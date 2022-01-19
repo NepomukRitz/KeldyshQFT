@@ -124,16 +124,16 @@ template <typename Q, typename Grid>
 inline auto interpolate_lin_on_aux1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)>& val) -> Q {
 
     double t;
-    int index = frequencies.fconv(t, x);
+    const int index = frequencies.fconv(t, x);
 
-    double x1 = frequencies.get_ts(index);
-    double x2 = frequencies.get_ts(index + 1);
-    double xd = (t - x1) / (x2 - x1);
+    const double x1 = frequencies.get_ts(index);
+    const double x2 = frequencies.get_ts(index + 1);
+    const double xd = (t - x1) / (x2 - x1);
 
-    Q f1 = val(index);
-    Q f2 = val(index + 1);
+    const Q f1 = val(index);
+    const Q f2 = val(index + 1);
 
-    Q result = ((1. - xd) * f1 + xd * f2);
+    const Q result = ((1. - xd) * f1 + xd * f2);
     assert(isfinite(result));
     return result;
 }
