@@ -14,6 +14,12 @@ set(CMAKE_CXX_COMPILER mpicxx)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") // for code coverage analysis (slows down the code a lot!)
 
+## enable profiling (will generate a gmon.out file which can be interpreted with gprof in Linux).
+## Comment out when no profiling shall be done!!
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+
 #set(SOURCE_FILES main.cpp) # diagrammatic_combinations.h interpolations.h testFunctions.h correctionFunctions.h)
 #add_executable(openmp_test_clion ${SOURCE_FILES})
 
