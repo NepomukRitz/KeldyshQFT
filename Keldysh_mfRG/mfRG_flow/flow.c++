@@ -62,7 +62,7 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
     // compute the flow using an ODE solver
-    ode_solver<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
+    ode_solver<State<state_datatype>, flowgrid::exp_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
                                                                       Lambda_checkpoints, outputFileName, 0, nODE, true);
 
 

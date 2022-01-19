@@ -246,41 +246,51 @@ namespace ode_solver_impl
         double Lambda = FlowGrid::lambda_from_t(t_value);
         double dLambda = FlowGrid::lambda_from_t(t_value + t_step) - Lambda;
         k.reserve(stages);
-        k.push_back( dydx );             /// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
+        k.push_back( dydx
+#ifdef REPARAMETRIZE_FLOWGRID
+        * FlowGrid::dlambda_dt(t_value)
+#endif
+        );
+
 
         double Lambda_stage;
+        double t_stage, stepsize, dLambda_dt;
         // Start at 1 because 0th stage is already contained in dydx parameter
         for (size_t stage = 1; stage < stages; stage++)
         {
-#if DEBUG > 0
-            if (stage != k.size())
-            {
-                throw std::logic_error("Inconsistency in RK solver.");
-            }
-#endif
+#ifdef REPARAMETRIZE_FLOWGRID
+            t_stage = t_value + t_step* tableau.get_node(stage);
+            Lambda_stage = FlowGrid::lambda_from_t(t_stage);
+            stepsize = t_step;
+#else
             Lambda_stage = Lambda + dLambda * tableau.get_node(stage);
+            stepsize = dLambda;
+#endif
 
             state_stage = y_init;
             for (size_t col_index = 0; col_index < stage; col_index++)
             {
-                double factor = dLambda * tableau.get_a(stage, col_index);
+                double factor = stepsize * tableau.get_a(stage, col_index);
                 state_stage += k[col_index] * factor;
-                //assert(isfinite(state_stage));
             }
 
-            k.push_back( rhs(state_stage, Lambda_stage, {iteration, stage})  );
+            k.push_back( rhs(state_stage, Lambda_stage, {iteration, stage})
+#ifdef REPARAMETRIZE_FLOWGRID
+            * FlowGrid::dlambda_dt(t_stage)
+#endif
+            );
         }
 
         result = y_init;
         for (size_t stage = 0; stage < stages; stage++)
         {
-            result += k[stage] * dLambda * tableau.b_high[stage];
+            result += k[stage] * stepsize * tableau.b_high[stage];
         }
 
-        Y err = k[0] * dLambda * tableau.get_error_b(0);
+        Y err = k[0] * stepsize * tableau.get_error_b(0);
         for (size_t stage = 1; stage < stages; stage++)
         {
-            err += k[stage] * dLambda * tableau.get_error_b(stage);
+            err += k[stage] * stepsize * tableau.get_error_b(stage);
         }
         maxrel_error = max_rel_err(err, k, 1e-6); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
         //assert(isfinite(result));

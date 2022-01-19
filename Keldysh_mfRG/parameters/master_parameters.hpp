@@ -14,7 +14,7 @@
 
 //#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
-constexpr bool VERBOSE = true;
+constexpr bool VERBOSE = false;
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD
@@ -24,7 +24,7 @@ constexpr bool VERBOSE = true;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 //#define KELDYSH_FORMALISM
-//#define SWITCH_SUM_N_INTEGRAL
+#define SWITCH_SUM_N_INTEGRAL
 #ifndef KELDYSH_FORMALISM
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
@@ -53,7 +53,7 @@ constexpr int N_LOOPS = 1;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-constexpr double glb_T = 10./M_PI; //0.01;                     // Temperature
+constexpr double glb_T = 1.; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 1.0;                     // Temperature
 #endif
@@ -62,10 +62,10 @@ constexpr double glb_T = 1.0;                     // Temperature
 #else
     constexpr double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
 #endif
-constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
+constexpr double glb_U = 4.0;                      // Impurity on-site interaction strength
 constexpr double glb_Vg = glb_mu;                  // Impurity level shift
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 1./5.;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 2.;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -133,14 +133,16 @@ constexpr int n_in = 1;
 
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
-#define REG 2
-
-// Computation is flowing or not (determines the value of the vertex).
-// Define FLOW for flow and comment out for static calculation
-//#define FLOW
+// 4: interaction cutoff
+#define REG 3
 
 
-constexpr int nODE = 50;
+
+// if the following is not defined, we flow with the parameter Lambda. The flowgrid just provides suggestions for stepsizes
+// if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
+#define REPARAMETRIZE_FLOWGRID
+
+constexpr int nODE = 1;
 constexpr double epsODE = 1e-4;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4;
@@ -149,8 +151,8 @@ constexpr double epsODE = 1e-4;
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 20;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 0;
+constexpr double Lambda_ini = 10.;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1.;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 #if REG == 2
