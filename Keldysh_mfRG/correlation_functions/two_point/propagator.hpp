@@ -624,12 +624,16 @@ auto Propagator<Q>::GM_REG3_SIAM(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::GM_REG3_SIAM_PHS(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    return v*v / (v*v + Lambda*Lambda) * 1./( v + (glb_Gamma)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+    double reg = v*v / (v*v + Lambda*Lambda);
+    Q G0inv = v + (glb_Gamma)*0.5*sign(v);
+    return 1./( G0inv / reg - selfenergy.valsmooth(0, v, i_in) );
 }
 
 template <typename Q>
 auto Propagator<Q>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> Q {
-    return v*v / (v*v + Lambda*Lambda) * 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+    double reg = v*v / (v*v + Lambda*Lambda);
+    Q G0inv =  (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v));
+    return 1./( G0inv / reg - selfenergy.valsmooth(0, v, i_in) );
 }
 
 // single scale propagator (Matsubara)
@@ -637,7 +641,8 @@ template <typename Q>
 auto Propagator<Q>::SM_REG3(const double v, const int i_in) const -> Q {
     assert(v != 0.);
     Q G = GM(v, i_in);
-    return -2 * Lambda / (v * v + Lambda * Lambda) * G;
+    Q G0inv = v + (glb_Gamma)*0.5*sign(v);
+    return -2 * Lambda / (v * v) * G * G0inv * G;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
 
