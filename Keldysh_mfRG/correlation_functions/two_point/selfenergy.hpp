@@ -63,6 +63,16 @@ public:
         return lhs;
     }
     template <typename  Qfac>
+    auto operator+= (Qfac alpha) -> SelfEnergy<Q> {
+        this->Sigma += alpha;
+        return *this;
+    }
+    template <typename  Qfac>
+    friend SelfEnergy<Q> operator+ (SelfEnergy<Q> lhs, const Qfac& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    template <typename  Qfac>
     auto operator*= (Qfac alpha) -> SelfEnergy<Q> {
         this->Sigma *= alpha;
         return *this;

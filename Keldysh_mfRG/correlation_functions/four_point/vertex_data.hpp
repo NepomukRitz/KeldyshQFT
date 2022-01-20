@@ -30,6 +30,7 @@ class Buffer;
  */
 template <typename Q, size_t rank>
 class vertexContainerBase {
+    friend class State<Q>;
     template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
     template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
     template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);

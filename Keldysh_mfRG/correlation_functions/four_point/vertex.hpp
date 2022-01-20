@@ -49,6 +49,13 @@ public:
     friend irreducible<Q> operator-(irreducible<Q> lhs, const irreducible<Q>& rhs) {
         lhs -= rhs; return lhs;
     }
+    auto operator+= (const double& alpha) -> irreducible<Q> {
+        this->bare +=alpha;
+        return *this;
+    }
+    friend irreducible<Q> operator+(irreducible<Q> lhs, const double& rhs) {
+        lhs += rhs; return lhs;
+    }
     auto operator*= (const double& alpha) -> irreducible<Q> {
         this->bare *=alpha;
         return *this;

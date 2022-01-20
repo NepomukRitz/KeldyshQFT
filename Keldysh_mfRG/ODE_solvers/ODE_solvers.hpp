@@ -292,7 +292,8 @@ namespace ode_solver_impl
         {
             err += k[stage] * stepsize * tableau.get_error_b(stage);
         }
-        maxrel_error = max_rel_err(err, k, 1e-6); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
+        Y y_scale = (abs(result) + abs(dydx*stepsize)) * epsODE_rel + epsODE_abs;
+        maxrel_error = max_rel_err(err, y_scale); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
         //assert(isfinite(result));
         //assert(isfinite(maxrel_error));
     }
@@ -352,16 +353,13 @@ namespace ode_solver_impl
                 std::cout << "Try stepsize t " << t_step << " (from Lambda = " << Lambda_i
                           << " to " << FlowGrid::lambda_from_t(t_value + t_step)
                           << ")." << std::endl;
+                std::cout << "Current t: " << t_value << std::endl;
             };
             ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs, iteration);
 
             if (not tableau.adaptive) break;
 
-            /// === Error checking ===
-            //errmax = max_rel_err<state_datatype>(err, yscal, 1.e-6);
-            // compute relative error over error tolerance
-            errmax /= epsODE; //std::max(errmax / epsODE, 0. // 0.1 * errmax_parquet
-            //);
+
 
             if (verbose and world_rank == 0)
             {

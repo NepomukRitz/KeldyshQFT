@@ -142,8 +142,9 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 1;
-constexpr double epsODE = 1e-4;
+constexpr int nODE = 50;
+constexpr double epsODE_rel = 1e-6;
+constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4;
 // 2 -> Bogacki–Shampine
@@ -151,8 +152,8 @@ constexpr double epsODE = 1e-4;
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 10.;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 1.;
+constexpr double Lambda_ini = 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 #if REG == 2

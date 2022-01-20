@@ -47,6 +47,15 @@ public:
         lhs += rhs;
         return lhs;
     }
+    auto operator+= (const double& alpha) -> State {
+        this->vertex += alpha;
+        this->selfenergy += alpha;
+        return (*this);
+    }
+    friend State<Q> operator+ (State<Q> lhs, const double& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
     auto operator*= (const double& alpha) -> State {
         this->vertex *= alpha;
         this->selfenergy *= alpha;
@@ -69,6 +78,15 @@ public:
     void check_resolution() const;
 
     void analyze_tails() const;
+
+    auto abs() const -> State<Q> {
+        State<Q> state_abs = (*this);
+        state_abs.selfenergy.Sigma = selfenergy.Sigma.abs();
+        state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
+        state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
+        state_abs.vertex.tvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
+        return state_abs;
+    }
 };
 
 
@@ -115,18 +133,21 @@ template <typename Q> void State<Q>::analyze_tails() const {
 
 
 template<typename Q>
-auto max_rel_err(const State<Q>& err, const vec<State<Q>>& scale_States, const double minimum_value_considered) -> double {
-    double scale_Vert = 0.;
-    for (auto state: scale_States) {scale_Vert += state.vertex.half1().sum_norm(0);}
-    double max_vert = err.vertex.half1().sum_norm(0) / scale_Vert * scale_States.size();
+auto max_rel_err(const State<Q>& err, const State<Q>& scale_State) -> double {
+    double scale_Vert = scale_State.vertex.half1().sum_norm(0);
+    double max_vert = err.vertex.half1().sum_norm(0) / scale_Vert;
 
-    double scale_SE = 0.;
-    for (auto state: scale_States) {scale_SE += state.selfenergy.norm(0);}
+    double scale_SE = scale_State.selfenergy.norm(0);
 
-    double max_self = err.selfenergy.norm(0) /scale_SE * scale_States.size();
+    double max_self = err.selfenergy.norm(0) /scale_SE;
     return std::max(max_self, max_vert);
 
 }
 
+template <typename Q>
+State<Q> abs(const State<Q>& state) {
+    State<Q> state_abs = state.abs();
+    return state_abs;
+}
 
 #endif //KELDYSH_MFRG_STATE_HPP
