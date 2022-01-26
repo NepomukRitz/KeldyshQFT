@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(Keldysh_mfRG)
 
-## Only one of these option can ever be set to ON!
+## Only one of these option can ever be set to ON! This is automatically done by the compile_cluster.sh script.
 option(WORKSTATION "Build on workstation" ON)
 option(ASC         "Build on ASC cluster" OFF)
 option(KCS         "Build on KCS cluster" OFF)
@@ -72,7 +72,11 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
 elseif(KCS)
-    include_directories($HDF5_INC $FFTW_INC $GSL_INC $BOOST_INC)
+    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.20-gcc-3dhdqfy/include) # $HDF5_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/fftw/3.3.8-intel-wrfank7/include) # $FFTW_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/include) # $GSL_INC
+    include_directories(/lrz/sys/libraries/boost/1.61_icc_serial/include) # $BOOST_INC
+
     target_link_libraries(Keldysh_mfRG $HDF5_CPP_SHLIB $HDF5_SHLIB $SZIP_LIB -lz)
     target_link_libraries(Keldysh_mfRG $FFTW_LIB $GSL_LIB -L$BOOST_LIBDIR$)
 endif()
