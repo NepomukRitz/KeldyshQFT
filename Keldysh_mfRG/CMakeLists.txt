@@ -19,12 +19,7 @@ else()
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
 endif()
 
-if(WORKSTATION OR ASC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
-elseif(KCS)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp $HDF5_INC
-        $FFTW_INC $GSL_INC $BOOST_INC")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
 if(WORKSTATION)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp") # unnecessary??
@@ -77,6 +72,7 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
 elseif(KCS)
+    include_directories($HDF5_INC $FFTW_INC $GSL_INC $BOOST_INC)
     target_link_libraries(Keldysh_mfRG $HDF5_CPP_SHLIB $HDF5_SHLIB $SZIP_LIB -lz)
     target_link_libraries(Keldysh_mfRG $FFTW_LIB $GSL_LIB -L$BOOST_LIBDIR$)
 endif()
