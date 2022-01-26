@@ -71,12 +71,13 @@ int main(int argc, char* argv[]) {
 
 
     //test_Bubble_in_Momentum_Space();
-    /*
+
     double lambda = 1;
     State<comp> state_ini (lambda);
     state_ini.initialize();
     sopt_state(state_ini, lambda);
 
+    /*
     Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
     auto Pi = PT_initialize_Bubble(barePropagator);
     // save_PreBubble_in_freq_space(Pi, 0);
