@@ -10,7 +10,8 @@ if [ "$1" == "--ASC" ]
 elif [ "$1" == "--KCS" ]
 then
   export CLUSTER=KCS
-  module load gcc
+  module unload gcc # in case some old version has been loaded previously
+  module load gcc/9
   module load hdf5/1.8.20-cxx-frt-threadsafe
   module load fftw
   module load gsl
