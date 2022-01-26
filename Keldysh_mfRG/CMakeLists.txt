@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.10)
-project(Keldysh_mfRG)
 
 ## Only one of these option can ever be set to ON! This is automatically done by the compile_cluster.sh script.
 option(WORKSTATION "Build on workstation" ON)
@@ -31,6 +30,8 @@ if(WORKSTATION)
     #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
     #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 endif()
+
+project(Keldysh_mfRG)
 
 ## include header and source code files
 include_directories(${CMAKE_SOURCE_DIR})

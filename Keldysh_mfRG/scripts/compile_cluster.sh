@@ -30,7 +30,6 @@ export LC_ALL=C
 # navigate to the directory with the CMakeLists.txt file
 cd ../
 
-
 # load cmake project
 cmake -DWORKSTATION=OFF -D$CLUSTER=ON .
 
