@@ -22,8 +22,8 @@ endif()
 if(WORKSTATION OR ASC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 elseif(KCS)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp $HDF5_INC $HDF5_CPP_SHLIB $HDF5_SHLIB $SZIP_LIB -lz
-        $FFTW_INC $FFTW_LIB $GSL_INC $GSL_LIB $BOOST_INC -L$BOOST_LIBDIR$")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp $HDF5_INC
+        $FFTW_INC $GSL_INC $BOOST_INC")
 endif()
 
 if(WORKSTATION)
@@ -76,4 +76,7 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
+elseif(KCS)
+    target_link_libraries(Keldysh_mfRG $HDF5_CPP_SHLIB $HDF5_SHLIB $SZIP_LIB -lz)
+    target_link_libraries(Keldysh_mfRG $FFTW_LIB $GSL_LIB -L$BOOST_LIBDIR$)
 endif()
