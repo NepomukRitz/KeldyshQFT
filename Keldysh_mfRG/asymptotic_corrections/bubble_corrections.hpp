@@ -195,7 +195,7 @@ auto correctionFunctionBubble_REG3_Matsubara_PHS_nondiff(double w, double vmax, 
         value = -0.25 * (
                 log((pow(vmax+w/2,2) + Lambda*Lambda)/(pow(vmax-w/2,2) + Lambda*Lambda)) / w
                 +
-                2. * std::real(log((vmax + w/2 + glb_i * Lambda) / (vmax - w/2 - glb_i * Lambda)) / (w + glb_i*Lambda))
+                2. * std::real(log((vmax + w/2 + glb_i * Lambda) / (vmax - w/2 - glb_i * Lambda)) / (w + 2. * glb_i*Lambda))
         );
     }
     return value;
