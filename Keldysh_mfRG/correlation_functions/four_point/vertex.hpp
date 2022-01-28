@@ -830,16 +830,26 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
 
 template <typename Q> auto fullvert<Q>::value (const VertexInput& input) const -> Q {
-    return irred.val(input.iK, input.i_in, input.spin)
-            + avertex.value(input, tvertex)
-            + pvertex.value(input, pvertex)
-            + tvertex.value(input, avertex);
+    if (Ir) {
+        return irred.val(input.iK, input.i_in, input.spin) + gammaRb(input);
+    }
+    else {
+        return irred.val(input.iK, input.i_in, input.spin)
+               + avertex.value(input, tvertex)
+               + pvertex.value(input, pvertex)
+               + tvertex.value(input, avertex);
+    }
 }
 template <typename Q> auto fullvert<Q>::value (const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
-    return irred.val(input.iK, input.i_in, input.spin)
-           + avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex)
-           + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
-           + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
+    if (Ir) {
+        return irred.val(input.iK, input.i_in, input.spin) + gammaRb(input, right_vertex);
+    }
+    else {
+        return irred.val(input.iK, input.i_in, input.spin)
+               + avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex)
+               + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
+               + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
+    }
 }
 
 template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input) const -> Q {
@@ -864,13 +874,13 @@ template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input, const
     Q res;
     switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
-            res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
+            res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         case 'p':
-            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
+            res = avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         case 't':
-            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
+            res = avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex) + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         default :
             res = 0.;
