@@ -98,14 +98,17 @@ public:
                               pvertex('p', Lambda, is_reserve),
                               tvertex('t', Lambda, is_reserve) {}
 
+private:
+    // Returns the sum of the contributions of the diagrammatic classes r' =/= r
+    auto gammaRb(const VertexInput& input) const -> Q;
+    auto gammaRb(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+
+
+public:
     // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
     // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
     auto value(const VertexInput& input) const -> Q;
     auto value(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
-
-    // Returns the sum of the contributions of the diagrammatic classes r' =/= r
-    auto gammaRb(const VertexInput& input) const -> Q;
-    auto gammaRb(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
     // Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
     auto left_same_bare(const VertexInput& input) const -> Q;
@@ -262,10 +265,6 @@ public:
         if constexpr(symmtype==symmetric) return vertex.value(input);
         else                              return vertex.value(input, vertex_half2);
         }
-    auto gammaRb(const VertexInput& input) const -> Q         {
-        if constexpr(symmtype==symmetric) return vertex.gammaRb(input);
-        else                              return vertex.gammaRb(input, vertex_half2);
-    }
     auto left_same_bare(const VertexInput& input)  const -> Q {
         if constexpr(symmtype==symmetric) return vertex.left_same_bare(input);
         else                              return vertex.left_same_bare(input, vertex_half2);
@@ -830,16 +829,28 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
 
 template <typename Q> auto fullvert<Q>::value (const VertexInput& input) const -> Q {
-    return irred.val(input.iK, input.i_in, input.spin)
-            + avertex.value(input, tvertex)
-            + pvertex.value(input, pvertex)
-            + tvertex.value(input, avertex);
+    assert(only_same_channel==false); // fullvert::value not implemented for only_same_channel
+    if (Ir) {
+        return irred.val(input.iK, input.i_in, input.spin) + gammaRb(input);
+    }
+    else {
+        return irred.val(input.iK, input.i_in, input.spin)
+               + avertex.value(input, tvertex)
+               + pvertex.value(input, pvertex)
+               + tvertex.value(input, avertex);
+    }
 }
 template <typename Q> auto fullvert<Q>::value (const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
-    return irred.val(input.iK, input.i_in, input.spin)
-           + avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex)
-           + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
-           + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
+    assert(only_same_channel==false); // fullvert::value not implemented for only_same_channel
+    if (Ir) {
+        return irred.val(input.iK, input.i_in, input.spin) + gammaRb(input, right_vertex);
+    }
+    else {
+        return irred.val(input.iK, input.i_in, input.spin)
+               + avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex)
+               + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
+               + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
+    }
 }
 
 template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input) const -> Q {
@@ -864,13 +875,13 @@ template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input, const
     Q res;
     switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
-            res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
+            res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         case 'p':
-            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
+            res = avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         case 't':
-            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
+            res = avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex) + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         default :
             res = 0.;
