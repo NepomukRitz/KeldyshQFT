@@ -272,7 +272,7 @@ struct Transformations {
                     K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
                               std::vector<int> ({ 1})};   // spin comp. Vhat
                     K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 1})};   //spin comp. Vhat
+                              std::vector<int> ({ 2})};   //spin comp. Vhat
                     break;
                 case 'p':
                     K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
@@ -292,7 +292,7 @@ struct Transformations {
                     K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
                               std::vector<int> ({ 1})};   // spin comp. Vhat
                     K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 1})};   // spin comp. Vhat
+                              std::vector<int> ({ 2})};   // spin comp. Vhat
                     break;
                 default:;
             }

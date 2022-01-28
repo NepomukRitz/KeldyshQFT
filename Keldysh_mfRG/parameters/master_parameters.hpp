@@ -44,7 +44,8 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-constexpr int N_LOOPS = 1;  // Number of loops
+constexpr int N_LOOPS = 3;  // Number of loops
+#define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
@@ -134,7 +135,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 // 4: interaction cutoff
-#define REG 3
+#define REG 4
 
 
 
@@ -142,18 +143,18 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 50;
+constexpr int nODE = 10;
 constexpr double epsODE_rel = 1e-6;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
-#define ODEsolver 3
+#define ODEsolver 1
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 1e4;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 1e-4;
+constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1.;// 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 
 #if REG == 2

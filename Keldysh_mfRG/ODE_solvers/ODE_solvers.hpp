@@ -262,6 +262,7 @@ namespace ode_solver_impl
             t_stage = t_value + t_step* tableau.get_node(stage);
             Lambda_stage = FlowGrid::lambda_from_t(t_stage);
             stepsize = t_step;
+            std::cout << "\t current t_stage: " << t_stage << std::endl;
 #else
             Lambda_stage = Lambda + dLambda * tableau.get_node(stage);
             stepsize = dLambda;
@@ -516,7 +517,6 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
             print("Lambda: ", Lambda, true);
         };
 
-        double t0 = get_time();
 
         //if next step would get us outside the interval [Lambda_f, Lambda_i]
         if ((Lambda + h - Lambda_f) * (Lambda + h - Lambda_i) > 0.0)
@@ -541,7 +541,6 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
         // Pick h for next iteration
         if (tableau.adaptive) h = hnext;
 
-        if (verbose and mpi_world_rank() == 0) get_time(t0); // measure time for one iteration
 
 
         lambdas[i+1] = Lambda;

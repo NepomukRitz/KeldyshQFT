@@ -172,8 +172,8 @@ void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     }
     if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
-        Nmin = (int) (vmin/(M_PI*glb_T)-1)/2;
-        Nmax = - Nmin;
+        Nmin = - POSINTRANGE; // (int) (vmin/(M_PI*glb_T)-1)/2;
+        Nmax = - Nmin - 1;
         vmin = (Nmin*2+1)*(M_PI*glb_T);
         vmax = (Nmax*2+1)*(M_PI*glb_T);
     }
@@ -327,7 +327,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             convert_external_MPI_OMP_indices_to_physical_indices_K2b(iK2, i0, ispin, iw, ivp, i_in, w, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = 0; // compute integrals for all frequency components
-            if (!KELDYSH and !ZERO_T and -vp + signFlipCorrection_MF(w) < vertex1.avertex().K2b.K2_get_wlower_f()) {
+            if (!KELDYSH and !ZERO_T and -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2b.K2_get_wlower_f()) {
                 trafo = -1;
             }
             if (trafo == 0) {calculate_value(value, i0, i_in, ispin, 0, w, 0, vp, k2b); }
@@ -355,6 +355,8 @@ void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value(Q& value, const int i0, const int i_in, const int ispin, const int iw,
                                            const double w, const double v, const double vp, const K_class k){
+
+    double vmin_temp = vmin;
     double vmax_temp = vmax;
 #ifndef SWITCH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
@@ -399,9 +401,12 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
                 }
                 else {
                     int interval_correction = signFlipCorrection_MF_int(w);
-                    vmax_temp = vmax + interval_correction * 2 * M_PI * glb_T;
+                    int W = (int) (w / (2*M_PI*glb_T) + 0.1*sgn(w));
+                    vmin_temp = (-POSINTRANGE - std::abs(W/2) + interval_correction) * 2 * M_PI * glb_T;
+                    vmax_temp = (POSINTRANGE-1  + std::abs(W/2)) * 2 * M_PI * glb_T;
                     // if interval_correction=-1, then the integrand is symmetric around v=-M_PI*glb_T
-                    value += bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand, Nmin, Nmax  + interval_correction);
+
+                    value = bubble_value_prefactor()*(2*M_PI) * glb_T * matsubarasum<Q>(integrand, -POSINTRANGE - std::abs(W/2) + interval_correction, POSINTRANGE-1  + std::abs(W/2));
                 }
             }
 
@@ -413,7 +418,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         // asymptotic corrections include spin sum
         if (not HUBBARD_MODEL) value += bubble_value_prefactor() *
                                         asymp_corrections_bubble(k, vertex1, vertex2, Pi.g,
-                                                                 vmin, vmax, w, v, vp, i0, i2, i_in, channel, diff, ispin);
+                                                                 vmin_temp, vmax_temp, w, v, vp, i0, i2, i_in, channel, diff, ispin);
 
     }
 }
@@ -710,7 +715,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     int trafo = 1;
 #ifdef DEBUG_SYMMETRIES
             trafo = 0; // compute integrals for all frequency components
-            if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w) < vertex1.avertex().K2.K2_get_wlower_f()) {
+            if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.K2_get_wlower_f()) {
                 trafo = -1;
             }
 #else
@@ -731,7 +736,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         default:
             print("Something went wrong in get_trafo_K2! Abort."); assert(false);
     }
-    if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w) < vertex1.avertex().K2.K2_get_wlower_f()) {
+    if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.K2_get_wlower_f()) {
         trafo = 0;
     }
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
@@ -763,11 +768,11 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #ifdef DEBUG_SYMMETRIES
     trafo = 0; // compute integrals for all frequency components
 
-    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w) < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w) < vertex1.avertex().K3.K3_get_wlower_f())) {
+    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f())) {
         trafo = -1;
     }
 #else
-    const double safety = 1e-10;
+    const double safety = 1e-5;
     int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
     int sign_f = sign_index(v + vp - safety);
     int sign_fp= sign_index(v - vp - safety);
@@ -785,8 +790,12 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         default:
             print("Something went wrong in get_trafo_K3! Abort."); assert(false);
     }
-    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w) < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w) < vertex1.avertex().K3.K3_get_wlower_f())) {
-        trafo = 0;
+
+    trafo = 0;
+    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f())) {
+        trafo = -1;
+        //std::cout << "omitted frequencies: " << v << "\t" << vp << std::endl;
+        //std::cout << "with limits " << vertex1.avertex().K3.K3_get_wlower_f() << std::endl;
     }
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
     if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
