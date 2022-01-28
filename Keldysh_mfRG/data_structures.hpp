@@ -69,7 +69,7 @@ public:
     vec<T> inv() const;   // element-wise inverse
     vec<double> real() const;   // element-wise real part
     vec<double> imag() const;   // element-wise imaginary part
-    vec<double> abs() const;    // element-wise absolute value
+    template<typename T2=double> vec<T2> abs() const;    // element-wise absolute value
     vec<T> conj() const;        // element-wise complex conjugate
     double max_norm() const;    // maximum norm
     vec<T> diff() const;        // vector of differences between adjacent elements
@@ -287,8 +287,9 @@ vec<double> vec<T>::imag() const {                    // if T != comp, vector of
 
 // element-wise absolute value
 template <typename T>
-vec<double> vec<T>::abs() const {
-    vec<double> temp (this->size());
+template<typename T2>
+vec<T2> vec<T>::abs() const {
+    vec<T2> temp (this->size());
 #pragma omp parallel for
     for (int i=0; i<this->size(); ++i) {
         temp[i] = std::abs((*this)[i]);

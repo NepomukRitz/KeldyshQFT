@@ -81,10 +81,10 @@ public:
 
     auto abs() const -> State<Q> {
         State<Q> state_abs = (*this);
-        state_abs.selfenergy.Sigma = selfenergy.Sigma.abs();
-        state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
-        state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
-        state_abs.vertex.tvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
+        state_abs.selfenergy.Sigma = selfenergy.Sigma.template abs<Q>();
+        state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
+        state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
+        state_abs.vertex.tvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
         return state_abs;
     }
 };

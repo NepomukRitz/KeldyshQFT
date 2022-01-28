@@ -173,7 +173,7 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
  */
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
-    if (std::abs(v) > this->frequencies.w_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
+    if (std::abs(v) > this->frequencies.w_upper + inter_tol)    //Check the range of frequency. If too large, return Sigma(\infty)
         //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
