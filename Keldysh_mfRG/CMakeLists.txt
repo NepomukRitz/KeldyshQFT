@@ -8,7 +8,7 @@ option(SuperMUC    "Build on SuperMUC"    OFF)
 
 ## Set the C++ standard, the compiler, compiler optimization options (O0 - off, O3 - best) and add -fopenmp
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_COMPILER gcc)
+#set(CMAKE_C_COMPILER gcc)
 set(CMAKE_CXX_COMPILER mpicxx)
 
 if(WORKSTATION)
