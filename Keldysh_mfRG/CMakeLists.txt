@@ -77,6 +77,6 @@ elseif(KCS)
     include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/include) # $GSL_INC
     include_directories(/lrz/sys/libraries/boost/1.61_icc_serial/include) # $BOOST_INC
 
-    target_link_libraries(Keldysh_mfRG $HDF5_CPP_SHLIB $HDF5_SHLIB $SZIP_LIB -lz)
-    target_link_libraries(Keldysh_mfRG $FFTW_LIB $GSL_LIB -L$BOOST_LIBDIR$)
+    target_link_libraries(Keldysh_mfRG ${HDF5_CPP_SHLIB} ${HDF5_SHLIB} ${SZIP_LIB} -lz)
+    target_link_libraries(Keldysh_mfRG ${FFTW_LIB} ${GSL_LIB} -L${BOOST_LIBDIR}$)
 endif()
