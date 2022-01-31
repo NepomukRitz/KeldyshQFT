@@ -53,7 +53,9 @@ private:
     size_t flattenIndex(const Types &... i) const {
 
         int it = 0;
+#ifndef NDEBUG
         (( assert(i < dims[it]) , it++), ...);
+#endif
         return getFlatIndex({static_cast<size_t>(i)...}, dims);
 
     }
