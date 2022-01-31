@@ -4,6 +4,7 @@
 #include "parameters/master_parameters.hpp"
 #include "symmetries/Keldysh_symmetries.hpp"
 #include <mpi.h>
+#include <omp.h>
 #include "utilities/mpi_setup.hpp"
 #include "mfRG_flow/flow.hpp"
 #include "tests/test_perturbation_theory.hpp"

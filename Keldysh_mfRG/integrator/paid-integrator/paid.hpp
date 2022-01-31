@@ -17,7 +17,8 @@
 #ifdef _OPENMP
 #include <omp.h>
 #else
-#include "omp_stub.h"
+//#include "omp_stub.h"
+#include <omp.h>
 #endif
 
 #include "config.hpp"

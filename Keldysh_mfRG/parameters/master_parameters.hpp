@@ -17,7 +17,7 @@
 constexpr bool VERBOSE = true;
 
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-#define HUBBARD
+//#define HUBBARD
 
 // Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
 //#define FERMI_POLARON_PROBLEM

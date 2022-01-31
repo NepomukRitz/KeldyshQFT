@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_PRECALCULATED_BUBBLE_HPP
 
 #include <cmath>                            // for using the macro M_PI as pi
+#include <omp.h>
 #include "../symmetries/Keldysh_symmetries.hpp"  // for independent Keldysh components and utilities
 #include "../correlation_functions/four_point/vertex.hpp"                         // vertex class
 #include "../correlation_functions/two_point/selfenergy.hpp"                     // self-energy class
