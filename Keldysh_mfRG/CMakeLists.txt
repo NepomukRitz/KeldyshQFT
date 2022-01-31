@@ -77,6 +77,13 @@ elseif(KCS)
     include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/include) # $GSL_INC
     include_directories(/lrz/sys/libraries/boost/1.61_icc_serial/include) # $BOOST_INC
 
-    target_link_libraries(Keldysh_mfRG ${HDF5_CPP_SHLIB} ${HDF5_SHLIB})
-    target_link_libraries(Keldysh_mfRG ${FFTW_LIB} ${GSL_LIB} -L${BOOST_LIBDIR}$)
+    target_link_libraries(Keldysh_mfRG /dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.21-intel-mlgen5q/lib -lhdf5_hl_cpp -lhdf5_cpp) # ${HDF5_CPP_SHLIB}
+    target_link_libraries(Keldysh_mfRG /dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.21-intel-mlgen5q/lib -lhdf5_hl -lhdf5) # ${HDF5_SHLIB}
+    target_link_libraries(Keldysh_mfRG /dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/fftw/3.3.8-intel-wrfank7/lib -lfftw3f -lfftw3 -lfftw3l -lm -Wl,-dy) # ${FFTW_LIB}
+    target_link_libraries(Keldysh_mfRG /dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/lib/libgsl.a) # ${GSL_LIB}
+    target_link_libraries(Keldysh_mfRG /lrz/sys/libraries/boost/1.61_icc_serial/lib) # ${BOOST_LIBDIR}
+
+
+    #target_link_libraries(Keldysh_mfRG ${HDF5_CPP_SHLIB} ${HDF5_SHLIB} ${SZIP_LIB} -lz)
+    #target_link_libraries(Keldysh_mfRG ${FFTW_LIB} ${GSL_LIB} -L${BOOST_LIBDIR}$)
 endif()
