@@ -27,9 +27,10 @@ module load cmake
 export LANG=C
 export LC_ALL=C
 
+dir_path=$(dirname "$(realpath "$0")")
 
 # navigate to the directory with the CMakeLists.txt file
-cd "$0"/./../ || exit
+cd "$dir_path"/../ || exit
 
 # load cmake project
 cmake -DWORKSTATION=OFF -D$CLUSTER=ON .
