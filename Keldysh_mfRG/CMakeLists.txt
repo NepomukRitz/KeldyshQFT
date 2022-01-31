@@ -72,11 +72,11 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
 elseif(KCS)
-    include_directories($ENV{HDF5_INC} $ENV{FFTW_INC} $ENV{GSL_INC} $ENV{BOOST_INC})
-    #include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.21-intel-mlgen5q/include) # $HDF5_INC
-    #include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/fftw/3.3.8-intel-wrfank7/include) # $FFTW_INC
-    #include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/include) # $GSL_INC
-    #include_directories(/lrz/sys/libraries/boost/1.61_icc_serial/include) # $BOOST_INC
+    #include_directories($ENV{HDF5_INC} $ENV{FFTW_INC} $ENV{GSL_INC} $ENV{BOOST_INC})
+    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.20-gcc-3dhdqfy/include) # $HDF5_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/fftw/3.3.8-intel-wrfank7/include) # $FFTW_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/include) # $GSL_INC
+    include_directories(/lrz/sys/libraries/boost/1.61_icc_serial/include) # $BOOST_INC
 
     #target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.21-intel-mlgen5q/lib -lhdf5_hl_cpp -lhdf5_cpp) # ${HDF5_CPP_SHLIB}
     #target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.21-intel-mlgen5q/lib -lhdf5_hl -lhdf5) # ${HDF5_SHLIB}
