@@ -1,5 +1,5 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "openmp-use-default-none"
+//#pragma clang diagnostic push
+//#pragma ide diagnostic ignored "openmp-use-default-none"
 //
 // Created by SAguirre on 9/07/2020.
 //
