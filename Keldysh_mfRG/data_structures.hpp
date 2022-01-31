@@ -87,6 +87,8 @@ public:
     vec<T> & operator*= (const vec<Q>& m);     // element-wise multiplication of two vectors
     template<typename Q>
     vec<T> & operator*= (const Q& c);          // multiplication with a constant
+    template<typename Q>
+    vec<T> & operator/= (const vec<Q>& m);     // element-wise division of two vectors
 
     // elementwise arithmetics-assignment op's
     template <typename Q, typename R>
@@ -201,6 +203,11 @@ vec<T> & vec<T>::operator-= (const Q& c) {
 
 }
 
+// element-wise division of two vectors
+template <typename T> template<typename Q>
+vec<T> & vec<T>::operator/= (const vec<Q>& m) {
+    return elementwise_map_assign([](const T &l, const Q &r) { return l / r; }, m);
+}
 // element-wise multiplication of two vectors
 template <typename T> template<typename Q>
 vec<T> & vec<T>::operator*= (const vec<Q>& m) {
@@ -345,6 +352,10 @@ template <typename T>
 vec<T> operator+ (vec<T> lhs, const double& rhs) {
     lhs += rhs; return lhs;
 }
+template <typename T>
+vec<T> operator+ (const double& rhs, vec<T> lhs) {
+    lhs += rhs; return lhs;
+}
 
 // subtraction of a double constant to comp vector
 template <typename T>
@@ -371,6 +382,10 @@ vec<T> operator*= (vec<T>& lhs, const double& rhs) {
 }
 template <typename T>
 vec<T> operator* (vec<T> lhs, const double& rhs) {
+    lhs *= rhs; return lhs;
+}
+template <typename T>
+vec<T> operator* (const double& rhs, vec<T> lhs) {
     lhs *= rhs; return lhs;
 }
 

@@ -150,12 +150,14 @@ constexpr double epsODE_abs = 1e-8;
 // 1 -> basic Runge-Kutta 4;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
-#define ODEsolver 1
+// 4 -> Dormand-Prince
+#define ODEsolver 3
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 1.;// 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
+constexpr double dLambda_initial = 0.1;             //Initial step size for ODE solvers with adaptive step size control
 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)

@@ -1050,7 +1050,7 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it);
  */
 template <typename  Q>
 void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
-                 const State<Q>& state_in, rvec& Lambdas, bool file_exists) {
+                 const State<Q>& state_in, rvec& Lambdas, bool file_exists, const bool verbose=true) {
     //Try block to detect exceptions raised by any of the calls inside it
     try {
         // Prepare a buffer for writing data into the file
@@ -1428,10 +1428,11 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
             dataSets.K3_t.write(buffer.K3_class_t, mtype_comp, dataSpaces_K3_t_buffer, dataSpaces_K3_t);
         }
 #endif
-
-        print("Successfully saved in hdf5 file: ", FILE_NAME);
-        if (file_exists) print_add(" in Lambda-layer ", Lambda_it, false);
-        print_add("", true);
+        if (verbose) {
+            print("Successfully saved in hdf5 file: ", FILE_NAME);
+            if (file_exists) print_add(" in Lambda-layer ", Lambda_it, false);
+            print_add("", true);
+        }
 
         // Terminate
         dataSets.close(file_exists);
@@ -1496,7 +1497,7 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  */
 template <typename Q>
-void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_in, rvec& Lambdas) {
+void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_in, rvec& Lambdas, const bool verbose=true) {
 #ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -1504,22 +1505,22 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_
         long Lambda_size = read_Lambdas_from_hdf(FILE_NAME).size();
         // write data to file if Lambda iteration number is in allowed range, otherwise print error message
         if (Lambda_it < Lambda_size) {
-            save_to_hdf(FILE_NAME, Lambda_it, Lambda_size, state_in, Lambdas, true);
+            save_to_hdf(FILE_NAME, Lambda_it, Lambda_size, state_in, Lambdas, true, verbose);
         } else {
-            print("Cannot write to file ", FILE_NAME, " since Lambda layer is out of range.", true);
+            print("Cannot write to file ", FILE_NAME, " since Lambda layer", Lambda_it, " is out of range.", true);
         }
     }
 }
 /// Overload of above function that only updates the Lambda at iteration Lambda_it
 template <typename Q>
-void add_hdf(const H5std_string FILE_NAME, const double Lambda_now, const int Lambda_it, const State<Q>& state_in) {
+void add_hdf(const H5std_string FILE_NAME, const double Lambda_now, const int Lambda_it, const State<Q>& state_in, const bool verbose=true) {
 #ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
     {
         rvec Lambdas = read_Lambdas_from_hdf(FILE_NAME);
         Lambdas[Lambda_it] = Lambda_now; // update Lambda
-        add_hdf<Q>(FILE_NAME, Lambda_it, state_in, Lambdas);
+        add_hdf<Q>(FILE_NAME, Lambda_it, state_in, Lambdas, verbose);
     }
 }
 

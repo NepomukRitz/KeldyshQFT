@@ -62,9 +62,13 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
     // compute the flow using an ODE solver
-    ode_solver<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
-                                                                      Lambda_checkpoints, outputFileName, 0, nODE, true);
+    //ode_solver<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
+    //                                                                  Lambda_checkpoints, outputFileName, 0, nODE, true);
 
+    rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
+    using namespace boost::numeric::odeint;
+    ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+                                                                        Lambda_checkpoints, outputFileName, 0, nODE, true);
 
     return state_fin;
 }
@@ -102,8 +106,13 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const int it
         //               nODE, Lambda_checkpoints,
         //               inputFileName,                           // save state at each step during flow
         //               it_start, save_intermediate_results);                               // start from iteration it_start
-        ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
-                                                                          Lambda_checkpoints, inputFileName, it_start);
+        //ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
+        //                                                                  Lambda_checkpoints, inputFileName, it_start);
+
+        rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
+        using namespace boost::numeric::odeint;
+        ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+                                                                                                                                             Lambda_checkpoints, inputFileName, it_start, nODE, true);
 
         return state_fin;
     }

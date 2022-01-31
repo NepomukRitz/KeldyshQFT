@@ -55,7 +55,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
          iteration = opt[0];
          rkStep = opt[1];
          save_intermediate = true;
-         makedir(dir_str);
+         if (rkStep==0 and iteration==0 and save_intermediate) makedir(dir_str);
     }
 
 
@@ -125,8 +125,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #endif
         }
         else {
-            add_hdf<Q>(dir_str+ "Psi_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, Psi);
-            add_hdf<Q>(dir_str+"dPsi_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, dPsi);
+            add_hdf<Q>(dir_str+ "Psi_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, Psi, false);
+            add_hdf<Q>(dir_str+"dPsi_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, dPsi, false);
         }
     }
 
@@ -180,11 +180,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #endif
             } else {
                 add_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
-                           Psi.Lambda, iteration, dPsi_L);
+                           Psi.Lambda, iteration, dPsi_L, false);
                 add_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
-                           Psi.Lambda, iteration, dPsi_R);
+                           Psi.Lambda, iteration, dPsi_R, false);
                 add_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
-                           Psi.Lambda, iteration, dPsi_T);
+                           Psi.Lambda, iteration, dPsi_T, false);
 
             }
         }
@@ -234,7 +234,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 }
 
                 // symmetrize by averaging left and right insertion
-                Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;                  /// TODO: Find better solution --> K2 in dGammaC_l is bad, K3 in dGammaC_l can be obtained from dGammaC_r
+                Vertex<Q> dGammaC = dGammaC_r;//(dGammaC_r + dGammaC_l) * 0.5;                  /// TODO: Find better solution --> K2 in dGammaC_l is bad, K3 in dGammaC_l can be obtained from dGammaC_r
 
                 /// save intermediate states:
                 if (save_intermediate) {
@@ -252,9 +252,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #endif
                     }
                     else {
-                        add_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C);
-                        add_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_left);
-                        add_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_right);
+                        add_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C, false);
+                        add_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_left, false);
+                        add_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_C_right, false);
 
                     }
                     if (VERBOSE) {
@@ -309,9 +309,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 #endif
                     }
                     else {
-                        add_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_L);
-                        add_hdf<Q>(dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_R);
-                        add_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_T);
+                        add_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_L, false);
+                        add_hdf<Q>(dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_R, false);
+                        add_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, iteration, dPsi_T, false);
 
                     }
                     if (VERBOSE) {
@@ -343,8 +343,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 //#endif
                 }
                 else {
-                    add_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, dPsi_C_tbar);
-                    add_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, Psi_SEcorrection);
+                    add_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, dPsi_C_tbar, false);
+                    add_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, Psi_SEcorrection, false);
 #ifdef DEBUG_SYMMETRIES
                     add_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), Psi.Lambda, iteration, Psi_SEcorrection);
 #endif
@@ -360,13 +360,24 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     }
 
     if (true and mpi_world_rank() == 0) { //
-        print("Time needed for evaluation of RHS: \n");
+        print("Time needed for evaluation of RHS --> ");
         get_time(t0); // measure time for one iteration
     }
 
     return dPsi;
 
 }
+
+template <typename Q>
+class rhs_n_loop_flow_t {
+public:
+    std::size_t rk_step = 0;
+    std::size_t iteration = 0;
+            void operator() (const State<Q>& Psi, State<Q>& dState_dLambda,  const double Lambda) {
+                dState_dLambda = rhs_n_loop_flow(Psi, Lambda, vec<size_t>({iteration, rk_step}));
+                rk_step++;
+            }
+};
 
 template <typename Q>
 void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator<Q>& S){

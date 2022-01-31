@@ -73,12 +73,22 @@ public:
         return lhs;
     }
     template <typename  Qfac>
+    friend SelfEnergy<Q> operator+ (const Qfac& rhs, SelfEnergy<Q> lhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    template <typename  Qfac>
     auto operator*= (Qfac alpha) -> SelfEnergy<Q> {
         this->Sigma *= alpha;
         return *this;
     }
     template <typename  Qfac>
     friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const Qfac& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    template <typename  Qfac>
+    friend SelfEnergy<Q> operator* (const Qfac& rhs, SelfEnergy<Q> lhs) {
         lhs *= rhs;
         return lhs;
     }
@@ -98,7 +108,15 @@ public:
         lhs -= rhs;
         return lhs;
     }
-
+    /// Elementwise division (needed for error estimate of adaptive ODE solvers)
+    auto operator/= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
+        this->Sigma /= self1.Sigma;
+        return *this;
+    }
+    friend SelfEnergy<Q> operator/ (SelfEnergy<Q> lhs, const SelfEnergy<Q>& rhs) {
+        lhs /= rhs;
+        return lhs;
+    }
 
 
     void check_resolution() const;

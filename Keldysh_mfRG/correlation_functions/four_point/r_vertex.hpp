@@ -329,6 +329,14 @@ public:
         lhs -= rhs;
         return lhs;
     }
+    // Elementwise divion:
+    auto operator/= (const rvert<Q>& rhs) -> rvert<Q> {
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data /= right.data;}, rhs);
+    }
+    friend rvert<Q> operator/ (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs /= rhs;
+        return lhs;
+    }
 
     auto operator*= (double alpha) -> rvert<Q> {
         return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.data *= alpha; });

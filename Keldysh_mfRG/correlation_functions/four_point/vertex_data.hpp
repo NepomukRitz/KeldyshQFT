@@ -35,6 +35,8 @@ class vertexContainerBase {
     template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
     template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
     template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
+    template<typename T> friend rvert<T> operator/ (rvert<T> lhs, const rvert<T>& rhs);
+    template<typename T> friend rvert<T> rvert<T>::operator/= (const rvert<T>& rhs);
     template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
     template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
     template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const double& alpha);

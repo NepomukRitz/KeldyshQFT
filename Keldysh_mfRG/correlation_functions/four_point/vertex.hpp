@@ -70,6 +70,14 @@ public:
     friend irreducible<Q> operator*(irreducible<Q> lhs, const irreducible<Q>& rhs) {
         lhs *= rhs; return lhs;
     }
+    auto operator/= (const irreducible<Q>& vertex) -> irreducible<Q> {
+        //his->bare /= vertex.bare;
+        return *this;
+    }
+    friend irreducible<Q> operator/(irreducible<Q> lhs, const irreducible<Q>& rhs) {
+        //lhs /= rhs;
+        return lhs;
+    }
 };
 
 // forward declaration of rvert from r_vertex.h
@@ -205,6 +213,19 @@ public:
     }
     friend fullvert<Q> operator-(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
         lhs -= rhs; // reuse compound assignment
+        return lhs; // return the result by value (uses move constructor)
+    }
+
+    /// Elementwise division (needed for error estimate of adaptive ODE solvers)
+    auto operator/= (const fullvert<Q>& vertex1) -> fullvert<Q> {
+        this->irred   /= vertex1.irred;
+        this->avertex /= vertex1.avertex;
+        this->pvertex /= vertex1.pvertex;
+        this->tvertex /= vertex1.tvertex;
+        return *this;
+    }
+    friend fullvert<Q> operator/(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
+        lhs /= rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
 
@@ -378,6 +399,16 @@ public:
     }
     friend GeneralVertex<Q,symmtype> operator- (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
         lhs -= rhs;
+        return lhs;
+    }
+
+    auto operator/= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
+        this->vertex /= vertex1.vertex;
+        if constexpr(symmtype == non_symmetric) this->vertex_half2 /= vertex1.vertex_half2;
+        return *this;
+    }
+    friend GeneralVertex<Q,symmtype> operator/ (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
+        lhs /= rhs;
         return lhs;
     }
 };
