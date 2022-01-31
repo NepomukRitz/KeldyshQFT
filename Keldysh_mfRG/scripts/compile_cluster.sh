@@ -12,7 +12,7 @@ then
   export CLUSTER=KCS
   module unload gcc # in case some old version has been loaded previously
   module load gcc/9
-  module load hdf5/1.8.21-intel-impi-cxx-frt-threadsafe
+  module load hdf5/1.8.20-intel-impi-cxx-frt-threadsafe
   module load fftw
   module load gsl
   module load boost/1.61_icc
