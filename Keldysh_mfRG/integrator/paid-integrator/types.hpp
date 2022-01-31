@@ -10,6 +10,7 @@
 
 namespace paid {
 
+/*
 // error_type depends on the compiler
 #define PAID_USE_QUAD 1
 
@@ -20,6 +21,11 @@ using error_type = __float128;
 #else
 using error_type = double;
 #endif
+*/
+
+/// We (Munich) use double as error type everywhere
+using error_type = double;
+
 
 enum IntegrationRule { ClenshawCurtis };
 
