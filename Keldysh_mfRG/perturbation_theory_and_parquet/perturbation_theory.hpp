@@ -217,4 +217,4 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 }
 
 #endif //KELDYSH_MFRG_PERTURBATION_THEORY_H
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop
