@@ -29,7 +29,7 @@ export LC_ALL=C
 
 
 # navigate to the directory with the CMakeLists.txt file
-cd ../
+cd "$0"/../ || exit
 
 # load cmake project
 cmake -DWORKSTATION=OFF -D$CLUSTER=ON .
