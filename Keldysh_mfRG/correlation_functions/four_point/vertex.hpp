@@ -49,6 +49,13 @@ public:
     friend irreducible<Q> operator-(irreducible<Q> lhs, const irreducible<Q>& rhs) {
         lhs -= rhs; return lhs;
     }
+    auto operator+= (const double& alpha) -> irreducible<Q> {
+        this->bare +=alpha;
+        return *this;
+    }
+    friend irreducible<Q> operator+(irreducible<Q> lhs, const double& rhs) {
+        lhs += rhs; return lhs;
+    }
     auto operator*= (const double& alpha) -> irreducible<Q> {
         this->bare *=alpha;
         return *this;
@@ -62,6 +69,14 @@ public:
     }
     friend irreducible<Q> operator*(irreducible<Q> lhs, const irreducible<Q>& rhs) {
         lhs *= rhs; return lhs;
+    }
+    auto operator/= (const irreducible<Q>& vertex) -> irreducible<Q> {
+        //his->bare /= vertex.bare;
+        return *this;
+    }
+    friend irreducible<Q> operator/(irreducible<Q> lhs, const irreducible<Q>& rhs) {
+        //lhs /= rhs;
+        return lhs;
     }
 };
 
@@ -91,14 +106,17 @@ public:
                               pvertex('p', Lambda, is_reserve),
                               tvertex('t', Lambda, is_reserve) {}
 
+private:
+    // Returns the sum of the contributions of the diagrammatic classes r' =/= r
+    auto gammaRb(const VertexInput& input) const -> Q;
+    auto gammaRb(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+
+
+public:
     // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
     // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
     auto value(const VertexInput& input) const -> Q;
     auto value(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
-
-    // Returns the sum of the contributions of the diagrammatic classes r' =/= r
-    auto gammaRb(const VertexInput& input) const -> Q;
-    auto gammaRb(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
     // Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
     auto left_same_bare(const VertexInput& input) const -> Q;
@@ -198,6 +216,19 @@ public:
         return lhs; // return the result by value (uses move constructor)
     }
 
+    /// Elementwise division (needed for error estimate of adaptive ODE solvers)
+    auto operator/= (const fullvert<Q>& vertex1) -> fullvert<Q> {
+        this->irred   /= vertex1.irred;
+        this->avertex /= vertex1.avertex;
+        this->pvertex /= vertex1.pvertex;
+        this->tvertex /= vertex1.tvertex;
+        return *this;
+    }
+    friend fullvert<Q> operator/(fullvert<Q> lhs, const fullvert<Q>& rhs) {// passing lhs by value helps optimize chained a+b+c
+        lhs /= rhs; // reuse compound assignment
+        return lhs; // return the result by value (uses move constructor)
+    }
+
     double get_deriv_max_K1(bool verbose) const;
     double get_deriv_max_K2(bool verbose) const;
     double get_deriv_max_K3(bool verbose) const;
@@ -255,10 +286,6 @@ public:
         if constexpr(symmtype==symmetric) return vertex.value(input);
         else                              return vertex.value(input, vertex_half2);
         }
-    auto gammaRb(const VertexInput& input) const -> Q         {
-        if constexpr(symmtype==symmetric) return vertex.gammaRb(input);
-        else                              return vertex.gammaRb(input, vertex_half2);
-    }
     auto left_same_bare(const VertexInput& input)  const -> Q {
         if constexpr(symmtype==symmetric) return vertex.left_same_bare(input);
         else                              return vertex.left_same_bare(input, vertex_half2);
@@ -372,6 +399,16 @@ public:
     }
     friend GeneralVertex<Q,symmtype> operator- (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
         lhs -= rhs;
+        return lhs;
+    }
+
+    auto operator/= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
+        this->vertex /= vertex1.vertex;
+        if constexpr(symmtype == non_symmetric) this->vertex_half2 /= vertex1.vertex_half2;
+        return *this;
+    }
+    friend GeneralVertex<Q,symmtype> operator/ (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
+        lhs /= rhs;
         return lhs;
     }
 };
@@ -823,16 +860,28 @@ template <typename Q> void irreducible<Q>::initialize(Q val) {
 /************************************* MEMBER FUNCTIONS OF THE VERTEX "fullvertex" ************************************/
 
 template <typename Q> auto fullvert<Q>::value (const VertexInput& input) const -> Q {
-    return irred.val(input.iK, input.i_in, input.spin)
-            + avertex.value(input, tvertex)
-            + pvertex.value(input, pvertex)
-            + tvertex.value(input, avertex);
+    assert(only_same_channel==false); // fullvert::value not implemented for only_same_channel
+    if (Ir) {
+        return irred.val(input.iK, input.i_in, input.spin) + gammaRb(input);
+    }
+    else {
+        return irred.val(input.iK, input.i_in, input.spin)
+               + avertex.value(input, tvertex)
+               + pvertex.value(input, pvertex)
+               + tvertex.value(input, avertex);
+    }
 }
 template <typename Q> auto fullvert<Q>::value (const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
-    return irred.val(input.iK, input.i_in, input.spin)
-           + avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex)
-           + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
-           + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
+    assert(only_same_channel==false); // fullvert::value not implemented for only_same_channel
+    if (Ir) {
+        return irred.val(input.iK, input.i_in, input.spin) + gammaRb(input, right_vertex);
+    }
+    else {
+        return irred.val(input.iK, input.i_in, input.spin)
+               + avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex)
+               + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex)
+               + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
+    }
 }
 
 template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input) const -> Q {
@@ -857,13 +906,13 @@ template <typename Q> auto fullvert<Q>::gammaRb (const VertexInput& input, const
     Q res;
     switch (input.channel){ // TODO(medium): Here, cross-projected contributions must be accessed!
         case 'a':
-            res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.avertex, right_vertex.tvertex);
+            res = pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         case 'p':
-            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
+            res = avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex) + tvertex.value(input, avertex, right_vertex.tvertex, right_vertex.avertex);
             break;
         case 't':
-            res = avertex.value(input, tvertex, right_vertex.tvertex, right_vertex.avertex) + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
+            res = avertex.value(input, tvertex, right_vertex.avertex, right_vertex.tvertex) + pvertex.value(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
             break;
         default :
             res = 0.;

@@ -11,6 +11,7 @@
  * For computing the mfRG equations without use of symmetries
  * Necessary settings:
  *  --> set flag DEBUG_SYMMETRIES to switch off the exploitation of symmetries
+ *  --> set flag SWITCH_SUM_N_INTEGRAL to perform correct spin summation in other spin channel
  *  --> Pick value for Lambda such that all K1, K2 and K3 contributions give results of the same order of magnitude (~1-2)
  * @param Lambda
  * 

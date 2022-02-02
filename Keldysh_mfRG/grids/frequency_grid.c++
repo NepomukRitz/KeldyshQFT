@@ -115,11 +115,14 @@ void FrequencyGrid::update_Wscale(double Wscale) {
  *  It rounds down due to the narrowing conversion from double to int.
  *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
  */
-auto FrequencyGrid::fconv(double w_in) const -> int {
+auto FrequencyGrid::fconv(const double w_in, const bool safety) const -> int {
 #ifdef PARAMETRIZED_GRID
     double t = grid_transf(w_in);
 
     t = (t - t_lower) / dt;
+#ifdef DENSEGRID
+    auto index = ((int) (t + (safety ? 0.1 : 0.) )) ;
+#else
     auto index = ((int) t) ;
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
@@ -134,6 +137,7 @@ auto FrequencyGrid::fconv(double w_in) const -> int {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
     }
+#endif
     return index;
 
 #else

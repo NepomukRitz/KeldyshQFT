@@ -17,14 +17,14 @@ auto heaviside (const double x) -> double {
 }
 
 auto round2Infty(double x) -> double {
-    const double tol = 1e-15;
+    const double tol = 1e-10;
     // trunc() rounds towards zero
     if (x <= 0.) return floor(x+tol);
     else return ceil(x-tol);
 }
 
 auto myround(double x) -> double {
-    const double tol = 1e-15;
+    const double tol = 1e-10;
     if (x <= -0.5) return floor(x+tol);
     else return ceil(x-tol);
 }
@@ -35,7 +35,8 @@ auto floor2bfreq(double w) -> double {
     double result = floor(w / a+tol) * a;
     assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result <= w + 1e-15);
+    assert(result <= w + 1e-10);
+    assert(result >  w - 2*M_PI*glb_T - 1e-10);
     return result;
 }
 auto ceil2bfreq(double w) -> double {
@@ -44,7 +45,8 @@ auto ceil2bfreq(double w) -> double {
     double result = ceil(w / a-tol) * a;
     assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result >= w - 1e-15);
+    assert(result >= w - 1e-10);
+    assert(result <  w + 2*M_PI*glb_T + 1e-10);
     return result;
 }
 auto round2bfreq(double w) -> double {
@@ -53,6 +55,7 @@ auto round2bfreq(double w) -> double {
     assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
     assert(std::abs(result) >= std::abs(w) - 1e-15);
+    assert(std::abs(result) <  std::abs(w) + 2*M_PI*glb_T + 1e-15);
     return result;
 }
 auto floor2ffreq(double w) -> double {
@@ -76,11 +79,22 @@ auto round2ffreq(double w) -> double {
 
 auto signFlipCorrection_MF(const double w) -> double {
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    double correction = floor2bfreq(w * 0.5) -  ceil2bfreq(w * 0.5);
+    double correction = signFlipCorrection_MF_int(w) * (2 * M_PI * glb_T);
     return correction;
 #else
     assert(false);
     return 0.;
+#endif
+}
+
+int signFlipCorrection_MF_int(const double w) {
+#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    int correction = -((int) (std::abs(w / (2. * M_PI * glb_T)) + 0.1) ) % 2;
+    assert(correction==0 or correction == -1);
+    return correction;
+#else
+    assert(false);
+    return 0;
 #endif
 }
 

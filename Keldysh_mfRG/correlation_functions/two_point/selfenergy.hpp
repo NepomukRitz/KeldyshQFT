@@ -63,12 +63,32 @@ public:
         return lhs;
     }
     template <typename  Qfac>
+    auto operator+= (Qfac alpha) -> SelfEnergy<Q> {
+        this->Sigma += alpha;
+        return *this;
+    }
+    template <typename  Qfac>
+    friend SelfEnergy<Q> operator+ (SelfEnergy<Q> lhs, const Qfac& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    template <typename  Qfac>
+    friend SelfEnergy<Q> operator+ (const Qfac& rhs, SelfEnergy<Q> lhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    template <typename  Qfac>
     auto operator*= (Qfac alpha) -> SelfEnergy<Q> {
         this->Sigma *= alpha;
         return *this;
     }
     template <typename  Qfac>
     friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const Qfac& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    template <typename  Qfac>
+    friend SelfEnergy<Q> operator* (const Qfac& rhs, SelfEnergy<Q> lhs) {
         lhs *= rhs;
         return lhs;
     }
@@ -88,7 +108,15 @@ public:
         lhs -= rhs;
         return lhs;
     }
-
+    /// Elementwise division (needed for error estimate of adaptive ODE solvers)
+    auto operator/= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
+        this->Sigma /= self1.Sigma;
+        return *this;
+    }
+    friend SelfEnergy<Q> operator/ (SelfEnergy<Q> lhs, const SelfEnergy<Q>& rhs) {
+        lhs /= rhs;
+        return lhs;
+    }
 
 
     void check_resolution() const;
@@ -163,13 +191,17 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
  */
 template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
 
-    if (std::abs(v) > this->frequencies.w_upper)    //Check the range of frequency. If too large, return Sigma(\infty)
+    if (std::abs(v) > this->frequencies.w_upper + inter_tol)    //Check the range of frequency. If too large, return Sigma(\infty)
         //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
     Q result;
+#ifdef DENSEGRID
+    result = interpolate_nearest1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+#else
     if (INTERPOLATION == linear) result = interpolate_lin1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
     else result = interpolate_lin_on_aux1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+#endif
     return result;
     }
 

@@ -37,21 +37,21 @@ namespace flowgrid {
     public:
         inline static double lambda_from_t(double t)
         {
-            double value = std::exp(-t);
+            double value = std::exp(t*log(10));
             assert (isfinite(value));
             return value; // -t;//
         }
 
         inline static double t_from_lambda(double Lambda)
         {
-            double value = -std::log(Lambda);
+            double value = std::log(Lambda)/log(10);
             assert (isfinite(value));
             return value; // -Lambda;//
         }
 
         inline static double dlambda_dt(double t)
         {
-            return -std::exp(-t);//lambda_from_t(t); // -1.;
+            return std::exp(t*log(10)) * log(10);//lambda_from_t(t); // -1.;
         }
     };
 
@@ -87,18 +87,18 @@ namespace flowgrid {
     public:
         inline static double lambda_from_t(double t)
         {
-            return -a*t*t / sqrt(1. - t*t) * sign(t);
+            return a*t*t / sqrt(1. - t*t) * sign(t);
         }
 
         inline static double t_from_lambda(double Lambda)
         {
-            return -sqrt((sqrt(pow(Lambda, 4) + 4.*pow(a*Lambda, 2)) - pow(Lambda, 2))/2.)/a * sign(Lambda);
+            return sqrt((sqrt(pow(Lambda, 4) + 4.*pow(a*Lambda, 2)) - pow(Lambda, 2))/2.)/a * sign(Lambda);
         }
 
         inline static double dlambda_dt(double t)
         {
             double temp = sqrt(1-t*t);
-            return -a*std::abs(t)*(t*t-2.) / (temp*temp*temp);
+            return a*std::abs(t)*(t*t-2.) / (temp*temp*temp);
         }
     };
 
@@ -108,17 +108,17 @@ namespace flowgrid {
     public:
         inline static double lambda_from_t(double t)
         {
-            return -t;
+            return t;
         }
 
         inline static double t_from_lambda(double Lambda)
         {
-            return -Lambda;
+            return Lambda;
         }
 
         inline static double dlambda_dt(double t)
         {
-            return -1.;
+            return 1.;
         }
     };
 

@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"
+#include "../utilities/math_utils.hpp"
 
 // TODO(high): Write unit tests for cross projection functionality!
 
@@ -162,9 +163,9 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
     int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 1; iw<=(nBOS3-1)/2; iw++){
+    for (int iw = 0; iw<=(nBOS3-1)/2; iw++){
         value = 0;
-        for (int iv = 1; iv<(nFER3)/2; iv++) {
+        for (int iv = 0; iv<(nFER3)/2; iv++) {
             for (int ivp = iv; ivp<(nFER3-iv); ivp++) {
                 avertex.K3.setvert(value, iK, i_spin, iw, iv, ivp, i_in);
                 value += 1;
@@ -183,10 +184,8 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
             for (int ivp = iv; ivp<nFER3; ivp++) {
                 avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
 #ifndef ZERO_TEMP   // Matsubara T>0
-                indices.v1 += correction;
-#endif
-#ifndef ZERO_TEMP   // Matsubara T>0
-                indices.v2 += correction;
+                //indices.v1 += correction;
+                //indices.v2 += correction;
 #endif
                 //if (avertex.K3_val(iK, i_spin, iw, iv, ivp, i_in) != avertex.K3_val(iK, nBOS3 - 1 - iw, iv, ivp, i_in)) {
                 //    asymmetry += 1;
@@ -196,15 +195,22 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 }
 
                 state_datatype compare_val = avertex.K3.interpolate(indices);
-                state_datatype savedK3_val = avertex.K3.val(iK, i_spin, iw, nFER3 - 1 - iv, nFER3 - 1 - ivp, i_in);
-                state_datatype savedK3_val0= avertex.K3.val(iK, i_spin, iw, iv, ivp, i_in);
-                double absdiff = std::abs(compare_val - savedK3_val);
-                if (absdiff > 1e-4) {
-                    asymmetry += absdiff;
-                }
+                double correction = signFlipCorrection_MF(indices.w);
+                int interval_correction = signFlipCorrection_MF_int(indices.w);
+                //if (! KELDYSH and ! ZERO_T)
+                //    interval_correction = (int)(signFlipCorrection_MF(indices.w)/(2*M_PI*glb_T) + 0.1);
+                if (nFER3 - 1 - iv + interval_correction >= 0 and nFER3 - 1 - ivp + interval_correction >= 0) {
+                    state_datatype savedK3_val = avertex.K3.val(iK, i_spin, iw, nFER3 - 1 - iv + interval_correction,
+                                                                nFER3 - 1 - ivp + interval_correction, i_in);
+                    state_datatype savedK3_val0 = avertex.K3.val(iK, i_spin, iw, iv, ivp, i_in);
+                    double absdiff = std::abs(compare_val - savedK3_val);
+                    if (absdiff > 1e-4) {
+                        asymmetry += absdiff;
+                    }
 
-                if (correction == 0 and std::abs(savedK3_val0 - savedK3_val) > asymmetry_tolerance ) {
-                    asymmetry += 1;
+                    if (correction == 0 and std::abs(savedK3_val0 - savedK3_val) > asymmetry_tolerance) {
+                        asymmetry += 1;
+                    }
                 }
             }
         }

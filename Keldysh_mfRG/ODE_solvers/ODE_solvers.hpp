@@ -246,43 +246,55 @@ namespace ode_solver_impl
         double Lambda = FlowGrid::lambda_from_t(t_value);
         double dLambda = FlowGrid::lambda_from_t(t_value + t_step) - Lambda;
         k.reserve(stages);
-        k.push_back( dydx );             /// TODO: Check this! Hier wird ja gar nicht mit der Schrittgröße dx multipliziert???
+        k.push_back( dydx
+#ifdef REPARAMETRIZE_FLOWGRID
+        * FlowGrid::dlambda_dt(t_value)
+#endif
+        );
+
 
         double Lambda_stage;
+        double t_stage, stepsize, dLambda_dt;
         // Start at 1 because 0th stage is already contained in dydx parameter
         for (size_t stage = 1; stage < stages; stage++)
         {
-#if DEBUG > 0
-            if (stage != k.size())
-            {
-                throw std::logic_error("Inconsistency in RK solver.");
-            }
-#endif
+#ifdef REPARAMETRIZE_FLOWGRID
+            t_stage = t_value + t_step* tableau.get_node(stage);
+            Lambda_stage = FlowGrid::lambda_from_t(t_stage);
+            stepsize = t_step;
+            std::cout << "\t current t_stage: " << t_stage << std::endl;
+#else
             Lambda_stage = Lambda + dLambda * tableau.get_node(stage);
+            stepsize = dLambda;
+#endif
 
             state_stage = y_init;
             for (size_t col_index = 0; col_index < stage; col_index++)
             {
-                double factor = dLambda * tableau.get_a(stage, col_index);
+                double factor = stepsize * tableau.get_a(stage, col_index);
                 state_stage += k[col_index] * factor;
-                //assert(isfinite(state_stage));
             }
 
-            k.push_back( rhs(state_stage, Lambda_stage, {iteration, stage})  );
+            k.push_back( rhs(state_stage, Lambda_stage, {iteration, stage})
+#ifdef REPARAMETRIZE_FLOWGRID
+            * FlowGrid::dlambda_dt(t_stage)
+#endif
+            );
         }
 
         result = y_init;
         for (size_t stage = 0; stage < stages; stage++)
         {
-            result += k[stage] * dLambda * tableau.b_high[stage];
+            result += k[stage] * stepsize * tableau.b_high[stage];
         }
 
-        Y err = k[0] * dLambda * tableau.get_error_b(0);
+        Y err = k[0] * stepsize * tableau.get_error_b(0);
         for (size_t stage = 1; stage < stages; stage++)
         {
-            err += k[stage] * dLambda * tableau.get_error_b(stage);
+            err += k[stage] * stepsize * tableau.get_error_b(stage);
         }
-        maxrel_error = max_rel_err(err, k, 1e-6); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
+        Y y_scale = (abs(result) + abs(dydx*stepsize)) * epsODE_rel + epsODE_abs;
+        maxrel_error = max_rel_err(err, y_scale); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
         //assert(isfinite(result));
         //assert(isfinite(maxrel_error));
     }
@@ -339,19 +351,16 @@ namespace ode_solver_impl
             // === Evaluation ===
             if (verbose and world_rank == 0)
             {
-                std::cout << "Try stepsize t " << t_step << " (from Lambda / J = " << Lambda_i
+                std::cout << "Try stepsize t " << t_step << " (from Lambda = " << Lambda_i
                           << " to " << FlowGrid::lambda_from_t(t_value + t_step)
                           << ")." << std::endl;
+                std::cout << "Current t: " << t_value << std::endl;
             };
             ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs, iteration);
 
             if (not tableau.adaptive) break;
 
-            /// === Error checking ===
-            //errmax = max_rel_err<state_datatype>(err, yscal, 1.e-6);
-            // compute relative error over error tolerance
-            errmax /= epsODE; //std::max(errmax / epsODE, 0. // 0.1 * errmax_parquet
-            //);
+
 
             if (verbose and world_rank == 0)
             {
@@ -367,7 +376,7 @@ namespace ode_solver_impl
 
             // accept result
             // if step was minimal step size, accept step in any case. This keeps program from crashing
-            if (errmax <= 1. || t_step <= min_t_step)
+            if (errmax <= 1. || std::abs(t_step) <= min_t_step)
             {
                 break;
             }
@@ -381,7 +390,7 @@ namespace ode_solver_impl
 
             rejected = true;
             const double t_step_resized = SAFETY * t_step * pow(errmax, PSHRINK);
-            t_step = std::max({t_step_resized, 0.1 * t_step, min_t_step});
+            t_step = sgn(t_step) * std::max({std::abs(t_step_resized), 0.1 * std::abs(t_step), min_t_step});
 
             if (t_value + t_step == t_value)
             {
@@ -400,31 +409,31 @@ namespace ode_solver_impl
         {
             t_next_step = SAFETY * t_step * std::pow(errmax, PGROW);
 
-            assert(t_next_step>=0);
+            //assert(t_next_step>=0);
         }
         else
         {
             t_next_step = MAXGROW * t_step;
 
-            assert(t_next_step>=0);
+            //assert(t_next_step>=0);
         }
 
         // Don't increase step size immediately after rejecting a step; further shrinking is ok
         if (rejected)
         {
-            t_next_step = std::min(t_next_step, t_step);
-            assert(t_next_step>=0);
+            t_next_step = sgn(t_step) * std::min(std::abs(t_next_step), std::abs(t_step));
+            //assert(t_next_step>=0);
         }
 
         // clip to interval [min_t_step, max_t_step]
-        t_next_step = std::min(std::max(min_t_step, t_next_step), max_t_step);
+        t_next_step = sgn(t_next_step) * std::min(std::max(min_t_step, std::abs(t_next_step)), max_t_step);
 
         // === Update output ref's ===
         Lambda_i = FlowGrid::lambda_from_t(t_value + t_step);
         hdid = Lambda_i - FlowGrid::lambda_from_t(t_value);
         hnext = FlowGrid::lambda_from_t(t_value + t_step + t_next_step) - Lambda_i;
         state_i = temporary;
-        assert(t_next_step>=0);
+        //assert(t_next_step>=0);
     }
 
 } // namespace ode_solver_impl
@@ -475,7 +484,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
     const auto tableau = ode_solver_impl::RK4basic;
 #elif ODEsolver == 2
     const auto tableau = ode_solver_impl::BogaSha;
-#elif ODEsolver == 3
+#else //ODEsolver == 3
     const auto tableau = ode_solver_impl::cash_carp;
 #endif
     if (verbose and world_rank == 0) {
@@ -508,7 +517,6 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
             print("Lambda: ", Lambda, true);
         };
 
-        double t0 = get_time();
 
         //if next step would get us outside the interval [Lambda_f, Lambda_i]
         if ((Lambda + h - Lambda_f) * (Lambda + h - Lambda_i) > 0.0)
@@ -533,7 +541,6 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
         // Pick h for next iteration
         if (tableau.adaptive) h = hnext;
 
-        if (verbose and mpi_world_rank() == 0) get_time(t0); // measure time for one iteration
 
 
         lambdas[i+1] = Lambda;
@@ -545,6 +552,206 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
 
     };
 }
+
+
+
+#include <boost/numeric/odeint/integrate/integrate_adaptive.hpp>
+#include <boost/numeric/odeint/integrate/detail/integrate_adaptive.hpp>
+#include <boost/numeric/odeint.hpp>
+
+namespace boost {
+    namespace numeric {
+        namespace odeint {
+            namespace detail {
+
+
+                template<class Stepper, typename State_t, typename FlowGrid, class System>
+                State_t integrate_nonadaptive(
+                        Stepper stepper, System system, State_t &start_state,
+                        double &t_now, double t_final, const vec<double> &lambdas_try, vec<double> &lambdas_did,
+                        std::string filename, int iter_start, const bool verbose
+                )
+                {
+                    size_t integration_step_count = iter_start;
+                    double dt = 1e-10*sgn(t_final - t_now);
+                    double dLambda;
+
+                    print("Initial t_now: ", t_now, " -- t_final: ", t_final, " -- dt: ", dt, "\n");
+
+                    while( less_with_sign( t_now, t_final, dt ) )
+                    {
+                        if( less_with_sign( t_final, t_now + dt, dt ) )
+                        {
+                            dt = t_final - t_now;
+                        }
+                        print("Lambda_now: ", FlowGrid::lambda_from_t(t_now), true);
+
+                        dt = FlowGrid::t_from_lambda(lambdas_try[integration_step_count + 1]) - t_now; // current step size
+                        dLambda = lambdas_try[integration_step_count + 1] - lambdas_try[integration_step_count]; // current step size
+                            print("t_now: ", t_now, " -- t_final: ", t_final, " -- dt: ", dt, "\n");
+
+#ifdef REPARAMETRIZE_FLOWGRID
+                        auto rhs = [&system](const State_t& state_in, State_t& dState_dt, double t) -> void {system(state_in, dState_dt, FlowGrid::lambda_from_t(t)); dState_dt *= FlowGrid::dlambda_dt(t);};
+                        stepper.do_step( rhs, start_state, t_now, dt);
+#else
+                        double Lambda_now = FlowGrid::lambda_from_t(t_now);
+                        double dLambda = FlowGrid::lambda_from_t(t_now+dt) -  Lambda_now;
+                        auto rhs = [&system](const State_t& state_in, State_t& dState_dt, double Lambda_in) -> void {system(state_in, dState_dt, Lambda_in);};
+                        stepper.do_step( rhs, start_state, Lambda_now, dLambda);  // if successful: updates Lambda_now and dt; if failed: updates only dt
+#endif
+                        t_now = FlowGrid::t_from_lambda(lambdas_try[integration_step_count+1]);   // t in next step
+
+                        lambdas_did[integration_step_count+1] = FlowGrid::lambda_from_t(t_now);
+                        postRKstep_stuff<State_t>(start_state, FlowGrid::lambda_from_t(t_now), lambdas_did, integration_step_count, filename, verbose);
+
+                        if constexpr(is_instance_of<State<state_datatype>>(&start_state)) {
+                            system.rk_step = 0;
+                            system.iteration++;
+                        }
+
+                        ++integration_step_count;
+                    }
+
+                    print(" ODE solver finished with ", integration_step_count, " integration steps.", "\n\n");
+                    return start_state;
+                }
+
+                template<class Stepper, typename State_t, typename FlowGrid, class System>
+                State_t integrate_adaptive_check(
+                        Stepper stepper, System system, State_t &start_state,
+                        double &t_now, double t_final, double &dt, const int MAXSTP,
+                        const std::vector<double> &lambda_checkpoints, vec<double> &lambdas_did,
+                        std::string filename, int iter_start, const bool verbose
+                )
+                {
+                    print("Initial t_now: ", t_now, " -- t_final: ", t_final, " -- dt: ", dt, "\n");
+
+                    const size_t max_attempts = 10;
+                    const char *error_string = "Integrate adaptive : Maximal number of iterations reached. A step size could not be found.";
+                    size_t integration_step_count = iter_start;
+                    bool previously_hit_lambda_checkpoint = false;
+                    double dt_temp;
+                    while( less_with_sign( t_now, t_final, dt ))
+                    {
+                        if(previously_hit_lambda_checkpoint) dt = dt_temp;
+                        if( less_with_sign( t_final, t_now + dt, dt ) )
+                        {
+                            dt = t_final - t_now;
+                        }
+                        double Lambda_now = FlowGrid::lambda_from_t(t_now);
+                        double Lambda_next = FlowGrid::lambda_from_t(t_now + dt);
+                        /// step to lambda checkpoint if within reach
+                        for (const double checkpoint : lambda_checkpoints)
+                        {
+                            // Guard against float arithmetic fails
+                            if ((Lambda_now - checkpoint) * (Lambda_next - checkpoint) < -1e-14 )
+                            {
+                                previously_hit_lambda_checkpoint = true;
+                                dt_temp = dt;
+                                dt = FlowGrid::t_from_lambda(checkpoint) - FlowGrid::t_from_lambda(Lambda_now);
+                                break;
+                            }
+                        }
+
+                        print("ODE iteration number: \t", integration_step_count, "\n");
+
+                        size_t trials = 0;
+                        controlled_step_result res = success;
+                        do
+                        {
+                            print("prestep t_now: ", t_now, " -- t_final: ", t_final, " -- dt: ", dt, "\n");
+                            #ifdef REPARAMETRIZE_FLOWGRID
+                                auto rhs = [&system](const State_t& state_in, State_t& dState_dt, double t) -> void {system(state_in, dState_dt, FlowGrid::lambda_from_t(t)); dState_dt *= FlowGrid::dlambda_dt(t);};
+                                res = stepper.try_step( rhs, start_state, t_now, dt);
+                            #else
+                                double dLambda = Lambda_next - Lambda_now;
+                                auto rhs = [&system](const State_t& state_in, State_t& dState_dt, double Lambda_in) -> void {system(state_in, dState_dt, Lambda_in);};
+                                res = stepper.try_step( rhs, start_state, Lambda_now, dLambda);  // if successful: updates Lambda_now and dt; if failed: updates only dt
+                                if (res == success) dt = FlowGrid::t_from_lambda(Lambda_now) - FlowGrid::t_from_lambda(Lambda_now-dLambda);
+                                else dt = FlowGrid::t_from_lambda(Lambda_now+dLambda) - FlowGrid::t_from_lambda(Lambda_now);
+                            #endif
+
+                            print("poststep t_now: ", t_now, " -- t_final: ", t_final, " -- dt: ", dt, "\n");
+                            if constexpr(is_instance_of<State<state_datatype>>(&start_state)) {
+                                system.rk_step = 0;
+                            }
+
+                            ++trials;
+                            if (verbose) print( (res == fail ? "ODE step FAILED -- new dt: " + std::to_string(dt) : "ODE step PASSED with step size " + std::to_string(dt)), "\n");
+                        }
+                        while( ( res == fail ) && ( trials < max_attempts ) );
+                        if( trials == max_attempts ) throw std::overflow_error( error_string ); /**Anxiang: don't allow adaptive step for one-shot */
+
+                        lambdas_did[integration_step_count+1] = FlowGrid::lambda_from_t(t_now);
+                        postRKstep_stuff<State_t>(start_state, FlowGrid::lambda_from_t(t_now), lambdas_did, integration_step_count, filename, verbose);
+                        if constexpr(is_instance_of<State<state_datatype>>(&start_state)) {
+                            //print("I'M A STATE!\n\n");
+                            system.iteration = integration_step_count+1;
+                        }
+                        //else print("I'M NOT A STATE!\n\n");
+
+                        ++integration_step_count;
+                        if(integration_step_count >= MAXSTP) {
+                            print("ODE solver reached maximal number of steps.");
+                            break;
+                        }
+                    }
+                    std::cout << " ODE solver finished with " << integration_step_count << " integration steps." << std::endl << std::endl;
+                    return start_state;
+                }
+
+            } // Namespace detail
+
+            template<typename State_t, typename FlowGrid, typename System>
+            void ode_solver_boost //integrate_adaptive_check
+                    (State_t& result, const double Lambda_f, const State_t& state_ini, const double Lambda_i, System rhs ,
+                     std::vector<double> lambda_checkpoints = {}, std::string filename = "", int iter_start=0, const int N_ODE=nODE, const bool verbose=true)
+            {
+#if ODEsolver==1
+#define ERR_STEPPER runge_kutta4
+#elif ODEsolver==2
+                static_assert(false, "Bogacki-Shampine not available for Boost library");
+#elif ODEsolver==3
+#define ERR_STEPPER runge_kutta_cash_karp54
+#elif ODEsolver==4
+#define ERR_STEPPER runge_kutta_dopri5
+#endif
+                double Lambda_now = Lambda_i;
+                double t_now = FlowGrid::t_from_lambda(Lambda_i);
+                double t_final = FlowGrid::t_from_lambda(Lambda_f);
+                State_t state_now = state_ini;
+                const int MAXSTP = N_ODE + lambda_checkpoints.size(); //maximal number of steps that is computed
+                // get lambdas according to FlowGrid (for hybridization flow: + checkpoints acc. to U_NRG  ) -> for non-adaptive method
+                const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, N_ODE, lambda_checkpoints);
+                vec<double> lambdas_did(MAXSTP+1);
+                lambdas_did[0] = Lambda_i;
+
+
+#if ODEsolver==1
+                typedef ERR_STEPPER< State_t, double, State_t, double, boost::numeric::odeint::vector_space_algebra > error_stepper_t;
+                    error_stepper_t stepper();
+                result = detail::integrate_nonadaptive<error_stepper_t, State_t, FlowGrid>(
+                        error_stepper_t(), rhs, state_now,
+                        t_now, t_final, lambdas_try, lambdas_did, filename, iter_start, verbose); //, typename Stepper::stepper_category() );
+#else
+                typedef ERR_STEPPER< State_t, double, State_t, double, boost::numeric::odeint::vector_space_algebra > error_stepper_t;
+                typedef controlled_runge_kutta< error_stepper_t > controlled_error_stepper_t;
+                const double a_x = 1.0 , a_dxdt = 1.0; //weights for computation of relative error (for error estimate)
+                controlled_error_stepper_t stepper(
+                        default_error_checker< double , vector_space_algebra , default_operations >( epsODE_abs , epsODE_rel , a_x , a_dxdt ) );
+
+
+                double dt = (Lambda_f - Lambda_i)*dLambda_initial > 1e-15 ? FlowGrid::t_from_lambda(Lambda_i + dLambda_initial) - FlowGrid::t_from_lambda(Lambda_i) : (FlowGrid::t_from_lambda(Lambda_f) - FlowGrid::t_from_lambda(Lambda_i)) / ((double) MAXSTP);
+                result = detail::integrate_adaptive_check<controlled_error_stepper_t, State_t, FlowGrid>(
+                        stepper, rhs, state_now,
+                        t_now, t_final, dt, MAXSTP, lambda_checkpoints, lambdas_did, filename, iter_start, verbose);
+
+#endif
+            }
+
+        } // Namespace odeint
+    } // Namespace numeric
+} // Namespace boost
 
 
 #endif //KELDYSH_MFRG_SOLVERS_H

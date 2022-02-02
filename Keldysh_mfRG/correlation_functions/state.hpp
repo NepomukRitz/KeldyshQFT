@@ -9,6 +9,7 @@
 #include "two_point/selfenergy.hpp"               // self-energy class
 #include "two_point/propagator.hpp"               // propagator class
 #include "../utilities/util.hpp"                     // printing text output
+#include <boost/numeric/odeint.hpp>
 
 template <typename Q>
 class State{
@@ -22,6 +23,11 @@ public:
     SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
 
+    State(): Lambda(std::numeric_limits<double>::infinity()) , vertex(fullvert<Q>(std::numeric_limits<double>::infinity(), true)), selfenergy(SelfEnergy<Q>(std::numeric_limits<double>::infinity())) {
+#ifndef NDEBUG
+        print("Watch out! Use of default constructor for State<Q>!", true);
+#endif
+    }
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
     explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (Lambda)), Lambda(Lambda) {};
 
@@ -47,12 +53,29 @@ public:
         lhs += rhs;
         return lhs;
     }
+    auto operator+= (const double& alpha) -> State {
+        this->vertex += alpha;
+        this->selfenergy += alpha;
+        return (*this);
+    }
+    friend State<Q> operator+ (State<Q> lhs, const double& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend State<Q> operator+ (const double& rhs, State<Q> lhs) {
+        lhs += rhs;
+        return lhs;
+    }
     auto operator*= (const double& alpha) -> State {
         this->vertex *= alpha;
         this->selfenergy *= alpha;
         return (*this);
     }
     friend State<Q> operator* (State<Q> lhs, const double& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+    friend State<Q> operator* (const double& rhs, State<Q> lhs) {
         lhs *= rhs;
         return lhs;
     }
@@ -65,10 +88,31 @@ public:
         lhs -= rhs;
         return lhs;
     }
+    /// Element-wise division (needed for error estimate in ODE solver)
+    auto operator/= (const State& state) -> State {
+        this->vertex /= state.vertex;
+        this->selfenergy /= state.selfenergy;
+        return (*this);
+    }
+    friend State<Q> operator/ (State<Q> lhs, const State<Q>& rhs) {
+        lhs /= rhs;
+        return lhs;
+    }
 
     void check_resolution() const;
 
     void analyze_tails() const;
+
+    auto abs() const -> State<Q> {
+        State<Q> state_abs = (*this);
+        state_abs.selfenergy.Sigma = selfenergy.Sigma.template abs<Q>();
+        state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
+        state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
+        state_abs.vertex.tvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
+        return state_abs;
+    }
+
+    auto norm() const -> double;
 };
 
 
@@ -113,20 +157,49 @@ template <typename Q> void State<Q>::analyze_tails() const {
     if (MAX_DIAG_CLASS > 2) {vertex.half1().analyze_tails_K3w(true); vertex.half1().analyze_tails_K3v(true); vertex.half1().analyze_tails_K3vp(true);}
 }
 
+template<typename Q>
+auto State<Q>::norm() const -> double {
+    double max_vert = vertex.half1().sum_norm(0);
+    double max_self = selfenergy.norm(0);
+    return std::max(max_self, max_vert);
+}
+
 
 template<typename Q>
-auto max_rel_err(const State<Q>& err, const vec<State<Q>>& scale_States, const double minimum_value_considered) -> double {
-    double scale_Vert = 0.;
-    for (auto state: scale_States) {scale_Vert += state.vertex.half1().sum_norm(0);}
-    double max_vert = err.vertex.half1().sum_norm(0) / scale_Vert * scale_States.size();
+auto max_rel_err(const State<Q>& err, const State<Q>& scale_State) -> double {
+    double scale_Vert = scale_State.vertex.half1().sum_norm(0);
+    double max_vert = err.vertex.half1().sum_norm(0) / scale_Vert;
 
-    double scale_SE = 0.;
-    for (auto state: scale_States) {scale_SE += state.selfenergy.norm(0);}
+    double scale_SE = scale_State.selfenergy.norm(0);
 
-    double max_self = err.selfenergy.norm(0) /scale_SE * scale_States.size();
+    double max_self = err.selfenergy.norm(0) /scale_SE;
     return std::max(max_self, max_vert);
 
 }
 
+template <typename Q>
+State<Q> abs(const State<Q>& state) {
+    State<Q> state_abs = state.abs();
+    return state_abs;
+}
+
+namespace boost {
+    namespace numeric {
+        namespace odeint {
+
+            /// vector space infinity-norm for ODE solver of Boost
+            template<>
+            struct vector_space_norm_inf< State<state_datatype> >
+            {
+                typedef double result_type;
+                double operator()( const State<state_datatype> &state_vec ) const
+                {
+                    using namespace std;
+                    return state_vec.norm();
+                }
+            };
+        }
+    }
+}
 
 #endif //KELDYSH_MFRG_STATE_HPP

@@ -329,6 +329,14 @@ public:
         lhs -= rhs;
         return lhs;
     }
+    // Elementwise divion:
+    auto operator/= (const rvert<Q>& rhs) -> rvert<Q> {
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data /= right.data;}, rhs);
+    }
+    friend rvert<Q> operator/ (rvert<Q> lhs, const rvert<Q>& rhs) {
+        lhs /= rhs;
+        return lhs;
+    }
 
     auto operator*= (double alpha) -> rvert<Q> {
         return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.data *= alpha; });
@@ -724,11 +732,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                             "K3"
                             },
                    {
-                           deviations_K1.real(),
-                           deviations_K1.imag(),
-                           deviations_K2,
-                           deviations_K2b,
-                           deviations_K3
+                           deviations_K1.real() * (1/K1.get_vec().max_norm()),
+                           deviations_K1.imag() * (1/K1.get_vec().max_norm()),
+                           deviations_K2        * (1/K2.get_vec().max_norm()),
+                           deviations_K2b       * (1/K2b.get_vec().max_norm()) ,
+                           deviations_K3        * (1/K3.get_vec().max_norm())
                             });
 
 }
@@ -910,7 +918,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
                         w  = input.v1-input.v2;                                     // input.w  = w_t
                         floor2bf_w = floor2bfreq(w / 2.);
                         v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
-                        v2 = input.v1 + floor2bf_w - floor2bf_inputw;               // input.v2 = v'_t
+                        v2 = input.v1 + floor2bf_w - w - floor2bf_inputw;               // input.v2 = v'_t
                     }
                     break;
                 case 'f':
@@ -956,7 +964,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
                     else {
                         w = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
                         floor2bf_w = floor2bfreq(w / 2.);
-                        v1 = -input.v1 + floor2bf_w + floor2bf_inputw;                 // input.v1 = v_t
+                        v1 =          - input.v1 + floor2bf_w + floor2bf_inputw;                 // input.v1 = v_t
                         v2 = -input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
                     }
                     break;
@@ -999,7 +1007,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
                     else{
                         w  = input.v1-input.v2;                                     // input.w  = w_p
                         floor2bf_w = floor2bfreq(w / 2.);
-                        v1 = - input.v1 + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
+                        v1 =-input.v1           + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
                         v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
                     }
                     break;
@@ -1612,6 +1620,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                     Ti(indices, trafo_index);
                     indices.iK = itK;
 
+
                     if (trafo_index != 0) {
 
                         Q result;
@@ -1622,6 +1631,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
                         K2.setvert(result, itK, it_spin, itw, itv, 0);
                     }
+                    if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.K2_get_wlower_f()) {
+                        K2.setvert(0., itK, it_spin, itw, itv, 0);                    }
                 }
             }
         }
@@ -1650,11 +1661,15 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                         K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
                         IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, vp_in, 0, channel, k2, 0, channel);
                         int sign_w = sign_index(w_in);
-                        int sign_f = sign_index(indices.v1 + indices.v2);
+
+                        int sign_f;
+                        if (!KELDYSH and !ZERO_T) sign_f = sign_index(indices.v1 + indices.v2 - signFlipCorrection_MF(w_in)*0.5);
+                        else sign_f = sign_index(indices.v1 + indices.v2);
                         int sign_fp = sign_index(indices.v1 - indices.v2);
                         int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
                         Ti(indices, trafo_index);
                         indices.iK = itK;
+
 
                         if (trafo_index != 0) {
 
@@ -1666,6 +1681,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                                 result = read_symmetryreduced_rvert<k3>(indices, *this);
 
                             K3.setvert(result, itK, it_spin, itw, itv, itvp, 0);
+                        }
+                        if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in)*0.5 < K3.K3_get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in)*0.5 < K3.K3_get_wlower_f())) {
+                            K3.setvert(0., itK, it_spin, itw, itv, itvp, 0);
                         }
                     }
                 }

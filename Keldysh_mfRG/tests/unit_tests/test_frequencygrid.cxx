@@ -13,7 +13,10 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
     for (int i = 0; i < nBOS; i++) {
 
         // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
-        if (std::abs(Bosfreqs.fconv(Bosfreqs.get_ws(i)) - i) > 1) isright = false;
+
+        int index = Bosfreqs.fconv(Bosfreqs.get_ws(i));
+        if (std::abs(index - i) > (dense ? 0 : 1))
+            isright = false;
         issymmetric += std::abs(Bosfreqs.get_ws(i) + Bosfreqs.get_ws(nBOS - i - 1));
     }
 

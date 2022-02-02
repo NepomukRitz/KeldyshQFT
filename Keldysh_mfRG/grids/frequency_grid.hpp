@@ -33,6 +33,11 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 #define DENSEGRID
 #endif
+#ifdef DENSEGRID
+const bool dense = true;
+#else
+const bool dense = false;
+#endif
 
 class FrequencyGrid {
     template<K_class k, typename Q> friend class vertexDataContainer;
@@ -182,7 +187,7 @@ public:
     void set_w_upper(double wmax);
     void rescale_grid(double Lambda);
     void update_Wscale(double Wscale);
-    auto fconv(double w_in) const -> int;
+    auto fconv(double w_in, bool safety=dense) const -> int;
     auto grid_transf(double w) const -> double;
     auto grid_transf_inv(double t) const -> double;
     auto wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double;
