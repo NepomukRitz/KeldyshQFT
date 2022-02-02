@@ -27,14 +27,25 @@ module load cmake
 export LANG=C
 export LC_ALL=C
 
-dir_path=$(dirname "$(realpath "$0")")
+dir_path=$(dirname "$(realpath "$0")")    # directory of this script
+src_dir="$dir_path"/..                    # source directory
+build_dir="$src_dir"/build                # build directory
+mkdir "$build_dir"
 
 # navigate to the directory with the CMakeLists.txt file
-cd "$dir_path"/../ || exit
+cd "$build_dir" || exit
+
 
 # load cmake project
-cmake -DWORKSTATION=OFF -D$CLUSTER=ON .
+cmake -DWORKSTATION=OFF -D$CLUSTER=ON -S$src_dir -B$build_dir
 
 
 # build
-cmake --build . --target Keldysh_mfRG
+TARGET=Keldysh_mfRG
+cmake --build . --target $TARGET
+
+mv ./Keldysh_mfRG $src_dir
+
+GREEN='\033[1;32m' # green
+NC='\033[0m' # no color
+echo -e "\n Moved executable ${GREEN}$TARGET ${NC}to Keldysh_mfRG source directory.\n"
