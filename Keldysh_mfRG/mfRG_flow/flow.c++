@@ -8,7 +8,7 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
 
     State<state_datatype> state_fin (Lambda_fin), state_ini(Lambda_ini);   // create final and initial state
 
-
+#ifdef ADAPTIVE_GRID
     /// Iterate:
     /// 1. compute parquet solution
     /// 2. optimize grid
@@ -29,7 +29,7 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
 
         state_ini.set_frequency_grid(state_temp); // copy frequency grid
     }
-
+#endif
 
     state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
     // initialize the flow with SOPT at Lambda_ini (important!)

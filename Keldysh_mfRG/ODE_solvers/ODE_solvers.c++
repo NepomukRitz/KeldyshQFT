@@ -7,10 +7,13 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y
     if (filename != "") {
         add_hdf(filename, iteration + 1, y_run, x_vals); // save result to hdf5 file
     }
-    //y_run.update_grid(x_run); // rescales grid with Delta or U
+#ifdef ADAPTIVE_GRID
     y_run.findBestFreqGrid(true);
     y_run.analyze_tails();
     y_run.vertex.half1().check_vertex_resolution();
+#else
+    y_run.update_grid(x_run); // rescales grid with Delta or U
+#endif
     if (filename != "") {
         add_hdf(filename+"_postOpt", iteration + 1,  y_run, x_vals); // save result to hdf5 file
     }
