@@ -1,6 +1,6 @@
 #include "catch.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"
-#include "../utilities/math_utils.hpp"
+#include "../../utilities/math_utils.hpp"
 
 // TODO(high): Write unit tests for cross projection functionality!
 

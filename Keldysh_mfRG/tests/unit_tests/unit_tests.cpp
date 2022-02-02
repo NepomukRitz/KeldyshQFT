@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
     //test_Bubble_in_Momentum_Space();
 
     double lambda = 1;
-    State<comp> state_ini (lambda);
+    State<state_datatype> state_ini (lambda);
     state_ini.initialize();
     sopt_state(state_ini, lambda);
 
