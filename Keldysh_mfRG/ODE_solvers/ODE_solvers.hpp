@@ -672,7 +672,7 @@ namespace boost {
                             #endif
 
                             print("poststep t_now: ", t_now, " -- t_final: ", t_final, " -- dt: ", dt, "\n");
-                            if constexpr(is_instance_of<State<state_datatype>>(&start_state)) {
+                            if constexpr(std::is_same<State<state_datatype>, State_t>::value) {
                                 system.rk_step = 0;
                             }
 
@@ -684,7 +684,7 @@ namespace boost {
 
                         lambdas_did[integration_step_count+1] = FlowGrid::lambda_from_t(t_now);
                         postRKstep_stuff<State_t>(start_state, FlowGrid::lambda_from_t(t_now), lambdas_did, integration_step_count, filename, verbose);
-                        if constexpr(is_instance_of<State<state_datatype>>(&start_state)) {
+                        if constexpr(std::is_same<State<state_datatype>, State_t>::value) {
                             //print("I'M A STATE!\n\n");
                             system.iteration = integration_step_count+1;
                         }
