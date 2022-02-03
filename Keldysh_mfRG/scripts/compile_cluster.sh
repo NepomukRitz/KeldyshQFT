@@ -26,6 +26,7 @@ then
   module load HDF5/1.12.1 # could be problematic, because already version 1.10 (instead of 1.08) and no threadsafe option
   module load FFTW
   module load GSL
+  module load Boost
   module load CMake/3.21.1
 else
   echo "Invalid cluster option! Needs to be --ASC, --KCS or --JSC"
