@@ -22,7 +22,7 @@ void compute_Phi_tilde(const std::string filename) {
             Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
             for (int i_in=0; i_in<n_in; ++i_in) {
-    #pragma omp parallel for schedule(dynamic)
+//    #pragma omp parallel for schedule(dynamic) // For some reason, this pragma can become problematic...
                 for (int iv=0; iv<nFER; ++iv) {
                     double v = state.selfenergy.frequencies.get_ws(iv);
                     vs[iLambda * nFER + iv * n_in + i_in] = v;
