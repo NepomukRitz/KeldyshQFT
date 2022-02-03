@@ -12,6 +12,8 @@
 #define USE_MPI
 #ifdef USE_MPI
 constexpr bool MPI_FLAG = true;
+#else
+constexpr bool MPI_FLAG = false; // TODO: Does not work yet. Probably, there are problems in mpi_collect()
 #endif
 
 //Tolerance for closeness to grid points when interpolating

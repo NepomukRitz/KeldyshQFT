@@ -68,7 +68,7 @@ auto main() -> int {
     print("Lambda flows from ", Lambda_ini);
     print_add(" to ", Lambda_fin, true);
     print("nODE for this run: ", nODE, true);
-    print("MPI World Size = " + std::to_string(mpi_world_size()), true);
+    if constexpr (MPI_FLAG) print("MPI World Size = " + std::to_string(mpi_world_size()), true);
 #pragma omp parallel default(none)
     {
     #pragma omp master

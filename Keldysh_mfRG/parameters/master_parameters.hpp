@@ -23,7 +23,7 @@ constexpr bool VERBOSE = false;
 //#define FERMI_POLARON_PROBLEM
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-//#define KELDYSH_FORMALISM
+#define KELDYSH_FORMALISM
 #define SWITCH_SUM_N_INTEGRAL
 #ifndef KELDYSH_FORMALISM
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
@@ -135,7 +135,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 // 4: interaction cutoff
-#define REG 4
+#define REG 2
 
 
 

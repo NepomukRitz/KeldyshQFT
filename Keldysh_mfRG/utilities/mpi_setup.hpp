@@ -6,6 +6,7 @@
 #define KELDYSH_MFRG_MPI_SETUP_HPP
 
 #include "../data_structures.hpp" // real/complex vector classes
+#include "../parameters/technical_parameters.hpp"
 #include <mpi.h>             // basic mpi functionality
 
 // Get the rank(ID) of the current process

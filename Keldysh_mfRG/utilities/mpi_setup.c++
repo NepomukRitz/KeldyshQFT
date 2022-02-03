@@ -1,14 +1,14 @@
 #include "mpi_setup.hpp"
 
 int mpi_world_rank() {
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    int world_rank= 1;
+    if constexpr (MPI_FLAG) MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
     return world_rank;
 }
 
 int mpi_world_size() {
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    int world_size = 1;
+    if constexpr (MPI_FLAG) MPI_Comm_size(MPI_COMM_WORLD, &world_size);
     return world_size;
 }
 
