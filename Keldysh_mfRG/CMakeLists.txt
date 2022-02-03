@@ -5,6 +5,8 @@ option(WORKSTATION "Build on workstation" ON)
 option(ASC         "Build on ASC cluster" OFF)
 option(KCS         "Build on KCS cluster" OFF)
 option(SuperMUC    "Build on SuperMUC"    OFF)
+option(JSC         "Build at JSC"         OFF)
+
 
 ## Set the C++ standard, the compiler, compiler optimization options (O0 - off, O3 - best) and add -fopenmp
 set(CMAKE_CXX_STANDARD 17)
@@ -79,4 +81,11 @@ elseif(KCS)
 
     target_link_libraries(Keldysh_mfRG $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB} $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
+elseif(JSC)
+    include_directories(/p/software/juwelsbooster/stages/2022/software/HDF5/1.12.1-iompi-2021b/include) # $HDF5_INC
+    include_directories(/p/software/juwelsbooster/stages/2022/software/FFTW/3.3.10-iompi-2021b/include) # $FFTW_INC
+    include_directories(/p/software/juwelsbooster/stages/2022/software/GSL/2.7-GCCcore-11.2.0/include) # $GSL_INC
+
+    target_link_libraries(Keldysh_mfRG $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB} $ENV{SZIP_LIB} -lz)
+    target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB})
 endif()
