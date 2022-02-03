@@ -285,10 +285,10 @@ Q sum_over_internal(const VertexValue_l& value_vertex_l, const BubbleObj& Pi, co
 
         multidimensional::multiarray<Q,2> values_vertex_l_diff = values_vertex_l - values_vertex_l_alt;
         multidimensional::multiarray<Q,2> values_vertex_r_diff = values_vertex_r - values_vertex_r_alt;
-        auto diff_l = transform_multiarray([](Q x) -> double {return std::abs(x);}, values_vertex_l_diff);
-        auto diff_r = transform_multiarray([](Q x) -> double {return std::abs(x);}, values_vertex_r_diff);
-        assert(diff_l.max_norm() < 1e-10);
-        assert(diff_r.max_norm() < 1e-10);
+        auto diff_l = values_vertex_l_diff.maxabs();
+        auto diff_r = values_vertex_r_diff.maxabs();
+        assert(diff_l < 1e-10);
+        assert(diff_r < 1e-10);
 
 
     }

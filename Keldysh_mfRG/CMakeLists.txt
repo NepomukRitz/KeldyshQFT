@@ -55,6 +55,7 @@ add_executable(get_integrand_dGammaL tests/integrand_tests/get_integrand_dGammaL
 if(WORKSTATION OR ASC)
     include_directories(/usr/include/mpi/)
     include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
+    include_directories(/usr/include/eigen3 /usr/include/eigen3/unsupported)
 
     target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG -lgsl -lgslcblas)
