@@ -123,6 +123,15 @@ auto main() -> int {
     //test_symmetries(1.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
+    std::vector<double> data(10);
+
+
+    //H5::H5std_string FILE_NAME(data_dir + "test.h5");
+    H5::H5File file("test.h5", H5F_ACC_TRUNC);
+    H5::Group group(file.createGroup("/data"));
+
+    write_to_hdf_group_LambdaLayer(data, group, "data", 1, 10);
+
     print("Hello world \n");
 #ifdef __linux__
     print("on linux.\n");

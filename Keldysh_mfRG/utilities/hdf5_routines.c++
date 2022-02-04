@@ -12,6 +12,52 @@ hsize_t h5_cast(int dim) {
     return static_cast<hsize_t>(dim);
 }
 
+void write_to_hdf_group(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name) {
+    hsize_t dims[1] = {data.size()};
+    H5::DataSpace mydataspace(1, dims);
+    H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, mydataspace);
+    mydataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
+    mydataset.close();
+    mydataspace.close();
+}
+void write_to_hdf_group(const std::vector<comp>& data, H5::Group& group, const std::string& dataset_name) {
+    hsize_t dims[1] = {data.size()};
+    H5::DataSpace mydataspace(1, dims);
+    H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, mydataspace);
+    mydataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
+    mydataset.close();
+    mydataspace.close();
+}
+
+void write_to_hdf_group_LambdaLayer(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name, const hsize_t Lambda_it, const hsize_t nLambda_layers) {
+    hsize_t start[2];
+    hsize_t stride[2];
+    hsize_t count[2];
+    hsize_t block[2];
+
+    start[0] = Lambda_it;
+    start[1] = 0;
+    for (int i = 0; i < 2; i++) {
+        stride[i] = 1;
+        block[i] = 1;
+    }
+    count[0] = 1;
+    count[1] = data.size(); // flat dimension
+
+    hsize_t RANK = 1;
+    hsize_t dims[RANK+1] = {nLambda_layers, data.size()};
+    H5::DataSpace file_space(RANK+1, dims);
+    H5::DataSpace mem_space(RANK, dims);
+    file_space.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+    H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, file_space);
+    mydataset.write(data.data(), H5::PredType::NATIVE_DOUBLE, mem_space, file_space);
+    mydataset.close();
+    mem_space.close();
+    file_space.close();
+}
+
+
+
 rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
 
 

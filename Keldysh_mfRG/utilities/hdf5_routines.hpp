@@ -14,6 +14,7 @@
 #include "../grids/frequency_grid.hpp"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
 #include "../correlation_functions/state.hpp"
+#include "../multidimensional/multiarray.hpp"
 
 //template<typename Q> class State;
 /// TODO: Save frequency grids and frequency parameters for each channel individually
@@ -88,6 +89,37 @@ typedef struct h5_comp {
 
 // Create the memory data type for storing complex numbers in file
 H5::CompType def_mtype_comp();
+
+
+/// Functions for writing to HDF group
+void write_to_hdf_group(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name);
+void write_to_hdf_group(const std::vector<comp>& data, H5::Group& group, const std::string& dataset_name);
+template<std::size_t depth>
+void write_to_hdf_group(const multidimensional::multiarray<double, depth>& data, H5::Group& group, const std::string& dataset_name) {
+    hsize_t dims[depth] = data.length();
+    H5::DataSpace mydataspace(1, dims);
+    H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, mydataspace);
+    mydataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
+    mydataset.close();
+    mydataspace.close();
+};
+template<std::size_t depth>
+void write_to_hdf_group(const multidimensional::multiarray<comp, depth>& data, H5::Group& group, const std::string& dataset_name) {
+
+    // Create the memory data type for storing complex numbers in file
+    H5::CompType mtype_comp = def_mtype_comp();
+
+    hsize_t dims[depth] = data.length();
+    H5::DataSpace mydataspace(1, dims);
+    H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, mydataspace);
+    mydataset.write(data.data(), mtype_comp);
+    mydataset.close();
+    mydataspace.close();
+};
+
+void write_to_hdf_group_LambdaLayer(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name, const hsize_t Lambda_it, const hsize_t Lambda_layers);
+
+
 
 /// --- Helper classes: buffer, dimension arrays, data sets --- ///
 
