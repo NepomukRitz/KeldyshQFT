@@ -100,7 +100,7 @@ void check_input() {
 #endif
 
 #if not defined(KELDYSH_FORMALISM)
-    assert(nFER % 2 == 0);
+    static_assert(nFER % 2 == 0, "nFER must be an odd number.");
 #endif
 
     if (BOSONIC_PARAM_FOR_K3) {

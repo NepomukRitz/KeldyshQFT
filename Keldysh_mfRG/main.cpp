@@ -119,8 +119,8 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string name = data_dir+filename+job;
-    n_loop_flow(name, true);
-    //test_symmetries(1.8);
+    //n_loop_flow(name, true);
+    test_symmetries(1.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
     print("Hello world \n");

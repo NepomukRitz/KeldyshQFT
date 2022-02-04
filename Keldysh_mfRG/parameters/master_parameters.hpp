@@ -26,7 +26,7 @@ constexpr bool VERBOSE = false;
 #define KELDYSH_FORMALISM
 #define SWITCH_SUM_N_INTEGRAL
 #ifndef KELDYSH_FORMALISM
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 #endif
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
