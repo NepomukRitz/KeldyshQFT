@@ -91,12 +91,12 @@ public:
                         }
 #else
                         if (KELDYSH){
-                            U_factor = 20./3.;
-                            Delta_factor = 20.;
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
                         }
                         else{
-                            U_factor = 20./3.;
-                            Delta_factor = 20.;
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
                         }
 #endif
                         break;
