@@ -62,6 +62,7 @@ public:
     vec (InputIterator first, InputIterator last)
      : std::vector<T> (first, last) {};                   // constructor from iterators to copy parts of existing vector
     vec(std::initializer_list<T> m) : std::vector<T> (m) {};   // constructor from initializer list
+    vec(std::vector<T> vect) : std::vector<T> (vect) {};
 
     T operator() (int i) {return (*this)[i]; }	     // operator for element access
     vec<T> operator() (int i1, int i2);              // get a subvector {x[i1], ..., x[i2]}

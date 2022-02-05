@@ -90,38 +90,291 @@ typedef struct h5_comp {
 // Create the memory data type for storing complex numbers in file
 H5::CompType def_mtype_comp();
 
+const H5::CompType mtype_comp = def_mtype_comp();
+H5::DSetCreatPropList def_proplist_comp();
+const H5::DSetCreatPropList plist_vert_comp = def_proplist_comp();
+
+namespace hdf5_impl {
+
+    template <typename Q, typename H5Object,
+            std::enable_if_t<
+                    std::is_same_v<Q, double> ||
+                    std::is_same_v<Q, comp>,
+                            bool> = true>
+    H5::DataSet create_Dataset(H5Object& group, const std::string& dataset_name, H5::DataSpace& file_space) {
+    if constexpr(std::is_same_v<Q, double>) {
+            H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, file_space);
+            return mydataset;
+    }
+    else if constexpr(std::is_same_v<Q, comp>) {
+            H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, file_space, plist_vert_comp);
+            return mydataset;
+    }
+    //else {
+    //    typeid (Q).name();
+    //    static_assert(false, "Used unsupported data type.");
+    //}
+    }
+
+
+    template <typename H5Object>
+    H5::DataSet open_Dataset(H5Object& group, const std::string& dataset_name) {
+            H5::DataSet mydataset = group.openDataSet(dataset_name);
+            return mydataset;
+    }
+
+
+
+    template <typename container,
+            std::enable_if_t<
+                    std::is_same_v<typename container::value_type, double> ||
+    std::is_same_v<typename container::value_type, comp>,
+    bool> = true>
+    void write_data_to_Dataset(const container data, H5::DataSet& dataset) {
+        if constexpr(std::is_same_v<typename container::value_type, double>) dataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
+        else if constexpr(std::is_same_v<typename container::value_type, comp>) dataset.write(data.data(), mtype_comp);
+        //else static_assert(false, "Container has wrong value_type.");
+    }
+    template <typename container,
+            std::enable_if_t<
+                    std::is_same_v<typename container::value_type, double> ||
+    std::is_same_v<typename container::value_type, comp>,
+    bool> = true>
+    void write_data_to_Dataset(const container data, H5::DataSet& dataset, H5::DataSpace& mem_space, H5::DataSpace& file_space) {
+        if constexpr(std::is_same_v<typename container::value_type, double>) dataset.write(data.data(), H5::PredType::NATIVE_DOUBLE, mem_space, file_space);
+        else if constexpr(std::is_same_v<typename container::value_type, comp>) dataset.write(data.data(), mtype_comp, mem_space, file_space);
+        //else static_assert(false, "Container has wrong value_type.");
+    }
+
+
+    template<typename Q, std::size_t depth, typename H5object, typename container, typename dimensions_type>
+    void write_to_hdf_LambdaLayer_impl(H5object& group, const std::string& dataset_name, const container& data, const dimensions_type& length, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
+        assert(Lambda_it < numberLambda_layers);
+
+        /// create arrays with information on dimensions
+        const hsize_t RANK = depth;
+        hsize_t start[RANK+1];      // starting location for the hyperslab
+        hsize_t stride[RANK+1];     // number of elements to separate each element or block
+        hsize_t count[RANK+1];      // number of elements or blocks to select along each dimension
+        hsize_t block[RANK+1];      // size of the block selected from the dataspace
+        hsize_t dims_file[RANK+1];       // size of the full dataspace (including all lambda layers)
+        hsize_t dims_mem[RANK];       // size of the full dataspace (including all lambda layers)
+        for (int i = 0; i < RANK+1; i++) {
+            stride[i] = 1;
+            block[i] = 1;
+        }
+        count[0] = 1;           // dimension of Lambda layer
+        start[0] = Lambda_it;
+        dims_file[0] = numberLambda_layers;
+
+        for (int i = 1; i < RANK+1; i++) {
+            count[i] = length[i-1];
+            start[i] = 0;
+            dims_file[i] = length[i-1];
+            dims_mem[i-1] = length[i-1];
+        }
+
+        // create dataspaces and select hyperslab
+        H5::DataSpace file_space(RANK+1, dims_file);
+        H5::DataSpace mem_space(RANK, dims_mem);
+        file_space.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+
+        // create or open dataset in HDF5group/file
+        H5::DataSet mydataset;
+        if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
+        else mydataset = hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+
+        //write data to dataset
+        hdf5_impl::write_data_to_Dataset(data, mydataset, mem_space, file_space);
+
+        mydataset.close();
+        mem_space.close();
+        file_space.close();
+    };
+
+
+    template<typename Q, std::size_t depth, typename H5object>
+    std::vector<Q> read_from_hdf_impl(const H5object& group, const std::string& dataset_name, std::array<std::size_t,depth>& dims_result) {
+        H5::DataSet dataset = hdf5_impl::open_Dataset(group, dataset_name);
+        H5::DataSpace file_space = dataset.getSpace();
+
+        // get the size of the dataset
+        hsize_t dims_file[depth];
+        hsize_t rank = file_space.getSimpleExtentDims(dims_file, NULL);
+        assert(rank == depth);  // Important assertion! Makes sure that the desired multiarray depth matches the data in the file
+        //std::cout<<"rank: "<<rank<<std::endl; // this is the correct number of values
+
+
+        hsize_t dims_mem[depth];
+        hsize_t dims_mem_flat = 1;
+        for (hsize_t i = 0; i < depth; i++) {
+            dims_mem[i] = dims_file[i];
+            dims_mem_flat *= dims_file[i];
+        }
+        H5::DataSpace dataSpace_buffer(depth, dims_mem);
+        std::cout<<"Datasize of loaded (flat): "<<dims_mem_flat<<std::endl; // this is the correct number of values
+
+
+        // create a vector the same size as the dataset
+        std::vector<Q> result;
+        result.resize(dims_mem_flat);
+        std::cout<<"Vectsize: "<<result.size()<<std::endl;
+
+
+        if constexpr(std::is_same_v<Q,double>) dataset.read(result.data(), H5::PredType::NATIVE_DOUBLE, dataSpace_buffer, file_space);
+        else if constexpr(std::is_same_v<Q,comp>) dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+
+
+        //std::vector<size_t> dims_result(depth);
+        for (int i = 0; i < depth; i++) dims_result[i] = dims_file[i];
+        return result;
+    }
+
+
+    template<typename Q, std::size_t depth, typename H5object>
+    std::vector<Q> read_from_hdf_LambdaLayer_impl(const H5object& group, const std::string& dataset_name, std::array<std::size_t,depth>& dims_result, const int Lambda_it) {
+
+        // open file_space to read from
+        H5::DataSet dataset = hdf5_impl::open_Dataset(group, dataset_name);
+        H5::DataSpace file_space = dataset.getSpace();
+
+        // get the size of the file_space (including all Lambda layers)
+        hsize_t dims_file[depth+1];       // size of the full dataspace (including all lambda layers)
+        hsize_t rank = file_space.getSimpleExtentDims(dims_file, NULL);
+        assert(Lambda_it < dims_file[0]); // if this fails, Lambda_it exceeded the available Lambda layers
+
+        // create arrays with information on dimensions
+        const hsize_t RANK = depth;
+        hsize_t start[RANK+1];      // starting location for the hyperslab
+        hsize_t stride[RANK+1];     // number of elements to separate each element or block
+        hsize_t count[RANK+1];      // number of elements or blocks to select along each dimension
+        hsize_t block[RANK+1];      // size of the block selected from the dataspace
+        hsize_t dims_mem[RANK];       // size of the full dataspace (including all lambda layers)
+        for (int i = 0; i < RANK+1; i++) {
+            stride[i] = 1;
+            block[i] = 1;
+        }
+        count[0] = 1;           // dimension of Lambda layer
+        start[0] = Lambda_it;
+        //typename multidimensional::multiarray<Q, depth>::dimensions_type length = data.length();
+        for (int i = 1; i < RANK+1; i++) {
+            count[i] = dims_file[i];
+            start[i] = 0;
+            dims_result[i-1] = dims_file[i];
+            dims_mem[i-1] = dims_file[i];
+        }
+        hsize_t dims_mem_flat = 1;
+        for (hsize_t i = 0; i < depth; i++) {
+            dims_mem_flat *= dims_file[i+1];
+        }
+
+        assert(rank == depth+1);  // Important assertion! Makes sure that the desired multiarray depth matches the data in the file
+
+        // select hyperslab to read from
+        file_space.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
+        H5::DataSet mydataset;
+
+        H5::DataSpace dataSpace_buffer(depth, dims_mem);
+
+        // create a vector the same size as the dataset
+        std::vector<Q> result(dims_mem_flat);
+
+
+        if constexpr(std::is_same_v<Q,double>) dataset.read(result.data(), H5::PredType::NATIVE_DOUBLE, dataSpace_buffer, file_space);
+        else if constexpr(std::is_same_v<Q,comp>) dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+
+        return result;
+    }
+
+
+}
+
+
+template <typename Q, typename H5object>
+void write_to_hdf(H5object& group, const std::string& dataset_name, const std::vector<Q>& data, const bool data_set_exists) {
+    hsize_t dims[1] = {data.size()};
+    H5::DataSpace file_space(1, dims);
+    H5::DataSet mydataset;
+    if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
+    else mydataset = hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+
+    hdf5_impl::write_data_to_Dataset(data, mydataset);
+    //mydataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
+
+    mydataset.close();
+    file_space.close();
+}
 
 /// Functions for writing to HDF group
-void write_to_hdf_group(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name);
-void write_to_hdf_group(const std::vector<comp>& data, H5::Group& group, const std::string& dataset_name);
-template<std::size_t depth>
-void write_to_hdf_group(const multidimensional::multiarray<double, depth>& data, H5::Group& group, const std::string& dataset_name) {
-    hsize_t dims[depth] = data.length();
-    H5::DataSpace mydataspace(1, dims);
-    H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, mydataspace);
-    mydataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
-    mydataset.close();
-    mydataspace.close();
-};
-template<std::size_t depth>
-void write_to_hdf_group(const multidimensional::multiarray<comp, depth>& data, H5::Group& group, const std::string& dataset_name) {
+//void write_to_hdf_group(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name);
+//void write_to_hdf_group(const std::vector<comp>& data, H5::Group& group, const std::string& dataset_name);
+template<typename Q, std::size_t depth, typename H5object>
+void write_to_hdf(H5object& group, const std::string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists) {
+    hsize_t dims[depth];
+    std::copy(std::begin(data.length()), std::end(data.length()), std::begin(dims));
+    H5::DataSpace file_space(depth, dims);
 
-    // Create the memory data type for storing complex numbers in file
-    H5::CompType mtype_comp = def_mtype_comp();
+    H5::DataSet mydataset;
+    if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
+    else mydataset = hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+    hdf5_impl::write_data_to_Dataset(data, mydataset);
 
-    hsize_t dims[depth] = data.length();
-    H5::DataSpace mydataspace(1, dims);
-    H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, mydataspace);
-    mydataset.write(data.data(), mtype_comp);
     mydataset.close();
-    mydataspace.close();
+    file_space.close();
 };
 
-void write_to_hdf_group_LambdaLayer(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name, const hsize_t Lambda_it, const hsize_t Lambda_layers);
+
+template <typename Q, typename H5object>
+void write_to_hdf_LambdaLayer(H5object& group, const std::string& dataset_name, const std::vector<Q>& data, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
+    assert(Lambda_it < numberLambda_layers);
+    std::array<std::size_t,1> length = {data.size()};
+    hdf5_impl::write_to_hdf_LambdaLayer_impl<Q,1,H5object>(group, dataset_name, data, length, Lambda_it, numberLambda_layers, data_set_exists);
+}
+
+
+template<typename Q, std::size_t depth, typename H5object>
+void write_to_hdf_LambdaLayer(H5object& group, const std::string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
+    assert(Lambda_it < numberLambda_layers);
+    typename multidimensional::multiarray<Q, depth>::dimensions_type length = data.length();
+    hdf5_impl::write_to_hdf_LambdaLayer_impl<Q,depth,H5object>(group, dataset_name, data, length, Lambda_it, numberLambda_layers, data_set_exists);
+};
 
 
 
-/// --- Helper classes: buffer, dimension arrays, data sets --- ///
+
+
+
+template<typename Q, std::size_t depth, typename H5object>
+void read_from_hdf(const H5object& group, const std::string& dataset_name, multidimensional::multiarray<Q,depth>& result) {
+
+    typename multidimensional::multiarray<Q,depth>::dimensions_type dims_result;
+    std::vector<Q> result_vec = hdf5_impl::read_from_hdf_impl<Q,depth,H5object>(group, dataset_name, dims_result);
+    result = multidimensional::multiarray<Q,depth>(dims_result, result_vec);
+}
+
+template<typename Q, typename H5object>
+void read_from_hdf(const H5object& group, const std::string& dataset_name, std::vector<Q>& result) {
+    std::array<std::size_t, 1> dims_result;
+    result = hdf5_impl::read_from_hdf_impl<Q,1,H5object>(group, dataset_name, dims_result);
+}
+
+
+
+template<typename Q, std::size_t depth, typename H5object>
+void read_from_hdf_LambdaLayer(const H5object& group, const std::string& dataset_name, multidimensional::multiarray<Q,depth>& result, const int Lambda_it) {
+
+    typename multidimensional::multiarray<Q,depth>::dimensions_type dims_result;
+    std::vector<Q> result_vec = hdf5_impl::read_from_hdf_LambdaLayer_impl<Q,depth,H5object>(group, dataset_name, dims_result, Lambda_it);
+    result = multidimensional::multiarray<Q,depth>(dims_result, result_vec);
+}
+
+template<typename Q, typename H5object>
+void read_from_hdf_LambdaLayer(const H5object& group, const std::string& dataset_name, std::vector<Q>& result, const int Lambda_it) {
+    std::array<std::size_t, 1> dims_result;
+    result = hdf5_impl::read_from_hdf_LambdaLayer_impl<Q,1,H5object>(group, dataset_name, dims_result, Lambda_it);
+}
+
+
 
 /**
  * Class containing buffer lengths and arrays to buffer data for selfenergy and irreducible vertex
@@ -1565,5 +1818,7 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 /// --- Test function --- ///
 
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state);
+
+bool test_read_write_data_hdf();
 
 #endif //KELDYSH_MFRG_HDF5_ROUTINES_HPP
