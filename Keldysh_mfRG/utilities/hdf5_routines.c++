@@ -22,8 +22,115 @@ hsize_t h5_cast(int dim) {
     return static_cast<hsize_t>(dim);
 }
 
+namespace hdf5_impl {
+    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const FrequencyGrid& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose) {
+        write_to_hdf_LambdaLayer<char>(group, "type", std::vector<char>({freqgrid.get_type()}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<int>(group, "diag_class", std::vector<int>({freqgrid.get_diag_class()}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<int>(group, "N_w", std::vector<int>({freqgrid.N_w}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(group, "w_upper", std::vector<double>({freqgrid.w_upper}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(group, "w_lower", std::vector<double>({freqgrid.w_lower}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(group, "Delta_factor", std::vector<double>({freqgrid.Delta_factor}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(group, "U_factor", std::vector<double>({freqgrid.U_factor}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(group, "W_scale", std::vector<double>({freqgrid.W_scale}), Lambda_it, numberLambdaLayers, file_exists);
+    }
+
+    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, const int Lambda_it, const double Lambda) {
+        std::vector<char> type;
+        std::vector<int> diag_class;
+        std::vector<int> N_w;
+        std::vector<double> w_upper;
+        std::vector<double> w_lower;
+        std::vector<double> Delta_factor;
+        std::vector<double> U_factor;
+        std::vector<double> W_scale;
+        read_from_hdf_LambdaLayer<char>(group, "type", type, Lambda_it);
+        read_from_hdf_LambdaLayer<int>(group, "diag_class", diag_class, Lambda_it);
+        read_from_hdf_LambdaLayer<int>(group, "N_w", N_w, Lambda_it);
+        read_from_hdf_LambdaLayer<double>(group, "w_upper", w_upper, Lambda_it);
+        read_from_hdf_LambdaLayer<double>(group, "w_lower", w_lower, Lambda_it);
+        read_from_hdf_LambdaLayer<double>(group, "Delta_factor", Delta_factor, Lambda_it);
+        read_from_hdf_LambdaLayer<double>(group, "U_factor", U_factor, Lambda_it);
+        read_from_hdf_LambdaLayer<double>(group, "W_scale", W_scale, Lambda_it);
+
+        FrequencyGrid freqgrid_new(type[0], diag_class[0], Lambda);
+        freqgrid_new.w_upper = w_upper[0];
+        freqgrid_new.w_lower = w_lower[0];
+        freqgrid_new.Delta_factor = Delta_factor[0];
+        freqgrid_new.U_factor = U_factor[0];
+        freqgrid_new.W_scale = W_scale[0];
+        freqgrid_new.initialize_grid();
+        freqgrid = freqgrid_new;
+    }
+
+}
 
 
+State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it) {
+    H5::H5File file_out(filename, H5F_ACC_RDONLY);
+
+    std::vector<double> Lambda;
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, LAMBDA_LIST, Lambda, Lambda_it);
+    State<state_datatype> state(Lambda[0]);
+
+    std::vector<state_datatype> Sigma_H;
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, SELF_LIST, state.selfenergy.Sigma, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, HARTREE, Sigma_H, Lambda_it);
+    state.selfenergy.asymp_val_R = Sigma_H[0];
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_irred, state.vertex.irred().bare, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K1_a, state.vertex.avertex().K1.data, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K1_p, state.vertex.pvertex().K1.data, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K1_t, state.vertex.tvertex().K1.data, Lambda_it);
+#if MAX_DIAG_CLASS>1
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2_a, state.vertex.avertex().K2.data, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2_p, state.vertex.pvertex().K2.data, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2_t, state.vertex.tvertex().K2.data, Lambda_it);
+#endif
+#if MAX_DIAG_CLASS>2
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K3_a, state.vertex.avertex().K3.data, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K3_p, state.vertex.pvertex().K3.data, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K3_t, state.vertex.tvertex().K3.data, Lambda_it);
+#endif
+    H5::Group group_freqparams(file_out.openGroup(FREQ_PARAMS));
+    H5::Group group_freqparams_bfreqsa (group_freqparams.openGroup(BFREQS_LISTa ));
+    H5::Group group_freqparams_bfreqsp (group_freqparams.openGroup(BFREQS_LISTp ));
+    H5::Group group_freqparams_bfreqst (group_freqparams.openGroup(BFREQS_LISTt ));
+    H5::Group group_freqparams_bfreqs2a(group_freqparams.openGroup(BFREQS2_LISTa));
+    H5::Group group_freqparams_bfreqs2p(group_freqparams.openGroup(BFREQS2_LISTp));
+    H5::Group group_freqparams_bfreqs2t(group_freqparams.openGroup(BFREQS2_LISTt));
+    H5::Group group_freqparams_bfreqs3a(group_freqparams.openGroup(BFREQS3_LISTa));
+    H5::Group group_freqparams_bfreqs3p(group_freqparams.openGroup(BFREQS3_LISTp));
+    H5::Group group_freqparams_bfreqs3t(group_freqparams.openGroup(BFREQS3_LISTt));
+    H5::Group group_freqparams_ffreqs2a(group_freqparams.openGroup(FFREQS2_LISTa));
+    H5::Group group_freqparams_ffreqs2p(group_freqparams.openGroup(FFREQS2_LISTp));
+    H5::Group group_freqparams_ffreqs2t(group_freqparams.openGroup(FFREQS2_LISTt));
+    H5::Group group_freqparams_ffreqs3a(group_freqparams.openGroup(FFREQS3_LISTa));
+    H5::Group group_freqparams_ffreqs3p(group_freqparams.openGroup(FFREQS3_LISTp));
+    H5::Group group_freqparams_ffreqs3t(group_freqparams.openGroup(FFREQS3_LISTt));
+
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqsa, state.vertex.avertex().K1.frequencies_K1.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqsp, state.vertex.pvertex().K1.frequencies_K1.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqst, state.vertex.tvertex().K1.frequencies_K1.b, Lambda_it, Lambda[0]);
+#if MAX_DIAG_CLASS>1
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs2a,state.vertex.avertex().K2.frequencies_K2.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs2p,state.vertex.pvertex().K2.frequencies_K2.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs2t,state.vertex.tvertex().K2.frequencies_K2.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs2a,state.vertex.avertex().K2.frequencies_K2.f, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs2p,state.vertex.pvertex().K2.frequencies_K2.f, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs2t,state.vertex.tvertex().K2.frequencies_K2.f, Lambda_it, Lambda[0]);
+#endif
+#if MAX_DIAG_CLASS>2
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs3a,state.vertex.avertex().K3.frequencies_K3.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs3p,state.vertex.pvertex().K3.frequencies_K3.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs3t,state.vertex.tvertex().K3.frequencies_K3.b, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs3a,state.vertex.avertex().K3.frequencies_K3.f, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs3p,state.vertex.pvertex().K3.frequencies_K3.f, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs3t,state.vertex.tvertex().K3.frequencies_K3.f, Lambda_it, Lambda[0]);
+#endif
+
+    file_out.close();
+
+    return state;
+}
 
 
 /*
@@ -469,9 +576,59 @@ bool test_read_write_data_hdf() {
     comp deviation_vec_L = (vector_input_L - vector_original).max_norm();
     comp deviation_mularr_L=(mularr_input_L -mularr_original).maxabs();
 
+
+    bool passed = true;
     if (std::abs(deviation_vec_L) < 1e-10) print("Read / write of vector to LambdaLayer of HDF file successful.", true);
-    else print("PROBLEM during read / write of vector to LambdaLayer of HDF file.", true);
+    else {
+        passed = false;
+        print("PROBLEM during read / write of vector to LambdaLayer of HDF file.", true);
+    }
     if (std::abs(deviation_mularr_L) < 1e-10) print("Read / write of multiarray to LambdaLayer ofHDF file successful.", true);
-    else print("PROBLEM during read / write to LambdaLayer of multiarray to HDF file.", true);
+    else {
+        passed = false;
+        print("PROBLEM during read / write to LambdaLayer of multiarray to HDF file.", true);
+    }
+
+    return passed;
+}
+
+
+bool test_read_write_state_hdf() {
+    print("Testing HDF input and output of states:", true);
+    const double Lambda = 1.;
+    const int Lambda_it = 1;
+    const int numberLambdaLayers = 10;
+    State<state_datatype> state_output(Lambda);
+    state_output.initialize();
+    state_output = state_output + 1.;
+
+    write_state_to_hdf("test_state.h5", state_output, numberLambdaLayers);
+    //print("Written state", true);
+
+
+    State<state_datatype> state_input = read_state_from_hdf_LambdaLayer("test_state.h5", 0);
+    //print("Read state", true);
+
+    State<state_datatype> state_diff = state_output - state_input;
+
+    add_state_to_hdf("test_state.h5", state_output*2, Lambda_it);
+    add_state_to_hdf("test_state.h5", state_input, Lambda_it+1);
+
+    write_state_to_hdf("test_statediff.h5", state_diff, numberLambdaLayers);
+
+    bool passed = true;
+    if (state_diff.norm() < 1e-10) print("Read / write of state data to LambdaLayer of HDF file successful.", true);
+    else {
+        passed = false;
+        print("PROBLEM during read / write of state data to LambdaLayer of HDF file. deviation : ", state_diff.norm(), true);
+    }
+    if ((state_output.selfenergy.frequencies.get_ws_vec() - state_input.selfenergy.frequencies.get_ws_vec()).max_norm() < 1e-10) print("Read / write of frequency grid to LambdaLayer of HDF file successful.", true);
+    else {
+        passed = false;
+        print("PROBLEM during read / write of frequency grid to LambdaLayer to HDF file.", true);
+    }
+
+    return passed;
 
 }
+

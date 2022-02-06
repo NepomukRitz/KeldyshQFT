@@ -24,10 +24,12 @@
 #include "../parameters/master_parameters.hpp" // for frequency/Lambda limits and number of frequency/Lambda points
 #include "../utilities/math_utils.hpp"
 #include <cassert>
+#include "H5Cpp.h"
 
 // TODO(low): implement functions used for GRID=3 also for GRID=1,2,4
 
 template<K_class k, typename Q> class vertexDataContainer; // forward declaration
+template<typename Q> class State; // forward declaration
 
 #define PARAMETRIZED_GRID
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
@@ -41,6 +43,8 @@ const bool dense = false;
 
 class FrequencyGrid {
     template<K_class k, typename Q> friend class vertexDataContainer;
+    //friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
+    friend void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, int Lambda_it);
 
     const char type;
     const unsigned int diag_class;
@@ -163,6 +167,8 @@ public:
 
 
     auto operator= (const FrequencyGrid& freqGrid) -> FrequencyGrid& {
+        assert(this->type == freqGrid.type);
+        assert(this->diag_class == freqGrid.diag_class);
         this->N_w = freqGrid.N_w;
         this->w_upper = freqGrid.w_upper;
         this->w_lower = freqGrid.w_lower;
@@ -177,6 +183,8 @@ public:
         return *this;
     }
 
+    int get_diag_class() const {return diag_class;}
+    char get_type() const {return type;}
     auto get_ws(int index) const -> double {assert(index>=0); assert(index<N_w); assert(isfinite(ws[index])); return ws[index];};
     auto get_ts(int index) const -> double {assert(index>=0); assert(index<N_w); assert(isfinite(ts[index])); return ts[index];};
     auto get_ws_vec() const -> vec<double> {return ws;}

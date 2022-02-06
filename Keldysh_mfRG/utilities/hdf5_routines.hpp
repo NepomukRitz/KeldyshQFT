@@ -57,6 +57,7 @@ const H5std_string	DATASET_K3_p("K3_p");
 const H5std_string	DATASET_K3_t("K3_t");
 
 const H5std_string	SELF_LIST("selflist");
+const H5std_string	HARTREE("hartree");
 const H5std_string	LAMBDA_LIST("lambdas");
 const H5std_string  BFREQS_LISTa ("bfreqs_a");
 const H5std_string  BFREQS_LISTp ("bfreqs_p");
@@ -95,60 +96,72 @@ H5::DSetCreatPropList def_proplist_comp();
 const H5::DSetCreatPropList plist_vert_comp = def_proplist_comp();
 
 namespace hdf5_impl {
-
+    /// Create new dataset of suitable datatype
     template <typename Q, typename H5Object,
             std::enable_if_t<
                     std::is_same_v<Q, double> ||
-                    std::is_same_v<Q, comp>,
+                    std::is_same_v<Q, comp>||
+                    std::is_same_v<Q, int>||
+                    std::is_same_v<Q, char>,
                             bool> = true>
-    H5::DataSet create_Dataset(H5Object& group, const std::string& dataset_name, H5::DataSpace& file_space) {
+    H5::DataSet create_Dataset(H5Object& group, const H5std_string& dataset_name, H5::DataSpace& file_space) {
     if constexpr(std::is_same_v<Q, double>) {
             H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, file_space);
             return mydataset;
     }
     else if constexpr(std::is_same_v<Q, comp>) {
-            H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, file_space, plist_vert_comp);
-            return mydataset;
+        H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, file_space, plist_vert_comp);
+        return mydataset;
     }
-    //else {
-    //    typeid (Q).name();
-    //    static_assert(false, "Used unsupported data type.");
-    //}
+    else if constexpr(std::is_same_v<Q, int>) {
+        H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_INT, file_space);
+        return mydataset;
+    }
+    else if constexpr(std::is_same_v<Q, char>) {
+        H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_CHAR, file_space);
+        return mydataset;
+    }
     }
 
-
+    /// Open existing dataset of suitable datatype
     template <typename H5Object>
-    H5::DataSet open_Dataset(H5Object& group, const std::string& dataset_name) {
+    H5::DataSet open_Dataset(H5Object& group, const H5std_string& dataset_name) {
             H5::DataSet mydataset = group.openDataSet(dataset_name);
             return mydataset;
     }
 
 
-
     template <typename container,
             std::enable_if_t<
                     std::is_same_v<typename container::value_type, double> ||
-    std::is_same_v<typename container::value_type, comp>,
+                    std::is_same_v<typename container::value_type, comp> ||
+                    std::is_same_v<typename container::value_type, int> ||
+                    std::is_same_v<typename container::value_type, char>,
     bool> = true>
     void write_data_to_Dataset(const container data, H5::DataSet& dataset) {
         if constexpr(std::is_same_v<typename container::value_type, double>) dataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
         else if constexpr(std::is_same_v<typename container::value_type, comp>) dataset.write(data.data(), mtype_comp);
-        //else static_assert(false, "Container has wrong value_type.");
+        else if constexpr(std::is_same_v<typename container::value_type, int>) dataset.write(data.data(), H5::PredType::NATIVE_INT);
+        else if constexpr(std::is_same_v<typename container::value_type, char>) dataset.write(data.data(), H5::PredType::NATIVE_CHAR);
     }
+
     template <typename container,
             std::enable_if_t<
                     std::is_same_v<typename container::value_type, double> ||
-    std::is_same_v<typename container::value_type, comp>,
+                    std::is_same_v<typename container::value_type, comp> ||
+                    std::is_same_v<typename container::value_type, int> ||
+                    std::is_same_v<typename container::value_type, char>,
     bool> = true>
     void write_data_to_Dataset(const container data, H5::DataSet& dataset, H5::DataSpace& mem_space, H5::DataSpace& file_space) {
         if constexpr(std::is_same_v<typename container::value_type, double>) dataset.write(data.data(), H5::PredType::NATIVE_DOUBLE, mem_space, file_space);
         else if constexpr(std::is_same_v<typename container::value_type, comp>) dataset.write(data.data(), mtype_comp, mem_space, file_space);
-        //else static_assert(false, "Container has wrong value_type.");
+        else if constexpr(std::is_same_v<typename container::value_type, int>) dataset.write(data.data(), H5::PredType::NATIVE_INT, mem_space, file_space);
+        else if constexpr(std::is_same_v<typename container::value_type, char>) dataset.write(data.data(), H5::PredType::NATIVE_CHAR, mem_space, file_space);
     }
 
 
     template<typename Q, std::size_t depth, typename H5object, typename container, typename dimensions_type>
-    void write_to_hdf_LambdaLayer_impl(H5object& group, const std::string& dataset_name, const container& data, const dimensions_type& length, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
+    void write_to_hdf_LambdaLayer_impl(H5object& group, const H5std_string& dataset_name, const container& data, const dimensions_type& length, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
         assert(Lambda_it < numberLambda_layers);
 
         /// create arrays with information on dimensions
@@ -182,7 +195,7 @@ namespace hdf5_impl {
         // create or open dataset in HDF5group/file
         H5::DataSet mydataset;
         if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
-        else mydataset = hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+        else mydataset = group.openDataSet(dataset_name);//= hdf5_impl::open_Dataset<H5object>(group, dataset_name);
 
         //write data to dataset
         hdf5_impl::write_data_to_Dataset(data, mydataset, mem_space, file_space);
@@ -194,15 +207,15 @@ namespace hdf5_impl {
 
 
     template<typename Q, std::size_t depth, typename H5object>
-    std::vector<Q> read_from_hdf_impl(const H5object& group, const std::string& dataset_name, std::array<std::size_t,depth>& dims_result) {
+    std::vector<Q> read_from_hdf_impl(const H5object& group, const H5std_string& dataset_name, std::array<std::size_t,depth>& dims_result) {
         H5::DataSet dataset = hdf5_impl::open_Dataset(group, dataset_name);
         H5::DataSpace file_space = dataset.getSpace();
 
         // get the size of the dataset
         hsize_t dims_file[depth];
         hsize_t rank = file_space.getSimpleExtentDims(dims_file, NULL);
-        assert(rank == depth);  // Important assertion! Makes sure that the desired multiarray depth matches the data in the file
         //std::cout<<"rank: "<<rank<<std::endl; // this is the correct number of values
+        assert(rank == depth);  // Important assertion! Makes sure that the desired multiarray depth matches the data in the file
 
 
         hsize_t dims_mem[depth];
@@ -212,27 +225,28 @@ namespace hdf5_impl {
             dims_mem_flat *= dims_file[i];
         }
         H5::DataSpace dataSpace_buffer(depth, dims_mem);
-        std::cout<<"Datasize of loaded (flat): "<<dims_mem_flat<<std::endl; // this is the correct number of values
+        //std::cout<<"Datasize of loaded (flat): "<<dims_mem_flat<<std::endl; // this is the correct number of values
 
 
         // create a vector the same size as the dataset
         std::vector<Q> result;
         result.resize(dims_mem_flat);
-        std::cout<<"Vectsize: "<<result.size()<<std::endl;
+        //std::cout<<"Vectsize: "<<result.size()<<std::endl;
 
 
         if constexpr(std::is_same_v<Q,double>) dataset.read(result.data(), H5::PredType::NATIVE_DOUBLE, dataSpace_buffer, file_space);
         else if constexpr(std::is_same_v<Q,comp>) dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+        else if constexpr(std::is_same_v<Q,int>) dataset.read(result.data(), H5::PredType::NATIVE_INT, dataSpace_buffer, file_space);
+        else if constexpr(std::is_same_v<Q,char>) dataset.read(result.data(), H5::PredType::NATIVE_CHAR, dataSpace_buffer, file_space);
 
 
-        //std::vector<size_t> dims_result(depth);
         for (int i = 0; i < depth; i++) dims_result[i] = dims_file[i];
         return result;
     }
 
 
     template<typename Q, std::size_t depth, typename H5object>
-    std::vector<Q> read_from_hdf_LambdaLayer_impl(const H5object& group, const std::string& dataset_name, std::array<std::size_t,depth>& dims_result, const int Lambda_it) {
+    std::vector<Q> read_from_hdf_LambdaLayer_impl(const H5object& group, const H5std_string& dataset_name, std::array<std::size_t,depth>& dims_result, const int Lambda_it) {
 
         // open file_space to read from
         H5::DataSet dataset = hdf5_impl::open_Dataset(group, dataset_name);
@@ -256,7 +270,6 @@ namespace hdf5_impl {
         }
         count[0] = 1;           // dimension of Lambda layer
         start[0] = Lambda_it;
-        //typename multidimensional::multiarray<Q, depth>::dimensions_type length = data.length();
         for (int i = 1; i < RANK+1; i++) {
             count[i] = dims_file[i];
             start[i] = 0;
@@ -282,6 +295,8 @@ namespace hdf5_impl {
 
         if constexpr(std::is_same_v<Q,double>) dataset.read(result.data(), H5::PredType::NATIVE_DOUBLE, dataSpace_buffer, file_space);
         else if constexpr(std::is_same_v<Q,comp>) dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+        else if constexpr(std::is_same_v<Q,int>) dataset.read(result.data(), H5::PredType::NATIVE_INT, dataSpace_buffer, file_space);
+        else if constexpr(std::is_same_v<Q,char>) dataset.read(result.data(), H5::PredType::NATIVE_CHAR, dataSpace_buffer, file_space);
 
         return result;
     }
@@ -290,50 +305,76 @@ namespace hdf5_impl {
 }
 
 
+/// Write scalar to HDF group/file as Attribute
+template<typename Q, typename H5object,
+        std::enable_if_t<
+                                std::is_same_v<Q, double> ||
+                                std::is_same_v<Q, comp> ||
+                                std::is_same_v<Q, int> ||
+                                std::is_same_v<Q, char>,
+                bool> = true>
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Q& data, const bool data_set_exists) {
+    H5::DataSpace file_space(H5S_SCALAR);
+
+    if constexpr(std::is_same_v<Q, double>) {
+        H5::Attribute attr = group.createAttribute( dataset_name, H5::PredType::NATIVE_DOUBLE, file_space );
+        attr.write( H5::PredType::NATIVE_DOUBLE, &data );
+    }
+    else if constexpr(std::is_same_v<Q, comp>) {
+        H5::Attribute attr = group.createAttribute( dataset_name, mtype_comp, file_space );
+        attr.write( mtype_comp, &data );
+    }
+    else if constexpr(std::is_same_v<Q, int>) {
+        H5::Attribute attr = group.createAttribute( dataset_name, H5::PredType::NATIVE_INT, file_space );
+        attr.write( H5::PredType::NATIVE_INT, &data );
+    }
+    else if constexpr(std::is_same_v<Q, char>) {
+        H5::Attribute attr = group.createAttribute( dataset_name, H5::PredType::NATIVE_CHAR, file_space );
+        attr.write( H5::PredType::NATIVE_CHAR, &data );
+    }
+
+    file_space.close();
+};
+/// Write vector to HDF group/file
 template <typename Q, typename H5object>
-void write_to_hdf(H5object& group, const std::string& dataset_name, const std::vector<Q>& data, const bool data_set_exists) {
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists) {
     hsize_t dims[1] = {data.size()};
     H5::DataSpace file_space(1, dims);
     H5::DataSet mydataset;
     if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
-    else mydataset = hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+    else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
 
     hdf5_impl::write_data_to_Dataset(data, mydataset);
-    //mydataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
 
     mydataset.close();
     file_space.close();
 }
-
-/// Functions for writing to HDF group
-//void write_to_hdf_group(const std::vector<double>& data, H5::Group& group, const std::string& dataset_name);
-//void write_to_hdf_group(const std::vector<comp>& data, H5::Group& group, const std::string& dataset_name);
+/// Write multiarray to HDF group/file
 template<typename Q, std::size_t depth, typename H5object>
-void write_to_hdf(H5object& group, const std::string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists) {
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists) {
     hsize_t dims[depth];
     std::copy(std::begin(data.length()), std::end(data.length()), std::begin(dims));
     H5::DataSpace file_space(depth, dims);
 
     H5::DataSet mydataset;
     if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
-    else mydataset = hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+    else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
     hdf5_impl::write_data_to_Dataset(data, mydataset);
 
     mydataset.close();
     file_space.close();
 };
 
-
+/// Write vector to Lambda layer of HDF group/file
 template <typename Q, typename H5object>
-void write_to_hdf_LambdaLayer(H5object& group, const std::string& dataset_name, const std::vector<Q>& data, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
+void write_to_hdf_LambdaLayer(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
     assert(Lambda_it < numberLambda_layers);
     std::array<std::size_t,1> length = {data.size()};
     hdf5_impl::write_to_hdf_LambdaLayer_impl<Q,1,H5object>(group, dataset_name, data, length, Lambda_it, numberLambda_layers, data_set_exists);
 }
-
-
+/// Write multiarray to Lambda layer of HDF group/file
 template<typename Q, std::size_t depth, typename H5object>
-void write_to_hdf_LambdaLayer(H5object& group, const std::string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
+void write_to_hdf_LambdaLayer(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
     assert(Lambda_it < numberLambda_layers);
     typename multidimensional::multiarray<Q, depth>::dimensions_type length = data.length();
     hdf5_impl::write_to_hdf_LambdaLayer_impl<Q,depth,H5object>(group, dataset_name, data, length, Lambda_it, numberLambda_layers, data_set_exists);
@@ -343,36 +384,227 @@ void write_to_hdf_LambdaLayer(H5object& group, const std::string& dataset_name, 
 
 
 
-
+/// Read multiarray from HDF group/file
 template<typename Q, std::size_t depth, typename H5object>
-void read_from_hdf(const H5object& group, const std::string& dataset_name, multidimensional::multiarray<Q,depth>& result) {
+void read_from_hdf(const H5object& group, const H5std_string& dataset_name, multidimensional::multiarray<Q,depth>& result) {
 
     typename multidimensional::multiarray<Q,depth>::dimensions_type dims_result;
     std::vector<Q> result_vec = hdf5_impl::read_from_hdf_impl<Q,depth,H5object>(group, dataset_name, dims_result);
     result = multidimensional::multiarray<Q,depth>(dims_result, result_vec);
 }
-
+/// Read vector from HDF group/file
 template<typename Q, typename H5object>
-void read_from_hdf(const H5object& group, const std::string& dataset_name, std::vector<Q>& result) {
+void read_from_hdf(const H5object& group, const H5std_string& dataset_name, std::vector<Q>& result) {
     std::array<std::size_t, 1> dims_result;
     result = hdf5_impl::read_from_hdf_impl<Q,1,H5object>(group, dataset_name, dims_result);
 }
 
 
-
+/// Read multiarray from Lambda layer of HDF group/file
 template<typename Q, std::size_t depth, typename H5object>
-void read_from_hdf_LambdaLayer(const H5object& group, const std::string& dataset_name, multidimensional::multiarray<Q,depth>& result, const int Lambda_it) {
+void read_from_hdf_LambdaLayer(const H5object& group, const H5std_string& dataset_name, multidimensional::multiarray<Q,depth>& result, const int Lambda_it) {
 
     typename multidimensional::multiarray<Q,depth>::dimensions_type dims_result;
     std::vector<Q> result_vec = hdf5_impl::read_from_hdf_LambdaLayer_impl<Q,depth,H5object>(group, dataset_name, dims_result, Lambda_it);
     result = multidimensional::multiarray<Q,depth>(dims_result, result_vec);
 }
-
+/// Read vector from Lambda layer of HDF group/file
 template<typename Q, typename H5object>
-void read_from_hdf_LambdaLayer(const H5object& group, const std::string& dataset_name, std::vector<Q>& result, const int Lambda_it) {
+void read_from_hdf_LambdaLayer(const H5object& group, const H5std_string& dataset_name, std::vector<Q>& result, const int Lambda_it) {
     std::array<std::size_t, 1> dims_result;
     result = hdf5_impl::read_from_hdf_LambdaLayer_impl<Q,1,H5object>(group, dataset_name, dims_result, Lambda_it);
 }
+
+
+namespace hdf5_impl {
+
+    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const FrequencyGrid& freqgrid, int Lambda_it, int numberLambdaLayers, bool file_exists, bool verbose=true);
+    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, int Lambda_it, double Lambda);
+
+    template<typename Q>
+    void write_state_to_hdf_LambdaLayer(const H5std_string& filename, const State<Q>& state, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose=true) {
+        H5::H5File file_out;
+        if (!file_exists) {
+            // If file doesn't exist, create a new file using the default property lists.
+            file_out = H5::H5File(filename, H5F_ACC_TRUNC);
+        }
+        else {
+            // If file exists, open existing file. Access rights: read/write
+            file_out = H5::H5File(filename, H5F_ACC_RDWR);
+        }
+
+        /// Save state data
+        write_to_hdf_LambdaLayer<double>(file_out, LAMBDA_LIST, std::vector<double>({state.Lambda}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, SELF_LIST, state.selfenergy.Sigma, Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, HARTREE, std::vector<Q>({state.selfenergy.asymp_val_R}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_irred, state.vertex.irred().get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_a, state.vertex.avertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_p, state.vertex.pvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_t, state.vertex.tvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTa, state.vertex.avertex().K1.K1_get_freqGrid().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTp, state.vertex.pvertex().K1.K1_get_freqGrid().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTt, state.vertex.tvertex().K1.K1_get_freqGrid().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+#if MAX_DIAG_CLASS>1
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_a, state.vertex.avertex().K2.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_p, state.vertex.pvertex().K2.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_t, state.vertex.tvertex().K2.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTa, state.vertex.avertex().K2.K2_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTp, state.vertex.pvertex().K2.K2_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTt, state.vertex.tvertex().K2.K2_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTa, state.vertex.avertex().K2.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTp, state.vertex.pvertex().K2.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTt, state.vertex.tvertex().K2.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+#endif
+#if MAX_DIAG_CLASS>2
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_a, state.vertex.avertex().K3.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_p, state.vertex.pvertex().K3.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_t, state.vertex.tvertex().K3.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTa, state.vertex.avertex().K3.K3_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTp, state.vertex.pvertex().K3.K3_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTt, state.vertex.tvertex().K3.K3_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTa, state.vertex.avertex().K3.K3_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTp, state.vertex.pvertex().K3.K3_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTt, state.vertex.tvertex().K3.K3_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+#endif
+        if(!file_exists) {
+            /// Write used parameters for documentation purpose
+            H5::Group group_params(file_out.createGroup(PARAM_LIST));
+            write_to_hdf(group_params, "REG", REG, file_exists);
+            write_to_hdf(group_params, "Gamma", glb_Gamma, file_exists);
+            write_to_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS, file_exists);
+            write_to_hdf(group_params, "N_LOOPS", N_LOOPS, file_exists);
+            write_to_hdf(group_params, "T", glb_T, file_exists);
+            write_to_hdf(group_params, "mu", glb_mu, file_exists);
+            write_to_hdf(group_params, "U", glb_U, file_exists);
+            write_to_hdf(group_params, "epsilon", glb_epsilon, file_exists);
+            write_to_hdf(group_params, "V", glb_V, file_exists);
+            write_to_hdf(group_params, "ODEsolver", ODEsolver, file_exists);
+        }
+
+        H5::Group group_freqparams;
+        H5::Group group_freqparams_bfreqsa;
+        H5::Group group_freqparams_bfreqsp;
+        H5::Group group_freqparams_bfreqst;
+        H5::Group group_freqparams_bfreqs2a;
+        H5::Group group_freqparams_bfreqs2p;
+        H5::Group group_freqparams_bfreqs2t;
+        H5::Group group_freqparams_bfreqs3a;
+        H5::Group group_freqparams_bfreqs3p;
+        H5::Group group_freqparams_bfreqs3t;
+        H5::Group group_freqparams_ffreqs2a;
+        H5::Group group_freqparams_ffreqs2p;
+        H5::Group group_freqparams_ffreqs2t;
+        H5::Group group_freqparams_ffreqs3a;
+        H5::Group group_freqparams_ffreqs3p;
+        H5::Group group_freqparams_ffreqs3t;
+    if (!file_exists) {
+        group_freqparams = file_out.createGroup(FREQ_PARAMS);
+        group_freqparams_bfreqsa = group_freqparams.createGroup(BFREQS_LISTa );
+        group_freqparams_bfreqsp = group_freqparams.createGroup(BFREQS_LISTp );
+        group_freqparams_bfreqst = group_freqparams.createGroup(BFREQS_LISTt );
+        group_freqparams_bfreqs2a = group_freqparams.createGroup(BFREQS2_LISTa);
+        group_freqparams_bfreqs2p = group_freqparams.createGroup(BFREQS2_LISTp);
+        group_freqparams_bfreqs2t = group_freqparams.createGroup(BFREQS2_LISTt);
+        group_freqparams_bfreqs3a = group_freqparams.createGroup(BFREQS3_LISTa);
+        group_freqparams_bfreqs3p = group_freqparams.createGroup(BFREQS3_LISTp);
+        group_freqparams_bfreqs3t = group_freqparams.createGroup(BFREQS3_LISTt);
+        group_freqparams_ffreqs2a = group_freqparams.createGroup(FFREQS2_LISTa);
+        group_freqparams_ffreqs2p = group_freqparams.createGroup(FFREQS2_LISTp);
+        group_freqparams_ffreqs2t = group_freqparams.createGroup(FFREQS2_LISTt);
+        group_freqparams_ffreqs3a = group_freqparams.createGroup(FFREQS3_LISTa);
+        group_freqparams_ffreqs3p = group_freqparams.createGroup(FFREQS3_LISTp);
+        group_freqparams_ffreqs3t = group_freqparams.createGroup(FFREQS3_LISTt);
+    }
+    else {
+        group_freqparams = file_out.openGroup(FREQ_PARAMS);
+        group_freqparams_bfreqsa = group_freqparams.openGroup(BFREQS_LISTa );
+        group_freqparams_bfreqsp = group_freqparams.openGroup(BFREQS_LISTp );
+        group_freqparams_bfreqst = group_freqparams.openGroup(BFREQS_LISTt );
+        group_freqparams_bfreqs2a = group_freqparams.openGroup(BFREQS2_LISTa);
+        group_freqparams_bfreqs2p = group_freqparams.openGroup(BFREQS2_LISTp);
+        group_freqparams_bfreqs2t = group_freqparams.openGroup(BFREQS2_LISTt);
+        group_freqparams_bfreqs3a = group_freqparams.openGroup(BFREQS3_LISTa);
+        group_freqparams_bfreqs3p = group_freqparams.openGroup(BFREQS3_LISTp);
+        group_freqparams_bfreqs3t = group_freqparams.openGroup(BFREQS3_LISTt);
+        group_freqparams_ffreqs2a = group_freqparams.openGroup(FFREQS2_LISTa);
+        group_freqparams_ffreqs2p = group_freqparams.openGroup(FFREQS2_LISTp);
+        group_freqparams_ffreqs2t = group_freqparams.openGroup(FFREQS2_LISTt);
+        group_freqparams_ffreqs3a = group_freqparams.openGroup(FFREQS3_LISTa);
+        group_freqparams_ffreqs3p = group_freqparams.openGroup(FFREQS3_LISTp);
+        group_freqparams_ffreqs3t = group_freqparams.openGroup(FFREQS3_LISTt);
+
+    }
+        /// Write frequency parameters
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqsa, state.vertex.avertex().K1.K1_get_freqGrid()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqsp, state.vertex.pvertex().K1.K1_get_freqGrid()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqst, state.vertex.tvertex().K1.K1_get_freqGrid()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
+#if MAX_DIAG_CLASS>1
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2a,state.vertex.avertex().K2.K2_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2p,state.vertex.pvertex().K2.K2_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2t,state.vertex.tvertex().K2.K2_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2a,state.vertex.avertex().K2.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2p,state.vertex.pvertex().K2.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2t,state.vertex.tvertex().K2.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+#endif
+#if MAX_DIAG_CLASS>2
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs3a,state.vertex.avertex().K3.K3_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs3p,state.vertex.pvertex().K3.K3_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs3t,state.vertex.tvertex().K3.K3_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs3a,state.vertex.avertex().K3.K3_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs3p,state.vertex.pvertex().K3.K3_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs3t,state.vertex.tvertex().K3.K3_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+#endif
+
+        file_out.close();
+    }
+
+}
+
+/// Create file with fixed number of Lambda layers and save state to first Lambda layer
+template <typename Q>
+void write_state_to_hdf(const H5std_string FILE_NAME, const State<Q>& state_in, const int Lambda_size, const bool verbose=true) {
+#ifdef USE_MPI
+    if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
+#endif
+    {
+        hdf5_impl::write_state_to_hdf_LambdaLayer(FILE_NAME, state_in, 0, Lambda_size, false);
+        if (verbose) {
+            print("Successfully saved in hdf5 file: ", FILE_NAME);
+            print_add(" in Lambda-layer ", 0, false);
+            print_add("", true);
+        }
+    }
+}
+
+/// Open file and save state to a specified Lambda layer
+template <typename Q>
+void add_state_to_hdf(const H5std_string FILE_NAME, const Q& state_in, int Lambda_it, const bool verbose=true) {
+#ifdef USE_MPI
+    if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
+#endif
+    {
+        multidimensional::multiarray<double,2> Lambdas;
+        H5::H5File file_out(FILE_NAME, H5F_ACC_RDONLY);
+        read_from_hdf<double>(file_out, LAMBDA_LIST, Lambdas);
+        file_out.close();
+        const std::size_t Lambda_size = Lambdas.size();
+
+        if (Lambda_it < Lambda_size) {
+            hdf5_impl::write_state_to_hdf_LambdaLayer(FILE_NAME, state_in, Lambda_it, Lambda_size, true);
+            if (verbose) {
+                print("Successfully saved in hdf5 file: ", FILE_NAME);
+                print_add(" in Lambda-layer ", Lambda_it, false);
+                print_add("", true);
+            }
+        } else {
+            print("\t\t  ERROR: Cannot write to file ", FILE_NAME, " since Lambda layer", Lambda_it,
+                  " is out of range.", true);
+        }
+    }
+}
+
+/// Read state from specified Lambda layer of hdf file
+State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, int Lambda_it) ;
 
 
 
@@ -1820,5 +2052,6 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state);
 
 bool test_read_write_data_hdf();
+bool test_read_write_state_hdf();
 
 #endif //KELDYSH_MFRG_HDF5_ROUTINES_HPP
