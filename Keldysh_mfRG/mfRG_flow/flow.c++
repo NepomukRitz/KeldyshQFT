@@ -79,26 +79,22 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const int it
     if (it_start < nODE + U_NRG.size() + 1) { // start iteration needs to be within the range of values
 
         State<state_datatype> state_ini = read_hdf(inputFileName, it_start); // read initial state
+        double Lambda_now = state_ini.Lambda;
         State<state_datatype> state_fin (Lambda_fin);
-        if (save_intermediate_results) {
-            write_hdf(inputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-            write_hdf(inputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-            write_hdf(inputFileName+"_RKstep3", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-            write_hdf(inputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-        }
+
         state_ini.findBestFreqGrid(true);
         state_ini.vertex.half1().check_vertex_resolution();
 
         std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
-        compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, inputFileName, true, nODE + U_NRG.size() + 1);
+        compare_with_FDTs(state_ini.vertex, Lambda_now, 0, inputFileName, true, nODE + U_NRG.size() + 1);
 
         //ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
         //                                                                  Lambda_checkpoints, inputFileName, it_start);
 
         rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
         using namespace boost::numeric::odeint;
-        ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+        ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_now, rhs_mfrg,
                                                                                                                                              Lambda_checkpoints, inputFileName, it_start, nODE, true);
 
         return state_fin;

@@ -722,7 +722,7 @@ namespace boost {
                 State_t state_now = state_ini;
                 const int MAXSTP = N_ODE + lambda_checkpoints.size(); //maximal number of steps that is computed
                 // get lambdas according to FlowGrid (for hybridization flow: + checkpoints acc. to U_NRG  ) -> for non-adaptive method
-                const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, N_ODE, lambda_checkpoints);
+                const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, N_ODE, lambda_checkpoints);
                 vec<double> lambdas_did(MAXSTP+1);
                 lambdas_did[0] = Lambda_i;
 
