@@ -14,6 +14,7 @@ H5::DSetCreatPropList def_proplist_comp() {
     fillvalue_vert.re = 0;
     fillvalue_vert.im = 0;
     H5::DSetCreatPropList plist_vert;
+    H5::CompType mtype_comp = def_mtype_comp();
     plist_vert.setFillValue(mtype_comp, &fillvalue_vert);
     return plist_vert;
 }

@@ -8,8 +8,8 @@
 #include <stdexcept>
 #include <cmath>
 #include <vector>
-#include "util.hpp"               // printing text
 #include "../parameters/master_parameters.hpp"         // system parameters (necessary for vector lengths etc.)
+#include "util.hpp"               // printing text
 #include "../data_structures.hpp"    // comp data type, std::real/complex vector class
 #include "../grids/frequency_grid.hpp"     // store frequency grid parameters
 #include "H5Cpp.h"              // HDF5 functions
@@ -91,9 +91,9 @@ typedef struct h5_comp {
 // Create the memory data type for storing complex numbers in file
 H5::CompType def_mtype_comp();
 
-const H5::CompType mtype_comp = def_mtype_comp();
+//const H5::CompType mtype_comp = def_mtype_comp();
 H5::DSetCreatPropList def_proplist_comp();
-const H5::DSetCreatPropList plist_vert_comp = def_proplist_comp();
+//const H5::DSetCreatPropList plist_vert_comp = def_proplist_comp();
 
 namespace hdf5_impl {
     /// Create new dataset of suitable datatype
@@ -110,7 +110,9 @@ namespace hdf5_impl {
             return mydataset;
     }
     else if constexpr(std::is_same_v<Q, comp>) {
-        H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, file_space, plist_vert_comp);
+        H5::DSetCreatPropList plist_vert = def_proplist_comp();
+        H5::CompType mtype_comp = def_mtype_comp();
+        H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, file_space, plist_vert);
         return mydataset;
     }
     else if constexpr(std::is_same_v<Q, int>) {
@@ -140,7 +142,10 @@ namespace hdf5_impl {
     bool> = true>
     void write_data_to_Dataset(const container data, H5::DataSet& dataset) {
         if constexpr(std::is_same_v<typename container::value_type, double>) dataset.write(data.data(), H5::PredType::NATIVE_DOUBLE);
-        else if constexpr(std::is_same_v<typename container::value_type, comp>) dataset.write(data.data(), mtype_comp);
+        else if constexpr(std::is_same_v<typename container::value_type, comp>) {
+            H5::CompType mtype_comp = def_mtype_comp();
+            dataset.write(data.data(), mtype_comp);
+        }
         else if constexpr(std::is_same_v<typename container::value_type, int>) dataset.write(data.data(), H5::PredType::NATIVE_INT);
         else if constexpr(std::is_same_v<typename container::value_type, char>) dataset.write(data.data(), H5::PredType::NATIVE_CHAR);
     }
@@ -154,7 +159,10 @@ namespace hdf5_impl {
     bool> = true>
     void write_data_to_Dataset(const container data, H5::DataSet& dataset, H5::DataSpace& mem_space, H5::DataSpace& file_space) {
         if constexpr(std::is_same_v<typename container::value_type, double>) dataset.write(data.data(), H5::PredType::NATIVE_DOUBLE, mem_space, file_space);
-        else if constexpr(std::is_same_v<typename container::value_type, comp>) dataset.write(data.data(), mtype_comp, mem_space, file_space);
+        else if constexpr(std::is_same_v<typename container::value_type, comp>) {
+            H5::CompType mtype_comp = def_mtype_comp();
+            dataset.write(data.data(), mtype_comp, mem_space, file_space);
+        }
         else if constexpr(std::is_same_v<typename container::value_type, int>) dataset.write(data.data(), H5::PredType::NATIVE_INT, mem_space, file_space);
         else if constexpr(std::is_same_v<typename container::value_type, char>) dataset.write(data.data(), H5::PredType::NATIVE_CHAR, mem_space, file_space);
     }
@@ -235,7 +243,10 @@ namespace hdf5_impl {
 
 
         if constexpr(std::is_same_v<Q,double>) dataset.read(result.data(), H5::PredType::NATIVE_DOUBLE, dataSpace_buffer, file_space);
-        else if constexpr(std::is_same_v<Q,comp>) dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+        else if constexpr(std::is_same_v<Q,comp>) {
+            H5::CompType mtype_comp = def_mtype_comp();
+            dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+        }
         else if constexpr(std::is_same_v<Q,int>) dataset.read(result.data(), H5::PredType::NATIVE_INT, dataSpace_buffer, file_space);
         else if constexpr(std::is_same_v<Q,char>) dataset.read(result.data(), H5::PredType::NATIVE_CHAR, dataSpace_buffer, file_space);
 
@@ -294,7 +305,10 @@ namespace hdf5_impl {
 
 
         if constexpr(std::is_same_v<Q,double>) dataset.read(result.data(), H5::PredType::NATIVE_DOUBLE, dataSpace_buffer, file_space);
-        else if constexpr(std::is_same_v<Q,comp>) dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+        else if constexpr(std::is_same_v<Q,comp>) {
+            H5::CompType mtype_comp = def_mtype_comp();
+            dataset.read(result.data(), mtype_comp, dataSpace_buffer, file_space);   /// Funktioniert das auch für comp?
+        }
         else if constexpr(std::is_same_v<Q,int>) dataset.read(result.data(), H5::PredType::NATIVE_INT, dataSpace_buffer, file_space);
         else if constexpr(std::is_same_v<Q,char>) dataset.read(result.data(), H5::PredType::NATIVE_CHAR, dataSpace_buffer, file_space);
 
@@ -321,6 +335,7 @@ void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Q& da
         attr.write( H5::PredType::NATIVE_DOUBLE, &data );
     }
     else if constexpr(std::is_same_v<Q, comp>) {
+        H5::CompType mtype_comp = def_mtype_comp();
         H5::Attribute attr = group.createAttribute( dataset_name, mtype_comp, file_space );
         attr.write( mtype_comp, &data );
     }
