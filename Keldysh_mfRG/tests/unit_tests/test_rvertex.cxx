@@ -195,8 +195,8 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 }
 
                 state_datatype compare_val = avertex.K3.interpolate(indices);
-                double correction = signFlipCorrection_MF(indices.w);
-                int interval_correction = signFlipCorrection_MF_int(indices.w);
+                double correction = (ZERO_T || KELDYSH) ? 0. :signFlipCorrection_MF(indices.w);
+                int interval_correction = (ZERO_T || KELDYSH) ? 0. : signFlipCorrection_MF_int(indices.w);
                 //if (! KELDYSH and ! ZERO_T)
                 //    interval_correction = (int)(signFlipCorrection_MF(indices.w)/(2*M_PI*glb_T) + 0.1);
                 if (nFER3 - 1 - iv + interval_correction >= 0 and nFER3 - 1 - ivp + interval_correction >= 0) {
