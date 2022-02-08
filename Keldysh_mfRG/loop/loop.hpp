@@ -156,33 +156,18 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
         // V component
         IntegrandSE<Q> integrand = IntegrandSE<Q> ('r', fullvertex, prop, 0, 0, v, i_in);
         // split up the integrand at discontinuities and (possible) kinks:
-        if (std::abs(v) > inter_tol) {
-            integratedR  = prefactor * integrator<Q>(integrand,  v_lower-std::abs(v), -std::abs(v)        , 0.);
-            integratedR += prefactor * integrator<Q>(integrand, -std::abs(v)        , -inter_tol     , 0.);
-            integratedR += prefactor * integrator<Q>(integrand, +inter_tol     ,  std::abs(v)        , 0.);
-            integratedR += prefactor * integrator<Q>(integrand,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
-        }
-        else {
-            integratedR  = prefactor * integrator<Q>(integrand,  v_lower-std::abs(v), -inter_tol     , 0.);
-            integratedR += prefactor * integrator<Q>(integrand, +inter_tol     ,  v_upper+std::abs(v), 0.);
-        }
+        integratedR = prefactor * integrator_Matsubara_T0<Q, 1>(integrand, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
+                                                                 {v}, Delta, true);
 
         // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
         if (all_spins) {
             integratedR *= 2.;
             IntegrandSE<Q> integrand_Vhat = IntegrandSE<Q> ('r', fullvertex, prop, 0, 1, v, i_in);
             // split up the integrand at discontinuities and (possible) kinks:
-            if (std::abs(v) > inter_tol) {
-                integratedR += prefactor * integrator<Q>(integrand_Vhat,  v_lower-std::abs(v), -std::abs(v)        , 0.);
-                integratedR += prefactor * integrator<Q>(integrand_Vhat, -std::abs(v)        , -inter_tol     , 0.);
-                integratedR += prefactor * integrator<Q>(integrand_Vhat, +inter_tol     ,  std::abs(v)        , 0.);
-                integratedR += prefactor * integrator<Q>(integrand_Vhat,  std::abs(v)        ,  v_upper+std::abs(v), 0.);
-            }
-            else {
-                integratedR += prefactor * integrator<Q>(integrand_Vhat,  v_lower-std::abs(v), -inter_tol     , 0.);
-                integratedR += prefactor * integrator<Q>(integrand_Vhat, +inter_tol     ,  v_upper+std::abs(v), 0.);
-            }
+            integratedR += prefactor * integrator_Matsubara_T0<Q, 1>(integrand_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
+                                                                    {v}, Delta, true);
         }
+
 
         integratedR += -1./(2.*M_PI)
                        * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, spin, i_in, all_spins);

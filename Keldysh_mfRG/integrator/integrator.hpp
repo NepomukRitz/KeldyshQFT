@@ -45,6 +45,47 @@ auto integrator_gsl_qagiu_helper(gsl_function& F, double a, int Nmax) -> double;
 auto integrator_gsl_qagil_helper(gsl_function& F, double a, int Nmax) -> double;
 
 
+
+/* Integration using routines from the GSL library (many different routines available, would need more testing) */
+template <typename Q, typename Integrand> auto integrator_gsl_qag_tails(Integrand& integrand, double a, double b, int Nmax) -> Q {
+    if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+
+        gsl_function F_real;
+        gsl_function F_imag;
+
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+        F_imag.function = &f_imag<Integrand>;
+        F_imag.params = &integrand;
+
+        double result_real = 0.;
+        double result_imag = 0.;
+
+
+        result_real += integrator_gsl_qagil_helper(F_real, a, Nmax);
+        result_real += integrator_gsl_qagiu_helper(F_real, b, Nmax);
+        result_imag += integrator_gsl_qagil_helper(F_imag, a, Nmax);
+        result_imag += integrator_gsl_qagiu_helper(F_imag, b, Nmax);
+
+
+        return result_real + glb_i*result_imag;
+    }
+    else{
+        gsl_function F_real;
+
+        F_real.function = &f_real<Integrand>;
+        F_real.params = &integrand;
+
+        double result_real = 0.;
+
+            result_real += integrator_gsl_qagil_helper(F_real, a, Nmax);
+            result_real += integrator_gsl_qagiu_helper(F_real, b, Nmax);
+
+
+        return result_real;
+    }
+}
+
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 template <typename Q, typename Integrand> auto integrator_gsl_qag_v2(Integrand& integrand, double a, double b, int Nmax, const bool isinf) -> Q {
     if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
@@ -487,6 +528,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         for (int i = 0; i < num_intervals; i++){
             if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
         }
+        if (isinf) {result[0] += integrator_gsl_qag_tails<Q>(integrand, intervals[0][0], intervals[num_intervals-1][1], nINT); }
         return result.sum();
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
@@ -505,7 +547,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         }
         paid::PAIDConfig config;
         paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
-        return paid_integral.solve(integrands)[0];
+        return paid_integral.solve(integrands)[0] + (isinf ? integrator_gsl_qag_tails<Q>(integrand, intervals[0][0], intervals[num_intervals-1][1], nINT) : 0.);
     }
 }
 
