@@ -2066,7 +2066,7 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
 
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state);
 
-bool test_read_write_data_hdf();
-bool test_read_write_state_hdf();
+bool test_read_write_data_hdf(bool verbose);
+bool test_read_write_state_hdf(bool verbose);
 
 #endif //KELDYSH_MFRG_HDF5_ROUTINES_HPP
