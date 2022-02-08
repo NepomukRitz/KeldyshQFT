@@ -14,14 +14,14 @@
 #include "../../parameters/master_parameters.hpp"  // define system parameters
 #include "../../utilities/hdf5_routines.hpp"
 #include "../test_PrecalculatedBubble.hpp"
-#include "tests/test_perturbation_theory.hpp"
+#include "../test_perturbation_theory.hpp"
 
 
 #ifdef INTEGRATION_TESTS
-#include "../../grids/frequency_grid.h"
-#include "../test_perturbation_theory.h"
-#include "../../flow.h"
-#include "../../parquet_solver.h"
+#include "../../grids/frequency_grid.hpp"
+#include "../test_perturbation_theory.hpp"
+#include "../../grids/flow_grid.hpp"
+#include "../../perturbation_theory_and_parquet/parquet_solver.hpp"
 #endif
 
 int main(int argc, char* argv[]) {
@@ -59,7 +59,9 @@ int main(int argc, char* argv[]) {
 #endif
 
     // run unit tests
-    MPI_Init(nullptr, nullptr);
+#ifdef INTEGRATION_TESTS
+    if (MPI_FLAG) MPI_Init(nullptr, nullptr);
+#endif
     print("   -----   Performing unit tests   -----", true);
 
     check_input();
@@ -70,6 +72,14 @@ int main(int argc, char* argv[]) {
     //Runtime_comparison<comp> runtime_tester;
     //runtime_tester.test_runtimes(100);
 
+    if (!KELDYSH and ZERO_T and REG==2) {
+        data_dir = "../Data_MFU=1.000000/";
+        makedir(data_dir);
+        std::string filename = "test_PTstate.h5";
+        test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
+    }
+
+    //compute_non_symmetric_diags(0.8, true, 1, true);
 
     //test_Bubble_in_Momentum_Space();
 
@@ -77,7 +87,6 @@ int main(int argc, char* argv[]) {
     //State<state_datatype> state_ini (lambda);
     //state_ini.initialize();
     //sopt_state(state_ini, lambda);
-    test_PT_state<state_datatype>(data_dir+"testPTstate.h5", 1.8, false);
 
     /*
     Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
