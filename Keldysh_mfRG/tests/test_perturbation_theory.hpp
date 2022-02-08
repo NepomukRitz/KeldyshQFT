@@ -1619,7 +1619,7 @@ public:
         //return vpp*vpp;
     }
 };
-
+#if REG == 2
 template <typename Q>
 void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     const int it_spin = 0;
@@ -1653,8 +1653,8 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
 
     fopt_state(state_cpp, Lambda);
-    state_cpp.vertex.half1().check_vertex_resolution();
-    state_cpp.analyze_tails();
+    //state_cpp.vertex.half1().check_vertex_resolution();
+    //state_cpp.analyze_tails();
 
     write_hdf(outputFileName + "_cpp", Lambda, 1, state_cpp);
 
@@ -1664,7 +1664,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     for (int i = 0; i<nFER; i++) {
         double v = PT_state.selfenergy.frequencies.get_ws(i);
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
-        Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, false);
+        Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
@@ -1734,6 +1734,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     State<Q> state_diff = state_cpp - PT_state;
 
     write_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
+    print("SE-difference: ", state_diff.selfenergy.Sigma.max_norm() / PT_state.selfenergy.Sigma.max_norm(), true);
     print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
     print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
     print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
@@ -1758,7 +1759,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
 }
 
-
+#endif
 
 
 
