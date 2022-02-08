@@ -72,12 +72,12 @@ int main(int argc, char* argv[]) {
     //Runtime_comparison<comp> runtime_tester;
     //runtime_tester.test_runtimes(100);
 
-    if (!KELDYSH and ZERO_T and REG==2) {
+    //if (ZERO_T and REG==2) {
         data_dir = "../Data_MFU=1.000000/";
         makedir(data_dir);
         std::string filename = "test_PTstate.h5";
         test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
-    }
+    //}
 
     //compute_non_symmetric_diags(0.8, true, 1, true);
 
