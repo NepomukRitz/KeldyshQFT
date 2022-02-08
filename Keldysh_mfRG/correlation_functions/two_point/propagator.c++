@@ -2,11 +2,13 @@
 
 auto Fermi_distr(double v, double mu) -> double {
     // return 1./(exp((v-mu)/glb_T)+1.);
-    return 0.5 * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
+    if (!ZERO_T) return 0.5 * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
+    else return (v-mu) < 0. ? 1. : 0.;
 }
 
 auto Fermi_fac(double v, double mu) -> double {
-    return tanh((v-mu)/(2.*glb_T));
+    if (!ZERO_T) return tanh((v-mu)/(2.*glb_T));
+    else return sgn(v-mu);
 }
 
 auto Eff_distr(double v) -> double {

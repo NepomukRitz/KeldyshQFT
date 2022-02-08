@@ -2608,6 +2608,98 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in dGammaC_r --> K3: ", dGammaC_r_diff.vertex.half1().norm_K3(0) / dGammaC_r.vertex.half1().norm_K3(0)  , true);
     }
 }
+#else
+auto SOPT_K1a(double w, double Lambda) -> comp {
+    double Delta = (glb_Gamma + Lambda) / 2.;
+    comp result;
+    if (w == 0.)
+        result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) * 0.5;
+    else
+        result = - glb_U*glb_U * Delta/M_PI / ((glb_i * w)*(2*Delta + (glb_i * w))) * log(1. + ((glb_i * w)*(2*Delta + (glb_i * w)))/(Delta*Delta + glb_mu*glb_mu)) * 0.5;
+    return result;
+}
+auto SOPT_K1a_diff(double w, double Lambda) -> comp {
+    double Delta = (glb_Gamma + Lambda) / 2.;
+    if (std::abs(w) < inter_tol) return - glb_U*glb_U      /2./ M_PI / (Delta*Delta + glb_mu*glb_mu)
+                                   + glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
+    comp term1 =  - glb_U*glb_U      /2./M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu));
+    comp term2 =  + glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu)) / (2.*Delta + (-glb_i * w));
+    comp term3 =  - glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w)))   /  (1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu))
+                    *(
+                            std::abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
+                            -(-glb_i * w) * (2*Delta + (-glb_i * w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
+                    );
+    return term1 + term2 + term3;
+}
+
+
+#if REG==2
+template <typename Q>
+void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
+    const int it_spin = 0;
+    double vmax = 100;
+    double Delta = (glb_Gamma + Lambda) / 2.;
+    State<Q> bareState (Lambda);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Bubble<Q> Pi(barePropagator, barePropagator, diff);
+
+    const int N_iterations = 0;
+    State<Q> state_cpp (Lambda);   // create final and initial state
+    state_cpp.initialize();             // initialize state
+    //write_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+    //write_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+    fopt_state(state_cpp, Lambda);
+    //state_cpp.vertex.half1().check_vertex_resolution();
+    //state_cpp.analyze_tails();
+
+    write_hdf(outputFileName + "_cpp", Lambda, 1, state_cpp);
+
+    State<state_datatype> PT_state(state_cpp, Lambda);
+
+    // compute SOPT self-energy (numerically exact)
+    //for (int i = 0; i<nFER; i++) {
+    //    double v = PT_state.selfenergy.frequencies.get_ws(i);
+    //    Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
+    //    Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+    //    PT_state.selfenergy.setself(0, i, 0, val_SE);
+    //}
+
+    // get SOPT K1 (exact)
+    for (int i = 0; i<nBOS; i++) {
+        double w = PT_state.vertex.avertex().K1.frequencies_K1.b.get_ws(i);
+        Q val_K1;
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
+        else val_K1 = SOPT_K1a(w, Lambda);
+        Q val_K1_K = state_cpp.vertex.avertex().K1.val(1, it_spin, i, 0); // - 2. * glb_i * Fermi_fac(w, glb_mu) * val_K1.imag();
+        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        PT_state.vertex.avertex().K1.setvert( val_K1  , 0, it_spin,  i, 0);
+        PT_state.vertex.avertex().K1.setvert( val_K1_K, 1, it_spin,  i, 0);
+        w = PT_state.vertex.pvertex().K1.frequencies_K1.b.get_ws(i);
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
+        else val_K1 = SOPT_K1a(w, Lambda);
+        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        PT_state.vertex.pvertex().K1.setvert( -val_K1  , 0, it_spin, i, 0);
+        PT_state.vertex.pvertex().K1.setvert( -val_K1_K, 1, it_spin, i, 0);
+        w = PT_state.vertex.tvertex().K1.frequencies_K1.b.get_ws(i);
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
+        else val_K1 = SOPT_K1a(w, Lambda);
+        val_K1_K = state_cpp.vertex.tvertex().K1.val(1, it_spin, i, 0);
+        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./glb_U    , 0, it_spin, i, 0);
+        PT_state.vertex.tvertex().K1.setvert( val_K1_K, 1, it_spin, i, 0);
+    }
+    write_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
+
+
+    State<Q> state_diff = state_cpp - PT_state;
+
+    write_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
+    print("SE-difference: ", state_diff.selfenergy.Sigma.max_norm() / PT_state.selfenergy.Sigma.max_norm(), true);
+    print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
+    print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
+    print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
+
+}
+#endif
 
 #endif // SIAM Matsubara T=0
 

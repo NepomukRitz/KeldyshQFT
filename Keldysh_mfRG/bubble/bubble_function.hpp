@@ -370,34 +370,35 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             // initialize the integrand object and perform frequency integration
             Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand(vertex1, vertex2, Pi, i0, i2, ispin, iw, w, v, vp, i_in, i_spin, channel, diff, k);
-            if (KELDYSH) {
-                value += bubble_value_prefactor() * integrator<Q>(integrand, vmin, vmax, -w / 2., w / 2., Delta);
+            if (ZERO_T) {
+                switch (k) {
+                    case k1:
+                        value += bubble_value_prefactor() *
+                                 integrator_Matsubara_T0<Q, 0>(integrand, vmin, vmax, std::abs(w / 2),
+                                                               {}, Delta, true);
+
+                        break;
+                    case k2:
+                        value += bubble_value_prefactor() *
+                                 integrator_Matsubara_T0<Q, 3>(integrand, vmin, vmax, std::abs(w / 2),
+                                                               {v, v + w, v - w}, Delta, true);
+                        break;
+                    case k3:
+                        value += bubble_value_prefactor() *
+                                 integrator_Matsubara_T0<Q, 6>(integrand, vmin, vmax, std::abs(w / 2),
+                                                               {v, vp, w - vp, w + vp, w - v, std::abs(w) + std::abs(v)}, Delta,
+                                                               true);
+                        break;
+                    case k2b:
+                        value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,3>(integrand, vmin, vmax, std::abs(w/2), {vp, vp+w, vp-w}, Delta, true);
+                        break;
+                    default:
+                        break;
+                }
             }
             else {
-                if (ZERO_T) {
-                    switch (k) {
-                        case k1:
-                            value += bubble_value_prefactor() *
-                                     integrator_Matsubara_T0<Q, 0>(integrand, vmin, vmax, std::abs(w / 2),
-                                                                   {}, Delta, false);
-                            break;
-                        case k2:
-                            value += bubble_value_prefactor() *
-                                     integrator_Matsubara_T0<Q, 3>(integrand, vmin, vmax, std::abs(w / 2),
-                                                                   {v, v + w, v - w}, Delta, false);
-                            break;
-                        case k3:
-                            value += bubble_value_prefactor() *
-                                     integrator_Matsubara_T0<Q, 6>(integrand, vmin, vmax, std::abs(w / 2),
-                                                                   {v, vp, w - vp, w + vp, w - v, abs(w) + abs(v)}, Delta,
-                                                                   false);
-                            break;
-                        case k2b:
-                            value += bubble_value_prefactor() * integrator_Matsubara_T0<Q,3>(integrand, vmin, vmax, std::abs(w/2), {vp, vp+w, vp-w}, Delta, false);
-                            break;
-                        default:
-                            break;
-                    }
+                if (KELDYSH) {
+                    value += bubble_value_prefactor() * integrator<Q>(integrand, vmin, vmax, -w / 2., w / 2., Delta);
                 }
                 else {
                     int interval_correction = signFlipCorrection_MF_int(w);
@@ -416,7 +417,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         for (int i2 : glb_non_zero_Keldysh_bubble) {
 #endif
         // asymptotic corrections include spin sum
-        if (not HUBBARD_MODEL) value += bubble_value_prefactor() *
+        if ( !HUBBARD_MODEL and !ZERO_T) value += bubble_value_prefactor() *
                                         asymp_corrections_bubble(k, vertex1, vertex2, Pi.g,
                                                                  vmin_temp, vmax_temp, w, v, vp, i0, i2, i_in, channel, diff, ispin);
 
