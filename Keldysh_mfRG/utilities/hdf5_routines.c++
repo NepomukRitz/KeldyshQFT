@@ -70,7 +70,7 @@ State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filena
     H5::H5File file_out(filename, H5F_ACC_RDONLY);
 
     std::vector<double> Lambda;
-    read_from_hdf_LambdaLayer<state_datatype>(file_out, LAMBDA_LIST, Lambda, Lambda_it);
+    read_from_hdf_LambdaLayer<double>(file_out, LAMBDA_LIST, Lambda, Lambda_it);
     State<state_datatype> state(Lambda[0]);
 
     std::vector<state_datatype> Sigma_H;
