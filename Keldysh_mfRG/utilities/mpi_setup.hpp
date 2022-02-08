@@ -6,7 +6,9 @@
 #define KELDYSH_MFRG_MPI_SETUP_HPP
 
 #include "../data_structures.hpp" // real/complex vector classes
+#ifdef USE_MPI
 #include <mpi.h>             // basic mpi functionality
+#endif
 
 // Get the rank(ID) of the current process
 int mpi_world_rank();
@@ -91,5 +93,4 @@ vec<Q> mpi_reorder_result(vec<Q>& result, int n_mpi, int n_omp) {
     }
     return ordered_result;
 }
-
 #endif //KELDYSH_MFRG_MPI_SETUP_HPP
