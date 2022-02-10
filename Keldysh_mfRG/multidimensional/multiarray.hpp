@@ -75,7 +75,7 @@ namespace multidimensional
             swap(lhs.elements, rhs.elements);
         }
 
-        // === constructors ===
+        /// === constructors ===
         constexpr multiarray() noexcept
                 : m_length{}, elements()
         {
@@ -117,14 +117,14 @@ namespace multidimensional
             check_size();
         }
 
-        // Move & copy constructors and assignment operators
+        /// Move & copy constructors and assignment operators
         multiarray(const multiarray<T, depth> &) = default;
         multiarray(multiarray<T, depth> &&) = default;
 
         multiarray<T, depth> &operator=(const multiarray<T, depth> &) = default;
         multiarray<T, depth> &operator=(multiarray<T, depth> &&) = default;
 
-        // === iterators ===
+        /// === iterators ===
         // using iterator = typename buffer_type::iterator;
         // using const_iterator = typename buffer_type::const_iterator;
         // using reverse_iterator = typename buffer_type::reverse_iterator;
@@ -183,6 +183,7 @@ namespace multidimensional
             }
         }
 
+        /// return segment including start and end
         constexpr auto eigen_segment(const index_type &start, const index_type &end)
         {
             if (check_bounds(start) && check_bounds_end(end))
@@ -211,9 +212,9 @@ namespace multidimensional
             }
         }
 
-        // === public member functions ===
+        /// === public member functions ===
 
-        // random element access
+        /// random element access
         // The type index_type ensures we have exactly the right number of indices.
         T &at(const index_type &index);
         const T &at(const index_type &index) const;
@@ -255,7 +256,7 @@ namespace multidimensional
             return elements.data();
         }
 
-        // flat access
+        /// flat access
 
         T &flat_at(size_type i)
         {
@@ -277,7 +278,7 @@ namespace multidimensional
             return flat_at(i);
         }
 
-        // elementwise arithmetics-assignment op's
+        /// elementwise arithmetics-assignment op's
         template <typename Q, typename R>
         multiarray<T, depth> &elementwise_map_assign(
                 Q op,
@@ -297,6 +298,7 @@ namespace multidimensional
         multiarray<T, depth> &operator+=(
                 const multiarray<T, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements += rhs.elements;
             return *this;
         }
@@ -304,6 +306,7 @@ namespace multidimensional
         multiarray<T, depth> &operator-=(
                 const multiarray<T, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements -= rhs.elements;
             return *this;
         }
@@ -311,6 +314,7 @@ namespace multidimensional
         multiarray<T, depth> &operator*=(
                 const multiarray<T, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements *= rhs.elements;
             return *this;
         }
@@ -318,14 +322,15 @@ namespace multidimensional
         multiarray<T, depth> &operator/=(
                 const multiarray<T, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements /= rhs.elements;
-            return *this;
         }
 
         template <typename R>
         multiarray<T, depth> &operator+=(
                 const multiarray<R, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements += rhs.elements.template cast<T>();
             return *this;
         }
@@ -334,6 +339,7 @@ namespace multidimensional
         multiarray<T, depth> &operator-=(
                 const multiarray<R, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements -= rhs.elements.template cast<T>();
             return *this;
         }
@@ -342,6 +348,7 @@ namespace multidimensional
         multiarray<T, depth> &operator*=(
                 const multiarray<R, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements *= rhs.elements.template cast<T>();
             return *this;
         }
@@ -350,11 +357,12 @@ namespace multidimensional
         multiarray<T, depth> &operator/=(
                 const multiarray<R, depth> &rhs)
         {
+            assert(is_same_length(rhs));
             elements /= rhs.elements.template cast<T>();
             return *this;
         }
 
-        // scalar arithmetic assignment
+        /// scalar arithmetic assignment
         template <typename Q, typename R>
         multiarray<T, depth> &scalar_map_assign(Q op, const R &rhs) noexcept(noexcept(op(T(), R())))
         {
@@ -394,7 +402,11 @@ namespace multidimensional
             return *this;
         }
 
-        // other function related to arithmetic
+        /// other function related to arithmetic
+
+        multiarray<T,depth> abs() const {
+            return transform([] (const T& x) {return static_cast<T>(std::abs(x));}, *this);
+        }
 
         T max() const
         {
@@ -416,11 +428,11 @@ namespace multidimensional
             return std::abs(*std::min_element(begin(), end(), abs_compare<value_type>));
         }
 
-        /// partial derivative in i_dim-th dimension
-        multiarray<T, depth> &partial_deriv(const  vec<double>& xs, const size_t i_dim)
-        {
-            return ::partial_deriv(elements, xs, m_length, i_dim);
-        }
+        double max_norm() const {
+                return std::abs(maxabs());
+            };
+
+
 
         bool isfinite() const
         {
@@ -434,7 +446,7 @@ namespace multidimensional
             return true;
         }
 
-        // non-member op's
+        /// non-member op's
         friend bool operator==<>(const multiarray<T, depth> &, const multiarray<T, depth> &);
 
         size_type size() const noexcept
@@ -476,6 +488,9 @@ namespace multidimensional
                 throw std::logic_error("multiarrray::operator= got an invalid parameter and cannot construct a consistent object.");
             }
 #endif
+        }
+        bool is_same_length(const multiarray<value_type,depth>& other) const {
+            return (m_length == other.m_length);
         }
 
         size_type flat_index(const index_type &index) const noexcept;
@@ -570,6 +585,20 @@ namespace multidimensional
 
     // === arithmetic operators ===
 
+    // unary op
+    template <
+            typename Q, typename L, size_t depth,
+            std::enable_if_t<std::is_same_v<std::result_of_t<Q && (L &&)>, L>, bool> = true>
+    auto transform(Q op, multiarray<L, depth> lhs) noexcept(noexcept(op(std::declval<L>())))
+    {
+    for (size_t i = 0; i < lhs.size(); i++)
+    {
+    lhs.elements[i] = op(lhs.elements[i]);
+    }
+    return lhs;
+    }
+
+    // binary op for two multiarrays
     template <
             typename Q,
             typename L, typename R,
@@ -588,6 +617,7 @@ namespace multidimensional
         return lhs;
     }
 
+    // binary op for two multiarrays
     template <
             typename Q,
             typename L, typename R,
@@ -607,6 +637,7 @@ namespace multidimensional
         return res;
     }
 
+    // binary op for a multiarray and a scalar
     template <
             typename Q, typename L, typename R, size_t depth,
             std::enable_if_t<std::is_same_v<std::result_of_t<Q && (L &&, R &&)>, L>, bool> = true>
@@ -619,6 +650,7 @@ namespace multidimensional
         return lhs;
     }
 
+    // binary op for a multiarray and a scalar
     template <
             typename Q, typename L, typename R, size_t depth,
             std::enable_if_t<!std::is_same_v<std::result_of_t<Q && (L &&, R &&)>, L>, bool> = true>

@@ -2,6 +2,7 @@
 #define FPP_MFRG_MATH_UTILS_H
 
 #include "../data_structures.hpp"
+#include "../multidimensional/multiarray.hpp"
 #include "template_utils.hpp"
 #include "runtime_error.hpp"
 #include "util.hpp"
@@ -717,6 +718,12 @@ vec<T> partial_deriv_v2(const vec<T>& data, const  vec<double>& xs, const std::a
     return get_finite_differences_v4<T,rank>(data, xs, dims_permuted, permutation, order);
 }
 
+template<typename T, size_t rank>
+multidimensional::multiarray<T,rank> partial_deriv(const multidimensional::multiarray<T,rank>& data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
+    return multidimensional::multiarray<T,rank>(data.length(), partial_deriv<T,rank>(vec<T>(data.begin(), data.end()), xs, data.length(), i_dim, order));
+}
+
+
 
 /**
  *  Collapses the dimensions of a vector using an operator op
@@ -860,6 +867,10 @@ template<typename T> vec<T> power2(const vec<T>& vec_in) {
     return result;
 }
 
+template<typename T, std::size_t rank> vec<T> power2(const multidimensional::multiarray<T,rank>& data) {
+    return power2(vec<T>(data.begin(), data.end()));
+}
+
 /// Computes maximum along axis i_dim
 template<size_t rank, typename T> vec<double> maxabs(const vec<T>& data, const std::array<size_t,rank>& dims, const size_t i_dim) {
     vec<double> result (dims[i_dim]);
@@ -872,6 +883,13 @@ template<size_t rank, typename T> vec<double> maxabs(const vec<T>& data, const s
         //else result = collapse_rev(data, [](const T& l, const T& r) -> T {return l + r;}, dims, i_dim).abs();
     return result;
 }
+
+template<std::size_t rank, typename T> vec<double> maxabs(const multidimensional::multiarray<T,rank>& data, const std::array<size_t,rank>& dims, const size_t i_dim) {
+    //vec<T> data_temp = vec<T>(data.begin(),data.end());
+    return maxabs<rank,T>(vec<T>(data.begin(),data.end()), data.length(), i_dim);
+}
+
+
 
 
 /**

@@ -62,8 +62,10 @@ protected:
     //bool m_made_monotonic = false;
     vec<Q> get_coeffs_from_derivs(size_t iK, size_t ispin, size_t iw, size_t iv, size_t i_in, double dw, double dv) const;  // calculate c_i, d_i from b_i
 public:
-    explicit SplineK2(double Lambda)
-            :   DataContainer(Lambda), n(DataContainer::data.size())
+    using index_type = typename DataContainer::index_type;
+    SplineK2() : initialized(false) {};
+    explicit SplineK2(double Lambda, index_type dims)
+            :   DataContainer(Lambda, dims), n(DataContainer::data.size())
     {
         //this->initializeK2();
     }

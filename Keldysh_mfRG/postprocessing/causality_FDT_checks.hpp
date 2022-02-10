@@ -14,9 +14,11 @@ template <typename Q>
 void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
     if (KELDYSH) {
         print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
+        using SE_buffertype = typename SelfEnergy<Q>::buffer_type;
+        SE_buffertype Sigma = selfEnergy.Sigma;                        // take self-energy
+        vec<Q> Sigma_R(Sigma.begin(), Sigma.begin() + (Sigma.size() / 2));     // take first half of self-energy (retarded comp.)
+        assert(Sigma_R.size() == nFER);
 
-        vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
-        vec<Q> Sigma_R(&Sigma[0], &Sigma[Sigma.size() / 2]);     // take first half of self-energy (retarded comp.)
 
         // check if Im(Sigma^R) is positive for every data point
         int cnt = 0;
@@ -37,7 +39,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
     else {
         print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
 
-        vec<Q> Sigma = selfEnergy.Sigma;                        // take self-energy
+        auto Sigma = selfEnergy.Sigma;                        // take self-energy
 
         // check if Im(Sigma^R) is positive for every data point
         int cnt = 0;
@@ -83,8 +85,8 @@ void check_FDTs(const State<Q>& state, bool verbose) {
 
     /** 1st check: real part of Keldysh component of the selfenergy has to be zero */
 
-    vec<Q> Sigma = state.selfenergy.Sigma;                          // take self-energy
-    vec<Q> Sigma_K (&Sigma[Sigma.size()/2], &Sigma[Sigma.size()]);  // take second half of self-energy (Keldysh comp.)
+    auto Sigma = state.selfenergy.Sigma;                          // take self-energy
+    vec<Q> Sigma_K (&Sigma.begin() + Sigma.size()/2, &Sigma.end());  // take second half of self-energy (Keldysh comp.)
     double max_Sigma_K = Sigma_K.real().max_norm();                 // take max. value of Re(Sigma^K)
 
     if (verbose) {
@@ -101,13 +103,13 @@ void check_FDTs(const State<Q>& state, bool verbose) {
     /** 2nd check: real part of Keldysh component of K1 in all channels has to be zero */
 
     // take K1 vertices in all channels
-    vec<Q> K1a = state.vertex.avertex().K1.get_vec();
-    vec<Q> K1p = state.vertex.pvertex().K1.get_vec();
-    vec<Q> K1t = state.vertex.tvertex().K1.get_vec();
+    auto K1a = state.vertex.avertex().K1.get_vec();
+    auto K1p = state.vertex.pvertex().K1.get_vec();
+    auto K1t = state.vertex.tvertex().K1.get_vec();
     // take second half of K1 vertices (Keldysh comp.)
-    vec<Q> K1a_K (&K1a[K1a.size()/2], &K1a[K1a.size()]);
-    vec<Q> K1p_K (&K1p[K1p.size()/2], &K1p[K1p.size()]);
-    vec<Q> K1t_K (&K1t[K1t.size()/2], &K1t[K1t.size()]);
+    vec<Q> K1a_K (&K1a.begin() + K1a.size()/2, &K1a.end());
+    vec<Q> K1p_K (&K1p.begin() + K1p.size()/2, &K1p.end());
+    vec<Q> K1t_K (&K1t.begin() + K1t.size()/2, &K1t.end());
     // take max. value of Re(K1r^K)
     double max_K1a_K = K1a_K.real().max_norm();
     double max_K1p_K = K1p_K.real().max_norm();

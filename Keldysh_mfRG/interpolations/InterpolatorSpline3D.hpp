@@ -121,8 +121,9 @@ protected:
 public:
 
     mutable bool initialized = false;
-
-    explicit SplineK3(double Lambda) :   DataContainer(Lambda), n(DataContainer::data.size()) {}
+    using index_type = typename DataContainer::index_type;
+    SplineK3() : initialized(false) {};
+    explicit SplineK3(double Lambda, index_type dims) :   DataContainer(Lambda, dims), n(DataContainer::data.size()) {}
 
 
     void initInterpolator() const;

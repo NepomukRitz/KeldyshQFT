@@ -25,9 +25,13 @@ class vertexBuffer {
 /** Template specialization for K1 (linear interpolation on the auxiliary grid) */
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k1, Q, inter> : public vertexDataContainer<k1, Q> {
+    using base_class = vertexDataContainer<k1, Q>;
 public:
-    explicit vertexBuffer<k1, Q, inter>(double Lambda) : vertexDataContainer<k1, Q>(Lambda) {};
+    using index_type = typename base_class::index_type;
     mutable bool initialized = false;
+
+    vertexBuffer<k1,Q,inter>() : initialized(false) {};
+    explicit vertexBuffer<k1, Q, inter>(double Lambda, index_type dims) : vertexDataContainer<k1, Q>(Lambda, dims) {};
 
     void initInterpolator() const {initialized = true;};
 
@@ -95,8 +99,11 @@ public:
 /** Template specialization for K2 (linear interpolation on the auxiliary grid) */
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k2, Q, inter> : public vertexDataContainer<k2, Q> {
+    using base_class = vertexDataContainer<k2, Q>;
 public:
-    explicit vertexBuffer<k2, Q, inter>(double Lambda) : vertexDataContainer<k2, Q>(Lambda) {};
+    using index_type = typename base_class::index_type;
+    vertexBuffer<k2,Q,inter>() : initialized(false) {};
+    explicit vertexBuffer<k2, Q, inter>(double Lambda, index_type dims) : vertexDataContainer<k2, Q>(Lambda, dims) {};
     mutable bool initialized = false;
 
     void initInterpolator() const {initialized = true;};
@@ -271,11 +278,14 @@ public:
 /** Template specialization for K3 (linear interpolation on the auxiliary grid) */
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k3, Q, inter> : public vertexDataContainer<k3, Q> {
+    using base_class = vertexDataContainer<k3, Q>;
 public:
+    using index_type = typename base_class::index_type;
     mutable bool initialized = false;
 
     void initInterpolator() const {initialized = true;};
-    explicit vertexBuffer<k3, Q, inter>(double Lambda) : vertexDataContainer<k3, Q>(Lambda) {};
+    vertexBuffer<k3,Q,inter>() : initialized(false), vertexDataContainer<k3, Q>() {};
+    explicit vertexBuffer<k3, Q, inter>(double Lambda, index_type dims) : vertexDataContainer<k3, Q>(Lambda, dims) {};
 
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
         double w_temp = indices.w;
@@ -452,9 +462,11 @@ public:
 /** Template specialization for K1 (cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k1,Q, cubic>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
-
+    using base_class = SplineK1<vertexDataContainer<k1,Q>, Q>;
 public:
-    explicit vertexBuffer<k1, Q, cubic>(double Lambda) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda) {};
+    using index_type = typename base_class::index_type;
+    vertexBuffer<k1,Q,cubic>() = default;
+    explicit vertexBuffer<k1, Q, cubic>(double Lambda, index_type dims) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda, dims) {};
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
@@ -481,8 +493,10 @@ public:
 /** Template specialization for K2 (cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k2,Q, cubic>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
+    using base_class = SplineK2<vertexDataContainer<k2,Q>, Q>;
 public:
-    explicit vertexBuffer<k2, Q, cubic>(double Lambda) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda) {};
+    using index_type = typename base_class::index_type;
+    explicit vertexBuffer<k2, Q, cubic>(double Lambda, index_type dims) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda, dims) {};
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         double w_temp = indices.w;
@@ -515,8 +529,10 @@ public:
 /** Template specialization for K3 (cubic interpolation) */
 template<typename Q>
 class vertexBuffer<k3,Q, cubic>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
+    using base_class = SplineK3<vertexDataContainer<k3,Q>, Q>;
 public:
-    explicit vertexBuffer<k3, Q, cubic>(double Lambda) : SplineK3<vertexDataContainer<k3,Q>, Q>(Lambda) {};
+    using index_type = typename base_class::index_type;
+    explicit vertexBuffer<k3, Q, cubic>(double Lambda, index_type dims) : SplineK3<vertexDataContainer<k3,Q>, Q>(Lambda, dims) {};
     auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
 
         double w_temp = indices.w;

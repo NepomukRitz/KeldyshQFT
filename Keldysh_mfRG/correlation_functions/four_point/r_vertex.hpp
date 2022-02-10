@@ -125,37 +125,32 @@ public:
      * @param Lambda
      */
     rvert(const char channel_in, const double Lambda, const bool is_reserve)
-    : channel(channel_in), //components (Components(channel_in)), transformations (Transformations(channel_in)),
-      //freq_transformations (FrequencyTransformations(channel_in)), freq_components (FrequencyComponents(channel_in)),
-      K1(Lambda), K2(Lambda), K3(Lambda)
-#ifdef DEBUG_SYMMETRIES
-    , K2b(Lambda)
-#endif
+    : channel(channel_in)
       {
         if (is_reserve) {
-            if (MAX_DIAG_CLASS >= 1) K1.reserve();
-            if (MAX_DIAG_CLASS >= 2) K2.reserve();
-            if (MAX_DIAG_CLASS >= 3) K3.reserve();
+            if (MAX_DIAG_CLASS >= 1) K1 = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, dimsK1);
+            if (MAX_DIAG_CLASS >= 2) K2 = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, dimsK2);
+            if (MAX_DIAG_CLASS >= 3) K3 = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, dimsK3);
             if constexpr(HUBBARD_MODEL) {
                 if (MAX_DIAG_CLASS >= 1) {
-                    K1_a_proj.reserve();
-                    K1_p_proj.reserve();
-                    K1_t_proj.reserve();
+                    K1_a_proj = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, dimsK1);
+                    K1_p_proj = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, dimsK1);
+                    K1_t_proj = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, dimsK1);
                 }
                 if (MAX_DIAG_CLASS >= 2) {
-                    K2_a_proj.reserve();
-                    K2_p_proj.reserve();
-                    K2_t_proj.reserve();
+                    K2_a_proj = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, dimsK2);
+                    K2_p_proj = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, dimsK2);
+                    K2_t_proj = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, dimsK2);
                 }
                 if (MAX_DIAG_CLASS >= 3) {
-                    K3_a_proj.reserve();
-                    K3_p_proj.reserve();
-                    K3_t_proj.reserve();
+                    K3_a_proj = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, dimsK3);
+                    K3_p_proj = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, dimsK3);
+                    K3_t_proj = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, dimsK3);
                 }
             }
 
 #ifdef DEBUG_SYMMETRIES
-            K2b.reserve();
+            K2b = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, dimsK2);
 #endif
         }
       };

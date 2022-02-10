@@ -65,8 +65,10 @@ protected:
     void set_coeffs_from_b() const;               // calculate c_i, d_i from b_i
 
 public:
-    explicit SplineK1(double Lambda)
-            :   DataContainer(Lambda), n(getFlatSize(DataContainer::dims)), i_x(2)
+    using index_type = typename DataContainer::index_type;
+    SplineK1() : initialized(false) {};
+    explicit SplineK1(double Lambda, index_type dims)
+            :   DataContainer(Lambda, dims), n(getFlatSize(DataContainer::dims)), i_x(2)
     {
         //this->initializeK1();
     }

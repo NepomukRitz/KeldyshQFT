@@ -46,8 +46,8 @@ class FrequencyGrid {
     //friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
     friend void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, int Lambda_it);
 
-    const char type;
-    const unsigned int diag_class;
+    char type;
+    unsigned int diag_class;
     rvec ws;                     // frequency grid
     rvec ts;                    // linear auxiliary grid (related to ws by ws(ts)=grid_transf_inv(ts))
 public:
@@ -214,7 +214,7 @@ class VertexFrequencyGrid<k1> {
 public:
     FrequencyGrid b;
 
-
+    VertexFrequencyGrid<k1>() :  b('b', 1, 0) {};
     VertexFrequencyGrid<k1>(double Lambda) : b('b', 1, Lambda) {};
 
     void rescale_grid(double Lambda) {
@@ -255,6 +255,7 @@ public:
     FrequencyGrid f;
 
 
+    VertexFrequencyGrid<k2>() :  b('b', 2, 0), f('f', 2, 0) {};
     VertexFrequencyGrid<k2>(double Lambda) : b('b', 2, Lambda),
                                              f('f', 2, Lambda) {};
 
@@ -308,6 +309,7 @@ public:
     FrequencyGrid f;
 
 
+    VertexFrequencyGrid<k3>() : b('b', 3, 0), f('f', 3, 0) {};
     VertexFrequencyGrid<k3>(double Lambda) : b('b', 3, Lambda),
                                              f('f', 3, Lambda) {};
 

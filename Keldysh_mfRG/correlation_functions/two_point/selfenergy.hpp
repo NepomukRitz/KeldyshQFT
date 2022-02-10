@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_SELFENERGY_HPP
 
 #include "../../data_structures.hpp" // real/complex vector classes
+#include "../../multidimensional/multiarray.hpp"
 #include "../../grids/frequency_grid.hpp"  // interpolate self-energy on new frequency grid
 #include "../../utilities/minimizer.hpp"
 #include <omp.h>             // parallelize initialization of self-energy
@@ -12,21 +13,22 @@
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
 class SelfEnergy{
-    vec<Q> empty_Sigma() {
-        return vec<Q> (dimsSE_flat);           // only one component in Matsubara formalism
+public:
+    using buffer_type = multidimensional::multiarray<Q,3>;
+
+private:
+    buffer_type empty_Sigma() {
+        return buffer_type (dimsSE);           // only one component in Matsubara formalism
     }
 
-    std::array<size_t,3> dims;
 
 public:
     FrequencyGrid frequencies;
-    vec<Q> Sigma = empty_Sigma();
+    buffer_type Sigma = buffer_type(dimsSE);
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
-    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {
-        for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];};
-    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {
-        for (int i = 0; i < 3; i++) dims[i] = dimsSE[i];};
+    explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
+    explicit  SelfEnergy(const FrequencyGrid& frequencies_in) : frequencies(frequencies_in) {};
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -239,7 +241,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
     FrequencyGrid frequencies_new = this->frequencies; // new frequency grid
     frequencies_new.rescale_grid(Lambda);              // rescale new frequency grid
 
-    vec<Q> Sigma_new = empty_Sigma();                     // temporary self-energy vector
+    buffer_type Sigma_new = empty_Sigma();                     // temporary self-energy vector
     for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
@@ -256,7 +258,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
 
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new) {
 
-    vec<Q> Sigma_new (nK_SE*(nSE)*n_in);                     // temporary self-energy vector
+    buffer_type Sigma_new (dimsSE);                     // temporary self-energy vector
     for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
@@ -273,10 +275,10 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
 
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma) {
 
-    vec<Q> Sigma_new (nK_SE*(nSE)*n_in_K1);                     // temporary self-energy vector
+    buffer_type Sigma_new (dimsSE);                     // temporary self-energy vector
 
     for (int iK=0; iK<nK_SE; ++iK) {
-    vec<Q> Sigma_new = empty_Sigma();                     // temporary self-energy vector
+    buffer_type Sigma_new = empty_Sigma();                     // temporary self-energy vector
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in_K1; ++i_in) {
@@ -396,12 +398,12 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
 }
 
 template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> FrequencyGrid {
-    vec<Q> Sigma_temp = Sigma;
+    buffer_type Sigma_temp = Sigma;
     if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp[i] -= asymp_val_R;
     else for (int i = 0; i < Sigma.size(); i++) Sigma_temp[i] -= asymp_val_R;
 
     double maxmax = Sigma.max_norm();
-    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, dims, 1) * (1/maxmax);
+    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, Sigma_temp.length(), 1) * (1/maxmax);
 
     FrequencyGrid frequencies_new = freqGrid::shrink_freq_box(frequencies, rel_tail_threshold, maxabsSE_along_w);
 
@@ -410,12 +412,12 @@ template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_
 
 
 template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) const {
-    vec<Q> Sigma_temp = Sigma;
+    buffer_type Sigma_temp = Sigma;
     if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp[i] -= asymp_val_R;
     else for (int i = 0; i < Sigma.size(); i++) Sigma_temp[i] -= asymp_val_R;
 
     double maxabs_SE_total = Sigma_temp.max_norm();
-    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, dims, 1);
+    vec<double> maxabsSE_along_w = maxabs(Sigma_temp, Sigma_temp.length(), 1);
 
     double result = maxabsSE_along_w[0] / maxabs_SE_total;
 
@@ -463,7 +465,7 @@ template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) co
     double maxmax = Sigma.max_norm();
     double dt = frequencies.dt;
 
-    double max_SE = (::power2(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1)*dt*(1/maxmax))).max_norm();
+    double max_SE = (::power2(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), Sigma.length(), 1)*dt*(1/maxmax))).max_norm();
 
     if (verbose and mpi_world_rank() == 0) {
         std::cout << "max. Derivative in selfenergy:" << std::endl;
@@ -483,7 +485,7 @@ template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose
     //return max_SE;
     const std::array<size_t,3> dims1 = {n_in_K1, nK_SE, nFER};
     const std::array<size_t,3> perm1 = {2, 0, 1};
-    double max_SE = (::power2(::partial_deriv<Q,3>(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), dims, 1), frequencies.get_ts_vec(), dims, 1)*dt*dt*(1/maxmax))).max_norm();
+    double max_SE = (::power2(::partial_deriv<Q,3>(::partial_deriv<Q,3>(Sigma, frequencies.get_ts_vec(), Sigma.length(), 1), frequencies.get_ts_vec(), Sigma.length(), 1)*dt*dt*(1/maxmax))).max_norm();
 
     if (verbose and mpi_world_rank() == 0) {
         std::cout << "max. Curvature in SE:";
