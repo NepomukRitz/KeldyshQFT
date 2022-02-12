@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"
 #include "../../utilities/math_utils.hpp"
+#include "../../utilities/hdf5_routines.hpp"
 
 // TODO(high): Write unit tests for cross projection functionality!
 
@@ -62,7 +63,200 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
 
 }
 
+namespace {
+    state_datatype vertex_function(double w) {
+        return w;
+    }
+    state_datatype vertex_function2(double w) {
+        return w + 1;
+    }
+}
 
+TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "[update grid]") {
+    rvert<state_datatype> testvertex1('a', Lambda_ini, true);
+
+    multidimensional::multiarray<state_datatype,4> v1(dimsK1);
+    for (int iw = 0; iw < nBOS; iw++) {
+        double w;
+        testvertex1.K1.K1_get_freq_w(w, iw);
+        auto val = vertex_function(w);
+        testvertex1.K1.setvert(val, 0, 0, iw, 0);
+    }
+    if (MAX_DIAG_CLASS>1) {
+        for (int iw = 0; iw < nBOS2; iw++) {
+            for (int iv = 0; iv < nFER2; iv++) {
+                double w, v;
+                testvertex1.K2.K2_get_freqs_w(w, v, iw, iv);
+                auto val = vertex_function(w) + vertex_function2(v);
+                testvertex1.K2.setvert(val, 0, 0, iw, iv, 0);
+            }
+        }
+    }
+
+
+    if (MAX_DIAG_CLASS>2) {
+        for (int iw = 0; iw < nBOS3; iw++) {
+            for (int iv = 0; iv < nFER3; iv++) {
+                for (int ivp = 0; ivp < nFER3; ivp++) {
+                    double w, v, vp;
+                    testvertex1.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+                    auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp);
+                    testvertex1.K3.setvert(val, 0, 0, iw, iv, ivp, 0);
+                }
+            }
+        }
+    }
+
+
+    const rvert<state_datatype> testvertex_old = testvertex1;
+
+
+
+    SECTION( "Is K1 correctly updated??" ) {
+        if (INTERPOLATION==linear) {
+            VertexFrequencyGrid<k1> bfreqK1 = testvertex1.K1.get_VertexFreqGrid();
+            double Wscale_old = bfreqK1.b.W_scale;
+            double wmax_old = bfreqK1.b.w_upper;
+            double factor = 0.5;
+            bfreqK1.b.set_w_upper(factor * wmax_old);
+            bfreqK1.b.set_W_scale(factor * Wscale_old);
+            bfreqK1.b.initialize_grid();
+
+            testvertex1.update_grid<k1>(bfreqK1, testvertex1);
+
+
+            multidimensional::multiarray<state_datatype,4> errors(dimsK1);
+            for (int iw = 0; iw < nBOS; iw++) {
+                double w;
+                testvertex1.K1.K1_get_freq_w(w, iw);
+                errors.at(0,0,iw,0) = vertex_function(w) - testvertex1.K1.at(0, 0, iw, 0);
+            }
+
+            //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_TRUNC);
+            //write_to_hdf(outfile, "vertex_dataK1_old", testvertex_old.K1.get_vec(), false);
+            //write_to_hdf(outfile, "vertex_dataK1_new", testvertex1.K1.get_vec(), false);
+            //write_to_hdf(outfile, "gridK1b_old", testvertex_old.K1.K1_get_freqGrid().get_ws_vec(), false);
+            //write_to_hdf(outfile, "gridK1b_new", testvertex1.K1.K1_get_freqGrid().get_ws_vec(), false);
+            //write_to_hdf(outfile, "errorsK1", errors, false);
+            //outfile.close();
+
+            REQUIRE(errors.max_norm() < 1e-10);
+        }
+        else {
+            print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
+
+        }
+
+    }
+    if (MAX_DIAG_CLASS>1) {
+        SECTION( "Is K2 correctly updated??" ) {
+            if (INTERPOLATION==linear) {
+                VertexFrequencyGrid<k2> bfreqK2 = testvertex1.K2.get_VertexFreqGrid();
+                double Wscale_old_b = bfreqK2.b.W_scale;
+                double wmax_old_b = bfreqK2.b.w_upper;
+                double Wscale_old_f = bfreqK2.f.W_scale;
+                double wmax_old_f = bfreqK2.f.w_upper;
+                double factor = 0.5;
+                bfreqK2.b.set_w_upper(factor * wmax_old_b);
+                bfreqK2.b.set_W_scale(factor * Wscale_old_b);
+                bfreqK2.f.set_w_upper(factor * wmax_old_f);
+                bfreqK2.f.set_W_scale(factor * Wscale_old_f);
+                bfreqK2.b.initialize_grid();
+                bfreqK2.f.initialize_grid();
+
+                testvertex1.update_grid<k2>(bfreqK2, testvertex1);
+
+
+                multidimensional::multiarray<state_datatype,5> errors(dimsK2);
+                for (int iw = 0; iw < nBOS2; iw++) {
+                    for (int iv = 0; iv < nFER2; iv++) {
+                        double w, v;
+                        testvertex1.K2.K2_get_freqs_w(w, v, iw, iv);
+                        auto val = vertex_function(w) + vertex_function2(v) - testvertex1.K2.at(0,0,iw,iv,0);
+                        errors.at(0, 0, iw, iv, 0) = val;
+                    }
+                }
+
+
+                //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_RDWR);
+                //write_to_hdf(outfile, "vertex_dataK2_old", testvertex_old.K2.get_vec(), false);
+                //write_to_hdf(outfile, "vertex_dataK2_new", testvertex1.K2.get_vec(), false);
+                //write_to_hdf(outfile, "gridK2b_old", testvertex_old.K2.K2_get_freqGrid_b().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK2b_new", testvertex1.K2.K2_get_freqGrid_b().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK2f_old", testvertex_old.K2.K2_get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK2f_new", testvertex1.K2.K2_get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "errorsK2", errors, false);
+                //outfile.close();
+
+
+                REQUIRE(errors.max_norm() < 1e-10);
+            }
+            else {
+                print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
+
+            }
+
+        }
+
+    }
+
+    if (MAX_DIAG_CLASS>2) {
+        SECTION( "Is K3 correctly updated??" ) {
+            if (INTERPOLATION==linear) {
+                VertexFrequencyGrid<k3> bfreqK3 = testvertex1.K3.get_VertexFreqGrid();
+                double Wscale_old_b = bfreqK3.b.W_scale;
+                double wmax_old_b = bfreqK3.b.w_upper;
+                double Wscale_old_f = bfreqK3.f.W_scale;
+                double wmax_old_f = bfreqK3.f.w_upper;
+                double factor = 0.5;
+                bfreqK3.b.set_w_upper(factor * wmax_old_b);
+                bfreqK3.b.set_W_scale(factor * Wscale_old_b);
+                bfreqK3.f.set_w_upper(factor * wmax_old_f);
+                bfreqK3.f.set_W_scale(factor * Wscale_old_f);
+                bfreqK3.b.initialize_grid();
+                bfreqK3.f.initialize_grid();
+
+                testvertex1.update_grid<k3>(bfreqK3, testvertex1);
+
+
+                multidimensional::multiarray<state_datatype,6> errors(dimsK3);
+                for (int iw = 0; iw < nBOS3; iw++) {
+                    for (int iv = 0; iv < nFER3; iv++) {
+                        for (int ivp = 0; ivp < nFER3; ivp++) {
+                            double w, v, vp;
+                            testvertex1.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+                            auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp) - testvertex1.K3.at(0,0,iw,iv, ivp,0);
+                            errors.at(0, 0, iw, iv, ivp, 0) = val;
+                        }
+                    }
+                }
+
+                //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_RDWR);
+                //write_to_hdf(outfile, "vertex_dataK3_old", testvertex_old.K3.get_vec(), false);
+                //write_to_hdf(outfile, "vertex_dataK3_new", testvertex1.K3.get_vec(), false);
+                //write_to_hdf(outfile, "gridK3b_old", testvertex_old.K3.K3_get_freqGrid_b().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3b_new", testvertex1.K3.K3_get_freqGrid_b().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3f_old", testvertex_old.K3.K3_get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3f_new", testvertex1.K3.K3_get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "errorsK3", errors, false);
+                //outfile.close();
+
+                REQUIRE(errors.max_norm() < 1e-10);
+            }
+            else {
+                print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
+
+            }
+
+        }
+
+    }
+
+
+
+
+
+}
 
 #ifndef KELDYSH_FORMALISM
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for K1a?", "[frequency_symmetries]" ) {
