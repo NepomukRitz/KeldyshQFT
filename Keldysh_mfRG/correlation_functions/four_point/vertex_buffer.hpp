@@ -10,6 +10,8 @@
 #include "../../symmetries/symmetry_table.hpp"
 #include "../../symmetries/symmetry_transformations.hpp"
 
+/// Possible (unit-) tests for the vertex buffer:
+/// [IMPLEMENTED in unit_tests/test_interpolations] reliability of interpolation --> fill vertex buffer with polynomial and interpolate
 
 /**
  * Vertex buffers store the vertex data and frequency grids and interpolates data points on the grid.

@@ -9,7 +9,13 @@
 #include "loop_corrections.hpp"
 #include <cmath>                        // for log function
 
+/// Possible unit-tests:
+/// compare with quadrature routines for (semi-)infinite intervals
+
+
 // TODO(medium) Write a class containing functions for all correction functions to minimize the number of times that many arguments have to be given to functions.
+
+
 
 /**
  * Compute the analytical result for the asymptotic tails of the bubble integral, assuming the self-energy to be decayed

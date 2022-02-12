@@ -27,6 +27,7 @@
 #include "H5Cpp.h"
 
 // TODO(low): implement functions used for GRID=3 also for GRID=1,2,4
+/// TODO: implement hybrid frequency grid, improve/unify treatment of different frequency meshes and their frequency parameters
 
 template<K_class k, typename Q> class vertexDataContainer; // forward declaration
 template<typename Q> class State; // forward declaration

@@ -11,6 +11,11 @@
 #include "../correlation_functions/state.hpp"
 #include "old_solvers.hpp"
 
+/// possible unit-tests:
+/// [IMPLEMENTED in unit_tests/test_ODE_solver] solve "trivial" ODE in 1 large step (polynomial of order N for a N-order rule)
+/// [IMPLEMENTED in unit_tests/test_ODE_solver] solve medium ODE with known solution and check accuracy of result with different choices of epsODE_rel
+
+
 /**
  * Explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step.
  * Allows for checkpointing: If last parameter it_start is given, ODE solver starts at this iteration (to continue

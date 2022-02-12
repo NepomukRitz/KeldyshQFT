@@ -752,8 +752,8 @@ vec<T> collapse(const vec<T>& data, const binaryOp& op, const std::array<size_t,
     for (size_t i = 0; i < rank; i++) {
         bool is_new = false;
         size_t j;
-        for (j = 0; j < rank_new; j++) {
-            if (i == i_dims[j]) is_new = true; iter_new = j; // break;
+        for (j = 0; j < rank_new; j++) { // is i in i_dims?
+            if (i == i_dims[j]) {is_new = true; iter_new = j;} // break;
         }
         if (is_new) {
             perm_rot[iter_new] = i;
@@ -793,6 +793,7 @@ T collapse_all(const vec<T>& data, const binaryOp& op) {
     size_t dim_collapse = data.size(); // flat dimension of dimensions that are to be collapsed
     assert(dim_collapse > 1); //otherwise nothing to collapse with binary operator
     T result = data[0];
+#pragma omp parallel for
     for (size_t j = 1; j < dim_collapse; j++) result = op(result, data[j]);
     return result;
 }

@@ -10,6 +10,8 @@
 #include "../../utilities/write_data2file.hpp"
 #include "../../interpolations/InterpolatorLinOrSloppy.hpp"
 
+/// TODO: Use Vertex buffer for self-energy
+
 /****************** CLASS FOR SELF-ENERGY *************/
 template <typename Q>
 class SelfEnergy{

@@ -14,6 +14,7 @@
 #include "../../grids/frequency_grid.hpp"            // functionality for the internal structure of the Hubbard model
 #include "H5Cpp.h"
 
+/// TODO: treat VertexFrequencyGrid as member of vertexContainerBase via template
 
 template <typename Q> class rvert; // forward declaration of rvert
 template <typename Q> class fullvert; // forward declaration of fullvert

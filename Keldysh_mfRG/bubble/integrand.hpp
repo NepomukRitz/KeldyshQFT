@@ -16,6 +16,18 @@
 #include "bubble.hpp"
 #include "precalculated_bubble.hpp"
 
+/// TODO: write move constructor (necessary for move in PAID integrator)
+/// TODO: write vectorized variant of integrand
+
+/// Possible (unit-)tests
+/// for operations: move, call
+/// [MISSING] copy integrand, perform move and compare with copy
+/// [IMPLEMENTED in test_PT_state()] compute bubble and compare with known result
+/// check combination of vertices and propagators and internal sum over indices
+/// [IMPLEMENTED in integrand_tets/...] load vertices and selfenergies from file and output integrands to hdf5 file
+/// [MISSING] output integrand without and with internal sum, then compare the output (are they identical?)
+
+
 //Class created for debugging of the Bubbles
 template <typename Q>
 class IntegrandBubble{

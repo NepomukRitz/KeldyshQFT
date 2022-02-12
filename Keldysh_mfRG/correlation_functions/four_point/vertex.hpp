@@ -7,6 +7,8 @@
 #include "r_vertex.hpp"           // reducible vertex in channel r
 #include "../../utilities/minimizer.hpp"
 
+/// Possible unit-tests
+/// Do the public functions return the correct vertex-contributions?
 
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
 //Irreducible
@@ -88,8 +90,12 @@ public:
 template <typename Q> class rvert;
 
 /**********************************************************************************************************************/
-//The class fullvert
-//The class defining a vertex with full channel decomposition i.e. irreducible (bare) a, p and t channels
+/**The class fullvert
+ * The class defining a vertex with full channel decomposition i.e. irreducible (bare) a, p and t channels
+ * The fullvert in the standard configuration is the full vertex \Gamma with all components (only_same_channel=false and Ir=false)
+ *      for Ir = true   it is an r-irreducible vertex I_r (r is the channel of the bubble)
+ *      for only_same_channel   it only contains the r-reducible component
+ */
 template <class Q>
 class fullvert {
 public:
@@ -111,14 +117,14 @@ public:
                               tvertex('t', Lambda, is_reserve) {}
 
 private:
-    // Returns the sum of the contributions of the diagrammatic classes r' =/= r
+    /// Returns \gamma_{\bar{r}} := the sum of the contributions of the diagrammatic classes r' =/= r
     auto gammaRb(const VertexInput& input) const -> Q;
     auto gammaRb(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
 
 public:
-    // Returns the value of the full vertex (i.e. irreducible + diagrammatic classes) for the given channel (char),
-    // Keldysh index (1st int), internal structure index (2nd int) and the three frequencies. 3rd int is spin
+    /// Access to vertex values:
+    // Returns the value of the full vertex
     auto value(const VertexInput& input) const -> Q;
     auto value(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
@@ -135,11 +141,21 @@ public:
     auto right_diff_bare(const VertexInput& input) const -> Q;
     auto right_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
+
+    // initialize Interpolator with coefficients (only necessary for spline interpolation)
+    void initializeInterpol() const;
+    // set the flag "initializedInterpol"
+    void set_initializedInterpol(bool is_init) const;
+
+
+    /// Reorder the results of two asymmetric bubbles which are related by left-right symmetry
     void reorder_due2antisymmetry(fullvert<Q>& right_vertex);
 
-    // Initialize vertex
+    /// Initialize bare vertex
     void initialize(Q val);
 
+
+    /// Functions concerning frequency mesh:
     void set_frequency_grid(const fullvert<Q>& vertex);
 
     // Interpolate vertex to updated grid
@@ -149,21 +165,20 @@ public:
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data);
 
-    //Crossprojection functionality (used for the Hubbard model)
+    void findBestFreqGrid(bool verbose=true);
+
+
+    ///Crossprojection functionality (used for the Hubbard model)
     void calculate_all_cross_projections();
 
-    //Norm of the vertex
+    ///Norm of the vertex
     double sum_norm(int) const;
     double norm_K1(int) const ;
     double norm_K2(int) const ;
     double norm_K3(int) const ;
 
-#if INTERPOLATION == 3
-    void initialize_K2_spline();
-    void free_K2_spline();
-#endif
 
-    // Various operators for the fullvertex class
+    /// Various arithmetic operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   += vertex1.irred;
         this->avertex += vertex1.avertex;
@@ -220,7 +235,7 @@ public:
         return lhs; // return the result by value (uses move constructor)
     }
 
-    /// Elementwise division (needed for error estimate of adaptive ODE solvers)
+    // Elementwise division (needed for error estimate of adaptive ODE solvers)
     auto operator/= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   /= vertex1.irred;
         this->avertex /= vertex1.avertex;
@@ -233,6 +248,8 @@ public:
         return lhs; // return the result by value (uses move constructor)
     }
 
+
+    /// Diagnostic functions:
     double get_deriv_max_K1(bool verbose) const;
     double get_deriv_max_K2(bool verbose) const;
     double get_deriv_max_K3(bool verbose) const;
@@ -247,12 +264,6 @@ public:
     double analyze_tails_K3w(bool verbose) const;
     double analyze_tails_K3v(bool verbose) const;
     double analyze_tails_K3vp(bool verbose) const;
-
-    void findBestFreqGrid(bool verbose=true);
-
-    void initializeInterpol() const;
-
-    void set_initializedInterpol(bool is_init) const;
 
     void check_symmetries(std::string identifier) const;
 };

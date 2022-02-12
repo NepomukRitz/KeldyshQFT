@@ -19,6 +19,10 @@
 #include "vertex_buffer.hpp"
 #include "../../utilities/minimizer.hpp"
 
+/// Possible (unit-)tests:
+/// [IMPLEMENTED in test_symmetries.c++] check read-out from symmetry-reduced sector and correctness of symmetry tables
+/// [MISSING] check conversion of frequency conventions
+
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <K_class k, typename Q, interpolMethod inter> class vertexBuffer; // forward declaration of vertexDataContainer
 //template <typename Q, interpolMethod interp> class vertexInterpolator; // forward declaration of vertexInterpolator

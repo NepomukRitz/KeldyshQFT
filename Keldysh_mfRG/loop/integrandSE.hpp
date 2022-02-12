@@ -10,6 +10,8 @@
 #include "../utilities/write_data2file.hpp"        // save integrand for debugging purposes
 #include "../asymptotic_corrections/correction_functions.hpp"    // analytical results for the tails of the loop integral
 
+/// possible tests: ---> See bubble integrand
+
 /**
  * Class for the integrand of the Retarded SelfEnergy
  * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
