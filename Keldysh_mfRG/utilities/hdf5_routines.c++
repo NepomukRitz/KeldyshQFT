@@ -66,7 +66,7 @@ namespace hdf5_impl {
 }
 
 
-State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it) {
+State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it) {
     H5::H5File file_out(filename, H5F_ACC_RDONLY);
 
     std::vector<double> Lambda;
@@ -607,19 +607,19 @@ bool test_read_write_state_hdf(bool verbose) {
     state_output.initialize();
     state_output = state_output + 1.;
 
-    write_state_to_hdf("test_state.h5", state_output, numberLambdaLayers);
+    write_state_to_hdf("test_state.h5", 0. , numberLambdaLayers, state_output);
     //print("Written state", true);
 
 
-    State<state_datatype> state_input = read_state_from_hdf_LambdaLayer("test_state.h5", 0);
+    State<state_datatype> state_input = read_state_from_hdf("test_state.h5", 0);
     //print("Read state", true);
 
     State<state_datatype> state_diff = state_output - state_input;
 
-    add_state_to_hdf("test_state.h5", state_output*2, Lambda_it);
-    add_state_to_hdf("test_state.h5", state_input, Lambda_it+1);
+    add_state_to_hdf("test_state.h5", Lambda_it  , state_output*2);
+    add_state_to_hdf("test_state.h5", Lambda_it+1, state_input);
 
-    write_state_to_hdf("test_statediff.h5", state_diff, numberLambdaLayers);
+    write_state_to_hdf("test_statediff.h5", 0., numberLambdaLayers, state_diff);
 
     bool passed = true;
 

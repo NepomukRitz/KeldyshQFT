@@ -15,7 +15,7 @@
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
-    friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
+    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
 
     vec<Q> empty_bare() {
         if (KELDYSH) return vec<Q> (16*n_in);

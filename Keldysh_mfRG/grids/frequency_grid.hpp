@@ -44,7 +44,7 @@ const bool dense = false;
 
 class FrequencyGrid {
     template<K_class k, typename Q> friend class vertexDataContainer;
-    //friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
+    //friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
     friend void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, int Lambda_it);
 
     char type;

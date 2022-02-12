@@ -55,8 +55,8 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
 #ifndef NDEBUG
     State<Q> state_L(Gamma_BSE_L, state_in.selfenergy);
     State<Q> state_R(Gamma_BSE_R, state_in.selfenergy);
-    add_hdf(data_dir + "Parquet_GammaL", Lambda, it_Lambda, state_L); // save input into 0-th layer of hdf5 file
-    add_hdf(data_dir + "Parquet_GammaR", Lambda, it_Lambda, state_R); // save input into 0-th layer of hdf5 file
+    add_state_to_hdf(data_dir + "Parquet_GammaL", it_Lambda, state_L); // save input into 0-th layer of hdf5 file
+    add_state_to_hdf(data_dir + "Parquet_GammaR", it_Lambda, state_R); // save input into 0-th layer of hdf5 file
 #endif
 }
 
@@ -248,12 +248,12 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     State<Q> state_out (Lambda);   // lhs of the parquet equations
     State<Q> state_diff (Lambda);  // difference between input and output of the parquet equations
 
-    write_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
 
 #ifndef NDEBUG
-    write_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
-    write_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_state_to_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
 #endif
 
 
@@ -263,7 +263,7 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         print("iteration ", iteration, true);
         parquet_iteration(state_out, state_in, Lambda, iteration);  // compute lhs of parquet equations
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
-        add_hdf(filename, iteration, state_out, Lambdas);  // store result into file
+        add_state_to_hdf(filename, iteration, state_out);  // store result into file
 
         // compute relative differences between input and output w.r.t. output
         relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();

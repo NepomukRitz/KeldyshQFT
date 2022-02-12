@@ -148,7 +148,7 @@ public:
     }
 
     void save_state() {
-        write_hdf("SOPT_state.h5", 1.8, 1, FOPTstate);
+        write_state_to_hdf("SOPT_state.h5", 1.8, 1, FOPTstate);
     }
 
     auto operator() (double vpp) const -> Q {
@@ -203,7 +203,7 @@ namespace {
             }
             print("Finished computing exact result for K2.", true);
 
-            write_hdf("Cost_pick_Wscale_4_K1_K2aexact", Lambda, 1, K2aexact);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_K2aexact", Lambda, 1, K2aexact);
         };
 
         auto operator() (double wscale_test) -> double {
@@ -215,7 +215,7 @@ namespace {
             SOPTstate.vertex.half1().template update_grid<k1>(bfreq, SOPTstate.vertex.half1());
             vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);
 
-            write_hdf("Cost_pick_Wscale_4_K1_SOPTstate", Lambda, 1, SOPTstate);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_SOPTstate", Lambda, 1, SOPTstate);
 
             State<Q> TOPTstate(Lambda);
             // set freqgrid parameter and update TOPTvertex on the new grid
@@ -227,8 +227,8 @@ namespace {
 
 
             State<Q> diff = TOPTstate-K2aexact;
-            write_hdf("Cost_pick_Wscale_4_K1_K2diff", Lambda, 1, diff);
-            write_hdf("Cost_pick_Wscale_4_K1_K2cpp", Lambda, 1, TOPTstate);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_K2diff", Lambda, 1, diff);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_K2cpp", Lambda, 1, TOPTstate);
             double result = diff.vertex.half1().norm_K2(0);
             print("!!!!!!!! Maximal deviation in K2: ", result, true);
             return result;

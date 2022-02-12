@@ -16,14 +16,12 @@ class State{
     friend State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_intermediate_results);
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool diff);
 
-private:
-    void set_frequency_grid(const State<Q>& state_in);
 public:
     double Lambda;
     SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
 
-    State(): Lambda(std::numeric_limits<double>::infinity()) , vertex(fullvert<Q>(std::numeric_limits<double>::infinity(), true)), selfenergy(SelfEnergy<Q>(std::numeric_limits<double>::infinity())) {
+    State(): Lambda(0.) , vertex(fullvert<Q>(0., true)), selfenergy(SelfEnergy<Q>(0.)) {
 #ifndef NDEBUG
         print("Watch out! Use of default constructor for State<Q>!", true);
 #endif
@@ -42,6 +40,7 @@ public:
     void initialize();
     void update_grid(double Lambda);
     void findBestFreqGrid(bool verbose);
+    void set_frequency_grid(const State<Q>& state_in);
 
     // operators containing State objects
     auto operator+= (const State& state) -> State {

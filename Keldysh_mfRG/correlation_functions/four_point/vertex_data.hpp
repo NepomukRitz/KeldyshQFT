@@ -42,7 +42,7 @@ class vertexContainerBase {
     template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
     template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const double& alpha);
     template<typename T> friend rvert<T> rvert<T>::operator+= (double alpha);
-    friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
+    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
 
 
 protected:
@@ -120,7 +120,7 @@ class vertexDataContainer: public vertexContainerBase<Q,5> {
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
-    friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
+    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
 
 protected:
     VertexFrequencyGrid<k2> frequencies_K2;    // frequency grid
@@ -187,7 +187,7 @@ class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,4>{
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void susceptibilities_postprocessing(Vertex<T>& chi, Vertex<T>& chi_diff, const State<T>& state, double Lambda);
-    friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
+    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
 
 
 protected:
@@ -242,7 +242,7 @@ class vertexDataContainer<k3, Q>: public vertexContainerBase<Q,6> {
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
     template <typename T> friend void result_set_frequency_grids(State<T>& result, Buffer& buffer);
     template<typename T> friend void check_FDTs(const State<T>& state, bool verbose);
-    friend State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, const int Lambda_it);
+    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
 
 
 protected:

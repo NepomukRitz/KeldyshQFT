@@ -633,12 +633,12 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             State<Q> state_out(temp_out, SE_empty);
             State<Q> state_diff(temp_diff, SE_empty);
             if (Lambda_it == 0) {
-                write_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
-                write_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda, nLambda, state_diff);
+                write_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
+                write_state_to_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda, nLambda, state_diff);
             }
             else {
-                add_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, Lambda_it, state_out);
-                add_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda, Lambda_it, state_diff);
+                add_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda_it, state_out);
+                add_state_to_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda_it, state_diff);
             }
         }
 

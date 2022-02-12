@@ -473,8 +473,8 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
     // compute PT4 K1a non-ladder at initial Lambda
     State<state_datatype> state_ini = compute_PT4_K1a_nonladder(Lambda_i);
     // save result to 0-th layer in hdf5 file (for both flow and direct computation)
-    write_hdf(filename, 0, Lambda_size, state_ini);
-    write_hdf(filename + "_dir", 0, Lambda_size, state_ini);
+    write_state_to_hdf(filename, 0, Lambda_size, state_ini);
+    write_state_to_hdf(filename + "_dir", 0, Lambda_size, state_ini);
 
     // generate Lambda grid
     rvec Lambdas = construct_flow_grid(Lambda_f, Lambda_i, sq_substitution, sq_resubstitution, nODE);
@@ -483,7 +483,7 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
         // compute direct result of PT4 K1a non-ladder at each Lambda step
         State<state_datatype> state_dir = compute_PT4_K1a_nonladder(Lambdas[i]);
         // save result to last layer in hdf5 file
-        add_hdf(filename + "_dir", i, state_dir, Lambdas);
+        add_state_to_hdf(filename + "_dir", i, state_dir);
     }
 
     // compute flow of PT4 K1a non-ladder from initial to final Lambda

@@ -577,7 +577,7 @@ namespace hdf5_impl {
 
 /// Create file with fixed number of Lambda layers and save state to first Lambda layer
 template <typename Q>
-void write_state_to_hdf(const H5std_string FILE_NAME, const State<Q>& state_in, const int Lambda_size, const bool verbose=true) {
+void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State<Q>& state_in, const bool verbose=true) {
 #ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -593,7 +593,7 @@ void write_state_to_hdf(const H5std_string FILE_NAME, const State<Q>& state_in, 
 
 /// Open file and save state to a specified Lambda layer
 template <typename Q>
-void add_state_to_hdf(const H5std_string FILE_NAME, const Q& state_in, int Lambda_it, const bool verbose=true) {
+void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_in, const bool verbose=true) {
 #ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -619,7 +619,7 @@ void add_state_to_hdf(const H5std_string FILE_NAME, const Q& state_in, int Lambd
 }
 
 /// Read state from specified Lambda layer of hdf file
-State<state_datatype> read_state_from_hdf_LambdaLayer(const H5std_string& filename, int Lambda_it) ;
+State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it) ;
 
 
 

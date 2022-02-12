@@ -12,7 +12,7 @@ void parquet_checks(const std::string filename) {
     for (int i=0; i<Lambdas.size(); ++i) {
         print("Iteration ", i, false);
         print_add(", Lambda = ", Lambdas[i], true);
-        State<state_datatype> state = read_hdf(filename, i);
+        State<state_datatype> state = read_state_from_hdf(filename, i);
         state.selfenergy.asymp_val_R = glb_U / 2.;
         print("State read from file.", true);
 
@@ -67,9 +67,9 @@ void parquet_checks(const std::string filename) {
         State<state_datatype> parquet(Gamma_BSE, Sigma_SDE);
 
         if (i == 0)
-            write_hdf(filename + "_parquet_checks", i, nL, parquet);
+            write_state_to_hdf(filename + "_parquet_checks", i, nL, parquet);
         else
-            add_hdf(filename + "_parquet_checks", i, parquet, Lambdas);
+            add_state_to_hdf(filename + "_parquet_checks", i, parquet);
 
 
         // post-processing susceptibilities:
@@ -86,12 +86,12 @@ void parquet_checks(const std::string filename) {
         State<state_datatype> state_chi_diff(chi_diff, trivial_SE);
 
         if (i == 0) {
-            write_hdf(filename + "_susceptibilities", i, nL, state_chi);
-            write_hdf(filename + "_susceptibilities_diff", i, nL, state_chi_diff);
+            write_state_to_hdf(filename + "_susceptibilities", i, nL, state_chi);
+            write_state_to_hdf(filename + "_susceptibilities_diff", i, nL, state_chi_diff);
         }
         else {
-            add_hdf(filename + "_susceptibilities", i, state_chi, Lambdas);
-            add_hdf(filename + "_susceptibilities_diff", i, state_chi_diff, Lambdas);
+            add_state_to_hdf(filename + "_susceptibilities", i, state_chi);
+            add_state_to_hdf(filename + "_susceptibilities_diff", i, state_chi_diff);
         }
 
     }

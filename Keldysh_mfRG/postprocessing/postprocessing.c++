@@ -13,7 +13,7 @@ void compute_Phi_tilde(const std::string filename) {
         rvec Phi_integrated (Lambdas.size() * n_in);
 
         for (int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
-            State<state_datatype> state = read_hdf(filename, iLambda);
+            State<state_datatype> state = read_state_from_hdf(filename, iLambda);
             state.selfenergy.asymp_val_R = glb_U / 2.;
 
             double vmin = state.selfenergy.frequencies.w_lower;
@@ -68,7 +68,7 @@ void sum_rule_K1tK(const std::string filename) {
     rvec sum_rule (nLambda);
 
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {
-        State<state_datatype> state = read_hdf(filename, iLambda);           // read state
+        State<state_datatype> state = read_state_from_hdf(filename, iLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
         double wmax = state.vertex.tvertex().K1.K1_get_wupper();   // upper integration boundary
 
@@ -93,7 +93,7 @@ void check_Kramers_Kronig(const std::string filename) {
     using buffer_type = multidimensional::multiarray<comp,4>;
 
     for (int i=0; i<iLambdas.size(); ++i) {
-        State<state_datatype> state = read_hdf(filename, iLambdas[i]);  // read data from file
+        State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
         // check Kramers-Kronig for retarded self-energy
         rvec vSigma = state.selfenergy.frequencies.get_ws_vec();  // frequency grid points
         // get retarded component (first half of stored data points)
