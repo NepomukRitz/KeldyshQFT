@@ -142,6 +142,13 @@ public:
     template<char ch_bubble> auto right_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
 
+    template<char ch_bubble> auto gammaRb_symmetry_expanded(const VertexInput& input) const -> Q;
+    auto left_same_bare_symmetry_expanded(const VertexInput& input) const -> Q;
+    auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q;
+    template<char ch_bubble> auto left_diff_bare_symmetry_expanded(const VertexInput& input) const -> Q;
+    template<char ch_bubble> auto right_diff_bare_symmetry_expanded(const VertexInput& input) const -> Q;
+
+
     // initialize Interpolator with coefficients (only necessary for spline interpolation)
     void initializeInterpol() const;
     // set the flag "initializedInterpol"
@@ -266,6 +273,8 @@ public:
     double analyze_tails_K3vp(bool verbose) const;
 
     void check_symmetries(std::string identifier) const;
+    void symmetry_expand(const fullvert<Q>& right_vert) const;
+    void save_expanded(const std::string& filename_prefix) const;
 };
 
 
@@ -300,7 +309,7 @@ public:
     template<char ch_bubble> auto value(const VertexInput& input) const -> Q           {
         if constexpr(symmtype==symmetric) return vertex.template value<ch_bubble>(input);
         else                              return vertex.template value<ch_bubble>(input, vertex_half2);
-        }
+    }
     auto left_same_bare(const VertexInput& input)  const -> Q {
         if constexpr(symmtype==symmetric) return vertex.left_same_bare(input);
         else                              return vertex.left_same_bare(input, vertex_half2);
@@ -316,6 +325,18 @@ public:
     template <char ch_bubble> auto right_diff_bare(const VertexInput& input) const -> Q {
         if constexpr(symmtype==symmetric) return vertex.template right_diff_bare<ch_bubble>(input);
         else                              return vertex.template right_diff_bare<ch_bubble>(input, vertex_half2);
+    }
+    auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> Q {
+        return vertex.left_same_bare_symmetry_expanded(input);
+    }
+    auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+        return vertex.right_same_bare_symmetry_expanded(input);
+    }
+    template <char ch_bubble> auto left_diff_bare_symmetry_expanded(const VertexInput& input)  const -> Q {
+        return vertex.template left_diff_bare_symmetry_expanded<ch_bubble>(input);
+    }
+    template <char ch_bubble> auto right_diff_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+        return vertex.template right_diff_bare_symmetry_expanded<ch_bubble>(input);
     }
 
 
@@ -368,6 +389,13 @@ public:
 
     void check_symmetries(const std::string identifier) const {
         vertex.check_symmetries(identifier);
+    }
+    void symmetry_expand() const {
+        if constexpr(symmtype==symmetric) vertex.symmetry_expand(vertex);
+        else                              vertex.symmetry_expand(vertex_half2);
+    }
+    void save_expanded(const std::string& filename_prefix) {
+        vertex.save_expanded(filename_prefix);
     }
 
 public:
@@ -847,6 +875,181 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_diff_bare
         return K2b_K3;
 
     gamma_Rb = gammaRb<ch_bubble>(input, right_vertex);
+    return K2b_K3 + gamma_Rb;
+}
+
+
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::gammaRb_symmetry_expanded (const VertexInput& input) const -> Q {
+    Q res;
+    if constexpr(ch_bubble == 'a') {
+        res = pvertex.template value_symmetry_expanded<ch_bubble>(input, pvertex) + tvertex.template value_symmetry_expanded<ch_bubble>(input, avertex);
+    }
+    else if constexpr(ch_bubble == 'p') {
+        res = avertex.template value_symmetry_expanded<ch_bubble>(input, tvertex) + tvertex.template value_symmetry_expanded<ch_bubble>(input, avertex);
+    }
+    else if constexpr(ch_bubble == 't') {
+        res = avertex.template value_symmetry_expanded<ch_bubble>(input, tvertex) + pvertex.template value_symmetry_expanded<ch_bubble>(input, pvertex);
+    }
+    else {
+        res = 0.;
+        print("Something's going wrong with gammaRb. Abort."); assert(false);
+    }
+    return res;
+}
+template <typename Q> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+    Q gamma0, K1_K2b;
+    gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
+
+    switch (input.channel){
+        case 'a':
+            K1_K2b = avertex.left_same_bare_symmetry_expanded(input, tvertex);
+            break;
+        case 'p':
+            K1_K2b = pvertex.left_same_bare_symmetry_expanded(input, pvertex);
+            break;
+        case 't':
+            K1_K2b = tvertex.left_same_bare_symmetry_expanded(input, avertex);
+            break;
+        default:
+            return 0.;
+    }
+
+#ifdef STATIC_FEEDBACK
+    assert(false): /// Needs to be checked
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
+
+        switch (input.channel) {
+            case 'a':
+                K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 'p':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 't':
+                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
+                          + pvertex.template valsmooth<k1>(input_p, pvertex);
+                break;
+            default:;
+        }
+    }
+#endif
+    assert(isfinite(K1_K2b));
+    return gamma0 + K1_K2b;
+}
+template <typename Q> auto fullvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+    Q gamma0, K1_K2;
+    gamma0 = irred.val(input.iK, input.i_in, input.spin);
+    if (Ir)
+        return gamma0;
+
+    switch (input.channel){
+        case 'a':
+            K1_K2 = avertex.right_same_bare_symmetry_expanded(input, tvertex);
+            break;
+
+        case 'p':
+            K1_K2 = pvertex.right_same_bare_symmetry_expanded(input, pvertex);
+            break;
+        case 't':
+            K1_K2 = tvertex.right_same_bare_symmetry_expanded(input, avertex);
+            break;
+        default:
+            return 0.;
+    }
+#ifdef STATIC_FEEDBACK
+    assert(false); // Check this!
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput& input_p = input;
+        VertexInput& input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
+
+        switch (input.channel) {
+            case 'a':
+                K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 'p':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                         + tvertex.template valsmooth<k1>(input_at, avertex);
+                break;
+            case 't':
+                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
+                         + pvertex.template valsmooth<k1>(input_p, pvertex);
+                break;
+            default:;
+        }
+    }
+#endif
+    assert(isfinite(K1_K2));
+    return gamma0 + K1_K2;
+}
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+    Q K2_K3, gamma_Rb;
+    if (Ir) {
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb_symmetry_expanded<ch_bubble>(input);
+            assert(isfinite(gamma_Rb));
+        }
+        return gamma_Rb;
+    }
+
+    switch (input.channel){
+        case 'a':
+            K2_K3 = avertex.left_diff_bare_symmetry_expanded(input, tvertex);
+            break;
+        case 'p':
+            K2_K3 = pvertex.left_diff_bare_symmetry_expanded(input, pvertex);
+            break;
+        case 't':
+            K2_K3 = tvertex.left_diff_bare_symmetry_expanded(input, avertex);
+            break;
+        default:
+            return 0.;
+    }
+    assert(isfinite(K2_K3));
+    if (only_same_channel)
+        return K2_K3;
+
+    gamma_Rb = gammaRb_symmetry_expanded<ch_bubble>(input);
+    return K2_K3 + gamma_Rb;
+}
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_diff_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+    Q K2b_K3, gamma_Rb;
+    if (Ir) {
+        if (MAX_DIAG_CLASS >= 2) {
+            gamma_Rb = gammaRb_symmetry_expanded<ch_bubble>(input);
+            assert(isfinite(gamma_Rb));
+        }
+        return gamma_Rb;
+    }
+
+    switch (input.channel){
+        case 'a':
+            K2b_K3 = avertex.right_diff_bare_symmetry_expanded(input, tvertex);
+            break;
+        case 'p':
+            K2b_K3 = pvertex.right_diff_bare_symmetry_expanded(input, pvertex);
+            break;
+        case 't':
+            K2b_K3 = tvertex.right_diff_bare_symmetry_expanded(input, avertex);
+            break;
+        default:
+            return 0.;
+    }
+    assert(isfinite(K2b_K3));
+    if (only_same_channel)
+        return K2b_K3;
+
+    gamma_Rb = gammaRb_symmetry_expanded<ch_bubble>(input);
     return K2b_K3 + gamma_Rb;
 }
 
@@ -1386,6 +1589,18 @@ template <typename Q> void fullvert<Q>::check_symmetries(const std::string ident
     this->avertex.check_symmetries(identifier, avertex, tvertex);
     this->pvertex.check_symmetries(identifier, pvertex, pvertex);
     this->tvertex.check_symmetries(identifier, tvertex, avertex);
+}
+
+template <typename Q> void fullvert<Q>::symmetry_expand(const fullvert<Q>& right_vert) const {
+    avertex.symmetry_expand(tvertex, right_vert.avertex, right_vert.tvertex);
+    pvertex.symmetry_expand(pvertex, right_vert.pvertex, right_vert.pvertex);
+    tvertex.symmetry_expand(avertex, right_vert.tvertex, right_vert.avertex);
+}
+
+template <typename Q> void fullvert<Q>::save_expanded(const std::string& filename_prefix) const {
+    avertex.save_expanded(filename_prefix + "_a.h5");
+    pvertex.save_expanded(filename_prefix + "_p.h5");
+    tvertex.save_expanded(filename_prefix + "_t.h5");
 }
 
 #endif //KELDYSH_MFRG_VERTEX_HPP

@@ -188,12 +188,14 @@ public:
     }
 };
 
-#ifdef DEBUG_SYMMETRIES
 /** Template specialization for K2b(linear interpolation on the auxiliary grid) */
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k2b, Q, inter> : public vertexDataContainer<k2b, Q> {
+    using base_class = vertexDataContainer<k2b, Q>;
 public:
-    explicit vertexBuffer<k2b, Q, inter>(double Lambda) : vertexDataContainer<k2b, Q>(Lambda) {};
+    using index_type = typename base_class::index_type;
+    vertexBuffer<k2b,Q,inter>() : initialized(false) {};
+    explicit vertexBuffer<k2b, Q, inter>(double Lambda, index_type dims) : base_class(Lambda, dims) {};
     mutable bool initialized = false;
 
     void initInterpolator() const {initialized = true;};
@@ -275,7 +277,6 @@ public:
         return lhs;
     }
 };
-#endif
 
 /** Template specialization for K3 (linear interpolation on the auxiliary grid) */
 template<typename Q, interpolMethod inter>

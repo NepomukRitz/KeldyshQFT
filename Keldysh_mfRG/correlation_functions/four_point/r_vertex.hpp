@@ -26,6 +26,8 @@
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <K_class k, typename Q, interpolMethod inter> class vertexBuffer; // forward declaration of vertexDataContainer
 //template <typename Q, interpolMethod interp> class vertexInterpolator; // forward declaration of vertexInterpolator
+template<typename Q, std::size_t depth, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
+template<typename Q, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
 
 template <typename Q>
 class rvert{
@@ -45,6 +47,7 @@ public:
     /// apply_unary_op_to_all_vertexBuffers()
     /// apply_binary_op_to_all_vertexBuffers()
     vertexBuffer<k1,Q,INTERPOLATION> K1;
+    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_symmetry_expanded;
 
     /// cross-projected contributions, needed for the Hubbard model;
     /// have to be mutable to allow us to compute them at a stage where the vertex should be const.
@@ -53,6 +56,7 @@ public:
     mutable vertexBuffer<k1,Q,INTERPOLATION> K1_t_proj = K1;
 
     vertexBuffer<k2,Q,INTERPOLATION> K2;
+    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_symmetry_expanded;
     mutable vertexBuffer<k2,Q,INTERPOLATION> K2_a_proj = K2;
     mutable vertexBuffer<k2,Q,INTERPOLATION> K2_p_proj = K2;
     mutable vertexBuffer<k2,Q,INTERPOLATION> K2_t_proj = K2;
@@ -60,7 +64,10 @@ public:
 #ifdef DEBUG_SYMMETRIES
     vertexBuffer<k2b,Q,INTERPOLATION> K2b;
 #endif
+    mutable vertexBuffer<k2b,Q,INTERPOLATION> K2b_symmetry_expanded;
+
     vertexBuffer<k3,Q,INTERPOLATION> K3;
+    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_symmetry_expanded;
     mutable vertexBuffer<k3,Q,INTERPOLATION> K3_a_proj = K3;
     mutable vertexBuffer<k3,Q,INTERPOLATION> K3_p_proj = K3;
     mutable vertexBuffer<k3,Q,INTERPOLATION> K3_t_proj = K3;
@@ -154,7 +161,7 @@ public:
             }
 
 #ifdef DEBUG_SYMMETRIES
-            K2b = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, dimsK2);
+            K2b = vertexBuffer<k2b,Q,INTERPOLATION>(Lambda, dimsK2);
 #endif
         }
       };
@@ -306,6 +313,10 @@ public:
      */
     void check_symmetries(std::string identifier, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
 
+    void symmetry_expand(const rvert<Q> &rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
+    void save_expanded(const std::string &filename) const;
+
+
     /// Arithmetric operators act on vertexBuffers:
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
         return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data += right.data;}, rhs);
@@ -351,6 +362,18 @@ public:
         lhs += rhs;
         return lhs;
     }
+
+    template<K_class k> auto valsmooth_symmetry_expanded(const VertexInput &input, const rvert<Q> &rvert_crossing) const -> Q;
+    auto left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    auto right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    auto right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+
+    template<char ch_bubble> Q value_symmetry_expanded(VertexInput input, const rvert<Q> &rvert_crossing) const;
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
@@ -435,8 +458,8 @@ auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& 
 
     assert(indices.channel == readMe.channel);
 #ifndef DEBUG_SYMMETRIES
-    if constexpr (k == k2) assert(not indices.asymmetry_transform);
-    if constexpr (k == k2b) assert(indices.asymmetry_transform);
+    //if constexpr (k == k2) assert(not indices.asymmetry_transform);
+    //if constexpr (k == k2b) assert(indices.asymmetry_transform);
 #endif
 
     Q value = read_value<k>(indices, readMe);
@@ -525,6 +548,16 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
 #endif
 }
 
+template <typename Q>
+template<K_class k> auto rvert<Q>::valsmooth_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+    IndicesSymmetryTransformations indices (input, channel);
+
+    if constexpr(k == k1)       return  K1_symmetry_expanded.interpolate(indices);
+    else if constexpr(k == k2)  return  K2_symmetry_expanded.interpolate(indices);
+    else if constexpr(k == k2b) return K2b_symmetry_expanded.interpolate(indices);
+    else                        return  K3_symmetry_expanded.interpolate(indices);
+}
+
 #ifdef  DEBUG_SYMMETRIES
 /**
  * Iterates over all vertex components and compares with the value obtained from application of the symmetry relations
@@ -607,7 +640,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             }
 
             // test frequency symmetries for symmetry-reduced Keldysh components:
-            if (transformations.K(k2, input.spin, input.iK) == 0 and components.K[k2][input.spin][input.iK] != -1 and
+            if (transformations.K(k2, input.spin, input.iK) == 0 and components.K[k2, input.spin, input.iK] != -1 and
                 (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : (channel == 'p' ? isInList(iK,
                                                                                                   non_zero_Keldysh_K2p)
                                                                                        : isInList(iK,
@@ -654,7 +687,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
 
             Q deviation = value_direct - value_symmet;
-            if (components.K[k2b][input.spin][input.iK] != -1) {// zero component is not being computed anyway
+            if (components.K[k2b, input.spin, input.iK] != -1) {// zero component is not being computed anyway
                 deviations_K2b[getFlatIndex<5, int, int, int, int, int>(iK, ispin, iw , iv ,
                                                                         i_in, K2b.get_dims())] = std::abs(deviation);
             }
@@ -688,14 +721,14 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
 
             Q deviation = value_direct - value_symmet;
-            if (components.K[k1][input.spin][input.iK] != -1) { // zero component is not being computed anyway
+            if (components.K[k1, input.spin, input.iK] != -1) { // zero component is not being computed anyway
                 deviations_K3[getFlatIndex<6, int, int, int, int, int, int>(iK, ispin, iw ,
                                                                             iv , ivp , i_in,
                                                                             K3.get_dims())] = std::abs(deviation);
             }
 
             // test frequency symmetries for symmetry-reduced Keldysh components:
-            if (transformations.K(k3, input.spin, input.iK) == 0 and components.K[k3][input.spin][input.iK] != -1 and
+            if (transformations.K(k3, input.spin, input.iK) == 0 and components.K[k3, input.spin, input.iK] != -1 and
                 isInList(iK, non_zero_Keldysh_K3)) {
                 IndicesSymmetryTransformations indices(iK, ispin, w, v, vp, i_in, channel, k2, 0, channel);
                 int sign_w = sign_index(w);
@@ -741,6 +774,116 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 }
 #endif
 
+/**
+ * Iterates over all vertex components and fills in the value obtained from the symmetry-reduced sector
+ * @tparam Q
+ */
+template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
+    /// TODO: Currently copies frequency_grid of same rvertex; but might actually need the frequency grid of conjugate channel
+    K1_symmetry_expanded = vertexBuffer<k1,Q,INTERPOLATION>(0., dimsK1_expanded);;
+    K1_symmetry_expanded.set_VertexFreqGrid(K1.get_VertexFreqGrid());
+    K2_symmetry_expanded = vertexBuffer<k2,Q,INTERPOLATION>(0., dimsK2_expanded);
+    K2_symmetry_expanded.set_VertexFreqGrid(K2.get_VertexFreqGrid());
+    K2b_symmetry_expanded = vertexBuffer<k2b,Q,INTERPOLATION>(0., dimsK2_expanded);
+    K2b_symmetry_expanded.set_VertexFreqGrid(K2.get_VertexFreqGrid());
+    K3_symmetry_expanded = vertexBuffer<k3,Q,INTERPOLATION>(0., dimsK3_expanded);;
+    K3_symmetry_expanded.set_VertexFreqGrid(K3.get_VertexFreqGrid());
+
+
+    // K1:
+    //vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
+#pragma omp parallel for
+    for (int iflat = 0; iflat < getFlatSize(K1_symmetry_expanded.get_dims()); iflat++) {
+        int iK, ispin, iw, i_in;
+        getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, K1_symmetry_expanded.get_dims());
+        double w;
+        K1_symmetry_expanded.K1_get_freq_w(w, iw);
+        VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
+        IndicesSymmetryTransformations indices(input, channel);
+        rvert<Q> readMe = symmetry_reduce<k1>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        Q value = read_symmetryreduced_rvert<k1>(indices, readMe);
+
+        K1_symmetry_expanded.setvert(value, iK, ispin, iw , i_in);
+
+    }
+
+
+    if (MAX_DIAG_CLASS > 1) {
+        // K2:
+#pragma omp parallel for
+        for (int iflat = 0; iflat < getFlatSize(K2_symmetry_expanded.get_dims()); iflat++) {
+            int iK, ispin, iw, iv, i_in;
+            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2_symmetry_expanded.get_dims());
+
+            double w, v;
+            K2_symmetry_expanded.K2_get_freqs_w(w, v, iw, iv);
+            VertexInput input(iK, ispin, w, v, 0., i_in, channel);
+            IndicesSymmetryTransformations indices(input, channel);
+            rvert<Q> readMe = symmetry_reduce<k2>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
+
+            K2_symmetry_expanded.setvert(value, iK, ispin, iw, iv, i_in);
+
+        }
+
+        // K2b:
+#pragma omp parallel for
+        for (int iflat = 0; iflat < getFlatSize(K2b_symmetry_expanded.get_dims()); iflat++) {
+            int iK, ispin, iw, iv, i_in;
+            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2b_symmetry_expanded.get_dims());
+            double w, vp;
+            K2b_symmetry_expanded.K2_get_freqs_w(w, vp, iw, iv);
+            VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
+            IndicesSymmetryTransformations indices(input, channel);
+            rvert<Q> readMe = symmetry_reduce<k2b>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
+
+            K2b_symmetry_expanded.setvert(value, iK, ispin, iw , iv , i_in);
+
+        }
+
+    }
+
+    if (MAX_DIAG_CLASS > 2) {
+        // K3:
+#pragma omp parallel for
+        for (int iflat = 0; iflat < getFlatSize(K3_symmetry_expanded.get_dims()); iflat++) {
+            int iK, ispin, iw, iv, ivp, i_in;
+            getMultIndex<6, int, int, int, int, int, int>(iK, ispin, iw, iv, ivp, i_in, iflat, K3_symmetry_expanded.get_dims());
+
+            double w, v, vp;
+            K3_symmetry_expanded.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
+            VertexInput input(iK, ispin, w, v, vp, i_in, channel);
+            IndicesSymmetryTransformations indices(input, channel);
+            rvert<Q> readMe = symmetry_reduce<k3>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            Q value = read_symmetryreduced_rvert<k3>(indices, readMe);
+
+            K3_symmetry_expanded.setvert(value, iK, ispin, iw ,iv , ivp , i_in);
+
+        }
+
+    }
+
+}
+
+
+template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) const {
+    H5::H5File file(filename, H5F_ACC_TRUNC);
+
+    write_to_hdf(file, "K1" + channel, K1_symmetry_expanded .get_vec(), false);
+    write_to_hdf(file, "K2" + channel, K2_symmetry_expanded .get_vec(), false);
+    write_to_hdf(file, "K2b"+ channel, K2b_symmetry_expanded.get_vec(), false);
+    write_to_hdf(file, "K3" + channel, K3_symmetry_expanded .get_vec(), false);
+
+    write_to_hdf(file, "bfreqs1", K1_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
+    write_to_hdf(file, "bfreqs2", K2_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
+    write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().f.get_ws_vec(), false);
+    write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
+    write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().f.get_ws_vec(), false);
+
+    file.close();
+
+}
 
 template <typename Q> template<char ch_bubble> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
@@ -775,7 +918,22 @@ template <typename Q> template<char ch_bubble> auto rvert<Q>::value(const Vertex
 
     return val;
 }
+template <typename Q> template<char ch_bubble> auto rvert<Q>::value_symmetry_expanded(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
 
+    //VertexInput input_tmp = input;
+    transfToR<ch_bubble>(input); // input manipulated here => input needs to be called by value
+
+    Q val;   // force zero initialization
+
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth_symmetry_expanded<k1>(input, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 2) {
+        val += valsmooth_symmetry_expanded<k2> (input, rvert_crossing);
+        val += valsmooth_symmetry_expanded<k2b>(input, rvert_crossing);
+    }
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth_symmetry_expanded<k3>(input, rvert_crossing);
+
+    return val;
+}
 
 template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if      (MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
@@ -820,6 +978,30 @@ template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, c
     else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
+
+
+template <typename Q> auto rvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+    if      (MAX_DIAG_CLASS == 1) return valsmooth_symmetry_expanded<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS  > 1) return valsmooth_symmetry_expanded<k1>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2b>(input, rvert_crossing);
+}
+
+template <typename Q> auto rvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+    if (MAX_DIAG_CLASS == 1)     return valsmooth_symmetry_expanded<k1>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS > 1) return valsmooth_symmetry_expanded<k1>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2>(input, rvert_crossing);
+}
+
+template <typename Q> auto rvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+    if (MAX_DIAG_CLASS == 1)      return 0.;
+    else if (MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3>(input, rvert_crossing);
+}
+
+template <typename Q> auto rvert<Q>::right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+    if (MAX_DIAG_CLASS == 1)      return 0.;
+    else if (MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2b>(input, rvert_crossing);
+    else if (MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2b>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3>(input, rvert_crossing);
+}
+
 
 template<typename Q>
 void rvert<Q>::cross_project() {
@@ -1532,7 +1714,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                 K1.K1_get_freq_w(w_in, itw);
                 IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, 0., 0., 0, channel, k1, 0, channel);
                 int sign_w = sign_index(indices.w);
-                int trafo_index = freq_transformations.K1[itK][sign_w];
+                int trafo_index = freq_transformations.K1[itK][ sign_w];
                 if (trafo_index != 0) {
                     Ti(indices, trafo_index);
                     indices.iK = itK;
@@ -1616,7 +1798,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                     IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, 0., 0, channel, k2, 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_v1 = sign_index(v_in);
-                    int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
+                    int trafo_index = freq_transformations.K2[itK][ sign_w * 2 + sign_v1];
                     Ti(indices, trafo_index);
                     indices.iK = itK;
 
@@ -1666,7 +1848,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                         if (!KELDYSH and !ZERO_T) sign_f = sign_index(indices.v1 + indices.v2 - signFlipCorrection_MF(w_in)*0.5);
                         else sign_f = sign_index(indices.v1 + indices.v2);
                         int sign_fp = sign_index(indices.v1 - indices.v2);
-                        int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                        int trafo_index = freq_transformations.K3[itK][ sign_w * 4 + sign_f * 2 + sign_fp];
                         Ti(indices, trafo_index);
                         indices.iK = itK;
 

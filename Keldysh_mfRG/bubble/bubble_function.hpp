@@ -520,7 +520,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2b(const vec<Q>& K2b_ordered_result){
     assert( K2b_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
     switch (channel) {
