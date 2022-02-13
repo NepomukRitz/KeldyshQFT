@@ -308,9 +308,9 @@ auto Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::operat
     //assert(false);
     VertexInput input_external (i0, spin, w, v, vp, i_in, channel, diag_class, iw);
 
-    result = sum_over_internal<channel,Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.template left_diff_bare<channel>(input_l);},
+    result = sum_over_internal<channel,Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare_symmetry_expanded(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<channel>(input_l);},
                   Pi,
-                  [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare<channel>(input_r); else return vertex2.right_same_bare(input_r);},
+                  [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<channel>(input_r); else return vertex2.right_same_bare_symmetry_expanded(input_r);},
                   input_external, vpp
     );
 

@@ -270,6 +270,8 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     vec<Q> Buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
     vertex1.initializeInterpol();
     vertex2.initializeInterpol();
+    vertex1.symmetry_expand();
+    vertex2.symmetry_expand();
 
     // start for-loop over external arguments, using MPI and OMP
     int iterator = 0;
