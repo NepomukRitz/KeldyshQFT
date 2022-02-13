@@ -406,7 +406,7 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
 
 
 #endif
-    if (indices.channel != channel)
+    if (indices.channel_rvert != channel)
         // if the symmetry transformation switches between channels (a <--> t), return the
         // r vertex in the channel related by crossing symmetry
         return rvert_crossing;
@@ -429,7 +429,7 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
     // first check if the applied transformations switch between half 1 and half 2 of the vertex
     if (indices.asymmetry_transform) {
         // if yes, return the interpolated value of half 2 in the appropriate channel
-        if (channel == indices.channel) {
+        if (channel == indices.channel_rvert) {
             // if the applied transformation(s) do not switch between channels a,t, return a vertex of half 2
             return vertex_half2_samechannel;
         }
@@ -441,7 +441,7 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
     }
     else {
         // if no, return the interpolated value of half 1 in the appropriate channel
-        if (indices.channel != channel)
+        if (indices.channel_rvert != channel)
             // if the symmetry transformation switches between channels (a <--> t), return the
             // r vertex in the channel related by crossing symmetry
             return rvert_crossing;
@@ -456,7 +456,7 @@ template <K_class k>
 auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q {
     if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
-    assert(indices.channel == readMe.channel);
+    assert(indices.channel_rvert == readMe.channel);
 #ifndef DEBUG_SYMMETRIES
     //if constexpr (k == k2) assert(not indices.asymmetry_transform);
     //if constexpr (k == k2b) assert(indices.asymmetry_transform);
@@ -550,12 +550,12 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
 
 template <typename Q>
 template<K_class k> auto rvert<Q>::valsmooth_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    IndicesSymmetryTransformations indices (input, channel);
+    //IndicesSymmetryTransformations indices (input, channel);
 
-    if constexpr(k == k1)       return  K1_symmetry_expanded.interpolate(indices);
-    else if constexpr(k == k2)  return  K2_symmetry_expanded.interpolate(indices);
-    else if constexpr(k == k2b) return K2b_symmetry_expanded.interpolate(indices);
-    else                        return  K3_symmetry_expanded.interpolate(indices);
+    if constexpr(k == k1)       return  K1_symmetry_expanded.interpolate(input);
+    else if constexpr(k == k2)  return  K2_symmetry_expanded.interpolate(input);
+    else if constexpr(k == k2b) return K2b_symmetry_expanded.interpolate(input);
+    else                        return  K3_symmetry_expanded.interpolate(input);
 }
 
 #ifdef  DEBUG_SYMMETRIES

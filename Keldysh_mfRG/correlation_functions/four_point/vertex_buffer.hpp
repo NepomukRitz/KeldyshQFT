@@ -37,7 +37,7 @@ public:
 
     void initInterpolator() const {initialized = true;};
 
-    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const VertexInput &indices) const -> Q {
 
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
@@ -110,7 +110,7 @@ public:
 
     void initInterpolator() const {initialized = true;};
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
-    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const VertexInput &indices) const -> Q {
 
         double w_temp = indices.w;
         double v_temp = indices.v1;
@@ -200,7 +200,7 @@ public:
 
     void initInterpolator() const {initialized = true;};
     // Template class call operator: used for K2 and K2b. For K1 and K3: template specializations (below)
-    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const VertexInput &indices) const -> Q {
 
         double w_temp = indices.w;
         double v_temp = indices.v2;
@@ -290,14 +290,15 @@ public:
     vertexBuffer<k3,Q,inter>() : initialized(false), vertexDataContainer<k3, Q>() {};
     explicit vertexBuffer<k3, Q, inter>(double Lambda, index_type dims) : vertexDataContainer<k3, Q>(Lambda, dims) {};
 
-    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const VertexInput &indices) const -> Q {
         double w_temp = indices.w;
         double v_temp = indices.v1;
         double vp_temp= indices.v2;
         if (BOSONIC_PARAM_FOR_K3) {
-            if (indices.channel == 'a') { switch2bosonicFreqs<'a'>(w_temp, v_temp, vp_temp); }
-            else if (indices.channel == 'p') { switch2bosonicFreqs<'p'>(w_temp, v_temp, vp_temp); }
-            else if (indices.channel == 't') { switch2bosonicFreqs<'t'>(w_temp, v_temp, vp_temp); }
+            assert(false); //
+            // if (indices.channel_rvert == 'a') { switch2bosonicFreqs<'a'>(w_temp, v_temp, vp_temp); }
+            // else if (indices.channel_rvert == 'p') { switch2bosonicFreqs<'p'>(w_temp, v_temp, vp_temp); }
+            // else if (indices.channel_rvert == 't') { switch2bosonicFreqs<'t'>(w_temp, v_temp, vp_temp); }
         }
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
@@ -368,13 +369,13 @@ public:
                             result = interpolate_lin_on_aux2D<Q>(v_temp, vp_temp,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw,j, k,indices.i_in);});
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw_r,j, k,indices.i_in);});
                             break;
                         case 'p':
                             result = interpolate_lin_on_aux2D<Q>(w_temp, vp_temp,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw, k,indices.i_in);});
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw_r, k,indices.i_in);});
 
                             break;
                         case 't':
@@ -382,7 +383,7 @@ public:
                             result = interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw,indices.i_in);});
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw_r,indices.i_in);});
                             break;
                         default:;
                     }
@@ -393,20 +394,20 @@ public:
                             result = interpolate_lin2D<Q>(v_temp, vp_temp,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw,j, k,indices.i_in);});
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw_r,j, k,indices.i_in);});
                             break;
                         case 'p':
                             result = interpolate_lin2D<Q>(w_temp, vp_temp,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw, k,indices.i_in);});
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw_r, k,indices.i_in);});
                             break;
                         case 't':
 
                             result = interpolate_lin2D<Q>(w_temp, v_temp,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw,indices.i_in);});
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw_r,indices.i_in);});
                             break;
                         default:;
                     }
@@ -417,20 +418,20 @@ public:
                             result = interpolate_sloppycubic2D<Q>(v_temp, vp_temp,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw,j, k,indices.i_in);});
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw_r,j, k,indices.i_in);});
                             break;
                         case 'p':
                             result = interpolate_sloppycubic2D<Q>(w_temp, vp_temp,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw, k,indices.i_in);});
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw_r, k,indices.i_in);});
 
                             break;
                         case 't':
                             result = interpolate_sloppycubic2D<Q>(w_temp, v_temp,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw,indices.i_in);});
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw_r,indices.i_in);});
                             break;
                         default:;
                     }
@@ -470,7 +471,7 @@ public:
     using index_type = typename base_class::index_type;
     vertexBuffer<k1,Q,cubic>() = default;
     explicit vertexBuffer<k1, Q, cubic>(double Lambda, index_type dims) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda, dims) {};
-    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const VertexInput &indices) const -> Q {
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
         //{
@@ -500,7 +501,7 @@ class vertexBuffer<k2,Q, cubic>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
 public:
     using index_type = typename base_class::index_type;
     explicit vertexBuffer<k2, Q, cubic>(double Lambda, index_type dims) : SplineK2<vertexDataContainer<k2,Q>, Q>(Lambda, dims) {};
-    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const VertexInput &indices) const -> Q {
 
         double w_temp = indices.w;
         double v_temp = indices.v1;
@@ -536,7 +537,7 @@ class vertexBuffer<k3,Q, cubic>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
 public:
     using index_type = typename base_class::index_type;
     explicit vertexBuffer<k3, Q, cubic>(double Lambda, index_type dims) : SplineK3<vertexDataContainer<k3,Q>, Q>(Lambda, dims) {};
-    auto interpolate(const IndicesSymmetryTransformations &indices) const -> Q {
+    auto interpolate(const VertexInput &indices) const -> Q {
 
         double w_temp = indices.w;
         double v_temp = indices.v1;

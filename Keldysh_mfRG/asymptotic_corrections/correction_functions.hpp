@@ -143,29 +143,29 @@ auto asymp_corrections_bubble(K_class k,
     // compute values of left/right vertex
     switch (k) {
         case k1:
-            res_l_V = vertex1.left_same_bare(input_l);
-            res_r_V = vertex2.right_same_bare(input_r);
+            res_l_V = vertex1.template left_same_bare<channel>(input_l);
+            res_r_V = vertex2.template right_same_bare<channel>(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_same_bare(input_l);
-            res_r_Vhat = vertex2.right_same_bare(input_r);
+            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
             break;
         case k2:
             res_l_V = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_V = vertex2.right_same_bare(input_r);
+            res_r_V = vertex2.template right_same_bare<channel>(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
             res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_Vhat = vertex2.right_same_bare(input_r);
+            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
             break;
         case k2b:
-            res_l_V = vertex1.left_same_bare(input_l);
+            res_l_V = vertex1.template left_same_bare<channel>(input_l);
             res_r_V = vertex2.template right_diff_bare<channel>(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_same_bare(input_l);
+            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
             res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
 
             break;

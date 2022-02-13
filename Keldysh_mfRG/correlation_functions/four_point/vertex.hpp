@@ -129,11 +129,11 @@ public:
     template<char ch_bubble> auto value(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
 
     // Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
-    auto left_same_bare(const VertexInput& input) const -> Q;
-    auto left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    template<char ch_bubble> auto left_same_bare(const VertexInput& input) const -> Q;
+    template<char ch_bubble> auto left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
     // Combination of those diagrams that connect to the same bare vertex on the right side: Gamma0, K1, K2
-    auto right_same_bare(const VertexInput& input) const -> Q;
-    auto right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
+    template<char ch_bubble> auto right_same_bare(const VertexInput& input) const -> Q;
+    template<char ch_bubble> auto right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
     // Combination of those diagrams that connect to the different bare vertices on the left side: K2, K3, gamma_bar{r}
     template<char ch_bubble> auto left_diff_bare(const VertexInput& input) const -> Q;
     template<char ch_bubble> auto left_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric vertex
@@ -143,8 +143,8 @@ public:
 
 
     template<char ch_bubble> auto gammaRb_symmetry_expanded(const VertexInput& input) const -> Q;
-    auto left_same_bare_symmetry_expanded(const VertexInput& input) const -> Q;
-    auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q;
+    template<char ch_bubble> auto left_same_bare_symmetry_expanded(const VertexInput& input) const -> Q;
+    template<char ch_bubble> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q;
     template<char ch_bubble> auto left_diff_bare_symmetry_expanded(const VertexInput& input) const -> Q;
     template<char ch_bubble> auto right_diff_bare_symmetry_expanded(const VertexInput& input) const -> Q;
 
@@ -310,13 +310,13 @@ public:
         if constexpr(symmtype==symmetric) return vertex.template value<ch_bubble>(input);
         else                              return vertex.template value<ch_bubble>(input, vertex_half2);
     }
-    auto left_same_bare(const VertexInput& input)  const -> Q {
-        if constexpr(symmtype==symmetric) return vertex.left_same_bare(input);
-        else                              return vertex.left_same_bare(input, vertex_half2);
+    template<char ch_bubble> auto left_same_bare(const VertexInput& input)  const -> Q {
+        if constexpr(symmtype==symmetric) return vertex.template left_same_bare<ch_bubble>(input);
+        else                              return vertex.template left_same_bare<ch_bubble>(input, vertex_half2);
     }
-    auto right_same_bare(const VertexInput& input) const -> Q {
-        if constexpr(symmtype==symmetric) return vertex.right_same_bare(input);
-        else                              return vertex.right_same_bare(input, vertex_half2);
+    template<char ch_bubble> auto right_same_bare(const VertexInput& input) const -> Q {
+        if constexpr(symmtype==symmetric) return vertex.template right_same_bare<ch_bubble>(input);
+        else                              return vertex.template right_same_bare<ch_bubble>(input, vertex_half2);
     }
     template <char ch_bubble> auto left_diff_bare(const VertexInput& input)  const -> Q {
         if constexpr(symmtype==symmetric) return vertex.template left_diff_bare<ch_bubble>(input);
@@ -326,11 +326,11 @@ public:
         if constexpr(symmtype==symmetric) return vertex.template right_diff_bare<ch_bubble>(input);
         else                              return vertex.template right_diff_bare<ch_bubble>(input, vertex_half2);
     }
-    auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> Q {
-        return vertex.left_same_bare_symmetry_expanded(input);
+    template <char ch_bubble> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> Q {
+        return vertex.template left_same_bare_symmetry_expanded<ch_bubble>(input);
     }
-    auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
-        return vertex.right_same_bare_symmetry_expanded(input);
+    template <char ch_bubble> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+        return vertex.template right_same_bare_symmetry_expanded<ch_bubble>(input);
     }
     template <char ch_bubble> auto left_diff_bare_symmetry_expanded(const VertexInput& input)  const -> Q {
         return vertex.template left_diff_bare_symmetry_expanded<ch_bubble>(input);
@@ -569,25 +569,17 @@ template <typename Q> template<char ch_bubble>auto fullvert<Q>::gammaRb (const V
     return res;
 }
 
-template <typename Q> auto fullvert<Q>::left_same_bare(const VertexInput& input) const -> Q {
+template <typename Q> template<char ch_bubble>auto fullvert<Q>::left_same_bare(const VertexInput& input) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
         return gamma0;
 
-    switch (input.channel){
-        case 'a':
-            K1_K2b = avertex.left_same_bare(input, tvertex);
-            break;
-        case 'p':
-            K1_K2b = pvertex.left_same_bare(input, pvertex);
-            break;
-        case 't':
-            K1_K2b = tvertex.left_same_bare(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K1_K2b = avertex.left_same_bare(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K1_K2b = pvertex.left_same_bare(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K1_K2b = tvertex.left_same_bare(input, avertex); }
+    else assert(false); //, "unsupported channel"+std::to_string(ch_bubble));
+
 #ifdef STATIC_FEEDBACK
     if (MAX_DIAG_CLASS <= 1) {
         VertexInput input_p = input;
@@ -615,25 +607,17 @@ template <typename Q> auto fullvert<Q>::left_same_bare(const VertexInput& input)
     assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
 }
-template <typename Q> auto fullvert<Q>::left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
         return gamma0;
 
-    switch (input.channel){
-        case 'a':
-            K1_K2b = avertex.left_same_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
-            break;
-        case 'p':
-            K1_K2b = pvertex.left_same_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
-            break;
-        case 't':
-            K1_K2b = tvertex.left_same_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K1_K2b = avertex.left_same_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K1_K2b = pvertex.left_same_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex); }
+    else if constexpr(ch_bubble == 't'){ K1_K2b = tvertex.left_same_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex); }
+    else assert(false);
+
 #ifdef STATIC_FEEDBACK
     if (MAX_DIAG_CLASS <= 1) {
         VertexInput input_p = input;
@@ -662,26 +646,17 @@ template <typename Q> auto fullvert<Q>::left_same_bare(const VertexInput& input,
     return gamma0 + K1_K2b;
 }
 
-template <typename Q> auto fullvert<Q>::right_same_bare(const VertexInput& input) const -> Q {
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_same_bare(const VertexInput& input) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
         return gamma0;
 
-    switch (input.channel){
-        case 'a':
-            K1_K2 = avertex.right_same_bare(input, tvertex);
-            break;
+    if constexpr (ch_bubble == 'a'){ K1_K2 = avertex.right_same_bare(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K1_K2 = pvertex.right_same_bare(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K1_K2 = tvertex.right_same_bare(input, avertex); }
+    else assert(false);
 
-        case 'p':
-            K1_K2 = pvertex.right_same_bare(input, pvertex);
-            break;
-        case 't':
-            K1_K2 = tvertex.right_same_bare(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
 #ifdef STATIC_FEEDBACK
     if (MAX_DIAG_CLASS <= 1) {
         VertexInput& input_p = input;
@@ -709,26 +684,17 @@ template <typename Q> auto fullvert<Q>::right_same_bare(const VertexInput& input
     assert(isfinite(K1_K2));
     return gamma0 + K1_K2;
 }
-template <typename Q> auto fullvert<Q>::right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
         return gamma0;
 
-    switch (input.channel){
-        case 'a':
-            K1_K2 = avertex.right_same_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
-            break;
+    if constexpr (ch_bubble == 'a'){ K1_K2 = avertex.right_same_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K1_K2 = pvertex.right_same_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex); }
+    else if constexpr(ch_bubble == 't'){ K1_K2 = tvertex.right_same_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex); }
+    else assert(false);
 
-        case 'p':
-            K1_K2 = pvertex.right_same_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
-            break;
-        case 't':
-            K1_K2 = tvertex.right_same_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
-            break;
-        default:
-            return 0.;
-    }
 #ifdef STATIC_FEEDBACK
     if (MAX_DIAG_CLASS <= 1) {
         VertexInput input_p = input;
@@ -767,19 +733,10 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::left_diff_bare(
         return gamma_Rb;
     }
 
-    switch (input.channel){
-        case 'a':
-            K2_K3 = avertex.left_diff_bare(input, tvertex);
-            break;
-        case 'p':
-            K2_K3 = pvertex.left_diff_bare(input, pvertex);
-            break;
-        case 't':
-            K2_K3 = tvertex.left_diff_bare(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K2_K3 = avertex.left_diff_bare(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K2_K3 = pvertex.left_diff_bare(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K2_K3 = tvertex.left_diff_bare(input, avertex); }
+    else assert(false);
     assert(isfinite(K2_K3));
     if (only_same_channel)
         return K2_K3;
@@ -797,19 +754,11 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::left_diff_bare(
         return gamma_Rb;
     }
 
-    switch (input.channel){
-        case 'a':
-            K2_K3 = avertex.left_diff_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
-            break;
-        case 'p':
-            K2_K3 = pvertex.left_diff_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
-            break;
-        case 't':
-            K2_K3 = tvertex.left_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K2_K3 = avertex.left_diff_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K2_K3 = pvertex.left_diff_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex); }
+    else if constexpr(ch_bubble == 't'){ K2_K3 = tvertex.left_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex); }
+    else assert(false);
+
     assert(isfinite(K2_K3));
     if (only_same_channel)
         return K2_K3;
@@ -828,19 +777,10 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_diff_bare
         return gamma_Rb;
     }
 
-    switch (input.channel){
-        case 'a':
-            K2b_K3 = avertex.right_diff_bare(input, tvertex);
-            break;
-        case 'p':
-            K2b_K3 = pvertex.right_diff_bare(input, pvertex);
-            break;
-        case 't':
-            K2b_K3 = tvertex.right_diff_bare(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K2b_K3 = avertex.right_diff_bare(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K2b_K3 = pvertex.right_diff_bare(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K2b_K3 = tvertex.right_diff_bare(input, avertex); }
+    else assert(false);
     assert(isfinite(K2b_K3));
     if (only_same_channel)
         return K2b_K3;
@@ -857,19 +797,12 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_diff_bare
         }
         return gamma_Rb;
     }
-    switch (input.channel){
-        case 'a':
-            K2b_K3 = avertex.right_diff_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex);
-            break;
-        case 'p':
-            K2b_K3 = pvertex.right_diff_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex);
-            break;
-        case 't':
-            K2b_K3 = tvertex.right_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex);
-            break;
-        default:
-            return 0.;
-    }
+
+    if constexpr (ch_bubble == 'a'){ K2b_K3 = avertex.right_diff_bare(input, tvertex, right_vertex.avertex, right_vertex.tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K2b_K3 = pvertex.right_diff_bare(input, pvertex, right_vertex.pvertex, right_vertex.pvertex); }
+    else if constexpr(ch_bubble == 't'){ K2b_K3 = tvertex.right_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex); }
+    else assert(false);
+
     assert(isfinite(K2b_K3));
     if (only_same_channel)
         return K2b_K3;
@@ -896,25 +829,16 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::gammaRb_symmetr
     }
     return res;
 }
-template <typename Q> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
     Q gamma0, K1_K2b;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
         return gamma0;
 
-    switch (input.channel){
-        case 'a':
-            K1_K2b = avertex.left_same_bare_symmetry_expanded(input, tvertex);
-            break;
-        case 'p':
-            K1_K2b = pvertex.left_same_bare_symmetry_expanded(input, pvertex);
-            break;
-        case 't':
-            K1_K2b = tvertex.left_same_bare_symmetry_expanded(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K1_K2b = avertex.left_same_bare_symmetry_expanded(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K1_K2b = pvertex.left_same_bare_symmetry_expanded(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K1_K2b = tvertex.left_same_bare_symmetry_expanded(input, avertex); }
+    else assert(false);
 
 #ifdef STATIC_FEEDBACK
     assert(false): /// Needs to be checked
@@ -944,26 +868,16 @@ template <typename Q> auto fullvert<Q>::left_same_bare_symmetry_expanded(const V
     assert(isfinite(K1_K2b));
     return gamma0 + K1_K2b;
 }
-template <typename Q> auto fullvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
+template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const -> Q {
     Q gamma0, K1_K2;
     gamma0 = irred.val(input.iK, input.i_in, input.spin);
     if (Ir)
         return gamma0;
 
-    switch (input.channel){
-        case 'a':
-            K1_K2 = avertex.right_same_bare_symmetry_expanded(input, tvertex);
-            break;
-
-        case 'p':
-            K1_K2 = pvertex.right_same_bare_symmetry_expanded(input, pvertex);
-            break;
-        case 't':
-            K1_K2 = tvertex.right_same_bare_symmetry_expanded(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K1_K2 = avertex.right_same_bare_symmetry_expanded(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K1_K2 = pvertex.right_same_bare_symmetry_expanded(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K1_K2 = tvertex.right_same_bare_symmetry_expanded(input, avertex); }
+    else assert(false);
 #ifdef STATIC_FEEDBACK
     assert(false); // Check this!
     if (MAX_DIAG_CLASS <= 1) {
@@ -1002,19 +916,10 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::left_diff_bare_
         return gamma_Rb;
     }
 
-    switch (input.channel){
-        case 'a':
-            K2_K3 = avertex.left_diff_bare_symmetry_expanded(input, tvertex);
-            break;
-        case 'p':
-            K2_K3 = pvertex.left_diff_bare_symmetry_expanded(input, pvertex);
-            break;
-        case 't':
-            K2_K3 = tvertex.left_diff_bare_symmetry_expanded(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K2_K3 = avertex.left_diff_bare_symmetry_expanded(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K2_K3 = pvertex.left_diff_bare_symmetry_expanded(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K2_K3 = tvertex.left_diff_bare_symmetry_expanded(input, avertex); }
+    else assert(false);
     assert(isfinite(K2_K3));
     if (only_same_channel)
         return K2_K3;
@@ -1032,19 +937,10 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::right_diff_bare
         return gamma_Rb;
     }
 
-    switch (input.channel){
-        case 'a':
-            K2b_K3 = avertex.right_diff_bare_symmetry_expanded(input, tvertex);
-            break;
-        case 'p':
-            K2b_K3 = pvertex.right_diff_bare_symmetry_expanded(input, pvertex);
-            break;
-        case 't':
-            K2b_K3 = tvertex.right_diff_bare_symmetry_expanded(input, avertex);
-            break;
-        default:
-            return 0.;
-    }
+    if constexpr (ch_bubble == 'a'){ K2b_K3 = avertex.right_diff_bare_symmetry_expanded(input, tvertex); }
+    else if constexpr(ch_bubble == 'p'){ K2b_K3 = pvertex.right_diff_bare_symmetry_expanded(input, pvertex); }
+    else if constexpr(ch_bubble == 't'){ K2b_K3 = tvertex.right_diff_bare_symmetry_expanded(input, avertex); }
+    else assert(false);
     assert(isfinite(K2b_K3));
     if (only_same_channel)
         return K2b_K3;
