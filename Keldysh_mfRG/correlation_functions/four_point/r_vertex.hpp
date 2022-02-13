@@ -172,12 +172,12 @@ public:
      * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                         symmetry transformations that map between channels a <--> t.
      */
-    auto value(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
+    template<char ch_bubble> auto value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
     /** Overload for accessing non-symmetric vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true
      */
-    auto value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    template<char ch_bubble> auto value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
     /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
     /// This version is used for a symmetric vertex
@@ -235,7 +235,7 @@ public:
      * Transform the frequencies from the frequency convention of input.channel to the frequency convention of
      * this->channel. Necessary when accessing the r vertex from a different channel r'.
      */
-    void transfToR(VertexInput& input) const;
+    template<char ch_bubble> void transfToR(VertexInput& input) const;
 
     /**
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
@@ -741,26 +741,27 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 }
 #endif
 
-template <typename Q> auto rvert<Q>::value(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
 
-    VertexInput input_tmp = input;
-    transfToR(input_tmp); // input manipulated here => input needs to be called by value
+template <typename Q> template<char ch_bubble> auto rvert<Q>::value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
+
+    //VertexInput input_tmp = input;
+    transfToR<ch_bubble>(input); // input manipulated here => input needs to be called by value
 
     Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input_tmp, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing);
     if (MAX_DIAG_CLASS >= 2) {
-        val += valsmooth<k2> (input_tmp, rvert_crossing);
-        val += valsmooth<k2b>(input_tmp, rvert_crossing);
+        val += valsmooth<k2> (input, rvert_crossing);
+        val += valsmooth<k2b>(input, rvert_crossing);
     }
-    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input_tmp, rvert_crossing);
+    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing);
 
     return val;
 }
-template <typename Q> auto rvert<Q>::value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
+template <typename Q> template<char ch_bubble> auto rvert<Q>::value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
 
     VertexInput input_tmp = input;
-    transfToR(input_tmp);   // input might be in different channel parametrization
+    transfToR<ch_bubble>(input_tmp);   // input might be in different channel parametrization
 
 
     Q val;   // force zero initialization
@@ -882,7 +883,7 @@ void rvert<Q>::cross_project() {
 }
 
 
-template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
+template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexInput& input) const {
     double w, v1, v2;
 
     // Needed for finite-temperature Matsubara
@@ -891,7 +892,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
     if (!KELDYSH and !ZERO_T){ floor2bf_inputw = floor2bfreq(input.w / 2.);}
     switch (channel) {
         case 'a':
-            switch (input.channel) {
+            switch (ch_bubble) {
                 case 'a':
                     return;                                    // do nothing
                 case 'p':
@@ -938,7 +939,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
             }
             break;
         case 'p':
-            switch (input.channel) {
+            switch (ch_bubble) {
                 case 'a':
                     if (KELDYSH || ZERO_T){
                         w  = input.v1+input.v2;                    // input.w  = w_a
@@ -983,7 +984,7 @@ template <typename Q> void rvert<Q>::transfToR(VertexInput& input) const {
             }
             break;
         case 't':
-            switch (input.channel) {
+            switch (ch_bubble) {
                 case 'a':
                     if (KELDYSH || ZERO_T){
                         w  = input.v1-input.v2;                    // input.w  = w_a

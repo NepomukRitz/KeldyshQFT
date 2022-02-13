@@ -43,7 +43,7 @@
  * @param channel         : Diagrammatic channel
  * @return                : Value of the asymptotic correction
  */
-template <typename Q,
+template <char channel, typename Q,
           symmetryType symmetry_left,
           symmetryType symmetry_right>
 auto asymp_corrections_bubble(K_class k,
@@ -51,7 +51,7 @@ auto asymp_corrections_bubble(K_class k,
                               const GeneralVertex<Q, symmetry_right>& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel, bool diff, int spin) -> Q {
+                              double w, double v, double vp, int i0_in, int i2, int i_in, bool diff, int spin) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
@@ -152,31 +152,31 @@ auto asymp_corrections_bubble(K_class k,
 
             break;
         case k2:
-            res_l_V = vertex1.left_diff_bare(input_l);
+            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
             res_r_V = vertex2.right_same_bare(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_diff_bare(input_l);
+            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
             res_r_Vhat = vertex2.right_same_bare(input_r);
 
             break;
         case k2b:
             res_l_V = vertex1.left_same_bare(input_l);
-            res_r_V = vertex2.right_diff_bare(input_r);
+            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
             res_l_Vhat = vertex1.left_same_bare(input_l);
-            res_r_Vhat = vertex2.right_diff_bare(input_r);
+            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
 
             break;
         case k3:
-            res_l_V = vertex1.left_diff_bare(input_l);
-            res_r_V = vertex2.right_diff_bare(input_r);
+            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
 
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_diff_bare(input_l);
-            res_r_Vhat = vertex2.right_diff_bare(input_r);
+            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
             break;
         default:;
     }

@@ -86,7 +86,7 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
         vertex_in_SOPT.avertex().K1.K1_get_freq_w(w1, iw1);
 
         VertexInput input(vertex_Keldysh_component(iK, iK_internal), it_spin, w1, 0., 0., i_in, 'a'); // TODO: Spin sum!?
-        vertex_values[i_in] = vertex_in_SOPT.avertex().value(input, vertex_in_SOPT.tvertex());
+        vertex_values[i_in] = vertex_in_SOPT.avertex().template value<'a'>(input, vertex_in_SOPT.tvertex());
         //if (iK==1 && iK_internal==0 && iv1==0 && i_in==0) {
         //    print("iw1 = " +std::to_string(iw1) + ", w1 = " + std::to_string(w1) + ": ", false);
         //    print(vertex_values[i_in], true);

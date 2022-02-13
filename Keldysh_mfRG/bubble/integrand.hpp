@@ -36,7 +36,7 @@ class IntegrandBubble{
     bool diff;
     double w;
     int iK;
-    char channel;
+    const char channel;
 
 public:
     /**
@@ -84,7 +84,7 @@ public:
 
 
 /// Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class
-template <typename Q,
+template <char channel, typename Q,
         symmetryType symmetry_left,
         symmetryType symmetry_right,
         class Bubble_Object>
@@ -97,7 +97,6 @@ private:
     const int i2;
     const int i_in;
     const int i_spin;
-    const char channel;
     const int iw=0;
     const double w, v = 0., vp = 0.;
     const bool diff;
@@ -138,9 +137,9 @@ public:
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
               int i0_in, int i2_in, const int spin_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
-              const int i_spin_in, const char ch_in, const bool diff_in, const K_class k_in)
+              const int i_spin_in, const bool diff_in, const K_class k_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-              i2(i2_in), spin(spin_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), channel(ch_in), diff(diff_in), diag_class(k_in){
+              i2(i2_in), spin(spin_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), diff(diff_in), diag_class(k_in){
         set_Keldysh_index_i0(i0_in);
         if (MAX_DIAG_CLASS < 2) {precompute_vertices();}
     }
@@ -157,8 +156,8 @@ public:
     void get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im)  const;
 };
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0(const int i0_in) {
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+void Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0(const int i0_in) {
     if (KELDYSH){
 #ifndef DEBUG_SYMMETRIES
         switch (diag_class) {
@@ -192,8 +191,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_ind
     }
 }
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vertices(){
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+void Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vertices(){
     // For K1 class, left and right vertices do not depend on integration frequency
     // -> precompute them to save time
 #ifndef DEBUG_SYMMETRIES
@@ -242,8 +241,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 #endif // DEBUG_SYMMETRIES
 }
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+auto Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
     Q result;
 #ifndef SWITCH_SUM_N_INTEGRAL
 
@@ -309,33 +308,19 @@ auto Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(doub
     //assert(false);
     VertexInput input_external (i0, spin, w, v, vp, i_in, channel, diag_class, iw);
 
-    if (channel == 'a')
-        result = sum_over_internal<'a',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
-                      Pi,
-                      [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
-                      input_external, vpp
+    result = sum_over_internal<channel,Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.template left_diff_bare<channel>(input_l);},
+                  Pi,
+                  [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare<channel>(input_r); else return vertex2.right_same_bare(input_r);},
+                  input_external, vpp
     );
-    else if (channel == 'p') {
-        result = sum_over_internal<'p',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
-                               Pi,
-                               [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
-                               input_external, vpp
-        );
-    }
-    else {
-        result = sum_over_internal<'t',Q>([&](const VertexInput& input_l) -> Q {if (diag_class == k1 or diag_class == k2b) return vertex1.left_same_bare(input_l) ; else return vertex1.left_diff_bare(input_l);},
-                               Pi,
-                               [&](const VertexInput& input_r) -> Q {if (diag_class == k3 or diag_class == k2b) return vertex2.right_diff_bare(input_r); else return vertex2.right_same_bare(input_r);},
-                               input_external, vpp
-        );
-    }
+
 #endif
 
     return result;
 }
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has_to_be_zero() const {
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+bool Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has_to_be_zero() const {
     bool zero_result = false;
     if (KELDYSH && (MAX_DIAG_CLASS <= 1)){
         if (!diff) {
@@ -368,8 +353,8 @@ bool Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has
     return zero_result;
 }
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+void Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
                                                                                   Q& res_l_V, Q& res_r_V,
                                                                                   Q& res_l_Vhat, Q& res_r_Vhat) const{
     if (MAX_DIAG_CLASS <= 1){
@@ -451,8 +436,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
     }
 }
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im) const {
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+void Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im) const {
     int npoints = freqs.size();
     for (int i=0; i<npoints; ++i) {
 
@@ -485,8 +470,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_v
 
 }
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+void Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
     int npoints = 10000;//nBOS;
     if (diag_class == k2) {npoints = 1000;}
@@ -524,8 +509,8 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(
 
 }
 
-template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
-void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
+template<char channel, typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+void Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
     /// evaluate the integrand on frequency points in freqs
     int npoints = freqs.size();
 

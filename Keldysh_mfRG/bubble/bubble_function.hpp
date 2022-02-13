@@ -18,7 +18,8 @@
 #include "integrand.hpp"
 
 
-template <typename Q,
+template <char channel,
+        typename Q,
         symmetryType symmetry_result,
         symmetryType symmetry_left,
         symmetryType symmetry_right,
@@ -31,7 +32,6 @@ class BubbleFunctionCalculator{
     const GeneralVertex<Q, symmetry_right>& vertex2;
 
     const Bubble_Object& Pi;
-    const char channel;
     const bool diff = Pi.diff;
 
     const double Delta = (Pi.g.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
@@ -90,10 +90,9 @@ class BubbleFunctionCalculator{
     BubbleFunctionCalculator(GeneralVertex<Q, symmetry_result>& dgamma_in,
                              const GeneralVertex<Q, symmetry_left>& vertex1_in,
                              const GeneralVertex<Q, symmetry_right>& vertex2_in,
-                             const Bubble_Object& Pi_in,
-                             const char channel_in)
+                             const Bubble_Object& Pi_in)
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
-                             Pi(Pi_in), channel(channel_in){
+                             Pi(Pi_in){
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
@@ -109,10 +108,10 @@ class BubbleFunctionCalculator{
     }
 };
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
 Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
 // set channel-specific frequency ranges and prefactor (1, 1, -1 for a, p, t) for sum over spins.
     switch (channel) {
@@ -147,9 +146,9 @@ Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
     }
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
-void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
+void BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
     if (HUBBARD_MODEL){ // In the HM we have a larger frequency box for the SE and want to limit us to the range of bosonic vertex frequencies.
         vmin = dgamma.avertex().K1.K1_get_wlower();
@@ -179,13 +178,13 @@ void BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     }
 }
 
-template<typename Q,
+template<char channel, typename Q,
         symmetryType symmetry_result,
         symmetryType symmetry_left,
         symmetryType symmetry_right,
         class Bubble_Object>
 bool
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::missing_cross_projection() {
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::missing_cross_projection() {
     switch (channel) {
         case 'a':
             if (!vertex1.pvertex().calculated_crossprojections ||
@@ -218,10 +217,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubb
     }
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
 
     double t_start = get_time();
@@ -256,10 +255,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_bubble_function(const K_class diag_class){
     if (diag_class < k1 || diag_class > k3){print("Incompatible diagrammatic class! Abort."); assert(false); return;}
 
@@ -295,10 +294,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 Q
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_value(const int i_mpi, const int i_omp, const int n_omp, const K_class diag_class){
     Q value = 0.;
     int iK1, iK2, i0, ispin, iw, iv, ivp, i_in;
@@ -349,10 +348,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     return value;
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_value(Q& value, const int i0, const int i_in, const int ispin, const int iw,
                                            const double w, const double v, const double vp, const K_class k){
 
@@ -368,8 +367,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             int i_spin = 0;
 #endif
             // initialize the integrand object and perform frequency integration
-            Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>
-                    integrand(vertex1, vertex2, Pi, i0, i2, ispin, iw, w, v, vp, i_in, i_spin, channel, diff, k);
+            Integrand<channel, Q, symmetry_left, symmetry_right, Bubble_Object>
+                    integrand(vertex1, vertex2, Pi, i0, i2, ispin, iw, w, v, vp, i_in, i_spin, diff, k);
             if (ZERO_T) {
                 switch (k) {
                     case k1:
@@ -417,18 +416,19 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         for (int i2 : glb_non_zero_Keldysh_bubble) {
 #endif
         // asymptotic corrections include spin sum
-        if ( !HUBBARD_MODEL and !ZERO_T) value += bubble_value_prefactor() *
-                                        asymp_corrections_bubble(k, vertex1, vertex2, Pi.g,
-                                                                 vmin_temp, vmax_temp, w, v, vp, i0, i2, i_in, channel, diff, ispin);
+        if ( !HUBBARD_MODEL and !ZERO_T) {
+                value += bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
+                                                                                  vmin_temp, vmax_temp, w, v, vp, i0, i2, i_in, diff, ispin);
+        }
 
     }
 }
 
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results(const vec<Q>& Ordered_result, const K_class diag_class){
     switch (diag_class) {
         case k1:
@@ -450,10 +450,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     dgamma.set_initializedInterpol(false);      // above initialization of the Interpolator is with the symmetry-reduced sector only (rest = zero)
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::write_out_results_K1(const vec<Q>& K1_ordered_result){
     switch (channel) {
         case 'a':
@@ -481,10 +481,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     }
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
     assert( K2_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
     switch (channel) {
@@ -517,7 +517,7 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 }
 
 #ifdef DEBUG_SYMMETRIES
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
@@ -547,10 +547,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 }
 #endif
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
     switch (channel) {
         case 'a':
@@ -581,10 +581,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 #endif
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, const K_class diag_class){
     switch (diag_class) {
         case k1:
@@ -604,10 +604,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     }
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, double& w,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK1 = i_mpi * n_omp + i_omp;
@@ -621,10 +621,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (channel == 't') dgamma.tvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& ispin,  int& iw, int& iv, int& i_in,
                                                                                 double& w, double& v,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
@@ -640,10 +640,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 }
 
 #ifdef DEBUG_SYMMETRIES
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2b(int& iK2, int& i0, int& ispin,  int& iw, int& ivp, int& i_in,
                                                                                 double& w, double& vp,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
@@ -659,10 +659,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 }
 #endif
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& ispin,  int& iw, int& iv, int& ivp, int& i_in,
                                                                                      double& w, double& v, double& vp,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
@@ -679,10 +679,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
 }
 
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 int
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::get_trafo_K1(const int i0, const double w){
     int trafo = 1;
 #ifdef DEBUG_SYMMETRIES
@@ -708,10 +708,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     return trafo;
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 int
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_trafo_K2(const int i0, const double w, const double v){
     int trafo = 1;
 #ifdef DEBUG_SYMMETRIES
@@ -760,10 +760,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     return trafo;
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 int
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::get_trafo_K3(const int i0, const double w, const double v, const double vp){
     int trafo = 1;
 #ifdef DEBUG_SYMMETRIES
@@ -805,10 +805,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     return trafo;
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 void
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<double>>& intervals,
                                                                  const double w){
     if( -std::abs(w/2)+inter_tol < std::abs(w/2)-inter_tol){
@@ -821,10 +821,10 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     }
 }
 
-template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
+template<char channel, typename Q, symmetryType symmetry_result, symmetryType symmetry_left,
         symmetryType symmetry_right, class Bubble_Object>
 Q
-BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::bubble_value_prefactor(){
     if constexpr (KELDYSH) return prefactor * (1. / (2. * M_PI * glb_i));
     else                   return prefactor * (1. / (2. * M_PI));
@@ -843,9 +843,22 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                                  const GeneralVertex<Q, symmetry_right>& vertex2,
                                  const Bubble_Object& Pi,
                                  const char channel){
-    BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
-            BubbleComputer (dgamma, vertex1, vertex2, Pi, channel);
-    if (channel == 'a' or channel == 'p' or channel == 't') BubbleComputer.perform_computation();
+
+    if (channel == 'a') {
+        BubbleFunctionCalculator<'a', Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
+                BubbleComputer (dgamma, vertex1, vertex2, Pi);
+        BubbleComputer.perform_computation();
+    }
+    else if (channel == 'p') {
+        BubbleFunctionCalculator<'p', Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
+                BubbleComputer (dgamma, vertex1, vertex2, Pi);
+        BubbleComputer.perform_computation();
+    }
+    else if (channel == 't') {
+        BubbleFunctionCalculator<'t', Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>
+                BubbleComputer (dgamma, vertex1, vertex2, Pi);
+        BubbleComputer.perform_computation();
+    }
     //else {print("Error! Incompatible channel given to bubble_function. Abort"); }
 
 }
