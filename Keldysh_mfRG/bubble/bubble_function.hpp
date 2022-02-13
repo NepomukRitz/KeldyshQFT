@@ -792,7 +792,6 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
             print("Something went wrong in get_trafo_K3! Abort."); assert(false);
     }
 
-    trafo = 0;
     if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f())) {
         trafo = -1;
         //std::cout << "omitted frequencies: " << v << "\t" << vp << std::endl;
