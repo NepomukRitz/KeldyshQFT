@@ -1364,9 +1364,9 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs.initialize_grid();
     // copy grids to result
     result.selfenergy.frequencies = ffreqs;
-    result.vertex.avertex().K1.frequencies_K1.b = bfreqsa;
-    result.vertex.pvertex().K1.frequencies_K1.b = bfreqsp;
-    result.vertex.tvertex().K1.frequencies_K1.b = bfreqst;
+    result.vertex.avertex().K1.frequencies.b = bfreqsa;
+    result.vertex.pvertex().K1.frequencies.b = bfreqsp;
+    result.vertex.tvertex().K1.frequencies.b = bfreqst;
 #if MAX_DIAG_CLASS >= 2
     FrequencyGrid bfreqs2a ('b', 2, Lambda_ini);
     FrequencyGrid ffreqs2a ('f', 2, Lambda_ini);
@@ -1404,12 +1404,12 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs2p.initialize_grid();
     bfreqs2t.initialize_grid();
     ffreqs2t.initialize_grid();
-    result.vertex.avertex().K2.frequencies_K2.b = bfreqs2a;
-    result.vertex.pvertex().K2.frequencies_K2.b = bfreqs2a;
-    result.vertex.tvertex().K2.frequencies_K2.b = bfreqs2p;
-    result.vertex.avertex().K2.frequencies_K2.f = ffreqs2p;
-    result.vertex.pvertex().K2.frequencies_K2.f = ffreqs2t;
-    result.vertex.tvertex().K2.frequencies_K2.f = ffreqs2t;
+    result.vertex.avertex().K2.frequencies.b = bfreqs2a;
+    result.vertex.pvertex().K2.frequencies.b = bfreqs2a;
+    result.vertex.tvertex().K2.frequencies.b = bfreqs2p;
+    result.vertex.avertex().K2.frequencies.f = ffreqs2p;
+    result.vertex.pvertex().K2.frequencies.f = ffreqs2t;
+    result.vertex.tvertex().K2.frequencies.f = ffreqs2t;
 #endif
 #if MAX_DIAG_CLASS >= 3
     FrequencyGrid bfreqs3a ('b', 3, Lambda_ini);
@@ -1448,12 +1448,12 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     ffreqs3p.initialize_grid();
     bfreqs3t.initialize_grid();
     ffreqs3t.initialize_grid();
-    result.vertex.avertex().K3.frequencies_K3.b = bfreqs3a;
-    result.vertex.pvertex().K3.frequencies_K3.b = bfreqs3a;
-    result.vertex.tvertex().K3.frequencies_K3.b = bfreqs3p;
-    result.vertex.avertex().K3.frequencies_K3.f = ffreqs3p;
-    result.vertex.pvertex().K3.frequencies_K3.f = ffreqs3t;
-    result.vertex.tvertex().K3.frequencies_K3.f = ffreqs3t;
+    result.vertex.avertex().K3.frequencies.b = bfreqs3a;
+    result.vertex.pvertex().K3.frequencies.b = bfreqs3a;
+    result.vertex.tvertex().K3.frequencies.b = bfreqs3p;
+    result.vertex.avertex().K3.frequencies.f = ffreqs3p;
+    result.vertex.pvertex().K3.frequencies.f = ffreqs3t;
+    result.vertex.tvertex().K3.frequencies.f = ffreqs3t;
 #endif
 }
 

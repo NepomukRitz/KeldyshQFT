@@ -1234,7 +1234,7 @@ class TestIntegrandK1a{
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1247,7 +1247,7 @@ class TestIntegrandK1a{
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i + 1) * (1 - frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1397,7 +1397,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1410,7 +1410,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1490,7 +1490,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1503,7 +1503,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1580,7 +1580,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=1; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1593,7 +1593,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1670,18 +1670,18 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
     // get SOPT K1 (exact)
     for (int i = 0; i<nBOS; i++) {
-        double w = PT_state.vertex.avertex().K1.frequencies_K1.b.get_ws(i);
+        double w = PT_state.vertex.avertex().K1.frequencies.b.get_ws(i);
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1, 0, it_spin,  i, 0);
-        w = PT_state.vertex.pvertex().K1.frequencies_K1.b.get_ws(i);
+        w = PT_state.vertex.pvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1, 0, it_spin, i, 0);
-        w = PT_state.vertex.tvertex().K1.frequencies_K1.b.get_ws(i);
+        w = PT_state.vertex.tvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1/glb_U, 0, it_spin, i, 0);
@@ -1816,7 +1816,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1829,7 +1829,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -1913,7 +1913,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -1926,7 +1926,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2006,7 +2006,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -2019,7 +2019,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2104,7 +2104,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -2117,7 +2117,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2202,7 +2202,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -2215,7 +2215,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2300,7 +2300,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=1; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -2313,7 +2313,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -2666,7 +2666,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
     // get SOPT K1 (exact)
     for (int i = 0; i<nBOS; i++) {
-        double w = PT_state.vertex.avertex().K1.frequencies_K1.b.get_ws(i);
+        double w = PT_state.vertex.avertex().K1.frequencies.b.get_ws(i);
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
@@ -2674,13 +2674,13 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1  , 0, it_spin,  i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1_K, 1, it_spin,  i, 0);
-        w = PT_state.vertex.pvertex().K1.frequencies_K1.b.get_ws(i);
+        w = PT_state.vertex.pvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1  , 0, it_spin, i, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1_K, 1, it_spin, i, 0);
-        w = PT_state.vertex.tvertex().K1.frequencies_K1.b.get_ws(i);
+        w = PT_state.vertex.tvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         val_K1_K = state_cpp.vertex.tvertex().K1.val(1, it_spin, i, 0);

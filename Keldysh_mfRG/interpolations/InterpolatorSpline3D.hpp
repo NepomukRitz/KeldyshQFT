@@ -12,7 +12,7 @@
 
 /**
  * SplineK3 interpolation
- * @tparam DataContainer  contains vertex data and frequency grids frequencies_K3.b and frequencies_K3.f
+ * @tparam DataContainer  contains vertex data and frequency grids frequencies.b and frequencies.f
  *                          computes partial derivative of data in x, y, z direction (and combinations of x/y/z)
  * @tparam Q              double or comp
  */
@@ -303,18 +303,18 @@ Q SplineK3<DataContainer,Q>::interpolK3 (const int iK, const int spin, const dou
 {
     assert(initialized);
     double tw;
-    const size_t iw=DataContainer::frequencies_K3.b.fconv(tw, w);
+    const size_t iw=DataContainer::frequencies.b.fconv(tw, w);
     double tv;
-    const size_t iv=DataContainer::frequencies_K3.f.fconv(tv, v);
+    const size_t iv=DataContainer::frequencies.f.fconv(tv, v);
     double tvp;
-    const size_t ivp=DataContainer::frequencies_K3.f.fconv(tvp, vp);
+    const size_t ivp=DataContainer::frequencies.f.fconv(tvp, vp);
 
-    const double dw = DataContainer::frequencies_K3.b.get_ts(iw +1) - DataContainer::frequencies_K3.b.get_ts(iw );
-    const double dv = DataContainer::frequencies_K3.f.get_ts(iv +1) - DataContainer::frequencies_K3.f.get_ts(iv );
-    const double dvp= DataContainer::frequencies_K3.f.get_ts(ivp+1) - DataContainer::frequencies_K3.f.get_ts(ivp);
-    const double hw = (tw - DataContainer::frequencies_K3.b.get_ts(iw )) / dw;
-    const double hv = (tv - DataContainer::frequencies_K3.f.get_ts(iv )) / dv;
-    const double hvp= (tvp- DataContainer::frequencies_K3.f.get_ts(ivp)) / dvp;
+    const double dw = DataContainer::frequencies.b.get_ts(iw +1) - DataContainer::frequencies.b.get_ts(iw );
+    const double dv = DataContainer::frequencies.f.get_ts(iv +1) - DataContainer::frequencies.f.get_ts(iv );
+    const double dvp= DataContainer::frequencies.f.get_ts(ivp+1) - DataContainer::frequencies.f.get_ts(ivp);
+    const double hw = (tw - DataContainer::frequencies.b.get_ts(iw )) / dw;
+    const double hv = (tv - DataContainer::frequencies.f.get_ts(iv )) / dv;
+    const double hvp= (tvp- DataContainer::frequencies.f.get_ts(ivp)) / dvp;
 
 
     const vec<Q> coeffs = get_coeffs_from_derivs(iK, spin, iw, iv, ivp, i_in, dw, dv, dvp);

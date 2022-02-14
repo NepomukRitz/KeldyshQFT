@@ -21,7 +21,7 @@
 
 /**
  * SplineK2 interpolation
- * @tparam DataContainer  contains vertex data and frequency grids frequencies_K2.b and frequencies_K2.f
+ * @tparam DataContainer  contains vertex data and frequency grids frequencies.b and frequencies.f
  *                          computes partial derivative of data in x, y and x&y direction
  * @tparam Q              double or comp
  */
@@ -148,14 +148,14 @@ Q SplineK2<DataContainer,Q>::interpolK2 (const int iK, const int spin, const dou
 
     assert(initialized);
     double tw;
-    const size_t iw=DataContainer::frequencies_K2.b.fconv(tw, w);
+    const size_t iw=DataContainer::frequencies.b.fconv(tw, w);
     double tv;
-    const size_t iv=DataContainer::frequencies_K2.f.fconv(tv, v);
+    const size_t iv=DataContainer::frequencies.f.fconv(tv, v);
 
-    const double dw = DataContainer::frequencies_K2.b.get_ts(iw+1) - DataContainer::frequencies_K2.b.get_ts(iw);
-    const double dv = DataContainer::frequencies_K2.f.get_ts(iv+1) - DataContainer::frequencies_K2.f.get_ts(iv);
-    const double hw = (tw - DataContainer::frequencies_K2.b.get_ts(iw)) / dw;
-    const double hv = (tv - DataContainer::frequencies_K2.f.get_ts(iv)) / dv;
+    const double dw = DataContainer::frequencies.b.get_ts(iw+1) - DataContainer::frequencies.b.get_ts(iw);
+    const double dv = DataContainer::frequencies.f.get_ts(iv+1) - DataContainer::frequencies.f.get_ts(iv);
+    const double hw = (tw - DataContainer::frequencies.b.get_ts(iw)) / dw;
+    const double hv = (tv - DataContainer::frequencies.f.get_ts(iv)) / dv;
 
 
     vec<Q> coeffs = get_coeffs_from_derivs(iK, spin, iw, iv, i_in, dw, dv);

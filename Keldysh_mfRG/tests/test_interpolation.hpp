@@ -113,7 +113,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -126,7 +126,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 

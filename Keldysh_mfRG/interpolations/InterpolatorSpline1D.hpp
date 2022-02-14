@@ -41,7 +41,7 @@
 
 /**
  * SplineK1 interpolation
- * @tparam DataContainer  contains vertex data and frequency grid frequencies_K1.b
+ * @tparam DataContainer  contains vertex data and frequency grid frequencies.b
  *                          computes derivative of data
  * @tparam Q              double or comp
  */
@@ -54,7 +54,7 @@ public:
     mutable bool initialized = false;
 
 protected:
-    //std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
+    //std::vector<double> m_x = DataContainer::frequencies.b.ts;
     size_t n;   // flat size of data vector (and interpolation coefficients)
     size_t i_x; // index of w dimension in DataContainer::dims
     mutable vec<Q> m_b = vec<Q>(n),m_c= vec<Q>(n),m_d= vec<Q>(n);        // SplineK1 coefficients
@@ -96,12 +96,12 @@ public:
     template <class DataContainer, typename Q>
     void SplineK1<DataContainer,Q>::set_coeffs_from_b() const
     {
-        size_t n_x = DataContainer::frequencies_K1.b.get_ws_vec().size();
+        size_t n_x = DataContainer::frequencies.b.get_ws_vec().size();
         size_t n_nonx = n/n_x;
 
     for(size_t i=0; i<n_nonx; i++) {
         for (size_t j=0; j<n_x-1; j++) { /// i=n_x-1 not treated (only used for extrapolation to the right)
-            const double h  = DataContainer::frequencies_K1.b.get_ts(j+1)-DataContainer::frequencies_K1.b.get_ts(j);      /// spacing
+            const double h  = DataContainer::frequencies.b.get_ts(j+1)-DataContainer::frequencies.b.get_ts(j);      /// spacing
             // from continuity and differentiability condition
             m_c[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] = (3.0 * (DataContainer::data[::rotateFlatIndex(i*n_x+j+1, DataContainer::dims, i_x)] - DataContainer::data[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)]) / h - (2.0 * m_b[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] + m_b[::rotateFlatIndex(i*n_x+j+1, DataContainer::dims, i_x)]) ) / h;   /// checked
             // from differentiability condition
@@ -225,9 +225,9 @@ public:
     {
     assert(initialized);
     double t;
-    int idx=DataContainer::frequencies_K1.b.fconv(t, x);
+    int idx=DataContainer::frequencies.b.fconv(t, x);
 
-    double h = t - DataContainer::frequencies_K1.b.get_ts(idx);
+    double h = t - DataContainer::frequencies.b.get_ts(idx);
     Q interpol;
     interpol   =((m_d[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx, i_in, DataContainer::dims)]*h
                 + m_c[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx, i_in, DataContainer::dims)])*h
@@ -242,7 +242,7 @@ public:
     Q SplineK1<DataContainer,Q>::deriv(int order, double x) const
     {
     assert(order>0);
-    size_t idx = DataContainer::frequencies_K1.b.fconv(x);
+    size_t idx = DataContainer::frequencies.b.fconv(x);
 
     double h=x-m_x[idx];
     Q interpol;

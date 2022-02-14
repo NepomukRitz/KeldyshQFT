@@ -369,8 +369,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
 
                 double w, v;
                 avertex.K2.K2_get_freqs_aux(w, v, iw, iv);
-                //= avertex.frequencies_K2.b.ts[iw];
-                //double v = avertex.frequencies_K2.f.ts[iv];
+                //= avertex.frequencies.b.ts[iw];
+                //double v = avertex.frequencies.f.ts[iv];
                 value = cubicFunction2D(w, v);
                 avertex.K2.setvert(value, iK, i_spin, iw, iv, i_in);
                 value += 1;
@@ -526,9 +526,9 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
 
                     double w, v, vp;
                     avertex.K3.K3_get_freqs_aux(w, v, vp, iw, iv, ivp);
-                    //= avertex.frequencies_K3.b.ts[iw];
-                    //double v = avertex.frequencies_K3.f.ts[iv];
-                    //double vp= avertex.frequencies_K3.f.ts[ivp];
+                    //= avertex.frequencies.b.ts[iw];
+                    //double v = avertex.frequencies.f.ts[iv];
+                    //double vp= avertex.frequencies.f.ts[ivp];
                     value = cubicFunction3D(w, v, vp);
                     avertex.K3.setvert(value, iK, i_spin, iw, iv, ivp, i_in);
                 }

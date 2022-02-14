@@ -41,7 +41,7 @@ public:
 
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (std::abs(indices.w) < vertexDataContainer<k1, Q>::frequencies_K1.b.w_upper + inter_tol)
+        if (std::abs(indices.w) < vertexDataContainer<k1, Q>::frequencies.b.w_upper + inter_tol)
         {
 
             Q result;
@@ -118,8 +118,8 @@ public:
 
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (    std::abs(indices.w ) < vertexDataContainer<k2, Q>::frequencies_K2.b.w_upper + inter_tol
-                && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies_K2.f.w_upper + inter_tol )
+        if (    std::abs(indices.w ) < vertexDataContainer<k2, Q>::frequencies.b.w_upper + inter_tol
+                && std::abs(indices.v1) < vertexDataContainer<k2, Q>::frequencies.f.w_upper + inter_tol )
         {
 
             Q result;
@@ -208,8 +208,8 @@ public:
 
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (    std::abs(indices.w ) < vertexDataContainer<k2b, Q>::frequencies_K2.b.w_upper + inter_tol
-                && std::abs(indices.v2) < vertexDataContainer<k2b, Q>::frequencies_K2.f.w_upper + inter_tol )
+        if (    std::abs(indices.w ) < vertexDataContainer<k2b, Q>::frequencies.b.w_upper + inter_tol
+                && std::abs(indices.v2) < vertexDataContainer<k2b, Q>::frequencies.f.w_upper + inter_tol )
         {
 
             Q result;
@@ -302,9 +302,9 @@ public:
         }
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (std::abs(indices.w) < vertexDataContainer<k3, Q>::frequencies_K3.b.w_upper + inter_tol
-            && std::abs(indices.v1) < vertexDataContainer<k3, Q>::frequencies_K3.f.w_upper + inter_tol
-            && std::abs(indices.v2) < vertexDataContainer<k3, Q>::frequencies_K3.f.w_upper + inter_tol)
+        if (std::abs(indices.w) < vertexDataContainer<k3, Q>::frequencies.b.w_upper + inter_tol
+            && std::abs(indices.v1) < vertexDataContainer<k3, Q>::frequencies.f.w_upper + inter_tol
+            && std::abs(indices.v2) < vertexDataContainer<k3, Q>::frequencies.f.w_upper + inter_tol)
         {
 
             Q result;
@@ -473,7 +473,7 @@ public:
     explicit vertexBuffer<k1, Q, cubic>(double Lambda, index_type dims) : SplineK1<vertexDataContainer<k1,Q>, Q>(Lambda, dims) {};
     auto interpolate(const VertexInput &indices) const -> Q {
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        //if (std::abs(indices.w) < vertex.frequencies_K1.b.w_upper + inter_tol)
+        //if (std::abs(indices.w) < vertex.frequencies.b.w_upper + inter_tol)
         //{
         Q result =  SplineK1<vertexDataContainer<k1,Q>, Q>::interpolK1 (indices.iK, indices.spin, indices.w, indices.i_in);
         return result;
@@ -508,7 +508,7 @@ public:
         K2_convert2internalFreqs(w_temp, v_temp); // convert natural frequency parametrization in channel r to internal parametrization
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        //if (std::abs(indices.w) < vertex.frequencies_K2.b.w_upper + inter_tol)
+        //if (std::abs(indices.w) < vertex.frequencies.b.w_upper + inter_tol)
         //{
 
         Q result =  SplineK2<vertexDataContainer<k2,Q>, Q>::interpolK2 (indices.iK, indices.spin, w_temp, v_temp, indices.i_in);
@@ -548,7 +548,7 @@ public:
         else if (indices.channel == 't') {switch2bosonicFreqs<'t'>(w_temp, v_temp, vp_temp);}
 #endif
         // Check if the frequency runs out of the box; if yes: return asymptotic value
-        //if (std::abs(indices.w) < vertex.frequencies_K3.b.w_upper + inter_tol)
+        //if (std::abs(indices.w) < vertex.frequencies.b.w_upper + inter_tol)
         //{
         Q result =  SplineK3<vertexDataContainer<k3,Q>, Q>::interpolK3 (indices.iK, indices.spin, w_temp, v_temp, vp_temp, indices.i_in);
         return result;
