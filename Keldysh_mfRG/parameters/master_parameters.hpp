@@ -79,6 +79,7 @@ constexpr int n_spin = 2;
 #else
 constexpr int n_spin = 1;
 #endif
+constexpr int n_spin_expanded = 2;
 
 /// Parameters for Fermi-polaron problem ///
 
