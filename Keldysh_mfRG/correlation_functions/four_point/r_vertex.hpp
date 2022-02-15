@@ -1708,6 +1708,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                 break;
             default:;
         }
+#pragma omp parallel for collapse(2)
         for (int it_spin = 0; it_spin < n_spin; it_spin++) {
             for (int itw = 0; itw < nw1; itw++) {
                 double w_in;
@@ -1790,6 +1791,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K2t[itK]; break;
             default: ;
         }
+#pragma omp parallel for collapse(3)
         for (int it_spin = 0; it_spin < n_spin; it_spin++) {
             for (int itw = 0; itw < nw2; itw++) {
                 for (int itv = 0; itv < nv2; itv++) {
@@ -1835,6 +1837,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
         i0_tmp = non_zero_Keldysh_K3[itK];
 
+#pragma omp parallel for collapse(4)
         for (int it_spin = 0; it_spin < n_spin; it_spin++) {
             for (int itw = 0; itw < nw3; itw++){
                 for (int itv = 0; itv < nv3; itv++) {
