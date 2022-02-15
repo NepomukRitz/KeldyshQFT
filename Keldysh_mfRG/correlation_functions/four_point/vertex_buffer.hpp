@@ -24,7 +24,200 @@ class vertexBuffer {
 };
 
 
-/** Template specialization for K1 (linear interpolation on the auxiliary grid) */
+
+
+template <K_class k, typename Q>
+class vertexBuffer<k, Q, linear> : public vertexDataContainer<k,Q> {
+    using base_class = vertexDataContainer<k, Q>;
+    static constexpr int numSamples() {
+        if constexpr(k == k1) {return 2;}
+        else if constexpr (k == k3) {return 8;}
+        else {return 4;}
+    }
+    static constexpr int numSamples_half() {
+        if constexpr(k == k1) {return 1;}
+        else if constexpr (k == k3) {return 4;}
+        else {return 2;}
+    }
+    static constexpr int frequencydims() {
+        if constexpr(k == k1) {return 1;}
+        else if constexpr (k == k3) {return 2;}
+        else {return 2;}
+    }
+public:
+    using index_type = typename base_class::index_type;
+    using weights_type = Eigen::Matrix<double, numSamples(), 1>;
+    using values_type = Eigen::Matrix<Q, 1, numSamples()>;
+    using frequency_arr = std::array<double, frequencydims()>;
+
+    mutable bool initialized = false;
+    vertexBuffer<k,Q,linear>() : initialized(false) {};
+    explicit vertexBuffer<k, Q, linear>(double Lambda, index_type dims) : base_class(Lambda, dims) {};
+    void initInterpolator() const {initialized = true;};
+
+    bool is_in_box(const VertexInput& indices) const {
+        if constexpr(k == k1) return std::abs(indices.w) < base_class::frequencies.b.w_upper + inter_tol;
+        else if constexpr(k == k2) return (std::abs(indices.w) < base_class::frequencies.b.w_upper + inter_tol) and (std::abs(indices.v1) < base_class::frequencies.f.w_upper + inter_tol);
+        else if constexpr(k == k2b)return (std::abs(indices.w) < base_class::frequencies.b.w_upper + inter_tol) and (std::abs(indices.v2) < base_class::frequencies.f.w_upper + inter_tol);
+        else return (std::abs(indices.w) < base_class::frequencies.b.w_upper + inter_tol) and (std::abs(indices.v1) < base_class::frequencies.f.w_upper + inter_tol) and (std::abs(indices.v2) < base_class::frequencies.f.w_upper + inter_tol);
+    }
+
+
+    weights_type get_weights(const VertexInput& indices, index_type& idx_low) const {
+        Eigen::Matrix<double, numSamples(), 1> weights;
+
+        int iw = base_class::frequencies.b.fconv(indices.w);
+        idx_low[0] = iw;
+        double w_low = base_class::frequencies.b.get_ws(iw);
+        double w_high= base_class::frequencies.b.get_ws(iw+1);
+        const double weight_w = (indices.w - w_low) / (w_high - w_low);
+        for (int j = 0; j < numSamples_half(); j++) {
+            weights[j  ] = 1-weight_w;
+            weights[numSamples_half()+j] = weight_w;
+        }
+
+        if constexpr (k == k1) {
+            idx_low = {indices.iK, indices.spin, iw, indices.i_in};
+
+            return weights;
+        }
+        if constexpr (k == k2) {
+            int iv = base_class::frequencies.f.fconv(indices.v1);
+            idx_low[0] = iv;
+            double v_low = base_class::frequencies.f.get_ws(iv);
+            double v_high= base_class::frequencies.f.get_ws(iv+1);
+            const double weight_v = (indices.v1 - v_low) / (v_high - v_low);
+            for (int j = 0; j < numSamples_half(); j++) {
+                weights[2*j  ] *= 1-weight_v;
+                weights[2*j+1] *= weight_v;
+            }
+            idx_low = {indices.iK, indices.spin, iw, iv, indices.i_in};
+
+            return weights;
+        }
+        if constexpr(k == k2b) {
+            int ivp = base_class::frequencies.f.fconv(indices.v2);
+            idx_low[0] = ivp;
+            double vp_low = base_class::frequencies.f.get_ws(ivp);
+            double vp_high= base_class::frequencies.f.get_ws(ivp+1);
+            const double weight_vp = (indices.v2 - vp_low) / (vp_high - vp_low);
+            for (int j = 0; j < numSamples_half(); j++) {
+                weights[2*j  ] *= 1-weight_vp;
+                weights[2*j+1] *= weight_vp;
+            }
+            idx_low = {indices.iK, indices.spin, iw, ivp, indices.i_in};
+
+            return weights;
+        }
+        if constexpr(k == k3) {
+            int iv = base_class::frequencies.f.fconv(indices.v1);
+            idx_low[0] = iv;
+            double v_low = base_class::frequencies.f.get_ws(iv);
+            double v_high= base_class::frequencies.f.get_ws(iv+1);
+            const double weight_v = (indices.v1 - v_low) / (v_high - v_low);
+
+            int ivp = base_class::frequencies.f.fconv(indices.v2);
+            idx_low[0] = ivp;
+            double vp_low = base_class::frequencies.f.get_ws(ivp);
+            double vp_high= base_class::frequencies.f.get_ws(ivp+1);
+            const double weight_vp= (indices.v2 - vp_low) / (vp_high - vp_low);
+
+            const std::array<double, 2> single_weights = {weight_v, weight_vp};
+            for (int j = 0; j < 2; j++) {
+                for (int i = 0; i < 2; i++) {
+                    weights[4*j+i]   *= 1-weight_v;
+                    weights[4*j+i+2] *= weight_v;
+                }
+            }
+            for (int j = 0; j < numSamples_half(); j++) {
+                weights[j*2]   *= 1-weight_vp;
+                weights[1+j*2] *= weight_vp;
+            }
+
+            idx_low = {indices.iK, indices.spin, iw, iv, ivp, indices.i_in};
+            return weights;
+        }
+
+
+
+    }
+
+    Eigen::Matrix<Q, Eigen::Dynamic, numSamples()> get_values(const index_type& vertex_index) const {
+        Eigen::Matrix<Q, 1, numSamples()> result;
+        if constexpr (k == k1) {
+            for (int i = 0; i < 2; i++) {
+            result[i] = base_class::val(vertex_index[0], vertex_index[1], vertex_index[2] + i, vertex_index[3]);
+            }
+        }
+        else if constexpr (k == k3) {
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    for (int l = 0; l < 2; l++) {
+                        result[i*4+j*2+l] = base_class::val(vertex_index[0], vertex_index[1], vertex_index[2] + i, vertex_index[3] + j, vertex_index[4] + l,
+                                                   vertex_index[5]);
+                    }
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                        result[i*2+j] = base_class::val(vertex_index[0], vertex_index[1], vertex_index[2] + i, vertex_index[3] + j,
+                                                   vertex_index[4]);
+
+                }
+            }
+        }
+
+        return result;
+    }
+
+    auto interpolate(const VertexInput &indices) const -> Q {
+
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        if (is_in_box(indices))
+        {
+
+            Q result;
+#ifdef DENSEGRID
+            assert(false);
+#else
+            // get weights from frequency Grid
+            index_type vertex_index;
+            weights_type weigths = get_weights(indices, vertex_index);
+            // fetch vertex values
+            values_type values = get_values(vertex_index);
+
+            result = values * weigths;
+
+#endif
+
+            assert(isfinite(result));
+            return result;
+
+        } else {
+            return 0.;  // asymptotic value
+        }
+
+    };
+
+    auto operator+= (const vertexBuffer<k,Q,linear>& rhs) -> vertexBuffer<k,Q,linear> {vertexDataContainer<k,Q>::data += rhs.data; return *this;}
+    auto operator-= (const vertexBuffer<k,Q,linear>& rhs) -> vertexBuffer<k,Q,linear> {vertexDataContainer<k,Q>::data -= rhs.data; return *this;}
+    friend vertexBuffer<k,Q,linear>& operator+ (vertexBuffer<k,Q,linear>& lhs, const vertexBuffer<k,Q,linear>& rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    friend vertexBuffer<k,Q,linear>& operator- (vertexBuffer<k,Q,linear>& lhs, const vertexBuffer<k,Q,linear>& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
+};
+
+
+
+/*
+/// Template specialization for K1 (linear interpolation on the auxiliary grid)
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k1, Q, inter> : public vertexDataContainer<k1, Q> {
     using base_class = vertexDataContainer<k1, Q>;
@@ -98,7 +291,7 @@ public:
     }
 };
 
-/** Template specialization for K2 (linear interpolation on the auxiliary grid) */
+/// Template specialization for K2 (linear interpolation on the auxiliary grid)
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k2, Q, inter> : public vertexDataContainer<k2, Q> {
     using base_class = vertexDataContainer<k2, Q>;
@@ -188,7 +381,7 @@ public:
     }
 };
 
-/** Template specialization for K2b(linear interpolation on the auxiliary grid) */
+/// Template specialization for K2b(linear interpolation on the auxiliary grid)
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k2b, Q, inter> : public vertexDataContainer<k2b, Q> {
     using base_class = vertexDataContainer<k2b, Q>;
@@ -278,7 +471,7 @@ public:
     }
 };
 
-/** Template specialization for K3 (linear interpolation on the auxiliary grid) */
+/// Template specialization for K3 (linear interpolation on the auxiliary grid)
 template<typename Q, interpolMethod inter>
 class vertexBuffer<k3, Q, inter> : public vertexDataContainer<k3, Q> {
     using base_class = vertexDataContainer<k3, Q>;
@@ -463,7 +656,7 @@ public:
 
 
 
-/** Template specialization for K1 (cubic interpolation) */
+/// Template specialization for K1 (cubic interpolation)
 template<typename Q>
 class vertexBuffer<k1,Q, cubic>: public SplineK1<vertexDataContainer<k1,Q>, Q> {
     using base_class = SplineK1<vertexDataContainer<k1,Q>, Q>;
@@ -494,7 +687,7 @@ public:
     }
 };
 
-/** Template specialization for K2 (cubic interpolation) */
+/// Template specialization for K2 (cubic interpolation)
 template<typename Q>
 class vertexBuffer<k2,Q, cubic>: public SplineK2<vertexDataContainer<k2,Q>, Q> {
     using base_class = SplineK2<vertexDataContainer<k2,Q>, Q>;
@@ -530,7 +723,7 @@ public:
     }
 };
 
-/** Template specialization for K3 (cubic interpolation) */
+/// Template specialization for K3 (cubic interpolation)
 template<typename Q>
 class vertexBuffer<k3,Q, cubic>: public SplineK3<vertexDataContainer<k3,Q>, Q> {
     using base_class = SplineK3<vertexDataContainer<k3,Q>, Q>;
@@ -570,7 +763,7 @@ public:
 };
 
 
-
+*/
 
 
 
