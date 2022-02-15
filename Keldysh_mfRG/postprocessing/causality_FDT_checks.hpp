@@ -180,7 +180,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                                           vertex_half2_in.avertex,
                                                                           vertex_half2_in.tvertex);
                             G2 = N1 * (myconj(G1) - G1);
-                            vertex_out.avertex.K1.setvert(G2, 1, itspin, itw, itin);
+                            vertex_out.avertex.K1.setvert(G2, itspin, itw, 1, itin);
                         }
                     }
                 }
@@ -196,7 +196,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                                           vertex_half2_in.pvertex,
                                                                           vertex_half2_in.pvertex);
                             G2 = N1 * (myconj(G1) - G1);
-                            vertex_out.pvertex.K1.setvert(G2, 1, itspin, itw, itin);
+                            vertex_out.pvertex.K1.setvert(G2, itspin, itw, 1, itin);
                         }
                     }
                 }
@@ -212,7 +212,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                                           vertex_half2_in.tvertex,
                                                                           vertex_half2_in.avertex);
                             G2 = N1 * (myconj(G1) - G1);
-                            vertex_out.tvertex.K1.setvert(G2, 1, itspin, itw, itin);
+                            vertex_out.tvertex.K1.setvert(G2, itspin, itw, 1, itin);
                         }
                     }
                 }
@@ -255,9 +255,9 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
                                 G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
                                 G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
-                                vertex_out.avertex.K2.setvert(G12 , 0, itspin, itw, itv, itin);
-                                vertex_out.avertex.K2.setvert(G123, 2, itspin, itw, itv, itin);
-                                vertex_out.avertex.K2.setvert(G23 , 3, itspin, itw, itv, itin);
+                                vertex_out.avertex.K2.setvert(G12 , itspin, itw, itv, 0, itin);
+                                vertex_out.avertex.K2.setvert(G123, itspin, itw, itv, 2, itin);
+                                vertex_out.avertex.K2.setvert(G23 , itspin, itw, itv, 3, itin);
                             }
                         }
                     }
@@ -291,9 +291,9 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
                                 G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
                                 G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
-                                vertex_out.pvertex.K2.setvert(G12 , 0, itspin, itw, itv, itin);
-                                vertex_out.pvertex.K2.setvert(G123, 1, itspin, itw, itv, itin);
-                                vertex_out.pvertex.K2.setvert(G13 , 3, itspin, itw, itv, itin);
+                                vertex_out.pvertex.K2.setvert(G12 , itspin, itw, itv, 0, itin);
+                                vertex_out.pvertex.K2.setvert(G123, itspin, itw, itv, 1, itin);
+                                vertex_out.pvertex.K2.setvert(G13 , itspin, itw, itv, 3, itin);
                             }
                         }
                     }
@@ -328,9 +328,9 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
                                 G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
                                 G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
-                                vertex_out.tvertex.K2.setvert(G12 , 0, itspin, itw, itv, itin);
-                                vertex_out.tvertex.K2.setvert(G123, 2, itspin, itw, itv, itin);
-                                vertex_out.tvertex.K2.setvert(G23 , 3, itspin, itw, itv, itin);
+                                vertex_out.tvertex.K2.setvert(G12 , itspin, itw, itv, 0, itin);
+                                vertex_out.tvertex.K2.setvert(G123, itspin, itw, itv, 2, itin);
+                                vertex_out.tvertex.K2.setvert(G23 , itspin, itw, itv, 3, itin);
                             }
                         }
                     }
@@ -421,8 +421,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                         + N1 * N4 * G23
                                         + N1 * N3 * G24
                                         + N1 * N2 * G34;
-                                vertex_out.avertex.K3.setvert(G1234, 0, itspin, itw, itv, itvp, itin);
-                                vertex_out.avertex.K3.setvert(G123,  1, itspin, itw, itv, itvp, itin);
+                                vertex_out.avertex.K3.setvert(G1234, itspin, itw, itv, itvp, 0, itin);
+                                vertex_out.avertex.K3.setvert(G123,  itspin, itw, itv, itvp, 1, itin);
                             }
                         }
                         break;
@@ -497,8 +497,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                         + N1 * N4 * G23
                                         + N1 * N3 * G24
                                         + N1 * N2 * G34;
-                                vertex_out.pvertex.K3.setvert(G1234, 0, itspin, itw, itv, itvp, itin);
-                                vertex_out.pvertex.K3.setvert(G123 , 1, itspin, itw, itv, itvp, itin);
+                                vertex_out.pvertex.K3.setvert(G1234, itspin, itw, itv, itvp, 0, itin);
+                                vertex_out.pvertex.K3.setvert(G123 , itspin, itw, itv, itvp, 1, itin);
                             }
                         }
                         break;
@@ -574,8 +574,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                         + N1 * N4 * G23
                                         + N1 * N3 * G24
                                         + N1 * N2 * G34;
-                                vertex_out.tvertex.K3.setvert(G1234, 0, itspin, itw, itv, itvp, itin);
-                                vertex_out.tvertex.K3.setvert(G123 , 1, itspin, itw, itv, itvp, itin);
+                                vertex_out.tvertex.K3.setvert(G1234, itspin, itw, itv, itvp, 0, itin);
+                                vertex_out.tvertex.K3.setvert(G123 , itspin, itw, itv, itvp, 1, itin);
                             }
                         }
                         break;

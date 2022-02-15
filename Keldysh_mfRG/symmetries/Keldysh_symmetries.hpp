@@ -38,18 +38,18 @@ const int nK_K3 = 1;
 
 
 constexpr std::array<size_t,3> dimsSE = std::array<size_t,3>({nK_SE, nFER, n_in_K1});
-constexpr std::array<size_t,4> dimsK1 = std::array<size_t,4>({nK_K1, n_spin, nBOS, n_in_K1});
-constexpr std::array<size_t,5> dimsK2 = std::array<size_t,5>({nK_K2, n_spin, nBOS2, nFER2, n_in_K2});
-constexpr std::array<size_t,6> dimsK3 = std::array<size_t,6>({nK_K3, n_spin, nBOS3, nFER3, nFER3, n_in_K3});
+constexpr std::array<size_t,4> dimsK1 = std::array<size_t,4>({n_spin, nBOS, nK_K1, n_in_K1});
+constexpr std::array<size_t,5> dimsK2 = std::array<size_t,5>({n_spin, nBOS2, nFER2, nK_K2, n_in_K2});
+constexpr std::array<size_t,6> dimsK3 = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, nK_K3, n_in_K3});
 constexpr size_t dimsSE_flat = getFlatSize(dimsSE);
 constexpr size_t dimsK1_flat = getFlatSize(dimsK1);
 constexpr size_t dimsK2_flat = getFlatSize(dimsK2);
 constexpr size_t dimsK3_flat = getFlatSize(dimsK3);
 
 constexpr std::array<size_t,3> dimsSE_expanded = std::array<size_t,3>({KELDYSH ?  4 : 1, nFER, n_in_K1});
-constexpr std::array<size_t,4> dimsK1_expanded = std::array<size_t,4>({KELDYSH ? 16 : 1, n_spin_expanded, nBOS, n_in_K1});
-constexpr std::array<size_t,5> dimsK2_expanded = std::array<size_t,5>({KELDYSH ? 16 : 1, n_spin_expanded, nBOS2, nFER2, n_in_K2});
-constexpr std::array<size_t,6> dimsK3_expanded = std::array<size_t,6>({KELDYSH ? 16 : 1, n_spin_expanded, nBOS3, nFER3, nFER3, n_in_K3});
+constexpr std::array<size_t,4> dimsK1_expanded = std::array<size_t,4>({n_spin_expanded, nBOS, KELDYSH ?  16 : 1, n_in_K1});
+constexpr std::array<size_t,5> dimsK2_expanded = std::array<size_t,5>({n_spin_expanded, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2});
+constexpr std::array<size_t,6> dimsK3_expanded = std::array<size_t,6>({n_spin_expanded, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3});
 
 #ifdef KELDYSH_FORMALISM
 // Vector of indices of the non-zero Keldysh components of the bubbles

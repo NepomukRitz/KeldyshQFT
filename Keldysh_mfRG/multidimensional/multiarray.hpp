@@ -256,6 +256,10 @@ namespace multidimensional
             return elements.data();
         }
 
+        buffer_type get_elements() const {
+            return elements;
+        }
+
         /// flat access
 
         T &flat_at(size_type i)
@@ -433,6 +437,9 @@ namespace multidimensional
                 return std::abs(maxabs());
             };
 
+        template<int p> double lpNorm() const {
+            return elements.template lpNorm<p>();
+        }
 
 
         bool isfinite() const

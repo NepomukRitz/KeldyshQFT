@@ -68,7 +68,7 @@ public:
     using index_type = typename DataContainer::index_type;
     SplineK1() : initialized(false) {};
     explicit SplineK1(double Lambda, index_type dims)
-            :   DataContainer(Lambda, dims), n(getFlatSize(DataContainer::dims)), i_x(2)
+            :   DataContainer(Lambda, dims), n(getFlatSize(DataContainer::dims)), i_x(1)
     {
         //this->initializeK1();
     }

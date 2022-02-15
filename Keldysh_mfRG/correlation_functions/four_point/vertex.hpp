@@ -1039,174 +1039,53 @@ void fullvert<Q>::calculate_all_cross_projections() {
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
     if(p==0) {//infinity (max) norm
-        double max = 0;
-        for(int iflat=0; iflat < dimsK1_flat; iflat++) {
-            int iK, ispin, iw, i_in;
-            getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, avertex.K1.get_dims());
-            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //for (int iK = 0; iK < nK_K1; iK++) {
-        //    if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //    for (int iw = 0; iw < nBOS; iw++) {
-        //        for (int i_in = 0; i_in < n_in; i_in++) {
-                    double compare = std::abs(this->avertex.K1.val(iK, ispin, iw, i_in));
-                    if (compare > max) {
-                        max = compare;
-                    }
+        double max = this->avertex.K1.get_vec().max_norm();
+        double compare = this->pvertex.K1.get_vec().max_norm();
+        if (compare > max) max = compare;
+        compare = this->tvertex.K1.get_vec().max_norm();
+        if (compare > max) max = compare;
 
-                    compare = std::abs(this->pvertex.K1.val(iK, ispin, iw, i_in));
-                    if (compare > max) {
-                        max = compare;
-                    }
-
-                    compare = std::abs(this->tvertex.K1.val(iK, ispin, iw, i_in));
-                    if (compare > max) {
-                        max = compare;
-                    }
-            //    }
-            //}
-        }
         return max;
     }
 
     else {//p-norm
-        double result = 0;
-        for(int iflat=0; iflat < dimsK1_flat; iflat++) {
-            int iK, ispin, iw, iv, i_in;
-            getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, avertex.K1.get_dims());
-            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //for(int iK = 0; iK<nK_K1; iK++){
-        //    if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //    for(int iw=0; iw < nBOS; iw++){
-        //        for(int i_in=0; i_in<n_in; i_in++){
-
-                    result += pow(std::abs(this->avertex.K1.val(iK, ispin, iw, i_in)), (double)p);
-                    result += pow(std::abs(this->pvertex.K1.val(iK, ispin, iw, i_in)), (double)p);
-                    result += pow(std::abs(this->tvertex.K1.val(iK, ispin, iw, i_in)), (double)p);
-
-            //    }
-            //}
-        }
-        return pow(result, 1./((double)p));
+        double norm = std::abs((this->avertex.K1.get_vec().get_elements().pow(p) + this->pvertex.K1.get_vec().get_elements().pow(p) + this->tvertex.K1.get_vec().get_elements().pow(p)).sum());
+        return pow(norm, 1./((double)p));
     }
 }
 
 template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
-    if(p==0) { //infinity (max) norm
-        double max = 0.;
-        for(int iflat=0; iflat < dimsK2_flat; iflat++) {
-            int iK, ispin, iw, iv, i_in;
-            getMultIndex<5,int,int,int,int,int>(iK, ispin, iw, iv, i_in, iflat, avertex.K2.get_dims());
-            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-            //for (int iw = 0; iw < nBOS2; iw++) {
-            //    for (int iv = 0; iv < nFER2; iv++) {
-            //        for (int i_in = 0; i_in < n_in; i_in++) {
+    if(p==0) {//infinity (max) norm
+        double max = this->avertex.K2.get_vec().max_norm();
+        double compare = this->pvertex.K2.get_vec().max_norm();
+        if (compare > max) max = compare;
+        compare = this->tvertex.K2.get_vec().max_norm();
+        if (compare > max) max = compare;
 
-            double compare = std::abs(this->avertex.K2.val(iK, ispin, iw, iv, i_in));
-            if(compare > max){
-                max = compare;
-            }
-
-            compare = std::abs(this->pvertex.K2.val(iK, ispin, iw, iv, i_in));
-            if(compare > max){
-                max = compare;
-            }
-
-            compare = std::abs(this->tvertex.K2.val(iK, ispin, iw, iv, i_in));
-            if(compare > max){
-                max = compare;
-            }
-            //        }
-            //    }
-            //}
-        }
         return max;
     }
-    else{//p-norm
-        double result = 0.;
-        for(int iflat=0; iflat < dimsK2_flat; iflat++) {
-            int iK, ispin, iw, iv, i_in;
-            getMultIndex<5,int,int,int,int,int>(iK, ispin, iw, iv, i_in, iflat, avertex.K2.get_dims());
-            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //for(int iK=0; iK < nK_K2; iK++){
-        //    for(int iw=0; iw < nBOS2; iw++){
-        //        for(int iv=0; iv < nFER2; iv++) {
-        //            for (int i_in = 0; i_in < n_in; i_in++) {
 
-            result += pow(std::abs(this->avertex.K2.val(iK, ispin, iw, iv, i_in)), (double) p);
-            result += pow(std::abs(this->pvertex.K2.val(iK, ispin, iw, iv, i_in)), (double) p);
-            result += pow(std::abs(this->tvertex.K2.val(iK, ispin, iw, iv, i_in)), (double) p);
-
-            //        }
-            //    }
-            //}
-        }
-        return pow(result, 1./((double)p));
+    else {//p-norm
+        double norm = std::abs((this->avertex.K2.get_vec().get_elements().pow(p) + this->pvertex.K2.get_vec().get_elements().pow(p) + this->tvertex.K2.get_vec().get_elements().pow(p)).sum());
+        return pow(norm, 1./((double)p));
     }
 }
-
 template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
-    if(p==0) {
-        double max = 0.;
-        for(int iflat=0; iflat < dimsK3_flat; iflat++) {
-            int iK, ispin, iw, iv1, iv2, i_in;
-            getMultIndex<6,int,int,int,int,int,int>(iK, ispin, iw, iv1, iv2, i_in, iflat, avertex.K3.get_dims());
-            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //for(int iK=0; iK < nK_K3; iK++) {
-        //    if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //    for (int iw = 0; iw < nBOS3; iw++) {
-        //        for (int iv1 = 0; iv1 < nFER3; iv1++) {
-        //            for (int iv2 = 0; iv2 < nFER3; iv2++) {
-        //                for (int i_in = 0; i_in < n_in; i_in++) {
-            double compare = std::abs(this->avertex.K3.val(iK, ispin, iw, iv1, iv2, i_in));
-            if(compare > max){
-                max = compare;
-            }
+    if(p==0) {//infinity (max) norm
+        double max = this->avertex.K3.get_vec().max_norm();
+        double compare = this->pvertex.K3.get_vec().max_norm();
+        if (compare > max) max = compare;
+        compare = this->tvertex.K3.get_vec().max_norm();
+        if (compare > max) max = compare;
 
-            compare = std::abs(this->pvertex.K3.val(iK, ispin, iw, iv1, iv2, i_in));
-            if(compare > max){
-                max = compare;
-            }
-
-            compare = std::abs(this->tvertex.K3.val(iK, ispin, iw, iv1, iv2, i_in));
-            if(compare > max) {
-                max = compare;
-            }
-            //            }
-            //        }
-            //    }
-            //}
-        }
         return max;
     }
 
-    else { //p-norm
-        double result = 0.;
-        for(int iflat=0; iflat < dimsK3_flat; iflat++) {
-            int iK, ispin, iw, iv1, iv2, i_in;
-            getMultIndex<6,int,int,int,int,int,int>(iK, ispin, iw, iv1, iv2, i_in, iflat, avertex.K3.get_dims());
-            if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //for(int iK=0; iK < nK_K3; iK++){
-        //    if (!KELDYSH && (iK > 0)) break; // only iK == 0 for Matsubara
-        //    for(int iw=0; iw < nBOS3; iw++){
-        //        for(int iv1=0; iv1<nFER3; iv1++) {
-        //            for (int iv2 = 0; iv2 < nFER3; iv2++) {
-        //                for (int i_in = 0; i_in < n_in; i_in++) {
-//
-            result += pow(std::abs(this->avertex.K3.val(iK, ispin, iw, iv1, iv2, i_in)), (double) p);
-            result += pow(std::abs(this->pvertex.K3.val(iK, ispin, iw, iv1, iv2, i_in)), (double) p);
-            result += pow(std::abs(this->tvertex.K3.val(iK, ispin, iw, iv1, iv2, i_in)), (double) p);
-
-            //            }
-            //        }
-            //    }
-            //}
-        }
-        return pow(result, 1./((double)p));
+    else {//p-norm
+        double norm = std::abs((this->avertex.K3.get_vec().get_elements().pow(p) + this->pvertex.K3.get_vec().get_elements().pow(p) + this->tvertex.K3.get_vec().get_elements().pow(p)).sum());
+        return pow(norm, 1./((double)p));
     }
-
-
 }
-
 template <typename Q> auto fullvert<Q>::sum_norm(const int p) const -> double {
     double result = 0.;
     if (MAX_DIAG_CLASS >= 0) result += norm_K1(p);

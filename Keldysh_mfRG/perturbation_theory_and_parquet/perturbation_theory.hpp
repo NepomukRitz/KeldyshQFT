@@ -33,10 +33,10 @@ template <typename Q, class Bubble_Object>
 void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
     std::string channels = "apt";
     for (char r: channels) {
-#if not defined(NDEBUG)
+//#if not defined(NDEBUG)
         print("Computing the vertex in SOPT in channel ", false);
         print_add(r, true);
-#endif
+//#endif
         bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
     }
 }

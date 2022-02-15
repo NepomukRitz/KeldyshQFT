@@ -80,7 +80,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
         double w;
         testvertex1.K1.K1_get_freq_w(w, iw);
         auto val = vertex_function(w);
-        testvertex1.K1.setvert(val, 0, 0, iw, 0);
+        testvertex1.K1.setvert(val, 0, iw, 0, 0);
     }
     if (MAX_DIAG_CLASS>1) {
         for (int iw = 0; iw < nBOS2; iw++) {
@@ -88,7 +88,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 double w, v;
                 testvertex1.K2.K2_get_freqs_w(w, v, iw, iv);
                 auto val = vertex_function(w) + vertex_function2(v);
-                testvertex1.K2.setvert(val, 0, 0, iw, iv, 0);
+                testvertex1.K2.setvert(val, 0, iw, iv, 0, 0);
             }
         }
     }
@@ -101,7 +101,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                     double w, v, vp;
                     testvertex1.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
                     auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp);
-                    testvertex1.K3.setvert(val, 0, 0, iw, iv, ivp, 0);
+                    testvertex1.K3.setvert(val, 0, iw, iv, ivp, 0, 0);
                 }
             }
         }
@@ -129,7 +129,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             for (int iw = 0; iw < nBOS; iw++) {
                 double w;
                 testvertex1.K1.K1_get_freq_w(w, iw);
-                errors.at(0,0,iw,0) = vertex_function(w) - testvertex1.K1.at(0, 0, iw, 0);
+                errors.at(0,iw,0,0) = vertex_function(w) - testvertex1.K1.at(0, iw, 0, 0);
             }
 
             //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_TRUNC);
@@ -172,8 +172,8 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                     for (int iv = 0; iv < nFER2; iv++) {
                         double w, v;
                         testvertex1.K2.K2_get_freqs_w(w, v, iw, iv);
-                        auto val = vertex_function(w) + vertex_function2(v) - testvertex1.K2.at(0,0,iw,iv,0);
-                        errors.at(0, 0, iw, iv, 0) = val;
+                        auto val = vertex_function(w) + vertex_function2(v) - testvertex1.K2.at(0,iw,iv,0,0);
+                        errors.at(0, iw, iv, 0, 0) = val;
                     }
                 }
 
@@ -225,8 +225,8 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                         for (int ivp = 0; ivp < nFER3; ivp++) {
                             double w, v, vp;
                             testvertex1.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
-                            auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp) - testvertex1.K3.at(0,0,iw,iv, ivp,0);
-                            errors.at(0, 0, iw, iv, ivp, 0) = val;
+                            auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp) - testvertex1.K3.at(0,iw,iv, ivp,0,0);
+                            errors.at(0, iw, iv, ivp, 0, 0) = val;
                         }
                     }
                 }
@@ -266,7 +266,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 1; iw<(nBOS-1)/2; iw++){
-        avertex.K1.setvert(value, iK, i_spin, iw, i_in);
+        avertex.K1.setvert(value, i_spin, iw, iK, i_in);
         value +=1;
     }
     avertex.initInterpolator();
@@ -277,7 +277,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
     value = 0.;
     for (int iw = 0; iw<(nBOS-1)/2; iw++){
         avertex.K1.K1_get_freq_w(indices.w, iw);
-        if (std::abs(avertex.K1.val(iK, i_spin, iw, i_in) - avertex.K1.val(iK, i_spin, nBOS -1 - iw, i_in)) > 1e-10) {
+        if (std::abs(avertex.K1.val(i_spin, iw, iK, i_in) - avertex.K1.val(i_spin, nBOS -1 - iw, iK, i_in)) > 1e-10) {
             asymmetry += 1;
         }
     }
@@ -304,7 +304,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     state_datatype value = 0.;
     for (int iw = 1; iw<=(nBOS2-1)/2; iw++){
         for (int iv = 1; iv<(nFER2)/2; iv++) {
-            avertex.K2.setvert(value, iK, i_spin, iw, iv, i_in);
+            avertex.K2.setvert(value, i_spin, iw, iv, iK, i_in);
             value += 1;
         }
     }
@@ -324,14 +324,14 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
             indices.v1 += correction;
             #endif
                                  ;
-            if (std::abs(avertex.K2.val(iK, i_spin, iw, iv, i_in) - avertex.K2.val(iK, i_spin, nBOS2 - 1 - iw, iv, i_in)) > asymmetry_tolerance) {
+            if (std::abs(avertex.K2.val(i_spin, iw, iv, iK, i_in) - avertex.K2.val(i_spin, nBOS2 - 1 - iw, iv, iK, i_in)) > asymmetry_tolerance) {
                 asymmetry += 1;
             }
             state_datatype compare_val = avertex.K2.interpolate(indices);
-            if (std::abs(avertex.K2.val(iK, i_spin, iw, nFER2 - 1 - iv, i_in) - compare_val) > asymmetry_tolerance) {
-                asymmetry += std::abs(avertex.K2.val(iK, i_spin, iw, nFER2 - 1 - iv, i_in) - compare_val);
+            if (std::abs(avertex.K2.val(i_spin, iw, nFER2 - 1 - iv, iK, i_in) - compare_val) > asymmetry_tolerance) {
+                asymmetry += std::abs(avertex.K2.val(i_spin, iw, nFER2 - 1 - iv, iK, i_in) - compare_val);
             }
-            if (correction == 0 and std::abs(avertex.K2.val(iK, i_spin, iw, iv, i_in) - avertex.K2.val(iK, i_spin, iw, nFER2 - 1 - iv, i_in)) > asymmetry_tolerance ) {
+            if (correction == 0 and std::abs(avertex.K2.val(i_spin, iw, iv, iK, i_in) - avertex.K2.val(i_spin, iw, nFER2 - 1 - iv, iK, i_in)) > asymmetry_tolerance ) {
                 asymmetry += 1;
             }
 
@@ -361,7 +361,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
         value = 0;
         for (int iv = 0; iv<(nFER3)/2; iv++) {
             for (int ivp = iv; ivp<(nFER3-iv); ivp++) {
-                avertex.K3.setvert(value, iK, i_spin, iw, iv, ivp, i_in);
+                avertex.K3.setvert(value, i_spin, iw, iv, ivp, iK, i_in);
                 value += 1;
             }
         }
@@ -394,9 +394,9 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                 //if (! KELDYSH and ! ZERO_T)
                 //    interval_correction = (int)(signFlipCorrection_MF(indices.w)/(2*M_PI*glb_T) + 0.1);
                 if (nFER3 - 1 - iv + interval_correction >= 0 and nFER3 - 1 - ivp + interval_correction >= 0) {
-                    state_datatype savedK3_val = avertex.K3.val(iK, i_spin, iw, nFER3 - 1 - iv + interval_correction,
-                                                                nFER3 - 1 - ivp + interval_correction, i_in);
-                    state_datatype savedK3_val0 = avertex.K3.val(iK, i_spin, iw, iv, ivp, i_in);
+                    state_datatype savedK3_val = avertex.K3.val(i_spin, iw, nFER3 - 1 - iv + interval_correction,
+                                                                nFER3 - 1 - ivp + interval_correction, iK, i_in);
+                    state_datatype savedK3_val0 = avertex.K3.val(i_spin, iw, iv, ivp, iK, i_in);
                     double absdiff = std::abs(compare_val - savedK3_val);
                     if (absdiff > 1e-4) {
                         asymmetry += absdiff;

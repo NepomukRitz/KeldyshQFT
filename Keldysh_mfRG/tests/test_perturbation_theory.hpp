@@ -42,8 +42,8 @@ void testSelfEnergy_and_K1(State<Q>& state, double Lambda){
     cvec SEK(nFER);
 
     for(int iv = 0; iv<nFER; iv++){
-        SER[iv] = state.selfenergy.val(0, iv, 0);
-        SEK[iv] = state.selfenergy.val(1, iv, 0);
+        SER[iv] = state.selfenergy.val(iv, 0, 0);
+        SEK[iv] = state.selfenergy.val(iv, 1, 0);
     }
 
     //Print results
@@ -1674,13 +1674,13 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
-        PT_state.vertex.avertex().K1.setvert( val_K1, 0, it_spin,  i, 0);
+        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, i, 0, 0);
+        PT_state.vertex.avertex().K1.setvert( val_K1, it_spin,  i, 0, 0);
         w = PT_state.vertex.pvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
-        PT_state.vertex.pvertex().K1.setvert( -val_K1, 0, it_spin, i, 0);
+        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, i, 0, 0);
+        PT_state.vertex.pvertex().K1.setvert( -val_K1, it_spin, i, 0, 0);
         w = PT_state.vertex.tvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
@@ -1695,9 +1695,9 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
             PT_state.vertex.avertex().K2.K2_get_freqs_w(w, v, i, j);
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
             Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
-            PT_state.vertex.avertex().K2.setvert(val_K2, 0, it_spin, i, j, 0);
-            PT_state.vertex.pvertex().K2.setvert(val_K2, 0, it_spin, i, j, 0);
-            PT_state.vertex.tvertex().K2.setvert(val_K2, 0, it_spin, i, j, 0);
+            PT_state.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
+            PT_state.vertex.pvertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
+            PT_state.vertex.tvertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
         }
     }
 #endif
@@ -1710,19 +1710,19 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 PT_state.vertex.avertex().K3.K3_get_freqs_w(w, v, vp, i, j, k, 'a');
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
                 Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
-                PT_state.vertex.avertex().K3.setvert(val_K3, 0, it_spin, i, j, k, 0);
+                PT_state.vertex.avertex().K3.setvert(val_K3, it_spin, i, j, k, 0, 0);
 
                 PT_state.vertex.pvertex().K3.K3_get_freqs_w(w, v, vp, i, j, k, 'p');
                 Integrand_FOPTK3a<Q> IntegrandK3_2(Lambda, w, v, vp, diff, Pi);
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_2, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
-                PT_state.vertex.pvertex().K3.setvert(-val_K3, 0, it_spin, i, j, k, 0);
+                PT_state.vertex.pvertex().K3.setvert(-val_K3, it_spin, i, j, k, 0, 0);
 
                 PT_state.vertex.tvertex().K3.K3_get_freqs_w(w, v, vp, i, j, k, 't');
                 Integrand_FOPTK3a<Q> IntegrandK3_3(Lambda, w, v, vp, diff, Pi);
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
                 Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
-                PT_state.vertex.tvertex().K3.setvert(-2.*(val_K3-val_K3_ap), 0, it_spin, i, j, k, 0);
+                PT_state.vertex.tvertex().K3.setvert(-2.*(val_K3-val_K3_ap), it_spin, i, j, k, 0, 0);
             }
         }
     }
@@ -2451,7 +2451,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1pdot_exact.vertex.avertex().K1.K1_get_freq_w(w, it);
             state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
             size_t iK{}, i_in{};
-            K1pdot_exact.vertex.pvertex().K1.setvert(val_K1, 0, it_spin, it, 0);
+            K1pdot_exact.vertex.pvertex().K1.setvert(val_K1, it_spin, it, 0, 0);
             //    }
         }
         write_state_to_hdf(data_dir + "K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
@@ -2473,7 +2473,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
-            K1rdot_PIa_K1p_exact.vertex.avertex().K2.setvert(val_K2, 0, it_spin, i, j, 0);
+            K1rdot_PIa_K1p_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
             //    }
         }
 
@@ -2490,7 +2490,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
                                     integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
                                                                                 std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta, true);
-            K1rdot_PIa_K1p_exact.vertex.avertex().K3.setvert(val_K3, 0, it_spin, i, j, k, 0);
+            K1rdot_PIa_K1p_exact.vertex.avertex().K3.setvert(val_K3, it_spin, i, j, k, 0, 0);
             //        }
             //    }
         }
@@ -2553,7 +2553,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
             state_datatype val_K1 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 0>(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta, true);
-            dGammaC_exact.vertex.avertex().K1.setvert(val_K1, 0, it_spin, i, 0);
+            dGammaC_exact.vertex.avertex().K1.setvert(val_K1, it_spin, i, 0, 0);
         }
 
 
@@ -2567,7 +2567,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
-            dGammaC_exact.vertex.avertex().K2.setvert(val_K2, 0, it_spin, i, j, 0);
+            dGammaC_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
             //    }
         }
 
@@ -2583,7 +2583,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator_Matsubara_T0<state_datatype, 3>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                   {v, vp, std::abs(v) - std::abs(vp)}, Delta, true);
-            dGammaC_exact.vertex.avertex().K3.setvert(val_K3, 0, it_spin, i, j, k, 0);
+            dGammaC_exact.vertex.avertex().K3.setvert(val_K3, it_spin, i, j, k, 0, 0);
             //    }
             //}
         }
@@ -2670,22 +2670,22 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        Q val_K1_K = state_cpp.vertex.avertex().K1.val(1, it_spin, i, 0); // - 2. * glb_i * Fermi_fac(w, glb_mu) * val_K1.imag();
+        Q val_K1_K = state_cpp.vertex.avertex().K1.val(it_spin, i, 1, 0); // - 2. * glb_i * Fermi_fac(w, glb_mu) * val_K1.imag();
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
-        PT_state.vertex.avertex().K1.setvert( val_K1  , 0, it_spin,  i, 0);
-        PT_state.vertex.avertex().K1.setvert( val_K1_K, 1, it_spin,  i, 0);
+        PT_state.vertex.avertex().K1.setvert( val_K1  , it_spin,  i, 0, 0);
+        PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);
         w = PT_state.vertex.pvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
-        PT_state.vertex.pvertex().K1.setvert( -val_K1  , 0, it_spin, i, 0);
-        PT_state.vertex.pvertex().K1.setvert( -val_K1_K, 1, it_spin, i, 0);
+        PT_state.vertex.pvertex().K1.setvert( -val_K1  , it_spin, i, 0, 0);
+        PT_state.vertex.pvertex().K1.setvert( -val_K1_K, it_spin, i, 1, 0);
         w = PT_state.vertex.tvertex().K1.frequencies.b.get_ws(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        val_K1_K = state_cpp.vertex.tvertex().K1.val(1, it_spin, i, 0);
-        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./glb_U    , 0, it_spin, i, 0);
-        PT_state.vertex.tvertex().K1.setvert( val_K1_K, 1, it_spin, i, 0);
+        val_K1_K = state_cpp.vertex.tvertex().K1.val(it_spin, i, 1, 0);
+        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./glb_U    , it_spin, i, 0, 0);
+        PT_state.vertex.tvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);
     }
     write_state_to_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
 

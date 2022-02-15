@@ -77,7 +77,7 @@ public:
         }
 
         if constexpr (k == k1) {
-            idx_low = {indices.iK, indices.spin, iw, indices.i_in};
+            idx_low = {indices.spin, iw, indices.iK, indices.i_in};
 
             return weights;
         }
@@ -91,7 +91,7 @@ public:
                 weights[2*j  ] *= 1-weight_v;
                 weights[2*j+1] *= weight_v;
             }
-            idx_low = {indices.iK, indices.spin, iw, iv, indices.i_in};
+            idx_low = {indices.spin, iw, iv, indices.iK, indices.i_in};
 
             return weights;
         }
@@ -105,7 +105,7 @@ public:
                 weights[2*j  ] *= 1-weight_vp;
                 weights[2*j+1] *= weight_vp;
             }
-            idx_low = {indices.iK, indices.spin, iw, ivp, indices.i_in};
+            idx_low = {indices.spin, iw, ivp, indices.iK, indices.i_in};
 
             return weights;
         }
@@ -134,7 +134,7 @@ public:
                 weights[1+j*2] *= weight_vp;
             }
 
-            idx_low = {indices.iK, indices.spin, iw, iv, ivp, indices.i_in};
+            idx_low = {indices.spin, iw, iv, ivp, indices.iK, indices.i_in};
             return weights;
         }
 
@@ -146,14 +146,14 @@ public:
         Eigen::Matrix<Q, 1, numSamples()> result;
         if constexpr (k == k1) {
             for (int i = 0; i < 2; i++) {
-            result[i] = base_class::val(vertex_index[0], vertex_index[1], vertex_index[2] + i, vertex_index[3]);
+            result[i] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2], vertex_index[3]);
             }
         }
         else if constexpr (k == k3) {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
                     for (int l = 0; l < 2; l++) {
-                        result[i*4+j*2+l] = base_class::val(vertex_index[0], vertex_index[1], vertex_index[2] + i, vertex_index[3] + j, vertex_index[4] + l,
+                        result[i*4+j*2+l] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j, vertex_index[3] + l, vertex_index[4],
                                                    vertex_index[5]);
                     }
                 }
@@ -162,7 +162,7 @@ public:
         else {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
-                        result[i*2+j] = base_class::val(vertex_index[0], vertex_index[1], vertex_index[2] + i, vertex_index[3] + j,
+                        result[i*2+j] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j, vertex_index[3] + k,
                                                    vertex_index[4]);
 
                 }
@@ -241,28 +241,28 @@ public:
 #ifdef DENSEGRID
             result =  interpolate_nearest1D<Q>(indices.w, vertexDataContainer<k1, Q>::get_VertexFreqGrid().b,
                                                   [&](int i) -> Q {
-                                                      return vertexDataContainer<k1, Q>::val(indices.iK, indices.spin, i,
+                                                      return vertexDataContainer<k1, Q>::val(indices.spin, i, indices.iK,
                                                                                              indices.i_in);
                                                   });
 #else
             if constexpr(inter == linear_on_aux) {
                 result =  interpolate_lin_on_aux1D<Q>(indices.w, vertexDataContainer<k1, Q>::get_VertexFreqGrid().b,
                                                         [&](int i) -> Q {
-                                                            return vertexDataContainer<k1, Q>::val(indices.iK, indices.spin, i,
+                                                            return vertexDataContainer<k1, Q>::val(indices.spin, i, indices.iK,
                                                                                                    indices.i_in);
                                                         });
             }
             else if constexpr(inter == linear) {
                 result =  interpolate_lin1D<Q>(indices.w, vertexDataContainer<k1, Q>::get_VertexFreqGrid().b,
                                                       [&](int i) -> Q {
-                                                          return vertexDataContainer<k1, Q>::val(indices.iK, indices.spin, i,
+                                                          return vertexDataContainer<k1, Q>::val(indices.spin, i, indices.iK,
                                                                                                  indices.i_in);
                                                       });
             }
             else if constexpr(inter == sloppycubic) {
                 result =  interpolate_sloppycubic1D<Q>(indices.w, vertexDataContainer<k1, Q>::get_VertexFreqGrid().b,
                                                    [&](int i) -> Q {
-                                                       return vertexDataContainer<k1, Q>::val(indices.iK, indices.spin, i,
+                                                       return vertexDataContainer<k1, Q>::val(indices.spin, i, indices.iK,
                                                                                               indices.i_in);
                                                    });
             }
@@ -321,8 +321,8 @@ public:
                                                vertexDataContainer<k2, Q>::get_VertexFreqGrid().b,
                                                vertexDataContainer<k2, Q>::get_VertexFreqGrid().f,
                                                [&](int i, int j) -> Q {
-                                                   return vertexDataContainer<k2, Q>::val(indices.iK, indices.spin, i,
-                                                                                           j,
+                                                   return vertexDataContainer<k2, Q>::val(indices.spin, i,
+                                                                                           j, indices.iK,
                                                                                            indices.i_in);
                                                });
 #else
@@ -331,8 +331,8 @@ public:
                                                       vertexDataContainer<k2, Q>::get_VertexFreqGrid().b,
                                                       vertexDataContainer<k2, Q>::get_VertexFreqGrid().f,
                                                         [&](int i, int j) -> Q {
-                                                            return vertexDataContainer<k2, Q>::val(indices.iK, indices.spin, i,
-                                                                                                   j,
+                                                            return vertexDataContainer<k2, Q>::val(indices.spin, i,
+                                                                                                   j, indices.iK,
                                                                                                    indices.i_in);
                                                         });
             }
@@ -341,8 +341,8 @@ public:
                                                vertexDataContainer<k2, Q>::get_VertexFreqGrid().b,
                                                vertexDataContainer<k2, Q>::get_VertexFreqGrid().f,
                                                         [&](int i, int j) -> Q {
-                                                            return vertexDataContainer<k2, Q>::val(indices.iK, indices.spin, i,
-                                                                                                   j,
+                                                            return vertexDataContainer<k2, Q>::val(indices.spin, i,
+                                                                                                   j, indices.iK,
                                                                                                    indices.i_in);
                                                         });
             }
@@ -352,8 +352,8 @@ public:
                                                        vertexDataContainer<k2, Q>::get_VertexFreqGrid().b,
                                                        vertexDataContainer<k2, Q>::get_VertexFreqGrid().f,
                                                      [&](int i, int j) -> Q {
-                                                         return vertexDataContainer<k2, Q>::val(indices.iK, indices.spin, i,
-                                                                                                j,
+                                                         return vertexDataContainer<k2, Q>::val(indices.spin, i,
+                                                                                                j, indices.iK,
                                                                                                 indices.i_in);
                                                      });
             }
@@ -412,8 +412,8 @@ public:
                                                vertexDataContainer<k2b, Q>::get_VertexFreqGrid().b,
                                                vertexDataContainer<k2b, Q>::get_VertexFreqGrid().f,
                                                [&](int i, int j) -> Q {
-                                                   return vertexDataContainer<k2b, Q>::val(indices.iK, indices.spin, i,
-                                                                                           j,
+                                                   return vertexDataContainer<k2b, Q>::val(indices.spin, i,
+                                                                                           j, indices.iK,
                                                                                            indices.i_in);
                                                });
 #else
@@ -422,8 +422,8 @@ public:
                                                       vertexDataContainer<k2b, Q>::get_VertexFreqGrid().b,
                                                       vertexDataContainer<k2b, Q>::get_VertexFreqGrid().f,
                                                       [&](int i, int j) -> Q {
-                                                          return vertexDataContainer<k2b, Q>::val(indices.iK, indices.spin, i,
-                                                                                                  j,
+                                                          return vertexDataContainer<k2b, Q>::val(indices.spin, i,
+                                                                                                  j, indices.iK,
                                                                                                   indices.i_in);
                                                       });
             }
@@ -432,8 +432,8 @@ public:
                                                vertexDataContainer<k2b, Q>::get_VertexFreqGrid().b,
                                                vertexDataContainer<k2b, Q>::get_VertexFreqGrid().f,
                                                       [&](int i, int j) -> Q {
-                                                          return vertexDataContainer<k2b, Q>::val(indices.iK, indices.spin, i,
-                                                                                                  j,
+                                                          return vertexDataContainer<k2b, Q>::val(indices.spin, i,
+                                                                                                  j, indices.iK,
                                                                                                   indices.i_in);
                                                       });
             }
@@ -442,8 +442,8 @@ public:
                                                        vertexDataContainer<k2b, Q>::get_VertexFreqGrid().b,
                                                        vertexDataContainer<k2b, Q>::get_VertexFreqGrid().f,
                                                [&](int i, int j) -> Q {
-                                                   return vertexDataContainer<k2b, Q>::val(indices.iK, indices.spin, i,
-                                                                                           j,
+                                                   return vertexDataContainer<k2b, Q>::val(indices.spin, i,
+                                                                                           j, indices.iK,
                                                                                            indices.i_in);
                                                });
             }
@@ -509,8 +509,8 @@ public:
                                                vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                [&](int i, int j, int k) -> Q {
-                                                   return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,
-                                                                                          j, k,
+                                                   return vertexDataContainer<k3, Q>::val(indices.spin, i,
+                                                                                          j, k, indices.iK,
                                                                                           indices.i_in);
                                                });
 #else
@@ -522,8 +522,8 @@ public:
                                                          vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                          vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                          [&](int i, int j, int k) -> Q {
-                                                             return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,
-                                                                                                    j, k,
+                                                             return vertexDataContainer<k3, Q>::val(indices.spin, i,
+                                                                                                    j, k, indices.iK,
                                                                                                     indices.i_in);
                                                          });
                 }
@@ -533,8 +533,8 @@ public:
                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                          [&](int i, int j, int k) -> Q {
-                                                             return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,
-                                                                                                    j, k,
+                                                             return vertexDataContainer<k3, Q>::val(indices.spin, i,
+                                                                                                    j, k, indices.iK,
                                                                                                     indices.i_in);
                                                          });
                 }
@@ -544,8 +544,8 @@ public:
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().f,
                                                   [&](int i, int j, int k) -> Q {
-                                                      return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,
-                                                                                             j, k,
+                                                      return vertexDataContainer<k3, Q>::val(indices.spin, i,
+                                                                                             j, k, indices.iK,
                                                                                              indices.i_in);
                                                   });
                 }
@@ -562,13 +562,13 @@ public:
                             result = interpolate_lin_on_aux2D<Q>(v_temp, vp_temp,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw_r,j, k,indices.i_in);});
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, indices.iw_r,j, k, indices.iK, indices.i_in);});
                             break;
                         case 'p':
                             result = interpolate_lin_on_aux2D<Q>(w_temp, vp_temp,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw_r, k,indices.i_in);});
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, i, indices.iw_r, k,indices.iK, indices.i_in);});
 
                             break;
                         case 't':
@@ -576,7 +576,7 @@ public:
                             result = interpolate_lin_on_aux2D<Q>(w_temp, v_temp,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                  vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw_r,indices.i_in);});
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, i,j, indices.iw_r,indices.iK, indices.i_in);});
                             break;
                         default:;
                     }
@@ -587,20 +587,20 @@ public:
                             result = interpolate_lin2D<Q>(v_temp, vp_temp,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw_r,j, k,indices.i_in);});
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, indices.iw_r,j, k,indices.iK, indices.i_in);});
                             break;
                         case 'p':
                             result = interpolate_lin2D<Q>(w_temp, vp_temp,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw_r, k,indices.i_in);});
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, i, indices.iw_r, k,indices.iK, indices.i_in);});
                             break;
                         case 't':
 
                             result = interpolate_lin2D<Q>(w_temp, v_temp,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                           vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw_r,indices.i_in);});
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, i,j, indices.iw_r,indices.iK, indices.i_in);});
                             break;
                         default:;
                     }
@@ -611,20 +611,20 @@ public:
                             result = interpolate_sloppycubic2D<Q>(v_temp, vp_temp,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, indices.iw_r,j, k,indices.i_in);});
+                                                                 [&](int j, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, indices.iw_r,j, k,indices.iK, indices.i_in);});
                             break;
                         case 'p':
                             result = interpolate_sloppycubic2D<Q>(w_temp, vp_temp,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i, indices.iw_r, k,indices.i_in);});
+                                                                 [&](int i, int k) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, i, indices.iw_r, k,indices.iK, indices.i_in);});
 
                             break;
                         case 't':
                             result = interpolate_sloppycubic2D<Q>(w_temp, v_temp,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
                                                                   vertexDataContainer<k3, Q>::get_VertexFreqGrid().b,
-                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.iK, indices.spin, i,j, indices.iw_r,indices.i_in);});
+                                                                 [&](int i, int j) -> Q {return vertexDataContainer<k3, Q>::val(indices.spin, i,j, indices.iw_r,indices.iK, indices.i_in);});
                             break;
                         default:;
                     }

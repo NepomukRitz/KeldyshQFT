@@ -571,7 +571,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
     vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
     for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
         int iK, ispin, iw, i_in;
-        getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, K1.get_dims());
+        getMultIndex<4,int,int,int,int>(ispin, iw, iK, i_in, iflat, K1.get_dims());
         //for (int iK = 0; iK < nK_K1; iK++) {
         //for (int iw = 0; iw < nBOS; iw++) {
         //    for (int i_in = 0; i_in < n_in; i_in++) {
@@ -619,7 +619,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         // K2:
         for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
             int iK, ispin, iw, iv, i_in;
-            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2.get_dims());
+            getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2.get_dims());
             //for (int iK = 0; iK < nK_K2; iK++) {
             //    for (int iw = 0; iw < nBOS2; iw++) {
             //        for (int iv = 0; iv < nFER2; iv++) {
@@ -672,7 +672,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         // K2b:
         for (int iflat = 0; iflat < getFlatSize(K2b.get_dims()); iflat++) {
             int iK, ispin, iw, iv, i_in;
-            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2b.get_dims());
+            getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2b.get_dims());
             //for (int iK = 0; iK < nK_K2; iK++) {
             //    for (int iw = 0; iw < nBOS2; iw++) {
             //        for (int iv = 0; iv < nFER2; iv++) {
@@ -705,7 +705,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         // K3:
         for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
             int iK, ispin, iw, iv, ivp, i_in;
-            getMultIndex<6, int, int, int, int, int, int>(iK, ispin, iw, iv, ivp, i_in, iflat, K3.get_dims());
+            getMultIndex<6, int, int, int, int, int, int>(ispin, iw, iv, ivp, iK, i_in, iflat, K3.get_dims());
             //for (int iK = 0; iK < nK_K3; iK++) {
             //    for (int iw = 0; iw < nBOS3; iw++) {
             //        for (int iv = 0; iv < nFER3; iv++) {
@@ -795,7 +795,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
 #pragma omp parallel for
     for (int iflat = 0; iflat < getFlatSize(K1_symmetry_expanded.get_dims()); iflat++) {
         int iK, ispin, iw, i_in;
-        getMultIndex<4,int,int,int,int>(iK, ispin, iw, i_in, iflat, K1_symmetry_expanded.get_dims());
+        getMultIndex<4,int,int,int,int>(ispin, iw, iK, i_in, iflat, K1_symmetry_expanded.get_dims());
         double w;
         K1_symmetry_expanded.K1_get_freq_w(w, iw);
         VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
@@ -803,7 +803,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
         rvert<Q> readMe = symmetry_reduce<k1>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
         Q value = read_symmetryreduced_rvert<k1>(indices, readMe);
 
-        K1_symmetry_expanded.setvert(value, iK, ispin, iw , i_in);
+        K1_symmetry_expanded.setvert(value, ispin, iw, iK, i_in);
 
     }
 
@@ -813,7 +813,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
 #pragma omp parallel for
         for (int iflat = 0; iflat < getFlatSize(K2_symmetry_expanded.get_dims()); iflat++) {
             int iK, ispin, iw, iv, i_in;
-            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2_symmetry_expanded.get_dims());
+            getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2_symmetry_expanded.get_dims());
 
             double w, v;
             K2_symmetry_expanded.K2_get_freqs_w(w, v, iw, iv);
@@ -822,7 +822,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
             rvert<Q> readMe = symmetry_reduce<k2>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
 
-            K2_symmetry_expanded.setvert(value, iK, ispin, iw, iv, i_in);
+            K2_symmetry_expanded.setvert(value, ispin, iw, iv, iK, i_in);
 
         }
 
@@ -830,7 +830,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
 #pragma omp parallel for
         for (int iflat = 0; iflat < getFlatSize(K2b_symmetry_expanded.get_dims()); iflat++) {
             int iK, ispin, iw, iv, i_in;
-            getMultIndex<5, int, int, int, int, int>(iK, ispin, iw, iv, i_in, iflat, K2b_symmetry_expanded.get_dims());
+            getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2b_symmetry_expanded.get_dims());
             double w, vp;
             K2b_symmetry_expanded.K2_get_freqs_w(w, vp, iw, iv);
             VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
@@ -838,7 +838,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
             rvert<Q> readMe = symmetry_reduce<k2b>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
 
-            K2b_symmetry_expanded.setvert(value, iK, ispin, iw , iv , i_in);
+            K2b_symmetry_expanded.setvert(value, ispin, iw , iv , iK, i_in);
 
         }
 
@@ -849,7 +849,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
 #pragma omp parallel for
         for (int iflat = 0; iflat < getFlatSize(K3_symmetry_expanded.get_dims()); iflat++) {
             int iK, ispin, iw, iv, ivp, i_in;
-            getMultIndex<6, int, int, int, int, int, int>(iK, ispin, iw, iv, ivp, i_in, iflat, K3_symmetry_expanded.get_dims());
+            getMultIndex<6, int, int, int, int, int, int>(ispin, iw, iv, ivp, iK, i_in, iflat, K3_symmetry_expanded.get_dims());
 
             double w, v, vp;
             K3_symmetry_expanded.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
@@ -858,7 +858,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
             rvert<Q> readMe = symmetry_reduce<k3>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k3>(indices, readMe);
 
-            K3_symmetry_expanded.setvert(value, iK, ispin, iw ,iv , ivp , i_in);
+            K3_symmetry_expanded.setvert(value, ispin, iw ,iv , ivp , iK, i_in);
 
         }
 
@@ -1253,7 +1253,7 @@ namespace {
             vec<Q> K1_new (dimsK1_flat);  // temporary K1 vector
             for (int iflat=0; iflat < dimsK1_flat; ++iflat) {
                 int iK1, i_spin, iw, i_in;
-                ::getMultIndex<4,int,int,int,int>(iK1, i_spin, iw, i_in, iflat, rvert4data.K1.get_dims()) ;
+                ::getMultIndex<4,int,int,int,int>(i_spin, iw, iK1, i_in, iflat, rvert4data.K1.get_dims()) ;
                 double w;
                 frequencies_new.get_freqs_w(w, iw);
                 IndicesSymmetryTransformations indices(iK1, i_spin, w, 0., 0., i_in, vertex.channel, k1, iw,
@@ -1273,7 +1273,7 @@ namespace {
             vec<Q> K2_new (dimsK2_flat);  // temporary K2 vector
             for (std::size_t i_flat = 0; i_flat < dimsK2_flat; i_flat++) {
                 int iK2, i_spin, iw, iv, i_in;
-                getMultIndex<5,int,int,int,int,int>(iK2, i_spin, iw, iv, i_in, i_flat, vertex.K2.get_dims());
+                getMultIndex<5,int,int,int,int,int>(i_spin, iw, iv, iK2, i_in, i_flat, vertex.K2.get_dims());
                 double w, v;
                 frequencies_new.get_freqs_w(w, v, iw, iv);
                 IndicesSymmetryTransformations indices(iK2, i_spin,
@@ -1297,7 +1297,7 @@ namespace {
             vec<Q> K3_new (dimsK3_flat);  // temporary K3 vector
             for (std::size_t i_flat = 0; i_flat < dimsK3_flat; i_flat++) {
                 int iK3, i_spin, iw, iv, ivp, i_in;
-                getMultIndex<6,int,int,int,int,int,int>(iK3, i_spin, iw, iv, ivp, i_in, i_flat, vertex.K3.get_dims());
+                getMultIndex<6,int,int,int,int,int,int>(i_spin, iw, iv, ivp, iK3, i_in, i_flat, vertex.K3.get_dims());
                 double w, v, vp;
                 frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp, vertex.channel);
                 IndicesSymmetryTransformations indices (iK3, i_spin,
@@ -1726,7 +1726,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                     else
                         result = read_symmetryreduced_rvert<k1>(indices, *this);
 
-                    K1.setvert(result, itK, it_spin, itw, 0);
+                    K1.setvert(result, it_spin, itw, itK, 0);
                 }
             }
         }
@@ -1744,13 +1744,13 @@ void rvert<Q>::K1_crossproject(const char channel_out) {
                 for (int i_in = 0; i_in < n_in_K1; ++i_in) {
                     switch (channel_out) {
                         case 'a':
-                            K1_a_proj.setvert(projected_value, iK, it_spin, iw, i_in);
+                            K1_a_proj.setvert(projected_value, it_spin, iw, iK, i_in);
                             break; // All internal arguments get the same value for K1!
                         case 'p':
-                            K1_p_proj.setvert(projected_value, iK, it_spin, iw, i_in);
+                            K1_p_proj.setvert(projected_value, it_spin, iw, iK, i_in);
                             break;
                         case 't':
-                            K1_t_proj.setvert(projected_value, iK, it_spin, iw, i_in);
+                            K1_t_proj.setvert(projected_value, it_spin, iw, iK, i_in);
                             break;
                         default:
                             print("Incompatible channel for K1 cross-projection!");
@@ -1765,15 +1765,15 @@ template<typename Q>
 Q rvert<Q>::K1_BZ_average(const int iK, const int ispin, const int iw) {
     /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
     Q value = 0.;
-    value += K1.val(iK, ispin, iw, momentum_index(0, 0));
-    value += K1.val(iK, ispin, iw, momentum_index(glb_N_q - 1, glb_N_q - 1));
-    value += 2. * K1.val(iK, ispin, iw, momentum_index(glb_N_q - 1, 0));
+    value +=      K1.val(ispin, iw, iK, momentum_index(0, 0));
+    value +=      K1.val(ispin, iw, iK, momentum_index(glb_N_q - 1, glb_N_q - 1));
+    value += 2. * K1.val(ispin, iw, iK, momentum_index(glb_N_q - 1, 0));
     for (int n = 1; n < glb_N_q - 1; ++n) {
-        value += 4. * K1.val(iK, ispin, iw, momentum_index(n, 0));
-        value += 4. * K1.val(iK, ispin, iw, momentum_index(glb_N_q - 1, n));
-        value += 4. * K1.val(iK, ispin, iw, momentum_index(n, n));
+        value += 4. * K1.val(ispin, iw, iK, momentum_index(n, 0));
+        value += 4. * K1.val(ispin, iw, iK, momentum_index(glb_N_q - 1, n));
+        value += 4. * K1.val(ispin, iw, iK, momentum_index(n, n));
         for (int np = 1; np < n; ++np) {
-            value += 8. * K1.val(iK, ispin, iw, momentum_index(n, np));
+            value += 8. * K1.val(ispin, iw, iK, momentum_index(n, np));
         }
     }
     value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
@@ -1813,10 +1813,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
                         else
                             result = read_symmetryreduced_rvert<k2>(indices, *this);
 
-                        K2.setvert(result, itK, it_spin, itw, itv, 0);
+                        K2.setvert(result, it_spin, itw, itv, itK, 0);
                     }
                     if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.K2_get_wlower_f()) {
-                        K2.setvert(0., itK, it_spin, itw, itv, 0);                    }
+                        K2.setvert(0., it_spin, itw, itv, itK, 0);                    }
                 }
             }
         }
@@ -1865,10 +1865,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                             else
                                 result = read_symmetryreduced_rvert<k3>(indices, *this);
 
-                            K3.setvert(result, itK, it_spin, itw, itv, itvp, 0);
+                            K3.setvert(result, it_spin, itw, itv, itvp, itK, 0);
                         }
                         if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in)*0.5 < K3.K3_get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in)*0.5 < K3.K3_get_wlower_f())) {
-                            K3.setvert(0., itK, it_spin, itw, itv, itvp, 0);
+                            K3.setvert(0., it_spin, itw, itv, itvp, itK, 0);
                         }
                     }
                 }
