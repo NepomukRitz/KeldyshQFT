@@ -104,7 +104,8 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const int it
         return state_fin;
     }
     else {
-        print("Error: Start iteration is too large.", true);
+        std::runtime_error("Error: Start iteration is too large.");
+        return State<state_datatype>();
     }
 }
 

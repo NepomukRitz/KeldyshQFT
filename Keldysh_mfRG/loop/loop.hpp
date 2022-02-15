@@ -169,8 +169,8 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
         }
 
 
-        integratedR += -1./(2.*M_PI)
-                       * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, spin, i_in, all_spins);
+        //integratedR += -1./(2.*M_PI)
+        //               * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, spin, i_in, all_spins);
         self.addself(0, iv, i_in, integratedR);
 
     }
@@ -217,7 +217,7 @@ template <typename Q>
 void loop(SelfEnergy<state_datatype>& self, const Vertex<Q>& fullvertex, const Propagator<Q>& prop,
           const bool all_spins){
     fullvertex.initializeInterpol();
-#pragma omp parallel for schedule(dynamic) default(none) shared(self, fullvertex, prop)
+#pragma omp parallel for schedule(dynamic) default(none) shared(self, fullvertex, prop, all_spins)
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         LoopCalculator<Q> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
         LoopIntegrationMachine.perform_computation();

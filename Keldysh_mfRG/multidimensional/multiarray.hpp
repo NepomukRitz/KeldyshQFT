@@ -324,6 +324,7 @@ namespace multidimensional
         {
             assert(is_same_length(rhs));
             elements /= rhs.elements;
+            return *this;
         }
 
         template <typename R>

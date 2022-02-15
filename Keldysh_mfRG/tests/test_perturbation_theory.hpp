@@ -2442,7 +2442,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         double vmax = 1e3;
         State<state_datatype> K1pdot_exact(Lambda);        // intermediate result: contains K2 and K3
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (size_t iflat = 0; iflat < (nBOS ); iflat++) {
             size_t it = iflat;
             //for (int it = 1; it<nBOS2-1; it++) {
@@ -2464,7 +2464,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         State<state_datatype> K1rdot_PIa_K1p_exact(Lambda);        // intermediate result: contains K2 and K3
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int iflat = 0; iflat < (nBOS2 ) * (nFER2 ); iflat++) {
             int i = iflat / (nFER2 );
             int j = iflat - (i ) * (nFER2 );
@@ -2478,7 +2478,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         }
 
 #if MAX_DIAG_CLASS>2
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int iflat = 0; iflat < (nBOS3 ) * (nFER3 ) * (nFER3); iflat++) {
             int i = iflat / (nFER3) / (nFER3);
             int j = iflat / (nFER3) - (i) * (nFER3);
@@ -2514,7 +2514,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> K1p_PIa_K1rdot_exact(Lambda);        // intermediate result: contains K2 and K3
 
 #if MAX_DIAG_CLASS>2
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1p_PIa_K1rdot_exact, vmax, Delta)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1p_PIa_K1rdot_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int iflat = 0; iflat < (nBOS3 ) * (nFER3 ) * (nFER3 ); iflat++) {
             int i = iflat / (nFER3 ) / (nFER3 );
             int j = iflat / (nFER3 ) - (i) * (nFER3 );
@@ -2546,7 +2546,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int i = 0; i < nBOS; i++) {
             double w;
             dGammaC_exact.vertex.avertex().K1.K1_get_freq_w(w, i);
@@ -2557,7 +2557,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         }
 
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int iflat = 0; iflat < (nBOS2) * (nFER2 ); iflat++) {
             int i = iflat / (nFER2 );
             int j = iflat - (i ) * (nFER2 );
@@ -2572,7 +2572,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         }
 
 #if MAX_DIAG_CLASS>2
-#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta)
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int iflat = 0; iflat < (nBOS3 ) * (nFER3 ) * (nFER3 ); iflat++) {
             int i = iflat / (nFER3 ) / (nFER3 );
             int j = iflat / (nFER3 ) - (i ) * (nFER3 );

@@ -113,7 +113,7 @@ auto indices_sum(int i0, int i2, const char channel) -> std::vector<int>;
 
 
 template<char ch, typename Q, typename VertexValue_l>
-Q load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_l& value_vertex, const VertexInput& input, const int spin_idx) {
+void load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_l& value_vertex, const VertexInput& input, const int spin_idx) {
     size_t len_1 = values_vertex.length()[0];
     assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
@@ -165,7 +165,7 @@ Q load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_v
 }
 
 template<char ch, typename Q, typename VertexValue_r>
-Q load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_r& value_vertex, const VertexInput& input, const int spin_idx) {
+void load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_r& value_vertex, const VertexInput& input, const int spin_idx) {
     size_t len_1 = values_vertex.length()[0];
     assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
