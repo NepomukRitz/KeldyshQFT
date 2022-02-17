@@ -649,8 +649,8 @@ namespace boost {
                     double dt_temp;
                     while( less_with_sign( t_now, t_final, dt ))
                     {
-                        if(previously_hit_lambda_checkpoint) dt = dt_temp;
-                        if( less_with_sign( t_final, t_now + dt, dt ) )
+                        if(previously_hit_lambda_checkpoint) dt = dt_temp;  // try the old step size if the step size of decreased due to hitting a Lambda checkpoint:
+                        if( less_with_sign( t_final, t_now + dt, dt ) ) //
                         {
                             dt = t_final - t_now;
                         }
@@ -661,7 +661,7 @@ namespace boost {
                         for (const double checkpoint : lambda_checkpoints)
                         {
                             // Guard against float arithmetic fails
-                            if ((Lambda_now - checkpoint) * (Lambda_next - checkpoint) < -1e-14 )
+                            if ((Lambda_now - checkpoint) * (Lambda_next - checkpoint) < -1e-14 ) // are we crossing a lambda checkpoint? If yes -> hit lambda checkpoint
                             {
                                 previously_hit_lambda_checkpoint = true;
                                 dt_temp = dt;

@@ -212,6 +212,11 @@ namespace multidimensional
             }
         }
 
+
+        bool is_same_length(const multiarray<value_type,depth>& other) const {
+            return (m_length == other.m_length);
+        }
+
         /// === public member functions ===
 
         /// random element access
@@ -496,9 +501,6 @@ namespace multidimensional
                 throw std::logic_error("multiarrray::operator= got an invalid parameter and cannot construct a consistent object.");
             }
 #endif
-        }
-        bool is_same_length(const multiarray<value_type,depth>& other) const {
-            return (m_length == other.m_length);
         }
 
         size_type flat_index(const index_type &index) const noexcept;

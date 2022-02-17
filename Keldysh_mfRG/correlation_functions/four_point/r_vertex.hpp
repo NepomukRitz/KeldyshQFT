@@ -1250,7 +1250,8 @@ namespace {
     class UpdateGrid<k1,Q> {
     public:
         void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k1>& frequencies_new, const rvert<Q>& rvert4data) {
-            vec<Q> K1_new (dimsK1_flat);  // temporary K1 vector
+            using buffer_type = multidimensional::multiarray<Q,dimsK1.size()>;
+            buffer_type K1_new (dimsK1);  // temporary K1 vector
             for (int iflat=0; iflat < dimsK1_flat; ++iflat) {
                 int iK1, i_spin, iw, i_in;
                 ::getMultIndex<4,int,int,int,int>(i_spin, iw, iK1, i_in, iflat, rvert4data.K1.get_dims()) ;
@@ -1259,10 +1260,9 @@ namespace {
                 IndicesSymmetryTransformations indices(iK1, i_spin, w, 0., 0., i_in, vertex.channel, k1, iw,
                                                        rvert4data.channel);
                 // interpolate old values to new vector
-                K1_new[iK1 * (nw1) * n_in_K1 + (iw ) * n_in_K1 +
-                       i_in] = rvert4data.K1.interpolate(indices);
+                K1_new.at(i_spin, iw, iK1, i_in) = rvert4data.K1.interpolate(indices);
             }
-            vertex.K1.set_vec(K1_new); // update vertex to new interpolated values
+            vertex.K1.set_vec(std::move(K1_new)); // update vertex to new interpolated values
             vertex.K1.set_VertexFreqGrid(frequencies_new);
         }
     };
@@ -1270,7 +1270,8 @@ namespace {
     class UpdateGrid<k2,Q> {
     public:
          void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k2>& frequencies_new, const rvert<Q>& rvert4data) {
-            vec<Q> K2_new (dimsK2_flat);  // temporary K2 vector
+             using buffer_type = multidimensional::multiarray<Q,dimsK2.size()>;
+             buffer_type K2_new(dimsK2); // temporary K2 vector
             for (std::size_t i_flat = 0; i_flat < dimsK2_flat; i_flat++) {
                 int iK2, i_spin, iw, iv, i_in;
                 getMultIndex<5,int,int,int,int,int>(i_spin, iw, iv, iK2, i_in, i_flat, vertex.K2.get_dims());
@@ -1280,12 +1281,9 @@ namespace {
                                                        w, v, 0.,
                                                        i_in, vertex.channel, k2, iw, rvert4data.channel);
                 // interpolate old values to new vector
-                K2_new[iK2 * (nw2) * (nv2) * n_in_K2 +
-                       (iw ) * (nv2) * n_in_K2 +
-                       (iv ) * n_in_K2 + i_in]
-                        = rvert4data.K2.interpolate(indices);
+                K2_new.at(i_spin, iw, iv, iK2, i_in) = rvert4data.K2.interpolate(indices);
             }
-            vertex.K2.set_vec(K2_new); // update vertex to new interpolated values
+            vertex.K2.set_vec(std::move(K2_new)); // update vertex to new interpolated values
              vertex.K2.set_VertexFreqGrid(frequencies_new);
         }
     };
@@ -1294,7 +1292,8 @@ namespace {
     public:
         void operator() (rvert<Q>& vertex, const VertexFrequencyGrid<k3>& frequencies_new, const rvert<Q>& rvert4data) {
             assert(vertex.channel == rvert4data.channel);
-            vec<Q> K3_new (dimsK3_flat);  // temporary K3 vector
+            using buffer_type = multidimensional::multiarray<Q,dimsK3.size()>;
+            buffer_type K3_new(dimsK3);  // temporary K3 vector
             for (std::size_t i_flat = 0; i_flat < dimsK3_flat; i_flat++) {
                 int iK3, i_spin, iw, iv, ivp, i_in;
                 getMultIndex<6,int,int,int,int,int,int>(i_spin, iw, iv, ivp, iK3, i_in, i_flat, vertex.K3.get_dims());
@@ -1304,14 +1303,9 @@ namespace {
                                                         w, v, vp,
                                                         i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
                 // interpolate old values to new vector
-                K3_new[iK3 * (nw3) * (nv3) * (nv3) * n_in_K3
-                      + (iw) * (nv3) * (nv3) * n_in_K3
-                      + (iv) * (nv3) * n_in_K3
-                      + (ivp) * n_in_K3
-                      + i_in]
-                        = rvert4data.K3.interpolate(indices);
+                K3_new.at(i_spin, iw, iv, ivp, iK3, i_in) = rvert4data.K3.interpolate(indices);
             }
-            vertex.K3.set_vec(K3_new); // update vertex to new interpolated values
+            vertex.K3.set_vec(std::move(K3_new)); // update vertex to new interpolated values
             vertex.K3.set_VertexFreqGrid(frequencies_new);
         }
 

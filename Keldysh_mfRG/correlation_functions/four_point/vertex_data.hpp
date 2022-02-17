@@ -88,6 +88,7 @@ public:
     >
     void set_vec(const container &data_in) {assert(data.size() == data_in.size()); data = buffer_type(data.length(), data_in);}
     void set_vec(const buffer_type &data_in) {assert(data.is_same_length(data_in)); data = data_in;}
+    void set_vec(const buffer_type &&data_in) {assert(data.is_same_length(data_in)); data = data_in;}
     /// Adds a vector to the data
     template <typename container,
             std::enable_if_t< std::is_same_v<typename container::value_type, Q> && !std::is_same_v<container, buffer_type>, bool> = true
