@@ -100,7 +100,7 @@ void check_input() {
 #endif
 
 #if not defined(KELDYSH_FORMALISM)
-    static_assert(nFER % 2 == 0, "nFER must be an odd number.");
+    static_assert(nFER % 2 == 0, "nFER must be an even number.");
 #endif
 
     if (BOSONIC_PARAM_FOR_K3) {
@@ -108,11 +108,11 @@ void check_input() {
     }
 
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
-    assert(nBOS %2 == 1);
-    assert(nBOS2%2 == 1);
-    assert(nBOS3%2 == 1);
-    assert(nFER %2 == 0);
-    assert(nFER2%2 == 0);
-    assert(nFER3%2 == 0);
+    static_assert(nBOS %2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
+    static_assert(nBOS2%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
+    static_assert(nBOS3%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
+    static_assert(nFER %2 == 0, "Number of frequency points inconsistent for Matsubara T>0");
+    static_assert(nFER2%2 == 0, "Number of frequency points inconsistent for Matsubara T>0");
+    static_assert(nFER3%2 == 0, "Number of frequency points inconsistent for Matsubara T>0");
 #endif
 }

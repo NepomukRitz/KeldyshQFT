@@ -61,8 +61,8 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
     using namespace boost::numeric::odeint;
-    //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
-    //                                                                    Lambda_checkpoints, outputFileName, 0, nODE, true);
+    ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+                                                                        Lambda_checkpoints, outputFileName, 0, nODE, true);
 
     return state_fin;
 }

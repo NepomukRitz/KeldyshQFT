@@ -65,6 +65,7 @@ auto main() -> int {
     if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
     print("U for this run is: ", glb_U, true);
+    print("temperature T = ", glb_T, true);
     print("Lambda flows from ", Lambda_ini);
     print_add(" to ", Lambda_fin, true);
     print("nODE for this run: ", nODE, true);
@@ -119,8 +120,8 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string name = data_dir+filename+job;
-    //n_loop_flow(name, true);
-    test_symmetries(1.8);
+    n_loop_flow(name, true);
+    //test_symmetries(1.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
     print("Hello world \n");

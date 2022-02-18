@@ -8,7 +8,7 @@
 #include <string>
 
 // For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
+#define NDEBUG
 
 //#define MULTIDIM_MINIMIZATION
 
@@ -24,8 +24,8 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
-#define SWITCH_SUM_N_INTEGRAL
-#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+//#define SWITCH_SUM_N_INTEGRAL
+//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
@@ -41,9 +41,9 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 1
+#define MAX_DIAG_CLASS 3
 
-constexpr int N_LOOPS = 1;  // Number of loops
+constexpr int N_LOOPS = 3;  // Number of loops
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
@@ -53,9 +53,9 @@ constexpr int N_LOOPS = 1;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 1.; //0.01;                     // Temperature
+constexpr double glb_T = 0.01; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 0.0;                     // Temperature
+constexpr double glb_T = 0.01;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
@@ -142,7 +142,7 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 //#define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 10;
+constexpr int nODE = 50;
 constexpr double epsODE_rel = 1e-6;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
@@ -150,7 +150,7 @@ constexpr double epsODE_abs = 1e-8;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 3
+#define ODEsolver 1
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;// 1e4;                // NOLINT(cert-err58-cpp)
