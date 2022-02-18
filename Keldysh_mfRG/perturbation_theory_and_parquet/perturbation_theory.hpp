@@ -17,6 +17,7 @@
 #include "../loop/loop.hpp"
 #include "HUBBARD_sopt_selfenergy.hpp"
 #include "../bubble/precalculated_bubble.hpp"
+#include "../utilities/write_data2file.hpp"
 
 template <typename Q>
 auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
@@ -215,6 +216,152 @@ void fopt_state(State<Q>& Psi, double Lambda) {
     Psi.selfenergy = bareState.selfenergy + SoptPsi.selfenergy;
 
 }
+
+template<typename Q, class Bubble_Object>
+class PT_Machine{
+private:
+    const unsigned int order;
+    const double Lambda;
+    const State<Q> bareState = State<Q>(Lambda).initialize(); // state with bare vertex and Hartree self-energy
+    const Propagator<Q> barePropagator = Propagator<Q>(Lambda, bareState.selfenergy, 'g');
+    const Bubble_Object Pi = PT_initialize_Bubble(barePropagator);
+
+    /// Vertices to be computed
+    Vertex<Q> SOPT_Vertex = Vertex<Q>(Lambda);
+    Vertex<Q> TOPT_Vertex = Vertex<Q>(Lambda);
+    Vertex<Q> FOPT_Vertex = Vertex<Q>(Lambda);
+
+    /// Function which actually perform the computations
+    void compute_SOPT();
+    void compute_TOPT();
+    void compute_FOPT();
+
+    const std::string channels = "apt";
+    const double U_over_Delta = glb_U / ((Lambda + glb_Gamma)/2.);
+
+    void write_out_results() const;
+
+public:
+    PT_Machine(const unsigned int order_in, const double Lambda_in): order(order_in), Lambda(Lambda_in){
+        static_assert((order > 0) and (order < 5));
+        static_assert(MAX_DIAG_CLASS == 3);
+
+        // perform computations
+        compute_SOPT();
+        if (order >= 3) compute_TOPT();
+        if (order == 4) compute_FOPT();
+
+        write_out_results();
+    };
+};
+
+template<typename Q, class Bubble_Object>
+void PT_Machine<Q, Bubble_Object>::compute_SOPT() {
+    assert(SOPT_Vertex.sum_norm(0) < 1e-15); // SOPT vertex should be empty
+    for (char r: channels) {
+        bubble_function(SOPT_Vertex, bareState.vertex, bareState.vertex, Pi, r);
+    }
+    assert(SOPT_Vertex.norm_K1(0) > 0.);
+    assert(SOPT_Vertex.norm_K2(0) < 1e-15);
+    assert(SOPT_Vertex.norm_K3(0) < 1e-15);
+}
+
+template<typename Q, class Bubble_Object>
+void PT_Machine<Q, Bubble_Object>::compute_TOPT() {
+    assert(SOPT_Vertex.sum_norm(0) > 0.);
+    assert(TOPT_Vertex.sum_norm(0) < 1e-15);
+
+    for (char r: channels) {
+        bubble_function(TOPT_Vertex, SOPT_Vertex, bareState.vertex, Pi, r);
+        bubble_function(TOPT_Vertex, bareState.vertex, SOPT_Vertex, Pi, r);
+    }
+
+    // Compensate for overcounting the ladder
+    Vertex<Q> TOPT_Ladder = Vertex<Q>(Lambda);
+    bubble_function(TOPT_Ladder, SOPT_Vertex.avertex, bareState.vertex, Pi, 'a');
+    bubble_function(TOPT_Ladder, SOPT_Vertex.pvertex, bareState.vertex, Pi, 'p');
+    bubble_function(TOPT_Ladder, SOPT_Vertex.tvertex, bareState.vertex, Pi, 't');
+
+    TOPT_Vertex -= TOPT_Ladder;
+
+    assert(TOPT_Vertex.norm_K1(0) > 0.);
+    assert(TOPT_Vertex.norm_K2(0) > 0.);
+    assert(TOPT_Vertex.norm_K3(0) < 1e-15);
+}
+
+template<typename Q, class Bubble_Object>
+void PT_Machine<Q, Bubble_Object>::compute_FOPT() {
+    assert(SOPT_Vertex.sum_norm(0) > 0.);
+    assert(TOPT_Vertex.sum_norm(0) > 0.);
+    assert(FOPT_Vertex.sum_norm(0) < 1e-15);
+
+    for (char r: channels) {
+        bubble_function(FOPT_Vertex, TOPT_Vertex, bareState.vertex, Pi, r); // K1 + K2
+        bubble_function(FOPT_Vertex, bareState.vertex, TOPT_Vertex, Pi, r); // K1 + K2p
+        bubble_function(FOPT_Vertex, SOPT_Vertex, SOPT_Vertex, Pi, r);      // K3 + K1, K2 and K2p terms from the same channel
+
+        // Compensate for counting K1 twice in the first two steps
+        Vertex<Q> K1_comp_step1 = Vertex<Q>(Lambda);
+        Vertex<Q> K1_comp = Vertex<Q>(Lambda);
+        bubble_funtion(K1_comp_step1, bareState.vertex, SOPT_Vertex, Pi, r);
+        bubble_funtion(K1_comp, K1_comp_step1, bareState.vertex, Pi, r);
+
+        FOPT_Vertex -= K1_comp;
+    }
+
+    // Compensate overcounting K1, K2 and K2p terms in the third step
+    Vertex<Q> K2_comp = Vertex<Q>(Lambda);
+    bubble_function(K2_comp, SOPT_Vertex, SOPT_Vertex.avertex, Pi, 'a');
+    bubble_function(K2_comp, SOPT_Vertex, SOPT_Vertex.pvertex, Pi, 'p');
+    bubble_function(K2_comp, SOPT_Vertex, SOPT_Vertex.tvertex, Pi, 't');
+
+    Vertex<Q> K2p_comp = Vertex<Q>(Lambda);
+    bubble_function(K2p_comp, SOPT_Vertex.avertex, SOPT_Vertex, Pi, 'a');
+    bubble_function(K2p_comp, SOPT_Vertex.pvertex, SOPT_Vertex, Pi, 'p');
+    bubble_function(K2p_comp, SOPT_Vertex.tvertex, SOPT_Vertex, Pi, 't');
+
+    FOPT_Vertex -= K2_comp;
+    FOPT_Vertex -= K2p_comp;
+
+    // Compensate for compensating for the ladder twice in the previous step
+    Vertex<Q> Ladder_comp = Vertex<Q>(Lambda);
+    bubble_function(Ladder_comp, SOPT_Vertex.avertex, SOPT_Vertex.avertex, Pi, 'a');
+    bubble_function(Ladder_comp, SOPT_Vertex.pvertex, SOPT_Vertex.pvertex, Pi, 'p');
+    bubble_function(Ladder_comp, SOPT_Vertex.tvertex, SOPT_Vertex.tvertex, Pi, 't');
+
+    FOPT_Vertex += Ladder_comp;
+
+    assert(FOPT_Vertex.norm_K1(0) > 0.);
+    assert(FOPT_Vertex.norm_K2(0) > 0.);
+    assert(FOPT_Vertex.norm_K3(0) > 0.);
+}
+
+template<typename Q, class Bubble_Object>
+void PT_Machine<Q, Bubble_Object>::write_out_results() const {
+    // Always fully retarded components, up-down spin component, and at zero frequencies
+    assert(KELDYSH);
+    const std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" + std::to_string(U_over_Delta) + ".h5";
+
+    /// Vectors with data.
+    /// First element: a-channel
+    /// Second element: p-channel
+    /// Third element: t-channel
+    VertexInput SOPT_a_input (0, 0, 0, 0, 0, 0, 'a', k1);
+    VertexInput SOPT_p_input (0, 0, 0, 0, 0, 0, 'p', k1);
+    VertexInput SOPT_t_input (0, 0, 0, 0, 0, 0, 't', k1);
+    rvec SOPT = {SOPT_Vertex.value(SOPT_a_input), SOPT_Vertex.value(SOPT_p_input), SOPT_Vertex.value(SOPT_t_input)};
+
+
+
+    //write_h5_rvecs(filename,
+                   {"SOPT_a", "SOPT_p", "SOPT_t",
+                    "TOPT_K1_a", "TOPT_K1_p", "TOPT_K1_t",
+                    "TOPT_K2_a", "TOPT_K2_p", "TOPT_K2_t",
+                    "FOPT_K1_a", "FOPT_K1_p", "FOPT_K1_t",
+                    "FOPT_K2_a", "FOPT_K2_p", "FOPT_K2_t",
+                    "FOPT_K3_a", "FOPT_K3_p", "FOPT_K3_t"})
+}
+
 
 #endif //KELDYSH_MFRG_PERTURBATION_THEORY_H
 //#pragma clang diagnostic pop
