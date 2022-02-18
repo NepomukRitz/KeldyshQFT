@@ -280,7 +280,6 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
     buffer_type Sigma_new (dimsSE);                     // temporary self-energy vector
 
     for (int iK=0; iK<nK_SE; ++iK) {
-    buffer_type Sigma_new = empty_Sigma();                     // temporary self-energy vector
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
             for (int i_in=0; i_in<n_in_K1; ++i_in) {
@@ -378,7 +377,7 @@ public:
 };
 
 template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
-    double rel_tail_threshold = 1e-2;
+    double rel_tail_threshold = 1e-3;
 
     FrequencyGrid frequencies_new = shrink_freq_box(rel_tail_threshold);
     update_grid(frequencies_new);
@@ -404,7 +403,7 @@ template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_
     if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp[i] -= asymp_val_R;
     else for (int i = 0; i < Sigma.size(); i++) Sigma_temp[i] -= asymp_val_R;
 
-    double maxmax = Sigma.max_norm();
+    double maxmax = Sigma_temp.max_norm();
     vec<double> maxabsSE_along_w = maxabs(Sigma_temp, Sigma_temp.length(), 1) * (1/maxmax);
 
     FrequencyGrid frequencies_new = freqGrid::shrink_freq_box(frequencies, rel_tail_threshold, maxabsSE_along_w);
