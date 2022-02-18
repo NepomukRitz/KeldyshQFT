@@ -264,17 +264,25 @@ template<typename Q>
 void PT_Machine<Q>::compute_SOPT() {
     assert(SOPT_Vertex.sum_norm(0) < 1e-15); // SOPT vertex should be empty
 
+    print("Now computing the SOPT contribution...", true);
+
+    print("...in the a channel...", true);
     bubble_function(SOPT_avertex, bareState.vertex, bareState.vertex, Pi, 'a');
+    print("...in the p channel...", true);
     bubble_function(SOPT_pvertex, bareState.vertex, bareState.vertex, Pi, 'p');
+    print("...in the t channel...", true);
     bubble_function(SOPT_tvertex, bareState.vertex, bareState.vertex, Pi, 't');
+    print("...done.", true);
 
     SOPT_Vertex += SOPT_avertex;
     SOPT_Vertex += SOPT_pvertex;
     SOPT_Vertex += SOPT_tvertex;
 
+    print("Now checking that the norms are right...", true);
     assert(SOPT_Vertex.norm_K1(0) > 0.);
     assert(SOPT_Vertex.norm_K2(0) < 1e-15);
     assert(SOPT_Vertex.norm_K3(0) < 1e-15);
+    print("...done.", true);
 }
 
 template<typename Q>
