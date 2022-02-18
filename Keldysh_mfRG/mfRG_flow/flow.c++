@@ -45,10 +45,11 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
 
     write_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
     state_ini.vertex.half1().check_vertex_resolution();
+#ifdef ADAPTIVE_GRID
     state_ini.findBestFreqGrid(true);
     state_ini.vertex.half1().check_vertex_resolution();
     write_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-
+#endif
 
     compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, true, nODE + U_NRG.size() + 1);
 
@@ -60,8 +61,8 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
     using namespace boost::numeric::odeint;
-    ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
-                                                                        Lambda_checkpoints, outputFileName, 0, nODE, true);
+    //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+    //                                                                    Lambda_checkpoints, outputFileName, 0, nODE, true);
 
     return state_fin;
 }
