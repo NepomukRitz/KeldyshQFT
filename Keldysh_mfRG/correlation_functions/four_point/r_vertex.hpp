@@ -136,7 +136,7 @@ public:
             if (MAX_DIAG_CLASS >= 1) K1.reserve();
             if (MAX_DIAG_CLASS >= 2) K2.reserve();
             if (MAX_DIAG_CLASS >= 3) K3.reserve();
-            if constexpr(HUBBARD_MODEL) {
+            if constexpr (HUBBARD_MODEL) {
                 if (MAX_DIAG_CLASS >= 1) {
                     K1_a_proj.reserve();
                     K1_p_proj.reserve();

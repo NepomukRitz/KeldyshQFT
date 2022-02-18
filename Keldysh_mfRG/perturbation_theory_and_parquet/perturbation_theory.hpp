@@ -217,19 +217,24 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 
 }
 
-template<typename Q, class Bubble_Object>
+template<typename Q>
 class PT_Machine{
 private:
     const unsigned int order;
     const double Lambda;
-    const State<Q> bareState = State<Q>(Lambda).initialize(); // state with bare vertex and Hartree self-energy
+    const State<Q> bareState = State<Q>(Lambda, true); // state with bare vertex and Hartree self-energy
     const Propagator<Q> barePropagator = Propagator<Q>(Lambda, bareState.selfenergy, 'g');
-    const Bubble_Object Pi = PT_initialize_Bubble(barePropagator);
+    const Bubble<Q> Pi = Bubble<Q> (barePropagator, barePropagator, false); // Works only for the SIAM
 
     /// Vertices to be computed
     Vertex<Q> SOPT_Vertex = Vertex<Q>(Lambda);
     Vertex<Q> TOPT_Vertex = Vertex<Q>(Lambda);
     Vertex<Q> FOPT_Vertex = Vertex<Q>(Lambda);
+
+    // SOPT vertices containing only specific channels. Useful when computing higher order contributions
+    Vertex<Q> SOPT_avertex = Vertex<Q>(Lambda);
+    Vertex<Q> SOPT_pvertex = Vertex<Q>(Lambda);
+    Vertex<Q> SOPT_tvertex = Vertex<Q>(Lambda);
 
     /// Function which actually perform the computations
     void compute_SOPT();
@@ -243,7 +248,7 @@ private:
 
 public:
     PT_Machine(const unsigned int order_in, const double Lambda_in): order(order_in), Lambda(Lambda_in){
-        static_assert((order > 0) and (order < 5));
+        assert((order > 0) and (order < 5));
         static_assert(MAX_DIAG_CLASS == 3);
 
         // perform computations
@@ -255,19 +260,25 @@ public:
     };
 };
 
-template<typename Q, class Bubble_Object>
-void PT_Machine<Q, Bubble_Object>::compute_SOPT() {
+template<typename Q>
+void PT_Machine<Q>::compute_SOPT() {
     assert(SOPT_Vertex.sum_norm(0) < 1e-15); // SOPT vertex should be empty
-    for (char r: channels) {
-        bubble_function(SOPT_Vertex, bareState.vertex, bareState.vertex, Pi, r);
-    }
+
+    bubble_function(SOPT_avertex, bareState.vertex, bareState.vertex, Pi, 'a');
+    bubble_function(SOPT_pvertex, bareState.vertex, bareState.vertex, Pi, 'p');
+    bubble_function(SOPT_tvertex, bareState.vertex, bareState.vertex, Pi, 't');
+
+    SOPT_Vertex += SOPT_avertex;
+    SOPT_Vertex += SOPT_pvertex;
+    SOPT_Vertex += SOPT_tvertex;
+
     assert(SOPT_Vertex.norm_K1(0) > 0.);
     assert(SOPT_Vertex.norm_K2(0) < 1e-15);
     assert(SOPT_Vertex.norm_K3(0) < 1e-15);
 }
 
-template<typename Q, class Bubble_Object>
-void PT_Machine<Q, Bubble_Object>::compute_TOPT() {
+template<typename Q>
+void PT_Machine<Q>::compute_TOPT() {
     assert(SOPT_Vertex.sum_norm(0) > 0.);
     assert(TOPT_Vertex.sum_norm(0) < 1e-15);
 
@@ -278,9 +289,9 @@ void PT_Machine<Q, Bubble_Object>::compute_TOPT() {
 
     // Compensate for overcounting the ladder
     Vertex<Q> TOPT_Ladder = Vertex<Q>(Lambda);
-    bubble_function(TOPT_Ladder, SOPT_Vertex.avertex, bareState.vertex, Pi, 'a');
-    bubble_function(TOPT_Ladder, SOPT_Vertex.pvertex, bareState.vertex, Pi, 'p');
-    bubble_function(TOPT_Ladder, SOPT_Vertex.tvertex, bareState.vertex, Pi, 't');
+    bubble_function(TOPT_Ladder, SOPT_avertex, bareState.vertex, Pi, 'a');
+    bubble_function(TOPT_Ladder, SOPT_pvertex, bareState.vertex, Pi, 'p');
+    bubble_function(TOPT_Ladder, SOPT_tvertex, bareState.vertex, Pi, 't');
 
     TOPT_Vertex -= TOPT_Ladder;
 
@@ -289,8 +300,8 @@ void PT_Machine<Q, Bubble_Object>::compute_TOPT() {
     assert(TOPT_Vertex.norm_K3(0) < 1e-15);
 }
 
-template<typename Q, class Bubble_Object>
-void PT_Machine<Q, Bubble_Object>::compute_FOPT() {
+template<typename Q>
+void PT_Machine<Q>::compute_FOPT() {
     assert(SOPT_Vertex.sum_norm(0) > 0.);
     assert(TOPT_Vertex.sum_norm(0) > 0.);
     assert(FOPT_Vertex.sum_norm(0) < 1e-15);
@@ -303,31 +314,31 @@ void PT_Machine<Q, Bubble_Object>::compute_FOPT() {
         // Compensate for counting K1 twice in the first two steps
         Vertex<Q> K1_comp_step1 = Vertex<Q>(Lambda);
         Vertex<Q> K1_comp = Vertex<Q>(Lambda);
-        bubble_funtion(K1_comp_step1, bareState.vertex, SOPT_Vertex, Pi, r);
-        bubble_funtion(K1_comp, K1_comp_step1, bareState.vertex, Pi, r);
+        bubble_function(K1_comp_step1, bareState.vertex, SOPT_Vertex, Pi, r);
+        bubble_function(K1_comp, K1_comp_step1, bareState.vertex, Pi, r);
 
         FOPT_Vertex -= K1_comp;
     }
 
     // Compensate overcounting K1, K2 and K2p terms in the third step
     Vertex<Q> K2_comp = Vertex<Q>(Lambda);
-    bubble_function(K2_comp, SOPT_Vertex, SOPT_Vertex.avertex, Pi, 'a');
-    bubble_function(K2_comp, SOPT_Vertex, SOPT_Vertex.pvertex, Pi, 'p');
-    bubble_function(K2_comp, SOPT_Vertex, SOPT_Vertex.tvertex, Pi, 't');
+    bubble_function(K2_comp, SOPT_Vertex, SOPT_avertex, Pi, 'a');
+    bubble_function(K2_comp, SOPT_Vertex, SOPT_pvertex, Pi, 'p');
+    bubble_function(K2_comp, SOPT_Vertex, SOPT_tvertex, Pi, 't');
 
     Vertex<Q> K2p_comp = Vertex<Q>(Lambda);
-    bubble_function(K2p_comp, SOPT_Vertex.avertex, SOPT_Vertex, Pi, 'a');
-    bubble_function(K2p_comp, SOPT_Vertex.pvertex, SOPT_Vertex, Pi, 'p');
-    bubble_function(K2p_comp, SOPT_Vertex.tvertex, SOPT_Vertex, Pi, 't');
+    bubble_function(K2p_comp, SOPT_avertex, SOPT_Vertex, Pi, 'a');
+    bubble_function(K2p_comp, SOPT_pvertex, SOPT_Vertex, Pi, 'p');
+    bubble_function(K2p_comp, SOPT_tvertex, SOPT_Vertex, Pi, 't');
 
     FOPT_Vertex -= K2_comp;
     FOPT_Vertex -= K2p_comp;
 
     // Compensate for compensating for the ladder twice in the previous step
     Vertex<Q> Ladder_comp = Vertex<Q>(Lambda);
-    bubble_function(Ladder_comp, SOPT_Vertex.avertex, SOPT_Vertex.avertex, Pi, 'a');
-    bubble_function(Ladder_comp, SOPT_Vertex.pvertex, SOPT_Vertex.pvertex, Pi, 'p');
-    bubble_function(Ladder_comp, SOPT_Vertex.tvertex, SOPT_Vertex.tvertex, Pi, 't');
+    bubble_function(Ladder_comp, SOPT_avertex, SOPT_avertex, Pi, 'a');
+    bubble_function(Ladder_comp, SOPT_pvertex, SOPT_pvertex, Pi, 'p');
+    bubble_function(Ladder_comp, SOPT_tvertex, SOPT_tvertex, Pi, 't');
 
     FOPT_Vertex += Ladder_comp;
 
@@ -336,30 +347,63 @@ void PT_Machine<Q, Bubble_Object>::compute_FOPT() {
     assert(FOPT_Vertex.norm_K3(0) > 0.);
 }
 
-template<typename Q, class Bubble_Object>
-void PT_Machine<Q, Bubble_Object>::write_out_results() const {
+template<typename Q>
+void PT_Machine<Q>::write_out_results() const {
     // Always fully retarded components, up-down spin component, and at zero frequencies
     assert(KELDYSH);
-    const std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" + std::to_string(U_over_Delta) + ".h5";
+    const std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
+    + std::to_string(U_over_Delta) + "_and_eVg_" + std::to_string(glb_Vg) + ".h5";
 
     /// Vectors with data.
     /// First element: a-channel
     /// Second element: p-channel
     /// Third element: t-channel
-    VertexInput SOPT_a_input (0, 0, 0, 0, 0, 0, 'a', k1);
-    VertexInput SOPT_p_input (0, 0, 0, 0, 0, 0, 'p', k1);
-    VertexInput SOPT_t_input (0, 0, 0, 0, 0, 0, 't', k1);
-    rvec SOPT = {SOPT_Vertex.value(SOPT_a_input), SOPT_Vertex.value(SOPT_p_input), SOPT_Vertex.value(SOPT_t_input)};
+
+    /// Comment on Keldysh index:
+    /// We look at a fully retarded component, where only one Keldysh index is one and the others are two.
+    /// We can choose 22|21 -> 1110 -> 2^3+2^2+2^1+0 = 8+4+2 = 14 = iK
+    /// or 22|12 -> 1101 -> 8+4+1 = 13
+    /// or 21|22 -> 1011 -> 8+2+1 = 11
+    /// or 12|22 -> 0111 -> 4+2+1 = 7
+    VertexInput a_input (7, 0, 0, 0, 0, 0, 'a');
+    VertexInput p_input (7, 0, 0, 0, 0, 0, 'p');
+    VertexInput t_input (7, 0, 0, 0, 0, 0, 't');
+    rvec SOPT = {SOPT_Vertex.avertex().template valsmooth<k1>(a_input, SOPT_Vertex.tvertex()).real() / glb_U,
+                 SOPT_Vertex.pvertex().template valsmooth<k1>(p_input, SOPT_Vertex.pvertex()).real() / glb_U,
+                 SOPT_Vertex.tvertex().template valsmooth<k1>(t_input, SOPT_Vertex.avertex()).real() / glb_U};
+
+    rvec TOPT_K1 = {TOPT_Vertex.avertex().template valsmooth<k1>(a_input, TOPT_Vertex.tvertex()).real() / glb_U,
+                    TOPT_Vertex.pvertex().template valsmooth<k1>(p_input, TOPT_Vertex.pvertex()).real() / glb_U,
+                    TOPT_Vertex.tvertex().template valsmooth<k1>(t_input, TOPT_Vertex.avertex()).real() / glb_U};
+
+    rvec TOPT_K2 = {TOPT_Vertex.avertex().template valsmooth<k2>(a_input, TOPT_Vertex.tvertex()).real() / glb_U,
+                    TOPT_Vertex.pvertex().template valsmooth<k2>(p_input, TOPT_Vertex.pvertex()).real() / glb_U,
+                    TOPT_Vertex.tvertex().template valsmooth<k2>(t_input, TOPT_Vertex.avertex()).real() / glb_U};
+
+    rvec TOPT_K2p = {TOPT_Vertex.avertex().template valsmooth<k2b>(a_input, TOPT_Vertex.tvertex()).real() / glb_U,
+                     TOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, TOPT_Vertex.pvertex()).real() / glb_U,
+                     TOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, TOPT_Vertex.avertex()).real() / glb_U};
+
+    rvec FOPT_K1 = {FOPT_Vertex.avertex().template valsmooth<k1>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
+                    FOPT_Vertex.pvertex().template valsmooth<k1>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
+                    FOPT_Vertex.tvertex().template valsmooth<k1>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
+
+    rvec FOPT_K2 = {FOPT_Vertex.avertex().template valsmooth<k2>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
+                    FOPT_Vertex.pvertex().template valsmooth<k2>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
+                    FOPT_Vertex.tvertex().template valsmooth<k2>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
+
+    rvec FOPT_K2p = {FOPT_Vertex.avertex().template valsmooth<k2b>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
+                     FOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
+                     FOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
+
+    rvec FOPT_K3 = {FOPT_Vertex.avertex().template valsmooth<k3>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
+                    FOPT_Vertex.pvertex().template valsmooth<k3>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
+                    FOPT_Vertex.tvertex().template valsmooth<k3>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
 
 
-
-    //write_h5_rvecs(filename,
-                   {"SOPT_a", "SOPT_p", "SOPT_t",
-                    "TOPT_K1_a", "TOPT_K1_p", "TOPT_K1_t",
-                    "TOPT_K2_a", "TOPT_K2_p", "TOPT_K2_t",
-                    "FOPT_K1_a", "FOPT_K1_p", "FOPT_K1_t",
-                    "FOPT_K2_a", "FOPT_K2_p", "FOPT_K2_t",
-                    "FOPT_K3_a", "FOPT_K3_p", "FOPT_K3_t"})
+    write_h5_rvecs(filename,
+                   {"SOPT", "TOPT_K1", "TOPT_K2", "TOPT_K2p", "FOPT_K1", "FOPT_K2", "FOPT_K2p", "FOPT_K3"},
+                   {SOPT, TOPT_K1, TOPT_K2, TOPT_K2p, FOPT_K1, FOPT_K2, FOPT_K2p, FOPT_K3});
 }
 
 

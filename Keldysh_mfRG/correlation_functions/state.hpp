@@ -29,7 +29,9 @@ public:
 #endif
     }
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (Lambda)), Lambda(Lambda) {};
+    explicit State(double Lambda, bool initialize=false) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (Lambda)), Lambda(Lambda) {
+        if (initialize) this->initialize();
+    };
 
     /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
     State(const State<Q>& state_in, const double Lambda_in)
