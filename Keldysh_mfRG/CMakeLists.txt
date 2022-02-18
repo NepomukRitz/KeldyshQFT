@@ -26,9 +26,9 @@ set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
 
     ## enable profiling (will generate a gmon.out file which can be interpreted with gprof in Linux).
     ## Comment out when no profiling shall be done!!
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+    #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 #endif()
 
 project(Keldysh_mfRG)

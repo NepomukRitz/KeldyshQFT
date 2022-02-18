@@ -41,7 +41,7 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 1
 
 constexpr int N_LOOPS = 1;  // Number of loops
 #define KATANIN

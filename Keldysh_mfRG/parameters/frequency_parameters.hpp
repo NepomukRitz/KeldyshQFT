@@ -7,7 +7,7 @@
 // Grid type
 // 1: log-grid, 2: linear grid, 3: non-linear grid, 4: tangent grid
 #define GRID 3
-#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
+//#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
