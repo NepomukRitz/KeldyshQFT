@@ -48,19 +48,19 @@ namespace {
 TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
     double Lambda_i = 100.;
-    double Lambda_f = 1e-12;
+    double Lambda_f = 1e-2;
     std::vector<double> lambda_checkpoints = {};
 
     double y_ini = exp(Lambda_i);
     double result;
     //ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, rhs_exp, lambda_checkpoints, "", 0, 2000, true);
 
-    boost::numeric::odeint::ode_solver_boost<double, flowgrid::linear_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(), lambda_checkpoints, "", 0, 3000, true);
+    boost::numeric::odeint::ode_solver_boost<double, flowgrid::linear_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(), lambda_checkpoints, "", 0, 3000, false);
 
 
-    double result_exact = exp(0.);
+    double result_exact = exp(Lambda_f);
     SECTION( "Is the correct value retrieved from ODE solver?" ) {
-        REQUIRE( std::abs(result - result_exact) < 1e-5 );
+        REQUIRE( std::abs(result - result_exact) < 1e-4 );
     }
 
 }

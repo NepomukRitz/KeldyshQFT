@@ -25,9 +25,8 @@ constexpr bool VERBOSE = false;
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
 #define SWITCH_SUM_N_INTEGRAL
-#ifndef KELDYSH_FORMALISM
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
-#endif
+
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
 constexpr bool BOSONIC_PARAM_FOR_K3 = false; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
@@ -42,9 +41,9 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 1
 
-constexpr int N_LOOPS = 3;  // Number of loops
+constexpr int N_LOOPS = 1;  // Number of loops
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
@@ -53,20 +52,20 @@ constexpr int N_LOOPS = 3;  // Number of loops
 //#define STATIC_FEEDBACK
 
 /// Physical parameters ///
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#if not defined(ZERO_TEMP)
 constexpr double glb_T = 1.; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 1.0;                     // Temperature
+constexpr double glb_T = 0.0;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
 #else
     constexpr double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
 #endif
-constexpr double glb_U = 4.0;                      // Impurity on-site interaction strength
+constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
 constexpr double glb_Vg = glb_mu;                  // Impurity level shift
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 2.;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -141,7 +140,7 @@ constexpr int n_in = 1;
 
 // if the following is not defined, we flow with the parameter Lambda. The flowgrid just provides suggestions for stepsizes
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
-#define REPARAMETRIZE_FLOWGRID
+//#define REPARAMETRIZE_FLOWGRID
 
 constexpr int nODE = 10;
 constexpr double epsODE_rel = 1e-6;
@@ -154,8 +153,8 @@ constexpr double epsODE_abs = 1e-8;
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 1.;// 1e-4;
+constexpr double Lambda_ini = 20.;// 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1e-12;// 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.1;             //Initial step size for ODE solvers with adaptive step size control
 
@@ -194,15 +193,14 @@ constexpr bool FPP = false;
 
 #ifdef KELDYSH_FORMALISM
 constexpr bool KELDYSH = true;
-constexpr bool ZERO_T = false; // only needed for Matsubara
 #else
 constexpr bool KELDYSH = false;
+#endif // KELDYSH_FORMALISM
 #ifdef ZERO_TEMP
 constexpr bool ZERO_T = true;
 #else
 constexpr bool ZERO_T = false;
 #endif // ZERO_TEMP
-#endif // KELDYSH_FORMALISM
 
 #ifdef PARTICLE_HOLE_SYMM
 constexpr bool PARTICLE_HOLE_SYMMETRY = true;
