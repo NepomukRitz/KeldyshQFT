@@ -59,9 +59,9 @@ int main(int argc, char* argv[]) {
 #endif
 
     // run unit tests
-#ifdef INTEGRATION_TESTS
+//#ifdef INTEGRATION_TESTS
     if (MPI_FLAG) MPI_Init(nullptr, nullptr);
-#endif
+//#endif
     print("   -----   Performing unit tests   -----", true);
 
     check_input();
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
     //runtime_tester.test_runtimes(100);
 
     //if (ZERO_T and REG==2) {
-        data_dir = "../Data_MFU=1.000000/";
+        data_dir = "../Data_tests/";
         makedir(data_dir);
         std::string filename = "test_PTstate.h5";
         test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
@@ -99,8 +99,8 @@ int main(int argc, char* argv[]) {
     */
 
     return Catch::Session().run(argc, argv);
-#ifdef INTEGRATION_TESTS
+//#ifdef INTEGRATION_TESTS
     if (MPI_FLAG) MPI_Finalize();
-#endif
+//#endif
     return 0;
 }
