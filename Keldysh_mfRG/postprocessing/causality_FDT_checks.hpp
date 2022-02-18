@@ -609,17 +609,17 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
         print("Checking the FDTs for Lambda_it", Lambda_it, true);
         GeneralVertex<Q,symmetry_type> vertex_diff = vertex_in - vertex_out;
         print("K2: max-norm of deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
         print("K2: relative deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K2(0)/vertex_out.half1().norm_K2(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_diff.half1().norm_K2(0)/vertex_out.half1().norm_K2(0) << std::scientific << '\n';
         print("K2: max-norm = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_out.half1().norm_K2(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_out.half1().norm_K2(0) << std::scientific << '\n';
         print("K3: max-norm of deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K3(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_diff.half1().norm_K3(0) << std::scientific << '\n';
         print("K3: relative deviation = ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_diff.half1().norm_K3(0)/vertex_out.half1().norm_K3(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_diff.half1().norm_K3(0)/vertex_out.half1().norm_K3(0) << std::scientific << '\n';
         print("K3: max-norm ", false);
-        if (mpi_world_rank() == 0) std::cout << vertex_out.half1().norm_K3(0) << std::scientific << '\n';
+        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_out.half1().norm_K3(0) << std::scientific << '\n';
         //
 
         if (write_flag) {
