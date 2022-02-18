@@ -14,6 +14,7 @@
 #include "../../parameters/master_parameters.hpp"  // define system parameters
 #include "../../utilities/hdf5_routines.hpp"
 #include "../test_PrecalculatedBubble.hpp"
+#include "tests/test_perturbation_theory.hpp"
 
 
 #ifdef INTEGRATION_TESTS
@@ -73,9 +74,10 @@ int main(int argc, char* argv[]) {
     //test_Bubble_in_Momentum_Space();
 
     double lambda = 1;
-    State<state_datatype> state_ini (lambda);
-    state_ini.initialize();
-    sopt_state(state_ini, lambda);
+    //State<state_datatype> state_ini (lambda);
+    //state_ini.initialize();
+    //sopt_state(state_ini, lambda);
+    test_PT_state<state_datatype>(data_dir+"testPTstate.h5", 1.8, false);
 
     /*
     Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
