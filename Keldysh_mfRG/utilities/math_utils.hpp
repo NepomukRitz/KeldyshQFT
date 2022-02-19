@@ -188,8 +188,10 @@ inline int getFlatIndex(const Types &&... i, const std::array<size_t,rank>&  dim
 //    indx[0] = iflat;
 //}
 
-template<size_t rank>
-inline void getMultIndex(std::array<size_t,rank>&  indx, const size_t iflat, const std::array<size_t,rank>&  dims) {
+template<size_t rank, typename I = size_t,
+        typename std::enable_if_t<std::is_integral<I>::value, bool> = true
+        >
+inline void getMultIndex(std::array<I,rank>&  indx, const size_t iflat, const std::array<I,rank>&  dims) {
     size_t temp = iflat;
     size_t dimtemp = 1;
     for (int it = 1; it < rank; it++) {

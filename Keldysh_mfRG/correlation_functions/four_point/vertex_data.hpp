@@ -73,8 +73,8 @@ public:
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
     const Q& at(const Types &... i) const {return data.at(i...);}
     template <std::size_t freqrank, std::size_t vecsize, typename... Types,
-            typename std::enable_if_t<(sizeof...(Types) == freqrank+pos_first_freq) and (are_all_integral<size_t, Types...>::value), bool> = true>
-                    const auto& val_vectorized(const Types &... i) const {
+            typename std::enable_if_t<(sizeof...(Types) == freqrank+pos_first_freq+1) and (are_all_integral<size_t, Types...>::value), bool> = true>
+                    const auto val_vectorized(const Types &... i) const -> Eigen::Matrix<Q,vecsize,1>{
         return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(i...);
     }
     /// Sets a value at a multiIndex

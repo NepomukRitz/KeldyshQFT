@@ -101,6 +101,74 @@ auto convertToIndepIndex(int iK) -> int;
 // This function returns the values of the 4 alphas for a given index in the 0...15 set
 auto alphas(int index) -> std::vector<int>;
 
+template<char channel_bubble, bool is_left_vertex> auto rotate_to_matrix(const int iK) -> int {
+    constexpr std::array<int, 4> Keldysh4pointdims = {2,2,2,2};
+    std::array<int,4> alpha;
+    getMultIndex(alpha, iK, Keldysh4pointdims);
+
+    int i0_left, i0_right;
+    if constexpr(channel_bubble == 'a') {
+        i0_left = alpha[0]*2 + alpha[3];
+        i0_right= alpha[2]*2 + alpha[1];
+    }
+    else if constexpr(channel_bubble == 'p') {
+        i0_left = alpha[0]*2 + alpha[1];
+        i0_right= alpha[2]*2 + alpha[3];
+    }
+    else {
+        static_assert(channel_bubble=='t', "Please use a, p or t for the channels.");
+        i0_left = alpha[1]*2 + alpha[3];
+        i0_right= alpha[2]*2 + alpha[0];
+    }
+
+
+template<char channel_bubble, bool is_left_vertex> auto rotate_to_matrix(const my_index_t iK) -> my_index_t {
+    constexpr std::array<my_index_t, 4> Keldysh4pointdims = {2,2,2,2};
+    std::array<my_index_t ,4> alpha;
+    getMultIndex(alpha, iK, Keldysh4pointdims);
+
+    my_index_t i0_left, i0_right;
+    if constexpr(channel_bubble == 'a') {
+
+        if constexpr(is_left_vertex) {
+            i0_left  = alpha[0] * 2 + alpha[3];
+            i0_right = alpha[2] * 2 + alpha[1];
+        }
+        else {
+            i0_left  = alpha[2] * 2 + alpha[1];
+            i0_right = alpha[0] * 2 + alpha[3];
+        }
+    }
+    else if constexpr(channel_bubble == 'p') {
+        if constexpr(is_left_vertex) {
+            i0_left = alpha[0]*2 + alpha[1];
+            i0_right= alpha[2]*2 + alpha[3];
+        }
+        else {
+            i0_left = alpha[2]*2 + alpha[3];
+            i0_right= alpha[0]*2 + alpha[1];
+
+        }
+    }
+    else {
+        static_assert(channel_bubble=='t', "Please use a, p or t for the channels.");
+
+        if constexpr(is_left_vertex) {
+            i0_left  = alpha[3] * 2 + alpha[0];
+            i0_right = alpha[2] * 2 + alpha[1];
+        }
+        else {
+            i0_left  = alpha[1] * 2 + alpha[2];
+            i0_right = alpha[0] * 2 + alpha[3];
+
+        }
+    }
+
+    const my_index_t iK_read = i0_left * 4 + i0_right;
+    assert(iK_read < 16);
+    return iK_read;
+}
+
 /**
  * Function that returns, for an input i0, i2 in 0...15, the two Keldysh indices of the left [0] and right [1] vertices
  * of a bubble in a given channel.

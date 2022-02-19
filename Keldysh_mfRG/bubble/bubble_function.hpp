@@ -28,8 +28,8 @@ class BubbleFunctionCalculator{
     private:
     GeneralVertex<Q, symmetry_result>& dgamma;
 
-    const GeneralVertex<Q, symmetry_left>& vertex1;
-    const GeneralVertex<Q, symmetry_right>& vertex2;
+    const GeneralVertex<Q, symmetry_left> vertex1;  /// THIS IS A COPY; needed for symmetry-expansion
+    const GeneralVertex<Q, symmetry_right> vertex2; /// THIS IS A COPY; needed for symmetry-expansion
 
     const Bubble_Object& Pi;
     const bool diff = Pi.diff;
@@ -101,6 +101,9 @@ class BubbleFunctionCalculator{
             print("Error! Needed crossprojection still has to be computed. Abort.");
             assert(false);
         }
+
+        vertex1.template symmetry_expand<channel,true>();
+        vertex2.template symmetry_expand<channel,false>();
 
         /// TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
@@ -227,15 +230,15 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     if (MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function<k1>();
         tK1 = get_time() - t_start;
-        //print("K1", channel, " done, ");
-        //get_time(t_start);
+        print("K1", channel, " done, ");
+        get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
         calculate_bubble_function<k2>();
         tK2 = get_time() - t_start;
-        //print("K2", channel, " done, ");
-        //get_time(t_start);
+        print("K2", channel, " done, ");
+        get_time(t_start);
 
 #ifdef DEBUG_SYMMETRIES
         t_start = get_time();
@@ -249,8 +252,8 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         t_start = get_time();
         calculate_bubble_function<k3>();
         tK3 = get_time() - t_start;
-        //print("K3", channel, " done, ");
-        //get_time(t_start);
+        print("K3", channel, " done, ");
+        get_time(t_start);
     }
 
 }
@@ -271,14 +274,12 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     vec<Q> Buffer = mpi_initialize_buffer<Q>(n_mpi, n_omp);
     vertex1.initializeInterpol();
     vertex2.initializeInterpol();
-    vertex1.symmetry_expand();
-    vertex2.symmetry_expand();
 
     // start for-loop over external arguments, using MPI and OMP
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-#pragma omp parallel for schedule(dynamic)
+//#pragma omp parallel for schedule(dynamic)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value<diag_class>(i_mpi, i_omp, n_omp); // write result of integration into MPI buffer
             }

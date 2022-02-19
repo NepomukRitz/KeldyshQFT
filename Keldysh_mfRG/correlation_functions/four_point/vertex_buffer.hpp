@@ -46,9 +46,9 @@ class vertexBuffer<k, Q, linear> : public vertexDataContainer<k,Q> {
         else if constexpr (k == k3) {return 3;}
         else {return 2;}
     }
-    template <vectypes typ = scalar>
+    template <typename result_type>
     static constexpr std::size_t get_vecsize() {
-        if constexpr(typ == scalar) return 1;
+        if constexpr(std::is_same_v<result_type, Q>) return 1;
         else { return 4; }  /// TODO: adapt for non-trivial internal index
     }
 public:
@@ -68,7 +68,6 @@ public:
     }
 
 
-    template <vectypes typ = scalar>
     Eigen::Matrix<double, numSamples(), 1> get_weights(const VertexInput& indices, index_type& idx_low) const {
         Eigen::Matrix<double, numSamples(), 1> weights;
 
@@ -148,10 +147,10 @@ public:
 
     }
 
-    template <vectypes typ = scalar, std::size_t vecsize>
+    template <typename result_type, std::size_t vecsize>
     Eigen::Matrix<Q, vecsize, numSamples()> get_values(const index_type& vertex_index) const {
         Eigen::Matrix<Q, vecsize, numSamples()> result;
-    if (typ == scalar) {
+    if constexpr(std::is_same_v<result_type, Q>) {
         if constexpr (k == k1) {
             for (int i = 0; i < 2; i++) {
                 result[i] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2], vertex_index[3]);
@@ -183,21 +182,22 @@ public:
 
         if constexpr (k == k1) {
             for (int i = 0; i < 2; i++) {
-                result.col(i) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i);
+                auto res = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2]);
+                result.col(i) = res;
             }
         } else if constexpr (k == k3) {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
                     for (int l = 0; l < 2; l++) {
                         result.col(i * 4 + j * 2 + l) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i,
-                                                                                                                     vertex_index[2] + j, vertex_index[3] + l);
+                                                                                                                     vertex_index[2] + j, vertex_index[3] + l, vertex_index[4]);
                     }
                 }
             }
         } else {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
-                    result.col(i * 2 + j) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j);
+                    result.col(i * 2 + j) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j, vertex_index[3]);
 
                 }
             }
@@ -213,10 +213,10 @@ public:
 
 
 
-    template <vectypes typ = scalar>
-    auto interpolate(const VertexInput &indices) const {
+    template <typename result_type = Q>
+    auto interpolate(const VertexInput &indices) const -> result_type {
 
-        constexpr std::size_t vecsize = get_vecsize<typ>();
+        constexpr std::size_t vecsize = get_vecsize<result_type>();
         using weights_type = Eigen::Matrix<double, numSamples(), 1>;
         using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
 
@@ -230,24 +230,21 @@ public:
             // get weights from frequency Grid
 
             index_type vertex_index;
-            weights_type weights = get_weights<typ>(indices, vertex_index);
+            weights_type weights = get_weights(indices, vertex_index);
             // fetch vertex values
-            values_type values = get_values<typ, vecsize>(vertex_index);
+            values_type values = get_values<result_type, vecsize>(vertex_index);
             assert(weights.allFinite());
             assert(values.allFinite());
 
-            if constexpr(typ == scalar) {
+            if constexpr(std::is_same_v<result_type, Q>) {
                 Q result = values * weights;
                 return result;
             }
-            else if constexpr(typ == vec_right) {
+            else {
                 Eigen::Matrix<Q, vecsize,1> result = values * weights;
                 return result;
             }
-            else {
-                Eigen::Matrix<Q, 1, vecsize> result = (values * weights).transpose();
-                return weights * values;
-            }
+
 
 #endif
 
@@ -255,16 +252,17 @@ public:
             //return result;
 
         } else { //asymptotic value
-            if constexpr(typ == scalar) {
-                return Q{};
-            }
-            else if constexpr(typ == vec_left) {
-                return Eigen::Matrix<Q, vecsize,1>{};
-            }
-            else {
-                if constexpr(not vec_right) return values_type{} * weights_type{};
-                else return  weights_type{} * values_type{};
-            }
+            return result_type{};
+            //if constexpr(typ == scalar) {
+            //    return Q{};
+            //}
+            //else
+            //    return Eigen::Matrix<Q, vecsize,1>{};
+            //}
+            //else {
+            //    if constexpr(not vec_right) return values_type{} * weights_type{};
+            //    else return  weights_type{} * values_type{};
+            //}
         }
 
     };

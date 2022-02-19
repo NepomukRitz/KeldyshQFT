@@ -2648,7 +2648,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     state_cpp.initialize();             // initialize state
     //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
     //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
-    fopt_state(state_cpp, Lambda);
+    topt_state(state_cpp, Lambda);
     //state_cpp.vertex.half1().check_vertex_resolution();
     //state_cpp.analyze_tails();
 
@@ -2665,6 +2665,8 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     //}
 
     // get SOPT K1 (exact)
+    print("Compute exact solution for SOPT: \n");
+#pragma omp parallel for
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.b.get_ws(i);
         Q val_K1;

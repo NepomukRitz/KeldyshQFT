@@ -313,7 +313,7 @@ public:
      */
     void check_symmetries(std::string identifier, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
 
-    void symmetry_expand(const rvert<Q> &rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
+    template<char channel_bubble, bool is_left_vertex> void symmetry_expand(const rvert<Q> &rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
     void save_expanded(const std::string &filename) const;
 
 
@@ -363,13 +363,12 @@ public:
         return lhs;
     }
 
-    template<K_class k, vectypes typ> auto valsmooth_symmetry_expanded(const VertexInput &input, const rvert<Q> &rvert_crossing) const;
-    template<vectypes typ>auto left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const ;
-    template<vectypes typ>auto right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const;
-    template<vectypes typ>auto left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const ;
-    template<vectypes typ>auto right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const ;
-
-    template<char ch_bubble, vectypes typ> auto value_symmetry_expanded(VertexInput input, const rvert<Q> &rvert_crossing) const;
+    template<K_class k, typename result_type> auto valsmooth_symmetry_expanded(const VertexInput &input, const rvert<Q> &rvert_crossing) const -> result_type;
+    template<typename result_type>auto left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const  -> result_type;
+    template<typename result_type>auto right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> result_type;
+    template<typename result_type>auto left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const  -> result_type;
+    template<typename result_type>auto right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> result_type;
+    template<char ch_bubble, typename result_type> auto value_symmetry_expanded(VertexInput input, const rvert<Q> &rvert_crossing) const -> result_type;
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
@@ -545,13 +544,13 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
 }
 
 template <typename Q>
-template<K_class k, vectypes typ> auto rvert<Q>::valsmooth_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
+template<K_class k, typename result_type> auto rvert<Q>::valsmooth_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> result_type {
     //IndicesSymmetryTransformations indices (input, channel);
 
-    if constexpr(k == k1)       return  K1_symmetry_expanded.template interpolate<typ>(input);
-    else if constexpr(k == k2)  return  K2_symmetry_expanded.template interpolate<typ>(input);
-    else if constexpr(k == k2b) return K2b_symmetry_expanded.template interpolate<typ>(input);
-    else                        return  K3_symmetry_expanded.template interpolate<typ>(input);
+    if constexpr(k == k1)       return  K1_symmetry_expanded.template interpolate<result_type>(input);
+    else if constexpr(k == k2)  return  K2_symmetry_expanded.template interpolate<result_type>(input);
+    else if constexpr(k == k2b) return K2b_symmetry_expanded.template interpolate<result_type>(input);
+    else                        return  K3_symmetry_expanded.template interpolate<result_type>(input);
 }
 
 #ifdef  DEBUG_SYMMETRIES
@@ -770,11 +769,13 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 }
 #endif
 
+
+
 /**
  * Iterates over all vertex components and fills in the value obtained from the symmetry-reduced sector
  * @tparam Q
  */
-template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
+template<typename Q> template<char channel_bubble, bool is_left_vertex> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
     /// TODO: Currently copies frequency_grid of same rvertex; but might actually need the frequency grid of conjugate channel
     K1_symmetry_expanded = vertexBuffer<k1,Q,INTERPOLATION>(0., dimsK1_expanded);;
     K1_symmetry_expanded.set_VertexFreqGrid(K1.get_VertexFreqGrid());
@@ -794,7 +795,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
         getMultIndex<4,int,int,int,int>(ispin, iw, iK, i_in, iflat, K1_symmetry_expanded.get_dims());
         double w;
         K1_symmetry_expanded.K1_get_freq_w(w, iw);
-        VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
+        VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
         IndicesSymmetryTransformations indices(input, channel);
         rvert<Q> readMe = symmetry_reduce<k1>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
         Q value = read_symmetryreduced_rvert<k1>(indices, readMe);
@@ -813,7 +814,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
 
             double w, v;
             K2_symmetry_expanded.K2_get_freqs_w(w, v, iw, iv);
-            VertexInput input(iK, ispin, w, v, 0., i_in, channel);
+            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             rvert<Q> readMe = symmetry_reduce<k2>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
@@ -829,7 +830,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
             getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2b_symmetry_expanded.get_dims());
             double w, vp;
             K2b_symmetry_expanded.K2_get_freqs_w(w, vp, iw, iv);
-            VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
+            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             rvert<Q> readMe = symmetry_reduce<k2b>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
@@ -849,7 +850,7 @@ template<typename Q> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossi
 
             double w, v, vp;
             K3_symmetry_expanded.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
-            VertexInput input(iK, ispin, w, v, vp, i_in, channel);
+            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             rvert<Q> readMe = symmetry_reduce<k3>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k3>(indices, readMe);
@@ -914,20 +915,6 @@ template <typename Q> template<char ch_bubble> auto rvert<Q>::value(const Vertex
 
     return val;
 }
-template <typename Q> template<char ch_bubble, vectypes typ> auto rvert<Q>::value_symmetry_expanded(VertexInput input, const rvert<Q>& rvert_crossing) const {
-
-    //VertexInput input_tmp = input;
-    transfToR<ch_bubble>(input); // input manipulated here => input needs to be called by value
-
-    auto val = valsmooth_symmetry_expanded<k1, typ>(input, rvert_crossing);
-    if constexpr(MAX_DIAG_CLASS >= 2) {
-        val += valsmooth_symmetry_expanded<k2, typ> (input, rvert_crossing);
-        val += valsmooth_symmetry_expanded<k2b, typ>(input, rvert_crossing);
-    }
-    if constexpr(MAX_DIAG_CLASS >= 3) val += valsmooth_symmetry_expanded<k3, typ>(input, rvert_crossing);
-
-    return val;
-}
 
 template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if      constexpr(MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
@@ -973,29 +960,43 @@ template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, c
     else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
+template <typename Q> template<char ch_bubble, typename result_type> auto rvert<Q>::value_symmetry_expanded(VertexInput input, const rvert<Q>& rvert_crossing) const -> result_type{
 
-template <typename Q>template<vectypes typ>  auto rvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
-    if      constexpr (MAX_DIAG_CLASS == 1) return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing);
-    else if constexpr (MAX_DIAG_CLASS  > 1) return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2b,typ>(input, rvert_crossing);
+    //VertexInput input_tmp = input;
+    transfToR<ch_bubble>(input); // input manipulated here => input needs to be called by value
+
+    auto val = valsmooth_symmetry_expanded<k1, result_type>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS >= 2) {
+        val += valsmooth_symmetry_expanded<k2, result_type> (input, rvert_crossing);
+        val += valsmooth_symmetry_expanded<k2b, result_type>(input, rvert_crossing);
+    }
+    if constexpr(MAX_DIAG_CLASS >= 3) val += valsmooth_symmetry_expanded<k3, result_type>(input, rvert_crossing);
+
+    return val;
 }
 
-template <typename Q> template<vectypes typ>  auto rvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
-    if constexpr(MAX_DIAG_CLASS == 1)     return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing);
-    else if constexpr(MAX_DIAG_CLASS > 1) return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2,typ>(input, rvert_crossing);
+template <typename Q>template<typename result_type>  auto rvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> result_type{
+    if      constexpr (MAX_DIAG_CLASS == 1) return valsmooth_symmetry_expanded<k1,result_type>(input, rvert_crossing);
+    else if constexpr (MAX_DIAG_CLASS  > 1) return valsmooth_symmetry_expanded<k1,result_type>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2b,result_type>(input, rvert_crossing);
 }
 
-template <typename Q> template<vectypes typ>  auto rvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
-    using result_type = decltype(valsmooth_symmetry_expanded<k1,typ>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
+template <typename Q> template<typename result_type>  auto rvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> result_type {
+    if constexpr(MAX_DIAG_CLASS == 1)     return valsmooth_symmetry_expanded<k1,result_type>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS > 1) return valsmooth_symmetry_expanded<k1,result_type>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2,result_type>(input, rvert_crossing);
+}
+
+template <typename Q> template<typename result_type>  auto rvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const  -> result_type{
+    //using result_type = decltype(valsmooth_symmetry_expanded<k1,result_type>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
     if constexpr(MAX_DIAG_CLASS == 1)      return result_type{};
-    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2,typ>(input, rvert_crossing);
-    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,typ>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2,result_type>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2,result_type>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,result_type>(input, rvert_crossing);
 }
 
-template <typename Q> template<vectypes typ>  auto rvert<Q>::right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
-    using result_type = decltype(valsmooth_symmetry_expanded<k1,typ>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
+template <typename Q> template<typename result_type>  auto rvert<Q>::right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const  -> result_type{
+    //using result_type = decltype(valsmooth_symmetry_expanded<k1,result_type>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
     if constexpr(MAX_DIAG_CLASS == 1)      return result_type{};
-    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2b,typ>(input, rvert_crossing);
-    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2b,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,typ>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2b,result_type>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2b,result_type>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,result_type>(input, rvert_crossing);
 }
 
 
