@@ -49,6 +49,7 @@ constexpr std::array<size_t,3> dimsSE_expanded = std::array<size_t,3>({KELDYSH ?
 constexpr std::array<size_t,4> dimsK1_expanded = std::array<size_t,4>({n_spin_expanded, nBOS, KELDYSH ?  16 : 1, n_in_K1});
 constexpr std::array<size_t,5> dimsK2_expanded = std::array<size_t,5>({n_spin_expanded, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2});
 constexpr std::array<size_t,6> dimsK3_expanded = std::array<size_t,6>({n_spin_expanded, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3});
+constexpr unsigned int pos_first_freq = 1;
 
 #ifdef KELDYSH_FORMALISM
 // Vector of indices of the non-zero Keldysh components of the bubbles

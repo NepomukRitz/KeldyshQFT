@@ -90,7 +90,7 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     Vertex<Q> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
 
     // compute the self-energy via SDE using the a bubble
-    Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
+    Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_a, bubble_a, G, false);
 
     // compute the p bubble with full vertex on the right
@@ -106,7 +106,7 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     Vertex<Q> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
 
     // compute the self-energy via SDE using the p bubble
-    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
+    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_p, bubble_p, G, false);
 
     // symmetrize the contributions computed via a/p bubble
@@ -161,13 +161,13 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
         Gamma_Gamma0_half1.set_frequency_grid(Gamma);
         bubble_function(Gamma_Gamma0_half1, Gamma, Gamma_0, G, G, r, false);
 
-        // construct non-symmetric vertices out of the two half1 vertices above
-        GeneralVertex<Q, non_symmetric> Gamma0_Gamma (Lambda);
+        // construct non-symmetric_full vertices out of the two half1 vertices above
+        GeneralVertex<Q, non_symmetric_diffleft> Gamma0_Gamma (Lambda);
         Gamma0_Gamma.half1() = Gamma0_Gamma_half1.half1();
         Gamma0_Gamma.half2() = Gamma_Gamma0_half1.half1();
         Gamma0_Gamma.set_only_same_channel(true);  // left/right bubble need to be in the same channel
 
-        GeneralVertex<Q, non_symmetric> Gamma_Gamma0 (Lambda);
+        GeneralVertex<Q, non_symmetric_diffright> Gamma_Gamma0 (Lambda);
         Gamma_Gamma0.half1() = Gamma_Gamma0_half1.half1();
         Gamma_Gamma0.half2() = Gamma0_Gamma_half1.half1();
 

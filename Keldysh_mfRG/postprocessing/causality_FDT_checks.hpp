@@ -591,7 +591,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 /*
  * Wrapper for above function (here defined for GeneralVertex)
  */
-template <typename Q, symmetryType symmetry_type>
+template <typename Q, vertexType symmetry_type>
 void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out, const GeneralVertex<Q,symmetry_type>& vertex_in) {
     vertex_in.initializeInterpol();
     for (char r:"apt") compute_components_through_FDTs(vertex_out.half1(), vertex_in.half1(), vertex_in.half1(), r);
@@ -601,7 +601,7 @@ void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out,
 /*
  *
  */
-template <typename Q, symmetryType symmetry_type>
+template <typename Q, vertexType symmetry_type>
 void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
     if(KELDYSH) {
 

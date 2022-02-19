@@ -13,6 +13,8 @@
 /// Possible (unit-) tests for the vertex buffer:
 /// [IMPLEMENTED in unit_tests/test_interpolations] reliability of interpolation --> fill vertex buffer with polynomial and interpolate
 
+enum vectypes {scalar, vec_left, vec_right};
+
 /**
  * Vertex buffers store the vertex data and frequency grids and interpolates data points on the grid.
  */
@@ -29,25 +31,28 @@ class vertexBuffer {
 template <K_class k, typename Q>
 class vertexBuffer<k, Q, linear> : public vertexDataContainer<k,Q> {
     using base_class = vertexDataContainer<k, Q>;
-    static constexpr int numSamples() {
+    static constexpr int numSamples() { /// TODO: adapt for non-trivial internal index
         if constexpr(k == k1) {return 2;}
         else if constexpr (k == k3) {return 8;}
         else {return 4;}
     }
-    static constexpr int numSamples_half() {
+    static constexpr int numSamples_half() {    /// TODO: adapt for non-trivial internal index
         if constexpr(k == k1) {return 1;}
         else if constexpr (k == k3) {return 4;}
         else {return 2;}
     }
     static constexpr int frequencydims() {
         if constexpr(k == k1) {return 1;}
-        else if constexpr (k == k3) {return 2;}
+        else if constexpr (k == k3) {return 3;}
         else {return 2;}
+    }
+    template <vectypes typ = scalar>
+    static constexpr std::size_t get_vecsize() {
+        if constexpr(typ == scalar) return 1;
+        else { return 4; }  /// TODO: adapt for non-trivial internal index
     }
 public:
     using index_type = typename base_class::index_type;
-    using weights_type = Eigen::Matrix<double, numSamples(), 1>;
-    using values_type = Eigen::Matrix<Q, 1, numSamples()>;
     using frequency_arr = std::array<double, frequencydims()>;
 
     mutable bool initialized = false;
@@ -63,7 +68,8 @@ public:
     }
 
 
-    weights_type get_weights(const VertexInput& indices, index_type& idx_low) const {
+    template <vectypes typ = scalar>
+    Eigen::Matrix<double, numSamples(), 1> get_weights(const VertexInput& indices, index_type& idx_low) const {
         Eigen::Matrix<double, numSamples(), 1> weights;
 
         int iw = base_class::frequencies.b.fconv(indices.w);
@@ -142,62 +148,123 @@ public:
 
     }
 
-    Eigen::Matrix<Q, Eigen::Dynamic, numSamples()> get_values(const index_type& vertex_index) const {
-        Eigen::Matrix<Q, 1, numSamples()> result;
+    template <vectypes typ = scalar, std::size_t vecsize>
+    Eigen::Matrix<Q, vecsize, numSamples()> get_values(const index_type& vertex_index) const {
+        Eigen::Matrix<Q, vecsize, numSamples()> result;
+    if (typ == scalar) {
         if constexpr (k == k1) {
             for (int i = 0; i < 2; i++) {
-            result[i] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2], vertex_index[3]);
+                result[i] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2], vertex_index[3]);
             }
-        }
-        else if constexpr (k == k3) {
+        } else if constexpr (k == k3) {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
                     for (int l = 0; l < 2; l++) {
-                        result[i*4+j*2+l] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j, vertex_index[3] + l, vertex_index[4],
-                                                   vertex_index[5]);
+                        result[i * 4 + j * 2 + l] = base_class::val(vertex_index[0], vertex_index[1] + i,
+                                                                    vertex_index[2] + j, vertex_index[3] + l,
+                                                                    vertex_index[4],
+                                                                    vertex_index[5]);
                     }
                 }
             }
-        }
-        else {
+        } else { // k2 and k2b
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
-                        result[i*2+j] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j, vertex_index[3] + k,
-                                                   vertex_index[4]);
+                    result[i * 2 + j] = base_class::val(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j,
+                                                        vertex_index[3],
+                                                        vertex_index[4]);
 
                 }
             }
         }
+
+    }
+    else { // typ == vec_left or vec_right
+
+        if constexpr (k == k1) {
+            for (int i = 0; i < 2; i++) {
+                result.col(i) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i);
+            }
+        } else if constexpr (k == k3) {
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    for (int l = 0; l < 2; l++) {
+                        result.col(i * 4 + j * 2 + l) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i,
+                                                                                                                     vertex_index[2] + j, vertex_index[3] + l);
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    result.col(i * 2 + j) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j);
+
+                }
+            }
+        }
+
+    }
+
+
 
         return result;
     }
 
-    auto interpolate(const VertexInput &indices) const -> Q {
 
+
+
+    template <vectypes typ = scalar>
+    auto interpolate(const VertexInput &indices) const {
+
+        constexpr std::size_t vecsize = get_vecsize<typ>();
+        using weights_type = Eigen::Matrix<double, numSamples(), 1>;
+        using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (is_in_box(indices))
         {
 
-            Q result;
 #ifdef DENSEGRID
             assert(false);
 #else
             // get weights from frequency Grid
-            index_type vertex_index;
-            weights_type weigths = get_weights(indices, vertex_index);
-            // fetch vertex values
-            values_type values = get_values(vertex_index);
 
-            result = values * weigths;
+            index_type vertex_index;
+            weights_type weights = get_weights<typ>(indices, vertex_index);
+            // fetch vertex values
+            values_type values = get_values<typ, vecsize>(vertex_index);
+            assert(weights.allFinite());
+            assert(values.allFinite());
+
+            if constexpr(typ == scalar) {
+                Q result = values * weights;
+                return result;
+            }
+            else if constexpr(typ == vec_right) {
+                Eigen::Matrix<Q, vecsize,1> result = values * weights;
+                return result;
+            }
+            else {
+                Eigen::Matrix<Q, 1, vecsize> result = (values * weights).transpose();
+                return weights * values;
+            }
 
 #endif
 
-            assert(isfinite(result));
-            return result;
+            //assert(isfinite(result));
+            //return result;
 
-        } else {
-            return 0.;  // asymptotic value
+        } else { //asymptotic value
+            if constexpr(typ == scalar) {
+                return Q{};
+            }
+            else if constexpr(typ == vec_left) {
+                return Eigen::Matrix<Q, vecsize,1>{};
+            }
+            else {
+                if constexpr(not vec_right) return values_type{} * weights_type{};
+                else return  weights_type{} * values_type{};
+            }
         }
 
     };

@@ -44,8 +44,8 @@
  * @return                : Value of the asymptotic correction
  */
 template <char channel, typename Q,
-          symmetryType symmetry_left,
-          symmetryType symmetry_right>
+          vertexType symmetry_left,
+          vertexType symmetry_right>
 auto asymp_corrections_bubble(K_class k,
                               const GeneralVertex<Q, symmetry_left>& vertex1,
                               const GeneralVertex<Q, symmetry_right>& vertex2,

@@ -25,9 +25,9 @@ template <typename Q> void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEner
 
 template <typename Q, class Bubble_Object> auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>;
 template <typename Q, class Bubble_Object> auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>;
-template <typename Q, class Bubble_Object> auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
+template <typename Q, class Bubble_Object> auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric_diffleft>& nonsymVertex,
                                                                                   const Bubble_Object& Pi) -> Vertex<Q>;
-template <typename Q, class Bubble_Object> auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
+template <typename Q, class Bubble_Object> auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffright>& nonsymVertex, const Vertex<Q>& PsiVertex,
                                                                                  const Bubble_Object& Pi) -> Vertex<Q>;
 
 
@@ -132,7 +132,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
     if (N_LOOPS>=2) {
         // Calculate left and right part of 2-loop contribution.
-        // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric vertex
+        // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric_full vertex
         // when inserted in the 3-loop contribution below.
 
         if (VERBOSE) print("Compute dGammaL (2-loop): ", true);
@@ -148,7 +148,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
             dGammaR_half1.half1().check_vertex_resolution();
         }
         Vertex<Q> dGammaT =
-                dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
+                dGammaL_half1 + dGammaR_half1; // since sum dGammaL + dGammaR is symmetric_full, half 1 is sufficient
         dPsi.vertex += dGammaT;
 
 #ifndef DEBUG_SYMMETRIES
@@ -198,16 +198,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
             for (int i = 3; i <= N_LOOPS; i++) {
 
 
-                // create non-symmetric vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
+                // create non-symmetric_full vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
                 // assign half 1 to dGammaL
-                // assign half 2 as half 1 of dGammaR [symmetric -> half1()=half2()]
-                GeneralVertex<Q, non_symmetric> dGammaL(dGammaL_half1.half1(), dGammaR_half1.half1());
+                // assign half 2 as half 1 of dGammaR [symmetric_full -> half1()=half2()]
+                GeneralVertex<Q, non_symmetric_diffleft> dGammaL(dGammaL_half1.half1(), dGammaR_half1.half1());
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaL, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, nLambda_layers);
                 }
 
 
-                // insert this non-symmetric vertex on the right of the bubble
+                // insert this non-symmetric_full vertex on the right of the bubble
                 if (VERBOSE) print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
                 Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
                 if(VERBOSE) dGammaC_r.half1().check_vertex_resolution();
@@ -215,16 +215,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                     compare_with_FDTs(dGammaC_r, Lambda, iteration, "dGammaC_r_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, nLambda_layers);
                 }
 
-                // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+                // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
                 // assign half 1
                 // assign half 2 as half 1 of dGammaL
-                GeneralVertex<Q, non_symmetric> dGammaR (dGammaR_half1.half1(), dGammaL_half1.half1());
+                GeneralVertex<Q, non_symmetric_diffright> dGammaR (dGammaR_half1.half1(), dGammaL_half1.half1());
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaR, Lambda, iteration, "dGammaR_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, nLambda_layers);
                 }
 
 
-                // insert this non-symmetric vertex on the left of the bubble
+                // insert this non-symmetric_full vertex on the left of the bubble
                 Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaC_l, Lambda, iteration, "dGammaC_l_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, nLambda_layers);
@@ -269,7 +269,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 if(VERBOSE) dGammaR_half1.half1().check_vertex_resolution();
 
                 dGammaT = dGammaL_half1 + dGammaC +
-                          dGammaR_half1; // since sum dGammaL + dGammaR is symmetric, half 1 is sufficient
+                          dGammaR_half1; // since sum dGammaL + dGammaR is symmetric_full, half 1 is sufficient
                 dPsi.vertex += dGammaT;
 #ifndef DEBUG_SYMMETRIES
                 // subdiagrams don't fulfill the full symmetry of the vertex
@@ -422,12 +422,12 @@ auto calculate_dGammaR(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, 
 }
 
 template <typename Q, class Bubble_Object>
-auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric>& nonsymVertex,
+auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const GeneralVertex<Q, non_symmetric_diffleft>& nonsymVertex,
                                        const Bubble_Object& Pi) -> Vertex<Q> {
     Vertex<Q> dGammaC (Lambda_ini);
     dGammaC.set_frequency_grid(PsiVertex);
 
-    GeneralVertex<Q, non_symmetric> nonsymVertex_calc = nonsymVertex;
+    GeneralVertex<Q, non_symmetric_diffleft> nonsymVertex_calc = nonsymVertex;
     nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
     for (char r: "apt") {
@@ -438,12 +438,12 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q>& PsiVertex, const General
 }
 
 template <typename Q, class Bubble_Object>
-auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric>& nonsymVertex, const Vertex<Q>& PsiVertex,
+auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffright>& nonsymVertex, const Vertex<Q>& PsiVertex,
                                       const Bubble_Object& Pi) -> Vertex<Q> {
     Vertex<Q> dGammaC (Lambda_ini);
     dGammaC.set_frequency_grid(PsiVertex);
 
-    GeneralVertex<Q, non_symmetric> nonsymVertex_calc = nonsymVertex;
+    GeneralVertex<Q, non_symmetric_diffright> nonsymVertex_calc = nonsymVertex;
     nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
     for (char r: "apt") {

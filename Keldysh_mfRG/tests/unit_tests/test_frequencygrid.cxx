@@ -24,7 +24,7 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
         REQUIRE( isright );
     }
 
-    SECTION( "Is the frequency grid symmetric?" ) {
+    SECTION( "Is the frequency grid symmetric_full?" ) {
         REQUIRE( issymmetric < symmetry_tolerance );
     }
 
@@ -56,7 +56,7 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
         REQUIRE( isright );
     }
 
-    SECTION( "Is the frequency grid symmetric?" ) {
+    SECTION( "Is the frequency grid symmetric_full?" ) {
         REQUIRE( issymmetric < symmetry_tolerance );
     }
 

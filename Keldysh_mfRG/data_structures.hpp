@@ -408,8 +408,8 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 enum K_class {k1=0, k2=1, k2b=2, k3=3};
 std::ostream& operator << (std::ostream& out, K_class k);
-enum symmetryType {symmetric=0, non_symmetric=1};
-std::ostream& operator << (std::ostream& out, symmetryType symmtype);
+enum vertexType {symmetric_full, symmetric_r_irred, non_symmetric_diffleft, non_symmetric_diffright};
+std::ostream& operator << (std::ostream& out, vertexType symmtype);
 
 /** auxiliary struct that contains all input variables of vertices
  * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)

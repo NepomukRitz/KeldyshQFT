@@ -418,12 +418,12 @@ auto rhs_PT4_K1a_nonladder_flow(const State<state_datatype>& Psi, const double L
     bubble_function(PT3_K2a_dot_half1.vertex, PT2_K1p_dot.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT3_K2a_dot_half2.vertex, bare.vertex, PT2_K1p_dot.vertex, G, G, 'a', false);
 
-    // construct non-symmetric K2a with differentiated p bubble
+    // construct non-symmetric_full K2a with differentiated p bubble
     GeneralVertex<state_datatype, non_symmetric> PT3_K2a_dot (n_spin, Lambda);
     PT3_K2a_dot[0].half1() = PT3_K2a_dot_half1.vertex[0].half1();
     PT3_K2a_dot[0].half2() = PT3_K2a_dot_half2.vertex[0].half1();
 
-    // construct non-symmetric K2ab with differentiated p bubble
+    // construct non-symmetric_full K2ab with differentiated p bubble
     GeneralVertex<state_datatype, non_symmetric> PT3_K2ab_dot (n_spin, Lambda);
     PT3_K2ab_dot[0].half1() = PT3_K2a_dot_half2.vertex[0].half1();
     PT3_K2ab_dot[0].half2() = PT3_K2a_dot_half1.vertex[0].half1();

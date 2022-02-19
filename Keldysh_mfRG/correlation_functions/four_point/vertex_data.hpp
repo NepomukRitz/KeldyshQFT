@@ -19,9 +19,9 @@
 template <typename Q> class rvert; // forward declaration of rvert
 template <typename Q> class fullvert; // forward declaration of fullvert
 template <typename Q> class State; // forward declaration of State
-template <typename Q, symmetryType symm_type> class GeneralVertex;
-//template <typename Q>class symmetric;
-template <typename Q>using Vertex = GeneralVertex<Q, symmetric>;
+template <typename Q, vertexType symm_type> class GeneralVertex;
+//template <typename Q>class symmetric_full;
+template <typename Q>using Vertex = GeneralVertex<Q, symmetric_full>;
 class Buffer;
 
 /**
@@ -72,6 +72,11 @@ public:
     template <typename... Types,
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
     const Q& at(const Types &... i) const {return data.at(i...);}
+    template <std::size_t freqrank, std::size_t vecsize, typename... Types,
+            typename std::enable_if_t<(sizeof...(Types) == freqrank+pos_first_freq) and (are_all_integral<size_t, Types...>::value), bool> = true>
+                    const auto& val_vectorized(const Types &... i) const {
+        return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(i...);
+    }
     /// Sets a value at a multiIndex
     template <typename... Types
             ,typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true

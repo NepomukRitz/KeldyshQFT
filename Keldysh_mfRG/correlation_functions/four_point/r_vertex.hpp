@@ -174,20 +174,20 @@ public:
 
     /**
      * Return the value of the reducible vertex in channel r = sum of all K_classes K1, K2, K2b and K3.
-     * This version of value() is used for the symmetric vertex
+     * This version of value() is used for the symmetric_full vertex
      * @param input          : Combination of input arguments.
      * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
      *                         symmetry transformations that map between channels a <--> t.
      */
     template<char ch_bubble> auto value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
-    /** Overload for accessing non-symmetric vertices, with
+    /** Overload for accessing non-symmetric_full vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true
      */
     template<char ch_bubble> auto value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
     /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
-    /// This version is used for a symmetric vertex
+    /// This version is used for a symmetric_full vertex
     template <K_class k>
     const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices,
 #ifdef DEBUG_SYMMETRIES
@@ -222,7 +222,7 @@ public:
     template <K_class k>
     auto valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
 
-    /** Overload for accessing non-symmetric vertices, with
+    /** Overload for accessing non-symmetric_full vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true */
     template <K_class k>
@@ -363,17 +363,13 @@ public:
         return lhs;
     }
 
-    template<K_class k> auto valsmooth_symmetry_expanded(const VertexInput &input, const rvert<Q> &rvert_crossing) const -> Q;
-    auto left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
-    auto right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
-    auto left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
-    auto right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
-    auto right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
+    template<K_class k, vectypes typ> auto valsmooth_symmetry_expanded(const VertexInput &input, const rvert<Q> &rvert_crossing) const;
+    template<vectypes typ>auto left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const ;
+    template<vectypes typ>auto right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const;
+    template<vectypes typ>auto left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const ;
+    template<vectypes typ>auto right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const ;
 
-    template<char ch_bubble> Q value_symmetry_expanded(VertexInput input, const rvert<Q> &rvert_crossing) const;
+    template<char ch_bubble, vectypes typ> auto value_symmetry_expanded(VertexInput input, const rvert<Q> &rvert_crossing) const;
 };
 
 /****************************************** MEMBER FUNCTIONS OF THE R-VERTEX ******************************************/
@@ -549,13 +545,13 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
 }
 
 template <typename Q>
-template<K_class k> auto rvert<Q>::valsmooth_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
+template<K_class k, vectypes typ> auto rvert<Q>::valsmooth_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
     //IndicesSymmetryTransformations indices (input, channel);
 
-    if constexpr(k == k1)       return  K1_symmetry_expanded.interpolate(input);
-    else if constexpr(k == k2)  return  K2_symmetry_expanded.interpolate(input);
-    else if constexpr(k == k2b) return K2b_symmetry_expanded.interpolate(input);
-    else                        return  K3_symmetry_expanded.interpolate(input);
+    if constexpr(k == k1)       return  K1_symmetry_expanded.template interpolate<typ>(input);
+    else if constexpr(k == k2)  return  K2_symmetry_expanded.template interpolate<typ>(input);
+    else if constexpr(k == k2b) return K2b_symmetry_expanded.template interpolate<typ>(input);
+    else                        return  K3_symmetry_expanded.template interpolate<typ>(input);
 }
 
 #ifdef  DEBUG_SYMMETRIES
@@ -892,12 +888,12 @@ template <typename Q> template<char ch_bubble> auto rvert<Q>::value(VertexInput 
 
     Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing);
-    if (MAX_DIAG_CLASS >= 2) {
+    if constexpr(MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS >= 2) {
         val += valsmooth<k2> (input, rvert_crossing);
         val += valsmooth<k2b>(input, rvert_crossing);
     }
-    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing);
 
     return val;
 }
@@ -909,97 +905,97 @@ template <typename Q> template<char ch_bubble> auto rvert<Q>::value(const Vertex
 
     Q val;   // force zero initialization
 
-    if (MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-    if (MAX_DIAG_CLASS >= 2) {
+    if constexpr(MAX_DIAG_CLASS >= 0) val = valsmooth<k1>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if constexpr(MAX_DIAG_CLASS >= 2) {
         val += valsmooth<k2> (input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
         val += valsmooth<k2b>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
-    if (MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if constexpr(MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input_tmp, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
     return val;
 }
-template <typename Q> template<char ch_bubble> auto rvert<Q>::value_symmetry_expanded(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q {
+template <typename Q> template<char ch_bubble, vectypes typ> auto rvert<Q>::value_symmetry_expanded(VertexInput input, const rvert<Q>& rvert_crossing) const {
 
     //VertexInput input_tmp = input;
     transfToR<ch_bubble>(input); // input manipulated here => input needs to be called by value
 
-    Q val;   // force zero initialization
-
-    if (MAX_DIAG_CLASS >= 0) val = valsmooth_symmetry_expanded<k1>(input, rvert_crossing);
-    if (MAX_DIAG_CLASS >= 2) {
-        val += valsmooth_symmetry_expanded<k2> (input, rvert_crossing);
-        val += valsmooth_symmetry_expanded<k2b>(input, rvert_crossing);
+    auto val = valsmooth_symmetry_expanded<k1, typ>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS >= 2) {
+        val += valsmooth_symmetry_expanded<k2, typ> (input, rvert_crossing);
+        val += valsmooth_symmetry_expanded<k2b, typ>(input, rvert_crossing);
     }
-    if (MAX_DIAG_CLASS >= 3) val += valsmooth_symmetry_expanded<k3>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS >= 3) val += valsmooth_symmetry_expanded<k3, typ>(input, rvert_crossing);
 
     return val;
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if      (MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS  > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
+    if      constexpr(MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS  > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2b>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if constexpr(MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if constexpr(MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing) + valsmooth<k2>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-    else if (MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if constexpr(MAX_DIAG_CLASS == 1)     return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if constexpr(MAX_DIAG_CLASS > 1) return valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS == 1)      return 0.;
+    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
-    if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if constexpr(MAX_DIAG_CLASS == 1)      return 0.;
+    else if constexpr (MAX_DIAG_CLASS == 2) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if constexpr (MAX_DIAG_CLASS == 3) return valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
+    if constexpr(MAX_DIAG_CLASS == 1)      return 0.;
+    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing) + valsmooth<k3>(input, rvert_crossing);
 }
 
 template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
-    if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-    else if (MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    if constexpr(MAX_DIAG_CLASS == 1)      return 0.;
+    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel) + valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 }
 
 
-template <typename Q> auto rvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if      (MAX_DIAG_CLASS == 1) return valsmooth_symmetry_expanded<k1>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS  > 1) return valsmooth_symmetry_expanded<k1>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2b>(input, rvert_crossing);
+template <typename Q>template<vectypes typ>  auto rvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
+    if      constexpr (MAX_DIAG_CLASS == 1) return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing);
+    else if constexpr (MAX_DIAG_CLASS  > 1) return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2b,typ>(input, rvert_crossing);
 }
 
-template <typename Q> auto rvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)     return valsmooth_symmetry_expanded<k1>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS > 1) return valsmooth_symmetry_expanded<k1>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2>(input, rvert_crossing);
+template <typename Q> template<vectypes typ>  auto rvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
+    if constexpr(MAX_DIAG_CLASS == 1)     return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS > 1) return valsmooth_symmetry_expanded<k1,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k2,typ>(input, rvert_crossing);
 }
 
-template <typename Q> auto rvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3>(input, rvert_crossing);
+template <typename Q> template<vectypes typ>  auto rvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
+    using result_type = decltype(valsmooth_symmetry_expanded<k1,typ>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
+    if constexpr(MAX_DIAG_CLASS == 1)      return result_type{};
+    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2,typ>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,typ>(input, rvert_crossing);
 }
 
-template <typename Q> auto rvert<Q>::right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
-    if (MAX_DIAG_CLASS == 1)      return 0.;
-    else if (MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2b>(input, rvert_crossing);
-    else if (MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2b>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3>(input, rvert_crossing);
+template <typename Q> template<vectypes typ>  auto rvert<Q>::right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const {
+    using result_type = decltype(valsmooth_symmetry_expanded<k1,typ>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
+    if constexpr(MAX_DIAG_CLASS == 1)      return result_type{};
+    else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2b,typ>(input, rvert_crossing);
+    else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2b,typ>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,typ>(input, rvert_crossing);
 }
 
 

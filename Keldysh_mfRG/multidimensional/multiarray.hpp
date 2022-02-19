@@ -13,6 +13,7 @@
 #include "Eigen/Dense"
 
 #include "ranged_view.hpp"
+#include "../utilities/template_utils.hpp"
 
 #ifndef NDEBUG
 #define MULTIARRAY_CHECK_BOUNDS
@@ -215,6 +216,17 @@ namespace multidimensional
 
         bool is_same_length(const multiarray<value_type,depth>& other) const {
             return (m_length == other.m_length);
+        }
+
+        template <std::size_t pos_first_freq_index, std::size_t freqrank, std::size_t vecsize, typename... Types,
+                typename std::enable_if_t<(sizeof...(Types) == freqrank+pos_first_freq_index) and (are_all_integral<size_t, Types...>::value) and (pos_first_freq_index + freqrank < depth), bool> = true>
+        constexpr auto at_vectorized(Types & ...i  ) const {
+#ifndef NDEBUG
+            int it = pos_first_freq_index;
+            ((assert(i < m_length[it]), it ++),...);
+#endif
+            const auto flat_start = flat_index(index_type({static_cast<size_t>(i)...}));;
+            return elements.template segment<vecsize>(flat_start);
         }
 
         /// === public member functions ===

@@ -449,8 +449,8 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         Q result = 0.; // initialize results
         // integrate intervals of with 2*Delta around the features at w1, w2
         Adapt<Q, Integrand> adaptor_peaks(integrator_tol, integrand);
-        result += adaptor_peaks.integrate(intersections[1], intersections[2]);
         result += adaptor_peaks.integrate(intersections[3], intersections[4]);
+        result += adaptor_peaks.integrate(intersections[1], intersections[2]);
 
         // integrate the tails and the interval between the features, with increased tolerance
         Adapt<Q, Integrand> adaptor_tails(integrator_tol * 10, integrand);
@@ -529,7 +529,8 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
             if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
         }
         if (isinf) {result[0] += integrator_gsl_qag_tails<Q>(integrand, intervals[0][0], intervals[num_intervals-1][1], nINT); }
-        return result.sum();
+        Q val = result.sum();
+        return val;
     }
     else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
         vec<paid::Domain<1>> domains;

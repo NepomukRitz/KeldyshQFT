@@ -2346,7 +2346,7 @@ public:
 
 
 // to check central part of multi-loop flow equations:
-// compute diagrams with non-symmetric intermediate results
+// compute diagrams with non-symmetric_full intermediate results
 void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, int version=1, bool compute_exact=false) {
     const int it_spin = 0;
     State<state_datatype> bare (Lambda); // bare state
@@ -2403,26 +2403,26 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         K1rdot_PIa_K1p.vertex = dGammaL_half1;
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
-        // create non-symmetric vertex with differentiated vertex on the left
+        // create non-symmetric_full vertex with differentiated vertex on the left
         GeneralVertex<state_datatype , non_symmetric> dGammaL(Lambda);
         dGammaL.half1()  = dGammaL_half1.half1();  // assign half 1 to dGammaL
-        dGammaL.half2() = dGammaR_half1.half1();  // assign half 2 as half 1 to dGammaR [symmetric -> left()=right()]
+        dGammaL.half2() = dGammaR_half1.half1();  // assign half 2 as half 1 to dGammaR [symmetric_full -> left()=right()]
 
 
-        // insert this non-symmetric vertex on the right of the bubble
+        // insert this non-symmetric_full vertex on the right of the bubble
         State<state_datatype> dGammaC_r(Lambda);
 
         dGammaL.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
         bubble_function(dGammaC_r.vertex, Psi.vertex, dGammaL, G, G, 'a', false);
 
 
-        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+        // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
         GeneralVertex<state_datatype , non_symmetric> dGammaR (Lambda);
         dGammaR.half1() = dGammaR_half1.half1();  // assign half 1
         dGammaR.half2() = dGammaL_half1.half1();  // assign half 2 as half 1 of dGammaL
 
 
-        // insert this non-symmetric vertex on the left of the bubble
+        // insert this non-symmetric_full vertex on the left of the bubble
         State<state_datatype> dGammaC_l(Lambda);
         dGammaR.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 

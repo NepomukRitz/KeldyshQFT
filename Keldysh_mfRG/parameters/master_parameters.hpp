@@ -53,7 +53,7 @@ constexpr int N_LOOPS = 1;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 1.; //0.01;                     // Temperature
+constexpr double glb_T = 0.01; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature
 #endif
@@ -103,7 +103,7 @@ constexpr int glb_N_ff = 1;                                 // Number of form fa
  * Ordered w.r.t. the form factor index. Currently at most 9 form factors are supported.
  *
  * The entries mean the following:
- * 1 : Multiply by one (nothing happens; form factor is symmetric
+ * 1 : Multiply by one (nothing happens; form factor is symmetric_full
  * -1: Multiply by minus one (form factor is antisymmetric)
  * i > 1: Need to access the i'th form factor component instead
  * i < 1: Need to access the |i|'th form factor component instead AND multiply by -1.*/

@@ -443,7 +443,8 @@ inline auto Propagator<double>::GR_REG2_Hubbard(const double v, const int i_in) 
 
 template <typename Q>
 auto Propagator<Q>::GR_REG2_SIAM(const double v, const int i_in) const -> Q {
-    return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+    Q res = 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+    return res;
 }
 
 template <typename Q>

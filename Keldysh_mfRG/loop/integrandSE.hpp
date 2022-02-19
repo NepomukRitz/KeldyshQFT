@@ -179,7 +179,7 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
         return (GM * factorClosedAbove);
     }
     else {
-        // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy Im(Sigma)
+        // in the particle-hole symmetric_full case in Matsubara we only save the imaginary part of the selfenergy Im(Sigma)
         // Accordingly the saved propagator is -Im(G)
         // Hence we need an additional factor of -1
         return -(GM * factorClosedAbove);

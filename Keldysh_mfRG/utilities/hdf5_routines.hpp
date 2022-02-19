@@ -784,7 +784,7 @@ template <typename Q>
 
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
-            // in the particle-hole symmetric case in Matsubara we only save the imaginary part of the selfenergy
+            // in the particle-hole symmetric_full case in Matsubara we only save the imaginary part of the selfenergy
             selfenergy[i].re = glb_U/2.;
             selfenergy[i].im = state_in.selfenergy.acc(i);
 #else

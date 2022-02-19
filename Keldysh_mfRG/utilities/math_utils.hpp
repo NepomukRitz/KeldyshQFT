@@ -54,7 +54,7 @@ int signFlipCorrection_MF_int(const double w);
 // Check whether there are doubly occuring frequencies
 auto is_doubleOccurencies(const rvec& freqs) -> int;
 
-// Check whether the frequency grid is symmetric
+// Check whether the frequency grid is symmetric_full
 auto is_symmetric(const rvec& freqs) -> double;
 
 
