@@ -127,8 +127,10 @@ int Hubbard_SE_SOPT_Computer::vertex_Keldysh_component(const int iK, const int i
                 case 1: return 4;           //Vertex component associated to Advanced propagator
                 case 2: return 5;           //Vertex component associated to Keldysh propagator
                 default: assert(false);
+                return 0;
             }
         default: assert(false);
+            return 0;
     }
 }
 

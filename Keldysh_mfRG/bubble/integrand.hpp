@@ -349,8 +349,8 @@ auto Integrand<diag_class, channel, Q, symmetry_left, symmetry_right, Bubble_Obj
     //assert(false);
     VertexInput input_external (i0, spin, w, v, vp, i_in, channel, diag_class, iw);
 
-    result = sum_over_internal_scalar(input_external, vpp);
-    //result = sum_over_internal_vectorized(input_external, vpp);
+    //result = sum_over_internal_scalar(input_external, vpp);
+    result = sum_over_internal_vectorized(input_external, vpp);
 
 #endif
 
@@ -408,34 +408,34 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 
         if (i_spin == 0) { // first summand in all channels is res_l_V * Pival * res_r_V
             if (diag_class == k1 or diag_class == k2b)
-                res_l_V = vertex1.left_same_bare(input_l);
+                res_l_V = vertex1.template left_same_bare<channel>(input_l);
             else
-                res_l_V = vertex1.left_diff_bare(input_l);
+                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
 
             if (diag_class == k3 or diag_class == k2b)
-                res_r_V = vertex2.right_diff_bare(input_r);
+                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
             else
-                res_r_V = vertex2.right_same_bare(input_r);
+                res_r_V = vertex2.template right_same_bare<channel>(input_r);
 #ifdef DEBUG_SYMMETRIES
             if (channel == 'p') {  // res_l_Vhat * Pival * res_r_Vhat
                 // compute res_l_Vhat
                 input_l.spin = 1 - spin;
                 if (diag_class == k1 or diag_class == k2b)
-                    res_l_Vhat = vertex1.left_same_bare(input_l);
+                    res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
                 else
-                    res_l_Vhat = vertex1.left_diff_bare(input_l);
+                    res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
                 // compute res_r_Vhat
                 input_r.spin = 1 - spin;
                 if (diag_class == k3 or diag_class == k2b)
-                    res_r_Vhat = vertex2.right_diff_bare(input_r);
+                    res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
                 else
-                    res_r_Vhat = vertex2.right_same_bare(input_r);
+                    res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
             }
 #endif
         }
         else { // relevant for t-channel (spin component 0) and a-channel (spin component 1): there i_spin = 0, 1, 2
 
-            if (channel == 't'
+            if constexpr(channel == 't'
 #ifdef DEBUG_SYMMETRIES
                 or channel == 'a'
 #endif
@@ -444,30 +444,30 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
                 if (i_spin == 1) {  // res_l_V * Pival * res_r_Vhat
                     // compute res_l_V
                     if (diag_class == k1 or diag_class == k2b)
-                        res_l_V = vertex1.left_same_bare(input_l);
+                        res_l_V = vertex1.template left_same_bare<channel>(input_l);
                     else
-                        res_l_V = vertex1.left_diff_bare(input_l);
+                        res_l_V = vertex1.template left_diff_bare<channel>(input_l);
                     // compute res_r_Vhat
                     input_r.spin = 1 - spin;
                     if (diag_class == k3 or diag_class == k2b)
-                        res_r_Vhat = vertex2.right_diff_bare(input_r);
+                        res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
                     else
-                        res_r_Vhat = vertex2.right_same_bare(input_r);
+                        res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
                 }
                 // channel = t, i_spin = 2
                 else {              // res_l_Vhat * Pival * res_r_V
                     assert(i_spin == 2);
                     // compute res_r_V
                     if (diag_class == k3 or diag_class == k2b)
-                        res_r_V = vertex2.right_diff_bare(input_r);
+                        res_r_V = vertex2.template right_diff_bare<channel>(input_r);
                     else
-                        res_r_V = vertex2.right_same_bare(input_r);
+                        res_r_V = vertex2.template right_same_bare<channel>(input_r);
                     // compute res_l_Vhat
                     input_l.spin = 1 - spin;
                     if (diag_class == k1 or diag_class == k2b)
-                        res_l_Vhat = vertex1.left_same_bare(input_l);
+                        res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
                     else
-                        res_l_Vhat = vertex1.left_diff_bare(input_l);
+                        res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
                 }
             }
         }

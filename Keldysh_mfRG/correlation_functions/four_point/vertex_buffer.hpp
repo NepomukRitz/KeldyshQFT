@@ -31,33 +31,34 @@ class vertexBuffer {
 template <K_class k, typename Q>
 class vertexBuffer<k, Q, linear> : public vertexDataContainer<k,Q> {
     using base_class = vertexDataContainer<k, Q>;
-    static constexpr int numSamples() { /// TODO: adapt for non-trivial internal index
+    static constexpr my_index_t numSamples() { /// TODO: adapt for non-trivial internal index
         if constexpr(k == k1) {return 2;}
         else if constexpr (k == k3) {return 8;}
         else {return 4;}
     }
-    static constexpr int numSamples_half() {    /// TODO: adapt for non-trivial internal index
+    static constexpr my_index_t numSamples_half() {    /// TODO: adapt for non-trivial internal index
         if constexpr(k == k1) {return 1;}
         else if constexpr (k == k3) {return 4;}
         else {return 2;}
     }
-    static constexpr int frequencydims() {
+    static constexpr my_index_t frequencydims() {
         if constexpr(k == k1) {return 1;}
         else if constexpr (k == k3) {return 3;}
         else {return 2;}
     }
     template <typename result_type>
-    static constexpr std::size_t get_vecsize() {
+    static constexpr my_index_t get_vecsize() {
         if constexpr(std::is_same_v<result_type, Q>) return 1;
         else { return 4; }  /// TODO: adapt for non-trivial internal index
     }
 public:
     using index_type = typename base_class::index_type;
+    using dimensions_type = typename base_class::dimensions_type;
     using frequency_arr = std::array<double, frequencydims()>;
 
     mutable bool initialized = false;
     vertexBuffer<k,Q,linear>() : initialized(false) {};
-    explicit vertexBuffer<k, Q, linear>(double Lambda, index_type dims) : base_class(Lambda, dims) {};
+    explicit vertexBuffer<k, Q, linear>(double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
     void initInterpolator() const {initialized = true;};
 
     bool is_in_box(const VertexInput& indices) const {
@@ -71,7 +72,7 @@ public:
     Eigen::Matrix<double, numSamples(), 1> get_weights(const VertexInput& indices, index_type& idx_low) const {
         Eigen::Matrix<double, numSamples(), 1> weights;
 
-        int iw = base_class::frequencies.b.fconv(indices.w);
+        my_index_t iw = base_class::frequencies.b.fconv(indices.w);
         idx_low[0] = iw;
         double w_low = base_class::frequencies.b.get_ws(iw);
         double w_high= base_class::frequencies.b.get_ws(iw+1);
@@ -82,12 +83,12 @@ public:
         }
 
         if constexpr (k == k1) {
-            idx_low = {indices.spin, iw, indices.iK, indices.i_in};
+            idx_low = {indices.spin, iw, (my_index_t)indices.iK, indices.i_in};
 
             return weights;
         }
         if constexpr (k == k2) {
-            int iv = base_class::frequencies.f.fconv(indices.v1);
+            my_index_t iv = base_class::frequencies.f.fconv(indices.v1);
             idx_low[0] = iv;
             double v_low = base_class::frequencies.f.get_ws(iv);
             double v_high= base_class::frequencies.f.get_ws(iv+1);
@@ -96,12 +97,12 @@ public:
                 weights[2*j  ] *= 1-weight_v;
                 weights[2*j+1] *= weight_v;
             }
-            idx_low = {indices.spin, iw, iv, indices.iK, indices.i_in};
+            idx_low = {indices.spin, iw, iv, (my_index_t)indices.iK, indices.i_in};
 
             return weights;
         }
         if constexpr(k == k2b) {
-            int ivp = base_class::frequencies.f.fconv(indices.v2);
+            my_index_t ivp = base_class::frequencies.f.fconv(indices.v2);
             idx_low[0] = ivp;
             double vp_low = base_class::frequencies.f.get_ws(ivp);
             double vp_high= base_class::frequencies.f.get_ws(ivp+1);
@@ -110,18 +111,18 @@ public:
                 weights[2*j  ] *= 1-weight_vp;
                 weights[2*j+1] *= weight_vp;
             }
-            idx_low = {indices.spin, iw, ivp, indices.iK, indices.i_in};
+            idx_low = {indices.spin, iw, ivp, (my_index_t)indices.iK, indices.i_in};
 
             return weights;
         }
         if constexpr(k == k3) {
-            int iv = base_class::frequencies.f.fconv(indices.v1);
+            my_index_t iv = base_class::frequencies.f.fconv(indices.v1);
             idx_low[0] = iv;
             double v_low = base_class::frequencies.f.get_ws(iv);
             double v_high= base_class::frequencies.f.get_ws(iv+1);
             const double weight_v = (indices.v1 - v_low) / (v_high - v_low);
 
-            int ivp = base_class::frequencies.f.fconv(indices.v2);
+            my_index_t ivp = base_class::frequencies.f.fconv(indices.v2);
             idx_low[0] = ivp;
             double vp_low = base_class::frequencies.f.get_ws(ivp);
             double vp_high= base_class::frequencies.f.get_ws(ivp+1);
@@ -139,7 +140,7 @@ public:
                 weights[1+j*2] *= weight_vp;
             }
 
-            idx_low = {indices.spin, iw, iv, ivp, indices.iK, indices.i_in};
+            idx_low = {indices.spin, iw, iv, ivp, (my_index_t) indices.iK, indices.i_in};
             return weights;
         }
 
@@ -147,7 +148,7 @@ public:
 
     }
 
-    template <typename result_type, std::size_t vecsize>
+    template <typename result_type, my_index_t vecsize>
     Eigen::Matrix<Q, vecsize, numSamples()> get_values(const index_type& vertex_index) const {
         Eigen::Matrix<Q, vecsize, numSamples()> result;
     if constexpr(std::is_same_v<result_type, Q>) {
@@ -216,7 +217,7 @@ public:
     template <typename result_type = Q>
     auto interpolate(const VertexInput &indices) const -> result_type {
 
-        constexpr std::size_t vecsize = get_vecsize<result_type>();
+        constexpr my_index_t vecsize = get_vecsize<result_type>();
         using weights_type = Eigen::Matrix<double, numSamples(), 1>;
         using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
 

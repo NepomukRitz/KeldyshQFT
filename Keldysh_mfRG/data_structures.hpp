@@ -405,7 +405,7 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 
-
+using my_index_t = std::size_t;
 enum K_class {k1=0, k2=1, k2b=2, k3=3};
 std::ostream& operator << (std::ostream& out, K_class k);
 enum vertexType {symmetric_full, symmetric_r_irred, non_symmetric_diffleft, non_symmetric_diffright};
@@ -421,13 +421,13 @@ std::ostream& operator << (std::ostream& out, vertexType symmtype);
 struct VertexInput{
     int iK;
     double w, v1, v2;
-    int i_in;
-    int spin;
+    my_index_t i_in;
+    my_index_t spin;
     char channel_bubble;
     K_class kClass_aim;
-    int iw_r;
+    my_index_t iw_r;
 
-    VertexInput(int iK_in, int spin_in, double w_in, double v1_in, double v2_in, int i_in_in, char channel_in, K_class k_in=k1, int iw_in=0)
+    VertexInput(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)
             :
 //#ifdef KELDYSH_FORMALISM
             iK(iK_in),
@@ -435,7 +435,7 @@ struct VertexInput{
 //            iK(0),
 //#endif
             spin(spin_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel_bubble(channel_in), kClass_aim(k_in), iw_r(iw_in)
-    {}
+    {assert(iK < 16);}
 };
 
 /**
@@ -454,16 +454,16 @@ struct IndicesSymmetryTransformations: VertexInput{
     //char channel_bubble;
     char channel_parametrization = channel_bubble; // W.r.t. which channel is the vertex parametrized? Used for the Hubbard model.
 
-    IndicesSymmetryTransformations(int iK_in, int spin_in, double w_in, double v1_in, double v2_in, int i_in_in, char channel_rvert_in, K_class k_in, int iw_in, char channel_bubble_in)
+    IndicesSymmetryTransformations(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_rvert_in, K_class k_in, my_index_t iw_in, char channel_bubble_in)
             : VertexInput(iK_in, spin_in, w_in, v1_in, v2_in, i_in_in, channel_bubble_in, k_in, iw_in), channel_rvert(channel_rvert_in)
-    {}
+    {assert(iK < 16);}
 
     IndicesSymmetryTransformations(VertexInput input, char channel_in)
             : VertexInput(input), channel_rvert(channel_in)
-    {}
+    {assert(iK < 16);}
     IndicesSymmetryTransformations(VertexInput&& input, char channel_in)
             : VertexInput(input), channel_rvert(channel_in)
-    {}
+    {assert(iK < 16);}
 };
 
 

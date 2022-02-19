@@ -48,13 +48,14 @@ class vertexContainerBase {
 protected:
     using buffer_type = multidimensional:: multiarray<Q,rank>;
     using index_type = typename buffer_type::index_type;
+    using dimensions_type = typename buffer_type::dimensions_type;
 
     buffer_type data;
 
 public:
     /// constructor:
     vertexContainerBase() = default;
-    explicit vertexContainerBase(const index_type dims) : data(dims) {};
+    explicit vertexContainerBase(const dimensions_type dims) : data(dims) {};
     template <typename... Types,
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
     explicit vertexContainerBase(const Types &... dims) : vertexContainerBase(index_type({static_cast<size_t>(dims)...})) {};
@@ -74,7 +75,7 @@ public:
     const Q& at(const Types &... i) const {return data.at(i...);}
     template <std::size_t freqrank, std::size_t vecsize, typename... Types,
             typename std::enable_if_t<(sizeof...(Types) == freqrank+pos_first_freq+1) and (are_all_integral<size_t, Types...>::value), bool> = true>
-                    const auto val_vectorized(const Types &... i) const -> Eigen::Matrix<Q,vecsize,1>{
+                    auto val_vectorized(const Types &... i) const -> Eigen::Matrix<Q,vecsize,1>{
         return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(i...);
     }
     /// Sets a value at a multiIndex
@@ -133,9 +134,10 @@ protected:
     using base_class = vertexContainerBase<Q,5>;
 public:
     using index_type = typename base_class::index_type;
+    using dimensions_type = typename base_class::dimensions_type;
     using buffer_type = typename base_class::buffer_type;
     vertexDataContainer() = default;
-    explicit vertexDataContainer(double Lambda, index_type dims) : frequencies(Lambda), base_class(dims) { };
+    explicit vertexDataContainer(double Lambda, dimensions_type dims) : frequencies(Lambda), base_class(dims) { };
 
     /// Functions for getting and setting the frequency grid and its members
 
@@ -201,9 +203,10 @@ protected:
     VertexFrequencyGrid<k1> frequencies;    // frequency grid
 public:
     using index_type = typename base_class::index_type;
+    using dimensions_type = typename base_class::dimensions_type;
     using buffer_type = typename base_class::buffer_type;
     vertexDataContainer() = default;
-    explicit vertexDataContainer(double Lambda, index_type dims) : frequencies(Lambda), base_class(dims) { };
+    explicit vertexDataContainer(double Lambda, dimensions_type dims) : frequencies(Lambda), base_class(dims) { };
 
     /// Functions for getting and setting frequency grid and its members;
     /// TODO: Can probably be shifted to vertexContainerBase    (problems: non-existing fermionic grid for K1 ==> use std::enable_if; need multiple parameter packs for get_freqs()
@@ -258,9 +261,10 @@ protected:
 
 public:
     using index_type = typename base_class::index_type;
+    using dimensions_type = typename base_class::dimensions_type;
     using buffer_type = typename base_class::buffer_type;
     vertexDataContainer() = default;
-    explicit vertexDataContainer(double Lambda, index_type dims) : frequencies(Lambda), base_class(dims) { };
+    explicit vertexDataContainer(double Lambda, dimensions_type dims) : frequencies(Lambda), base_class(dims) { };
 
 
     void K3_get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp, char channel) const;

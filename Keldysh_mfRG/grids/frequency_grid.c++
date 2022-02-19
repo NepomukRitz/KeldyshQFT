@@ -250,6 +250,10 @@ auto FrequencyGrid::wscale_from_wmax(double & Wscale, const double w1, const dou
             return wscale_from_wmax_v1(Wscale, w1, wmax, N);
         }
     }
+    else {
+        assert(false);
+        return 0;
+    }
 }
 
 

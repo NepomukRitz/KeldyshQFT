@@ -42,7 +42,7 @@ constexpr int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((in
 
 
 // Number of bosonic and fermionic frequency points
-#ifdef KELDYSH_FORMALISM
+//#ifdef KELDYSH_FORMALISM
 constexpr int nBOS = 201;
 constexpr int nFER = 201;
 // Number of frequency points for K2 and K3 classes
@@ -50,17 +50,17 @@ constexpr int nBOS2 = 51;//nBOS;
 constexpr int nFER2 = 51;//nFER;
 constexpr int nBOS3 = 21; //nBOS;
 constexpr int nFER3 = 21; //nFER;
-#else
+//#else
 const int COUNT = 4;
-constexpr int nBOS = COUNT * 64 * 2 + 1;
-constexpr int nFER = COUNT * 64 * 2;
-// Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = COUNT * 6 * 2 + 1;//nBOS;
-constexpr int nFER2 = COUNT * 4 * 2;//nFER;
-constexpr int nBOS3 = COUNT * 2 * 2 + 1; //nBOS;
-constexpr int nFER3 = COUNT * 2; //nFER;
+//constexpr int nBOS = COUNT * 64 * 2 + 1;
+//constexpr int nFER = COUNT * 64 * 2;
+//// Number of frequency points for K2 and K3 classes
+//constexpr int nBOS2 = COUNT * 6 * 2 + 1;//nBOS;
+//constexpr int nFER2 = COUNT * 4 * 2;//nFER;
+//constexpr int nBOS3 = COUNT * 2 * 2 + 1; //nBOS;
+//constexpr int nFER3 = COUNT * 2; //nFER;
 const int POSINTRANGE = 64 * COUNT;
-#endif
+//#endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )
 // density of points around zero frequency

@@ -101,9 +101,9 @@ auto convertToIndepIndex(int iK) -> int;
 // This function returns the values of the 4 alphas for a given index in the 0...15 set
 auto alphas(int index) -> std::vector<int>;
 
-template<char channel_bubble, bool is_left_vertex> auto rotate_to_matrix(const int iK) -> int {
-    constexpr std::array<int, 4> Keldysh4pointdims = {2,2,2,2};
-    std::array<int,4> alpha;
+template<char channel_bubble, bool is_left_vertex> auto rotate_to_matrix(const my_index_t iK) -> my_index_t {
+    constexpr std::array<my_index_t, 4> Keldysh4pointdims = {2,2,2,2};
+    std::array<my_index_t ,4> alpha;
     getMultIndex(alpha, iK, Keldysh4pointdims);
 
     int i0_left, i0_right;

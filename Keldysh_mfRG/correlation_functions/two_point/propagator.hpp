@@ -364,6 +364,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
         default:
             print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
+            return 0.;
     }
 }
 

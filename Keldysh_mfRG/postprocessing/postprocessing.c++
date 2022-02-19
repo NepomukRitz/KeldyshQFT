@@ -97,8 +97,8 @@ void check_Kramers_Kronig(const std::string filename) {
         // check Kramers-Kronig for retarded self-energy
         rvec vSigma = state.selfenergy.frequencies.get_ws_vec();  // frequency grid points
         // get retarded component (first half of stored data points)
-        std::array<std::size_t,3> start_SE = {0, 0, 0};
-        std::array<std::size_t,3> end_SE   = {0,nSE-1, n_in};
+        std::array<my_index_t ,3> start_SE = {0, 0, 0};
+        std::array<my_index_t,3> end_SE   = {0,nSE-1, n_in};
 
         auto SigmaR = state.selfenergy.Sigma.eigen_segment(start_SE, end_SE);
         vec<comp> SigmaR_vec = vec<comp>(SigmaR.data(), SigmaR.data() + SigmaR.size());
@@ -106,8 +106,8 @@ void check_Kramers_Kronig(const std::string filename) {
         rvec SigmaR_im = SigmaR_vec.imag();  // imaginary part from flow
         rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im, 0);  // compute real part from imaginary part via KK
 
-        std::array<std::size_t,4> start_K1 = {0, 0, 0, 0};
-        std::array<std::size_t,4> end_K1   = {0,0,nBOS-1, n_in_K1};
+        std::array<my_index_t,4> start_K1 = {0, 0, 0, 0};
+        std::array<my_index_t,4> end_K1   = {0,0,nBOS-1, n_in_K1};
         // check Kramers-Kronig for retarded component of K1r
         rvec wK1 = state.vertex.avertex().K1.get_VertexFreqGrid().b.get_ws_vec();  // frequency grid points
         // get retarded component of K1a (first half of stored data points)

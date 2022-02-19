@@ -101,10 +101,10 @@ class BubbleFunctionCalculator{
             print("Error! Needed crossprojection still has to be computed. Abort.");
             assert(false);
         }
-
+#ifdef SWITCH_SUM_N_INTEGRAL
         vertex1.template symmetry_expand<channel,true>();
         vertex2.template symmetry_expand<channel,false>();
-
+#endif
         /// TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
         ///  The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.
@@ -279,7 +279,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     int iterator = 0;
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
-//#pragma omp parallel for schedule(dynamic)
+#pragma omp parallel for schedule(dynamic)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
                 Buffer[iterator*n_omp + i_omp] = get_value<diag_class>(i_mpi, i_omp, n_omp); // write result of integration into MPI buffer
             }

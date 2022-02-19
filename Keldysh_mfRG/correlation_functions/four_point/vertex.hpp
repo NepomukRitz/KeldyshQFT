@@ -484,6 +484,7 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
             default:
                 print("Problems in irred.val. Abort.");
                 assert(false);
+                return 0.;
         }
     }
     else {

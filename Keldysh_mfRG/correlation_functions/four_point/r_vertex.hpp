@@ -789,10 +789,11 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
     // K1:
     //vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
-#pragma omp parallel for
-    for (int iflat = 0; iflat < getFlatSize(K1_symmetry_expanded.get_dims()); iflat++) {
-        int iK, ispin, iw, i_in;
-        getMultIndex<4,int,int,int,int>(ispin, iw, iK, i_in, iflat, K1_symmetry_expanded.get_dims());
+#pragma omp parallel for schedule(dynamic, 50)
+    for (my_index_t iflat = 0; iflat < getFlatSize(K1_symmetry_expanded.get_dims()); iflat++) {
+        int iK;
+        my_index_t ispin, iw, i_in;
+        getMultIndex<4,my_index_t,my_index_t,int,my_index_t>(ispin, iw, iK, i_in, iflat, K1_symmetry_expanded.get_dims());
         double w;
         K1_symmetry_expanded.K1_get_freq_w(w, iw);
         VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
@@ -807,10 +808,11 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
     if (MAX_DIAG_CLASS > 1) {
         // K2:
-#pragma omp parallel for
-        for (int iflat = 0; iflat < getFlatSize(K2_symmetry_expanded.get_dims()); iflat++) {
-            int iK, ispin, iw, iv, i_in;
-            getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2_symmetry_expanded.get_dims());
+#pragma omp parallel for schedule(dynamic, 50)
+        for (my_index_t iflat = 0; iflat < getFlatSize(K2_symmetry_expanded.get_dims()); iflat++) {
+            int iK;
+            my_index_t ispin, iw, iv, i_in;
+            getMultIndex<5, my_index_t, my_index_t, my_index_t, int, my_index_t>(ispin, iw, iv, iK, i_in, iflat, K2_symmetry_expanded.get_dims());
 
             double w, v;
             K2_symmetry_expanded.K2_get_freqs_w(w, v, iw, iv);
@@ -824,10 +826,11 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         }
 
         // K2b:
-#pragma omp parallel for
-        for (int iflat = 0; iflat < getFlatSize(K2b_symmetry_expanded.get_dims()); iflat++) {
-            int iK, ispin, iw, iv, i_in;
-            getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2b_symmetry_expanded.get_dims());
+#pragma omp parallel for schedule(dynamic, 50)
+        for (my_index_t iflat = 0; iflat < getFlatSize(K2b_symmetry_expanded.get_dims()); iflat++) {
+            int iK;
+            my_index_t ispin, iw, iv, i_in;
+            getMultIndex<5, my_index_t, my_index_t, my_index_t, int, my_index_t>(ispin, iw, iv, iK, i_in, iflat, K2b_symmetry_expanded.get_dims());
             double w, vp;
             K2b_symmetry_expanded.K2_get_freqs_w(w, vp, iw, iv);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
@@ -843,10 +846,11 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
     if (MAX_DIAG_CLASS > 2) {
         // K3:
-#pragma omp parallel for
-        for (int iflat = 0; iflat < getFlatSize(K3_symmetry_expanded.get_dims()); iflat++) {
-            int iK, ispin, iw, iv, ivp, i_in;
-            getMultIndex<6, int, int, int, int, int, int>(ispin, iw, iv, ivp, iK, i_in, iflat, K3_symmetry_expanded.get_dims());
+#pragma omp parallel for schedule(dynamic, 50)
+        for (my_index_t iflat = 0; iflat < getFlatSize(K3_symmetry_expanded.get_dims()); iflat++) {
+            int iK;
+            my_index_t ispin, iw, iv, ivp, i_in;
+            getMultIndex<6, my_index_t, my_index_t, my_index_t, my_index_t, int, my_index_t>(ispin, iw, iv, ivp, iK, i_in, iflat, K3_symmetry_expanded.get_dims());
 
             double w, v, vp;
             K3_symmetry_expanded.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);

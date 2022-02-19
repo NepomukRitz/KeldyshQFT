@@ -49,7 +49,7 @@ namespace multidimensional
         using const_reference = const value_type &;
         using pointer = value_type *;
         using const_pointer = const value_type *;
-        using index_type = std::array<size_type, depth>;
+        using index_type = std::array<my_index_t, depth>;
         using dimensions_type = std::array<size_type, depth>;
         // iterator typedefs follow in the iterator section
 
@@ -242,13 +242,13 @@ namespace multidimensional
                 typename std::enable_if_t<sizeof...(Types) == depth, bool> = true>
         T &at(const Types &...i)
         {
-            return at(index_type({static_cast<size_t>(i)...}));
+            return at(index_type({static_cast<size_type>(i)...}));
         }
         template <typename... Types,
                 typename std::enable_if_t<sizeof...(Types) == depth, bool> = true>
         const T &at(const Types &...i) const
         {
-            return at(index_type({static_cast<size_t>(i)...}));
+            return at(index_type({static_cast<size_type>(i)...}));
         }
         template <typename... Types,
                 typename std::enable_if_t<sizeof...(Types) == depth, bool> = true>
