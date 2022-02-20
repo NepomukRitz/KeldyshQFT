@@ -798,7 +798,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         K1_symmetry_expanded.K1_get_freq_w(w, iw);
         VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
         IndicesSymmetryTransformations indices(input, channel);
-        rvert<Q> readMe = symmetry_reduce<k1>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        const rvert<Q>& readMe = symmetry_reduce<k1>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
         Q value = read_symmetryreduced_rvert<k1>(indices, readMe);
 
         K1_symmetry_expanded.setvert(value, ispin, iw, iK, i_in);
@@ -818,7 +818,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             K2_symmetry_expanded.K2_get_freqs_w(w, v, iw, iv);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
-            rvert<Q> readMe = symmetry_reduce<k2>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            const rvert<Q>& readMe = symmetry_reduce<k2>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
 
             K2_symmetry_expanded.setvert(value, ispin, iw, iv, iK, i_in);
@@ -835,7 +835,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             K2b_symmetry_expanded.K2_get_freqs_w(w, vp, iw, iv);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
-            rvert<Q> readMe = symmetry_reduce<k2b>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            const rvert<Q>& readMe = symmetry_reduce<k2b>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k2>(indices, readMe);
 
             K2b_symmetry_expanded.setvert(value, ispin, iw , iv , iK, i_in);
@@ -856,7 +856,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             K3_symmetry_expanded.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
-            rvert<Q> readMe = symmetry_reduce<k3>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            const rvert<Q>& readMe = symmetry_reduce<k3>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
             Q value = read_symmetryreduced_rvert<k3>(indices, readMe);
 
             K3_symmetry_expanded.setvert(value, ispin, iw ,iv , ivp , iK, i_in);

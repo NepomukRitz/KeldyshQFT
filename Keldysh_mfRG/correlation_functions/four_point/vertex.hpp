@@ -961,7 +961,6 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
         }
     }
 
-    else assert(false);
 
     if constexpr(only_channel_r){
         if constexpr     (ch_bubble == 'a'){ auto K2b_K3 = avertex.template right_diff_bare_symmetry_expanded<result_type>(input, tvertex); return K2b_K3; }
