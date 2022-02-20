@@ -59,7 +59,7 @@ public:
     double t_lower;             // lower bound of auxiliary grid
     double W_scale;             // non-linearity of grid_transf()
     double dt;                  // spacing on linear auxiliary grid
-    double U_factor = 10./3.;   // determines scale_factor()
+    double U_factor = 0./3.;   // determines scale_factor()
     double Delta_factor = 10.;  // determines scale_factor()
 
     /**
@@ -75,8 +75,8 @@ public:
                     case 1:
                         N_w = nBOS;
                         if (KELDYSH) {
-                            U_factor = 30. / 3.;
-                            Delta_factor = 30.;
+                            U_factor = 0. / 3.;
+                            Delta_factor = 5.;
                         }
                         else {
                             U_factor = 40./3.;
@@ -96,12 +96,12 @@ public:
                         }
 #else
                         if (KELDYSH){
-                            U_factor = 20./3.;
-                            Delta_factor = 20.;
+                            U_factor = 0./3.;
+                            Delta_factor = 15.;
                         }
                         else{
-                            U_factor = 20./3.;
-                            Delta_factor = 20.;
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
                         }
 #endif
                         break;
@@ -116,8 +116,8 @@ public:
                     case 1:
                         N_w = nFER;
                         if (KELDYSH) {
-                            U_factor = 40. / 3.;
-                            Delta_factor = 40.;
+                            U_factor = 0. / 3.;
+                            Delta_factor = 10.;
                         }
                         else {
                             U_factor = 2./3.;
@@ -142,7 +142,7 @@ public:
                         }
 #else
                         if (KELDYSH) {
-                            U_factor = 20. / 3.;
+                            U_factor = 0. / 3.;
                             Delta_factor = 20.;
                         }
                         else {

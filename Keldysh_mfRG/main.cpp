@@ -116,14 +116,14 @@ auto main() -> int {
 
     //
     //test_PT4(0.5, true);
-    test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
+    //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
     //findBestWscale4K1<state_datatype>(1.8);
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string name = data_dir+filename+job;
     //n_loop_flow(name, 1,  true);
-    //test_symmetries(1.8);
+    test_symmetries(1.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
 

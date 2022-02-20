@@ -428,23 +428,23 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
     rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
     std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
 
-    if (INTEGRATOR_TYPE == 0) { // Riemann sum
+    if constexpr(INTEGRATOR_TYPE == 0) { // Riemann sum
         return integrator_riemann<Q>(integrand, nINT);
     }
-    else if (INTEGRATOR_TYPE == 1) { // Simpson
+    else if constexpr(INTEGRATOR_TYPE == 1) { // Simpson
         return integrator_simpson<Q>(integrand, a, b, nINT);           // only use standard Simpson
     }
-    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+    else if constexpr(INTEGRATOR_TYPE == 2) { // Simpson + additional points
         return integrator_simpson<Q>(integrand, a, b, w1, w2,
                                   nINT);     // use standard Simpson plus additional points around +- w/2
     }
-    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+    else if constexpr(INTEGRATOR_TYPE == 3) { // adaptive Simpson
         return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
     }
-    else if (INTEGRATOR_TYPE == 4) { // GSL
+    else if constexpr(INTEGRATOR_TYPE == 4) { // GSL
         return integrator_gsl_qagp_v2<Q>(integrand, intersections.data(), intersections.size(), nINT, false);
     }
-    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+    else if constexpr(INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
 
         Q result = 0.; // initialize results
         // integrate intervals of with 2*Delta around the features at w1, w2
@@ -460,7 +460,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
 
         return result;
     }
-    else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
+    else if constexpr(INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
         // define points at which to split the integrals (including lower and upper integration limits)
         vec<paid::Domain<1>> domains;
         domains.reserve(5);
@@ -482,6 +482,7 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
         paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
         return paid_integral.solve(integrands)[0];
     }
+    else return 0.;
 }
 
 /**

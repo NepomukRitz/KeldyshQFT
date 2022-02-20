@@ -12,7 +12,7 @@
 
 //#define MULTIDIM_MINIMIZATION
 
-//#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -143,7 +143,7 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 //#define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 10;
+constexpr int nODE = 1;
 constexpr double epsODE_rel = 1e-6;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
@@ -151,7 +151,7 @@ constexpr double epsODE_abs = 1e-8;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 3
+#define ODEsolver 1
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;// 1e4;                // NOLINT(cert-err58-cpp)
@@ -162,7 +162,7 @@ constexpr double dLambda_initial = 0.1;             //Initial step size for ODE 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+const std::vector<double> U_NRG {};//0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 #else
 const std::vector<double> U_NRG {};
 #endif

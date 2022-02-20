@@ -212,24 +212,10 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 
 template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
 void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0_left_right(const int i0_in) {
-    constexpr std::array<int, 4> Keldysh4pointdims = {2,2,2,2};
-    std::array<int,4> alpha;
-    getMultIndex(alpha, i0_in, Keldysh4pointdims);
-    if constexpr(channel == 'a') {
-        i0_left = alpha[0]*2 + alpha[3];
-        i0_right= alpha[2]*2 + alpha[1];
-    }
-    else if constexpr(channel == 'p') {
-        i0_left = alpha[0]*2 + alpha[1];
-        i0_right= alpha[2]*2 + alpha[3];
-    }
-    else {
-        static_assert(channel=='t', "Please use a, p or t for the channels.");
-        i0_left = alpha[1]*2 + alpha[3];
-        i0_right= alpha[2]*2 + alpha[0];
-    }
-    i0_left *= 4; //
-    i0_right*= 4; //
+    my_index_t left, right;
+    get_i0_left_right<channel>(i0_in, left, right);
+    i0_left  = left * 4; //
+    i0_right = right * 4; //
 }
 
 template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
@@ -259,25 +245,31 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 #ifdef KELDYSH_FORMALISM
     std::vector<int> indices = indices_sum(i0, i2, channel);
 
-    VertexInput input_l (indices, spin, w, 0., 0., i_in, channel);
+    VertexInput input_l (indices[0], spin, w, 0., 0., i_in, channel);
     VertexInput input_r (indices[1], spin, w, 0., 0., i_in, channel);
 #else
     VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
     VertexInput &input_r = input_l;
 #endif
-    res_l_V_initial = vertex1.left_same_bare(input_l);
-    res_r_V_initial = vertex2.right_same_bare(input_r);
+    res_l_V_initial = vertex1.template left_same_bare<channel>(input_l);
+    res_r_V_initial = vertex2.template right_same_bare<channel>(input_r);
     if (channel == 't' and spin == 0) {
         input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
         input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
-        res_l_Vhat_initial = vertex1.left_same_bare(input_l);
-        res_r_Vhat_initial = vertex2.right_same_bare(input_r);
+        res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
+        res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
     }
     else if (channel == 'a' and spin == 1) {
         input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
         input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
-        res_l_Vhat_initial = vertex1.left_same_bare(input_l);
-        res_r_Vhat_initial = vertex2.right_same_bare(input_r);
+        res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
+        res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
+    }
+    else if (channel == 'p' and spin == 1) {
+        input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
+        input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
+        res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
+        res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
     }
 #endif // DEBUG_SYMMETRIES
 }
@@ -314,13 +306,13 @@ auto Integrand<diag_class, channel, Q, symmetry_left, symmetry_right, Bubble_Obj
     }
 #ifdef DEBUG_SYMMETRIES
     if (spin == 0 and channel ==  'p') {
-        result = (res_l_V * Pival * res_r_V + res_l_Vhat * Pival * res_r_Vhat) * 0.5;
+        result = (res_l_V * Pival * res_r_V);
     }
     if (spin == 1) {
         if (channel == 't')  // no spin sum in t channel
             result = res_l_V * Pival * res_r_V;
         else if (channel == 'p') {
-            result = (res_l_V * Pival * res_r_Vhat + res_l_Vhat * Pival * res_r_V) * 0.5;
+            result = (res_l_V * Pival * res_r_Vhat);
         }
         else { // channel == 'a'
             // in a channel, spin sum has 3 terms:
@@ -661,11 +653,29 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
 
     }
 #ifdef DEBUG_SYMMETRIES
-        else if (channel == 'p' and input_external.spin == 0) {
+        /*else if (channel == 'p' and input_external.spin == 0) {
+        buffer_type_vertex_l values_vertex_l_other;
+        buffer_type_vertex_r values_vertex_r_other;
+        input_l.spin = 1 - input_external.spin;
+        input_r.spin = 1 - input_external.spin;
+        spin_idx = 1;
+
+        load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
+        load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
+
             result = (values_vertex_l * Pi_matrix * values_vertex_r +  values_vertex_l_other * Pi_matrix * values_vertex_r_other) * 0.5;
-        }
+        }*/
         else if (channel == 'p' and input_external.spin == 1) {
-            result = (values_vertex_l * Pi_matrix * values_vertex_r_other + values_vertex_l_other * Pi_matrix * values_vertex_r) * 0.5;
+        buffer_type_vertex_l values_vertex_l_other;
+        buffer_type_vertex_r values_vertex_r_other;
+        input_l.spin = 1 - input_external.spin;
+        input_r.spin = 1 - input_external.spin;
+        spin_idx = 1;
+
+        load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
+        load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
+
+            result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
         }
 #endif
     else {
@@ -766,12 +776,29 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
 
     }
 #ifdef DEBUG_SYMMETRIES
-        else if (channel == 'p' and input_external.spin == 0) {
-            result = (values_vertex_l * Pi_matrix * values_vertex_r +  values_vertex_l_other * Pi_matrix * values_vertex_r_other) * 0.5;
-        }
-        else if (channel == 'p' and input_external.spin == 1) {
-            result = (values_vertex_l * Pi_matrix * values_vertex_r_other + values_vertex_l_other * Pi_matrix * values_vertex_r) * 0.5;
-        }
+    //else if (channel == 'p' and input_external.spin == 0) {
+    //    buffer_type_vertex_l values_vertex_l_other;
+    //    buffer_type_vertex_r values_vertex_r_other;
+    //    input_l.spin = 1 - input_external.spin;
+    //    input_r.spin = 1 - input_external.spin;
+    //    spin_idx = 1;
+//
+    //    load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
+    //    load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
+//
+    //    result = (values_vertex_l * Pi_matrix * values_vertex_r +  values_vertex_l_other * Pi_matrix * values_vertex_r_other).eval()[0] * 0.5;
+    //}
+    else if (channel == 'p' and input_external.spin == 1) {
+        buffer_type_vertex_l values_vertex_l_other;
+        buffer_type_vertex_r values_vertex_r_other;
+        input_l.spin = 1 - input_external.spin;
+        input_r.spin = 1 - input_external.spin;
+        spin_idx = 1;
+
+        load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
+        load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
+        result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval()[0];
+    }
 #endif
     else {
         result = (values_vertex_l * Pi_matrix * values_vertex_r).eval()[0];

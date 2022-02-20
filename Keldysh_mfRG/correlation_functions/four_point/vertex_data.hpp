@@ -87,7 +87,7 @@ public:
     auto get_dims() const {return data.length();}
 
     /// Returns the buffer "data" containing the vertex data
-    buffer_type get_vec() const {return data;}
+    const buffer_type& get_vec() const {return data;}
     /// Sets the the buffer "data"
     template <typename container,
             std::enable_if_t<std::is_same_v<typename container::value_type, Q> && !std::is_same_v<container, buffer_type>, bool> = true

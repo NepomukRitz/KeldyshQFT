@@ -350,8 +350,9 @@ public:
     double norm_K2(int i)  { return vertex.norm_K2(i); }
     double norm_K3(int i)  { return vertex.norm_K3(i); }
 
-    void set_frequency_grid(const GeneralVertex<Q, symmtype>& vertex_in) {
-        vertex.set_frequency_grid(vertex_in.vertex);
+
+    void set_frequency_grid(const GeneralVertex<Q, symmetric_full>& vertex_in) {
+        vertex.set_frequency_grid(vertex_in.half1());
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.set_frequency_grid(vertex_in.vertex_half2);
     }
 
@@ -392,14 +393,8 @@ public:
         vertex.check_symmetries(identifier);
     }
     template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
-        double t_start = get_time();
-
         if constexpr(symmtype == symmetric_full or symmtype == symmetric_r_irred ) vertex.template symmetry_expand<channel_bubble,is_left_vertex>(vertex);
         else                                                                       vertex.template symmetry_expand<channel_bubble,is_left_vertex>(vertex_half2);
-
-        double t = get_time() - t_start;
-        print("Symmetry expansion of vertex", is_left_vertex ? "1" : "2", " - ");
-        get_time(t_start);
     }
     void save_expanded(const std::string& filename_prefix) {
         vertex.save_expanded(filename_prefix);
@@ -935,7 +930,7 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
             auto gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
-            assert((gamma_Rb.allFinite()));
+            if constexpr(std::is_same_v<Q,result_type>) {assert(isfinite(gamma_Rb));} else {assert((gamma_Rb.allFinite()));}
             return gamma_Rb;
         }
     }

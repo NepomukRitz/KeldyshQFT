@@ -103,6 +103,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
 
     if (VERBOSE) print("Compute 1-loop contribution: ", true);
+    //GeneralVertex<Q, symmetric_r_irred> dGamma_1loop(Lambda);
+    //dGamma_1loop.set_frequency_grid(Psi.vertex);
     vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
     if(VERBOSE) {
         dPsi.vertex.half1().check_vertex_resolution();
@@ -135,8 +137,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
         // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric_full vertex
         // when inserted in the 3-loop contribution below.
 
+        GeneralVertex<Q, symmetric_r_irred> dGamma_1loop(dPsi.vertex.half1());
         if (VERBOSE) print("Compute dGammaL (2-loop): ", true);
-        Vertex<Q> dGammaL_half1 = calculate_dGammaL(dPsi.vertex, Psi.vertex, Pi);
+        Vertex<Q> dGammaL_half1 = calculate_dGammaL(dGamma_1loop, Psi.vertex, Pi);
         if(VERBOSE) {
             dGammaL_half1.half1().check_vertex_resolution();
             compare_with_FDTs(dGammaL_half1, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, nLambda_layers);
@@ -393,15 +396,15 @@ void vertexOneLoopFlow(Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const 
 
 
 template <typename Q, class Bubble_Object>
-auto calculate_dGammaL(const Vertex<Q>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>{
+auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred>& dPsiVertex, const Vertex<Q>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q>{
     Vertex<Q> dGammaL(Lambda_ini);
     dGammaL.set_frequency_grid(PsiVertex);
 
-    Vertex<Q> dPsiVertex_calc = dPsiVertex;
-    dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
+    //Vertex<Q> dPsiVertex_calc = dPsiVertex;
+    //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
     for (char r: "apt") {
-        bubble_function(dGammaL, dPsiVertex_calc, PsiVertex, Pi, r);
+        bubble_function(dGammaL, dPsiVertex, PsiVertex, Pi, r);
     }
 
     return dGammaL;
