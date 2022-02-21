@@ -1,4 +1,5 @@
 #include "util.hpp"
+#include <omp.h>
 
 void print_time_stamp() {
     time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()); // get time stamp
@@ -95,6 +96,10 @@ void makedir(const std::string& dir_str) {
 }
 
 void check_input() {
+#ifdef STATIC_FEEDBACK
+    assert(MAX_DIAG_CLASS == 1);
+#endif
+    if (MAX_DIAG_CLASS<2) assert(N_LOOPS < 2);
 #ifdef ROTATEK2
     assert (nBOS2 == nFER2);
 #endif
@@ -114,5 +119,99 @@ void check_input() {
     assert(nFER %2 == 0);
     assert(nFER2%2 == 0);
     assert(nFER3%2 == 0);
+#endif
+}
+
+std::string generate_data_directory(std::string& job) {
+#ifdef KELDYSH_FORMALISM
+#ifdef DEBUG_SYMMETRIES
+    std::string data_directory = "../Data_KF_debug/";
+#else
+    std::string data_directory = "../Data_KF" + job + "/";
+#endif
+#else
+    #ifdef DEBUG_SYMMETRIES
+    std::string data_directory = "../Data_MF_debug/";
+
+#else
+    std::string data_directory = "../Data_MF"+ job +"/";
+#endif
+#endif
+
+    makedir(data_directory);
+
+    return data_directory;
+}
+
+std::string generate_filename() {
+    std::string klass = "K" + std::to_string(MAX_DIAG_CLASS) + "_";
+    std::string loops = std::to_string(N_LOOPS) + "LF_";
+    std::string n1 = "n1=" + std::to_string(nBOS) + "_";
+    std::string n2 = "n2=" + std::to_string(nBOS2) + "_";
+    std::string n3 = "n3=" + std::to_string(nBOS3) + "_";
+    std::string gamma = "Gamma=" + std::to_string(glb_Gamma) + "_";
+    std::string voltage = "V=" + std::to_string(glb_V) + "_";
+    std::string temp = "T=" + std::to_string(glb_T) + "_";
+    std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
+    std::string ode = "nODE=" + std::to_string(nODE);
+    std::string extension = ".h5";
+
+    std::string filename = klass + loops + n1;
+    if (MAX_DIAG_CLASS >= 2) filename += n2;
+#if defined(STATIC_FEEDBACK)
+    filename += "static_";
+#endif
+    if (MAX_DIAG_CLASS >= 3) filename += n3;
+    filename += gamma;
+    if(glb_V != 0.)
+        filename += voltage;
+    if(glb_T != 0.01)
+        filename += temp;
+    filename += lambda + ode + extension;
+
+    return filename;
+}
+
+void print_job_info() {
+    if (KELDYSH){
+        if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
+        else               print("SIAM in Keldysh formalism: \n");
+    }
+    else{
+        if (HUBBARD_MODEL) print("Hubbard model in Matsubara formalism: \n");
+        else               print("SIAM in Matsubara formalism: \n");
+    }
+
+    if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
+
+    print("U for this run is: ", glb_U, true);
+    print("Lambda flows from ", Lambda_ini);
+    print_add(" to ", Lambda_fin, true);
+    print("nODE for this run: ", nODE, true);
+    if constexpr (MPI_FLAG) print("MPI World Size = " + std::to_string(mpi_world_size()), true);
+#pragma omp parallel default(none)
+    {
+#pragma omp master
+        print("OMP Threads = " + std::to_string(omp_get_num_threads()), true);
+    }
+    print("nBOS1 = ", nBOS, true);
+    print("nFER1 = ", nFER, true);
+    if(MAX_DIAG_CLASS > 1) {
+        print("nBOS2 = ", nBOS2, true);
+        print("nFER2 = ", nFER2, true);
+    }
+    if(MAX_DIAG_CLASS > 2) {
+        print("nBOS3 = ", nBOS3, true);
+        print("nFER3 = ", nFER3, true);
+    }
+    if (HUBBARD_MODEL) print("n_in = ", n_in, true);
+}
+
+void hello_world() {
+    print("Hello world \n");
+#ifdef __linux__
+    print("on linux.\n");
+#elif __APPLE__
+    print("on apple.\n");
 #endif
 }

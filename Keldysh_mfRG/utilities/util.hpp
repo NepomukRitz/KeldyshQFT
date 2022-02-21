@@ -161,6 +161,14 @@ void makedir(const std::string& dir_str);
 
 void check_input();
 
+std::string generate_data_directory(std::string& job);
+
+std::string generate_filename();
+
+void print_job_info();
+
+void hello_world();
+
 //template <typename T, typename... Args>
 //constexpr std::array<T, sizeof...(Args)> to_array (const Args && ... args)
 //{ return {{ static_cast<T>(std::forward<Args>(args))... }}; }
