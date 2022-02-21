@@ -62,10 +62,10 @@ constexpr double glb_T = 0.0;                     // Temperature
 #else
     constexpr double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
 #endif
-constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
+constexpr double glb_U = 5.0;                      // Impurity on-site interaction strength
 constexpr double glb_Vg = glb_mu;                  // Impurity level shift
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 1.;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)

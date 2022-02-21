@@ -12,6 +12,7 @@
 #include "utilities/util.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
+#include "perturbation_theory_and_parquet/perturbation_theory.hpp"
 
 
 auto main() -> int {
@@ -20,6 +21,7 @@ auto main() -> int {
         MPI_Init(nullptr, nullptr);
     }
 
+    /*
     print_job_info();
     check_input();
 
@@ -40,6 +42,16 @@ auto main() -> int {
     //n_loop_flow(name, true);
     test_symmetries(1.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
+    */
+
+    // SIAM PT4 specific:
+    data_dir = "../Data_SIAM_PT4/";
+    makedir(data_dir);
+
+    const rvec lambdas = {999., 199., 19., 9.};
+    for (const double lambda : lambdas) {
+        PT_Machine<state_datatype> PT_Calculator (4, lambda);
+    }
 
     hello_world();
 

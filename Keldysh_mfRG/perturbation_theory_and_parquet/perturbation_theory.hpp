@@ -250,6 +250,11 @@ public:
     PT_Machine(const unsigned int order_in, const double Lambda_in): order(order_in), Lambda(Lambda_in){
         assert((order > 0) and (order < 5));
         static_assert(MAX_DIAG_CLASS == 3);
+        assert(KELDYSH); //
+        print("Perturbation Theory for the SIAM up to order " + std::to_string(order)
+        + " in the Keldysh formalism for the fully retarded vertex components at zero frequency.", true);
+        print("For this run we have U over Delta = " + std::to_string(U_over_Delta)
+        + " and eVg = " + std::to_string(glb_Vg), true);
 
         // perform computations
         compute_SOPT();
@@ -290,22 +295,33 @@ void PT_Machine<Q>::compute_TOPT() {
     assert(SOPT_Vertex.sum_norm(0) > 0.);
     assert(TOPT_Vertex.sum_norm(0) < 1e-15);
 
+    print("Now computing the TOPT contribution...", true);
     for (char r: channels) {
+        std::string channel (1, r);
+        print("...in the " + channel + " channel...", true);
         bubble_function(TOPT_Vertex, SOPT_Vertex, bareState.vertex, Pi, r);
         bubble_function(TOPT_Vertex, bareState.vertex, SOPT_Vertex, Pi, r);
     }
+    print("...done.", true);
 
     // Compensate for overcounting the ladder
+    print("Compensate for overcounting the ladder...", true);
     Vertex<Q> TOPT_Ladder = Vertex<Q>(Lambda);
+    print("...in the a channel...", true);
     bubble_function(TOPT_Ladder, SOPT_avertex, bareState.vertex, Pi, 'a');
+    print("...in the p channel...", true);
     bubble_function(TOPT_Ladder, SOPT_pvertex, bareState.vertex, Pi, 'p');
+    print("...in the t channel...", true);
     bubble_function(TOPT_Ladder, SOPT_tvertex, bareState.vertex, Pi, 't');
 
     TOPT_Vertex -= TOPT_Ladder;
+    print("...done.", true);
 
+    print("Now checking that the norms are right...", true);
     assert(TOPT_Vertex.norm_K1(0) > 0.);
     assert(TOPT_Vertex.norm_K2(0) > 0.);
     assert(TOPT_Vertex.norm_K3(0) < 1e-15);
+    print("...done.", true);
 }
 
 template<typename Q>
@@ -315,20 +331,25 @@ void PT_Machine<Q>::compute_FOPT() {
     assert(FOPT_Vertex.sum_norm(0) < 1e-15);
 
     for (char r: channels) {
+        std::string channel (1, r);
+        print("Now computing the FOPT contribution in the " + channel + " channel...", true);
         bubble_function(FOPT_Vertex, TOPT_Vertex, bareState.vertex, Pi, r); // K1 + K2
         bubble_function(FOPT_Vertex, bareState.vertex, TOPT_Vertex, Pi, r); // K1 + K2p
         bubble_function(FOPT_Vertex, SOPT_Vertex, SOPT_Vertex, Pi, r);      // K3 + K1, K2 and K2p terms from the same channel
 
         // Compensate for counting K1 twice in the first two steps
+        print("...and compensate for counting K1 twice...");
         Vertex<Q> K1_comp_step1 = Vertex<Q>(Lambda);
         Vertex<Q> K1_comp = Vertex<Q>(Lambda);
         bubble_function(K1_comp_step1, bareState.vertex, SOPT_Vertex, Pi, r);
         bubble_function(K1_comp, K1_comp_step1, bareState.vertex, Pi, r);
 
         FOPT_Vertex -= K1_comp;
+        print("...done.", true);
     }
 
     // Compensate overcounting K1, K2 and K2p terms in the third step
+    print("Compensate for overcounting K1, K2 and K2p terms before...");
     Vertex<Q> K2_comp = Vertex<Q>(Lambda);
     bubble_function(K2_comp, SOPT_Vertex, SOPT_avertex, Pi, 'a');
     bubble_function(K2_comp, SOPT_Vertex, SOPT_pvertex, Pi, 'p');
@@ -343,16 +364,20 @@ void PT_Machine<Q>::compute_FOPT() {
     FOPT_Vertex -= K2p_comp;
 
     // Compensate for compensating for the ladder twice in the previous step
+    print("... and compensate for overcompensating the ladder in the previous step...");
     Vertex<Q> Ladder_comp = Vertex<Q>(Lambda);
     bubble_function(Ladder_comp, SOPT_avertex, SOPT_avertex, Pi, 'a');
     bubble_function(Ladder_comp, SOPT_pvertex, SOPT_pvertex, Pi, 'p');
     bubble_function(Ladder_comp, SOPT_tvertex, SOPT_tvertex, Pi, 't');
 
     FOPT_Vertex += Ladder_comp;
+    print("...done.", true);
 
+    print("Now checking that the norms are right...", true);
     assert(FOPT_Vertex.norm_K1(0) > 0.);
     assert(FOPT_Vertex.norm_K2(0) > 0.);
     assert(FOPT_Vertex.norm_K3(0) > 0.);
+    print("...done.", true);
 }
 
 template<typename Q>
@@ -361,6 +386,8 @@ void PT_Machine<Q>::write_out_results() const {
     assert(KELDYSH);
     const std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
     + std::to_string(U_over_Delta) + "_and_eVg_" + std::to_string(glb_Vg) + ".h5";
+
+    print("Write out results to file " + filename + "...", true);
 
     /// Vectors with data.
     /// First element: a-channel
@@ -412,6 +439,8 @@ void PT_Machine<Q>::write_out_results() const {
     write_h5_rvecs(filename,
                    {"SOPT", "TOPT_K1", "TOPT_K2", "TOPT_K2p", "FOPT_K1", "FOPT_K2", "FOPT_K2p", "FOPT_K3"},
                    {SOPT, TOPT_K1, TOPT_K2, TOPT_K2p, FOPT_K1, FOPT_K2, FOPT_K2p, FOPT_K3});
+
+    print("...done.", true);
 }
 
 

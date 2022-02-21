@@ -89,10 +89,6 @@ int main(int argc, char* argv[]) {
     state_ini.initialize();
     sopt_state(state_ini, lambda);*/
 
-    const double Lambda = 6.;
-
-    PT_Machine<state_datatype> PT_Calculator (2, Lambda);
-
     /*
     Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
     auto Pi = PT_initialize_Bubble(barePropagator);
