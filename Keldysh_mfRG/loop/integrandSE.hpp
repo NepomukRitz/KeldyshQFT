@@ -17,12 +17,12 @@
  * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
  * @tparam Q Type in which the integrand takes values, usually comp
  */
-template <typename Q>
+template <typename Q, vertexType vertType>
 class IntegrandSE {
     const char type;
     std::vector<int> components = std::vector<int>(6);
 
-    const Vertex<Q>& vertex;
+    const GeneralVertex<Q,vertType>& vertex;
     const Propagator<Q>& propagator;
 
     const int iK;
@@ -44,7 +44,7 @@ class IntegrandSE {
                          const int iK, const double vp) const; // for unsymmetrized Keldysh/Matsubara flow
 
 public:
-    IntegrandSE(const char type_in, const Vertex<Q>& vertex_in, const Propagator<Q>& prop_in,
+    IntegrandSE(const char type_in, const GeneralVertex<Q,vertType>& vertex_in, const Propagator<Q>& prop_in,
                 const int iK_in, const int i_spin_in, const double v_in, const int i_in_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), i_spin(i_spin_in), v(v_in), i_in(i_in_in){
         if (KELDYSH){set_Keldysh_components_to_be_calculated();}
@@ -58,8 +58,8 @@ public:
 
 };
 
-template<typename Q>
-void IntegrandSE<Q>::set_Keldysh_components_to_be_calculated() {
+template<typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::set_Keldysh_components_to_be_calculated() {
     if(type=='r'){  //Check which kind of contribution is calculated
         components[0]=3;    //Vertex component associated to Retarded propagator
         components[1]=6;    //Vertex component associated to Advanced propagator
@@ -78,14 +78,14 @@ void IntegrandSE<Q>::set_Keldysh_components_to_be_calculated() {
     }
 }
 
-template<typename Q>
-auto IntegrandSE<Q>::operator()(const double vp) const -> Q {
+template<typename Q, vertexType vertType>
+auto IntegrandSE<Q,vertType>::operator()(const double vp) const -> Q {
     if (KELDYSH){return Keldysh_value(vp);}
     else{return Matsubara_value(vp);}
 }
 
-template<typename Q>
-void IntegrandSE<Q>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im) const {
+template<typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im) const {
     int npoints = freqs.size();
     for (int i=0; i<npoints; ++i) {
 
@@ -109,8 +109,8 @@ void IntegrandSE<Q>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, r
 
 }
 
-template<typename Q>
-void IntegrandSE<Q>::save_integrand() const {
+template<typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
     int npoints = 1e5;
 
@@ -130,8 +130,8 @@ void IntegrandSE<Q>::save_integrand() const {
 
 }
 
-template<typename Q>
-void IntegrandSE<Q>::save_integrand(const rvec& freqs) const {
+template<typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::save_integrand(const rvec& freqs) const {
     int npoints = freqs.size();
 
     rvec integrand_re (npoints);
@@ -149,8 +149,8 @@ void IntegrandSE<Q>::save_integrand(const rvec& freqs) const {
                    {freqs, integrand_re, integrand_im});
 }
 
-template<typename Q>
-Q IntegrandSE<Q>::Keldysh_value(const double vp) const {
+template<typename Q, vertexType vertType>
+Q IntegrandSE<Q,vertType>::Keldysh_value(const double vp) const {
     Q Gi;
     evaluate_propagator(Gi, iK, vp);
 
@@ -167,8 +167,8 @@ Q IntegrandSE<Q>::Keldysh_value(const double vp) const {
 
 }
 
-template<typename Q>
-Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
+template<typename Q, vertexType vertType>
+Q IntegrandSE<Q,vertType>::Matsubara_value(const double vp) const {
     Q GM;
     evaluate_propagator(GM, vp);
 
@@ -186,8 +186,8 @@ Q IntegrandSE<Q>::Matsubara_value(const double vp) const {
     }
 }
 
-template <typename Q>
-void IntegrandSE<Q>::evaluate_propagator(Q &Gi, const int iK, const double vp) const {
+template <typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::evaluate_propagator(Q &Gi, const int iK, const double vp) const {
     switch (iK) {
         case 0:
             Gi = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
@@ -202,13 +202,13 @@ void IntegrandSE<Q>::evaluate_propagator(Q &Gi, const int iK, const double vp) c
     }
 }
 
-template<typename Q>
-void IntegrandSE<Q>::evaluate_propagator(Q &GM, const double vp) const {
+template<typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::evaluate_propagator(Q &GM, const double vp) const {
     GM = propagator.valsmooth(0, vp, i_in);           // Matsubara propagator (full or single scale)
 }
 
-template <typename Q>
-void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
+template <typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
                                      const int iK, const double vp) const {
     VertexInput inputClosedAbove (components[iK]  , i_spin, 0., vp, v, i_in, 't');
     VertexInput inputClosedBelow (components[iK+3], i_spin, 0., v, vp, i_in, 't');
@@ -216,8 +216,8 @@ void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
     factorClosedBelow = vertex.template value<'t'>(inputClosedBelow);
 }
 
-template <typename Q>
-void IntegrandSE<Q>::evaluate_vertex(Q &factorClosedAbove, const int iK, const double vp) const {
+template <typename Q, vertexType vertType>
+void IntegrandSE<Q,vertType>::evaluate_vertex(Q &factorClosedAbove, const int iK, const double vp) const {
     // "components" are all zero in Matsubara case -> this function also works for Matsubara
     VertexInput inputClosedAbove (components[iK], i_spin, 0, vp, v, i_in, 't');
     factorClosedAbove = vertex.template value<'t'>(inputClosedAbove);

@@ -54,6 +54,10 @@ const H5std_string	DATASET_K2_a("K2_a");
 const H5std_string	DATASET_K2_p("K2_p");
 const H5std_string	DATASET_K2_t("K2_t");
 
+const H5std_string	DATASET_K2b_a("K2b_a");
+const H5std_string	DATASET_K2b_p("K2b_p");
+const H5std_string	DATASET_K2b_t("K2b_t");
+
 const H5std_string	DATASET_K3_a("K3_a");
 const H5std_string	DATASET_K3_p("K3_p");
 const H5std_string	DATASET_K3_t("K3_t");
@@ -67,6 +71,9 @@ const H5std_string  BFREQS_LISTt ("bfreqs_t");
 const H5std_string  BFREQS2_LISTa("bfreqs2_a");
 const H5std_string  BFREQS2_LISTp("bfreqs2_p");
 const H5std_string  BFREQS2_LISTt("bfreqs2_t");
+const H5std_string  BFREQS2b_LISTa("bfreqs2b_a");
+const H5std_string  BFREQS2b_LISTp("bfreqs2b_p");
+const H5std_string  BFREQS2b_LISTt("bfreqs2b_t");
 const H5std_string  BFREQS3_LISTa("bfreqs3_a");
 const H5std_string  BFREQS3_LISTp("bfreqs3_p");
 const H5std_string  BFREQS3_LISTt("bfreqs3_t");
@@ -74,6 +81,9 @@ const H5std_string  FFREQS_LIST ("ffreqs");
 const H5std_string  FFREQS2_LISTa("ffreqs2_a");
 const H5std_string  FFREQS2_LISTp("ffreqs2_p");
 const H5std_string  FFREQS2_LISTt("ffreqs2_t");
+const H5std_string  FFREQS2b_LISTa("ffreqs2b_a");
+const H5std_string  FFREQS2b_LISTp("ffreqs2b_p");
+const H5std_string  FFREQS2b_LISTt("ffreqs2b_t");
 const H5std_string  FFREQS3_LISTa("ffreqs3_a");
 const H5std_string  FFREQS3_LISTp("ffreqs3_p");
 const H5std_string  FFREQS3_LISTt("ffreqs3_t");
@@ -471,6 +481,17 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTa, state.vertex.avertex().K2.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTp, state.vertex.pvertex().K2.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTt, state.vertex.tvertex().K2.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+#ifdef DEBUG_SYMMETRIES
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_a, state.vertex.avertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_p, state.vertex.pvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_t, state.vertex.tvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTa, state.vertex.avertex().K2b.K2_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTp, state.vertex.pvertex().K2b.K2_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTt, state.vertex.tvertex().K2b.K2_get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTa, state.vertex.avertex().K2b.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTp, state.vertex.pvertex().K2b.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTt, state.vertex.tvertex().K2b.K2_get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+#endif
 #endif
 #if MAX_DIAG_CLASS>2
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_a, state.vertex.avertex().K3.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
@@ -505,12 +526,18 @@ namespace hdf5_impl {
         H5::Group group_freqparams_bfreqs2a;
         H5::Group group_freqparams_bfreqs2p;
         H5::Group group_freqparams_bfreqs2t;
+        H5::Group group_freqparams_bfreqs2ba;
+        H5::Group group_freqparams_bfreqs2bp;
+        H5::Group group_freqparams_bfreqs2bt;
         H5::Group group_freqparams_bfreqs3a;
         H5::Group group_freqparams_bfreqs3p;
         H5::Group group_freqparams_bfreqs3t;
         H5::Group group_freqparams_ffreqs2a;
         H5::Group group_freqparams_ffreqs2p;
         H5::Group group_freqparams_ffreqs2t;
+        H5::Group group_freqparams_ffreqs2ba;
+        H5::Group group_freqparams_ffreqs2bp;
+        H5::Group group_freqparams_ffreqs2bt;
         H5::Group group_freqparams_ffreqs3a;
         H5::Group group_freqparams_ffreqs3p;
         H5::Group group_freqparams_ffreqs3t;
@@ -522,12 +549,18 @@ namespace hdf5_impl {
         group_freqparams_bfreqs2a = group_freqparams.createGroup(BFREQS2_LISTa);
         group_freqparams_bfreqs2p = group_freqparams.createGroup(BFREQS2_LISTp);
         group_freqparams_bfreqs2t = group_freqparams.createGroup(BFREQS2_LISTt);
+        group_freqparams_bfreqs2ba = group_freqparams.createGroup(BFREQS2b_LISTa);
+        group_freqparams_bfreqs2bp = group_freqparams.createGroup(BFREQS2b_LISTp);
+        group_freqparams_bfreqs2bt = group_freqparams.createGroup(BFREQS2b_LISTt);
         group_freqparams_bfreqs3a = group_freqparams.createGroup(BFREQS3_LISTa);
         group_freqparams_bfreqs3p = group_freqparams.createGroup(BFREQS3_LISTp);
         group_freqparams_bfreqs3t = group_freqparams.createGroup(BFREQS3_LISTt);
         group_freqparams_ffreqs2a = group_freqparams.createGroup(FFREQS2_LISTa);
         group_freqparams_ffreqs2p = group_freqparams.createGroup(FFREQS2_LISTp);
         group_freqparams_ffreqs2t = group_freqparams.createGroup(FFREQS2_LISTt);
+        group_freqparams_ffreqs2ba = group_freqparams.createGroup(FFREQS2b_LISTa);
+        group_freqparams_ffreqs2bp = group_freqparams.createGroup(FFREQS2b_LISTp);
+        group_freqparams_ffreqs2bt = group_freqparams.createGroup(FFREQS2b_LISTt);
         group_freqparams_ffreqs3a = group_freqparams.createGroup(FFREQS3_LISTa);
         group_freqparams_ffreqs3p = group_freqparams.createGroup(FFREQS3_LISTp);
         group_freqparams_ffreqs3t = group_freqparams.createGroup(FFREQS3_LISTt);
@@ -540,12 +573,18 @@ namespace hdf5_impl {
         group_freqparams_bfreqs2a = group_freqparams.openGroup(BFREQS2_LISTa);
         group_freqparams_bfreqs2p = group_freqparams.openGroup(BFREQS2_LISTp);
         group_freqparams_bfreqs2t = group_freqparams.openGroup(BFREQS2_LISTt);
+        group_freqparams_bfreqs2ba = group_freqparams.openGroup(BFREQS2b_LISTa);
+        group_freqparams_bfreqs2bp = group_freqparams.openGroup(BFREQS2b_LISTp);
+        group_freqparams_bfreqs2bt = group_freqparams.openGroup(BFREQS2b_LISTt);
         group_freqparams_bfreqs3a = group_freqparams.openGroup(BFREQS3_LISTa);
         group_freqparams_bfreqs3p = group_freqparams.openGroup(BFREQS3_LISTp);
         group_freqparams_bfreqs3t = group_freqparams.openGroup(BFREQS3_LISTt);
         group_freqparams_ffreqs2a = group_freqparams.openGroup(FFREQS2_LISTa);
         group_freqparams_ffreqs2p = group_freqparams.openGroup(FFREQS2_LISTp);
         group_freqparams_ffreqs2t = group_freqparams.openGroup(FFREQS2_LISTt);
+        group_freqparams_ffreqs2ba = group_freqparams.openGroup(FFREQS2b_LISTa);
+        group_freqparams_ffreqs2bp = group_freqparams.openGroup(FFREQS2b_LISTp);
+        group_freqparams_ffreqs2bt = group_freqparams.openGroup(FFREQS2b_LISTt);
         group_freqparams_ffreqs3a = group_freqparams.openGroup(FFREQS3_LISTa);
         group_freqparams_ffreqs3p = group_freqparams.openGroup(FFREQS3_LISTp);
         group_freqparams_ffreqs3t = group_freqparams.openGroup(FFREQS3_LISTt);
@@ -562,6 +601,14 @@ namespace hdf5_impl {
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2a,state.vertex.avertex().K2.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2p,state.vertex.pvertex().K2.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2t,state.vertex.tvertex().K2.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+#ifdef DEBUG_SYMMETRIES
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2ba,state.vertex.avertex().K2b.K2_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2bp,state.vertex.pvertex().K2b.K2_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2bt,state.vertex.tvertex().K2b.K2_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2ba,state.vertex.avertex().K2b.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2bp,state.vertex.pvertex().K2b.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2bt,state.vertex.tvertex().K2b.K2_get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
+#endif
 #endif
 #if MAX_DIAG_CLASS>2
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs3a,state.vertex.avertex().K3.K3_get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);

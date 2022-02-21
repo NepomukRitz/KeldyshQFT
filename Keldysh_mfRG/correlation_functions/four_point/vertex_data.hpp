@@ -144,8 +144,8 @@ public:
     /**
      * gets the frequency corresponding to the frequency index i
      */
-    void K2_get_freqs_w(double& w, double& v, int iw, int iv) const;
-    void K2_get_freqs_aux(double& w, double& v, int iw, int iv) const;
+    //void get_freqs_w(double& w, double& v, int iw, int iv) const;
+    //void K2_get_freqs_aux(double& w, double& v, int iw, int iv) const;
 
     auto get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>&;
     void set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid);

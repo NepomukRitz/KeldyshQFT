@@ -17,10 +17,10 @@
 
 
 /// Class to actually calculate the loop integral for a given external fermionic frequency and internal index.
-template <typename Q>
+template <typename Q, vertexType vertType>
 class LoopCalculator{
     SelfEnergy<Q>& self;
-    const Vertex<Q>& fullvertex;
+    const GeneralVertex<Q,vertType>& fullvertex;
     const Propagator<Q>& prop;
     const bool all_spins;
 
@@ -53,7 +53,7 @@ class LoopCalculator{
     void compute_Matsubara_finiteT();
 
 public:
-    LoopCalculator(SelfEnergy<Q>& self_in, const Vertex<Q>& fullvertex_in, const Propagator<Q>& prop_in,
+    LoopCalculator(SelfEnergy<Q>& self_in, const GeneralVertex<Q,vertType>& fullvertex_in, const Propagator<Q>& prop_in,
                    const bool all_spins_in, const int iSE)
                    : self(self_in), fullvertex(fullvertex_in), prop(prop_in), all_spins(all_spins_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){
@@ -63,8 +63,8 @@ public:
     void perform_computation();
 };
 
-template<typename Q>
-void LoopCalculator<Q>::set_v_limits() {
+template<typename Q, vertexType vertType>
+void LoopCalculator<Q,vertType>::set_v_limits() {
     /// One integrates the integrands from v_lower-|v| to v_upper+|v|
     /// The limits of the integral must depend on v
     /// because of the transformations that must be done on the frequencies
@@ -83,29 +83,30 @@ void LoopCalculator<Q>::set_v_limits() {
     }
 }
 
-template<typename Q>
-Q LoopCalculator<Q>::set_prefactor() {
+template<typename Q, vertexType vertType>
+Q LoopCalculator<Q,vertType>::set_prefactor() {
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
     if (KELDYSH) return Keldysh_prefactor();
     else         return Matsubara_prefactor();
 }
 
-template<typename Q>
-Q LoopCalculator<Q>::Keldysh_prefactor() {
-    // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
-    return -1./(2.*M_PI*glb_i);
+template<typename Q, vertexType vertType>
+Q LoopCalculator<Q,vertType>::Keldysh_prefactor() {
+    if constexpr(!std::is_same_v<Q,double>) {
+        // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
+        return -1. / (2. * M_PI * glb_i);
+    }
+    else return 0.;
 }
-template<>
-double LoopCalculator<double>::Keldysh_prefactor();
 
-template<typename Q>
-Q LoopCalculator<Q>::Matsubara_prefactor() {
+template<typename Q, vertexType vertType>
+Q LoopCalculator<Q,vertType>::Matsubara_prefactor() {
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi))
    return -1./(2*M_PI);
 }
 
-template<typename Q>
-void LoopCalculator<Q>::perform_computation() {
+template<typename Q, vertexType vertType>
+void LoopCalculator<Q,vertType>::perform_computation() {
     if (KELDYSH)    compute_Keldysh();
     else{
         if (ZERO_T) compute_Matsubara_zeroT();
@@ -113,20 +114,20 @@ void LoopCalculator<Q>::perform_computation() {
     }
 }
 
-template <typename Q>
-void LoopCalculator<Q>::compute_Keldysh() {
+template <typename Q, vertexType vertType>
+void LoopCalculator<Q,vertType>::compute_Keldysh() {
     if (isfinite(v)) {
         for (int iK=0; iK<3; ++iK) {
             // V component
-            IntegrandSE<Q> integrandR ('r', fullvertex, prop, iK, 0, v, i_in);
-            IntegrandSE<Q> integrandK ('k', fullvertex, prop, iK, 0, v, i_in);
+            IntegrandSE<Q,vertType> integrandR ('r', fullvertex, prop, iK, 0, v, i_in);
+            IntegrandSE<Q,vertType> integrandK ('k', fullvertex, prop, iK, 0, v, i_in);
             integratedR = prefactor * integrator<Q>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
             integratedK = prefactor * integrator<Q>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
 
             // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
             if (all_spins) {
-                IntegrandSE<Q> integrandR_Vhat ('r', fullvertex, prop, iK, 1, v, i_in);
-                IntegrandSE<Q> integrandK_Vhat ('k', fullvertex, prop, iK, 1, v, i_in);
+                IntegrandSE<Q,vertType> integrandR_Vhat ('r', fullvertex, prop, iK, 1, v, i_in);
+                IntegrandSE<Q,vertType> integrandK_Vhat ('k', fullvertex, prop, iK, 1, v, i_in);
                 integratedR = 2. * integratedR
                         + prefactor * integrator<Q>(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
                 integratedK = 2. * integratedK
@@ -134,9 +135,9 @@ void LoopCalculator<Q>::compute_Keldysh() {
             }
 
             // add analytical results for the tails
-            integratedR += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+            integratedR += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
                                                                  v, 0, spin, i_in, all_spins);
-            integratedK += prefactor * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+            integratedK += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
                                                                  v, 1, spin, i_in, all_spins);
 
             //The results are emplaced in the right place of the answer object.
@@ -150,11 +151,11 @@ void LoopCalculator<Q>::compute_Keldysh() {
     }
 }
 
-template <typename Q>
-void LoopCalculator<Q>::compute_Matsubara_zeroT() {
+template <typename Q, vertexType vertType>
+void LoopCalculator<Q,vertType>::compute_Matsubara_zeroT() {
     if (isfinite(v)) {
         // V component
-        IntegrandSE<Q> integrand = IntegrandSE<Q> ('r', fullvertex, prop, 0, 0, v, i_in);
+        IntegrandSE<Q,vertType> integrand = IntegrandSE<Q,vertType> ('r', fullvertex, prop, 0, 0, v, i_in);
         // split up the integrand at discontinuities and (possible) kinks:
         integratedR = prefactor * integrator_Matsubara_T0<Q, 1>(integrand, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
                                                                  {v}, Delta, true);
@@ -162,7 +163,7 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
         // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
         if (all_spins) {
             integratedR *= 2.;
-            IntegrandSE<Q> integrand_Vhat = IntegrandSE<Q> ('r', fullvertex, prop, 0, 1, v, i_in);
+            IntegrandSE<Q,vertType> integrand_Vhat = IntegrandSE<Q,vertType> ('r', fullvertex, prop, 0, 1, v, i_in);
             // split up the integrand at discontinuities and (possible) kinks:
             integratedR += prefactor * integrator_Matsubara_T0<Q, 1>(integrand_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
                                                                     {v}, Delta, true);
@@ -170,7 +171,7 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
 
 
         //integratedR += -1./(2.*M_PI)
-        //               * asymp_corrections_loop<Q>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, spin, i_in, all_spins);
+        //               * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, spin, i_in, all_spins);
         self.addself(0, iv, i_in, integratedR);
 
     }
@@ -179,17 +180,17 @@ void LoopCalculator<Q>::compute_Matsubara_zeroT() {
     }
 }
 
-template <typename Q>
-void LoopCalculator<Q>::compute_Matsubara_finiteT() {
+template <typename Q, vertexType vertType>
+void LoopCalculator<Q,vertType>::compute_Matsubara_finiteT() {
     if (isfinite(v)) {
-        IntegrandSE<Q> integrand = IntegrandSE<Q> ('r', fullvertex, prop, 0, 0, v, i_in);
+        IntegrandSE<Q,vertType> integrand = IntegrandSE<Q,vertType> ('r', fullvertex, prop, 0, 0, v, i_in);
         int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
 
         integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin, Nmax);
 
         if (all_spins) {
             integratedR *= 2.;
-            IntegrandSE<Q> integrand_Vhat = IntegrandSE<Q> ('r', fullvertex, prop, 0, 1, v, i_in);
+            IntegrandSE<Q,vertType> integrand_Vhat = IntegrandSE<Q,vertType> ('r', fullvertex, prop, 0, 1, v, i_in);
             integratedR += - glb_T * matsubarasum<Q>(integrand_Vhat, Nmin, Nmax);
         }
 
@@ -213,13 +214,13 @@ void LoopCalculator<Q>::compute_Matsubara_finiteT() {
  * @param prop      : Propagator object for the calculation of the loop
  * @param all_spins : Whether the calculation of the loop should include all spin components of the vertex
  */
-template <typename Q>
-void loop(SelfEnergy<state_datatype>& self, const Vertex<Q>& fullvertex, const Propagator<Q>& prop,
+template <typename Q, vertexType vertType>
+void loop(SelfEnergy<state_datatype>& self, const GeneralVertex<Q,vertType>& fullvertex, const Propagator<Q>& prop,
           const bool all_spins){
     fullvertex.initializeInterpol();
 #pragma omp parallel for schedule(dynamic) default(none) shared(self, fullvertex, prop, all_spins)
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
-        LoopCalculator<Q> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
+        LoopCalculator<Q,vertType> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
         LoopIntegrationMachine.perform_computation();
     }
 

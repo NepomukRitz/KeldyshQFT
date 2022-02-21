@@ -239,10 +239,12 @@ public:
 
             if constexpr(std::is_same_v<result_type, Q>) {
                 Q result = values * weights;
+                assert(isfinite(result));
                 return result;
             }
             else {
                 Eigen::Matrix<Q, vecsize,1> result = values * weights;
+                assert(result.allFinite());
                 return result;
             }
 
@@ -253,17 +255,9 @@ public:
             //return result;
 
         } else { //asymptotic value
-            return result_type{};
-            //if constexpr(typ == scalar) {
-            //    return Q{};
-            //}
-            //else
-            //    return Eigen::Matrix<Q, vecsize,1>{};
-            //}
-            //else {
-            //    if constexpr(not vec_right) return values_type{} * weights_type{};
-            //    else return  weights_type{} * values_type{};
-            //}
+            if constexpr (std::is_same_v<result_type,Q>) return result_type{};
+            else return result_type::Zero();
+
         }
 
     };
