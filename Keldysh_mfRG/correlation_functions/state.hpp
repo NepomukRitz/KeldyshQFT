@@ -131,8 +131,8 @@ template <typename Q> void State<Q>::initialize() {
             assert (not PARTICLE_HOLE_SYMMETRY);
             // TODO(high): Determine the Hartree-Value of the self-energy self-consistently starting from U/2.
             Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
-            const double filling = Hartree_Term.compute_Hartree_term();
-            this->selfenergy.initialize(glb_U * filling, 0.);
+            const double hartree_value = Hartree_Term.compute_Hartree_term();
+            this->selfenergy.initialize(hartree_value, 0.);
         }
     }
 

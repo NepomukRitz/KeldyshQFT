@@ -13,8 +13,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_COMPILER mpicxx)
 
 if(WORKSTATION)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3 -fopenmp -march=native -flto")
-    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -O3 -march=native -flto")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fopenmp -march=native -flto")
+    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -march=native -flto")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -march=native -flto")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
@@ -22,7 +22,7 @@ else()
 endif()
 
 if(WORKSTATION)
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp") # unnecessary??
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp") # unnecessary??
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") // for code coverage analysis (slows down the code a lot!)
 
     ## enable profiling (will generate a gmon.out file which can be interpreted with gprof in Linux).
@@ -55,8 +55,10 @@ add_executable(get_integrand_dGammaL tests/integrand_tests/get_integrand_dGammaL
 
 ## rest works so far only on workstation and ASC
 if(WORKSTATION OR ASC)
+    include_directories(/usr/include/c++/7/)
     include_directories(/usr/include/mpi/)
-    include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
+    include_directories(/usr/lib/gcc/x86_64-linux-gnu/7/include/) # omp.h
+    include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include/)
 
     target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG -lgsl -lgslcblas)

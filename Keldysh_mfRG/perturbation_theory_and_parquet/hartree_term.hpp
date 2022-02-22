@@ -18,11 +18,10 @@ class Hartree_Solver {
     SelfEnergy<comp> Sigma = SelfEnergy<comp> (Lambda);
     double filling = 1./2.; // filling at the particle-hole symmetric point
 
-    const double v_lower = 2 * Sigma.frequencies.w_lower; // arbitrary choice. Needs to be checked.
-    const double v_upper = 2 * Sigma.frequencies.w_upper;
+    const double v_lower = 1e3 * Sigma.frequencies.w_lower; // arbitrary choice. Needs to be checked.
+    const double v_upper = 1e3 * Sigma.frequencies.w_upper;
 public:
     explicit Hartree_Solver(const double Lambda_in): Lambda(Lambda_in){
-        assert(std::abs(glb_mu) < 1e-15);
         assert(std::abs(glb_T) > 1e-15);
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
@@ -30,7 +29,7 @@ public:
 
         Sigma.initialize(glb_U * filling, 0);
     };
-    double compute_Hartree_term(double convergence_threshold = 1e-5);
+    double compute_Hartree_term(double convergence_threshold = 1e-12);
     auto operator()(double nu) const -> double;
     void friedel_sum_rule_check() const;
 };

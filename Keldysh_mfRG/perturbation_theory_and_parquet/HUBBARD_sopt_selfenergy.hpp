@@ -2,6 +2,7 @@
 #define FPP_MFRG_HUBBARD_SOPT_SELFENERGY_H
 
 #include <cassert>
+#include <omp.h>
 #include "../utilities/util.hpp"
 #include "../grids/frequency_grid.hpp"
 #include "../correlation_functions/two_point/selfenergy.hpp"

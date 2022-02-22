@@ -16,6 +16,7 @@
 #include "../test_PrecalculatedBubble.hpp"
 #include "../test_perturbation_theory.hpp"
 #include "../../perturbation_theory_and_parquet/perturbation_theory.hpp"
+#include "../../perturbation_theory_and_parquet/hartree_term.hpp"
 
 
 #ifdef INTEGRATION_TESTS
@@ -74,10 +75,10 @@ int main(int argc, char* argv[]) {
     //runtime_tester.test_runtimes(100);
 
     //if (ZERO_T and REG==2) {
-        data_dir = "../Data_tests/";
+        /*data_dir = "../Data_tests/";
         makedir(data_dir);
         std::string filename = "test_PTstate.h5";
-        test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
+        test_PT_state<state_datatype>(data_dir + filename, 1.8, false);*/
     //}
 
     //compute_non_symmetric_diags(0.8, true, 1, true);
@@ -99,7 +100,15 @@ int main(int argc, char* argv[]) {
     write_hdf<comp>(directory+filename, lambda, 1, state_ini);
     */
 
-    return Catch::Session().run(argc, argv);
+    // Test Hartree functionality
+    const double Lambda = 9.;
+    Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
+    const double hartree_value = Hartree_Term.compute_Hartree_term();
+    Hartree_Term.friedel_sum_rule_check();
+
+
+
+    //return Catch::Session().run(argc, argv);
 //#ifdef INTEGRATION_TESTS
     if (MPI_FLAG) MPI_Finalize();
 //#endif
