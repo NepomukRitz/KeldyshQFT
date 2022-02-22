@@ -8,6 +8,7 @@
 #include "four_point/vertex.hpp"                   // vertex class
 #include "two_point/selfenergy.hpp"               // self-energy class
 #include "two_point/propagator.hpp"               // propagator class
+#include "../perturbation_theory_and_parquet/hartree_term.hpp"
 #include "../utilities/util.hpp"                     // printing text output
 #include <boost/numeric/odeint.hpp>
 
@@ -129,7 +130,9 @@ template <typename Q> void State<Q>::initialize() {
         if (std::abs(glb_Vg) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
             assert (not PARTICLE_HOLE_SYMMETRY);
             // TODO(high): Determine the Hartree-Value of the self-energy self-consistently starting from U/2.
-
+            Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
+            const double filling = Hartree_Term.compute_Hartree_term();
+            this->selfenergy.initialize(glb_U * filling, 0.);
         }
     }
 
