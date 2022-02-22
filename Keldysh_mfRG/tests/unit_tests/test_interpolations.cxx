@@ -26,7 +26,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     for (int iw = 0; iw<nBOS; iw++){
-        avertex.K1.K1_get_freq_w(indices.w, iw);
+        avertex.K1.frequencies.get_freqs_w(indices.w, iw);
 
         state_datatype result_interpol = avertex.K1.interpolate(indices);
         state_datatype result_exact = avertex.K1.val(i_spin, iw, iK, i_in);
@@ -72,7 +72,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS2; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
-            avertex.K2.K2_get_freqs_w(indices.w, indices.v1, iw, iv);
+            avertex.K2.frequencies.get_freqs_w(indices.w, indices.v1, iw, iv);
 
             double error = std::abs(avertex.K2.interpolate(indices) -  avertex.K2.val(i_spin, iw, iv, iK, i_in));
             cumul_interpolation_error += error;
@@ -119,7 +119,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
-                avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
+                avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
                 if (BOSONIC_PARAM_FOR_K3) {
                     switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
                 }
@@ -185,9 +185,9 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     value = 0.;
     int N = nBOS * 3;
     vec<double> errors (N);
-    double inter = (avertex.K1.K1_get_wupper() - avertex.K1.K1_get_wlower()) / double(N-1);
+    double inter = (avertex.K1.frequencies.get_wupper_b() - avertex.K1.frequencies.get_wupper_b()) / double(N-1);
     for (int iw = 0; iw<N; iw++){
-        indices.w = avertex.K1.K1_get_wlower() + iw*inter;
+        indices.w = avertex.K1.frequencies.get_wupper_b() + iw*inter;
 
         double freq;
         if (INTERPOLATION == linear) freq = indices.w;
@@ -467,14 +467,14 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     int N = nBOS3 * 4;
     int M = nFER3 * 4;
     vec<double> errors (N*M*M);
-    double interb = (avertex.K3.K3_get_wupper_b() - avertex.K3.K3_get_wlower_b()) / double(N-1);
-    double interf = (avertex.K3.K3_get_wupper_f() - avertex.K3.K3_get_wlower_f()) / double(M-1);
+    double interb = (avertex.K3.frequencies.get_wupper_b() - avertex.K3.frequencies.get_wlower_b()) / double(N-1);
+    double interf = (avertex.K3.frequencies.get_wupper_f() - avertex.K3.frequencies.get_wlower_f()) / double(M-1);
     for (int iw = 0; iw<N; iw++){
         for (int iv = 0; iv<M; iv++) {
             for (int ivp = 0; ivp<M; ivp++) {
-                indices.w  = avertex.K3.K3_get_wlower_b() + iw*interb;
-                indices.v1 = avertex.K3.K3_get_wlower_f() + iv*interf;
-                indices.v2 = avertex.K3.K3_get_wlower_f() + ivp*interf;
+                indices.w  = avertex.K3.frequencies.get_wlower_b() + iw*interb;
+                indices.v1 = avertex.K3.frequencies.get_wlower_f() + iv*interf;
+                indices.v2 = avertex.K3.frequencies.get_wlower_f() + ivp*interf;
 
 
                 double freqw, freqv, freqvp;

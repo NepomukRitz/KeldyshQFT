@@ -237,17 +237,19 @@ public:
         w = b.get_ts(iw);
     }
 
-    //auto get_freqGrid_b() const -> FrequencyGrid {return b;};
+    auto get_freqGrid_b() const -> FrequencyGrid {return b;};
 //
-    //double get_wlower_b() const {return b.w_lower;};
-    //double get_wupper_b() const {return b.w_upper;};
-    //double get_tlower_aux() const {return b.t_lower;};
-    //double get_tupper_aux() const {return b.t_upper;};
+    const double& get_wlower_b() const {return b.w_lower;};
+    const double& get_wupper_b() const {return b.w_upper;};
+    const double& get_tlower_aux() const {return b.t_lower;};
+    const double& get_tupper_aux() const {return b.t_upper;};
+
+    // currently only used in test_interpolations:
     //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
     //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
 //
-    //void get_freqs_w(double& w, int i) const {w = b.ws[i];};
-    //void get_freqs_aux(double& w, int iw) const {w = b.ts[iw];};
+    //void get_freqs_w_b(double& w, int i) const {w = b.ws[i];};
+    //void get_freqs_aux_b(double& w, int iw) const {w = b.ts[iw];};
 };
 template<>
 class VertexFrequencyGrid<k2> {
@@ -275,21 +277,21 @@ public:
         f.initialize_grid();
     }
 
-    //auto get_freqGrid_b() const -> FrequencyGrid {return b;};
-    //auto get_freqGrid_f() const -> FrequencyGrid {return f;};
+    auto get_freqGrid_b() const -> const FrequencyGrid& {return b;};
+    auto get_freqGrid_f() const -> const FrequencyGrid& {return f;};
 //
-    //double get_wlower_b() const {return b.w_lower;};
-    //double get_wupper_b() const {return b.w_upper;};
-    //double get_wlower_f() const {return f.w_lower;};
-    //double get_wupper_f() const {return f.w_upper;};
-    //double get_tlower_b_aux() const {return b.t_lower;};
-    //double get_tupper_b_aux() const {return b.t_upper;};
-    //double get_tlower_f_aux() const {return f.t_lower;};
-    //double get_tupper_f_aux() const {return f.t_upper;};
-    //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
-    //auto gridtransf_f(double w) const -> double {return f.grid_transf(w);};
-    //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
-    //auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
+    const double& get_wlower_b() const {return b.w_lower;};
+    const double& get_wupper_b() const {return b.w_upper;};
+    const double& get_wlower_f() const {return f.w_lower;};
+    const double& get_wupper_f() const {return f.w_upper;};
+    const double& get_tlower_b_aux() const {return b.t_lower;};
+    const double& get_tupper_b_aux() const {return b.t_upper;};
+    const double& get_tlower_f_aux() const {return f.t_lower;};
+    const double& get_tupper_f_aux() const {return f.t_upper;};
+    auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
+    auto gridtransf_f(double w) const -> double {return f.grid_transf(w);};
+    auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
+    auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
 //
     void get_freqs_w(double &w, double &v, const int iw, const int iv) const {
         w = b.get_ws(iw);
@@ -329,17 +331,17 @@ public:
         f.initialize_grid();
     }
 
-    //auto get_freqGrid_b() const -> FrequencyGrid {return b;};
-    //auto get_freqGrid_f() const -> FrequencyGrid {return f;};
-//
-    //double get_wlower_b() const {return b.w_lower;};
-    //double get_wupper_b() const {return b.w_upper;};
-    //double get_wlower_f() const {return f.w_lower;};
-    //double get_wupper_f() const {return f.w_upper;};
-    //double get_tlower_b_aux() const {return b.t_lower;};
-    //double get_tupper_b_aux() const {return b.t_upper;};
-    //double get_tlower_f_aux() const {return f.t_lower;};
-    //double get_tupper_f_aux() const {return f.t_upper;};
+    auto get_freqGrid_b() const -> FrequencyGrid {return b;};
+    auto get_freqGrid_f() const -> FrequencyGrid {return f;};
+
+    const double& get_wlower_b() const {return b.w_lower;};
+    const double& get_wupper_b() const {return b.w_upper;};
+    const double& get_wlower_f() const {return f.w_lower;};
+    const double& get_wupper_f() const {return f.w_upper;};
+    const double& get_tlower_b_aux() const {return b.t_lower;};
+    const double& get_tupper_b_aux() const {return b.t_upper;};
+    const double& get_tlower_f_aux() const {return f.t_lower;};
+    const double& get_tupper_f_aux() const {return f.t_upper;};
     //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
     //auto gridtransf_f(double w) const -> double {return f.grid_transf(w);};
     //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};

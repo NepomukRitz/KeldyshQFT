@@ -943,8 +943,8 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
         double wl, wu;
         switch (diag_class) {
             case k1:
-                wl = vertex1.avertex().K1.K1_get_wlower();
-                wu = vertex1.avertex().K1.K1_get_wupper();
+                wl = vertex1.avertex().K1.frequencies.get_wupper_b();
+                wu = vertex1.avertex().K1.frequencies.get_wupper_b();
                 wl *= 2.;
                 wu *= 2.;
                 break;
@@ -953,13 +953,13 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
                 wu = vertex1.avertex().K2.frequencies.get_wupper_f();
                 break;
             case k3:
-                wl = vertex1.avertex().K3.K3_get_wlower_f();
-                wu = vertex1.avertex().K3.K3_get_wupper_f();
+                wl = vertex1.avertex().K3.frequencies.get_wlower_f();
+                wu = vertex1.avertex().K3.frequencies.get_wupper_f();
                 break;
             default:;
         }
         double vpp = wl + i * (wu - wl) / (npoints - 1);
-        //if (diag_class == k1 and not HUBBARD_MODEL) {vertex1.avertex().K1.K1_get_freq_w(vpp, i);}
+        //if (diag_class == k1 and not HUBBARD_MODEL) {vertex1.avertex().K1.frequencies.get_freqs_w(vpp, i);}
         freqs[i] = vpp;
     }
 

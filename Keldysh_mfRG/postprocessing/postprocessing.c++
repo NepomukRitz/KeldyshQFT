@@ -70,7 +70,7 @@ void sum_rule_K1tK(const std::string filename) {
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
-        double wmax = state.vertex.tvertex().K1.K1_get_wupper();   // upper integration boundary
+        double wmax = state.vertex.tvertex().K1.frequencies.get_wupper_b();   // upper integration boundary
 
         if (KELDYSH){
             sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));

@@ -570,7 +570,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         getMultIndex<4,my_index_t,my_index_t,int,my_index_t>(ispin, iw, iK, i_in, iflat, K1.get_dims());
 
                 double w;
-                K1.K1_get_freq_w(w, iw);
+                K1.frequencies.get_freqs_w(w, iw);
                 VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
                 Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
@@ -616,7 +616,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2.get_dims());
 
             double w, v;
-            K2.K2_get_freqs_w(w, v, iw, iv);
+            K2.frequencies.get_freqs_w(w, v, iw, iv);
             VertexInput input(iK, ispin, w, v, 0., i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             Q value_direct = read_symmetryreduced_rvert<k2>(indices, *this);
@@ -661,7 +661,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             getMultIndex<5, int, int, int, int, int>(ispin, iw, iv, iK, i_in, iflat, K2b.get_dims());
 
             double w, vp;
-            K2b.K2_get_freqs_w(w, vp, iw, iv);
+            K2b.frequencies.get_freqs_w(w, vp, iw, iv);
             VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             Q value_direct = read_symmetryreduced_rvert<k2b>(indices, *this);
@@ -688,7 +688,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             getMultIndex<6, int, int, int, int, int, int>(ispin, iw, iv, ivp, iK, i_in, iflat, K3.get_dims());
 
             double w, v, vp;
-            K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
+            K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
             VertexInput input(iK, ispin, w, v, vp, i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
@@ -766,7 +766,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         my_index_t ispin, iw, i_in;
         getMultIndex<4,my_index_t,my_index_t,int,my_index_t>(ispin, iw, iK, i_in, iflat, K1_symmetry_expanded.get_dims());
         double w;
-        K1_symmetry_expanded.K1_get_freq_w(w, iw);
+        K1_symmetry_expanded.frequencies.get_freqs_w(w, iw);
         VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
         Q value = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
@@ -784,7 +784,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             getMultIndex<5, my_index_t, my_index_t, my_index_t, int, my_index_t>(ispin, iw, iv, iK, i_in, iflat, K2_symmetry_expanded.get_dims());
 
             double w, v;
-            K2_symmetry_expanded.K2_get_freqs_w(w, v, iw, iv);
+            K2_symmetry_expanded.frequencies.get_freqs_w(w, v, iw, iv);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
             Q value = valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
@@ -799,7 +799,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             my_index_t ispin, iw, iv, i_in;
             getMultIndex<5, my_index_t, my_index_t, my_index_t, int, my_index_t>(ispin, iw, iv, iK, i_in, iflat, K2b_symmetry_expanded.get_dims());
             double w, vp;
-            K2b_symmetry_expanded.K2_get_freqs_w(w, vp, iw, iv);
+            K2b_symmetry_expanded.frequencies.get_freqs_w(w, vp, iw, iv);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
             Q value = valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
@@ -818,7 +818,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             getMultIndex<6, my_index_t, my_index_t, my_index_t, my_index_t, int, my_index_t>(ispin, iw, iv, ivp, iK, i_in, iflat, K3_symmetry_expanded.get_dims());
 
             double w, v, vp;
-            K3_symmetry_expanded.K3_get_freqs_w(w, v, vp, iw, iv, ivp, channel);
+            K3_symmetry_expanded.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
             Q value = valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
@@ -1309,7 +1309,7 @@ namespace {
             }
             /*
             std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
-            rvec v = rVert.K1.K1_get_freqGrid().get_ws_vec();
+            rvec v = rVert.K1.frequencies.get_freqGrid_b().get_ws_vec();
             rvec SE_re = rVert.K1.get_vec().real();
             rvec SE_im = rVert.K1.get_vec().imag();
             write_h5_rvecs(filename,
@@ -1670,7 +1670,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
         for (int it_spin = 0; it_spin < n_spin; it_spin++) {
             for (int itw = 0; itw < nw1; itw++) {
                 double w_in;
-                K1.K1_get_freq_w(w_in, itw);
+                K1.frequencies.get_freqs_w(w_in, itw);
                 IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, 0., 0., 0, channel, k1, 0, channel);
                 int sign_w = sign_index(indices.w);
                 int trafo_index = freq_transformations.K1[itK][ sign_w];
@@ -1754,7 +1754,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             for (int itw = 0; itw < nw2; itw++) {
                 for (int itv = 0; itv < nv2; itv++) {
                     double w_in, v_in;
-                    K2.K2_get_freqs_w(w_in, v_in, itw, itv);
+                    K2.frequencies.get_freqs_w(w_in, v_in, itw, itv);
                     IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, 0., 0, channel, k2, 0, channel);
                     int sign_w = sign_index(w_in);
                     int sign_v1 = sign_index(v_in);
@@ -1773,7 +1773,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
                         K2.setvert(result, it_spin, itw, itv, itK, 0);
                     }
-                    if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.K2_get_wlower_f()) {
+                    if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.frequencies.get_wlower_f()) {
                         K2.setvert(0., it_spin, itw, itv, itK, 0);                    }
                 }
             }
@@ -1801,7 +1801,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
                 for (int itv = 0; itv < nv3; itv++) {
                     for (int itvp = 0; itvp < nv3; itvp++) {
                         double w_in, v_in, vp_in;
-                        K3.K3_get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
+                        K3.frequencies.get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
                         IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, vp_in, 0, channel, k2, 0, channel);
                         int sign_w = sign_index(w_in);
 
@@ -1825,7 +1825,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 
                             K3.setvert(result, it_spin, itw, itv, itvp, itK, 0);
                         }
-                        if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in)*0.5 < K3.K3_get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in)*0.5 < K3.K3_get_wlower_f())) {
+                        if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f())) {
                             K3.setvert(0., it_spin, itw, itv, itvp, itK, 0);
                         }
                     }

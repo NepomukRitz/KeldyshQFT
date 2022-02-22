@@ -191,7 +191,7 @@ namespace {
             for (int i = 0; i<nBOS2; i++) {
                 for (int j = 0; j<nFER2; j++) {
                     double w, v;
-                    K2aexact.vertex.avertex().K2_get_freqs_w(w, v, i, j);
+                    K2aexact.vertex.avertex().frequencies.get_freqs_w(w, v, i, j);
                     Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
                     double vmax = 100.;
                     double Delta = (glb_Gamma+Lambda)/2.;

@@ -78,7 +78,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
     multidimensional::multiarray<state_datatype,4> v1(dimsK1);
     for (int iw = 0; iw < nBOS; iw++) {
         double w;
-        testvertex1.K1.K1_get_freq_w(w, iw);
+        testvertex1.K1.frequencies.get_freqs_w(w, iw);
         auto val = vertex_function(w);
         testvertex1.K1.setvert(val, 0, iw, 0, 0);
     }
@@ -86,7 +86,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
         for (int iw = 0; iw < nBOS2; iw++) {
             for (int iv = 0; iv < nFER2; iv++) {
                 double w, v;
-                testvertex1.K2.K2_get_freqs_w(w, v, iw, iv);
+                testvertex1.K2.frequencies.get_freqs_w(w, v, iw, iv);
                 auto val = vertex_function(w) + vertex_function2(v);
                 testvertex1.K2.setvert(val, 0, iw, iv, 0, 0);
             }
@@ -99,7 +99,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             for (int iv = 0; iv < nFER3; iv++) {
                 for (int ivp = 0; ivp < nFER3; ivp++) {
                     double w, v, vp;
-                    testvertex1.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+                    testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
                     auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp);
                     testvertex1.K3.setvert(val, 0, iw, iv, ivp, 0, 0);
                 }
@@ -128,15 +128,15 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             multidimensional::multiarray<state_datatype,4> errors(dimsK1);
             for (int iw = 0; iw < nBOS; iw++) {
                 double w;
-                testvertex1.K1.K1_get_freq_w(w, iw);
+                testvertex1.K1.frequencies.get_freqs_w(w, iw);
                 errors.at(0,iw,0,0) = vertex_function(w) - testvertex1.K1.at(0, iw, 0, 0);
             }
 
             //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_TRUNC);
             //write_to_hdf(outfile, "vertex_dataK1_old", testvertex_old.K1.get_vec(), false);
             //write_to_hdf(outfile, "vertex_dataK1_new", testvertex1.K1.get_vec(), false);
-            //write_to_hdf(outfile, "gridK1b_old", testvertex_old.K1.K1_get_freqGrid().get_ws_vec(), false);
-            //write_to_hdf(outfile, "gridK1b_new", testvertex1.K1.K1_get_freqGrid().get_ws_vec(), false);
+            //write_to_hdf(outfile, "gridK1b_old", testvertex_old.K1.frequencies.get_freqGrid_b().get_ws_vec(), false);
+            //write_to_hdf(outfile, "gridK1b_new", testvertex1.K1.frequencies.get_freqGrid_b().get_ws_vec(), false);
             //write_to_hdf(outfile, "errorsK1", errors, false);
             //outfile.close();
 
@@ -171,7 +171,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 for (int iw = 0; iw < nBOS2; iw++) {
                     for (int iv = 0; iv < nFER2; iv++) {
                         double w, v;
-                        testvertex1.K2.K2_get_freqs_w(w, v, iw, iv);
+                        testvertex1.K2.frequencies.get_freqs_w(w, v, iw, iv);
                         auto val = vertex_function(w) + vertex_function2(v) - testvertex1.K2.at(0,iw,iv,0,0);
                         errors.at(0, iw, iv, 0, 0) = val;
                     }
@@ -224,7 +224,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                     for (int iv = 0; iv < nFER3; iv++) {
                         for (int ivp = 0; ivp < nFER3; ivp++) {
                             double w, v, vp;
-                            testvertex1.K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+                            testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
                             auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp) - testvertex1.K3.at(0,iw,iv, ivp,0,0);
                             errors.at(0, iw, iv, ivp, 0, 0) = val;
                         }
@@ -234,10 +234,10 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_RDWR);
                 //write_to_hdf(outfile, "vertex_dataK3_old", testvertex_old.K3.get_vec(), false);
                 //write_to_hdf(outfile, "vertex_dataK3_new", testvertex1.K3.get_vec(), false);
-                //write_to_hdf(outfile, "gridK3b_old", testvertex_old.K3.K3_get_freqGrid_b().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK3b_new", testvertex1.K3.K3_get_freqGrid_b().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK3f_old", testvertex_old.K3.K3_get_freqGrid_f().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK3f_new", testvertex1.K3.K3_get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3b_old", testvertex_old.K3.frequencies.get_freqGrid_b().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3b_new", testvertex1.K3.frequencies.get_freqGrid_b().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3f_old", testvertex_old.K3.frequencies.get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3f_new", testvertex1.K3.frequencies.get_freqGrid_f().get_ws_vec(), false);
                 //write_to_hdf(outfile, "errorsK3", errors, false);
                 //outfile.close();
 
@@ -276,7 +276,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     value = 0.;
     for (int iw = 0; iw<(nBOS-1)/2; iw++){
-        avertex.K1.K1_get_freq_w(indices.w, iw);
+        avertex.K1.frequencies.get_freqs_w(indices.w, iw);
         if (std::abs(avertex.K1.val(i_spin, iw, iK, i_in) - avertex.K1.val(i_spin, nBOS -1 - iw, iK, i_in)) > 1e-10) {
             asymmetry += 1;
         }
@@ -319,7 +319,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     for (int iw = 0; iw<=(nBOS2-1)/2; iw++){
         double correction = avertex.K2.K2_get_correction_MFfiniteT(iw);
         for (int iv = 0; iv<(nFER2)/2; iv++) {
-            avertex.K2.K2_get_freqs_w(indices.w, indices.v1, iw, iv);
+            avertex.K2.frequencies.get_freqs_w(indices.w, indices.v1, iw, iv);
             #ifndef ZERO_TEMP   // Matsubara T>0
             indices.v1 += correction;
             #endif
@@ -376,7 +376,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
         double correction = avertex.K3.K3_get_correction_MFfiniteT(iw);
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = iv; ivp<nFER3; ivp++) {
-                avertex.K3.K3_get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
+                avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
 #ifndef ZERO_TEMP   // Matsubara T>0
                 //indices.v1 += correction;
                 //indices.v2 += correction;

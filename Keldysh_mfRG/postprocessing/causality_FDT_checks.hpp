@@ -170,7 +170,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
     for (int itw = 0; itw < nw1; itw++ ){
         switch (channel) {
             case 'a':
-                vertex_in.avertex.K1.K1_get_freq_w(w, itw);
+                vertex_in.avertex.K1.frequencies.get_freqs_w(w, itw);
                 if (std::abs(w) > glb_T*25.) {
                     N1 = 1./Fermi_fac(w, glb_mu);
                     for (int itspin = 0; itspin < n_in; itspin++) {
@@ -186,7 +186,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 }
                 break;
             case 'p':
-                vertex_in.pvertex.K1.K1_get_freq_w(w, itw);
+                vertex_in.pvertex.K1.frequencies.get_freqs_w(w, itw);
                 if (std::abs(w) > glb_T*25.) {
                     N1 = 1./Fermi_fac(w, glb_mu);
                     for (int itspin = 0; itspin < n_in; itspin++) {
@@ -202,7 +202,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 }
                 break;
             case 't':
-                vertex_in.tvertex.K1.K1_get_freq_w(w, itw);
+                vertex_in.tvertex.K1.frequencies.get_freqs_w(w, itw);
                 if (std::abs(w) > glb_T*25.) {
                     N1 = 1./Fermi_fac(w, glb_mu);
                     for (int itspin = 0; itspin < n_in; itspin++) {
@@ -228,7 +228,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
             switch (channel) {
                 case 'a':
                     // for K2a:
-                    vertex_in.avertex.K2.K2_get_freqs_w(w, v, itw, itv);
+                    vertex_in.avertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                     if (std::abs(w) > glb_T){
                         N1 = Fermi_fac(-v  - w/2, glb_mu);
                         N2 = Fermi_fac( v  - w/2, glb_mu);
@@ -264,7 +264,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                     break;
                 case 'p':
                     // for K2p:
-                    vertex_in.pvertex.K2.K2_get_freqs_w(w, v, itw, itv);
+                    vertex_in.pvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                     if (std::abs(w) > glb_T*1.){//
                         N1 = Fermi_fac( v  + w/2, glb_mu);
                         N2 = Fermi_fac(-v  + w/2, glb_mu);
@@ -301,7 +301,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 
                 case 't':
                     // for K2t:
-                    vertex_in.tvertex.K2.K2_get_freqs_w(w, v, itw, itv);
+                    vertex_in.tvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                     if (std::abs(w) > glb_T*1.){
                         N1 = Fermi_fac(-v  - w/2, glb_mu);
                         N2 = Fermi_fac( v  - w/2, glb_mu);
@@ -352,7 +352,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 switch (channel) {
                     case 'a':
                         // for K3a:
-                        vertex_in.avertex.K3.K3_get_freqs_w(w, v, vp, itw, itv, itvp, 'a');
+                        vertex_in.avertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp, 'a');
                         N1 = Fermi_fac( v  - w/2, glb_mu);
                         N2 = Fermi_fac( vp + w/2, glb_mu);
                         N3 = Fermi_fac(-vp + w/2, glb_mu);
@@ -428,7 +428,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         break;
                     case 'p':
                         // for K3p:
-                        vertex_in.pvertex.K3.K3_get_freqs_w(w, v, vp, itw, itv, itvp, 'p');
+                        vertex_in.pvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp, 'p');
                         N1 = Fermi_fac( v  + w/2, glb_mu);
                         N2 = Fermi_fac(-v  + w/2, glb_mu);
                         N3 = Fermi_fac(-vp - w/2, glb_mu);
@@ -505,7 +505,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 
                     case 't':
                         // for K3t:
-                        vertex_in.tvertex.K3.K3_get_freqs_w(w, v, vp, itw, itv, itvp, 't');
+                        vertex_in.tvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp, 't');
                         N1 = Fermi_fac( vp + w/2, glb_mu);
                         N2 = Fermi_fac( v  - w/2, glb_mu);
                         N3 = Fermi_fac(-vp + w/2, glb_mu);

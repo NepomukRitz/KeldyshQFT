@@ -154,23 +154,23 @@ template<char channel, typename Q, vertexType symmetry_result, vertexType symmet
 void BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
     if (HUBBARD_MODEL){ // In the HM we have a larger frequency box for the SE and want to limit us to the range of bosonic vertex frequencies.
-        vmin = dgamma.avertex().K1.K1_get_wlower();
-        vmax = dgamma.avertex().K1.K1_get_wupper();
+        vmin = dgamma.avertex().K1.frequencies.get_wupper_b();
+        vmax = dgamma.avertex().K1.frequencies.get_wupper_b();
     }
     else{
-        vmin = std::min(dgamma.avertex().K1.K1_get_wlower(), Pi.g.selfenergy.frequencies.w_lower);
-        vmax = std::max(dgamma.avertex().K1.K1_get_wupper(), Pi.g.selfenergy.frequencies.w_upper);
+        vmin = std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.frequencies.w_lower);
+        vmax = std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.frequencies.w_upper);
     }
 
     if (MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma.avertex().K2.K2_get_wlower_f());
-        vmax = std::max(vmax, dgamma.avertex().K2.K2_get_wupper_f());
+        vmin = std::min(vmin, dgamma.avertex().K2.frequencies.get_wlower_f());
+        vmax = std::max(vmax, dgamma.avertex().K2.frequencies.get_wupper_f());
     }
     if (MAX_DIAG_CLASS >= 3){
         // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma.avertex().K3.K3_get_wlower_f());
-        vmax = std::max(vmax, dgamma.avertex().K3.K3_get_wupper_f());
+        vmin = std::min(vmin, dgamma.avertex().K3.frequencies.get_wlower_f());
+        vmax = std::max(vmax, dgamma.avertex().K3.frequencies.get_wupper_f());
     }
     if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
@@ -331,7 +331,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             convert_external_MPI_OMP_indices_to_physical_indices_K2b(iK2, i0, ispin, iw, ivp, i_in, w, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = 0; // compute integrals for all frequency components
-            if (!KELDYSH and !ZERO_T and -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2b.K2_get_wlower_f()) {
+            if (!KELDYSH and !ZERO_T and -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2b.frequencies.get_wlower_f()) {
                 trafo = -1;
             }
             if (trafo == 0) {calculate_value<diag_class>(value, i0, i_in, ispin, 0, w, 0, vp); }
@@ -620,9 +620,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     //i_in = iK1 - i0*nw1_w*n_in_K1 - iw*n_in_K1;            // internal index
     getMultIndex<4,int,int,int,int>(ispin, iw, i0, i_in, iK1, vertex1.avertex().K1.get_dims());
 
-    if (channel == 'a') dgamma.avertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
-    if (channel == 'p') dgamma.pvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
-    if (channel == 't') dgamma.tvertex().K1.K1_get_freq_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 'a') dgamma.avertex().K1.frequencies.get_freqs_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 'p') dgamma.pvertex().K1.frequencies.get_freqs_w(w, iw);           // frequency acc. to frequency index
+    if (channel == 't') dgamma.tvertex().K1.frequencies.get_freqs_w(w, iw);           // frequency acc. to frequency index
 }
 
 template<char channel, typename Q, vertexType symmetry_result, vertexType symmetry_left,
@@ -638,9 +638,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     //iv = iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
     //i_in = iK2 - iv * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
     getMultIndex<5,int,int,int,int,int>(ispin, iw, iv, i0, i_in, iK2, vertex1.avertex().K2.get_dims());
-    if (channel == 'a') dgamma.avertex().K2.K2_get_freqs_w(w, v, iw, iv);
-    if (channel == 'p') dgamma.pvertex().K2.K2_get_freqs_w(w, v, iw, iv);
-    if (channel == 't') dgamma.tvertex().K2.K2_get_freqs_w(w, v, iw, iv);
+    if (channel == 'a') dgamma.avertex().K2.frequencies.get_freqs_w(w, v, iw, iv);
+    if (channel == 'p') dgamma.pvertex().K2.frequencies.get_freqs_w(w, v, iw, iv);
+    if (channel == 't') dgamma.tvertex().K2.frequencies.get_freqs_w(w, v, iw, iv);
 }
 
 #ifdef DEBUG_SYMMETRIES
@@ -657,9 +657,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     //ivp= iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
     //i_in = iK2 - ivp * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
     getMultIndex<5,int,int,int,int,int>(ispin, iw, ivp, i0, i_in, iK2, vertex1.avertex().K2b.get_dims());
-    if (channel == 'a') dgamma.avertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
-    if (channel == 'p') dgamma.pvertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
-    if (channel == 't') dgamma.tvertex().K2b.K2_get_freqs_w(w, vp, iw, ivp);
+    if (channel == 'a') dgamma.avertex().K2b.frequencies.get_freqs_w(w, vp, iw, ivp);
+    if (channel == 'p') dgamma.pvertex().K2b.frequencies.get_freqs_w(w, vp, iw, ivp);
+    if (channel == 't') dgamma.tvertex().K2b.frequencies.get_freqs_w(w, vp, iw, ivp);
 }
 #endif
 
@@ -677,9 +677,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     //ivp =iK3/(n_in_K3) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
     //i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in_K3 - iw*nw3_v*nw3_v_p*n_in_K3 - iv*nw3_v_p*n_in_K3 - ivp*n_in_K3;
     getMultIndex<6,int,int,int,int,int,int>(ispin, iw, iv, ivp, i0, i_in, iK3, vertex1.avertex().K3.get_dims());
-    if (channel == 'a') dgamma.avertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
-    if (channel == 'p') dgamma.pvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 'p');
-    if (channel == 't') dgamma.tvertex().K3.K3_get_freqs_w(w, v, vp, iw, iv, ivp, 't');
+    if (channel == 'a') dgamma.avertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+    if (channel == 'p') dgamma.pvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'p');
+    if (channel == 't') dgamma.tvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 't');
 }
 
 
@@ -720,7 +720,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     int trafo = 1;
 #ifdef DEBUG_SYMMETRIES
             trafo = 0; // compute integrals for all frequency components
-            if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.K2_get_wlower_f()) {
+            if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
                 trafo = -1;
             }
 #else
@@ -741,7 +741,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         default:
             print("Something went wrong in get_trafo_K2! Abort."); assert(false);
     }
-    if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.K2_get_wlower_f()) {
+    if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
         trafo = 0;
     }
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
@@ -773,7 +773,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 #ifdef DEBUG_SYMMETRIES
     trafo = 0; // compute integrals for all frequency components
 
-    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f())) {
+    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f())) {
         trafo = -1;
     }
 #else
@@ -796,10 +796,10 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             print("Something went wrong in get_trafo_K3! Abort."); assert(false);
     }
 
-    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.K3_get_wlower_f())) {
+    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f())) {
         trafo = -1;
         //std::cout << "omitted frequencies: " << v << "\t" << vp << std::endl;
-        //std::cout << "with limits " << vertex1.avertex().K3.K3_get_wlower_f() << std::endl;
+        //std::cout << "with limits " << vertex1.avertex().K3.frequencies.get_wlower_f() << std::endl;
     }
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
     if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration

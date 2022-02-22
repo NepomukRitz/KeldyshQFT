@@ -130,12 +130,14 @@ class vertexDataContainer: public vertexContainerBase<Q,5> {
     friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
 
 protected:
-    VertexFrequencyGrid<k2> frequencies;    // frequency grid
     using base_class = vertexContainerBase<Q,5>;
 public:
     using index_type = typename base_class::index_type;
     using dimensions_type = typename base_class::dimensions_type;
     using buffer_type = typename base_class::buffer_type;
+
+
+    VertexFrequencyGrid<k2> frequencies;    // frequency grid
     vertexDataContainer() = default;
     explicit vertexDataContainer(double Lambda, dimensions_type dims) : frequencies(Lambda), base_class(dims) { };
 
@@ -150,20 +152,20 @@ public:
     auto get_VertexFreqGrid() const -> const VertexFrequencyGrid<k2>&;
     void set_VertexFreqGrid(const VertexFrequencyGrid<k2> frequencyGrid);
 
-    const double& K2_get_wlower_b() const;
-    const double& K2_get_wupper_b() const;
-    const double& K2_get_wlower_f() const;
-    const double& K2_get_wupper_f() const;
-    const FrequencyGrid& K2_get_freqGrid_b() const;
-    const FrequencyGrid& K2_get_freqGrid_f() const;
-    const double& K2_get_tlower_b_aux() const;
-    const double& K2_get_tupper_b_aux() const;
-    const double& K2_get_tlower_f_aux() const;
-    const double& K2_get_tupper_f_aux() const;
-    auto K2_gridtransf_b(double w) const -> double;
-    auto K2_gridtransf_f(double w) const -> double;
-    auto K2_gridtransf_inv_b(double w) const -> double;
-    auto K2_gridtransf_inv_f(double w) const -> double;
+    //const double& K2_get_wlower_b() const;
+    //const double& K2_get_wupper_b() const;
+    //const double& frequencies.get_wlower_f() const;
+    //const double& K2_get_wupper_f() const;
+    //const FrequencyGrid& K2_get_freqGrid_b() const;
+    //const FrequencyGrid& K2_get_freqGrid_f() const;
+    //const double& K2_get_tlower_b_aux() const;
+    //const double& K2_get_tupper_b_aux() const;
+    //const double& K2_get_tlower_f_aux() const;
+    //const double& K2_get_tupper_f_aux() const;
+    //auto K2_gridtransf_b(double w) const -> double;
+    //auto K2_gridtransf_f(double w) const -> double;
+    //auto K2_gridtransf_inv_b(double w) const -> double;
+    //auto K2_gridtransf_inv_f(double w) const -> double;
 
 
     auto K2_get_correction_MFfiniteT(int iw) const -> double;
@@ -200,11 +202,13 @@ class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,4>{
 
 protected:
     using base_class = vertexContainerBase<Q,4>;
-    VertexFrequencyGrid<k1> frequencies;    // frequency grid
 public:
     using index_type = typename base_class::index_type;
     using dimensions_type = typename base_class::dimensions_type;
     using buffer_type = typename base_class::buffer_type;
+
+    VertexFrequencyGrid<k1> frequencies;    // frequency grid
+
     vertexDataContainer() = default;
     explicit vertexDataContainer(double Lambda, dimensions_type dims) : frequencies(Lambda), base_class(dims) { };
 
@@ -216,20 +220,20 @@ public:
     /**
      * gets the frequency corresponding to the frequency index i
      */
-    void K1_get_freq_w(double& w, int i) const;     /// returns regular frequency
-    void K1_get_freq_aux(double& w, int i) const;   /// returns frequency on the auxiliary grid
-
+    //void frequencies.get_freqs_w(double& w, int i) const;     /// returns regular frequency
+    //void K1_get_freq_aux(double& w, int i) const;   /// returns frequency on the auxiliary grid
+//
     auto get_VertexFreqGrid() const -> const VertexFrequencyGrid<k1>&;
     void set_VertexFreqGrid(const VertexFrequencyGrid<k1> frequencyGrid);
-
-    auto K1_get_freqGrid() const -> const FrequencyGrid&;
-
-    const double& K1_get_wlower() const;
-    const double& K1_get_wupper() const;
-    const double& K1_get_tlower_aux() const;
-    const double& K1_get_tupper_aux() const;
-    auto K1_gridtransf(double w) const -> double;
-    auto K1_gridtransf_inv(double w) const -> double;
+//
+    //auto frequencies.get_freqGrid_b() const -> const FrequencyGrid&;
+//
+    //const double& frequencies.get_wlower() const;
+    //const double& frequencies.get_wupper_b() const;
+    //const double& K1_get_tlower_aux() const;
+    //const double& K1_get_tupper_aux() const;
+    //auto K1_gridtransf(double w) const -> double;
+    //auto K1_gridtransf_inv(double w) const -> double;
 
     /// Compute derivative in w-direction using a finite-differences method
     buffer_type get_deriv_K1_x(int order=5) const;
@@ -256,37 +260,39 @@ class vertexDataContainer<k3, Q>: public vertexContainerBase<Q,6> {
 
 protected:
     using base_class = vertexContainerBase<Q,6>;
-    VertexFrequencyGrid<k3> frequencies;    // frequency grid
 
 
 public:
     using index_type = typename base_class::index_type;
     using dimensions_type = typename base_class::dimensions_type;
     using buffer_type = typename base_class::buffer_type;
+
+    VertexFrequencyGrid<k3> frequencies;    // frequency grid
+
     vertexDataContainer() = default;
     explicit vertexDataContainer(double Lambda, dimensions_type dims) : frequencies(Lambda), base_class(dims) { };
 
 
-    void K3_get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp, char channel) const;
-    void K3_get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
+    //void K3.frequencies.get_freqs_w(double& w, double& v, double& vp, int iw, int iv, int ivp, char channel) const;
+    //void K3_get_freqs_aux(double& w, double& v, double& vp, int iw, int iv, int ivp) const;
 
     auto get_VertexFreqGrid() const -> const VertexFrequencyGrid<k3>&;
     void set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid);
-    const FrequencyGrid& K3_get_freqGrid_b() const;
-    const FrequencyGrid& K3_get_freqGrid_f() const;
-
-    const double& K3_get_wlower_b() const;
-    const double& K3_get_wupper_b() const;
-    const double& K3_get_wlower_f() const;
-    const double& K3_get_wupper_f() const;
-    const double& K3_get_tlower_b_aux() const;
-    const double& K3_get_tupper_b_aux() const;
-    const double& K3_get_tlower_f_aux() const;
-    const double& K3_get_tupper_f_aux() const;
-    auto K3_gridtransf_b(double w) const -> double;
-    auto K3_gridtransf_f(double w) const -> double;
-    auto K3_gridtransf_inv_b(double w) const -> double;
-    auto K3_gridtransf_inv_f(double w) const -> double;
+    //const FrequencyGrid& frequencies.get_freqGrid_b() const;
+    //const FrequencyGrid& frequencies.get_freqGrid_f() const;
+//
+    //const double& K3_get_wlower_b() const;
+    //const double& K3_get_wupper_b() const;
+    //const double& K3_get_wlower_f() const;
+    //const double& K3_get_wupper_f() const;
+    //const double& K3_get_tlower_b_aux() const;
+    //const double& K3_get_tupper_b_aux() const;
+    //const double& K3_get_tlower_f_aux() const;
+    //const double& K3_get_tupper_f_aux() const;
+    //auto K3_gridtransf_b(double w) const -> double;
+    //auto K3_gridtransf_f(double w) const -> double;
+    //auto K3_gridtransf_inv_b(double w) const -> double;
+    //auto K3_gridtransf_inv_f(double w) const -> double;
 
     auto K3_get_correction_MFfiniteT(int iw) const -> double;
 
@@ -340,20 +346,21 @@ void vertexDataContainer<k3,Q>::set_VertexFreqGrid(const VertexFrequencyGrid<k3>
     frequencies = frequencyGrid;
 }
 
+/*
 template<typename Q>
-const double& vertexDataContainer<k1,Q>::K1_get_wlower() const {
+const double& vertexDataContainer<k1,Q>::frequencies.get_wlower() const {
     return frequencies.b.w_lower;
 }
 template<typename Q>
-const double& vertexDataContainer<k1,Q>::K1_get_wupper() const {
+const double& vertexDataContainer<k1,Q>::frequencies.get_wupper_b() const {
     return frequencies.b.w_upper;
 }
 template<typename Q>
-auto vertexDataContainer<k1,Q>::K1_get_freqGrid() const -> const FrequencyGrid& {
+auto vertexDataContainer<k1,Q>::frequencies.get_freqGrid_b() const -> const FrequencyGrid& {
     return frequencies.b;
 }
 template<typename Q>
-void vertexDataContainer<k1,Q>::K1_get_freq_w(double& w, const int i) const {
+void vertexDataContainer<k1,Q>::frequencies.get_freqs_w(double& w, const int i) const {
     w = frequencies.b.get_ws(i);
 }
 template<typename Q>
@@ -376,7 +383,7 @@ template<typename Q>
 auto vertexDataContainer<k1,Q>::K1_gridtransf_inv(double w) const -> double {
     return frequencies.b.grid_transf_inv(w);
 }
-
+*/
 
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x(const int order) const -> buffer_type {
     buffer_type result = ::partial_deriv<Q,4>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order);
@@ -384,14 +391,14 @@ template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x(const int o
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const -> double {
     int order = 3;
-    double dt = K1_get_freqGrid().dt;
+    double dt = frequencies.get_freqGrid_b().dt;
     double Kmax = base_class::get_vec().max_norm();
     double max_K1 = ::power2(get_deriv_K1_x(order)*dt*(1/Kmax)).max_norm();  // normalize by magnitude of vertex contribution and grid spacing
     return max_K1;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_curvature_maxK1() const -> double {
     int order = 3;
-    double dt = K1_get_freqGrid().dt;
+    double dt = frequencies.get_freqGrid_b().dt;
     double Kmax = base_class::get_vec().max_norm();
     double max_K1 = ::power2(::partial_deriv<Q,4>(::partial_deriv<Q,4>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order), frequencies.b.ts, base_class::data.length(), 2, order) * dt * dt * (1 / Kmax)).max_norm();
     return max_K1;
@@ -418,7 +425,7 @@ template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const doub
 
 
 /// K2:
-
+/*
 template<K_class k, typename Q>
 const double& vertexDataContainer<k,Q>::K2_get_wlower_b() const {
     return frequencies.b.w_lower;
@@ -428,7 +435,7 @@ const double& vertexDataContainer<k,Q>::K2_get_wupper_b() const {
     return frequencies.b.w_upper;
 }
 template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_wlower_f() const {
+const double& vertexDataContainer<k,Q>::frequencies.get_wlower_f() const {
     return frequencies.f.w_lower;
 }
 template<K_class k, typename Q>
@@ -444,7 +451,7 @@ auto vertexDataContainer<k,Q>::K2_get_freqGrid_f() const -> const FrequencyGrid&
     return frequencies.f;
 }
 template<K_class k, typename Q>
-void vertexDataContainer<k,Q>::K2_get_freqs_w(double &w, double &v, const int iw, const int iv) const {
+void vertexDataContainer<k,Q>::frequencies.get_freqs_w(double &w, double &v, const int iw, const int iv) const {
     frequencies.get_freqs_w(w, v, iw, iv);
 }
 
@@ -484,6 +491,7 @@ template<K_class k, typename Q>
 auto vertexDataContainer<k,Q>::K2_gridtransf_inv_f(double w) const -> double {
     return frequencies.f.grid_transf_inv(w);
 }
+ */
 template<K_class k, typename Q>
 auto vertexDataContainer<k,Q>::K2_get_correction_MFfiniteT(int iw) const -> double {
     if (not KELDYSH and not ZERO_T)
@@ -518,8 +526,8 @@ template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_deriv_maxK2(
     const int order = 3;
 
     double Kmax = base_class::get_vec().max_norm();
-    double dtb = K2_get_freqGrid_b().dt;
-    double dtf = K2_get_freqGrid_f().dt;
+    double dtb = frequencies.get_freqGrid_b().dt;
+    double dtf = frequencies.get_freqGrid_f().dt;
     double max_K2 = (     ::power2(get_deriv_K2_x(order)*dtb*(1/Kmax)) // multiply by dt to make the result independent of the grid spacing
                         + ::power2(get_deriv_K2_y(order)*dtf*(1/Kmax))
                     ).max_norm();
@@ -529,8 +537,8 @@ template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_curvature_ma
     const int order = 3;
 
     double Kmax = base_class::get_vec().max_norm();
-    double dtb = K2_get_freqGrid_b().dt;
-    double dtf = K2_get_freqGrid_f().dt;
+    double dtb = frequencies.get_freqGrid_b().dt;
+    double dtf = frequencies.get_freqGrid_f().dt;
     double max_K1 = (    ::power2( get_deriv_K2_xx(order)*dtb*dtb*(1/Kmax))
                         +::power2( get_deriv_K2_yy(order)*dtf*dtf*(1/Kmax))
                         +::power2( get_deriv_K2_xy(order)*dtb*dtf*(1/Kmax))*2.
@@ -570,7 +578,7 @@ template <K_class k, typename Q> auto vertexDataContainer<k,Q>::shrink_freq_box(
 
 
 /// K3:
-
+/*
 template<typename Q>
 const double& vertexDataContainer<k3,Q>::K3_get_wlower_b() const {
     return frequencies.b.w_lower;
@@ -596,7 +604,7 @@ auto vertexDataContainer<k3,Q>::K3_get_freqGrid_f() const -> const FrequencyGrid
     return frequencies.f;
 }
 template<typename Q>
-void vertexDataContainer<k3,Q>::K3_get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp, const char channel) const {
+void vertexDataContainer<k3,Q>::K3.frequencies.get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp, const char channel) const {
     frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
 }
 
@@ -636,6 +644,7 @@ template<typename Q>
 auto vertexDataContainer<k3,Q>::K3_gridtransf_inv_f(double w) const -> double {
     return frequencies.f.grid_transf_inv(w);
 }
+ */
 template<typename Q>
 auto vertexDataContainer<k3,Q>::K3_get_correction_MFfiniteT(int iw) const -> double {
     if (not KELDYSH and not ZERO_T)
@@ -697,8 +706,8 @@ template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_maxK3() const ->
     const int order = 3;
 
     double Kmax = base_class::get_vec().max_norm();
-    double dtb = K3_get_freqGrid_b().dt;
-    double dtf = K3_get_freqGrid_f().dt;
+    double dtb = frequencies.get_freqGrid_b().dt;
+    double dtf = frequencies.get_freqGrid_f().dt;
     double max_K3 = (::power2(get_deriv_K3_z(order) * dtf * (1/Kmax))
                    + ::power2(get_deriv_K3_y(order) * dtf * (1/Kmax))
                    + ::power2(get_deriv_K3_x(order) * dtb * (1/Kmax))
@@ -709,8 +718,8 @@ template <typename Q> auto vertexDataContainer<k3,Q>::get_curvature_maxK3() cons
     const int order = 3;
 
     double Kmax = base_class::get_vec().max_norm();
-    double dtb = K3_get_freqGrid_b().dt;
-    double dtf = K3_get_freqGrid_f().dt;
+    double dtb = frequencies.get_freqGrid_b().dt;
+    double dtf = frequencies.get_freqGrid_f().dt;
     double max_K3 = (   ::power2(get_deriv_K3_xx(order)*dtb*dtb*(1/Kmax))
                       + ::power2(get_deriv_K3_yy(order)*dtf*dtf*(1/Kmax))
                       + ::power2(get_deriv_K3_zz(order)*dtf*dtf*(1/Kmax))
