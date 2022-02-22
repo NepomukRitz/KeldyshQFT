@@ -83,8 +83,11 @@ public:
         }
 
         if constexpr (k == k1) {
-            idx_low = {indices.spin, iw, (my_index_t)indices.iK, indices.i_in};
-
+            //idx_low = {indices.spin, iw, (my_index_t)indices.iK, indices.i_in};
+            idx_low[my_defs::K1::spin] = indices.spin;
+            idx_low[my_defs::K1::keldysh] = (my_index_t) indices.iK;
+            idx_low[my_defs::K1::omega] = iw;
+            idx_low[my_defs::K1::internal] = indices.i_in;
             return weights;
         }
         if constexpr (k == k2) {
@@ -97,13 +100,17 @@ public:
                 weights[2*j  ] *= 1-weight_v;
                 weights[2*j+1] *= weight_v;
             }
-            idx_low = {indices.spin, iw, iv, (my_index_t)indices.iK, indices.i_in};
+            //idx_low = {indices.spin, iw, iv, (my_index_t)indices.iK, indices.i_in};
+            idx_low[my_defs::K2::spin] = indices.spin;
+            idx_low[my_defs::K2::keldysh] = (my_index_t) indices.iK;
+            idx_low[my_defs::K2::omega] = iw;
+            idx_low[my_defs::K2::nu] = iv;
+            idx_low[my_defs::K2::internal] = indices.i_in;
 
             return weights;
         }
         if constexpr(k == k2b) {
             my_index_t ivp = base_class::frequencies.f.fconv(indices.v2);
-            idx_low[0] = ivp;
             double vp_low = base_class::frequencies.f.get_ws(ivp);
             double vp_high= base_class::frequencies.f.get_ws(ivp+1);
             const double weight_vp = (indices.v2 - vp_low) / (vp_high - vp_low);
@@ -111,19 +118,22 @@ public:
                 weights[2*j  ] *= 1-weight_vp;
                 weights[2*j+1] *= weight_vp;
             }
-            idx_low = {indices.spin, iw, ivp, (my_index_t)indices.iK, indices.i_in};
+            //idx_low = {indices.spin, iw, ivp, (my_index_t)indices.iK, indices.i_in};
+            idx_low[my_defs::K2b::spin] = indices.spin;
+            idx_low[my_defs::K2b::keldysh] = (my_index_t) indices.iK;
+            idx_low[my_defs::K2b::omega] = iw;
+            idx_low[my_defs::K2b::nup] = ivp;
+            idx_low[my_defs::K2b::internal] = indices.i_in;
 
             return weights;
         }
         if constexpr(k == k3) {
             my_index_t iv = base_class::frequencies.f.fconv(indices.v1);
-            idx_low[0] = iv;
             double v_low = base_class::frequencies.f.get_ws(iv);
             double v_high= base_class::frequencies.f.get_ws(iv+1);
             const double weight_v = (indices.v1 - v_low) / (v_high - v_low);
 
             my_index_t ivp = base_class::frequencies.f.fconv(indices.v2);
-            idx_low[0] = ivp;
             double vp_low = base_class::frequencies.f.get_ws(ivp);
             double vp_high= base_class::frequencies.f.get_ws(ivp+1);
             const double weight_vp= (indices.v2 - vp_low) / (vp_high - vp_low);
@@ -140,7 +150,13 @@ public:
                 weights[1+j*2] *= weight_vp;
             }
 
-            idx_low = {indices.spin, iw, iv, ivp, (my_index_t) indices.iK, indices.i_in};
+            //idx_low = {indices.spin, iw, iv, ivp, (my_index_t) indices.iK, indices.i_in};
+            idx_low[my_defs::K3::spin] = indices.spin;
+            idx_low[my_defs::K3::keldysh] = (my_index_t) indices.iK;
+            idx_low[my_defs::K3::omega] = iw;
+            idx_low[my_defs::K3::nu] = iv;
+            idx_low[my_defs::K3::nup]= ivp;
+            idx_low[my_defs::K3::internal] = indices.i_in;
             return weights;
         }
 

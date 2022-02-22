@@ -75,7 +75,7 @@ namespace {
 TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "[update grid]") {
     rvert<state_datatype> testvertex1('a', Lambda_ini, true);
 
-    multidimensional::multiarray<state_datatype,4> v1(dimsK1);
+    multidimensional::multiarray<state_datatype,4> v1(K1_config.dims);
     for (int iw = 0; iw < nBOS; iw++) {
         double w;
         testvertex1.K1.frequencies.get_freqs_w(w, iw);
@@ -125,7 +125,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             testvertex1.update_grid<k1>(bfreqK1, testvertex1);
 
 
-            multidimensional::multiarray<state_datatype,4> errors(dimsK1);
+            multidimensional::multiarray<state_datatype,4> errors(K1_config.dims);
             for (int iw = 0; iw < nBOS; iw++) {
                 double w;
                 testvertex1.K1.frequencies.get_freqs_w(w, iw);
@@ -167,7 +167,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 testvertex1.update_grid<k2>(bfreqK2, testvertex1);
 
 
-                multidimensional::multiarray<state_datatype,5> errors(dimsK2);
+                multidimensional::multiarray<state_datatype,5> errors(K2_config.dims);
                 for (int iw = 0; iw < nBOS2; iw++) {
                     for (int iv = 0; iv < nFER2; iv++) {
                         double w, v;
@@ -219,7 +219,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 testvertex1.update_grid<k3>(bfreqK3, testvertex1);
 
 
-                multidimensional::multiarray<state_datatype,6> errors(dimsK3);
+                multidimensional::multiarray<state_datatype,6> errors(K3_config.dims);
                 for (int iw = 0; iw < nBOS3; iw++) {
                     for (int iv = 0; iv < nFER3; iv++) {
                         for (int ivp = 0; ivp < nFER3; ivp++) {

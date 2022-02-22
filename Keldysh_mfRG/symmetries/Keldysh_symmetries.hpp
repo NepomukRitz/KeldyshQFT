@@ -35,21 +35,60 @@ const int nK_K3 = 1;
 #endif // KELDYSH_FORMALISM
 
 
+constexpr size_t rank_SE = 3;
+constexpr size_t rank_K1 = 4;
+constexpr size_t rank_K2 = 5;
+constexpr size_t rank_K3 = 6;
+namespace my_defs {
+    namespace SE {
+        enum names {keldysh, nu, internal};
+        using index_type = std::array<my_index_t, 3>;
+        using dimensions_type = std::array<my_index_t, 3>;
+    }
+    namespace K1 {
+        enum names {spin,  omega,  keldysh,  internal};
+        using index_type = std::array<my_index_t, 4>;
+        using dimensions_type = std::array<my_index_t, 4>;
+    }
+    namespace K2 {
+        enum names {spin,  omega,  nu,  keldysh,  internal};
+        using index_type = std::array<my_index_t, 5>;
+        using dimensions_type = std::array<my_index_t, 5>;
+    }
+    namespace K2b{
+        enum names {spin,  omega,  nup,  keldysh,  internal};
+        using index_type = std::array<my_index_t, 5>;
+        using dimensions_type = std::array<my_index_t, 5>;
+    }
+    namespace K3 {
+        enum names {spin,  omega,  nu,  nup,  keldysh,  internal};
+        using index_type = std::array<my_index_t, 6>;
+        using dimensions_type = std::array<my_index_t, 6>;
+    }
+}
+template <std::size_t _rank>
+struct buffer_config {
+    using index_type = std::array<my_index_t, _rank>;
+    using dimensions_type = std::array<my_index_t, _rank>;
 
-constexpr std::array<size_t,3> dimsSE = std::array<size_t,3>({nK_SE, nFER, n_in_K1});
-constexpr std::array<size_t,4> dimsK1 = std::array<size_t,4>({n_spin, nBOS, nK_K1, n_in_K1});
-constexpr std::array<size_t,5> dimsK2 = std::array<size_t,5>({n_spin, nBOS2, nFER2, nK_K2, n_in_K2});
-constexpr std::array<size_t,6> dimsK3 = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, nK_K3, n_in_K3});
-constexpr size_t dimsSE_flat = getFlatSize(dimsSE);
-constexpr size_t dimsK1_flat = getFlatSize(dimsK1);
-constexpr size_t dimsK2_flat = getFlatSize(dimsK2);
-constexpr size_t dimsK3_flat = getFlatSize(dimsK3);
+    dimensions_type dims;
+    const std::size_t dims_flat = getFlatSize(dims);
+    const size_t rank = _rank;
 
-constexpr std::array<size_t,3> dimsSE_expanded = std::array<size_t,3>({KELDYSH ?  4 : 1, nFER, n_in_K1});
-constexpr std::array<size_t,4> dimsK1_expanded = std::array<size_t,4>({n_spin_expanded, nBOS, KELDYSH ?  16 : 1, n_in_K1});
-constexpr std::array<size_t,5> dimsK2_expanded = std::array<size_t,5>({n_spin_expanded, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2});
-constexpr std::array<size_t,6> dimsK3_expanded = std::array<size_t,6>({n_spin_expanded, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3});
-constexpr unsigned int pos_first_freq = 1;
+    my_index_t num_freqs;
+};
+
+constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ nK_SE, nFER, n_in_K1}), .num_freqs=1};
+constexpr buffer_config<4> K1_config{.dims = std::array<size_t,4>({n_spin, nBOS, nK_K1, n_in_K1}), .num_freqs=1};
+constexpr buffer_config<5> K2_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, nK_K2, n_in_K2}), .num_freqs=2};
+constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, nK_K3, n_in_K3}), .num_freqs=3};
+
+constexpr buffer_config<3> SE_expanded_config{.dims = std::array<size_t,3>({ KELDYSH ?  4 : 1, nFER, n_in_K1}), .num_freqs=1};
+constexpr buffer_config<4> K1_expanded_config{.dims = std::array<size_t,4>({n_spin_expanded, nBOS, KELDYSH ?  16 : 1, n_in_K1}), .num_freqs=1};
+constexpr buffer_config<5> K2_expanded_config{.dims = std::array<size_t,5>({n_spin_expanded, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2}), .num_freqs=2};
+constexpr buffer_config<6> K3_expanded_config{.dims = std::array<size_t,6>({n_spin_expanded, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3}), .num_freqs=3};
+
+constexpr unsigned int pos_first_freq = 1;  // position of first frequency index
 
 #ifdef KELDYSH_FORMALISM
 // Vector of indices of the non-zero Keldysh components of the bubbles

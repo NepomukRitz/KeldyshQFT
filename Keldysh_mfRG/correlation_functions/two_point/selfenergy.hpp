@@ -20,13 +20,13 @@ public:
 
 private:
     buffer_type empty_Sigma() {
-        return buffer_type (dimsSE);           // only one component in Matsubara formalism
+        return buffer_type (SE_config.dims);           // only one component in Matsubara formalism
     }
 
 
 public:
     FrequencyGrid frequencies;
-    buffer_type Sigma = buffer_type(dimsSE);
+    buffer_type Sigma = buffer_type(SE_config.dims);
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
     explicit  SelfEnergy(double Lambda) : frequencies('f', 1, Lambda) {};
@@ -260,7 +260,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
 
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new) {
 
-    buffer_type Sigma_new (dimsSE);                     // temporary self-energy vector
+    buffer_type Sigma_new (SE_config.dims);                     // temporary self-energy vector
     for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara
         for (int iv=0; iv<nSE; ++iv) {
@@ -277,7 +277,7 @@ template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_
 
 template <typename Q> void SelfEnergy<Q>::update_grid(FrequencyGrid frequencies_new, SelfEnergy<Q> selfEnergy4Sigma) {
 
-    buffer_type Sigma_new (dimsSE);                     // temporary self-energy vector
+    buffer_type Sigma_new (SE_config.dims);                     // temporary self-energy vector
 
     for (int iK=0; iK<nK_SE; ++iK) {
         if (!KELDYSH && (iK == 1)) break; // Only Keldysh index 0 for Matsubara

@@ -615,10 +615,14 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, double& w,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK1 = i_mpi * n_omp + i_omp;
-    //i0 = iK1/(nw1_w*n_in_K1);                              // exterior Keldysh indices of the bubble
-    //iw = iK1/(n_in_K1) - i0*nw1_w;                         // frequency index
-    //i_in = iK1 - i0*nw1_w*n_in_K1 - iw*n_in_K1;            // internal index
-    getMultIndex<4,int,int,int,int>(ispin, iw, i0, i_in, iK1, vertex1.avertex().K1.get_dims());
+
+    my_defs::K1::index_type idx;
+    getMultIndex<rank_K1>(idx, iK1, vertex1.avertex().K1.get_dims());
+    i0       = (int) idx[my_defs::K1::keldysh];
+    ispin    = (int) idx[my_defs::K1::spin];
+    iw       = (int) idx[my_defs::K1::omega];
+    i_in     = (int) idx[my_defs::K1::internal];
+   //getMultIndex<4,int,int,int,int>(ispin, iw, i0, i_in, iK1, vertex1.avertex().K1.get_dims());
 
     if (channel == 'a') dgamma.avertex().K1.frequencies.get_freqs_w(w, iw);           // frequency acc. to frequency index
     if (channel == 'p') dgamma.pvertex().K1.frequencies.get_freqs_w(w, iw);           // frequency acc. to frequency index
@@ -633,11 +637,15 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                                                                                 double& w, double& v,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
     iK2 = i_mpi * n_omp + i_omp;
-    //i0 = iK2 / (nw2_w * nw2_v * n_in_K2);
-    //iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
-    //iv = iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
-    //i_in = iK2 - iv * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
-    getMultIndex<5,int,int,int,int,int>(ispin, iw, iv, i0, i_in, iK2, vertex1.avertex().K2.get_dims());
+
+    my_defs::K2::index_type idx;
+    getMultIndex<rank_K2>(idx, iK2, vertex1.avertex().K2.get_dims());
+    i0       = (int) idx[my_defs::K2::keldysh];
+    ispin    = (int) idx[my_defs::K2::spin];
+    iw       = (int) idx[my_defs::K2::omega];
+    iv       = (int) idx[my_defs::K2::nu];
+    i_in     = (int) idx[my_defs::K2::internal];
+    //getMultIndex<5,int,int,int,int,int>(ispin, iw, iv, i0, i_in, iK2, vertex1.avertex().K2.get_dims());
     if (channel == 'a') dgamma.avertex().K2.frequencies.get_freqs_w(w, v, iw, iv);
     if (channel == 'p') dgamma.pvertex().K2.frequencies.get_freqs_w(w, v, iw, iv);
     if (channel == 't') dgamma.tvertex().K2.frequencies.get_freqs_w(w, v, iw, iv);
@@ -652,11 +660,15 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                                                                                 double& w, double& vp,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
     iK2 = i_mpi * n_omp + i_omp;
-    //i0 = iK2 / (nw2_w * nw2_v * n_in_K2);
-    //iw = iK2 / (nw2_v * n_in_K2) - i0 * nw2_w;
-    //ivp= iK2 / n_in_K2 - iw * nw2_v - i0 * nw2_w * nw2_v;
-    //i_in = iK2 - ivp * n_in_K2 - iw * nw2_v * n_in_K2 - i0 * nw2_w * nw2_v * n_in_K2;
-    getMultIndex<5,int,int,int,int,int>(ispin, iw, ivp, i0, i_in, iK2, vertex1.avertex().K2b.get_dims());
+
+    my_defs::K2::index_type idx;
+    getMultIndex<rank_K2>(idx, iK2, vertex1.avertex().K2b.get_dims());
+    i0       = (int) idx[my_defs::K2b::keldysh];
+    ispin    = (int) idx[my_defs::K2b::spin];
+    iw       = (int) idx[my_defs::K2b::omega];
+    ivp      = (int) idx[my_defs::K2b::nup];
+    i_in     = (int) idx[my_defs::K2b::internal];
+    //getMultIndex<5,int,int,int,int,int>(ispin, iw, ivp, i0, i_in, iK2, vertex1.avertex().K2b.get_dims());
     if (channel == 'a') dgamma.avertex().K2b.frequencies.get_freqs_w(w, vp, iw, ivp);
     if (channel == 'p') dgamma.pvertex().K2b.frequencies.get_freqs_w(w, vp, iw, ivp);
     if (channel == 't') dgamma.tvertex().K2b.frequencies.get_freqs_w(w, vp, iw, ivp);
@@ -671,12 +683,16 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                                                                                      double& w, double& v, double& vp,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK3 = i_mpi * n_omp + i_omp;
-    //i0 = iK3/(nw3_w * nw3_v * nw3_v_p * n_in_K3);
-    //iw = iK3/(nw3_v * nw3_v_p * n_in_K3) - i0*nw3_w;
-    //iv = iK3/(nw3_v * n_in_K3) - i0*nw3_w*nw3_v - iw*nw3_v;
-    //ivp =iK3/(n_in_K3) - i0*nw3_w*nw3_v*nw3_v_p - iw*nw3_v*nw3_v_p - iv*nw3_v_p;
-    //i_in = iK3 - i0*nw3_w*nw3_v*nw3_v_p*n_in_K3 - iw*nw3_v*nw3_v_p*n_in_K3 - iv*nw3_v_p*n_in_K3 - ivp*n_in_K3;
-    getMultIndex<6,int,int,int,int,int,int>(ispin, iw, iv, ivp, i0, i_in, iK3, vertex1.avertex().K3.get_dims());
+
+    my_defs::K3::index_type idx;
+    getMultIndex<rank_K3>(idx, iK3, vertex1.avertex().K3.get_dims());
+    i0       = (int) idx[my_defs::K3::keldysh];
+    ispin    = (int) idx[my_defs::K3::spin];
+    iw       = (int) idx[my_defs::K3::omega];
+    iv       = (int) idx[my_defs::K3::nu];
+    ivp      = (int) idx[my_defs::K3::nup];
+    i_in     = (int) idx[my_defs::K3::internal];
+    //getMultIndex<6,int,int,int,int,int,int>(ispin, iw, iv, ivp, i0, i_in, iK3, vertex1.avertex().K3.get_dims());
     if (channel == 'a') dgamma.avertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
     if (channel == 'p') dgamma.pvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'p');
     if (channel == 't') dgamma.tvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 't');

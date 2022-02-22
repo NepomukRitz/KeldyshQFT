@@ -69,6 +69,7 @@ public:
     template <typename... Types,
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
     Q val(const Types &... i) const {return data(i...);}
+    Q val(const index_type& idx) const {return data.at(idx);}
     /// Returns reference to a value for a multiIndex
     template <typename... Types,
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
@@ -81,8 +82,9 @@ public:
     /// Sets a value at a multiIndex
     template <typename... Types
             ,typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true
-                    >
+    >
     void setvert(const Q value, const Types &... i) {data.at(i...) = value;}
+    void setvert(const Q value, const index_type & idx) {data.at(idx) = value;}
 
     auto get_dims() const {return data.length();}
 
