@@ -54,7 +54,7 @@ class BubbleFunctionCalculator{
 
     template<K_class diag_class> void calculate_bubble_function();
     template<K_class diag_class> Q get_value(int i_mpi, int i_omp, int n_omp);
-    template<K_class diag_class> void calculate_value(Q &value, int i0, int i_in,  int ispin, int iw, double w, double v, double vp);
+    template<K_class diag_class,int spin> void calculate_value(Q &value, int i0, int i_in, int iw, double w, double v, double vp);
 
     void write_out_results(const vec<Q>& Ordered_result, K_class diag_class);
     void write_out_results_K1(const vec<Q>& K1_ordered_result);
@@ -315,8 +315,8 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 
             trafo = get_trafo_K1(i0, w);
             if (trafo == 0 || HUBBARD_MODEL) {
-
-                calculate_value<diag_class>(value, i0, i_in, ispin, 0, w, 0, 0);
+                if (ispin == 0 or n_spin == 1)  calculate_value<diag_class,0>(value, i0, i_in, 0, w, 0, 0);
+                else                            calculate_value<diag_class,1>(value, i0, i_in, 0, w, 0, 0);
             } // TODO: Freqency symmetries for the Hubbard model?
             break;
         case k2:
@@ -324,7 +324,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                                                                     i_mpi, n_omp, i_omp);
 
             trafo = get_trafo_K2(i0, w, v);
-            if (trafo == 0 || HUBBARD_MODEL) {calculate_value<diag_class>(value, i0, i_in, ispin, 0, w, v, 0); }
+            if (trafo == 0 || HUBBARD_MODEL) {
+                if (ispin == 0 or n_spin == 1) calculate_value<diag_class,0>(value, i0, i_in, 0, w, v, 0);
+                else                           calculate_value<diag_class,1>(value, i0, i_in, 0, w, v, 0);}
             break;
 #ifdef DEBUG_SYMMETRIES
         case k2b:
@@ -334,7 +336,10 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             if (!KELDYSH and !ZERO_T and -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2b.frequencies.get_wlower_f()) {
                 trafo = -1;
             }
-            if (trafo == 0) {calculate_value<diag_class>(value, i0, i_in, ispin, 0, w, 0, vp); }
+            if (trafo == 0) {
+                if (ispin == 0 or n_spin == 1) calculate_value<diag_class,0>(value, i0, i_in, 0, w, 0, vp);
+                else                           calculate_value<diag_class,1>(value, i0, i_in, 0, w, 0, vp);
+            }
             break;
 #endif
         case k3:
@@ -343,7 +348,8 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 
             trafo = get_trafo_K3(i0, w, v, vp);
             if (trafo == 0 || HUBBARD_MODEL) {
-                calculate_value<diag_class>(value, i0, i_in, ispin, channel=='a' ? iw : (channel=='p' ? iv : ivp), w, v, vp);  // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+                if (ispin == 0 or n_spin == 1) calculate_value<diag_class,0>(value, i0, i_in, channel=='a' ? iw : (channel=='p' ? iv : ivp), w, v, vp);  // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
+                else                           calculate_value<diag_class,1>(value, i0, i_in, channel=='a' ? iw : (channel=='p' ? iv : ivp), w, v, vp);
             }
             break;
         default:;
@@ -353,10 +359,10 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 
 template<char channel, typename Q, vertexType symmetry_result, vertexType symmetry_left,
         vertexType symmetry_right, class Bubble_Object>
-template<K_class k>
+template<K_class k, int spin>
 void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
-        Bubble_Object>::calculate_value(Q& value, const int i0, const int i_in, const int ispin, const int iw,
+        Bubble_Object>::calculate_value(Q& value, const int i0, const int i_in, const int iw,
                                            const double w, const double v, const double vp){
 
     double vmin_temp = vmin;
@@ -371,8 +377,8 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             int i_spin = 0;
 #endif
             // initialize the integrand object and perform frequency integration
-            Integrand<k, channel, Q, symmetry_left, symmetry_right, Bubble_Object>
-                    integrand(vertex1, vertex2, Pi, i0, i2, ispin, iw, w, v, vp, i_in, i_spin, diff);
+            Integrand<k, channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>
+                    integrand(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, i_spin, diff);
             if constexpr(ZERO_T) {
                 switch (k) {
                     case k1:
@@ -422,7 +428,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         // asymptotic corrections include spin sum
         if ( !HUBBARD_MODEL and !ZERO_T) {
                 value += bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
-                                                                                  vmin_temp, vmax_temp, w, v, vp, i0, i2, i_in, diff, ispin);
+                                                                                  vmin_temp, vmax_temp, w, v, vp, i0, i2, i_in, diff, spin);
         }
 
     }

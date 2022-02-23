@@ -38,32 +38,32 @@ namespace saveIntegrand {
         switch (k_class) {
             case k1: {
                 if (channel == 'a') {
-                    Integrand<k1, 'a', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    Integrand<k1, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 'p') {
-                    Integrand<k1, 'p', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    Integrand<k1, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 't') {
-                    Integrand<k1, 't', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    Integrand<k1, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 break;
             }
             case k2: {
                 if (channel == 'a') {
-                    Integrand<k2, 'a', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    Integrand<k2, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 'p') {
-                    Integrand<k2, 'p', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    Integrand<k2, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 't') {
-                    Integrand<k2, 't', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    Integrand<k2, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
@@ -71,16 +71,16 @@ namespace saveIntegrand {
             }
             case k3: {
                 if (channel == 'a') {
-                    Integrand<k3, 'a', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    Integrand<k3, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
                     integrandK3.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 'p') {
-                    Integrand<k3, 'p', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    Integrand<k3, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
                     integrandK3.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 't') {
-                    Integrand<k3, 't', Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    Integrand<k3, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
                     integrandK3.save_integrand(freqs, filename_prefix);
                 }
                 break;

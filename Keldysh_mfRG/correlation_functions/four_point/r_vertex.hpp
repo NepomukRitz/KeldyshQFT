@@ -313,7 +313,7 @@ public:
      */
     void check_symmetries(std::string identifier, const rvert<Q>& rvert_this, const rvert<Q> &rvert_crossing) const;
 
-    template<char channel_bubble, bool is_left_vertex> void symmetry_expand(const rvert<Q> &rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
+    template<char channel_bubble, bool is_left_vertex> void symmetry_expand(const rvert<Q> &rvert_this, const rvert<Q> &rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel, int spin) const;
     void save_expanded(const std::string &filename) const;
 
 
@@ -766,16 +766,26 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
  * Iterates over all vertex components and fills in the value obtained from the symmetry-reduced sector
  * @tparam Q
  */
-template<typename Q> template<char channel_bubble, bool is_left_vertex> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
+template<typename Q> template<char channel_bubble, bool is_left_vertex> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel, const int spin) const {
     /// TODO: Currently copies frequency_grid of same rvertex; but might actually need the frequency grid of conjugate channel
-    K1_symmetry_expanded = vertexBuffer<k1,Q,INTERPOLATION>(0., K1_expanded_config.dims);
-    K1_symmetry_expanded.set_VertexFreqGrid(K1.get_VertexFreqGrid());
-    K2_symmetry_expanded = vertexBuffer<k2,Q,INTERPOLATION>(0., K2_expanded_config.dims);
-    K2_symmetry_expanded.set_VertexFreqGrid(K2.get_VertexFreqGrid());
-    K2b_symmetry_expanded = vertexBuffer<k2b,Q,INTERPOLATION>(0., K2_expanded_config.dims);
-    K2b_symmetry_expanded.set_VertexFreqGrid(K2.get_VertexFreqGrid());
-    K3_symmetry_expanded = vertexBuffer<k3,Q,INTERPOLATION>(0., K3_expanded_config.dims);
-    K3_symmetry_expanded.set_VertexFreqGrid(K3.get_VertexFreqGrid());
+    assert(0 <= spin and spin < 2);
+    K1_symmetry_expanded = vertexBuffer<k1, Q, INTERPOLATION>(0., K1_expanded_config.dims);
+    K2_symmetry_expanded = vertexBuffer<k2, Q, INTERPOLATION>(0., K2_expanded_config.dims);
+    K2b_symmetry_expanded = vertexBuffer<k2b, Q, INTERPOLATION>(0., K2_expanded_config.dims);
+    K3_symmetry_expanded = vertexBuffer<k3, Q, INTERPOLATION>(0., K3_expanded_config.dims);
+    if (spin == 0) {
+        K1_symmetry_expanded.set_VertexFreqGrid(rvert_this.K1.get_VertexFreqGrid());
+        K2_symmetry_expanded.set_VertexFreqGrid(rvert_this.K2.get_VertexFreqGrid());
+        K2b_symmetry_expanded.set_VertexFreqGrid(rvert_this.K2.get_VertexFreqGrid());
+        K3_symmetry_expanded.set_VertexFreqGrid(rvert_this.K3.get_VertexFreqGrid());
+    }
+    else {
+        K1_symmetry_expanded.set_VertexFreqGrid(rvert_crossing.K1.get_VertexFreqGrid());
+        K2_symmetry_expanded.set_VertexFreqGrid(rvert_crossing.K2.get_VertexFreqGrid());
+        K2b_symmetry_expanded.set_VertexFreqGrid(rvert_crossing.K2.get_VertexFreqGrid());
+        K3_symmetry_expanded.set_VertexFreqGrid(rvert_crossing.K3.get_VertexFreqGrid());
+    }
+
 
 
     // K1:
@@ -789,13 +799,14 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         my_defs::K1::index_type idx;
         getMultIndex<rank_K1>(idx, iflat, K1_symmetry_expanded.get_dims());
         int iK           = (int) idx[my_defs::K1::keldysh];
-        my_index_t ispin = idx[my_defs::K1::spin];
+        my_index_t ispin = spin; // idx[my_defs::K1::spin];
         my_index_t iw    = idx[my_defs::K1::omega];
         my_index_t i_in  = idx[my_defs::K1::internal];
+        assert(idx[my_defs::K1::spin] == 0);
         double w;
         K1_symmetry_expanded.frequencies.get_freqs_w(w, iw);
         VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
-        Q value = valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        Q value = rvert_this.template valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
         K1_symmetry_expanded.setvert(value, idx);
 
@@ -812,7 +823,8 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             my_defs::K2::index_type idx;
             getMultIndex<rank_K2>(idx, iflat, K2_symmetry_expanded.get_dims());
             int iK              = (int) idx[my_defs::K2::keldysh];
-            my_index_t ispin    = idx[my_defs::K2::spin];
+            my_index_t ispin    = spin; // idx[my_defs::K2::spin];
+            assert(idx[my_defs::K2::spin] == 0);
             my_index_t iw       = idx[my_defs::K2::omega];
             my_index_t iv       = idx[my_defs::K2::nu];
             my_index_t i_in     = idx[my_defs::K2::internal];
@@ -821,7 +833,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             double w, v;
             K2_symmetry_expanded.frequencies.get_freqs_w(w, v, iw, iv);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
-            Q value = valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            Q value = rvert_this.template valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K2_symmetry_expanded.setvert(value, idx);
 
@@ -837,7 +849,8 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             my_defs::K2::index_type idx;
             getMultIndex<rank_K2>(idx, iflat, K2b_symmetry_expanded.get_dims());
             int iK              = (int) idx[my_defs::K2b::keldysh];
-            my_index_t ispin    = idx[my_defs::K2b::spin];
+            my_index_t ispin    = spin; // idx[my_defs::K2b::spin];
+            assert(idx[my_defs::K2b::spin] == 0);
             my_index_t iw       = idx[my_defs::K2b::omega];
             my_index_t iv       = idx[my_defs::K2b::nup];
             my_index_t i_in     = idx[my_defs::K2b::internal];
@@ -845,7 +858,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             double w, vp;
             K2b_symmetry_expanded.frequencies.get_freqs_w(w, vp, iw, iv);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
-            Q value = valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            Q value = rvert_this.template valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K2b_symmetry_expanded.setvert(value, idx);
 
@@ -864,7 +877,8 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             my_defs::K3::index_type idx;
             getMultIndex<rank_K3>(idx, iflat, K3_symmetry_expanded.get_dims());
             int iK              = (int) idx[my_defs::K3::keldysh];
-            my_index_t ispin    = idx[my_defs::K3::spin];
+            my_index_t ispin    = spin; // idx[my_defs::K3::spin];
+            assert(idx[my_defs::K3::spin] == 0);
             my_index_t iw       = idx[my_defs::K3::omega];
             my_index_t iv       = idx[my_defs::K3::nu];
             my_index_t ivp      = idx[my_defs::K3::nup];
@@ -874,7 +888,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             double w, v, vp;
             K3_symmetry_expanded.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
-            Q value = valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+            Q value = rvert_this.template valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K3_symmetry_expanded.setvert(value, idx);
 
