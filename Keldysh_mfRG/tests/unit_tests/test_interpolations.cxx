@@ -211,7 +211,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
 
         double freq;
         if (INTERPOLATION == linear) freq = indices.w;
-        else freq = avertex.K1.frequencies.gridtransf_b(indices.w);
+        else freq = avertex.K1.frequencies.b.grid_transf(indices.w);
         double error = std::abs(avertex.K1.interpolate(indices) - linearFunction1D(freq));
         cumul_interpolation_error += error;
         errors[iw] = error;
@@ -273,11 +273,11 @@ if (INTERPOLATION == cubic) {
     vec<double> errors(N);
     double inter = 2. / double(N - 1);
     for (int iw = 1; iw < N - 1; iw++) {
-        indices.w = avertex.K1.frequencies.gridtransf_inv_b(-1. + iw * inter);
+        indices.w = avertex.K1.frequencies.b.grid_transf_inv(-1. + iw * inter);
 
         //values[iw] = avertex.K1.interpolate(indices); TODO: Does not always return a double!!
         double error = std::abs(
-                avertex.K1.interpolate(indices) - cubicFunction1D(avertex.K1.frequencies.gridtransf_b(indices.w)));
+                avertex.K1.interpolate(indices) - cubicFunction1D(avertex.K1.frequencies.b.grid_transf(indices.w)));
         cumul_interpolation_error += error;
         errors[iw] = error;
         if (error >= interpolation_tolerance) {
@@ -352,12 +352,12 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     double interf = (avertex.K2.frequencies.get_tupper_f_aux() - avertex.K2.frequencies.get_tlower_f_aux()) / double(M-1);
     for (int iw = 0; iw<N; iw++){
         for (int iv = 0; iv<M; iv++) {
-            indices.w  = avertex.K2.frequencies.gridtransf_inv_b(avertex.K2.frequencies.get_tlower_b_aux() + iw*interb);
-            indices.v1 = avertex.K2.frequencies.gridtransf_inv_f(avertex.K2.frequencies.get_tlower_f_aux() + iv*interf);
+            indices.w  = avertex.K2.frequencies.b.grid_transf_inv(avertex.K2.frequencies.get_tlower_b_aux() + iw*interb);
+            indices.v1 = avertex.K2.frequencies.f.grid_transf_inv(avertex.K2.frequencies.get_tlower_f_aux() + iv*interf);
 
             double freqw, freqv;
             if (INTERPOLATION == linear) {freqw = indices.w; freqv = indices.v1;}
-            else {freqw = avertex.K2.frequencies.gridtransf_b(indices.w); freqv = avertex.K2.frequencies.gridtransf_f(indices.v1);}
+            else {freqw = avertex.K2.frequencies.b.grid_transf(indices.w); freqv = avertex.K2.frequencies.gridtransf_f(indices.v1);}
             error = std::abs(avertex.K2.interpolate(indices) -  linearFunction2D(freqw, freqv));
             cumul_interpolation_error += error;
             errors[iw*M+iv] = error;
@@ -429,12 +429,12 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         double interf = (avertex.K2.frequencies.get_tupper_f_aux() - avertex.K2.frequencies.get_tlower_f_aux()) / double(M - 1);
         for (int iw = 0; iw < N; iw++) {
             for (int iv = 0; iv < M; iv++) {
-                indices.w  = avertex.K2.frequencies.gridtransf_inv_b(avertex.K2.frequencies.get_tlower_b_aux() + iw * interb);
-                indices.v1 = avertex.K2.frequencies.gridtransf_inv_f(avertex.K2.frequencies.get_tlower_f_aux() + iv * interf);
+                indices.w  = avertex.K2.frequencies.b.grid_transf_inv(avertex.K2.frequencies.get_tlower_b_aux() + iw * interb);
+                indices.v1 = avertex.K2.frequencies.f.grid_transf_inv(avertex.K2.frequencies.get_tlower_f_aux() + iv * interf);
 
                 values[iw * M + iv] = avertex.K2.interpolate(indices);
                 error = std::abs(avertex.K2.interpolate(indices) -
-                                 cubicFunction2D(avertex.K2.frequencies.gridtransf_b(indices.w), avertex.K2.frequencies.gridtransf_f(indices.v1)));
+                                 cubicFunction2D(avertex.K2.frequencies.b.grid_transf(indices.w), avertex.K2.frequencies.gridtransf_f(indices.v1)));
                 cumul_interpolation_error += error;
                 errors[iw * M + iv] = error;
                 if (error >= interpolation_tolerance) {
@@ -515,7 +515,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
 
                 double freqw, freqv, freqvp;
                 if (INTERPOLATION == linear) {freqw = indices.w; freqv = indices.v1; freqvp = indices.v2;}
-                else {freqw = avertex.K3.K3_gridtransf_b(indices.w); freqv = avertex.K3.K3_gridtransf_f(indices.v1); freqvp = avertex.K3.K3_gridtransf_f(indices.v2);}
+                else {freqw = avertex.K3.frequencies.b.grid_transf(indices.w); freqv = avertex.K3.frequencies.f.grid_transf(indices.v1); freqvp = avertex.K3.frequencies.f.grid_transf(indices.v2);}
 
                 error = std::abs(
                         avertex.K3.interpolate(indices) - linearFunction3D(freqw, freqv, freqvp));
@@ -588,14 +588,14 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         for (int iw = 1; iw < N - 1; iw++) {
             for (int iv = 1; iv < M - 1; iv++) {
                 for (int ivp = 1; ivp < M - 1; ivp++) {
-                    indices.w  = avertex.K3.K3_gridtransf_inv_b(-1 + iw * interb);
-                    indices.v1 = avertex.K3.K3_gridtransf_inv_f(-1 + iv * interf);
-                    indices.v2 = avertex.K3.K3_gridtransf_inv_f(-1 + ivp * interf);
+                    indices.w  = avertex.K3.frequencies.b.grid_transf_inv(-1 + iw * interb);
+                    indices.v1 = avertex.K3.frequencies.f.grid_transf_inv(-1 + iv * interf);
+                    indices.v2 = avertex.K3.frequencies.f.grid_transf_inv(-1 + ivp * interf);
 
                     error = std::abs(
                             avertex.K3.interpolate(indices) -
-                            cubicFunction3D(avertex.K3.K3_gridtransf_b(indices.w), avertex.K3.K3_gridtransf_f(indices.v1),
-                                            avertex.K3.K3_gridtransf_f(indices.v2)));
+                            cubicFunction3D(avertex.K3.frequencies.b.grid_transf(indices.w), avertex.K3.frequencies.f.grid_transf(indices.v1),
+                                            avertex.K3.frequencies.f.grid_transf(indices.v2)));
                     cumul_interpolation_error += error;
                     values[(iw * M + iv) * M + ivp] = avertex.K3.interpolate(indices);
                     errors[(iw * M + iv) * M + ivp] = error;
@@ -634,21 +634,21 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
     if (KELDYSH) {
 
         using result_type = Eigen::Matrix<state_datatype, 4, 1>;
-        using result_type_full = Eigen::Matrix<state_datatype, 4, K1_config.dims_flat/4>;
+        using result_type_full = Eigen::Matrix<state_datatype, 4, K1_expanded_config.dims_flat/4>;
 
         const char channel = 'a';
         double Lambda = 1.8;
         rvert<state_datatype> rvertex(channel, Lambda, true);
 
         SECTION("K1") {
-            using result_type_full = Eigen::Matrix<state_datatype, 4, K1_config.dims_flat/4>;
+            using result_type_full = Eigen::Matrix<state_datatype, 4, K1_expanded_config.dims_flat/4>;
             result_type_full result_scalar_full;
             result_type_full result_vector_full;
             result_type_full deviation_full;
 
             // fill VertexBuffer with values
             double value = 0;
-            for (my_index_t iflat = 0; iflat < K1_config.dims_flat; iflat++) {
+            for (my_index_t iflat = 0; iflat < K1_expanded_config.dims_flat; iflat++) {
 
                 my_defs::K1::index_type idx;
                 getMultIndex<rank_K1>(idx, iflat, rvertex.K1.get_dims());
@@ -666,7 +666,7 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
             // Interpolate
             int counter = 0;
-            for (my_index_t iflat = 0; iflat < K1_config.dims_flat; iflat++) {
+            for (my_index_t iflat = 0; iflat < K1_expanded_config.dims_flat; iflat++) {
 
                 my_defs::K1::index_type idx;
                 getMultIndex<rank_K1>(idx, iflat, rvertex.K1.get_dims());
@@ -695,11 +695,11 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
                 H5::H5File file("test_vectorized_interpolation", H5F_ACC_TRUNC);
                 write_to_hdf(file, "scalar", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K1_config.dims_flat / 4}), result_scalar_full), false);
+                        std::array<size_t, 2>({4, K1_expanded_config.dims_flat / 4}), result_scalar_full), false);
                 write_to_hdf(file, "vector", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K1_config.dims_flat / 4}), result_vector_full), false);
+                        std::array<size_t, 2>({4, K1_expanded_config.dims_flat / 4}), result_vector_full), false);
                 write_to_hdf(file, "deviation", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K1_config.dims_flat / 4}), deviation_full), false);
+                        std::array<size_t, 2>({4, K1_expanded_config.dims_flat / 4}), deviation_full), false);
                 file.close();
 
 
@@ -710,13 +710,13 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
         }
 
         SECTION("K2") {
-            using result_type_full = Eigen::Matrix<state_datatype, 4, K2_config.dims_flat/4>;
+            using result_type_full = Eigen::Matrix<state_datatype, 4, K2_expanded_config.dims_flat/4>;
             result_type_full result_scalar_full;
             result_type_full result_vector_full;
             result_type_full deviation_full;
             // fill VertexBuffer with values
             double value = 0;
-            for (my_index_t iflat = 0; iflat < K2_config.dims_flat; iflat++) {
+            for (my_index_t iflat = 0; iflat < K2_expanded_config.dims_flat; iflat++) {
                 my_index_t iK;
                 my_index_t ispin, iw, iv, i_in;
                 getMultIndex<5, my_index_t, my_index_t, my_index_t, my_index_t, my_index_t>(ispin, iw, iv, iK, i_in, iflat,
@@ -727,7 +727,7 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
             // Interpolate
             int counter = 0;
-            for (my_index_t iflat = 0; iflat < K2_config.dims_flat; iflat++) {
+            for (my_index_t iflat = 0; iflat < K2_expanded_config.dims_flat; iflat++) {
 
                 my_defs::K2::index_type idx;
                 getMultIndex<rank_K2>(idx, iflat, rvertex.K2.get_dims());
@@ -757,11 +757,11 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
                 H5::H5File file("test_vectorized_interpolation_K2", H5F_ACC_TRUNC);
                 write_to_hdf(file, "scalar", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K2_config.dims_flat / 4}), result_scalar_full), false);
+                        std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_scalar_full), false);
                 write_to_hdf(file, "vector", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K2_config.dims_flat / 4}), result_vector_full), false);
+                        std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_vector_full), false);
                 write_to_hdf(file, "deviation", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K2_config.dims_flat / 4}), deviation_full), false);
+                        std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), deviation_full), false);
                 file.close();
 
 
