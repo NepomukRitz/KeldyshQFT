@@ -84,9 +84,9 @@ constexpr buffer_config<5> K2_config{.dims = std::array<size_t,5>({n_spin, nBOS2
 constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, nK_K3, n_in_K3}), .num_freqs=3};
 
 constexpr buffer_config<3> SE_expanded_config{.dims = std::array<size_t,3>({ KELDYSH ?  4 : 1, nFER, n_in_K1}), .num_freqs=1};
-constexpr buffer_config<4> K1_expanded_config{.dims = std::array<size_t,4>({n_spin_expanded, nBOS, KELDYSH ?  16 : 1, n_in_K1}), .num_freqs=1};
-constexpr buffer_config<5> K2_expanded_config{.dims = std::array<size_t,5>({n_spin_expanded, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2}), .num_freqs=2};
-constexpr buffer_config<6> K3_expanded_config{.dims = std::array<size_t,6>({n_spin_expanded, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3}), .num_freqs=3};
+constexpr buffer_config<4> K1_expanded_config{.dims = std::array<size_t,4>({1, nBOS, KELDYSH ?  16 : 1, n_in_K1}), .num_freqs=1};
+constexpr buffer_config<5> K2_expanded_config{.dims = std::array<size_t,5>({1, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2}), .num_freqs=2};
+constexpr buffer_config<6> K3_expanded_config{.dims = std::array<size_t,6>({1, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3}), .num_freqs=3};
 
 constexpr unsigned int pos_first_freq = 1;  // position of first frequency index
 

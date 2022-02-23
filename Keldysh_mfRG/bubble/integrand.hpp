@@ -85,7 +85,7 @@ public:
 
 
 /// Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class
-template <K_class diag_class, char channel, typename Q,
+template <K_class diag_class, char channel, int spin, typename Q,
         vertexType symmetry_left,
         vertexType symmetry_right,
         class Bubble_Object>
@@ -103,7 +103,6 @@ private:
     const int iw=0;
     const double w, v = 0., vp = 0.;
     const bool diff;
-    const int spin;
 
     using buffer_type_vertex_l = Eigen::Matrix<Q,1,KELDYSH?4:1>;
     using buffer_type_vertex_r = Eigen::Matrix<Q,KELDYSH?4:1,1>; // buffer_type_vertex_l;
@@ -120,10 +119,10 @@ private:
 
     void compute_vertices(double vpp, Q& res_l_V, Q& res_r_V, Q& res_l_Vhat, Q& res_r_Vhat) const;
 
-    void load_vertex_keldyshComponents_left_scalar (buffer_type_vertex_l& values_vertex, const VertexInput& input) const;
-    void load_vertex_keldyshComponents_right_scalar(buffer_type_vertex_r& values_vertex, const VertexInput& input) const;
-    void load_vertex_keldyshComponents_left_vectorized (buffer_type_vertex_l& values_vertex, const VertexInput& input) const;
-    void load_vertex_keldyshComponents_right_vectorized(buffer_type_vertex_r& values_vertex, const VertexInput& input) const;
+    template<int ispin> void load_vertex_keldyshComponents_left_scalar (buffer_type_vertex_l& values_vertex, const VertexInput& input) const;
+    template<int ispin> void load_vertex_keldyshComponents_right_scalar(buffer_type_vertex_r& values_vertex, const VertexInput& input) const;
+    template<int ispin> void load_vertex_keldyshComponents_left_vectorized (buffer_type_vertex_l& values_vertex, const VertexInput& input) const;
+    template<int ispin> void load_vertex_keldyshComponents_right_vectorized(buffer_type_vertex_r& values_vertex, const VertexInput& input) const;
 
     Q sum_over_internal_scalar(const VertexInput& input_external, double vpp) const;
     Q sum_over_internal_vectorized(const VertexInput& input_external, double vpp) const;
@@ -150,10 +149,10 @@ private:
     Integrand(const GeneralVertex<Q, symmetry_left>& vertex1_in,
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
-              int i0_in, int i2_in, const int spin_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
+              int i0_in, int i2_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
               const int i_spin_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
-              i2(i2_in), spin(spin_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), diff(diff_in){
+              i2(i2_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), diff(diff_in){
         set_Keldysh_index_i0(i0_in);
         if (MAX_DIAG_CLASS < 2) {precompute_vertices();}
     }
@@ -170,8 +169,8 @@ private:
     void get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im)  const;
 };
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0(const int i0_in) {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0(const int i0_in) {
     if (KELDYSH){
 #ifndef DEBUG_SYMMETRIES
         switch (diag_class) {
@@ -210,16 +209,16 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 
 // i0_in in {0,...,15}
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0_left_right(const int i0_in) {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::set_Keldysh_index_i0_left_right(const int i0_in) {
     my_index_t left, right;
     get_i0_left_right<channel>(i0_in, left, right);
     i0_left  = left * 4; //
     i0_right = right * 4; //
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vertices(){
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vertices(){
     // For K1 class, left and right vertices do not depend on integration frequency
     // -> precompute them to save time
 #ifndef DEBUG_SYMMETRIES
@@ -274,8 +273,8 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 #endif // DEBUG_SYMMETRIES
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-auto Integrand<diag_class, channel, Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+auto Integrand<diag_class, channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::operator()(double vpp) const -> Q {
     Q result;
 #ifndef SWITCH_SUM_N_INTEGRAL
 
@@ -339,7 +338,7 @@ auto Integrand<diag_class, channel, Q, symmetry_left, symmetry_right, Bubble_Obj
 
     /// TODO: fix conflict with sum over internal spins
     //assert(false);
-    VertexInput input_external (i0, spin, w, v, vp, i_in, channel, diag_class, iw);
+    VertexInput input_external (i0, 0, w, v, vp, i_in, channel, diag_class, iw);
 
     //result = sum_over_internal_scalar(input_external, vpp);
     result = sum_over_internal_vectorized(input_external, vpp);
@@ -352,8 +351,8 @@ auto Integrand<diag_class, channel, Q, symmetry_left, symmetry_right, Bubble_Obj
     return result;
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-bool Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has_to_be_zero() const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+bool Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::case_always_has_to_be_zero() const {
     bool zero_result = false;
     if (KELDYSH && (MAX_DIAG_CLASS <= 1)){
         if (!diff) {
@@ -386,8 +385,8 @@ bool Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
     return zero_result;
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertices(const double vpp,
                                                                                   Q& res_l_V, Q& res_r_V,
                                                                                   Q& res_l_Vhat, Q& res_r_Vhat) const{
     if (MAX_DIAG_CLASS <= 1){
@@ -469,10 +468,11 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
     }
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_left_scalar(buffer_type_vertex_l& values_vertex, const VertexInput& input) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+template<int ispin>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_left_scalar(buffer_type_vertex_l& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
-    const auto vertexvalue_scalar = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<channel,Q>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<channel,Q>(input_l);};
+    const auto vertexvalue_scalar = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<ispin,channel,Q>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<ispin,channel,Q>(input_l);};
     //const auto vertexvalue_scalar = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare<channel>(input_l) ; else return vertex1.template left_diff_bare<channel>(input_l);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
@@ -528,10 +528,11 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_right_scalar(buffer_type_vertex_r& values_vertex, const VertexInput& input) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+template<int ispin>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_right_scalar(buffer_type_vertex_r& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
-    const auto vertexvalue_scalar = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<channel,Q>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<channel,Q>(input_r);};
+    const auto vertexvalue_scalar = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<ispin,channel,Q>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<ispin,channel,Q>(input_r);};
     //const auto vertexvalue_scalar = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare<channel>(input_r); else return vertex2.template right_same_bare<channel>(input_r);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
@@ -584,11 +585,12 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 }
 
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_left_vectorized(buffer_type_vertex_l& values_vertex, const VertexInput& input) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+template<int ispin>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_left_vectorized(buffer_type_vertex_l& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
     using result_type = Eigen::Matrix<Q,4,1>;
-    const auto vertexvalue_vector = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<channel,result_type>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<channel,result_type>(input_l);};
+    const auto vertexvalue_vector = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<ispin,channel,result_type>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<ispin,channel,result_type>(input_l);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
     if constexpr(not KELDYSH) {
@@ -601,11 +603,12 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 }
 
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_right_vectorized(buffer_type_vertex_r& values_vertex, const VertexInput& input) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+template<int ispin>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_right_vectorized(buffer_type_vertex_r& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
     using result_type = Eigen::Matrix<Q,4,1>;
-    const auto vertexvalue_vector = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<channel,result_type>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<channel,result_type>(input_r);};
+    const auto vertexvalue_vector = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<ispin,channel,result_type>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<ispin,channel,result_type>(input_r);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
     if constexpr(not KELDYSH) {
@@ -618,12 +621,13 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 }
 
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::sum_over_internal_scalar(const VertexInput& input_external, const double vpp) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::sum_over_internal_scalar(const VertexInput& input_external, const double vpp) const {
 
     VertexInput input_l = input_external, input_r = input_external;
     input_l.v2 = vpp; input_r.v1 = vpp;
     input_l.iK = i0_left; input_r.iK = i0_right;
+    input_l.spin = 0; input_r.spin = 0;
 
     // create multiarrays to store loaded values
     buffer_type_vertex_l values_vertex_l;
@@ -631,8 +635,8 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
     auto Pi_matrix = Pi.template value_vectorized<channel>(input_external.w, vpp, input_external.i_in);
     // load vertex values:
     int spin_idx = 0;
-    load_vertex_keldyshComponents_left_scalar (values_vertex_l, input_l);
-    load_vertex_keldyshComponents_right_scalar(values_vertex_r, input_r);
+    load_vertex_keldyshComponents_left_scalar<spin> (values_vertex_l, input_l);
+    load_vertex_keldyshComponents_right_scalar<spin>(values_vertex_r, input_r);
 
     /// Comment in to compare with vectorized access to vertices:
     //buffer_type_vertex_l values_vertex_l_test;
@@ -657,20 +661,17 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
 
     Q result;
     // load other spin component
-    if ((channel == 't' and input_external.spin == 0)
+    if constexpr ((channel == 't' and spin == 0)
 #ifdef DEBUG_SYMMETRIES
-        or (channel == 'a' and input_external.spin == 1)
+        or (channel == 'a' and spin == 1)
 #endif
             ){
 
         buffer_type_vertex_l values_vertex_l_other;
         buffer_type_vertex_r values_vertex_r_other;
-        input_l.spin = 1 - input_external.spin;
-        input_r.spin = 1 - input_external.spin;
-        spin_idx = 1;
 
-        load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
-        load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
+        load_vertex_keldyshComponents_left_scalar <1-spin>(values_vertex_l_other, input_l);
+        load_vertex_keldyshComponents_right_scalar<1-spin>(values_vertex_r_other, input_r);
         result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r + values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
 
     }
@@ -687,15 +688,12 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
 
             result = (values_vertex_l * Pi_matrix * values_vertex_r +  values_vertex_l_other * Pi_matrix * values_vertex_r_other) * 0.5;
         }*/
-    else if (channel == 'p' and input_external.spin == 1) {
+    else  if constexpr(channel == 'p' and spin == 1) {
         buffer_type_vertex_l values_vertex_l_other;
         buffer_type_vertex_r values_vertex_r_other;
-        input_l.spin = 1 - input_external.spin;
-        input_r.spin = 1 - input_external.spin;
-        spin_idx = 1;
 
-        load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
-        load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
+        load_vertex_keldyshComponents_left_scalar <1-spin>(values_vertex_l_other, input_l);
+        load_vertex_keldyshComponents_right_scalar<1-spin>(values_vertex_r_other, input_r);
 
             result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
         }
@@ -758,12 +756,14 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
 }
 
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::sum_over_internal_vectorized(const VertexInput& input_external, const double vpp) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::sum_over_internal_vectorized(const VertexInput& input_external, const double vpp) const {
 
     VertexInput input_l = input_external, input_r = input_external;
     input_l.v2 = vpp; input_r.v1 = vpp;
     input_l.iK = i0_left; input_r.iK = i0_right;
+    input_l.spin = 0;
+    input_r.spin = 0;
 
     // create multiarrays to store loaded values
     buffer_type_vertex_l values_vertex_l;
@@ -772,8 +772,8 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
     auto Pi_matrix = Pi.template value_vectorized<channel>(input_external.w, vpp, input_external.i_in);
     // load vertex values:
     int spin_idx = 0;
-    load_vertex_keldyshComponents_left_vectorized (values_vertex_l, input_l);
-    load_vertex_keldyshComponents_right_vectorized(values_vertex_r, input_r);
+    load_vertex_keldyshComponents_left_vectorized <spin>(values_vertex_l, input_l);
+    load_vertex_keldyshComponents_right_vectorized<spin>(values_vertex_r, input_r);
 
     /// Comment in to compare with vectorized access to vertices:
     //buffer_type_vertex_l values_vertex_l_test;
@@ -797,20 +797,17 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
 
     Q result;
     // load other spin component
-    if ((channel == 't' and input_external.spin == 0)
+    if constexpr ((channel == 't' and spin == 0)
 #ifdef DEBUG_SYMMETRIES
-        or (channel == 'a' and input_external.spin == 1)
+        or (channel == 'a' and spin == 1)
 #endif
             ){
 
         buffer_type_vertex_l values_vertex_l_other;
         buffer_type_vertex_r values_vertex_r_other;
-        input_l.spin = 1 - input_external.spin;
-        input_r.spin = 1 - input_external.spin;
-        spin_idx = 1;
 
-        load_vertex_keldyshComponents_left_vectorized (values_vertex_l_other, input_l);
-        load_vertex_keldyshComponents_right_vectorized(values_vertex_r_other, input_r);
+        load_vertex_keldyshComponents_left_vectorized <1-spin>(values_vertex_l_other, input_l);
+        load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_other, input_r);
         result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r + values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
 
     }
@@ -827,15 +824,12 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
 //
     //    result = (values_vertex_l * Pi_matrix * values_vertex_r +  values_vertex_l_other * Pi_matrix * values_vertex_r_other).eval()[0] * 0.5;
     //}
-    else if (channel == 'p' and input_external.spin == 1) {
+    else if constexpr(channel == 'p' and spin == 1) {
         buffer_type_vertex_l values_vertex_l_other;
         buffer_type_vertex_r values_vertex_r_other;
-        input_l.spin = 1 - input_external.spin;
-        input_r.spin = 1 - input_external.spin;
-        spin_idx = 1;
 
-        load_vertex_keldyshComponents_left_vectorized (values_vertex_l_other, input_l);
-        load_vertex_keldyshComponents_right_vectorized(values_vertex_r_other, input_r);
+        load_vertex_keldyshComponents_left_vectorized <1-spin>(values_vertex_l_other, input_l);
+        load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_other, input_r);
         result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval()[0];
     }
 #endif
@@ -896,8 +890,8 @@ Q Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>
     return result;
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im) const {
     int npoints = freqs.size();
     for (int i=0; i<npoints; ++i) {
 
@@ -930,8 +924,8 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
     int npoints = 10000;//nBOS;
     if (diag_class == k2) {npoints = 1000;}
@@ -969,8 +963,8 @@ void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Obje
 
 }
 
-template<K_class diag_class, char channel, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
-void Integrand<diag_class,channel, Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
+template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
     /// evaluate the integrand on frequency points in freqs
     int npoints = freqs.size();
 
