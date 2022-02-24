@@ -371,9 +371,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 template <typename Q>
 class rhs_n_loop_flow_t {
 public:
-    std::size_t rk_step = 0;
-    std::size_t iteration = 0;
-            void operator() (const State<Q>& Psi, State<Q>& dState_dLambda,  const double Lambda) {
+    mutable std::size_t rk_step = 0;
+    mutable std::size_t iteration = 0;
+            void operator() (const State<Q>& Psi, State<Q>& dState_dLambda,  const double Lambda) const {
                 dState_dLambda = rhs_n_loop_flow(Psi, Lambda, vec<size_t>({iteration, rk_step}));
                 rk_step++;
             }
