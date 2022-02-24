@@ -217,6 +217,36 @@ inline void getMultIndex(Types &... i, const size_t iflat, const std::array<size
     ((i = temp[it], it++), ...);
 }
 
+/// Convert iflat into a multi-index while keeping the idim-th dimension fixed
+/// (i.e. assuming that the idim-th direction has dimension = 1)
+template <size_t rank, size_t idim>
+inline void getMultIndexSkippingOneDimension(std::array<size_t,rank>&  indx, const size_t iflat, const std::array<size_t,rank>&  dims)
+{
+    static_assert(idim < rank, "idim must be smaller than rank.");
+    size_t temp = iflat;
+    size_t dimtemp = 1;
+    for (int it = 1; it < idim; it++) {
+        dimtemp *= dims[it];
+    }
+    for (int it = idim+1; it < rank; it++) {
+        dimtemp *= dims[it];
+    }
+    if constexpr (idim != 0) {
+        indx[0] = temp / dimtemp;
+        temp -= indx[0] * dimtemp;
+    }
+    for (int it = 1; it < idim; it++) {
+        dimtemp = dimtemp / dims[it];
+        indx[it] = temp / dimtemp;
+        temp -= indx[it] * dimtemp;
+    }
+    for (int it = idim+1; it < rank; it++) {
+        dimtemp = dimtemp / dims[it];
+        indx[it] = temp / dimtemp;
+        temp -= indx[it] * dimtemp;
+    }
+}
+
 /**
  * Takes a flat index and returns a flat index for a vector with rotated directions
  * @tparam rank             rank of tensor (number of "directions")
