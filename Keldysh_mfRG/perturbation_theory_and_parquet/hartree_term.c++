@@ -33,3 +33,26 @@ void Hartree_Solver::friedel_sum_rule_check() const {
     print("Filling from the Friedel sum rule, valid at zero T = " + std::to_string(filling_friedel), true);
     print("Relative difference = " + std::to_string(std::abs((filling - filling_friedel) / filling)), true);
 }
+
+void Hartree_Solver::write_out_propagators() const {
+    Propagator<comp> G (Lambda, Sigma, 'g');
+    rvec GR_real = {};
+    rvec GR_imag = {};
+    rvec GK_real = {};
+    rvec GK_imag = {};
+    rvec freqs = G.selfenergy.frequencies.get_ws_vec();
+    for (double nu : freqs) {
+        GR_real.push_back(G.GR(nu, 0).real());
+        GR_imag.push_back(G.GR(nu, 0).imag());
+        GK_real.push_back(G.GK(nu, 0).real());
+        GK_imag.push_back(G.GK(nu, 0).imag());
+    }
+
+    const std::string filename = data_dir + "Hartree_Propagators_with_U_over_Delta_" \
+    + std::to_string(glb_U / Delta) + "_and_eVg_over_U_" + std::to_string(glb_Vg / glb_U) + ".h5";
+
+    write_h5_rvecs(filename,
+                   {"GR_real", "GR_imag", "GK_real", "GK_imag", "freqs"},
+                   {GR_real, GR_imag, GK_real, GK_imag, freqs});
+
+}

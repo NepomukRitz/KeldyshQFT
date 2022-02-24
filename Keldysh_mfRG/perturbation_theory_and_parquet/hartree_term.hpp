@@ -6,6 +6,7 @@
 #include "../correlation_functions/two_point/selfenergy.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
 #include "../integrator/integrator.hpp"
+#include "../utilities/write_data2file.hpp"
 #include <cassert>
 #include <cmath>
 
@@ -32,6 +33,7 @@ public:
     double compute_Hartree_term(double convergence_threshold = 1e-12);
     auto operator()(double nu) const -> double;
     void friedel_sum_rule_check() const;
+    void write_out_propagators() const ;
 };
 
 #endif //FPP_MFRG_HARTREE_TERM_HPP

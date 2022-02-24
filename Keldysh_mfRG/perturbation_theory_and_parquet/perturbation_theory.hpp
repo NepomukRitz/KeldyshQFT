@@ -247,10 +247,14 @@ private:
     void write_out_results() const;
 
 public:
-    PT_Machine(const unsigned int order_in, const double Lambda_in): order(order_in), Lambda(Lambda_in){
+    PT_Machine(const unsigned int order_in, const double Lambda_in, const bool write_results=true): order(order_in), Lambda(Lambda_in){
         assert((order > 0) and (order < 5));
         static_assert(MAX_DIAG_CLASS == 3);
-        assert(KELDYSH); //
+        assert(KELDYSH);
+#ifndef DEBUG_SYMMETRIES
+        print("Cannot use spin symmetries for these calculations.");
+        assert(false);
+#endif
         print("Perturbation Theory for the SIAM up to order " + std::to_string(order)
         + " in the Keldysh formalism for the fully retarded vertex components at zero frequency.", true);
         print("For this run we have U over Delta = " + std::to_string(U_over_Delta)
@@ -261,8 +265,10 @@ public:
         if (order >= 3) compute_TOPT();
         if (order == 4) compute_FOPT();
 
-        write_out_results();
+        if (write_results) write_out_results();
     };
+
+    void debug_TOPT();
 };
 
 template<typename Q>
@@ -338,7 +344,7 @@ void PT_Machine<Q>::compute_FOPT() {
         bubble_function(FOPT_Vertex, SOPT_Vertex, SOPT_Vertex, Pi, r);      // K3 + K1, K2 and K2p terms from the same channel
 
         // Compensate for counting K1 twice in the first two steps
-        print("...and compensate for counting K1 twice...");
+        print("...and compensate for counting K1 twice...", true);
         Vertex<Q> K1_comp_step1 = Vertex<Q>(Lambda);
         Vertex<Q> K1_comp = Vertex<Q>(Lambda);
         bubble_function(K1_comp_step1, bareState.vertex, SOPT_Vertex, Pi, r);
@@ -349,7 +355,7 @@ void PT_Machine<Q>::compute_FOPT() {
     }
 
     // Compensate overcounting K1, K2 and K2p terms in the third step
-    print("Compensate for overcounting K1, K2 and K2p terms before...");
+    print("Compensate for overcounting K1, K2 and K2p terms before...", true);
     Vertex<Q> K2_comp = Vertex<Q>(Lambda);
     bubble_function(K2_comp, SOPT_Vertex, SOPT_avertex, Pi, 'a');
     bubble_function(K2_comp, SOPT_Vertex, SOPT_pvertex, Pi, 'p');
@@ -364,7 +370,7 @@ void PT_Machine<Q>::compute_FOPT() {
     FOPT_Vertex -= K2p_comp;
 
     // Compensate for compensating for the ladder twice in the previous step
-    print("... and compensate for overcompensating the ladder in the previous step...");
+    print("... and compensate for overcompensating the ladder in the previous step...", true);
     Vertex<Q> Ladder_comp = Vertex<Q>(Lambda);
     bubble_function(Ladder_comp, SOPT_avertex, SOPT_avertex, Pi, 'a');
     bubble_function(Ladder_comp, SOPT_pvertex, SOPT_pvertex, Pi, 'p');
@@ -441,6 +447,42 @@ void PT_Machine<Q>::write_out_results() const {
                    {SOPT, TOPT_K1, TOPT_K2, TOPT_K2p, FOPT_K1, FOPT_K2, FOPT_K2p, FOPT_K3});
 
     print("...done.", true);
+}
+
+template<typename Q>
+void PT_Machine<Q>::debug_TOPT() {
+    Vertex<Q> TOPT_K1_a = Vertex<Q>(Lambda);
+    Vertex<Q> TOPT_K1_p = Vertex<Q>(Lambda);
+    Vertex<Q> TOPT_K1_t_left = Vertex<Q>(Lambda);
+    Vertex<Q> TOPT_K1_t_right = Vertex<Q>(Lambda);
+
+    print("Now calculating K1 contribution for third order...", true);
+    print("...in the a channel...", true);
+    bubble_function(TOPT_K1_a, SOPT_avertex, bareState.vertex, Pi, 'a');
+    print("...in the p channel...", true);
+    bubble_function(TOPT_K1_p, SOPT_pvertex, bareState.vertex, Pi, 'p');
+    print("...in the t channel the one way...", true);
+    bubble_function(TOPT_K1_t_left, SOPT_tvertex, bareState.vertex, Pi, 't');
+    print("...the other way...", true);
+    bubble_function(TOPT_K1_t_right, bareState.vertex, SOPT_tvertex, Pi, 't');
+    print("...done.", true);
+
+    VertexInput a_input (7, 0, 0, 0, 0, 0, 'a');
+    VertexInput p_input (7, 0, 0, 0, 0, 0, 'p');
+    VertexInput t_input (7, 0, 0, 0, 0, 0, 't');
+
+    double exact = - 1./2. * (U_over_Delta/M_PI) * (U_over_Delta/M_PI) * glb_U;
+
+    const double TOPT_K1_a_val = TOPT_K1_a.value(a_input).real();
+    const double TOPT_K1_p_val = TOPT_K1_p.value(p_input).real();
+    const double TOPT_K1_t_left_val = TOPT_K1_t_left.value(t_input).real();
+    const double TOPT_K1_t_right_val = TOPT_K1_t_right.value(t_input).real();
+
+    print("K1_a val in units of exact result = " + std::to_string(TOPT_K1_a_val / exact), true);
+    print("K1_p val in units of exact result = " + std::to_string(TOPT_K1_p_val / exact), true);
+    print("K1_t_left_val in units of exact result = " + std::to_string(TOPT_K1_t_left_val / exact), true);
+    print("K1_t_right_val in units of exact result = " + std::to_string(TOPT_K1_t_right_val / exact), true);
+
 }
 
 
