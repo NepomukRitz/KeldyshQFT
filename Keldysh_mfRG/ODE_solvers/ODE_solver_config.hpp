@@ -22,7 +22,7 @@ static ODE_solver_config ODE_solver_config_standard{
     .iter_start = 0,
     .lambda_checkpoints = {},
     .filename = "",
-    .max_stepResizing_attempts = 10,
+    .max_stepResizing_attempts = 1000,
     .relative_error = epsODE_rel,
     .absolute_error = epsODE_abs,
     .a_State = 1.,

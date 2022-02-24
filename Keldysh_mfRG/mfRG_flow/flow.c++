@@ -103,6 +103,8 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const int it
         rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
         ODE_solver_config config = ODE_solver_config_standard;
         config.iter_start = it_start;
+        config.lambda_checkpoints = Lambda_checkpoints;
+        config.filename = inputFileName;
         using namespace boost::numeric::odeint;
         ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
 
