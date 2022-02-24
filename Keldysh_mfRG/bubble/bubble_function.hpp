@@ -228,15 +228,15 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     if (MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function(k1);
         tK1 = get_time() - t_start;
-        //print("K1", channel, " done, ");
-        //get_time(t_start);
+        print("K1", channel, " done, ");
+        get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
         calculate_bubble_function(k2);
         tK2 = get_time() - t_start;
-        //print("K2", channel, " done, ");
-        //get_time(t_start);
+        print("K2", channel, " done, ");
+        get_time(t_start);
 
 #ifdef DEBUG_SYMMETRIES
         t_start = get_time();
@@ -250,8 +250,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         t_start = get_time();
         calculate_bubble_function(k3);
         tK3 = get_time() - t_start;
-        //print("K3", channel, " done, ");
-        //get_time(t_start);
+        print("K3", channel, " done, ");
+        get_time(t_start);
     }
 
 }
