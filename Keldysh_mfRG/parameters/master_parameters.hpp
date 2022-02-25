@@ -12,7 +12,7 @@
 
 //#define MULTIDIM_MINIMIZATION
 
-//#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
