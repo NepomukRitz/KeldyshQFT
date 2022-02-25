@@ -1,7 +1,7 @@
 #include "mpi_setup.hpp"
 
 int mpi_world_rank() {
-    int world_rank= 1;
+    int world_rank= 0;
     if constexpr (MPI_FLAG) MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
     return world_rank;
 }

@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_WRITE_DATA2FILE_HPP
 
 #include "../data_structures.hpp" // real/complex vector classes
+#include "mpi_setup.hpp"
 #include <fstream>           // standard file input/output
 #include "H5Cpp.h"           // HDF5 package
 
