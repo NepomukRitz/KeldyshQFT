@@ -214,7 +214,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::precompute_vert
 #ifdef KELDYSH_FORMALISM
     std::vector<int> indices = indices_sum(i0, i2, channel);
 
-    VertexInput input_l (indices, spin, w, 0., 0., i_in, channel);
+    VertexInput input_l (indices[0], spin, w, 0., 0., i_in, channel);
     VertexInput input_r (indices[1], spin, w, 0., 0., i_in, channel);
 #else
     VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
