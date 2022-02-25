@@ -12,7 +12,7 @@
 
 //#define MULTIDIM_MINIMIZATION
 
-//#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -55,12 +55,12 @@ constexpr int N_LOOPS = 3;  // Number of loops
 #if not defined(ZERO_TEMP)
 constexpr double glb_T = 1.; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 0.0;                     // Temperature
+constexpr double glb_T = 0.001;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
 #else
-    constexpr double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
+    constexpr double glb_mu = 0.;                    // Chemical potential // set to zero as energy offset
 #endif
 constexpr double glb_U = 5.0;                      // Impurity on-site interaction strength
 constexpr double glb_Vg = glb_mu;                  // Impurity level shift

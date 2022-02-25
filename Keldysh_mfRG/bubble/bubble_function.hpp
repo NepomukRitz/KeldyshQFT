@@ -47,6 +47,7 @@ class BubbleFunctionCalculator{
 
     double tK1 = 0, tK2 = 0, tK3 = 0;
 
+    void check_presence_of_symmetry_related_contributions();
     void set_channel_specific_freq_ranges_and_prefactor();
     void find_vmin_and_vmax();
 
@@ -94,6 +95,9 @@ class BubbleFunctionCalculator{
                              const char channel_in)
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
                              Pi(Pi_in), channel(channel_in){
+#ifndef DEBUG_SYMMETRIES
+        check_presence_of_symmetry_related_contributions();
+#endif
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
@@ -242,8 +246,8 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
         t_start = get_time();
         calculate_bubble_function(k2b);
         tK2 = get_time() - t_start;
-        print("K2b", channel, " done, ");
-        get_time(t_start);
+        //print("K2b", channel, " done, ");
+        //get_time(t_start);
 #endif
     }
     if (MAX_DIAG_CLASS >= 3) {
@@ -831,6 +835,27 @@ BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right,
     else                   return prefactor * (1. / (2. * M_PI));
 }
 
+template<typename Q, symmetryType symmetry_result, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+void
+BubbleFunctionCalculator<Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::check_presence_of_symmetry_related_contributions() {
+    bool vertex1_is_bare = false;
+    bool vertex2_is_bare = false;
+    if ((vertex1.avertex().max_norm() < 1e-18)
+        && (vertex1.pvertex().max_norm() < 1e-18)
+        && (vertex1.tvertex().max_norm() < 1e-18)) {vertex1_is_bare = true;}
+    if ((vertex2.avertex().max_norm() < 1e-18)
+        && (vertex2.pvertex().max_norm() < 1e-18)
+        && (vertex2.tvertex().max_norm() < 1e-18)) {vertex2_is_bare = true;}
+
+    if (channel == 'a'){ // There must be a non-vanishing contribution in the t-channel for both vertices
+        if (not vertex1_is_bare) assert(vertex1.tvertex().max_norm() > 1e-18);
+        if (not vertex2_is_bare) assert(vertex2.tvertex().max_norm() > 1e-18);
+    }
+    if (channel == 't'){ // There must be a non-vanishing contribution in the a-channel for both vertices
+        if (not vertex1_is_bare) assert(vertex1.avertex().max_norm() > 1e-18);
+        if (not vertex2_is_bare) assert(vertex2.avertex().max_norm() > 1e-18);
+    }
+}
 
 
 // bubble_function using the new class BubbleFunctionCalculator

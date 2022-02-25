@@ -164,6 +164,7 @@ public:
     mutable bool calculated_crossprojections = false;
     void cross_project();
 
+    double max_norm() const;
 
 
     /**
@@ -1699,10 +1700,18 @@ void rvert<Q>::K3_crossproject(char channel_out) {
     // TODO: Currently does nothing!
 }
 
+template<typename Q>
+double rvert<Q>::max_norm() const {
+    double norm = 0.;
+    norm += K1.get_vec().max_norm();
+    if constexpr(MAX_DIAG_CLASS >= 2) {
+        norm += K2.get_vec().max_norm();
+        norm += K2b.get_vec().max_norm();
+    }
+    if constexpr(MAX_DIAG_CLASS >= 3) norm += K3.get_vec().max_norm();
 
-
-
-
+    return norm;
+}
 
 
 #endif //KELDYSH_MFRG_R_VERTEX_HPP

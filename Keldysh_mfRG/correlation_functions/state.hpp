@@ -8,6 +8,7 @@
 #include "four_point/vertex.hpp"                   // vertex class
 #include "two_point/selfenergy.hpp"               // self-energy class
 #include "two_point/propagator.hpp"               // propagator class
+#include "../perturbation_theory_and_parquet/hartree_term.hpp"
 #include "../utilities/util.hpp"                     // printing text output
 #include <boost/numeric/odeint.hpp>
 
@@ -121,8 +122,18 @@ public:
 template <typename Q> void State<Q>::initialize() {
     // Initial conditions
     // Assign initial conditions to self energy
-    if ((!KELDYSH && PARTICLE_HOLE_SYMMETRY) || HUBBARD_MODEL) this->selfenergy.initialize(0. , 0.); // TODO(high): Proper treatment for the Hubbard model.
-    else this->selfenergy.initialize(glb_U/2., 0.);
+    if ((!KELDYSH && PARTICLE_HOLE_SYMMETRY) || HUBBARD_MODEL) {
+        this->selfenergy.initialize(0., 0.); // TODO(high): Proper treatment for the Hubbard model.
+        }
+    else {
+        this->selfenergy.initialize(glb_U / 2., 0.);
+        if (std::abs(glb_Vg) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
+            assert (not PARTICLE_HOLE_SYMMETRY);
+            Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
+            const double hartree_value = Hartree_Term.compute_Hartree_term();
+            this->selfenergy.initialize(hartree_value, 0.);
+        }
+    }
 
     // Assign initial conditions to bare vertex
     if (KELDYSH) this->vertex.initialize(-glb_U/2.);

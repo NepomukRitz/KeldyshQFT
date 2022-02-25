@@ -1,5 +1,4 @@
 #include "HUBBARD_sopt_selfenergy.hpp"
-#include <omp.h>
 
 auto Integrand_SE_SOPT_Hubbard::operator()(const double w_a) const -> comp {
     const double v1 = v + w_a;
