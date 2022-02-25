@@ -35,12 +35,12 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_i
     // initialize the flow with SOPT at Lambda_ini (important!)
     sopt_state(state_ini, Lambda_ini);
 
-    parquet_solver(data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    std::string parquet_filename = data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-6, 5);
 
 
     //// better: read state from converged parquet solution
-    //state_ini = read_state_from_hdf(data_dir + "parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", 4, 51);
-    //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
+    state_ini = read_state_from_hdf(parquet_filename, 5);
 
 
     write_state_to_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
@@ -61,8 +61,8 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_i
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
     using namespace boost::numeric::odeint;
-    //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
-    //                                                                    Lambda_checkpoints, outputFileName, 0, nODE, true);
+    ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+                                                                        Lambda_checkpoints, outputFileName, 0, nODE, true);
 
     return state_fin;
 }

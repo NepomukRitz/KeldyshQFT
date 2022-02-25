@@ -388,7 +388,7 @@ auto vertexDataContainer<k1,Q>::K1_gridtransf_inv(double w) const -> double {
 */
 
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x(const int order) const -> buffer_type {
-    buffer_type result = ::partial_deriv<Q,4>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type result = ::partial_deriv<Q,4>(base_class::data, frequencies.b.ts, base_class::data.length(), K1_config.position_first_freq_index, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_maxK1() const -> double {
@@ -402,7 +402,7 @@ template <typename Q> auto vertexDataContainer<k1,Q>::get_curvature_maxK1() cons
     int order = 3;
     double dt = frequencies.get_freqGrid_b().dt;
     double Kmax = base_class::get_vec().max_norm();
-    double max_K1 = ::power2(::partial_deriv<Q,4>(::partial_deriv<Q,4>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order), frequencies.b.ts, base_class::data.length(), 2, order) * dt * dt * (1 / Kmax)).max_norm();
+    double max_K1 = ::power2(::partial_deriv<Q,4>(::partial_deriv<Q,4>(base_class::data, frequencies.b.ts, base_class::data.length(), K1_config.position_first_freq_index, order), frequencies.b.ts, base_class::data.length(), K1_config.position_first_freq_index, order) * dt * dt * (1 / Kmax)).max_norm();
     return max_K1;
 }
 
@@ -427,73 +427,6 @@ template <typename Q> auto vertexDataContainer<k1,Q>::shrink_freq_box(const doub
 
 
 /// K2:
-/*
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_wlower_b() const {
-    return frequencies.b.w_lower;
-}
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_wupper_b() const {
-    return frequencies.b.w_upper;
-}
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::frequencies.get_wlower_f() const {
-    return frequencies.f.w_lower;
-}
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_wupper_f() const {
-    return frequencies.f.w_upper;
-}
-template<K_class k, typename Q>
-auto vertexDataContainer<k,Q>::K2_get_freqGrid_b() const -> const FrequencyGrid& {
-    return frequencies.b;
-}
-template<K_class k, typename Q>
-auto vertexDataContainer<k,Q>::K2_get_freqGrid_f() const -> const FrequencyGrid& {
-    return frequencies.f;
-}
-template<K_class k, typename Q>
-void vertexDataContainer<k,Q>::frequencies.get_freqs_w(double &w, double &v, const int iw, const int iv) const {
-    frequencies.get_freqs_w(w, v, iw, iv);
-}
-
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_tlower_b_aux() const {
-    return frequencies.b.t_lower;
-}
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_tupper_b_aux() const {
-    return frequencies.b.t_upper;
-}
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_tlower_f_aux() const {
-    return frequencies.f.t_lower;
-}
-template<K_class k, typename Q>
-const double& vertexDataContainer<k,Q>::K2_get_tupper_f_aux() const {
-    return frequencies.f.t_upper;
-}
-template<K_class k, typename Q>
-void vertexDataContainer<k,Q>::K2_get_freqs_aux(double &w, double &v, const int iw, const int iv) const {
-    frequencies.get_freqs_aux(w, v, iw, iv);
-}
-template<K_class k, typename Q>
-auto vertexDataContainer<k,Q>::K2_gridtransf_b(double w) const -> double {
-    return frequencies.b.grid_transf(w);
-}
-template<K_class k, typename Q>
-auto vertexDataContainer<k,Q>::K2_gridtransf_f(double w) const -> double {
-    return frequencies.f.grid_transf(w);
-}
-template<K_class k, typename Q>
-auto vertexDataContainer<k,Q>::K2_gridtransf_inv_b(double w) const -> double {
-    return frequencies.b.grid_transf_inv(w);
-}
-template<K_class k, typename Q>
-auto vertexDataContainer<k,Q>::K2_gridtransf_inv_f(double w) const -> double {
-    return frequencies.f.grid_transf_inv(w);
-}
- */
 template<K_class k, typename Q>
 auto vertexDataContainer<k,Q>::K2_get_correction_MFfiniteT(int iw) const -> double {
     if (not KELDYSH and not ZERO_T)
@@ -502,26 +435,26 @@ auto vertexDataContainer<k,Q>::K2_get_correction_MFfiniteT(int iw) const -> doub
 }
 
 template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_deriv_K2_x(const int order) const -> buffer_type {
-    buffer_type result = ::partial_deriv<Q,5>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type result = ::partial_deriv<Q,5>(base_class::data, frequencies.b.ts, base_class::data.length(), K2_config.position_first_freq_index, order);
     return result;
 }
 template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_deriv_K2_y(const int order) const -> buffer_type {
-    buffer_type result = ::partial_deriv<Q,5>(base_class::data, frequencies.f.ts, base_class::data.length(), 3, order);
+    buffer_type result = ::partial_deriv<Q,5>(base_class::data, frequencies.f.ts, base_class::data.length(), K2_config.position_first_freq_index+1, order);
     return result;
 }
 template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_deriv_K2_xy(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,5>(base_class::data, frequencies.f.ts, base_class::data.length(), 3, order);
-    buffer_type result       = ::partial_deriv<Q,5>(inter_result, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type inter_result = ::partial_deriv<Q,5>(base_class::data, frequencies.f.ts, base_class::data.length(), K2_config.position_first_freq_index+1, order);
+    buffer_type result       = ::partial_deriv<Q,5>(inter_result, frequencies.b.ts, base_class::data.length(), K2_config.position_first_freq_index, order);
     return result;
 }
 template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_deriv_K2_xx(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,5>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order);
-    buffer_type result       = ::partial_deriv<Q,5>(inter_result, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type inter_result = ::partial_deriv<Q,5>(base_class::data, frequencies.b.ts, base_class::data.length(), K2_config.position_first_freq_index, order);
+    buffer_type result       = ::partial_deriv<Q,5>(inter_result, frequencies.b.ts, base_class::data.length(), K2_config.position_first_freq_index, order);
     return result;
 }
 template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_deriv_K2_yy(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,5>(base_class::data, frequencies.f.ts, base_class::data.length(), 3, order);
-    buffer_type result       = ::partial_deriv<Q,5>(inter_result, frequencies.f.ts, base_class::data.length(), 3, order);
+    buffer_type inter_result = ::partial_deriv<Q,5>(base_class::data, frequencies.f.ts, base_class::data.length(), K2_config.position_first_freq_index+1, order);
+    buffer_type result       = ::partial_deriv<Q,5>(inter_result, frequencies.f.ts, base_class::data.length(),  K2_config.position_first_freq_index+1, order);
     return result;
 }
 template <K_class k, typename Q> auto vertexDataContainer<k,Q>::get_deriv_maxK2() const -> double {
@@ -580,73 +513,6 @@ template <K_class k, typename Q> auto vertexDataContainer<k,Q>::shrink_freq_box(
 
 
 /// K3:
-/*
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_wlower_b() const {
-    return frequencies.b.w_lower;
-}
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_wupper_b() const {
-    return frequencies.b.w_upper;
-}
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_wlower_f() const {
-    return frequencies.f.w_lower;
-}
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_wupper_f() const {
-    return frequencies.f.w_upper;
-}
-template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_get_freqGrid_b() const -> const FrequencyGrid& {
-    return frequencies.b;
-}
-template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_get_freqGrid_f() const -> const FrequencyGrid& {
-    return frequencies.f;
-}
-template<typename Q>
-void vertexDataContainer<k3,Q>::K3.frequencies.get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp, const char channel) const {
-    frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
-}
-
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_tlower_b_aux() const {
-    return frequencies.b.t_lower;
-}
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_tupper_b_aux() const {
-    return frequencies.b.t_upper;
-}
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_tlower_f_aux() const {
-    return frequencies.f.t_lower;
-}
-template<typename Q>
-const double& vertexDataContainer<k3,Q>::K3_get_tupper_f_aux() const {
-    return frequencies.f.t_upper;
-}
-template<typename Q>
-void vertexDataContainer<k3,Q>::K3_get_freqs_aux(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
-    frequencies.get_freqs_aux(w, v, vp, iw, iv, ivp);
-}
-template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_gridtransf_b(double w) const -> double {
-    return frequencies.b.grid_transf(w);
-}
-template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_gridtransf_f(double w) const -> double {
-    return frequencies.f.grid_transf(w);
-}
-template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_gridtransf_inv_b(double w) const -> double {
-    return frequencies.b.grid_transf_inv(w);
-}
-template<typename Q>
-auto vertexDataContainer<k3,Q>::K3_gridtransf_inv_f(double w) const -> double {
-    return frequencies.f.grid_transf_inv(w);
-}
- */
 template<typename Q>
 auto vertexDataContainer<k3,Q>::K3_get_correction_MFfiniteT(int iw) const -> double {
     if (not KELDYSH and not ZERO_T)
@@ -656,51 +522,51 @@ auto vertexDataContainer<k3,Q>::K3_get_correction_MFfiniteT(int iw) const -> dou
 
 
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_x(const int order) const -> buffer_type {
-    buffer_type result = ::partial_deriv<Q,6>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type result = ::partial_deriv<Q,6>(base_class::data, frequencies.b.ts, base_class::data.length(),  K3_config.position_first_freq_index, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_y(const int order) const -> buffer_type {
-    buffer_type result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 3, order);
+    buffer_type result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+1, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_z(const int order) const -> buffer_type {
-    buffer_type result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 4, order);
+    buffer_type result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+2, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xy(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 3, order);
-    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index, order);
+    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.b.ts, base_class::data.length(),  K3_config.position_first_freq_index+1, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xz(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 4, order);
-    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+2, order);
+    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.b.ts, base_class::data.length(),  K3_config.position_first_freq_index, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yz(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 3, order);
-    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(), 4, order);
+    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+1, order);
+    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+2, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xx(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.b.ts, base_class::data.length(), 2, order);
-    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.b.ts, base_class::data.length(),  K3_config.position_first_freq_index, order);
+    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.b.ts, base_class::data.length(),  K3_config.position_first_freq_index, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_yy(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 3, order);
-    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(), 3, order);
+    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+1, order);
+    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+1, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_zz(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 4, order);
-    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(), 4, order);
+    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+2, order);
+    buffer_type result       = ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+2, order);
     return result;
 }
 template <typename Q> auto vertexDataContainer<k3,Q>::get_deriv_K3_xyz(const int order) const -> buffer_type {
-    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), 4, order);
-    buffer_type inter_result2= ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(), 3, order);
-    buffer_type result       = ::partial_deriv<Q,6>(inter_result2, frequencies.b.ts, base_class::data.length(), 2, order);
+    buffer_type inter_result = ::partial_deriv<Q,6>(base_class::data, frequencies.f.ts, base_class::data.length(), K3_config.position_first_freq_index+2, order);
+    buffer_type inter_result2= ::partial_deriv<Q,6>(inter_result, frequencies.f.ts, base_class::data.length(),  K3_config.position_first_freq_index+1, order);
+    buffer_type result       = ::partial_deriv<Q,6>(inter_result2, frequencies.b.ts, base_class::data.length(), K3_config.position_first_freq_index, order);
     return result;
 }
 
