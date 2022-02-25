@@ -4,6 +4,41 @@
 #include "../parameters/master_parameters.hpp"
 
 struct ODE_solver_config {
+
+    ODE_solver_config()
+            :   maximal_number_of_ODE_steps(nODE),
+                iter_start(0),
+                lambda_checkpoints({}),
+                filename(""),
+                max_stepResizing_attempts(1000),
+                relative_error(epsODE_rel),
+                absolute_error(epsODE_abs),
+                a_State(1.),
+                a_dState_dLambda(1.){}
+
+    ODE_solver_config(int maximal_number_of_ODE_steps_in, int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in)
+            :   maximal_number_of_ODE_steps(maximal_number_of_ODE_steps_in),
+                iter_start(0),
+                lambda_checkpoints({}),
+                filename(""),
+                max_stepResizing_attempts(max_stepResizing_attempts_in),
+                relative_error(relative_error_in),
+                absolute_error(absolute_error_in),
+                a_State(1.),
+                a_dState_dLambda(1.){}
+
+    ODE_solver_config(int maximal_number_of_ODE_steps_in, int iter_start_in, std::vector<double> lambda_checkpoints_in, std::string filename_in,
+                      int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in, double a_State_in, double a_dState_dLambda_in)
+            :   maximal_number_of_ODE_steps(maximal_number_of_ODE_steps_in),
+                iter_start(iter_start_in),
+                lambda_checkpoints(lambda_checkpoints_in),
+                filename(filename_in),
+                max_stepResizing_attempts(max_stepResizing_attempts_in),
+                relative_error(relative_error_in),
+                absolute_error(absolute_error_in),
+                a_State(a_State_in),
+                a_dState_dLambda(a_dState_dLambda_in){}
+
     int maximal_number_of_ODE_steps;
     int iter_start;                 // number of iteration at which the ODE solver starts
     std::vector<double> lambda_checkpoints; // check points at which we want to a solution
@@ -14,19 +49,7 @@ struct ODE_solver_config {
     double relative_error;
     double absolute_error;
     double a_State;          //weights for computation of relative error (for error estimate)
-    double a_dState_dLamba;  //weights for computation of relative error (for error estimate)
-};
-
-static ODE_solver_config ODE_solver_config_standard{
-    .maximal_number_of_ODE_steps = nODE,
-    .iter_start = 0,
-    .lambda_checkpoints = {},
-    .filename = "",
-    .max_stepResizing_attempts = 1000,
-    .relative_error = epsODE_rel,
-    .absolute_error = epsODE_abs,
-    .a_State = 1.,
-    .a_dState_dLamba = 1.
+    double a_dState_dLambda;  //weights for computation of relative error (for error estimate)
 };
 
 

@@ -55,7 +55,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
     double result;
     //ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, rhs_exp, lambda_checkpoints, "", 0, 2000, true);
 
-    ODE_solver_config config = ODE_solver_config_standard;
+    ODE_solver_config config;
     config.maximal_number_of_ODE_steps = 3000;
     boost::numeric::odeint::ode_solver_boost<double, flowgrid::linear_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(),  config, false);
 

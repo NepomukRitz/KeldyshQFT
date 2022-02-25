@@ -488,7 +488,7 @@ template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y
 template <typename Y, typename FlowGrid = flowgrid::sqrt_parametrization, typename System
         >
 void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, const System& rhs,
-                const ODE_solver_config& config=ODE_solver_config_standard, const bool verbose=true) {
+                const ODE_solver_config& config=ODE_solver_config(), const bool verbose=true) {
     int world_rank = mpi_world_rank();
 
 
@@ -745,7 +745,7 @@ namespace boost {
             template<typename State_t, typename FlowGrid, typename System>
             void ode_solver_boost //integrate_adaptive_check
                     (State_t& result, const double Lambda_f, const State_t& state_ini, const double Lambda_i, const System& rhs ,
-                     const ODE_solver_config& config=ODE_solver_config_standard, const bool verbose=true)
+                     const ODE_solver_config& config=ODE_solver_config(), const bool verbose=true)
             {
 #if ODEsolver==1
 #define ERR_STEPPER runge_kutta4
@@ -779,7 +779,7 @@ namespace boost {
                 typedef ERR_STEPPER< State_t, double, State_t, double, boost::numeric::odeint::vector_space_algebra > error_stepper_t;
                 typedef controlled_runge_kutta< error_stepper_t > controlled_error_stepper_t;
                 controlled_error_stepper_t stepper(
-                        default_error_checker< double , vector_space_algebra , default_operations >( config.absolute_error , config.relative_error , config.a_State , config.a_dState_dLamba ) );
+                        default_error_checker< double , vector_space_algebra , default_operations >( config.absolute_error , config.relative_error , config.a_State , config.a_dState_dLambda ) );
 
 
                 double dt = (Lambda_f - Lambda_i)*dLambda_initial > 1e-15 ? FlowGrid::t_from_lambda(Lambda_i + dLambda_initial) - FlowGrid::t_from_lambda(Lambda_i) : (FlowGrid::t_from_lambda(Lambda_f) - FlowGrid::t_from_lambda(Lambda_i)) / ((double) MAXSTP);

@@ -56,7 +56,7 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
-    ODE_solver_config config = ODE_solver_config_standard;
+    ODE_solver_config config;// = ODE_solver_config_standard;
     config.lambda_checkpoints = Lambda_checkpoints;
     config.filename = outputFileName;
     // compute the flow using an ODE solver
@@ -65,7 +65,7 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
 
     using namespace boost::numeric::odeint;
     ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
-                                                               ODE_solver_config_standard, true);
+                                                               config, true);
 
     return state_fin;
 }
@@ -101,7 +101,7 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const int it
         //                                                                  Lambda_checkpoints, inputFileName, it_start);
 
         rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
-        ODE_solver_config config = ODE_solver_config_standard;
+        ODE_solver_config config;
         config.iter_start = it_start;
         config.lambda_checkpoints = Lambda_checkpoints;
         config.filename = inputFileName;
