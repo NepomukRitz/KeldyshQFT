@@ -97,6 +97,7 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K3_t, state.vertex.tvertex().K3.data, Lambda_it);
 #endif
     H5::Group group_freqparams(file_out.openGroup(FREQ_PARAMS));
+    H5::Group group_freqparams_ffreqs (group_freqparams.openGroup(FFREQS_LIST ));
     H5::Group group_freqparams_bfreqsa (group_freqparams.openGroup(BFREQS_LISTa ));
     H5::Group group_freqparams_bfreqsp (group_freqparams.openGroup(BFREQS_LISTp ));
     H5::Group group_freqparams_bfreqst (group_freqparams.openGroup(BFREQS_LISTt ));
@@ -119,6 +120,7 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     H5::Group group_freqparams_ffreqs3p(group_freqparams.openGroup(FFREQS3_LISTp));
     H5::Group group_freqparams_ffreqs3t(group_freqparams.openGroup(FFREQS3_LISTt));
 
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs , state.selfenergy.frequencies, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqsa, state.vertex.avertex().K1.frequencies.b, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqsp, state.vertex.pvertex().K1.frequencies.b, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqst, state.vertex.tvertex().K1.frequencies.b, Lambda_it, Lambda[0]);

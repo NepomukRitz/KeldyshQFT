@@ -468,6 +468,7 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_a, state.vertex.avertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_p, state.vertex.pvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_t, state.vertex.tvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS_LIST, state.selfenergy.frequencies.get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTa, state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTt, state.vertex.tvertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
@@ -520,6 +521,7 @@ namespace hdf5_impl {
         }
 
         H5::Group group_freqparams;
+        H5::Group group_freqparams_ffreqs;
         H5::Group group_freqparams_bfreqsa;
         H5::Group group_freqparams_bfreqsp;
         H5::Group group_freqparams_bfreqst;
@@ -543,6 +545,7 @@ namespace hdf5_impl {
         H5::Group group_freqparams_ffreqs3t;
     if (!file_exists) {
         group_freqparams = file_out.createGroup(FREQ_PARAMS);
+        group_freqparams_ffreqs = group_freqparams.createGroup(FFREQS_LIST );
         group_freqparams_bfreqsa = group_freqparams.createGroup(BFREQS_LISTa );
         group_freqparams_bfreqsp = group_freqparams.createGroup(BFREQS_LISTp );
         group_freqparams_bfreqst = group_freqparams.createGroup(BFREQS_LISTt );
@@ -567,6 +570,7 @@ namespace hdf5_impl {
     }
     else {
         group_freqparams = file_out.openGroup(FREQ_PARAMS);
+        group_freqparams_ffreqs = group_freqparams.openGroup(FFREQS_LIST );
         group_freqparams_bfreqsa = group_freqparams.openGroup(BFREQS_LISTa );
         group_freqparams_bfreqsp = group_freqparams.openGroup(BFREQS_LISTp );
         group_freqparams_bfreqst = group_freqparams.openGroup(BFREQS_LISTt );
@@ -591,6 +595,7 @@ namespace hdf5_impl {
 
     }
         /// Write frequency parameters
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs , state.selfenergy.frequencies                            , Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqsa, state.vertex.avertex().K1.frequencies.get_freqGrid_b()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqsp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqst, state.vertex.tvertex().K1.frequencies.get_freqGrid_b()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
