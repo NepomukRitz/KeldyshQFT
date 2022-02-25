@@ -48,7 +48,7 @@ auto main() -> int {
     data_dir = "../Data_SIAM_PT4/";
     makedir(data_dir);
 
-    const rvec lambdas = {999., 199., 19., 9.};
+    const rvec lambdas = {999., 199., 99., 19., 9.};
     for (const double lambda : lambdas) {
         PT_Machine<state_datatype> PT_Calculator (4, lambda);
     }
