@@ -104,8 +104,13 @@ private:
     const double w, v = 0., vp = 0.;
     const bool diff;
 
-    using buffer_type_vertex_l = Eigen::Matrix<Q,1,KELDYSH?4:1>;
-    using buffer_type_vertex_r = Eigen::Matrix<Q,KELDYSH?4:1,1>; // buffer_type_vertex_l;
+#ifdef KELDYSH_FORMALISM
+    using buffer_type_vertex_l = Eigen::Matrix<Q,1,4>;
+    using buffer_type_vertex_r = Eigen::Matrix<Q,4,1>; // buffer_type_vertex_l;
+#else
+    using buffer_type_vertex_l = Q;
+    using buffer_type_vertex_r = Q;
+#endif
 
     //K_class diag_class;
 
@@ -341,7 +346,13 @@ auto Integrand<diag_class, channel, spin, Q, symmetry_left, symmetry_right, Bubb
     VertexInput input_external (i0, 0, w, v, vp, i_in, channel, diag_class, iw);
 
     //result = sum_over_internal_scalar(input_external, vpp);
-    result = sum_over_internal_vectorized(input_external, vpp);
+    if constexpr(KELDYSH)
+    {
+        result = sum_over_internal_vectorized(input_external, vpp);
+    }
+    else {
+        result = sum_over_internal_scalar(input_external, vpp);
+    }
     /// comment in to test vectorized access
     //Q result2 = sum_over_internal_scalar(input_external, vpp);
     //assert(std::abs(result-result2) < 1e-10);
@@ -476,8 +487,8 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
     //const auto vertexvalue_scalar = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare<channel>(input_l) ; else return vertex1.template left_diff_bare<channel>(input_l);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
-    if (not KELDYSH) {
-        values_vertex[0] =  vertexvalue_scalar(input);
+    if constexpr(not KELDYSH) {
+        values_vertex =  vertexvalue_scalar(input);
     }
     else {
 
@@ -536,8 +547,8 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
     //const auto vertexvalue_scalar = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare<channel>(input_r); else return vertex2.template right_same_bare<channel>(input_r);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
-    if (not KELDYSH) {
-        values_vertex[0] =  vertexvalue_scalar(input);
+    if constexpr(not KELDYSH) {
+        values_vertex =  vertexvalue_scalar(input);
     }
     else {
         //Q v11, v12, v21, v22;
@@ -594,7 +605,8 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
     if constexpr(not KELDYSH) {
-        static_assert(KELDYSH, "Currently vectorized integrand only available for Keldysh.");
+        //static_assert(KELDYSH, "Currently vectorized integrand only available for Keldysh.");
+        values_vertex = vertexvalue_vector(input);
     }
     else {
         values_vertex = vertexvalue_vector(input).transpose();
@@ -612,7 +624,8 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
     if constexpr(not KELDYSH) {
-        static_assert(KELDYSH, "Currently vectorized integrand only available for Keldysh.");
+        //static_assert(KELDYSH, "Currently vectorized integrand only available for Keldysh.");
+        values_vertex = vertexvalue_vector(input);
     }
     else {
         values_vertex = vertexvalue_vector(input);
@@ -672,8 +685,15 @@ Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_O
 
         load_vertex_keldyshComponents_left_scalar <1-spin>(values_vertex_l_other, input_l);
         load_vertex_keldyshComponents_right_scalar<1-spin>(values_vertex_r_other, input_r);
-        result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r + values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
-
+        if constexpr(KELDYSH)
+        {
+            result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
+                      values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
+        }
+        else {
+            result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
+                      values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other));
+        }
     }
 #ifdef DEBUG_SYMMETRIES
         /*else if (channel == 'p' and input_external.spin == 0) {

@@ -242,7 +242,50 @@ public:
         {
 
 #ifdef DENSEGRID
-            assert(false);
+            Q result;
+            if constexpr(k == k1)
+            {
+                result = interpolate_nearest1D<Q>(indices.w, base_class::get_VertexFreqGrid().b,
+                                                  [&](int i) -> Q {
+                                                      return base_class::val(indices.spin, i,
+                                                                                             indices.iK,
+                                                                                             indices.i_in);
+                                                  });
+            }
+            else if constexpr(k==k2){
+                result =  interpolate_nearest2D<Q>(indices.w, indices.v1,
+                                                   base_class::get_VertexFreqGrid().b,
+                                                   base_class::get_VertexFreqGrid().f,
+                                                   [&](int i, int j) -> Q {
+                                                       return base_class::val(indices.spin, i,
+                                                                                              j, indices.iK,
+                                                                                              indices.i_in);
+                                                   });
+            }
+            else if constexpr(k==k2b){
+                result =  interpolate_nearest2D<Q>(indices.w, indices.v2,
+                                                   base_class::get_VertexFreqGrid().b,
+                                                   base_class::get_VertexFreqGrid().f,
+                                                   [&](int i, int j) -> Q {
+                                                       return base_class::val(indices.spin, i,
+                                                                                              j, indices.iK,
+                                                                                              indices.i_in);
+                                                   });
+            }
+            else if constexpr(k == k3)
+            {
+                result =  interpolate_nearest3D<Q>(indices.w, indices.v1, indices.v2,
+                                                   base_class::get_VertexFreqGrid().b,
+                                                   base_class::get_VertexFreqGrid().f,
+                                                   base_class::get_VertexFreqGrid().f,
+                                                   [&](int i, int j, int l) -> Q {
+                                                       return base_class::val(indices.spin, i,
+                                                                                              j, l, indices.iK,
+                                                                                              indices.i_in);
+                                                   });
+            }
+
+            return result;
 #else
             // get weights from frequency Grid
 

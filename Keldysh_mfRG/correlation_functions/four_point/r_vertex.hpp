@@ -1022,14 +1022,14 @@ template <typename Q> template<typename result_type>  auto rvert<Q>::right_same_
 
 template <typename Q> template<typename result_type>  auto rvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const  -> result_type{
     //using result_type = decltype(valsmooth_symmetry_expanded<k1,result_type>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
-    if constexpr(MAX_DIAG_CLASS == 1)      if (std::is_same_v<result_type,Q>) {return result_type{};} else {return result_type::Zero();}
+    if constexpr(MAX_DIAG_CLASS == 1)      if constexpr(std::is_same_v < result_type, Q > ) {return result_type{};} else {return result_type::Zero();}
     else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2,result_type>(input, rvert_crossing);
     else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2,result_type>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,result_type>(input, rvert_crossing);
 }
 
 template <typename Q> template<typename result_type>  auto rvert<Q>::right_diff_bare_symmetry_expanded(const VertexInput& input, const rvert<Q>& rvert_crossing) const  -> result_type{
     //using result_type = decltype(valsmooth_symmetry_expanded<k1,result_type>(std::declval<VertexInput>(), std::declval<rvert<Q>>()));
-    if constexpr(MAX_DIAG_CLASS == 1)      if (std::is_same_v<result_type,Q>) {return result_type{};} else {return result_type::Zero();}
+    if constexpr(MAX_DIAG_CLASS == 1)      if constexpr(std::is_same_v < result_type, Q > ) {return result_type{};} else {return result_type::Zero();}
     else if constexpr(MAX_DIAG_CLASS == 2) return valsmooth_symmetry_expanded<k2b,result_type>(input, rvert_crossing);
     else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth_symmetry_expanded<k2b,result_type>(input, rvert_crossing) + valsmooth_symmetry_expanded<k3,result_type>(input, rvert_crossing);
 }
