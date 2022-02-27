@@ -54,7 +54,7 @@ public:
                         const bool diff_in)
                        :g(G_in), s(S_in), diff(diff_in),
                        Helper_Bubble(G_in, S_in, diff),
-                       fermionic_grid(G_in.selfenergy.frequencies){
+                       fermionic_grid(G_in.selfenergy.Sigma.frequencies.b){
         if (diff) {print("Precalculating a differentiated bubble...", true);}
         else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();

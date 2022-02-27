@@ -9,6 +9,13 @@
 #include <iostream>
 #include <cassert>
 
+template<unsigned int n, typename Q>
+constexpr Q my_integer_pow(const Q i) {
+    if constexpr(n == 0) return 1;
+    else if constexpr(n == 1) return i;
+    else return i * my_integer_pow<n-1,Q>(i);
+}
+
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
 template <typename T>
 auto sign(T x) -> double {

@@ -16,7 +16,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
         using SE_buffertype = typename SelfEnergy<Q>::buffer_type;
         SE_buffertype Sigma = selfEnergy.Sigma;                        // take self-energy
-        vec<Q> Sigma_R(Sigma.begin(), Sigma.begin() + (Sigma.size() / 2));     // take first half of self-energy (retarded comp.)
+        vec<Q> Sigma_R(Sigma.get_vec().begin(), Sigma.get_vec().begin() + (Sigma.get_vec().size() / 2));     // take first half of self-energy (retarded comp.)
         assert(Sigma_R.size() == nFER);
 
 
@@ -46,10 +46,10 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         double sum = 0.;
         for (int i = 0; i < nFER; ++i) {
 
-            double val = myimag(Sigma[i]) * sign(selfEnergy.frequencies.get_ws(i));
+            double val = myimag(Sigma.acc(i)) * sign(selfEnergy.Sigma.frequencies.b.get_ws(i));
 
             if (val > 0.) {
-                //cout << "i: " << i << "\t for w = " << selfEnergy.frequencies.get_ws(i) << "; \t Sigma[i] = " << Sigma[i] << "\n";
+                //cout << "i: " << i << "\t for w = " << selfenergy.Sigma.frequencies.b.get_ws(i) << "; \t Sigma[i] = " << Sigma[i] << "\n";
                 cnt += 1;
                 sum += val;
             }
@@ -444,7 +444,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             double w, v, vp, N1, N2, N3, N4;
                             Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
-                            vertex_in.avertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp, 'a');
+                            vertex_in.avertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
                             N1 = Fermi_fac( v  - w/2, glb_mu);
                             N2 = Fermi_fac( vp + w/2, glb_mu);
                             N3 = Fermi_fac(-vp + w/2, glb_mu);
@@ -538,7 +538,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             double w, v, vp, N1, N2, N3, N4;
                             Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
-                            vertex_in.pvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp, 'p');
+                            vertex_in.pvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
                             N1 = Fermi_fac( v  + w/2, glb_mu);
                             N2 = Fermi_fac(-v  + w/2, glb_mu);
                             N3 = Fermi_fac(-vp - w/2, glb_mu);
@@ -636,7 +636,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             double w, v, vp, N1, N2, N3, N4;
                             Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
-                            vertex_in.tvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp, 't');
+                            vertex_in.tvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
                             N1 = Fermi_fac( vp + w/2, glb_mu);
                             N2 = Fermi_fac( v  - w/2, glb_mu);
                             N3 = Fermi_fac(-vp + w/2, glb_mu);

@@ -12,12 +12,13 @@
 
 /// Possible (unit-) tests for the vertex buffer:
 /// [IMPLEMENTED in unit_tests/test_interpolations] reliability of interpolation --> fill vertex buffer with polynomial and interpolate
-
+/*
 enum vectypes {scalar, vec_left, vec_right};
-
+*/
 /**
  * Vertex buffers store the vertex data and frequency grids and interpolates data points on the grid.
  */
+ /*
 template<K_class k, typename Q, interpolMethod inter>
 class vertexBuffer {
     explicit vertexBuffer(double Lambda) {
@@ -199,7 +200,7 @@ public:
 
         if constexpr (k == k1) {
             for (int i = 0; i < 2; i++) {
-                auto res = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2]);
+                auto res = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2], vertex_index[3]);
                 result.col(i) = res;
             }
         } else if constexpr (k == k3) {
@@ -207,14 +208,14 @@ public:
                 for (int j = 0; j < 2; j++) {
                     for (int l = 0; l < 2; l++) {
                         result.col(i * 4 + j * 2 + l) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i,
-                                                                                                                     vertex_index[2] + j, vertex_index[3] + l, vertex_index[4]);
+                                                                                                                     vertex_index[2] + j, vertex_index[3] + l, vertex_index[4], vertex_index[5]);
                     }
                 }
             }
         } else {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
-                    result.col(i * 2 + j) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j, vertex_index[3]);
+                    result.col(i * 2 + j) = base_class::template val_vectorized<frequencydims(),vecsize>(vertex_index[0], vertex_index[1] + i, vertex_index[2] + j, vertex_index[3], vertex_index[4]);
 
                 }
             }
@@ -334,7 +335,7 @@ public:
 };
 
 
-
+*/
 /*
 /// Template specialization for K1 (linear interpolation on the auxiliary grid)
 template<typename Q, interpolMethod inter>

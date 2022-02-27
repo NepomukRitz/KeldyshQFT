@@ -119,8 +119,8 @@ void IntegrandSE<Q,vertType>::save_integrand() const {
     for (int i=0; i<npoints; ++i) {
         double wl, wu;
 
-        wl = propagator.selfenergy.frequencies.w_lower * 2.;
-        wu = propagator.selfenergy.frequencies.w_upper * 2.;
+        wl = propagator.selfenergy.Sigma.frequencies.b.w_lower * 2.;
+        wu = propagator.selfenergy.Sigma.frequencies.b.w_upper * 2.;
 
         double vpp = wl + i * (wu - wl) / (npoints - 1);
         freqs[i] = vpp;

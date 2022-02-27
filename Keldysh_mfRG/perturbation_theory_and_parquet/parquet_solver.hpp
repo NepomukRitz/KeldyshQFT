@@ -121,8 +121,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
  */
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
-    SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy.frequencies);
-    SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy.frequencies);
+    SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy.Sigma.frequencies);
+    SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy.Sigma.frequencies);
     compute_SDE(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
 }
 

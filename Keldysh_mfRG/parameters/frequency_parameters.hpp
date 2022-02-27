@@ -43,8 +43,8 @@ constexpr int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((in
 
 // Number of bosonic and fermionic frequency points
 //#ifdef KELDYSH_FORMALISM
-constexpr int nBOS = 100;
-constexpr int nFER = 100;
+constexpr int nBOS = 1000;
+constexpr int nFER = 1000;
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 11;//nBOS;
 constexpr int nFER2 = 11;//nFER;
@@ -53,13 +53,13 @@ constexpr int nFER3 = 11; //nFER;
 //#else
 const int COUNT = 4;
 //constexpr int nBOS = COUNT * 64 * 2 + 1;
-//constexpr int nFER = COUNT * 64 * 2;
+//constexpr int nFER = COUNT * 4 * 2;
 //// Number of frequency points for K2 and K3 classes
 //constexpr int nBOS2 = COUNT * 6 * 2 + 1;//nBOS;
 //constexpr int nFER2 = COUNT * 4 * 2;//nFER;
 //constexpr int nBOS3 = COUNT * 2 * 2 + 1; //nBOS;
 //constexpr int nFER3 = COUNT * 2; //nFER;
-const int POSINTRANGE = 64 * COUNT;
+const int POSINTRANGE = 32 * COUNT;
 //#endif
 
 #elif GRID==4 // tangent grid: v = a/c * tan ( (i - N/2)/(N/2) * c )

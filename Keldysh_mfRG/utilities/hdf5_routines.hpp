@@ -462,13 +462,13 @@ namespace hdf5_impl {
 
         /// Save state data
         write_to_hdf_LambdaLayer<double>(file_out, LAMBDA_LIST, std::vector<double>({state.Lambda}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<Q>(file_out, SELF_LIST, state.selfenergy.Sigma, Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<Q>(file_out, SELF_LIST, state.selfenergy.Sigma.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, HARTREE, std::vector<Q>({state.selfenergy.asymp_val_R}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_irred, state.vertex.irred().get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_a, state.vertex.avertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_p, state.vertex.pvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_t, state.vertex.tvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS_LIST, state.selfenergy.frequencies.get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS_LIST, state.selfenergy.Sigma.frequencies.b.get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTa, state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTt, state.vertex.tvertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
@@ -595,7 +595,7 @@ namespace hdf5_impl {
 
     }
         /// Write frequency parameters
-        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs , state.selfenergy.frequencies                            , Lambda_it, numberLambdaLayers, file_exists, verbose);
+        write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs , state.selfenergy.Sigma.frequencies.get_freqGrid_b()      , Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqsa, state.vertex.avertex().K1.frequencies.get_freqGrid_b()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqsp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqst, state.vertex.tvertex().K1.frequencies.get_freqGrid_b()  , Lambda_it, numberLambdaLayers, file_exists, verbose);
@@ -811,7 +811,7 @@ template <typename Q>
         FrequencyGrid bfreqsa = state_in.vertex.avertex().K1.frequencies.get_freqGrid_b();
         FrequencyGrid bfreqsp = state_in.vertex.pvertex().K1.frequencies.get_freqGrid_b();
         FrequencyGrid bfreqst = state_in.vertex.tvertex().K1.frequencies.get_freqGrid_b();
-        FrequencyGrid ffreqs = state_in.selfenergy.frequencies;
+        FrequencyGrid ffreqs = state_in.selfenergy.Sigma.frequencies.b;
         freq_params[0] = (double) bfreqsa.N_w;
         freq_params[1] = bfreqsa.w_upper;
         freq_params[2] = bfreqsa.w_lower;
@@ -1415,7 +1415,7 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     bfreqst.initialize_grid();
     ffreqs.initialize_grid();
     // copy grids to result
-    result.selfenergy.frequencies = ffreqs;
+    result.selfenergy.Sigma.frequencies.b = ffreqs;
     result.vertex.avertex().K1.frequencies.b = bfreqsa;
     result.vertex.pvertex().K1.frequencies.b = bfreqsp;
     result.vertex.tvertex().K1.frequencies.b = bfreqst;

@@ -16,15 +16,15 @@ void compute_Phi_tilde(const std::string filename) {
             State<state_datatype> state = read_state_from_hdf(filename, iLambda);
             state.selfenergy.asymp_val_R = glb_U / 2.;
 
-            double vmin = state.selfenergy.frequencies.w_lower;
-            double vmax = state.selfenergy.frequencies.w_upper;
+            double vmin = state.selfenergy.Sigma.frequencies.b.w_lower;
+            double vmax = state.selfenergy.Sigma.frequencies.b.w_upper;
 
             Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
             for (int i_in=0; i_in<n_in; ++i_in) {
     #pragma omp parallel for
                 for (int iv=0; iv<nFER; ++iv) {
-                    double v = state.selfenergy.frequencies.get_ws(iv);
+                    double v = state.selfenergy.Sigma.frequencies.b.get_ws(iv);
                     vs[iLambda * nFER + iv * n_in + i_in] = v;
                     // lhs of Ward identity
                     ImSigma[iLambda * nFER + iv * n_in + i_in] = -2. * myimag(state.selfenergy.val(0, iv, i_in));
@@ -34,11 +34,11 @@ void compute_Phi_tilde(const std::string filename) {
                             = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
                 }
                 // integrate difference of lhs and rhs of Ward identity
-                Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
+                Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.Sigma.frequencies.b, Phi, state.selfenergy,
                                                                         iLambda, i_in);
                 // integrate lhs of Ward identity (for computing relative error): set Phi to zero (empty vector)
                 rvec Phi_0 (Lambdas.size() * nFER * n_in);
-                Integrand_Ward_id_integrated integrandWardIdIntegrated_0 (state.selfenergy.frequencies, Phi_0, state.selfenergy,
+                Integrand_Ward_id_integrated integrandWardIdIntegrated_0 (state.selfenergy.Sigma.frequencies.b, Phi_0, state.selfenergy,
                                                                           iLambda, i_in);
                 // compute relative error
                 Phi_integrated[iLambda * n_in + i_in]
@@ -95,7 +95,7 @@ void check_Kramers_Kronig(const std::string filename) {
     for (int i=0; i<iLambdas.size(); ++i) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
         // check Kramers-Kronig for retarded self-energy
-        rvec vSigma = state.selfenergy.frequencies.get_ws_vec();  // frequency grid points
+        rvec vSigma = state.selfenergy.Sigma.frequencies.b.get_ws_vec();  // frequency grid points
         // get retarded component (first half of stored data points)
         std::array<my_index_t ,3> start_SE = {0, 0, 0};
         std::array<my_index_t,3> end_SE   = {0,nSE-1, n_in};

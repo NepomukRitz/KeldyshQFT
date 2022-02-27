@@ -405,11 +405,7 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 
-using my_index_t = std::size_t;
-enum K_class {k1=0, k2=1, k2b=2, k3=3};
-std::ostream& operator << (std::ostream& out, K_class k);
-enum vertexType {symmetric_full, symmetric_r_irred, non_symmetric_diffleft, non_symmetric_diffright};
-std::ostream& operator << (std::ostream& out, vertexType symmtype);
+
 
 /** auxiliary struct that contains all input variables of vertices
  * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
@@ -436,6 +432,68 @@ struct VertexInput{
 //#endif
             spin(spin_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel_bubble(channel_in), kClass_aim(k_in), iw_r(iw_in)
     {assert(iK < 16);}
+
+    template<K_class k>
+    auto get_freqs() const {
+        if constexpr(k == k1) {
+            my_defs::K1::frequencies_type freqs = {w};
+            return freqs;
+        }
+        else
+        if constexpr(k == k2) {
+            my_defs::K2::frequencies_type freqs = {w, v1};
+            return freqs;
+        }
+        else
+        if constexpr(k == k2b) {
+            my_defs::K2b::frequencies_type freqs = {w, v2};
+            return freqs;
+        }
+        else
+        if constexpr(k == k3) {
+            my_defs::K3::frequencies_type freqs = {w, v1, v2};
+            return freqs;
+        }
+        else assert(false);
+    }
+
+    template<K_class k>
+    auto get_indices() const {
+        if constexpr(k == k1) {
+            my_defs::K1::index_type idx;
+            idx[my_defs::K1::spin] = spin;
+            idx[my_defs::K1::keldysh] = iK;
+            idx[my_defs::K1::internal] = i_in;
+
+            return idx;
+        }
+        else
+        if constexpr(k == k2) {
+            my_defs::K2::index_type idx;
+            idx[my_defs::K2::spin] = spin;
+            idx[my_defs::K2::keldysh] = iK;
+            idx[my_defs::K2::internal] = i_in;
+
+            return idx;
+        }
+        else
+        if constexpr(k == k2b) {
+            my_defs::K2b::index_type idx;
+            idx[my_defs::K2b::spin] = spin;
+            idx[my_defs::K2b::keldysh] = iK;
+            idx[my_defs::K2b::internal] = i_in;
+            return idx;
+        }
+        else
+        if constexpr(k == k3) {
+            my_defs::K3::index_type idx;
+            idx[my_defs::K3::spin] = spin;
+            idx[my_defs::K3::keldysh] = iK;
+            idx[my_defs::K3::internal] = i_in;
+            return idx;
+        }
+        else assert(false);
+    }
 };
 
 /**

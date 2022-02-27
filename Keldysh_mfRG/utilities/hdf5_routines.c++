@@ -74,7 +74,7 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     State<state_datatype> state(Lambda[0]);
 
     std::vector<state_datatype> Sigma_H;
-    read_from_hdf_LambdaLayer<state_datatype>(file_out, SELF_LIST, state.selfenergy.Sigma, Lambda_it);
+    read_from_hdf_LambdaLayer<state_datatype>(file_out, SELF_LIST, state.selfenergy.Sigma.data, Lambda_it);
     read_from_hdf_LambdaLayer<state_datatype>(file_out, HARTREE, Sigma_H, Lambda_it);
     state.selfenergy.asymp_val_R = Sigma_H[0];
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_irred, state.vertex.irred().bare, Lambda_it);
@@ -120,7 +120,7 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     H5::Group group_freqparams_ffreqs3p(group_freqparams.openGroup(FFREQS3_LISTp));
     H5::Group group_freqparams_ffreqs3t(group_freqparams.openGroup(FFREQS3_LISTt));
 
-    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs , state.selfenergy.frequencies, Lambda_it, Lambda[0]);
+    hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs , state.selfenergy.Sigma.frequencies.b, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqsa, state.vertex.avertex().K1.frequencies.b, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqsp, state.vertex.pvertex().K1.frequencies.b, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqst, state.vertex.tvertex().K1.frequencies.b, Lambda_it, Lambda[0]);
@@ -651,8 +651,8 @@ bool test_read_write_state_hdf(bool verbose) {
             print("PROBLEM during read / write of state data to LambdaLayer of HDF file. deviation : ",
                   state_diff.norm(), true);
         }
-        if ((state_output.selfenergy.frequencies.get_ws_vec() -
-             state_input.selfenergy.frequencies.get_ws_vec()).max_norm() < 1e-10)
+        if ((state_output.selfenergy.Sigma.frequencies.b.get_ws_vec() -
+             state_input.selfenergy.Sigma.frequencies.b.get_ws_vec()).max_norm() < 1e-10)
             print("Read / write of frequency grid to LambdaLayer of HDF file successful.", true);
         else {
             passed = false;

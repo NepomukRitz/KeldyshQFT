@@ -134,7 +134,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
-                avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
+                avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
                 if (BOSONIC_PARAM_FOR_K3) {
                     switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
                 }
@@ -486,7 +486,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
             for (int ivp = 0; ivp<nFER3; ivp++) {
 
                 double w, v, vp;
-                if (INTERPOLATION == linear)  avertex.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+                if (INTERPOLATION == linear)  avertex.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
                 else avertex.K3.frequencies.get_freqs_aux(w, v, vp, iw, iv, ivp);
                 value = linearFunction3D(w, v, vp);
                 avertex.K3.setvert(value, i_spin, iw, iv, ivp, iK, i_in);
@@ -639,12 +639,15 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
         const char channel = 'a';
         double Lambda = 1.8;
         rvert<state_datatype> rvertex(channel, Lambda, true);
+        rvertex.K1 = rvert<state_datatype>::buffer_type_K1(Lambda, K1_expanded_config.dims);
+        rvertex.K2 = rvert<state_datatype>::buffer_type_K2(Lambda, K2_expanded_config.dims);
 
         SECTION("K1") {
             using result_type_full = Eigen::Matrix<state_datatype, 4, K1_expanded_config.dims_flat/4>;
             result_type_full result_scalar_full;
             result_type_full result_vector_full;
             result_type_full deviation_full;
+
 
             // fill VertexBuffer with values
             double value = 0;

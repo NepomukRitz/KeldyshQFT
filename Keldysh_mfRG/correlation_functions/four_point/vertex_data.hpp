@@ -13,7 +13,7 @@
 #include "../../parameters/frequency_parameters.hpp"
 #include "../../grids/frequency_grid.hpp"            // functionality for the internal structure of the Hubbard model
 #include "H5Cpp.h"
-
+/*
 /// TODO: treat VertexFrequencyGrid as member of vertexContainerBase via template
 
 template <typename Q> class rvert; // forward declaration of rvert
@@ -23,12 +23,13 @@ template <typename Q, vertexType symm_type> class GeneralVertex;
 //template <typename Q>class symmetric_full;
 template <typename Q>using Vertex = GeneralVertex<Q, symmetric_full>;
 class Buffer;
-
+*/
 /**
  * Offers basic functionality that is identical for all K_classes
  * @tparam Q        data type of vertex data
  * @tparam rank     rank of data tensor
  */
+ /*
 template <typename Q, std::size_t rank>
 class vertexContainerBase {
     friend class State<Q>;
@@ -75,7 +76,7 @@ public:
             typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
     const Q& at(const Types &... i) const {return data.at(i...);}
     template <std::size_t freqrank, std::size_t vecsize, typename... Types,
-            typename std::enable_if_t<(sizeof...(Types) == freqrank+pos_first_freq+1) and (are_all_integral<size_t, Types...>::value), bool> = true>
+            typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<size_t, Types...>::value), bool> = true>
                     auto val_vectorized(const Types &... i) const -> Eigen::Matrix<Q,vecsize,1>{
         return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(i...);
     }
@@ -145,9 +146,9 @@ public:
 
     /// Functions for getting and setting the frequency grid and its members
 
-    /**
-     * gets the frequency corresponding to the frequency index i
-     */
+    ///
+    ///gets the frequency corresponding to the frequency index i
+    ///
     //void get_freqs_w(double& w, double& v, int iw, int iv) const;
     //void K2_get_freqs_aux(double& w, double& v, int iw, int iv) const;
 
@@ -189,9 +190,7 @@ public:
 };
 
 
-/**
- * vertex data container for K1
- */
+///vertex data container for K1
 template<typename Q>
 class vertexDataContainer<k1, Q> : public vertexContainerBase<Q,4>{
     friend void check_Kramers_Kronig(std::string filename);
@@ -219,9 +218,9 @@ public:
     /// Or shift these to the VertexFrequencyGrid class?
     /// For now I keep this to retain flexibility, e.g. to store data on very different grids in K1/K2/K3
 
-    /**
-     * gets the frequency corresponding to the frequency index i
-     */
+
+    ///gets the frequency corresponding to the frequency index i
+
     //void frequencies.get_freqs_w(double& w, int i) const;     /// returns regular frequency
     //void K1_get_freq_aux(double& w, int i) const;   /// returns frequency on the auxiliary grid
 //
@@ -319,7 +318,6 @@ public:
 
 };
 
-/************************************ MEMBER FUNCTIONS OF THE VERTEX Data Container************************************/
 
 /// K1:
 
@@ -347,7 +345,7 @@ template<typename Q>
 void vertexDataContainer<k3,Q>::set_VertexFreqGrid(const VertexFrequencyGrid<k3> frequencyGrid) {
     frequencies = frequencyGrid;
 }
-
+*/
 /*
 template<typename Q>
 const double& vertexDataContainer<k1,Q>::frequencies.get_wlower() const {
@@ -386,7 +384,7 @@ auto vertexDataContainer<k1,Q>::K1_gridtransf_inv(double w) const -> double {
     return frequencies.b.grid_transf_inv(w);
 }
 */
-
+/*
 template <typename Q> auto vertexDataContainer<k1,Q>::get_deriv_K1_x(const int order) const -> buffer_type {
     buffer_type result = ::partial_deriv<Q,4>(base_class::data, frequencies.b.ts, base_class::data.length(), K1_config.position_first_freq_index, order);
     return result;
@@ -630,5 +628,5 @@ template <typename Q> auto vertexDataContainer<k3,Q>::shrink_freq_box(const doub
 
     return frequencies_new;
 }
-
+*/
 #endif //FPP_MFRG_VERTEX_DATA_H

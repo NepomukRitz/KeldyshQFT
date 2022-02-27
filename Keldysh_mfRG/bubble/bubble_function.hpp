@@ -158,8 +158,8 @@ void BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmet
         vmax = dgamma.avertex().K1.frequencies.get_wupper_b();
     }
     else{
-        vmin = std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.frequencies.w_lower);
-        vmax = std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.frequencies.w_upper);
+        vmin = std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.b.w_lower);
+        vmax = std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.b.w_upper);
     }
 
     if (MAX_DIAG_CLASS >= 2){
@@ -230,15 +230,15 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     if (MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function<k1>();
         tK1 = get_time() - t_start;
-        print("K1", channel, " done, ");
-        get_time(t_start);
+        //print("K1", channel, " done, ");
+        //get_time(t_start);
     }
     if (MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
         calculate_bubble_function<k2>();
         tK2 = get_time() - t_start;
-        print("K2", channel, " done, ");
-        get_time(t_start);
+        //print("K2", channel, " done, ");
+        //get_time(t_start);
 
 #ifdef DEBUG_SYMMETRIES
         t_start = get_time();
@@ -252,8 +252,8 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         t_start = get_time();
         calculate_bubble_function<k3>();
         tK3 = get_time() - t_start;
-        print("K3", channel, " done, ");
-        get_time(t_start);
+        //print("K3", channel, " done, ");
+        //get_time(t_start);
     }
 
 }
@@ -699,9 +699,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     ivp      = (int) idx[my_defs::K3::nup];
     i_in     = (int) idx[my_defs::K3::internal];
     //getMultIndex<6,int,int,int,int,int,int>(ispin, iw, iv, ivp, i0, i_in, iK3, vertex1.avertex().K3.get_dims());
-    if (channel == 'a') dgamma.avertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
-    if (channel == 'p') dgamma.pvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'p');
-    if (channel == 't') dgamma.tvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 't');
+    if (channel == 'a') dgamma.avertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
+    if (channel == 'p') dgamma.pvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
+    if (channel == 't') dgamma.tvertex().K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
 }
 
 

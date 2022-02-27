@@ -18,13 +18,14 @@
 #include "vertex_data.hpp"
 #include "vertex_buffer.hpp"
 #include "../../utilities/minimizer.hpp"
+#include "../n_point/data_buffer.hpp"
 
 /// Possible (unit-)tests:
 /// [IMPLEMENTED in test_symmetries.c++] check read-out from symmetry-reduced sector and correctness of symmetry tables
 /// [MISSING] check conversion of frequency conventions
 
 template <typename Q> class fullvert; // forward declaration of fullvert
-template <K_class k, typename Q, interpolMethod inter> class vertexBuffer; // forward declaration of vertexDataContainer
+//template <K_class k, typename Q, interpolMethod inter> class vertexBuffer; // forward declaration of vertexDataContainer
 //template <typename Q, interpolMethod interp> class vertexInterpolator; // forward declaration of vertexInterpolator
 template<typename Q, std::size_t depth, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
 template<typename Q, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
@@ -32,6 +33,16 @@ template<typename Q, typename H5object> void write_to_hdf(H5object& group, const
 template <typename Q>
 class rvert{
 public:
+    using freqGrid_type_K1 = bufferFrequencyGrid<k1>;
+    using freqGrid_type_K2 = bufferFrequencyGrid<k2>;
+    using freqGrid_type_K3 = bufferFrequencyGrid<k3>;
+    using buffer_type_K1 = dataBuffer<Q, k1, K1_config.rank, K1_config.num_freqs, K1_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION>;
+    using buffer_type_K2 = dataBuffer<Q, k2, K2_config.rank, K2_config.num_freqs, K2_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2,Q,INTERPOLATION>; //
+    using buffer_type_K2b= dataBuffer<Q, k2b,K2_config.rank, K2_config.num_freqs, K2_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2b,Q,INTERPOLATION>;//
+    using buffer_type_K3 = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>; // vertexBuffer<k3,Q,INTERPOLATION>; //
+
+
+
     char channel;                       // reducibility channel
 private:
     Components components = Components(channel);              // lists providing information on how all Keldysh components are related to the
@@ -46,31 +57,30 @@ public:
     /// When you add a vertex buffer, also adapt the following:
     /// apply_unary_op_to_all_vertexBuffers()
     /// apply_binary_op_to_all_vertexBuffers()
-    vertexBuffer<k1,Q,INTERPOLATION> K1;
-    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_symmetry_expanded;
-
+    buffer_type_K1 K1;
+    mutable buffer_type_K1 K1_symmetry_expanded;
     /// cross-projected contributions, needed for the Hubbard model;
     /// have to be mutable to allow us to compute them at a stage where the vertex should be const.
-    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_a_proj = K1;
-    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_p_proj = K1;
-    mutable vertexBuffer<k1,Q,INTERPOLATION> K1_t_proj = K1;
+    mutable buffer_type_K1 K1_a_proj = K1;
+    mutable buffer_type_K1 K1_p_proj = K1;
+    mutable buffer_type_K1 K1_t_proj = K1;
 
-    vertexBuffer<k2,Q,INTERPOLATION> K2;
-    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_symmetry_expanded;
-    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_a_proj = K2;
-    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_p_proj = K2;
-    mutable vertexBuffer<k2,Q,INTERPOLATION> K2_t_proj = K2;
+    buffer_type_K2 K2;
+    mutable buffer_type_K2 K2_symmetry_expanded;
+    mutable buffer_type_K2 K2_a_proj = K2;
+    mutable buffer_type_K2 K2_p_proj = K2;
+    mutable buffer_type_K2 K2_t_proj = K2;
 
 #ifdef DEBUG_SYMMETRIES
-    vertexBuffer<k2b,Q,INTERPOLATION> K2b;
+    buffer_type_K2b K2b;
 #endif
-    mutable vertexBuffer<k2b,Q,INTERPOLATION> K2b_symmetry_expanded;
+    mutable buffer_type_K2b K2b_symmetry_expanded;
 
-    vertexBuffer<k3,Q,INTERPOLATION> K3;
-    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_symmetry_expanded;
-    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_a_proj = K3;
-    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_p_proj = K3;
-    mutable vertexBuffer<k3,Q,INTERPOLATION> K3_t_proj = K3;
+    buffer_type_K3 K3;
+    mutable buffer_type_K3 K3_symmetry_expanded;
+    mutable buffer_type_K3 K3_a_proj = K3;
+    mutable buffer_type_K3 K3_p_proj = K3;
+    mutable buffer_type_K3 K3_t_proj = K3;
 
     /**
      * Applies unary operator f to this rvert
@@ -139,29 +149,29 @@ public:
     : channel(channel_in)
       {
         if (is_reserve) {
-            if (MAX_DIAG_CLASS >= 1) K1 = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, K1_config.dims);
-            if (MAX_DIAG_CLASS >= 2) K2 = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, K2_config.dims);
-            if (MAX_DIAG_CLASS >= 3) K3 = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, K3_config.dims);
+            if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, K1_config.dims);
+            if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, K2_config.dims);
+            if (MAX_DIAG_CLASS >= 3) K3 = buffer_type_K3(Lambda, K3_config.dims);
             if constexpr(HUBBARD_MODEL) {
                 if (MAX_DIAG_CLASS >= 1) {
-                    K1_a_proj = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, K1_config.dims);
-                    K1_p_proj = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, K1_config.dims);
-                    K1_t_proj = vertexBuffer<k1,Q,INTERPOLATION>(Lambda, K1_config.dims);
+                    K1_a_proj = buffer_type_K1(Lambda, K1_config.dims);
+                    K1_p_proj = buffer_type_K1(Lambda, K1_config.dims);
+                    K1_t_proj = buffer_type_K1(Lambda, K1_config.dims);
                 }
                 if (MAX_DIAG_CLASS >= 2) {
-                    K2_a_proj = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, K2_config.dims);
-                    K2_p_proj = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, K2_config.dims);
-                    K2_t_proj = vertexBuffer<k2,Q,INTERPOLATION>(Lambda, K2_config.dims);
+                    K2_a_proj = buffer_type_K2(Lambda, K2_config.dims);
+                    K2_p_proj = buffer_type_K2(Lambda, K2_config.dims);
+                    K2_t_proj = buffer_type_K2(Lambda, K2_config.dims);
                 }
                 if (MAX_DIAG_CLASS >= 3) {
-                    K3_a_proj = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, K3_config.dims);
-                    K3_p_proj = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, K3_config.dims);
-                    K3_t_proj = vertexBuffer<k3,Q,INTERPOLATION>(Lambda, K3_config.dims);
+                    K3_a_proj = buffer_type_K3(Lambda, K3_config.dims);
+                    K3_p_proj = buffer_type_K3(Lambda, K3_config.dims);
+                    K3_t_proj = buffer_type_K3(Lambda, K3_config.dims);
                 }
             }
 
 #ifdef DEBUG_SYMMETRIES
-            K2b = vertexBuffer<k2b,Q,INTERPOLATION>(Lambda, K2_config.dims);
+            K2b = buffer_type_K2b(Lambda, K2_config.dims);
 #endif
         }
       };
@@ -256,8 +266,8 @@ public:
      * @param rvert4data        vertex to be interpolated
      *                          can be different from *this, so we can backup a vertex and interpolate the backup
      */
-    template<K_class k>
-    void update_grid(const VertexFrequencyGrid<k> frequencyGrid_in, rvert<Q>& rvert4data);
+    template<K_class k, typename FGrid>
+    void update_grid(const FGrid& frequencyGrid_in, rvert<Q>& rvert4data);
 
     /**
      * Optimizes the frequency grids and updates the grids accordingly
@@ -708,7 +718,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             my_index_t i_in     = idx[my_defs::K3::internal];
 
             double w, v, vp;
-            K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
+            K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
             VertexInput input(iK, ispin, w, v, vp, i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
@@ -769,10 +779,10 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 template<typename Q> template<char channel_bubble, bool is_left_vertex> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel, const int spin) const {
     /// TODO: Currently copies frequency_grid of same rvertex; but might actually need the frequency grid of conjugate channel
     assert(0 <= spin and spin < 2);
-    K1_symmetry_expanded = vertexBuffer<k1, Q, INTERPOLATION>(0., K1_expanded_config.dims);
-    K2_symmetry_expanded = vertexBuffer<k2, Q, INTERPOLATION>(0., K2_expanded_config.dims);
-    K2b_symmetry_expanded = vertexBuffer<k2b, Q, INTERPOLATION>(0., K2_expanded_config.dims);
-    K3_symmetry_expanded = vertexBuffer<k3, Q, INTERPOLATION>(0., K3_expanded_config.dims);
+    K1_symmetry_expanded = buffer_type_K1(0., K1_expanded_config.dims);
+    K2_symmetry_expanded = buffer_type_K2(0., K2_expanded_config.dims);
+    K2b_symmetry_expanded = buffer_type_K2b (0., K2_expanded_config.dims);
+    K3_symmetry_expanded = buffer_type_K3(0., K3_expanded_config.dims);
     if (spin == 0) {
         K1_symmetry_expanded.set_VertexFreqGrid(rvert_this.K1.get_VertexFreqGrid());
         K2_symmetry_expanded.set_VertexFreqGrid(rvert_this.K2.get_VertexFreqGrid());
@@ -886,7 +896,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
 
             double w, v, vp;
-            K3_symmetry_expanded.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, channel);
+            K3_symmetry_expanded.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
             VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
             Q value = rvert_this.template valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
@@ -1253,35 +1263,47 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     if (MAX_DIAG_CLASS >= 1) {
+        K1.update_grid(Lambda);
+    }
+    if (MAX_DIAG_CLASS >= 2) {
+        K2.update_grid(Lambda);
+    }
+    if (MAX_DIAG_CLASS >= 3) {
+        K3.update_grid(Lambda);
+    }
+    /*
+    if (MAX_DIAG_CLASS >= 1) {
 
-        VertexFrequencyGrid<k1> frequenciesK1_new = K1.get_VertexFreqGrid();  // new frequency grid
+        freqGrid_type_K1 frequenciesK1_new = K1.get_VertexFreqGrid();  // new frequency grid
         frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k1>(frequenciesK1_new, *this);
     }
     if (MAX_DIAG_CLASS >= 2) {
 
-        VertexFrequencyGrid<k2> frequenciesK2_new = K2.get_VertexFreqGrid();  // new frequency grid
+        freqGrid_type_K2 frequenciesK2_new = K2.get_VertexFreqGrid();  // new frequency grid
         frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k2>(frequenciesK2_new, *this);
     }
     if (MAX_DIAG_CLASS >= 3) {
-        VertexFrequencyGrid<k3> frequenciesK3_new = K3.get_VertexFreqGrid();  // new frequency grid
+        freqGrid_type_K3 frequenciesK3_new = K3.get_VertexFreqGrid();  // new frequency grid
         frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
         update_grid<k3>(frequenciesK3_new, *this);
     }
+     */
 }
 
 
 
-
+/*
 namespace {
 
     template <K_class k, typename Q>
     class UpdateGrid { }; // TODO(high): Make the UpdateGrid functionality also update the cross-projected parts.
     template<typename Q>
     class UpdateGrid<k1,Q> {
+        using freqGrid_type_K1 = typename rvert<Q>::freqGrid_type_K1;
     public:
-        void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k1>& frequencies_new, const rvert<Q>& rvert4data) {
+        void operator()(rvert<Q>& vertex, const freqGrid_type_K1& frequencies_new, const rvert<Q>& rvert4data) {
             using buffer_type = multidimensional::multiarray<Q,K1_config.rank>;
             buffer_type K1_new (K1_config.dims);  // temporary K1 vector
             for (int iflat=0; iflat < K1_config.dims_flat; ++iflat) {
@@ -1304,8 +1326,9 @@ namespace {
     };
     template<typename Q>
     class UpdateGrid<k2,Q> {
+        using freqGrid_type_K2 = typename rvert<Q>::freqGrid_type_K2;
     public:
-         void operator()(rvert<Q>& vertex, const VertexFrequencyGrid<k2>& frequencies_new, const rvert<Q>& rvert4data) {
+         void operator()(rvert<Q>& vertex, const freqGrid_type_K2& frequencies_new, const rvert<Q>& rvert4data) {
              using buffer_type = multidimensional::multiarray<Q,K2_config.rank>;
              buffer_type K2_new(K2_config.dims); // temporary K2 vector
             for (std::size_t i_flat = 0; i_flat < K2_config.dims_flat; i_flat++) {
@@ -1331,8 +1354,9 @@ namespace {
     };
     template<typename Q>
     class UpdateGrid<k3,Q> {
+        using freqGrid_type_K3 = typename rvert<Q>::freqGrid_type_K3;
     public:
-        void operator() (rvert<Q>& vertex, const VertexFrequencyGrid<k3>& frequencies_new, const rvert<Q>& rvert4data) {
+        void operator() (rvert<Q>& vertex, const freqGrid_type_K3& frequencies_new, const rvert<Q>& rvert4data) {
             assert(vertex.channel == rvert4data.channel);
             using buffer_type = multidimensional::multiarray<Q,K3_config.rank>;
             buffer_type K3_new(K3_config.dims);  // temporary K3 vector
@@ -1347,7 +1371,7 @@ namespace {
                 my_index_t i_in     = idx[my_defs::K3::internal];
 
                 double w, v, vp;
-                frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp, vertex.channel);
+                frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp);
                 IndicesSymmetryTransformations indices (iK, ispin,
                                                         w, v, vp,
                                                         i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
@@ -1360,32 +1384,42 @@ namespace {
 
     };
 }
-
+*/
 
 template <typename Q>
-template<K_class k>
-void rvert<Q>::update_grid(const VertexFrequencyGrid<k> frequencies_new, rvert<Q>& rvert4data) {
-    rvert4data.initInterpolator();
-    UpdateGrid<k,Q>() (*this, frequencies_new, rvert4data);
-    rvert4data.set_initializedInterpol(false);
+template<K_class k, typename FGrid>
+void rvert<Q>::update_grid(const FGrid& frequencies_new, rvert<Q>& rvert4data) {
+    if constexpr(k == k1) {
+        K1.update_grid(frequencies_new, rvert4data.K1);
+    }
+    else if constexpr(k == k2) {
+        K2.update_grid(frequencies_new, rvert4data.K2);
+    }
+    else if constexpr(k == k3) {
+        K3.update_grid(frequencies_new, rvert4data.K3);
+    }
+    else assert(false);
+
 }
 
 namespace {
 
     template<typename Q>
     class CostFullvert_Wscale_b_K1 {
+        using freqGrid_type_K1 = bufferFrequencyGrid<k1>;
+
         rvert<Q> rVert_backup;
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k1> frequencies = rVert.K1.get_VertexFreqGrid();
+        freqGrid_type_K1 frequencies = rVert.K1.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K1(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
             frequencies.b.update_Wscale(wscale_test);
             rVert.template update_grid<k1>(frequencies, rVert_backup);
             //rVert.K1.analyze_tails_K1();
-            double result = rVert.K1.get_curvature_maxK1();
+            double result = rVert.K1.get_curvature_max();
 
             if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K1" << rVert.channel; // << std::endl;
@@ -1411,7 +1445,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k2> frequencies = rVert.K2.get_VertexFreqGrid();
+        typename rvert<Q>::freqGrid_type_K2 frequencies = rVert.K2.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1421,7 +1455,7 @@ namespace {
 #endif
             rVert.template update_grid<k2>(frequencies, rVert_backup);
             //rVert.K2.analyze_tails_K2_b();
-            double result = rVert.K2.get_curvature_maxK2();
+            double result = rVert.K2.get_curvature_max();
 
             if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
@@ -1439,7 +1473,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k2> frequencies = rVert.K2.get_VertexFreqGrid();
+        typename rvert<Q>::freqGrid_type_K2 frequencies = rVert.K2.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_f_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1449,7 +1483,7 @@ namespace {
             frequencies.f.update_Wscale(wscale_test);
             rVert.template update_grid<k2>(frequencies, rVert_backup);
             //rVert.K2.analyze_tails_K2_f();
-            double result = rVert.K2.get_curvature_maxK2();
+            double result = rVert.K2.get_curvature_max();
 
             if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
@@ -1468,7 +1502,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k2> frequencies = rVert.K2.get_VertexFreqGrid();
+        typename rvert<Q>::freqGrid_type_K2 frequencies = rVert.K2.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (std::vector<double> Wscales) -> double
@@ -1479,7 +1513,7 @@ namespace {
             frequencies.f.update_Wscale(wscale_test_f);
             rVert.template update_grid<k2>(frequencies, rVert_backup);
             //rVert.K2.analyze_tails_K2_f();
-            double result = rVert.K2.get_curvature_maxK2();
+            double result = rVert.K2.get_curvature_max();
 
             if (verbose and mpi_world_rank() == 0)
             {
@@ -1500,14 +1534,14 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k3> frequencies = rVert.K3.get_VertexFreqGrid();
+        typename rvert<Q>::freqGrid_type_K3 frequencies = rVert.K3.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_b_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
             frequencies.b.update_Wscale(wscale_test);
             rVert.template update_grid<k3>(frequencies, rVert_backup);
             //rVert.K3.analyze_tails_K3_b();
-            double result = rVert.K3.get_curvature_maxK3();
+            double result = rVert.K3.get_curvature_max();
 
             if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
@@ -1524,7 +1558,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k3> frequencies = rVert.K3.get_VertexFreqGrid();
+        typename rvert<Q>::freqGrid_type_K3 frequencies = rVert.K3.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_f_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
@@ -1535,7 +1569,7 @@ namespace {
             frequencies.f.update_Wscale(wscale_test);
             rVert.template update_grid<k3>(frequencies, rVert_backup);
             //rVert.K3.analyze_tails_K3_b();
-            double result = rVert.K3.get_curvature_maxK3();
+            double result = rVert.K3.get_curvature_max();
 
             if (verbose and mpi_world_rank() == 0) {
                 std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
@@ -1553,7 +1587,7 @@ namespace {
         bool verbose;
     public:
         rvert<Q> rVert;
-        VertexFrequencyGrid<k3> frequencies = rVert.K3.get_VertexFreqGrid();
+        typename rvert<Q>::freqGrid_type_K3 frequencies = rVert.K3.get_VertexFreqGrid();
         explicit CostFullvert_Wscale_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (std::vector<double> Wscales) -> double
@@ -1564,7 +1598,7 @@ namespace {
             frequencies.f.update_Wscale(wscale_test_f);
             rVert.template update_grid<k3>(frequencies, rVert_backup);
             //rVert.K3.analyze_tails_K3_f();
-            double result = rVert.K3.get_curvature_maxK3();
+            double result = rVert.K3.get_curvature_max();
 
             if (verbose and mpi_world_rank() == 0)
             {
@@ -1585,10 +1619,10 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
     /// for K1:
     if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K1" << channel << " grid in direction w:\n";
-    VertexFrequencyGrid<k1> frequenciesK1_new = K1.shrink_freq_box(rel_tail_threshold);
+    freqGrid_type_K1 frequenciesK1_new = K1.shrink_freq_box(rel_tail_threshold);
     update_grid<k1>(frequenciesK1_new, *this);
     if (verbose and mpi_world_rank() == 0) {
-        std::cout << "K1 rel.tail height in direction w: " << K1.analyze_tails_K1() << std::endl;
+        std::cout << "K1 rel.tail height in direction w: " << K1.template analyze_tails<0>() << std::endl;
     }
 
     double a_Wscale = K1.get_VertexFreqGrid().b.W_scale / 2.;
@@ -1603,11 +1637,11 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     /// Using 1-dimensional minimization consecutively:
     if(MAX_DIAG_CLASS>1) {
         /// for K2:
-        VertexFrequencyGrid<k2> frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
+        typename rvert<Q>::freqGrid_type_K2 frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
         update_grid<k2>(frequenciesK2_new, *this);
         if (verbose and mpi_world_rank() == 0) {
-            std::cout << "K2 rel.tail height in direction w: " << K2.analyze_tails_K2_x() << std::endl;
-            std::cout << "K2 rel.tail height in direction v: " << K2.analyze_tails_K2_y() << std::endl;
+            std::cout << "K2 rel.tail height in direction w: " << K2.template analyze_tails<0>() << std::endl;
+            std::cout << "K2 rel.tail height in direction v: " << K2.template analyze_tails<1>() << std::endl;
         }
 
 
@@ -1638,7 +1672,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     if(MAX_DIAG_CLASS>1) {
         /// for K2:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
-        VertexFrequencyGrid<k2> frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
+        typename rvert<Q>::freqGrid_type_K2 frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
         update_grid<k2>(frequenciesK2_new, *this);
         if (verbose and mpi_world_rank() == 0) {
             std::cout << "K2 rel.tail height in direction w: " << K2.analyze_tails_K2_x() << std::endl;
@@ -1667,12 +1701,12 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 #ifndef MULTIDIM_MINIMIZATION // multi-dimensional optimization
     if(MAX_DIAG_CLASS>2) {
         /// for K3:
-        VertexFrequencyGrid<k3> frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
+        typename rvert<Q>::freqGrid_type_K3 frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
         update_grid<k3>(frequenciesK3_new, *this);
         if (verbose and mpi_world_rank() == 0) {
-            std::cout << "K3 rel.tail height in direction w: " << K3.analyze_tails_K3_x() << std::endl;
-            std::cout << "K3 rel.tail height in direction v: " << K3.analyze_tails_K3_y() << std::endl;
-            std::cout << "K3 rel.tail height in direction vp:" << K3.analyze_tails_K3_z() << std::endl;
+            std::cout << "K3 rel.tail height in direction w: " << K3.template analyze_tails<0>() << std::endl;
+            std::cout << "K3 rel.tail height in direction v: " << K3.template analyze_tails<1>() << std::endl;
+            std::cout << "K3 rel.tail height in direction vp:" << K3.template analyze_tails<2>() << std::endl;
         }
 
         // in v-direction:
@@ -1706,7 +1740,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
     if(MAX_DIAG_CLASS>2) {
         /// for K3:
-        VertexFrequencyGrid<k3> frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
+        typename rvert<Q>::freqGrid_type_K3 frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
         update_grid<k3>(frequenciesK3_new, *this);
         if (verbose and mpi_world_rank() == 0) {
             std::cout << "K3 rel.tail height in direction w: " << K3.analyze_tails_K3_x() << std::endl;
@@ -1895,7 +1929,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 
 
         double w_in, v_in, vp_in;
-        K3.frequencies.get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp, channel);
+        K3.frequencies.get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp);
         IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, vp_in, i_in, channel, k2, 0, channel);
         int sign_w = sign_index(w_in);
 

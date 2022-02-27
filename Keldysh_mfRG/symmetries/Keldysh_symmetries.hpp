@@ -6,66 +6,12 @@
 
 #include <vector>     // standard std::vector
 #include <algorithm>  // for find function in isInList
+#include "../data_structures.hpp"
 #include "../utilities/util.hpp"     // printing text output
 #include "../grids/frequency_grid.hpp"
 
 /// Keldysh index parameters ///
-#ifdef KELDYSH_FORMALISM
-#ifndef DEBUG_SYMMETRIES
-// Number of independent Keldysh components for the respective diagrammatic class
-const int nK_SE = 2;
-const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-                            // for channel p components 1 and 5
-const int nK_K2 = 5;        // For channels a, p and t -channel separately
-const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-                            // (independent components in order of appearance)
-#else // DEBUG_SYMMETRIES
-const int nK_SE = 2;
-const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-                            // for channel p components 1 and 5
-const int nK_K2 = 16;       // For channels a, p and t -channel separately
-const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-                            // (independent components in order of appearance)
-#endif // DEBUG_SYMMETRIES
-#else // KELDYSH_FORMALISM
-const int nK_SE = 1;
-const int nK_K1 = 1;
-const int nK_K2 = 1;
-const int nK_K3 = 1;
-#endif // KELDYSH_FORMALISM
 
-
-constexpr size_t rank_SE = 3;
-constexpr size_t rank_K1 = 4;
-constexpr size_t rank_K2 = 5;
-constexpr size_t rank_K3 = 6;
-namespace my_defs {
-    namespace SE {
-        enum names {keldysh, nu, internal};
-        using index_type = std::array<my_index_t, 3>;
-        using dimensions_type = std::array<my_index_t, 3>;
-    }
-    namespace K1 {
-        enum names {spin,  omega,  keldysh,  internal};
-        using index_type = std::array<my_index_t, 4>;
-        using dimensions_type = std::array<my_index_t, 4>;
-    }
-    namespace K2 {
-        enum names {spin,  omega,  nu,  keldysh,  internal};
-        using index_type = std::array<my_index_t, 5>;
-        using dimensions_type = std::array<my_index_t, 5>;
-    }
-    namespace K2b{
-        enum names {spin,  omega,  nup,  keldysh,  internal};
-        using index_type = std::array<my_index_t, 5>;
-        using dimensions_type = std::array<my_index_t, 5>;
-    }
-    namespace K3 {
-        enum names {spin,  omega,  nu,  nup,  keldysh,  internal};
-        using index_type = std::array<my_index_t, 6>;
-        using dimensions_type = std::array<my_index_t, 6>;
-    }
-}
 template <std::size_t _rank>
 struct buffer_config {
     using index_type = std::array<my_index_t, _rank>;

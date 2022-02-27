@@ -54,8 +54,8 @@ private:
     SelfEnergy<comp>& SOPT_SE_Hubbard; // result
 
     // Limits of the frequency space of the self-energy to compute:
-    const double v_lower = SOPT_SE_Hubbard.frequencies.w_lower;
-    const double v_upper = SOPT_SE_Hubbard.frequencies.w_upper;
+    const double v_lower = SOPT_SE_Hubbard.Sigma.frequencies.get_wlower_b();
+    const double v_upper = SOPT_SE_Hubbard.Sigma.frequencies.get_wupper_b();
 
     // hybridization (needed for proper splitting of the integration domain):
     const double Delta = (Lambda + glb_Gamma) / 2.; // TODO(medium): Is this meaningful for the Hubbard model?

@@ -99,7 +99,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             for (int iv = 0; iv < nFER3; iv++) {
                 for (int ivp = 0; ivp < nFER3; ivp++) {
                     double w, v, vp;
-                    testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+                    testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
                     auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp);
                     testvertex1.K3.setvert(val, 0, iw, iv, ivp, 0, 0);
                 }
@@ -114,7 +114,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
     SECTION( "Is K1 correctly updated??" ) {
         if (INTERPOLATION==linear) {
-            VertexFrequencyGrid<k1> bfreqK1 = testvertex1.K1.get_VertexFreqGrid();
+            auto bfreqK1 = testvertex1.K1.get_VertexFreqGrid();
             double Wscale_old = bfreqK1.b.W_scale;
             double wmax_old = bfreqK1.b.w_upper;
             double factor = 0.5;
@@ -151,7 +151,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
     if (MAX_DIAG_CLASS>1) {
         SECTION( "Is K2 correctly updated??" ) {
             if (INTERPOLATION==linear) {
-                VertexFrequencyGrid<k2> bfreqK2 = testvertex1.K2.get_VertexFreqGrid();
+                rvert<state_datatype>::freqGrid_type_K2 bfreqK2 = testvertex1.K2.get_VertexFreqGrid();
                 double Wscale_old_b = bfreqK2.b.W_scale;
                 double wmax_old_b = bfreqK2.b.w_upper;
                 double Wscale_old_f = bfreqK2.f.W_scale;
@@ -203,7 +203,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
     if (MAX_DIAG_CLASS>2) {
         SECTION( "Is K3 correctly updated??" ) {
             if (INTERPOLATION==linear) {
-                VertexFrequencyGrid<k3> bfreqK3 = testvertex1.K3.get_VertexFreqGrid();
+                rvert<state_datatype>::freqGrid_type_K3 bfreqK3 = testvertex1.K3.get_VertexFreqGrid();
                 double Wscale_old_b = bfreqK3.b.W_scale;
                 double wmax_old_b = bfreqK3.b.w_upper;
                 double Wscale_old_f = bfreqK3.f.W_scale;
@@ -224,7 +224,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                     for (int iv = 0; iv < nFER3; iv++) {
                         for (int ivp = 0; ivp < nFER3; ivp++) {
                             double w, v, vp;
-                            testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp, 'a');
+                            testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
                             auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp) - testvertex1.K3.at(0,iw,iv, ivp,0,0);
                             errors.at(0, iw, iv, ivp, 0, 0) = val;
                         }
@@ -376,7 +376,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
         double correction = avertex.K3.K3_get_correction_MFfiniteT(iw);
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = iv; ivp<nFER3; ivp++) {
-                avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp, 'a');
+                avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
 #ifndef ZERO_TEMP   // Matsubara T>0
                 //indices.v1 += correction;
                 //indices.v2 += correction;

@@ -66,7 +66,7 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrands(vec<comp>& integrand
 void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp>& vertex_values,
                                                    const int iK, const int iK_internal,
                                                    const int iv1, const int iw1) const {
-    const double v1 = barePropagator.selfenergy.frequencies.get_ws(iv1);
+    const double v1 = barePropagator.selfenergy.Sigma.frequencies.b.get_ws(iv1);
     int it_spin = 0;
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
         switch (iK_internal) {
@@ -98,11 +98,11 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrals(const vec<comp>& inte
                                                            const int iK, const int iK_internal) {
 #pragma omp parallel for schedule(dynamic)
     for (int iv = 0; iv < nFER; ++iv) {
-        const double v = SOPT_SE_Hubbard.frequencies.get_ws(iv);
+        const double v = SOPT_SE_Hubbard.Sigma.frequencies.b.get_ws(iv);
         for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
             Integrand_SE_SOPT_Hubbard integrand_w \
                 (integrand, v, i_in,
-                 barePropagator.selfenergy.frequencies,                              // frequency grid of propagator
+                 barePropagator.selfenergy.Sigma.frequencies.b,                              // frequency grid of propagator
                  vertex_in_SOPT.avertex().K1.frequencies.get_freqGrid_b());     // frequency grid of SOPT vertex
             auto val = integrator<comp>(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, 0, Delta);
             // TODO: What about asymptotic corrections?
@@ -140,7 +140,7 @@ void Hubbard_SE_SOPT_Computer::save_integrand(const vec<comp>& integrand, const 
 
     write_h5_rvecs(filename,
                    {"prop_freq", "vert_freq", "integrand_re", "integrand_im"},
-                   {barePropagator.selfenergy.frequencies.get_ws_vec(),
+                   {barePropagator.selfenergy.Sigma.frequencies.b.get_ws_vec(),
                     vertex_in_SOPT.avertex().K1.frequencies.get_freqGrid_b().get_ws_vec(),
                     integrand.real(), integrand.imag()});
 }
