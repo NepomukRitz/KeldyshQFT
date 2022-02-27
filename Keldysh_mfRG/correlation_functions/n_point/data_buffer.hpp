@@ -80,7 +80,7 @@ public:
         return weights;
 
     }
-
+    /*
     template <typename result_type, my_index_t vecsize>
     Eigen::Matrix<Q, vecsize, numSamples()> get_values(const index_type& vertex_index) const {
         Eigen::Matrix<Q, vecsize, numSamples()> result;
@@ -166,7 +166,7 @@ public:
         return result;
     }
 
-
+    */
 
 
     template <typename result_type = Q,
@@ -232,7 +232,7 @@ public:
             //index_type vertex_index;
             weights_type weights = get_weights(frequencies, indices);
             // fetch vertex values
-            values_type values = get_values<result_type, vecsize>(indices);
+            values_type values = base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 2>(indices);
             assert(weights.allFinite());
             assert(values.allFinite());
 

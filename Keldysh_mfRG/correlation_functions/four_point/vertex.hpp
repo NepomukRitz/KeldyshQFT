@@ -382,6 +382,9 @@ public:
         vertex.Ir = Ir;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.Ir=Ir;
     }
+    //bool is_Ir() const {  // set the Ir flag (irreducible or full) for all spin components
+    //    return vertex.Ir;
+    //}
     void set_only_same_channel(bool only_same_channel) {
         vertex.only_same_channel = only_same_channel;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.only_same_channel = only_same_channel;

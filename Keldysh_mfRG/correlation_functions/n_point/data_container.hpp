@@ -160,6 +160,11 @@ class Buffer;
             return data.eigen_segment(start, end);
         }
 
+        template <my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, my_index_t vecsize, my_index_t sample_size>
+        Eigen::Matrix<Q, vecsize, my_integer_pow<numberFrequencyDims>(sample_size)> get_values(const index_type& index) const {
+            return data.template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, sample_size>(index);
+        }
+
     };
 
 

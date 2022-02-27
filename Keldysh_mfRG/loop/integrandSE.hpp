@@ -151,17 +151,19 @@ void IntegrandSE<Q,vertType>::save_integrand(const rvec& freqs) const {
 
 template<typename Q, vertexType vertType>
 Q IntegrandSE<Q,vertType>::Keldysh_value(const double vp) const {
-    Q Gi;
-    evaluate_propagator(Gi, iK, vp);
+    Q Gi, Gi2;
+    evaluate_propagator(Gi , iK, vp);
+    evaluate_propagator(Gi2, iK,-vp);
 
-    Q factorClosedAbove;
+    Q factorClosedAbove, factorClosedAbove2;
 #ifdef SYMMETRIZED_SELF_ENERGY_FLOW
     Q factorClosedBelow;
     evaluate_vertex(factorClosedAbove, factorClosedBelow, iK, vp);
     return (1./2.) * Gi * (factorClosedAbove + factorClosedBelow);
 #else
-    evaluate_vertex(factorClosedAbove, iK, vp);
-    return Gi * factorClosedAbove;
+    evaluate_vertex(factorClosedAbove,  iK, vp);
+    evaluate_vertex(factorClosedAbove2, iK,-vp);
+    return (Gi * factorClosedAbove +  Gi2 * factorClosedAbove2) * 0.5;
 #endif
 
 

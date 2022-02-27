@@ -121,26 +121,26 @@ void LoopCalculator<Q,vertType>::compute_Keldysh() {
             // V component
             IntegrandSE<Q,vertType> integrandR ('r', fullvertex, prop, iK, 0, v, i_in);
             IntegrandSE<Q,vertType> integrandK ('k', fullvertex, prop, iK, 0, v, i_in);
-            integratedR = prefactor * integrator<Q>                (integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-            //integratedR = prefactor * integrator_Matsubara_T0<Q, 1>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-            integratedK = prefactor * integrator<Q>                (integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-            //integratedK = prefactor * integrator_Matsubara_T0<Q, 1>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+            //integratedR = prefactor * integrator<Q>                (integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+            integratedR = prefactor * integrator_Matsubara_T0<Q, 1>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+            //integratedK = prefactor * integrator<Q>                (integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+            integratedK = prefactor * integrator_Matsubara_T0<Q, 1>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
 
             // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
             if (all_spins) {
                 IntegrandSE<Q,vertType> integrandR_Vhat ('r', fullvertex, prop, iK, 1, v, i_in);
                 IntegrandSE<Q,vertType> integrandK_Vhat ('k', fullvertex, prop, iK, 1, v, i_in);
-                integratedR = 2. * integratedR + prefactor * integrator<Q>                (integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                //integratedR = 2. * integratedR + prefactor * integrator_Matsubara_T0<Q, 1>(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-                integratedK = 2. * integratedK + prefactor * integrator<Q>                (integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                //integratedK = 2. * integratedK + prefactor * integrator_Matsubara_T0<Q, 1>(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                //integratedR = 2. * integratedR + prefactor * integrator<Q>                (integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+                integratedR = 2. * integratedR + prefactor * integrator_Matsubara_T0<Q, 1>(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                //integratedK = 2. * integratedK + prefactor * integrator<Q>                (integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+                integratedK = 2. * integratedK + prefactor * integrator_Matsubara_T0<Q, 1>(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
             }
 
             // add analytical results for the tails
-            integratedR += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                                 v, 0, spin, i_in, all_spins);
-            integratedK += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
-                                                                 v, 1, spin, i_in, all_spins);
+            //integratedR += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+            //                                                     v, 0, spin, i_in, all_spins);
+            //integratedK += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+            //                                                     v, 1, spin, i_in, all_spins);
 
             //The results are emplaced in the right place of the answer object.
             self.addself(0, iv, i_in, integratedR);

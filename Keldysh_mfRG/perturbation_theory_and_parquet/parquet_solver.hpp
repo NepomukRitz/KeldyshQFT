@@ -23,7 +23,7 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
                  const State<Q>& state_in, const double Lambda) {
     Vertex<Q> Gamma = state_in.vertex;  // full vertex
     GeneralVertex<Q,symmetric_r_irred> Ir(state_in.vertex.half1());     // irreducible vertex
-    //Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
+    Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g'); // full propagator
 
     // compute the BSE by inserting I_r on the left and the full Gamma on the right
@@ -79,11 +79,13 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     // compute the a bubble with full vertex on the right
     GeneralVertex<Q,symmetric_r_irred> bubble_a_r (Lambda);
+    bubble_a_r.set_Ir(true);
     bubble_a_r.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_a_r, Gamma_0, state_in.vertex, G, G, 'a', false);  // full vertex on the right
 
     // compute the a bubble with full vertex on the left
     GeneralVertex<Q,symmetric_r_irred> bubble_a_l (Lambda);
+    bubble_a_l.set_Ir(true);
     bubble_a_l.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_a_l, state_in.vertex, Gamma_0, G, G, 'a', false);  // full vertex on the left
 
@@ -95,11 +97,13 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     // compute the p bubble with full vertex on the right
     GeneralVertex<Q,symmetric_r_irred> bubble_p_r (Lambda);
+    bubble_p_r.set_Ir(true);
     bubble_p_r.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_p_r, Gamma_0, state_in.vertex, G, G, 'p', false);  // full vertex on the right
 
     // compute the p bubble with full vertex on the left
     GeneralVertex<Q,symmetric_r_irred> bubble_p_l (Lambda);
+    bubble_p_l.set_Ir(true);
     bubble_p_l.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_p_l, state_in.vertex, Gamma_0, G, G, 'p', false);  // full vertex on the left
 
