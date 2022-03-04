@@ -55,7 +55,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 #if not defined(ZERO_TEMP)
 constexpr double glb_T = 1.; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 0.001;                     // Temperature
+constexpr double glb_T = 0.0;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
