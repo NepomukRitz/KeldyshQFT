@@ -269,6 +269,7 @@ public:
     };
 
     void debug_TOPT();
+    void debug_FOPT_K1();
 };
 
 template<typename Q>
@@ -482,6 +483,86 @@ void PT_Machine<Q>::debug_TOPT() {
     print("K1_p val in units of exact result = " + std::to_string(TOPT_K1_p_val / exact), true);
     print("K1_t_left_val in units of exact result = " + std::to_string(TOPT_K1_t_left_val / exact), true);
     print("K1_t_right_val in units of exact result = " + std::to_string(TOPT_K1_t_right_val / exact), true);
+
+}
+
+template<typename Q>
+void PT_Machine<Q>::debug_FOPT_K1() {
+    print("---------- Build K1-diagrams at fourth order ----------", true);
+    Vertex<Q> a_ladder = Vertex<Q>(Lambda);
+    Vertex<Q> a_nonladder_p = Vertex<Q>(Lambda);
+    Vertex<Q> a_nonladder_t = Vertex<Q>(Lambda);
+    Vertex<Q> p_ladder = Vertex<Q>(Lambda);
+    Vertex<Q> p_nonladder_a = Vertex<Q>(Lambda);
+    Vertex<Q> p_nonladder_t = Vertex<Q>(Lambda);
+    Vertex<Q> t_ladder = Vertex<Q>(Lambda);
+    Vertex<Q> t_nonladder_a = Vertex<Q>(Lambda);
+    Vertex<Q> t_nonladder_p = Vertex<Q>(Lambda);
+
+    print("Now calculating the a-channel contributions...", true);
+    Vertex<Q> a_ladder_intermediate = Vertex<Q>(Lambda);
+    bubble_function(a_ladder_intermediate, SOPT_avertex, bareState.vertex, Pi, 'a');
+    bubble_function(a_ladder, bareState.vertex, a_ladder_intermediate, Pi, 'a');
+    print("a-ladder done.", true);
+    Vertex<Q> a_nonladder_p_intermediate = Vertex<Q>(Lambda);
+    bubble_function(a_nonladder_p_intermediate, SOPT_pvertex, bareState.vertex, Pi, 'a');
+    bubble_function(a_nonladder_p, bareState.vertex, a_nonladder_p_intermediate, Pi, 'a');
+    print("a-non-ladder contribution from the p channel done.", true);
+    Vertex<Q> a_nonladder_t_intermediate = Vertex<Q>(Lambda);
+    bubble_function(a_nonladder_t_intermediate, SOPT_tvertex, bareState.vertex, Pi, 'a');
+    bubble_function(a_nonladder_t, bareState.vertex, a_nonladder_t_intermediate, Pi, 'a');
+    print("a-non-ladder contribution from the p channel done.", true);
+
+    print("Now calculating the p-channel contributions...", true);
+    Vertex<Q> p_ladder_intermediate = Vertex<Q>(Lambda);
+    bubble_function(p_ladder_intermediate, SOPT_pvertex, bareState.vertex, Pi, 'p');
+    bubble_function(p_ladder, bareState.vertex, p_ladder_intermediate, Pi, 'p');
+    print("p-ladder done.", true);
+    Vertex<Q> p_nonladder_a_intermediate = Vertex<Q>(Lambda);
+    bubble_function(p_nonladder_a_intermediate, SOPT_avertex, bareState.vertex, Pi, 'p');
+    bubble_function(p_nonladder_a, bareState.vertex, p_nonladder_a_intermediate, Pi, 'p');
+    print("p-non-ladder contribution from the a channel done.", true);
+    Vertex<Q> p_nonladder_t_intermediate = Vertex<Q>(Lambda);
+    bubble_function(p_nonladder_t_intermediate, SOPT_tvertex, bareState.vertex, Pi, 'p');
+    bubble_function(p_nonladder_t, bareState.vertex, p_nonladder_t_intermediate, Pi, 'p');
+    print("p-non-ladder contribution from the p channel done.", true);
+
+    print("Now calculating the t-channel contributions...", true);
+    Vertex<Q> t_ladder_intermediate = Vertex<Q>(Lambda);
+    bubble_function(t_ladder_intermediate, SOPT_tvertex, bareState.vertex, Pi, 't');
+    bubble_function(t_ladder, bareState.vertex, t_ladder_intermediate, Pi, 't');
+    print("t-ladder done.", true);
+    Vertex<Q> t_nonladder_a_intermediate = Vertex<Q>(Lambda);
+    bubble_function(t_nonladder_a_intermediate, SOPT_avertex, bareState.vertex, Pi, 't');
+    bubble_function(t_nonladder_a, bareState.vertex, t_nonladder_a_intermediate, Pi, 't');
+    print("t-non-ladder contribution from the a channel done.", true);
+    Vertex<Q> t_nonladder_p_intermediate = Vertex<Q>(Lambda);
+    bubble_function(t_nonladder_p_intermediate, SOPT_pvertex, bareState.vertex, Pi, 't');
+    bubble_function(t_nonladder_p, bareState.vertex, t_nonladder_p_intermediate, Pi, 't');
+    print("t-non-ladder contribution from the p channel done.", true);
+
+    print("Now writing out results...", true);
+    assert(KELDYSH);
+    const std::string filename = data_dir + "debug_FOPT_K1_with_U_over_Delta_" + std::to_string(U_over_Delta)+ ".h5";
+
+    VertexInput a_input (7, 0, 0, 0, 0, 0, 'a');
+    VertexInput p_input (7, 0, 0, 0, 0, 0, 'p');
+    VertexInput t_input (7, 0, 0, 0, 0, 0, 't');
+
+    rvec K1a = {a_ladder.value(a_input).real() / glb_U,
+                a_nonladder_p.value(a_input).real() / glb_U,
+                a_nonladder_t.value(a_input).real() / glb_U};
+
+    rvec K1p = {p_ladder.value(p_input).real() / glb_U,
+                p_nonladder_a.value(p_input).real() / glb_U,
+                p_nonladder_t.value(p_input).real() / glb_U};
+
+    rvec K1t = {t_ladder.value(t_input).real() / glb_U,
+                t_nonladder_a.value(t_input).real() / glb_U,
+                t_nonladder_p.value(t_input).real() / glb_U};
+
+    write_h5_rvecs(filename, {"K1a", "K1p", "K1t"}, {K1a, K1p, K1t});
+    print("...done.", true);
 
 }
 
