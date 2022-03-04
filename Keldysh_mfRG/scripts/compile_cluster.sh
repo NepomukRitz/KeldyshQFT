@@ -51,7 +51,7 @@ cmake -DWORKSTATION=OFF -D$CLUSTER=ON -S$src_dir -B$build_dir
 
 # build
 TARGET=Keldysh_mfRG
-cmake --build . --target $TARGET
+cmake --build . --target $TARGET -- -j 9
 
 mv ./Keldysh_mfRG $src_dir
 

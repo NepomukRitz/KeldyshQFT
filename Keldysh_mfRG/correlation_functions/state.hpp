@@ -11,6 +11,7 @@
 #include "../perturbation_theory_and_parquet/hartree_term.hpp"
 #include "../utilities/util.hpp"                     // printing text output
 #include <boost/numeric/odeint.hpp>
+#include <string>
 
 template <typename Q>
 class State{
