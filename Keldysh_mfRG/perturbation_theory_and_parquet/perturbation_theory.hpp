@@ -392,7 +392,7 @@ void PT_Machine<Q>::write_out_results() const {
     // Always fully retarded components, up-down spin component, and at zero frequencies
     assert(KELDYSH);
     const std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
-    + std::to_string(U_over_Delta) + "_and_eVg_" + std::to_string(glb_Vg) + ".h5";
+    + std::to_string(U_over_Delta) + "_and_eVg_" + std::to_string(glb_Vg) + "_and_T_" +std::to_string(glb_T) + ".h5";
 
     print("Write out results to file " + filename + "...", true);
 
