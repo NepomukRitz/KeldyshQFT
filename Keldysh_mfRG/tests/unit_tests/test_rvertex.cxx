@@ -317,7 +317,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     value = 0.;
     ;
     for (int iw = 0; iw<=(nBOS2-1)/2; iw++){
-        double correction = avertex.K2.K2_get_correction_MFfiniteT(iw);
+        double correction = (!KELDYSH and !ZERO_T) ? signFlipCorrection_MF_int(iw) : 0;
         for (int iv = 0; iv<(nFER2)/2; iv++) {
             avertex.K2.frequencies.get_freqs_w(indices.w, indices.v1, iw, iv);
             #ifndef ZERO_TEMP   // Matsubara T>0
