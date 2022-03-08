@@ -53,7 +53,7 @@ public:
     void update_grid(const freqGrid_type&  frequencies_new, SelfEnergy<Q> selfEnergy4Sigma);
     /// finds optimal grid parameters with minimizer()
     void findBestFreqGrid(bool verbose);       // optimize frequency grid parameters and update self-energy on new grid
-    auto shrink_freq_box(double rel_tail_threshold) const -> FrequencyGrid;       // optimize frequency grid parameters and update self-energy on new grid
+    auto shrink_freq_box(double rel_tail_threshold) const -> freqGrid_type ;       // optimize frequency grid parameters and update self-energy on new grid
     double analyze_tails(bool verbose) const;
     /// computes finite differences of Sigma
     double get_deriv_maxSE(bool verbose) const;
@@ -270,27 +270,23 @@ public:
     SelfEnergy<Q> selfEnergy;
     explicit CostSE_Wscale(SelfEnergy<Q> SE_in, bool verbose): selfEnergy(SE_in), selfEnergy_backup(SE_in), verbose(verbose) {
         // remove Hartree contribution
-        for (int iv = 0; iv < nSE; ++iv) {
-            for (int i_in = 0; i_in < n_in_K1; ++i_in) {
-                selfEnergy.Sigma[iv * n_in_K1 + i_in] -= selfEnergy.asymp_val_R;
-            }
-        }
+        std::array<size_t, 3> start = {0,0,0};
+        std::array<size_t, 3> end   = {0, nFER, n_in};
+        auto data = selfEnergy.Sigma.get_vec();
+        data.eigen_segment(start, end) -= selfEnergy.asymp_val_R;
 
+        selfEnergy.Sigma.set_vec(data);
+        selfEnergy_backup.Sigma.set_vec(data);
         selfEnergy.asymp_val_R = 0.;
 
-        for (int iv = 0; iv < nSE; ++iv) {
-            for (int i_in = 0; i_in < n_in_K1; ++i_in) {
-                selfEnergy_backup.Sigma[iv * n_in_K1 + i_in] -= selfEnergy_backup.asymp_val_R;
-            }
-        }
 
         selfEnergy_backup.asymp_val_R = 0.;
 
     };
 
     auto operator() (double wscale_test) -> double {
-        selfEnergy.frequencies.update_Wscale(wscale_test);
-        selfEnergy.update_grid(selfEnergy.frequencies, selfEnergy_backup);
+        selfEnergy.Sigma.frequencies.b.update_Wscale(wscale_test);
+        selfEnergy.update_grid(selfEnergy.Sigma.frequencies, selfEnergy_backup);
         double result = selfEnergy.get_curvature_maxSE(verbose);
         /*
         std::string filename = "SE_costCurvature_" + std::to_string(wscale_test) + ".h5";
@@ -314,27 +310,27 @@ public:
 template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
     double rel_tail_threshold = 1e-3;
 
-    FrequencyGrid frequencies_new = shrink_freq_box(rel_tail_threshold);
+    freqGrid_type frequencies_new = shrink_freq_box(rel_tail_threshold);
     update_grid(frequencies_new);
 
     SelfEnergy<Q> SEtemp = *this;
     //SEtemp.update_grid(Lambda);
 
     //double wmax_current = SEtemp.frequencies.w_upper;
-    double a_Wscale = SEtemp.frequencies.W_scale / 10.;
-    double m_Wscale = SEtemp.frequencies.W_scale;
-    double b_Wscale = SEtemp.frequencies.W_scale * 10;
+    double a_Wscale = SEtemp.Sigma.frequencies.b.W_scale / 10.;
+    double m_Wscale = SEtemp.Sigma.frequencies.b.W_scale;
+    double b_Wscale = SEtemp.Sigma.frequencies.b.W_scale * 10;
     CostSE_Wscale<Q> cost(SEtemp, verbose);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose, false, 1., 0.);
-    frequencies_new.update_Wscale(m_Wscale);
+    frequencies_new.b.update_Wscale(m_Wscale);
 
     update_grid(frequencies_new);
 
 
 }
 
-template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> FrequencyGrid {
-    FrequencyGrid frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold);
+template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> freqGrid_type {
+    freqGrid_type frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold);
     return frequencies_new;
 }
 
