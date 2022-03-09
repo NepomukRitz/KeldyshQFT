@@ -162,17 +162,17 @@ void BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmet
         vmax = std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.b.w_upper);
     }
 
-    if (MAX_DIAG_CLASS >= 2){
+    if constexpr(MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
         vmin = std::min(vmin, dgamma.avertex().K2.frequencies.get_wlower_f());
         vmax = std::max(vmax, dgamma.avertex().K2.frequencies.get_wupper_f());
     }
-    if (MAX_DIAG_CLASS >= 3){
+    if constexpr(MAX_DIAG_CLASS >= 3){
         // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
         vmin = std::min(vmin, dgamma.avertex().K3.frequencies.get_wlower_f());
         vmax = std::max(vmax, dgamma.avertex().K3.frequencies.get_wupper_f());
     }
-    if ((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
+    if constexpr((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
         Nmin = - POSINTRANGE; // (int) (vmin/(M_PI*glb_T)-1)/2;
         Nmax = - Nmin - 1;
@@ -227,13 +227,13 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                 Bubble_Object>::perform_computation(){
 
     double t_start = get_time();
-    if (MAX_DIAG_CLASS >= 0) {
+    if constexpr(MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function<k1>();
         tK1 = get_time() - t_start;
         //print("K1", channel, " done, ");
         //get_time(t_start);
     }
-    if (MAX_DIAG_CLASS >= 2) {
+    if constexpr(MAX_DIAG_CLASS >= 2) {
         t_start = get_time();
         calculate_bubble_function<k2>();
         tK2 = get_time() - t_start;
@@ -248,7 +248,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         get_time(t_start);
 #endif
     }
-    if (MAX_DIAG_CLASS >= 3) {
+    if constexpr(MAX_DIAG_CLASS >= 3) {
         t_start = get_time();
         calculate_bubble_function<k3>();
         tK3 = get_time() - t_start;
@@ -763,7 +763,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         default:
             print("Something went wrong in get_trafo_K2! Abort."); assert(false);
     }
-    if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
+    if constexpr(!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
         trafo = 0;
     }
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
@@ -818,7 +818,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             print("Something went wrong in get_trafo_K3! Abort."); assert(false);
     }
 
-    if (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f())) {
+    if constexpr (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f())) {
         trafo = -1;
         //std::cout << "omitted frequencies: " << v << "\t" << vp << std::endl;
         //std::cout << "with limits " << vertex1.avertex().K3.frequencies.get_wlower_f() << std::endl;

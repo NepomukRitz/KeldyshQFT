@@ -368,14 +368,17 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
     }
     avertex.initInterpolator();
     avertex.enforce_freqsymmetriesK3(avertex);
+    avertex.initInterpolator();
 
     double asymmetry_tolerance = 1e-10;
     double asymmetry = 0;
+    vec<double> asymmetries(nBOS3*nFER3*nFER3);
+    vec<double> saved_values(nBOS3*nFER3*nFER3);
+    vec<double> compare_values(nBOS3*nFER3*nFER3);
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS3; iw++){
-        double correction = avertex.K3.K3_get_correction_MFfiniteT(iw);
         for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = iv; ivp<nFER3; ivp++) {
+            for (int ivp = 0; ivp<nFER3; ivp++) {
                 avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
 #ifndef ZERO_TEMP   // Matsubara T>0
                 //indices.v1 += correction;
@@ -398,6 +401,9 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
                                                                 nFER3 - 1 - ivp + interval_correction, iK, i_in);
                     state_datatype savedK3_val0 = avertex.K3.val(i_spin, iw, iv, ivp, iK, i_in);
                     double absdiff = std::abs(compare_val - savedK3_val);
+                    asymmetries[iw*nFER3*nFER3 + iv*nFER3 + ivp] = absdiff;
+                    saved_values[iw*nFER3*nFER3 + iv*nFER3 + ivp] = savedK3_val;
+                    compare_values[iw*nFER3*nFER3 + iv*nFER3 + ivp] = compare_val;
                     if (absdiff > 1e-4) {
                         asymmetry += absdiff;
                     }

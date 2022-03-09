@@ -821,6 +821,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         K1_symmetry_expanded.setvert(value, idx);
 
     }
+    K1_symmetry_expanded.initInterpolator();
 
 
     if (MAX_DIAG_CLASS > 1) {
@@ -874,6 +875,8 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
         }
 
+        K2_symmetry_expanded.initInterpolator();
+        K2b_symmetry_expanded.initInterpolator();
     }
 
     if (MAX_DIAG_CLASS > 2) {
@@ -903,6 +906,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             K3_symmetry_expanded.setvert(value, idx);
 
         }
+        K3_symmetry_expanded.initInterpolator();
 
     }
 

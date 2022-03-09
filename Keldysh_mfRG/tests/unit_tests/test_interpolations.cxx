@@ -169,9 +169,9 @@ namespace {
 
     auto quadFunction2D(double x, double y) -> state_datatype {return 1. + x + y  + x*y + x*x + y*y;}
 
-    auto cubicFunction1D(double x) -> state_datatype {return 1. + x;}
+    auto cubicFunction1D(double x) -> state_datatype {return 1. + x - 2.*x*x + M_PI*x*x*x;}
     auto cubicFunction2D(double x, double y) -> state_datatype {return 1. + y + y*y*x + x*y*y + x*x*x;}
-    auto cubicFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 0.5*z + x*y + 2.*y*y*z + 3.*z*z*z + x*x*x + y*y*y;}
+    auto cubicFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 0.5*z + x*y + x*x*x + 3.*z*z*z + x*x*x + y*y*y + y*y*x + x*y*y + 2.*y*y*z;} //
 }
 
 #ifndef DENSEGRID
@@ -205,9 +205,9 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     value = 0.;
     int N = nBOS * 3;
     vec<double> errors (N);
-    double inter = (avertex.K1.frequencies.get_wupper_b() - avertex.K1.frequencies.get_wupper_b()) / double(N-1);
+    double inter = (avertex.K1.frequencies.get_wupper_b() - avertex.K1.frequencies.get_wlower_b()) / double(N-1);
     for (int iw = 0; iw<N; iw++){
-        indices.w = avertex.K1.frequencies.get_wupper_b() + iw*inter;
+        indices.w = avertex.K1.frequencies.get_wlower_b() + iw*inter;
 
         double freq;
         if (INTERPOLATION == linear) freq = indices.w;
@@ -271,11 +271,12 @@ if (INTERPOLATION == cubic) {
     int N = nBOS * 500;
     vec<state_datatype> values(N);
     vec<double> errors(N);
-    double inter = 2. / double(N - 1);
+    double w_limit = avertex.K1.frequencies.b.t_upper;
+    double inter = 2.*w_limit / double(N - 1);
     for (int iw = 1; iw < N - 1; iw++) {
-        indices.w = avertex.K1.frequencies.b.grid_transf_inv(-1. + iw * inter);
+        indices.w = avertex.K1.frequencies.b.grid_transf_inv(-w_limit + iw * inter);
 
-        //values[iw] = avertex.K1.interpolate(indices); TODO: Does not always return a double!!
+        values[iw] = avertex.K1.interpolate(indices); ///TODO: Does not always return a double!!
         double error = std::abs(
                 avertex.K1.interpolate(indices) - cubicFunction1D(avertex.K1.frequencies.b.grid_transf(indices.w)));
         cumul_interpolation_error += error;
@@ -583,14 +584,15 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         int M = nFER3 * 5;
         vec<state_datatype> values(N * M * M);
         vec<double> errors(N * M * M);
-        double interb = (2.) / double(N - 1);
-        double interf = (2.) / double(M - 1);
-        for (int iw = 1; iw < N - 1; iw++) {
-            for (int iv = 1; iv < M - 1; iv++) {
-                for (int ivp = 1; ivp < M - 1; ivp++) {
-                    indices.w  = avertex.K3.frequencies.b.grid_transf_inv(-1 + iw * interb);
-                    indices.v1 = avertex.K3.frequencies.f.grid_transf_inv(-1 + iv * interf);
-                    indices.v2 = avertex.K3.frequencies.f.grid_transf_inv(-1 + ivp * interf);
+        double interb = (avertex.K3.frequencies.get_tupper_b_aux() - avertex.K3.frequencies.get_tlower_b_aux()) / double(N-1);
+        double interf = (avertex.K3.frequencies.get_tupper_f_aux() - avertex.K3.frequencies.get_tlower_f_aux()) / double(M-1);
+
+        for (int iw = 0; iw < N; iw++) {
+            for (int iv = 0; iv < M; iv++) {
+                for (int ivp = 0; ivp < M; ivp++) {
+                    indices.w  = avertex.K3.frequencies.b.grid_transf_inv(avertex.K3.frequencies.get_tlower_b_aux() + iw * interb);
+                    indices.v1 = avertex.K3.frequencies.f.grid_transf_inv(avertex.K3.frequencies.get_tlower_f_aux() + iv * interf);
+                    indices.v2 = avertex.K3.frequencies.f.grid_transf_inv(avertex.K3.frequencies.get_tlower_f_aux() + ivp * interf);
 
                     error = std::abs(
                             avertex.K3.interpolate(indices) -
@@ -668,6 +670,7 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
             }
 
             // Interpolate
+            rvertex.initInterpolator();
             int counter = 0;
             for (my_index_t iflat = 0; iflat < K1_expanded_config.dims_flat; iflat++) {
 
@@ -712,66 +715,70 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
         }
 
-        SECTION("K2") {
-            using result_type_full = Eigen::Matrix<state_datatype, 4, K2_expanded_config.dims_flat/4>;
-            result_type_full result_scalar_full;
-            result_type_full result_vector_full;
-            result_type_full deviation_full;
-            // fill VertexBuffer with values
-            double value = 0;
-            for (my_index_t iflat = 0; iflat < K2_expanded_config.dims_flat; iflat++) {
-                my_index_t iK;
-                my_index_t ispin, iw, iv, i_in;
-                getMultIndex<5, my_index_t, my_index_t, my_index_t, my_index_t, my_index_t>(ispin, iw, iv, iK, i_in, iflat,
-                                                                                rvertex.K2.get_dims());
-                rvertex.K2.setvert(value, ispin, iw, iv, iK, i_in);
-                value += 1.;
-            }
-
-            // Interpolate
-            int counter = 0;
-            for (my_index_t iflat = 0; iflat < K2_expanded_config.dims_flat; iflat++) {
-
-                my_defs::K2::index_type idx;
-                getMultIndex<rank_K2>(idx, iflat, rvertex.K2.get_dims());
-                int iK              = (int) idx[my_defs::K2::keldysh];
-                my_index_t ispin    = idx[my_defs::K2::spin];
-                my_index_t iw       = idx[my_defs::K2::omega];
-                my_index_t iv       = idx[my_defs::K2::nu];
-                my_index_t i_in     = idx[my_defs::K2::internal];
-
-                if (iK % 4 == 0) {
-                    double w, v;
-                    rvertex.K2.frequencies.get_freqs_w(w, v, iw, iv);
-                    w *= M_PI;
-                    VertexInput input(iK, ispin, w, v, 0., i_in, channel);
-                    for (int i = 0; i < 4; i++) {
-                        VertexInput input_tmp = input;
-                        input_tmp.iK = input.iK + i;
-                        result_scalar_full(i, counter) = rvertex.K2.interpolate<state_datatype>(input_tmp);
-                    }
-                    result_vector_full.col(counter) = rvertex.K2.interpolate<result_type>(input);
-
-                    counter++;
+        if constexpr(MAX_DIAG_CLASS > 1) {
+            SECTION("K2") {
+                using result_type_full = Eigen::Matrix<state_datatype, 4, K2_expanded_config.dims_flat / 4>;
+                result_type_full result_scalar_full;
+                result_type_full result_vector_full;
+                result_type_full deviation_full;
+                // fill VertexBuffer with values
+                double value = 0;
+                for (my_index_t iflat = 0; iflat < K2_expanded_config.dims_flat; iflat++) {
+                    my_index_t iK;
+                    my_index_t ispin, iw, iv, i_in;
+                    getMultIndex<5, my_index_t, my_index_t, my_index_t, my_index_t, my_index_t>(ispin, iw, iv, iK, i_in,
+                                                                                                iflat,
+                                                                                                rvertex.K2.get_dims());
+                    rvertex.K2.setvert(value, ispin, iw, iv, iK, i_in);
+                    value += 1.;
                 }
 
-                deviation_full = result_vector_full - result_scalar_full;
+                // Interpolate
+                rvertex.initInterpolator();
+                int counter = 0;
+                for (my_index_t iflat = 0; iflat < K2_expanded_config.dims_flat; iflat++) {
+
+                    my_defs::K2::index_type idx;
+                    getMultIndex<rank_K2>(idx, iflat, rvertex.K2.get_dims());
+                    int iK = (int) idx[my_defs::K2::keldysh];
+                    my_index_t ispin = idx[my_defs::K2::spin];
+                    my_index_t iw = idx[my_defs::K2::omega];
+                    my_index_t iv = idx[my_defs::K2::nu];
+                    my_index_t i_in = idx[my_defs::K2::internal];
+
+                    if (iK % 4 == 0) {
+                        double w, v;
+                        rvertex.K2.frequencies.get_freqs_w(w, v, iw, iv);
+                        w *= M_PI;
+                        VertexInput input(iK, ispin, w, v, 0., i_in, channel);
+                        for (int i = 0; i < 4; i++) {
+                            VertexInput input_tmp = input;
+                            input_tmp.iK = input.iK + i;
+                            result_scalar_full(i, counter) = rvertex.K2.interpolate<state_datatype>(input_tmp);
+                        }
+                        result_vector_full.col(counter) = rvertex.K2.interpolate<result_type>(input);
+
+                        counter++;
+                    }
+
+                    deviation_full = result_vector_full - result_scalar_full;
 
 
-                H5::H5File file("test_vectorized_interpolation_K2", H5F_ACC_TRUNC);
-                write_to_hdf(file, "scalar", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_scalar_full), false);
-                write_to_hdf(file, "vector", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_vector_full), false);
-                write_to_hdf(file, "deviation", multidimensional::multiarray<state_datatype, 2>(
-                        std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), deviation_full), false);
-                file.close();
+                    H5::H5File file("test_vectorized_interpolation_K2", H5F_ACC_TRUNC);
+                    write_to_hdf(file, "scalar", multidimensional::multiarray<state_datatype, 2>(
+                            std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_scalar_full), false);
+                    write_to_hdf(file, "vector", multidimensional::multiarray<state_datatype, 2>(
+                            std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_vector_full), false);
+                    write_to_hdf(file, "deviation", multidimensional::multiarray<state_datatype, 2>(
+                            std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), deviation_full), false);
+                    file.close();
 
 
-                REQUIRE(deviation_full.lpNorm<Eigen::Infinity>() < 1e-10);
+                    REQUIRE(deviation_full.lpNorm<Eigen::Infinity>() < 1e-10);
+
+                }
 
             }
-
         }
     }
 

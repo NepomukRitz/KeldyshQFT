@@ -29,7 +29,10 @@ public:
      * @param diff_in      : whether to compute standard (false) or differentiated (true) bubble
      */
     Bubble(const Propagator<Q>& propagatorG, const Propagator<Q>& propagatorS, const bool diff_in)
-        :g(propagatorG), s(propagatorS), diff(diff_in) {};
+        :g(propagatorG), s(propagatorS), diff(diff_in) {
+        g.initInterpolator();
+        s.initInterpolator();
+    };
 
     /**
      * Call operator:

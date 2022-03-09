@@ -484,6 +484,61 @@ public:
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
 
+    void fconv_on_aux(std::array<my_index_t,1>& idx, std::array<double,1>& dt_unnormalized, const std::array<double,1>& freqs) const {
+        if constexpr(k == k1 or k == selfenergy)  {
+            //double w = freqs[0];
+            double tw;
+            int iw = b.fconv(tw, freqs[0]);
+            idx[0] = iw;
+            double tw_low = b.get_ts(iw);
+            double tw_high= b.get_ts(iw+1);
+            dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
+        }
+        else assert(false); // "Inconsistent number of frequency arguments.");
+    }
+    void fconv_on_aux(std::array<my_index_t,2>& idx, std::array<double,2>& dt_unnormalized, const std::array<double,2>& freqs) const {
+        if constexpr(k == k2)  {
+            //double w  = freqs[0];
+            //double v  = freqs[1];
+            double tw, tv;
+            int iw = b.fconv(tw, freqs[0]);
+            int iv = f.fconv(tv, freqs[1]);
+            idx[0] = iw;
+            idx[1] = iv;
+            double tw_low = b.get_ts(iw);
+            double tw_high= b.get_ts(iw+1);
+            double tv_low = f.get_ts(iv);
+            double tv_high= f.get_ts(iv+1);
+            dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
+            dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
+        }
+        else assert(false); // "Inconsistent number of frequency arguments.");
+    }
+    void fconv_on_aux(std::array<my_index_t,3>& idx, std::array<double,3>& dt_unnormalized, const std::array<double,3>& freqs) const {
+        if constexpr(k == k3)  {
+            //double w  = freqs[0];
+            //double v  = freqs[1];
+            //double vp = freqs[2];
+            double tw, tv, tvp;
+            int iw = b.fconv(tw, freqs[0]);
+            int iv = f.fconv(tv, freqs[1]);
+            int ivp= f.fconv(tvp,freqs[2]);
+            idx[0] = iw;
+            idx[1] = iv;
+            idx[2] = ivp;
+            double tw_low = b.get_ts(iw);
+            double tw_high= b.get_ts(iw+1);
+            double tv_low = f.get_ts(iv);
+            double tv_high= f.get_ts(iv+1);
+            double tvp_low =f.get_ts(ivp);
+            double tvp_high=f.get_ts(ivp+1);
+            dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
+            dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
+            dt_unnormalized[2] = (tvp-tvp_low); // / (tvp_high-tvp_low);
+        }
+        else assert(false); // "Inconsistent number of frequency arguments.");
+    }
+
     void get_freqs_w(double &w, const int iw) const {
         if constexpr(k == k1 or k == selfenergy) w = b.get_ws(iw);
         else assert(false); // "Inconsistent number of frequency arguments.");

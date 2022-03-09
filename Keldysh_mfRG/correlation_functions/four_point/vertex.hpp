@@ -199,7 +199,7 @@ public:
         lhs += rhs; // reuse compound assignment
         return lhs; // return the result by value (uses move constructor)
     }
-    auto operator+= (const double& alpha) -> fullvert<Q> {
+    auto operator+= (const double alpha) -> fullvert<Q> {
         this->irred   += alpha;
         this->pvertex += alpha;
         this->tvertex += alpha;
@@ -414,11 +414,15 @@ public:
     }
     template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
         vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded, fullvert<Q>(0., false));
+        //print("Start symmetry expansion\n");
+        initializeInterpol();
+        //print("Initialized Interpolator \n");
 
         for (int ispin = 0; ispin < n_spin_expanded; ispin++) {
             vertices_bubbleintegrand[ispin].template symmetry_expand<channel_bubble,is_left_vertex>(half1(), half2(), ispin);
+            //print("expanded spin component ", ispin, "\n");
         }
-
+        set_initializedInterpol(false);
     }
     void save_expanded(const std::string& filename_prefix) {
         for (int i = 0; i < vertices_bubbleintegrand.size(); i++) {
@@ -436,7 +440,7 @@ public:
         lhs += rhs;
         return lhs;
     }
-    auto operator+= (const double& alpha) -> GeneralVertex<Q,symmtype> {
+    auto operator+= (const double alpha) -> GeneralVertex<Q,symmtype> {
         this->vertex += alpha;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) this->vertex_half2 += alpha;
         return *this;

@@ -126,7 +126,7 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
  * @param state        : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
-void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
+void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
     State<Q> bareState (Psi, Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
@@ -163,7 +163,7 @@ void sopt_state(State<Q>& Psi, const double Lambda) {
     print("...done.", true);
 #endif
 
-    sopt_state(Psi, Pi, Lambda);
+    sopt_state_impl(Psi, Pi, Lambda);
 }
 
 
@@ -179,7 +179,7 @@ void topt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> SoptPsi (Psi, Lambda);
     //SoptPsi.initialize();
-    sopt_state(SoptPsi, Pi, Lambda);
+    sopt_state_impl(SoptPsi, Pi, Lambda);
 
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
@@ -202,7 +202,7 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> SoptPsi (Psi, Lambda);
     //SoptPsi.initialize();
-    sopt_state(SoptPsi, Pi, Lambda);
+    sopt_state_impl(SoptPsi, Pi, Lambda);
 
 
     //SoptPsi.findBestFreqGrid(Lambda);

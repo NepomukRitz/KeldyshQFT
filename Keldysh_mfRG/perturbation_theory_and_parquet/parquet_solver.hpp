@@ -9,6 +9,7 @@
 #include "../utilities/hdf5_routines.hpp"  // read data from HDF5 file
 #include "../bubble/bubble_function.hpp"        // compute bubble function
 #include "../loop/loop.hpp"           // compute loop function
+#include "../postprocessing/causality_FDT_checks.hpp"
 
 /**
  * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
@@ -94,6 +95,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     // compute the self-energy via SDE using the a bubble
     Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_a, bubble_a, G, false);
+    print("Check causality of Sigma_SDE_a: \n");
+    check_SE_causality(Sigma_SDE_a);
 
     // compute the p bubble with full vertex on the right
     GeneralVertex<Q,symmetric_r_irred> bubble_p_r (Lambda);
@@ -112,9 +115,13 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     // compute the self-energy via SDE using the p bubble
     Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_p, bubble_p, G, false);
+    print("Check causality of Sigma_SDE_p: \n");
+    check_SE_causality(Sigma_SDE_p);
 
     // symmetrize the contributions computed via a/p bubble
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
+    print("Check causality of Sigma_SDE: \n");
+    check_SE_causality(Sigma_SDE);
 }
 
 /**

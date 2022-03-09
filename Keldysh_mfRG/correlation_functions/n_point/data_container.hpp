@@ -31,7 +31,7 @@ class Buffer;
  */
     template<typename Q, std::size_t rank>
     class dataContainerBase {
-        //friend class State<Q>;
+        friend class State<Q>;
         template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
         template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
         template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
@@ -256,7 +256,7 @@ class Buffer;
             return result;
         }
 
-        buffer_type get_deriv_K3_xyz() const {
+        buffer_type get_deriv_xyz() const {
             buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.f.ts, base_class::data.length(), pos_first_freqpoint+2);
             buffer_type inter_result2= ::partial_deriv<Q,rank>(inter_result,     frequencies.f.ts, base_class::data.length(), pos_first_freqpoint+1);
             buffer_type result       = ::partial_deriv<Q,rank>(inter_result2,    frequencies.b.ts, base_class::data.length(), pos_first_freqpoint  );

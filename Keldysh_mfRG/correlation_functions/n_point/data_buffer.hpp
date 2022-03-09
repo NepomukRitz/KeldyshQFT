@@ -4,6 +4,7 @@
 #include "../../data_structures.hpp"
 #include "../../symmetries/Keldysh_symmetries.hpp"
 #include "data_container.hpp"
+#include "../interpolations/InterpolatorSpline1D.hpp"
 
 template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type, interpolMethod inter>
 class Interpolator {
@@ -266,6 +267,127 @@ public:
 };
 
 
+/*
+template<typename Q, size_t rank, my_index_t pos_first_freqpoint, typename dataContainer_type>
+class Interpolator<Q, rank, 1, pos_first_freqpoint, dataContainer_type, cubic> : public Spline1D<Q,rank,pos_first_freqpoint,dataContainer_type> {
+    using base_class = Spline1D<Q,rank,pos_first_freqpoint,dataContainer_type>;
+    using this_class = Interpolator<Q, rank, 1, pos_first_freq, dataContainer_type, cubic>;
+
+    using frequencies_type = std::array<double, 1>;
+
+    static constexpr my_index_t numSamples() {
+        return my_integer_pow<1>(my_index_t(2));
+    }
+    static constexpr my_index_t numSamples_half() {
+        return my_integer_pow<1-1>(my_index_t(2));
+    }
+    template <typename result_type>
+    static constexpr my_index_t get_vecsize() {
+        if constexpr(std::is_same_v<result_type, Q>) return 1;
+        else { return 4; }  /// TODO: adapt for non-trivial internal index
+    }
+public:
+    using index_type = typename dataContainer_type::index_type;
+    using dimensions_type = typename dataContainer_type::dimensions_type;
+
+    //mutable bool initialized = false;
+    Interpolator() = default;
+    explicit Interpolator (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+    //void initInterpolator() const {initialized = true;};
+    //void set_initializedInterpol(const bool is) const {initialized = is;}
+
+
+
+    template <typename result_type = Q,
+            typename std::enable_if_t<(pos_first_freqpoint+1 < rank), bool> = true>
+    auto interpolate_impl(const frequencies_type& frequencies, index_type indices) const -> result_type {
+
+        constexpr my_index_t vecsize = get_vecsize<result_type>();
+        using weights_type = Eigen::Matrix<double, numSamples(), 1>;
+        using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        if (base_class::frequencies.is_in_box(frequencies))
+        {
+
+#ifdef DENSEGRID
+            assert(false); // Use "linear" interpolation for dense grid
+#else
+            result_type result = base_class::template interpolate_spline<result_type>(frequencies, indices);
+            return result;
+
+#endif
+
+            //assert(isfinite(result));
+            //return result;
+
+        } else { //asymptotic value
+            if constexpr (std::is_same_v<result_type,Q>) return result_type{};
+            else return result_type::Zero();
+
+        }
+
+    };
+
+
+
+};
+*/
+template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type>
+class Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic> : public Spline<Q,rank,numberFrequencyDims,pos_first_freqpoint,dataContainer_type> {
+    using base_class = Spline<Q,rank,numberFrequencyDims,pos_first_freqpoint,dataContainer_type>;
+    using this_class = Interpolator<Q, rank, numberFrequencyDims, pos_first_freq, dataContainer_type, cubic>;
+
+    using frequencies_type = std::array<double, numberFrequencyDims>;
+
+    static constexpr my_index_t numSamples() {
+        return my_integer_pow<numberFrequencyDims>(my_index_t(2));
+    }
+    static constexpr my_index_t numSamples_half() {
+        return my_integer_pow<numberFrequencyDims-1>(my_index_t(2));
+    }
+    template <typename result_type>
+    static constexpr my_index_t get_vecsize() {
+        if constexpr(std::is_same_v<result_type, Q>) return 1;
+        else { return 4; }  /// TODO: adapt for non-trivial internal index
+    }
+public:
+    using index_type = typename dataContainer_type::index_type;
+    using dimensions_type = typename dataContainer_type::dimensions_type;
+
+    Interpolator() = default;
+    explicit Interpolator (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+
+    template <typename result_type = Q,
+            typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
+    auto interpolate_impl(const frequencies_type& frequencies, index_type indices) const -> result_type {
+#ifdef DENSEGRID
+        assert(false); // Use "linear" interpolation for dense grid
+#endif
+        constexpr my_index_t vecsize = get_vecsize<result_type>();
+        using weights_type = Eigen::Matrix<double, numSamples(), 1>;
+        using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
+
+        // Check if the frequency runs out of the box; if yes: return asymptotic value
+        if (base_class::frequencies.is_in_box(frequencies))
+        {
+
+            result_type result = base_class::template interpolate_spline<result_type>(frequencies, indices);
+            return result;
+
+
+        } else { //asymptotic value
+            if constexpr (std::is_same_v<result_type,Q>) return result_type{};
+            else return result_type::Zero();
+
+        }
+
+    };
+
+
+
+};
+
 
 
 /**
@@ -283,7 +405,7 @@ template <typename Q, K_class k, size_t rank, my_index_t numberFrequencyDims, my
         typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
 class dataBuffer: public Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>, inter> {
     using base_class = Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>, inter>;
-    using this_class = dataBuffer<Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, linear>;
+    using this_class = dataBuffer<Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter>;
     using frequencies_type = std::array<double, numberFrequencyDims>;
 
 public:

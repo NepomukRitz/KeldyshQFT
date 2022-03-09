@@ -72,6 +72,46 @@ TEST_CASE("Does the vectorized interpolation work for the GeneralVertex?", "vect
         vertex_asymmfull.vertices_bubbleintegrand[0].tvertex.K2b_symmetry_expanded.set_vec(K2_raw*pow(2.,11));
         vertex_asymmfull.vertices_bubbleintegrand[0].tvertex.K3_symmetry_expanded .set_vec(K3_raw*pow(2.,12));
 
+        vertex_symmetricfull.vertices_bubbleintegrand[0].avertex.K1_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].avertex.K2_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].avertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].avertex.K3_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].pvertex.K1_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].pvertex.K2_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].pvertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].pvertex.K3_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].tvertex.K1_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].tvertex.K2_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].tvertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_symmetricfull.vertices_bubbleintegrand[0].tvertex.K3_symmetry_expanded.initInterpolator();
+
+        vertex_irredfull.vertices_bubbleintegrand[0].avertex.K1_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].avertex.K2_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].avertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].avertex.K3_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].pvertex.K1_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].pvertex.K2_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].pvertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].pvertex.K3_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].tvertex.K1_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].tvertex.K2_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].tvertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_irredfull.vertices_bubbleintegrand[0].tvertex.K3_symmetry_expanded.initInterpolator();
+
+        vertex_asymmfull.vertices_bubbleintegrand[0].avertex.K1_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].avertex.K2_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].avertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].avertex.K3_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].pvertex.K1_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].pvertex.K2_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].pvertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].pvertex.K3_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].tvertex.K1_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].tvertex.K2_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].tvertex.K2b_symmetry_expanded.initInterpolator();
+        vertex_asymmfull.vertices_bubbleintegrand[0].tvertex.K3_symmetry_expanded.initInterpolator();
+
+
         int iK = 0;
         my_index_t spin = 0;
         double w = 0.; double v = 0.; double vp = 0.;

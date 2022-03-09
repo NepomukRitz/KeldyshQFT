@@ -220,6 +220,7 @@ template <typename Q, vertexType vertType>
 void loop(SelfEnergy<state_datatype>& self, const GeneralVertex<Q,vertType>& fullvertex, const Propagator<Q>& prop,
           const bool all_spins){
     fullvertex.initializeInterpol();
+    prop.selfenergy.Sigma.initInterpolator();
 #pragma omp parallel for schedule(dynamic) default(none) shared(self, fullvertex, prop, all_spins)
     for (int iSE=0; iSE<nSE*n_in; ++iSE){
         LoopCalculator<Q,vertType> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);

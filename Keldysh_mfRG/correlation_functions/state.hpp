@@ -52,12 +52,12 @@ public:
         lhs += rhs;
         return lhs;
     }
-    auto operator+= (const double& alpha) -> State {
+    auto operator+= (const double alpha) -> State {
         this->vertex += alpha;
         this->selfenergy += alpha;
         return (*this);
     }
-    friend State<Q> operator+ (State<Q> lhs, const double& rhs) {
+    friend State<Q> operator+ (State<Q> lhs, const double rhs) {
         lhs += rhs;
         return lhs;
     }
@@ -104,7 +104,7 @@ public:
 
     auto abs() const -> State<Q> {
         State<Q> state_abs = (*this);
-        state_abs.selfenergy.Sigma = selfenergy.Sigma.abs();
+        state_abs.selfenergy.Sigma.set_vec(selfenergy.Sigma.data.abs());
         state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
         state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
         state_abs.vertex.tvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});

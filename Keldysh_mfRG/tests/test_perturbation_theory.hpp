@@ -2670,7 +2670,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     state_cpp.initialize();             // initialize state
     //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
     //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
-    topt_state(state_cpp, Lambda);
+    sopt_state(state_cpp, Lambda);
     //state_cpp.vertex.half1().check_vertex_resolution();
     //state_cpp.analyze_tails();
 

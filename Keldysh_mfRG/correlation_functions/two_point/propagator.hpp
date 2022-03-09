@@ -127,6 +127,7 @@ public:
     Q GM_REG4_SIAM_PHS(double v, int i_in) const;
     Q SM_REG4(double v, int i_in) const;
 
+    void initInterpolator() const;
 };
 
 
@@ -671,6 +672,12 @@ auto Propagator<Q>::SM_REG4(const double v, const int i_in) const -> Q {
     assert(isfinite(val));
     return val;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+}
+
+template <typename Q>
+void Propagator<Q>::initInterpolator() const {
+    selfenergy.Sigma.initInterpolator();
+    if (type == 'k' or type == 'e') diff_selfenergy.Sigma.initInterpolator();
 }
 
 #endif //KELDYSH_MFRG_PROPAGATOR_HPP
