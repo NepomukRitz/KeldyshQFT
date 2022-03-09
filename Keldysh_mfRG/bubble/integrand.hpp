@@ -104,9 +104,9 @@ private:
     void compute_vertices(double vpp, Q& res_l_V, Q& res_r_V, Q& res_l_Vhat, Q& res_r_Vhat) const;
 
     template<char ch, typename VertexValue_l>
-    Q load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_l& value_vertex, const VertexInput& input, int spin_idx) const;
+    void load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_l& value_vertex, const VertexInput& input, int spin_idx) const;
     template<char ch, typename VertexValue_r>
-    Q load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_r& value_vertex, const VertexInput& input, int spin_idx) const;
+    void load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_r& value_vertex, const VertexInput& input, int spin_idx) const;
     template<char ch, typename VertexValue_l, typename VertexValue_r>
     Q sum_over_internal(const VertexValue_l& value_vertex_l, const Bubble_Object& Pi, const VertexValue_r& value_vertex_r, const VertexInput& input_external, const double vpp) const;
         public:
@@ -438,7 +438,7 @@ void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::compute_vertice
 
 template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
 template<char ch, typename VertexValue_l>
-Q Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_l& value_vertex, const VertexInput& input, const int spin_idx) const {
+void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_left(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_l& value_vertex, const VertexInput& input, const int spin_idx) const {
     size_t len_1 = values_vertex.length()[0];
     assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
@@ -491,7 +491,7 @@ Q Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldys
 
 template<typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
 template<char ch, typename VertexValue_r>
-Q Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_r& value_vertex, const VertexInput& input, const int spin_idx) const {
+void Integrand<Q, symmetry_left, symmetry_right, Bubble_Object>::load_vertex_keldyshComponents_right(multidimensional::multiarray<Q,2>& values_vertex, const VertexValue_r& value_vertex, const VertexInput& input, const int spin_idx) const {
     size_t len_1 = values_vertex.length()[0];
     assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
