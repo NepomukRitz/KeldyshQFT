@@ -50,7 +50,7 @@ auto main() -> int {
 
     const rvec lambdas = {999., 199., 99., 19., 9.};
     for (const double lambda : lambdas) {
-        PT_Machine<state_datatype> PT_Calculator (4, lambda, true);
+        PT_Machine<state_datatype> PT_Calculator (2, lambda, true);
         //PT_Calculator.debug_FOPT_K1();
     }
 
