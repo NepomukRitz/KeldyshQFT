@@ -29,7 +29,7 @@ class Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContai
     template <typename result_type>
     static constexpr my_index_t get_vecsize() {
         if constexpr(std::is_same_v<result_type, Q>) return 1;
-        else { return 4; }  /// TODO: adapt for non-trivial internal index
+        else { return result_type::RowsAtCompileTime; }
     }
 public:
     using index_type = typename base_class::index_type;
@@ -242,9 +242,14 @@ public:
                 assert(isfinite(result));
                 return result;
             }
-            else {
+            else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){
                 Eigen::Matrix<Q, vecsize,1> result = values * weights;
                 assert(result.allFinite());
+                return result;
+            }
+            else {
+                assert(false);
+                result_type result;
                 return result;
             }
 
@@ -284,7 +289,7 @@ class Interpolator<Q, rank, 1, pos_first_freqpoint, dataContainer_type, cubic> :
     template <typename result_type>
     static constexpr my_index_t get_vecsize() {
         if constexpr(std::is_same_v<result_type, Q>) return 1;
-        else { return 4; }  /// TODO: adapt for non-trivial internal index
+        else { return 4; }
     }
 public:
     using index_type = typename dataContainer_type::index_type;
@@ -349,7 +354,7 @@ class Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContai
     template <typename result_type>
     static constexpr my_index_t get_vecsize() {
         if constexpr(std::is_same_v<result_type, Q>) return 1;
-        else { return 4; }  /// TODO: adapt for non-trivial internal index
+        else { return result_type::RowsAtCompileTime; }
     }
 public:
     using index_type = typename dataContainer_type::index_type;
@@ -378,9 +383,14 @@ public:
 
         } else { //asymptotic value
             if constexpr (std::is_same_v<result_type,Q>) return result_type{};
-            else return result_type::Zero();
-
+            else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){return result_type::Zero();}
+            else {
+                assert(false);
+                result_type result;
+                return result;
+            }
         }
+
 
     };
 
@@ -411,24 +421,7 @@ class dataBuffer: public Interpolator<Q, rank, numberFrequencyDims, pos_first_fr
 public:
     using index_type = typename base_class::index_type;
     using dimensions_type = typename base_class::dimensions_type;
-    /*
-    static constexpr my_index_t numSamples() {
-        return my_integer_pow<numberFrequencyDims>(my_index_t(2));
-    }
-    static constexpr my_index_t numSamples_half() {
-        return my_integer_pow<numberFrequencyDims-1>(my_index_t(2));
-    }
-    template <typename result_type>
-    static constexpr my_index_t get_vecsize() {
-        if constexpr(std::is_same_v<result_type, Q>) return 1;
-        else { return 4; }  /// TODO: adapt for non-trivial internal index
-    }
-public:
-    using index_type = typename base_class::index_type;
-    using dimensions_type = typename base_class::dimensions_type;
 
-    mutable bool initialized = false;
-     */
     dataBuffer() : base_class() {};
     explicit dataBuffer (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
     //void initInterpolator() const {initialized = true;};

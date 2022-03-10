@@ -302,12 +302,17 @@ result_type Spline<Q,rank,1,pos_first_freq_index,DataContainer>::interpolate_spl
         //assert(std::abs(result) < 1e-10);
         return result;
     }
-    else {
+    else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){
         Eigen::Matrix<Q,result_type::RowsAtCompileTime,1> result;
         Eigen::Matrix<Q, result_type::RowsAtCompileTime, 4> values = all_coefficients.template block<result_type::RowsAtCompileTime,4>(i_row,0);
         result = (values * weights).eval();
 
         assert(result.allFinite());
+        return result;
+    }
+    else {
+        assert(false);
+        result_type result;
         return result;
     }
 }
