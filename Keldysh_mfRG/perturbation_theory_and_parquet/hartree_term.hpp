@@ -21,9 +21,10 @@ class Hartree_Solver {
 
     const double v_lower = 1e3 * Sigma.frequencies.w_lower; // arbitrary choice. Needs to be checked.
     const double v_upper = 1e3 * Sigma.frequencies.w_upper;
+
+    double fermi_distribution (double nu) const;
 public:
     explicit Hartree_Solver(const double Lambda_in): Lambda(Lambda_in){
-        assert(std::abs(glb_T) > 1e-15);
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs

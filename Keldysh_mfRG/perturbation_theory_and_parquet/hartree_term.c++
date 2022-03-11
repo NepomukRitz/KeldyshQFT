@@ -14,7 +14,10 @@ double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) 
         Sigma_new.initialize(glb_U * filling, 0);
         Sigma = Sigma_new;
     }
+    print_add("  ", true);
+    print("Determined filling of: " + std::to_string(filling), true);
     print("Number of iterations needed: " + std::to_string(n_iter), true);
+    friedel_sum_rule_check();
     return glb_U * filling;
 }
 
@@ -22,7 +25,7 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
     // integrand for the filling (not the Hartree value!) given according to the formula
     // 1/pi * n_F(nu) Im G^R(nu)
     Propagator<comp> G (Lambda, Sigma, 'g');
-    double val = - 1. / M_PI * 1 / (exp(nu / glb_T) + 1.);
+    double val = - 1. / M_PI * fermi_distribution(nu);
 
     return val * G.GR(nu, 0).imag();
 }
@@ -54,5 +57,18 @@ void Hartree_Solver::write_out_propagators() const {
     write_h5_rvecs(filename,
                    {"GR_real", "GR_imag", "GK_real", "GK_imag", "freqs"},
                    {GR_real, GR_imag, GK_real, GK_imag, freqs});
+
+}
+
+double Hartree_Solver::fermi_distribution(const double nu) const {
+    if constexpr (not ZERO_T){
+        return 1 / (exp(nu / glb_T) + 1.);
+    }
+    else{
+        if (nu > 0.) return 0.;
+        else if (nu == 0.) return 1/2.;
+        else if (nu < 0.) return 1.;
+        else assert(false);
+    }
 
 }
