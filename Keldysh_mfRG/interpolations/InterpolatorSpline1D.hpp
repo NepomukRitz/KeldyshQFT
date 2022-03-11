@@ -265,8 +265,8 @@ void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::initInterpolator() con
         double t_low = DataContainer::frequencies.b.get_ts(idx);
         double t_high= DataContainer::frequencies.b.get_ts(idx+1);
         double h = (t - t_low);
-        assert(h>-1e-10);
-        assert(t<t_high+1e-10);
+        //assert(h>-1e-10);
+        //assert(t<t_high+1e-6);
         weights_type weights;
         weights << 1., h, h*h, h*h*h;
         return weights;

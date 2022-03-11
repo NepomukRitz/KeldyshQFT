@@ -5,18 +5,18 @@
 #include "../../symmetries/Keldysh_symmetries.hpp"
 #include "data_container.hpp"
 #include "../interpolations/InterpolatorSpline1D.hpp"
-
+/*
 template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type, interpolMethod inter>
 class Interpolator {
     explicit Interpolator(double Lambda) {
         assert(false);
     }
-};
+};*/
 
-template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type>
-class Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, linear> : public dataContainer_type {
+template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type, interpolMethod inter>
+class Interpolator : public dataContainer_type {
     using base_class = dataContainer_type;
-    using this_class = Interpolator<Q, rank, numberFrequencyDims, pos_first_freq, dataContainer_type, linear>;
+    using this_class = Interpolator;
 
     using frequencies_type = std::array<double, numberFrequencyDims>;
 
@@ -47,7 +47,10 @@ public:
 
         std::array<my_index_t,numberFrequencyDims> freq_idx;
         std::array<double,numberFrequencyDims> dw_normalized;
-        base_class::frequencies.fconv(freq_idx, dw_normalized, frequencies);
+        if constexpr(inter == linear) base_class::frequencies.fconv(freq_idx, dw_normalized, frequencies);
+        else if constexpr(inter == linear_on_aux) base_class::frequencies.fconv_on_aux(freq_idx, dw_normalized, frequencies);
+        else assert(false);
+
         for (my_index_t i = 0; i < numberFrequencyDims; i++) {
             idx_low[pos_first_freqpoint+i] = freq_idx[i];
             assert(freq_idx[i] < 2000);

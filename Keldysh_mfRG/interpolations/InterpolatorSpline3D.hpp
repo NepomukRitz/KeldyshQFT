@@ -401,7 +401,7 @@ result_type Spline<Q,rank,3,pos_first_freq_index,DataContainer>::interpolate_spl
     assert(initialized);
     std::array<my_index_t,3> freq_idx;
     std::array<double,3> dt_unnormalized;
-    DataContainer::frequencies.fconv_on_aux(freq_idx, dt_unnormalized, frequencies);
+    DataContainer::frequencies.fconv_on_aux_unnormalized(freq_idx, dt_unnormalized, frequencies);
     //double tw;
     //const size_t iw=DataContainer::frequencies.b.fconv(tw, frequencies[0]);
     //double tv;

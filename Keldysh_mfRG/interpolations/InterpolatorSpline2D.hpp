@@ -23,6 +23,8 @@ class Spline;
 
 /**
  * SplineK2 interpolation
+ * @tparam rank             number of dimensions (of dataContainer)
+ * @tparam pos_first_freq_index     position of first frequency index (second frequency index is as position pos_first_freq_index+1)
  * @tparam DataContainer  contains vertex data and frequency grids frequencies.b and frequencies.f
  *                          computes partial derivative of data in x, y and x&y direction
  * @tparam Q              double or comp
@@ -230,9 +232,9 @@ result_type Spline<Q,rank,2,pos_first_freq_index,DataContainer>::interpolate_spl
     //const int iK, const int spin, const double w, const double v, const int i_in
 
 
-    std::array<my_index_t,2> freq_idx;
-    std::array<double,2> dt_unnormalized;
-    DataContainer::frequencies.fconv_on_aux(freq_idx, dt_unnormalized, frequencies);
+    std::array<my_index_t,2> freq_idx;      // frequency indices of nearest smaller gridpoints
+    std::array<double,2> dt_unnormalized;   // distance to nearest smaller gridpoint
+    DataContainer::frequencies.fconv_on_aux_unnormalized(freq_idx, dt_unnormalized, frequencies);
 
     //double tw;
     //const size_t iw=DataContainer::frequencies.b.fconv(tw, frequencies[0]);

@@ -128,10 +128,6 @@ auto FrequencyGrid::fconv(const double w_in, const bool safety) const -> int {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
     }
-    else if (INTERPOLATION==sloppycubic) {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
-    }
     else {
         if (ws[index+1] < w_in) index++;
         index = std::max(0, index);
@@ -164,10 +160,6 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
-    }
-    else if (INTERPOLATION==sloppycubic) {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
     }
     else {
         if (ws[index+1] < w_in and index < N_w-1)
