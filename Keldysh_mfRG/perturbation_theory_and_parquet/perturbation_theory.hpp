@@ -242,7 +242,8 @@ private:
     void compute_FOPT();
 
     const std::string channels = "apt";
-    const double U_over_Delta = glb_U / ((Lambda + glb_Gamma)/2.);
+    const double Delta = (Lambda + glb_Gamma)/2. ;
+    const double U_over_Delta = glb_U / Delta;
 
     void write_out_results() const;
 
@@ -258,7 +259,7 @@ public:
         print("Perturbation Theory for the SIAM up to order " + std::to_string(order)
         + " in the Keldysh formalism for the fully retarded vertex components at zero frequency.", true);
         print("For this run we have U over Delta = " + std::to_string(U_over_Delta)
-        + " and eVg = " + std::to_string(glb_Vg), true);
+        + " and eVg over U = " + std::to_string(glb_Vg / glb_U), true);
 
         // perform computations
         compute_SOPT();
@@ -290,11 +291,11 @@ void PT_Machine<Q>::compute_SOPT() {
     SOPT_Vertex += SOPT_pvertex;
     SOPT_Vertex += SOPT_tvertex;
 
-    print("Now checking that the norms are right...", true);
+    print("Now checking that the norms are right...", false);
     assert(SOPT_Vertex.norm_K1(0) > 0.);
     assert(SOPT_Vertex.norm_K2(0) < 1e-15);
     assert(SOPT_Vertex.norm_K3(0) < 1e-15);
-    print("...done.", true);
+    print_add(" done.", true);
 }
 
 template<typename Q>
@@ -324,11 +325,11 @@ void PT_Machine<Q>::compute_TOPT() {
     TOPT_Vertex -= TOPT_Ladder;
     print("...done.", true);
 
-    print("Now checking that the norms are right...", true);
+    print("Now checking that the norms are right...", false);
     assert(TOPT_Vertex.norm_K1(0) > 0.);
     assert(TOPT_Vertex.norm_K2(0) > 0.);
     assert(TOPT_Vertex.norm_K3(0) < 1e-15);
-    print("...done.", true);
+    print_add(" done.", true);
 }
 
 template<typename Q>
@@ -380,11 +381,11 @@ void PT_Machine<Q>::compute_FOPT() {
     FOPT_Vertex += Ladder_comp;
     print("...done.", true);
 
-    print("Now checking that the norms are right...", true);
+    print("Now checking that the norms are right...", false);
     assert(FOPT_Vertex.norm_K1(0) > 0.);
     assert(FOPT_Vertex.norm_K2(0) > 0.);
     assert(FOPT_Vertex.norm_K3(0) > 0.);
-    print("...done.", true);
+    print_add(" done.", true);
 }
 
 template<typename Q>
@@ -392,9 +393,10 @@ void PT_Machine<Q>::write_out_results() const {
     // Always fully retarded components, up-down spin component, and at zero frequencies
     assert(KELDYSH);
     const std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
-    + std::to_string(U_over_Delta) + "_and_eVg_" + std::to_string(glb_Vg) + "_and_T_" +std::to_string(glb_T) + ".h5";
+    + std::to_string(U_over_Delta) + "_and_eVg_over_U_" + std::to_string(glb_Vg / glb_U)\
+    + "_and_T_over_Delta_" +std::to_string(glb_T / Delta) + ".h5";
 
-    print("Write out results to file " + filename + "...", true);
+    print("Write out results to file " + filename + "...", false);
 
     /// Vectors with data.
     /// First element: a-channel
@@ -442,12 +444,50 @@ void PT_Machine<Q>::write_out_results() const {
                     FOPT_Vertex.pvertex().template valsmooth<k3>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
                     FOPT_Vertex.tvertex().template valsmooth<k3>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
 
+    // Also store imaginary parts to do consistency checks:
+
+    rvec SOPT_imag = {SOPT_Vertex.avertex().template valsmooth<k1>(a_input, SOPT_Vertex.tvertex()).imag() / glb_U,
+                      SOPT_Vertex.pvertex().template valsmooth<k1>(p_input, SOPT_Vertex.pvertex()).imag() / glb_U,
+                      SOPT_Vertex.tvertex().template valsmooth<k1>(t_input, SOPT_Vertex.avertex()).imag() / glb_U};
+
+    rvec TOPT_K1_imag = {TOPT_Vertex.avertex().template valsmooth<k1>(a_input, TOPT_Vertex.tvertex()).imag() / glb_U,
+                         TOPT_Vertex.pvertex().template valsmooth<k1>(p_input, TOPT_Vertex.pvertex()).imag() / glb_U,
+                         TOPT_Vertex.tvertex().template valsmooth<k1>(t_input, TOPT_Vertex.avertex()).imag() / glb_U};
+
+    rvec TOPT_K2_imag = {TOPT_Vertex.avertex().template valsmooth<k2>(a_input, TOPT_Vertex.tvertex()).imag() / glb_U,
+                         TOPT_Vertex.pvertex().template valsmooth<k2>(p_input, TOPT_Vertex.pvertex()).imag() / glb_U,
+                         TOPT_Vertex.tvertex().template valsmooth<k2>(t_input, TOPT_Vertex.avertex()).imag() / glb_U};
+
+    rvec TOPT_K2p_imag = {TOPT_Vertex.avertex().template valsmooth<k2b>(a_input, TOPT_Vertex.tvertex()).imag() / glb_U,
+                          TOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, TOPT_Vertex.pvertex()).imag() / glb_U,
+                          TOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, TOPT_Vertex.avertex()).imag() / glb_U};
+
+    rvec FOPT_K1_imag = {FOPT_Vertex.avertex().template valsmooth<k1>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
+                         FOPT_Vertex.pvertex().template valsmooth<k1>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
+                         FOPT_Vertex.tvertex().template valsmooth<k1>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+
+    rvec FOPT_K2_imag = {FOPT_Vertex.avertex().template valsmooth<k2>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
+                         FOPT_Vertex.pvertex().template valsmooth<k2>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
+                         FOPT_Vertex.tvertex().template valsmooth<k2>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+
+    rvec FOPT_K2p_imag = {FOPT_Vertex.avertex().template valsmooth<k2b>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
+                          FOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
+                          FOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+
+    rvec FOPT_K3_imag = {FOPT_Vertex.avertex().template valsmooth<k3>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
+                         FOPT_Vertex.pvertex().template valsmooth<k3>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
+                         FOPT_Vertex.tvertex().template valsmooth<k3>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+
 
     write_h5_rvecs(filename,
-                   {"SOPT", "TOPT_K1", "TOPT_K2", "TOPT_K2p", "FOPT_K1", "FOPT_K2", "FOPT_K2p", "FOPT_K3"},
-                   {SOPT, TOPT_K1, TOPT_K2, TOPT_K2p, FOPT_K1, FOPT_K2, FOPT_K2p, FOPT_K3});
+                   {"SOPT", "TOPT_K1", "TOPT_K2", "TOPT_K2p", "FOPT_K1", "FOPT_K2", "FOPT_K2p", "FOPT_K3",
+                           "SOPT_imag", "TOPT_K1_imag", "TOPT_K2_imag", "TOPT_K2p_imag", "FOPT_K1_imag",
+                           "FOPT_K2_imag", "FOPT_K2p_imag", "FOPT_K3_imag"},
+                   {SOPT, TOPT_K1, TOPT_K2, TOPT_K2p, FOPT_K1, FOPT_K2, FOPT_K2p, FOPT_K3,
+                            SOPT_imag, TOPT_K1_imag, TOPT_K2_imag, TOPT_K2p_imag, FOPT_K1_imag,
+                            FOPT_K2_imag, FOPT_K2p_imag, FOPT_K3_imag});
 
-    print("...done.", true);
+    print_add(" done.", true);
 }
 
 template<typename Q>
@@ -464,9 +504,9 @@ void PT_Machine<Q>::debug_TOPT() {
     bubble_function(TOPT_K1_p, SOPT_pvertex, bareState.vertex, Pi, 'p');
     print("...in the t channel the one way...", true);
     bubble_function(TOPT_K1_t_left, SOPT_tvertex, bareState.vertex, Pi, 't');
-    print("...the other way...", true);
+    print("...the other way...", false);
     bubble_function(TOPT_K1_t_right, bareState.vertex, SOPT_tvertex, Pi, 't');
-    print("...done.", true);
+    print_add(" done.", true);
 
     VertexInput a_input (7, 0, 0, 0, 0, 0, 'a');
     VertexInput p_input (7, 0, 0, 0, 0, 0, 'p');
@@ -541,7 +581,7 @@ void PT_Machine<Q>::debug_FOPT_K1() {
     bubble_function(t_nonladder_p, bareState.vertex, t_nonladder_p_intermediate, Pi, 't');
     print("t-non-ladder contribution from the p channel done.", true);
 
-    print("Now writing out results...", true);
+    print("Now writing out results...", false);
     assert(KELDYSH);
     const std::string filename = data_dir + "debug_FOPT_K1_with_U_over_Delta_" + std::to_string(U_over_Delta)+ ".h5";
 
@@ -562,7 +602,7 @@ void PT_Machine<Q>::debug_FOPT_K1() {
                 t_nonladder_p.value(t_input).real() / glb_U};
 
     write_h5_rvecs(filename, {"K1a", "K1p", "K1t"}, {K1a, K1p, K1t});
-    print("...done.", true);
+    print_add(" done.", true);
 
 }
 
