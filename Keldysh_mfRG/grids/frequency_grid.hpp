@@ -447,8 +447,11 @@ public:
         if constexpr(k == k2)  {
             double w  = freqs[0];
             double v  = freqs[1];
-            int iw = b.fconv(freqs[0]);
-            int iv = f.fconv(freqs[1]);
+#ifdef ROTATEK2
+            K2_convert2internalFreqs(w, v);
+#endif
+            int iw = b.fconv(w);
+            int iv = f.fconv(v);
             idx[0] = iw;
             idx[1] = iv;
             double w_low = b.get_ws(iw);
@@ -498,11 +501,14 @@ public:
     }
     void fconv_on_aux(std::array<my_index_t,2>& idx, std::array<double,2>& dt_normalized, const std::array<double,2>& freqs) const {
         if constexpr(k == k2)  {
-            //double w  = freqs[0];
-            //double v  = freqs[1];
+            double w  = freqs[0];
+            double v  = freqs[1];
+#ifdef ROTATEK2
+            K2_convert2internalFreqs(w, v);
+#endif
             double tw, tv;
-            int iw = b.fconv(tw, freqs[0]);
-            int iv = f.fconv(tv, freqs[1]);
+            int iw = b.fconv(tw, w);
+            int iv = f.fconv(tv, v);
             idx[0] = iw;
             idx[1] = iv;
             double tw_low = b.get_ts(iw);
@@ -552,11 +558,14 @@ public:
     }
     void fconv_on_aux_unnormalized(std::array<my_index_t,2>& idx, std::array<double,2>& dt_unnormalized, const std::array<double,2>& freqs) const {
         if constexpr(k == k2)  {
-            //double w  = freqs[0];
-            //double v  = freqs[1];
+            double w  = freqs[0];
+            double v  = freqs[1];
+#ifdef ROTATEK2
+            K2_convert2internalFreqs(w, v);
+#endif
             double tw, tv;
-            int iw = b.fconv(tw, freqs[0]);
-            int iv = f.fconv(tv, freqs[1]);
+            int iw = b.fconv(tw, w);
+            int iv = f.fconv(tv, v);
             idx[0] = iw;
             idx[1] = iv;
             double tw_low = b.get_ts(iw);
@@ -602,7 +611,7 @@ public:
         {
             w = b.get_ws(iw);
             v = f.get_ws(iv);
-            //K2_convert2naturalFreqs(w, v);
+            K2_convert2naturalFreqs(w, v);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }

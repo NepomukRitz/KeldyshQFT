@@ -157,7 +157,7 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 
     double t_rescaled = (t - t_lower) / dt;
     auto index = ((int) t_rescaled) ;  // round down
-    if (INTERPOLATION==linear) {
+    if constexpr(INTERPOLATION==linear) {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
     }

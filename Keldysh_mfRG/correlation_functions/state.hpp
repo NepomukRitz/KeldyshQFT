@@ -145,7 +145,7 @@ template <typename Q> void State<Q>::findBestFreqGrid(const bool verbose) {
 }
 
 template <typename Q> void State<Q>::check_resolution() const {
-    vertex.half1().check_resolution();
+    vertex.half1().check_vertex_resolution();
     selfenergy.check_resolution();
 }
 

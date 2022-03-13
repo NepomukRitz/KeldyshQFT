@@ -256,8 +256,8 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     double relative_difference_vertex = 1.;
     double relative_difference_selfenergy = 1.;
 
-    State<Q> state_out (Lambda);   // lhs of the parquet equations
-    State<Q> state_diff (Lambda);  // difference between input and output of the parquet equations
+    State<Q> state_out (state_in, Lambda);   // lhs of the parquet equations
+    State<Q> state_diff (state_in, Lambda);  // difference between input and output of the parquet equations
 
     write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
