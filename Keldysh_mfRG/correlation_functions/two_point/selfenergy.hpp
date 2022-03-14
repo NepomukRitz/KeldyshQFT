@@ -290,7 +290,7 @@ public:
         double result = selfEnergy.get_curvature_maxSE(verbose);
         /*
         std::string filename = "SE_costCurvature_" + std::to_string(wscale_test) + ".h5";
-        rvec v = selfEnergy.frequencies.get_ws_vec();
+        rvec v = selfEnergy.frequencies.get_all_frequencies();
 
         rvec SE_re = selfEnergy.Sigma.real();
         rvec SE_im = selfEnergy.Sigma.imag();
@@ -322,7 +322,11 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
     double b_Wscale = SEtemp.Sigma.frequencies.b.W_scale * 10;
     CostSE_Wscale<Q> cost(SEtemp, verbose);
     minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose, false, 1., 0.);
+#ifdef HYBRID_GRID
+
+#else
     frequencies_new.b.update_Wscale(m_Wscale);
+#endif
 
     update_grid(frequencies_new);
 

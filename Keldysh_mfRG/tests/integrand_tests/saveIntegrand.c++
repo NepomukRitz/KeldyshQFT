@@ -12,7 +12,7 @@ rvec saveIntegrand::get_freqs_equidistant_aux(const size_t nfreqs, const double 
     rvec freqs (nfreqs);
     double inter = (tmax - tmin) / (double) nfreqs;
     for (int i = 0; i < nfreqs; i++) {
-        freqs[i] = frequencyGrid.grid_transf_inv(tmin + inter * i);
+        freqs[i] = frequencyGrid.frequency_from_t(tmin + inter * i);
     }
     return freqs;
 }

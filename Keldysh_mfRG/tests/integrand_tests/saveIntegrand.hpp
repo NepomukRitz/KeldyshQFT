@@ -322,7 +322,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
     double vp= 0.;      // frequencies in the natural parametrization of channel
     int i_in = 0;
 
-    vec<double> ws = {0., 5., 100.};
+    vec<double> all_frequencies = {0., 5., 100.};
     vec<double> vs = {0., 5., 100.};
     vec<int> i2s = {0,1,2,3,4,5,6,7,8,9};
 
@@ -332,7 +332,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
     makedir(dir_integrand_str);
     const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_RKstep"+std::to_string(rkStep);
 
-    for (double w_temp: ws) {
+    for (double w_temp: all_frequencies) {
         for (double v_temp: vs) {
             saveIntegrand::dGamma_1Loop<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w_temp, v_temp, vp, i_in);
 

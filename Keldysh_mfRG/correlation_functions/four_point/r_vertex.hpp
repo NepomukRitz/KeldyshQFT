@@ -919,11 +919,11 @@ template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) c
     write_to_hdf(file, "K2b"+ ch, K2b_symmetry_expanded.get_vec(), false);
     write_to_hdf(file, "K3" + ch, K3_symmetry_expanded .get_vec(), false);
 
-    write_to_hdf(file, "bfreqs1", K1_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
-    write_to_hdf(file, "bfreqs2", K2_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
-    write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().f.get_ws_vec(), false);
-    write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
-    write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().f.get_ws_vec(), false);
+    write_to_hdf(file, "bfreqs1", K1_symmetry_expanded.get_VertexFreqGrid().b.get_all_frequencies(), false);
+    write_to_hdf(file, "bfreqs2", K2_symmetry_expanded.get_VertexFreqGrid().b.get_all_frequencies(), false);
+    write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().f.get_all_frequencies(), false);
+    write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().b.get_all_frequencies(), false);
+    write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().f.get_all_frequencies(), false);
 
     file.close();
 
@@ -1277,18 +1277,18 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     if (MAX_DIAG_CLASS >= 1) {
 
         freqGrid_type_K1 frequenciesK1_new = K1.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
+        frequenciesK1_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
         update_grid<k1>(frequenciesK1_new, *this);
     }
     if (MAX_DIAG_CLASS >= 2) {
 
         freqGrid_type_K2 frequenciesK2_new = K2.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
+        frequenciesK2_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
         update_grid<k2>(frequenciesK2_new, *this);
     }
     if (MAX_DIAG_CLASS >= 3) {
         freqGrid_type_K3 frequenciesK3_new = K3.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
+        frequenciesK3_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
         update_grid<k3>(frequenciesK3_new, *this);
     }
      */
@@ -1418,7 +1418,11 @@ namespace {
         explicit CostFullvert_Wscale_b_K1(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
 
         auto operator() (double wscale_test) -> double {
+#ifdef HYBRID_GRID
+
+#else
             frequencies.b.update_Wscale(wscale_test);
+#endif
             rVert.template update_grid<k1>(frequencies, rVert_backup);
             //rVert.K1.analyze_tails_K1();
             double result = rVert.K1.get_curvature_max();
@@ -1430,7 +1434,7 @@ namespace {
             }
             /*
             std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
-            rvec v = rVert.K1.frequencies.get_freqGrid_b().get_ws_vec();
+            rvec v = rVert.K1.frequencies.get_freqGrid_b().get_all_frequencies();
             rvec SE_re = rVert.K1.get_vec().real();
             rvec SE_im = rVert.K1.get_vec().imag();
             write_h5_rvecs(filename,
@@ -1627,12 +1631,17 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
         std::cout << "K1 rel.tail height in direction w: " << K1.template analyze_tails<0>() << std::endl;
     }
 
+#ifdef HYBRID_GRID
+
+#else
+
     double a_Wscale = K1.get_VertexFreqGrid().b.W_scale / 2.;
     double m_Wscale = K1.get_VertexFreqGrid().b.W_scale;
     double b_Wscale = K1.get_VertexFreqGrid().b.W_scale * 2;
     CostFullvert_Wscale_b_K1<Q> cost_b_K1(*this, verbose);
     minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
     frequenciesK1_new.b.update_Wscale(m_Wscale);
+#endif
     update_grid<k1>(frequenciesK1_new, *this);
 
 #ifndef MULTIDIM_MINIMIZATION
@@ -1649,23 +1658,32 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
         // in v-direction:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction v:\n";
+
+#ifdef HYBRID_GRID
+
+#else
         a_Wscale = K2.get_VertexFreqGrid().f.W_scale / 2.;
         m_Wscale = K2.get_VertexFreqGrid().f.W_scale;
         b_Wscale = K2.get_VertexFreqGrid().f.W_scale * 2;
         CostFullvert_Wscale_f_K2<Q> cost_f_K2(*this, verbose);
         minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK2_new.f.update_Wscale(m_Wscale);
+#endif
         update_grid<k2>(frequenciesK2_new, *this);
 
 #ifndef ROTATEK2
         // in w-direction:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
+#ifdef HYBRID_GRID
+
+#else
         a_Wscale = K2.get_VertexFreqGrid().b.W_scale / 2.;
         m_Wscale = K2.get_VertexFreqGrid().b.W_scale;
         b_Wscale = K2.get_VertexFreqGrid().b.W_scale * 2;
         CostFullvert_Wscale_b_K2<Q> cost_b_K2(*this, verbose);
         minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
         frequenciesK2_new.b.update_Wscale(m_Wscale);
+#endif
         update_grid<k2>(frequenciesK2_new, *this);
 #endif
     }
@@ -1713,28 +1731,40 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
         // in v-direction:
         if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction v:\n";
-        a_Wscale = K3.get_VertexFreqGrid().f.W_scale / 2.;
+
+        if (BOSONIC_PARAM_FOR_K3) {
+#ifdef HYBRID_GRID
+
+#else
+            a_Wscale = K3.get_VertexFreqGrid().f.W_scale / 2.;
         m_Wscale = K3.get_VertexFreqGrid().f.W_scale;
         b_Wscale = K3.get_VertexFreqGrid().f.W_scale * 2;
         CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
         minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
-
-        if (BOSONIC_PARAM_FOR_K3) {
             frequenciesK3_new.b.update_Wscale(m_Wscale);
+#endif
         }
+#ifdef HYBRID_GRID
+
+#else
         frequenciesK3_new.f.update_Wscale(m_Wscale);
+#endif
         update_grid<k3>(frequenciesK3_new, *this);
 
         if (not BOSONIC_PARAM_FOR_K3) {
             // in w-direction:
             if (verbose and mpi_world_rank() == 0)
                 std::cout << "---> Now Optimize K3" << channel << " grid in direction w:\n";
+#ifdef HYBRID_GRID
+
+#else
             a_Wscale = K3.get_VertexFreqGrid().b.W_scale / 2.;
             m_Wscale = K3.get_VertexFreqGrid().b.W_scale;
             b_Wscale = K3.get_VertexFreqGrid().b.W_scale * 2;
             CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
             minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
             frequenciesK3_new.b.update_Wscale(m_Wscale);
+#endif
             update_grid<k3>(frequenciesK3_new, *this);
         }
     }

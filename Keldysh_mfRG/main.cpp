@@ -6,8 +6,8 @@
 #include <omp.h>
 #include "utilities/mpi_setup.hpp"
 #include "mfRG_flow/flow.hpp"
-#include "tests/test_perturbation_theory.hpp"
-#include "tests/test_interpolation.hpp"
+//#include "tests/test_perturbation_theory.hpp"
+//#include "tests/test_interpolation.hpp"
 #include "utilities/util.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"

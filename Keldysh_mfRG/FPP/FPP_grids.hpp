@@ -269,7 +269,7 @@ public:
          */
     }
 
-    auto fconv(double x) const -> int {
+    auto get_grid_index(double x) const -> int {
         //assert((x >= grid_points[0]) and (x <= grid_points.back());
         /*for (int i = 0; i < grid_points.size(); ++i){
             if (x > grid_points[i] and x < grid_points[i+1]){

@@ -444,9 +444,10 @@ void read_from_hdf_LambdaLayer(const H5object& group, const H5std_string& datase
 
 
 namespace hdf5_impl {
-
-    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const FrequencyGrid& freqgrid, int Lambda_it, int numberLambdaLayers, bool file_exists, bool verbose=true);
-    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, int Lambda_it, double Lambda);
+    template<typename gridType>
+    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, int Lambda_it, int numberLambdaLayers, bool file_exists, bool verbose);
+    template<typename gridType>
+    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, int Lambda_it, double Lambda);
 
     template<typename Q>
     void write_state_to_hdf_LambdaLayer(const H5std_string& filename, const State<Q>& state, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose=true) {
@@ -468,42 +469,42 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_a, state.vertex.avertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_p, state.vertex.pvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_t, state.vertex.tvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS_LIST, state.selfenergy.Sigma.frequencies.b.get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTa, state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTt, state.vertex.tvertex().K1.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS_LIST, state.selfenergy.Sigma.frequencies.b.get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTa, state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTt, state.vertex.tvertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
 #if MAX_DIAG_CLASS>1
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_a, state.vertex.avertex().K2.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_p, state.vertex.pvertex().K2.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_t, state.vertex.tvertex().K2.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
 #ifdef DEBUG_SYMMETRIES
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_a, state.vertex.avertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_p, state.vertex.pvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_t, state.vertex.tvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
 #endif
 #endif
 #if MAX_DIAG_CLASS>2
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_a, state.vertex.avertex().K3.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_p, state.vertex.pvertex().K3.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_t, state.vertex.tvertex().K3.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_b().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_f().get_ws_vec(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
 #endif
         if(!file_exists) {
             /// Write used parameters for documentation purpose
@@ -682,6 +683,7 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
  * as well as K1, K2, K3 classes.
  * Constructor creates new arrays, destructor deletes them.
  */
+ /*
 class Buffer {
 public:
     double * lambda;
@@ -812,27 +814,27 @@ template <typename Q>
         FrequencyGrid bfreqsp = state_in.vertex.pvertex().K1.frequencies.get_freqGrid_b();
         FrequencyGrid bfreqst = state_in.vertex.tvertex().K1.frequencies.get_freqGrid_b();
         FrequencyGrid ffreqs = state_in.selfenergy.Sigma.frequencies.b;
-        freq_params[0] = (double) bfreqsa.N_w;
+        freq_params[0] = (double) bfreqsa.number_of_gridpoints;
         freq_params[1] = bfreqsa.w_upper;
         freq_params[2] = bfreqsa.w_lower;
         freq_params[3] = bfreqsa.W_scale;
-        freq_params[4] = (double) ffreqs.N_w;
+        freq_params[4] = (double) ffreqs.number_of_gridpoints;
         freq_params[5] = ffreqs.w_upper;
         freq_params[6] = ffreqs.w_lower;
         freq_params[7] = ffreqs.W_scale;
-        freq_params[24] = (double) bfreqsp.N_w;
+        freq_params[24] = (double) bfreqsp.number_of_gridpoints;
         freq_params[25] = bfreqsp.w_upper;
         freq_params[26] = bfreqsp.w_lower;
         freq_params[27] = bfreqsp.W_scale;
-        freq_params[28] = (double) bfreqst.N_w;
+        freq_params[28] = (double) bfreqst.number_of_gridpoints;
         freq_params[29] = bfreqst.w_upper;
         freq_params[30] = bfreqst.w_lower;
         freq_params[31] = bfreqst.W_scale;
 
-    convert_vec_to_type(bfreqsa.get_ws_vec(), bfreqsa_buffer);
-    convert_vec_to_type(bfreqsp.get_ws_vec(), bfreqsp_buffer);
-    convert_vec_to_type(bfreqst.get_ws_vec(), bfreqst_buffer);
-    convert_vec_to_type(ffreqs.get_ws_vec(), ffreqs_buffer);
+    convert_vec_to_type(bfreqsa.get_all_frequencies(), bfreqsa_buffer);
+    convert_vec_to_type(bfreqsp.get_all_frequencies(), bfreqsp_buffer);
+    convert_vec_to_type(bfreqst.get_all_frequencies(), bfreqst_buffer);
+    convert_vec_to_type(ffreqs.get_all_frequencies(), ffreqs_buffer);
 
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
@@ -867,37 +869,37 @@ template <typename Q>
     FrequencyGrid ffreqs2p = state_in.vertex.pvertex().K2.K2_get_freqGrid_f();
     FrequencyGrid bfreqs2t = state_in.vertex.tvertex().K2.K2_get_freqGrid_b();
     FrequencyGrid ffreqs2t = state_in.vertex.tvertex().K2.K2_get_freqGrid_f();
-    freq_params[8]  = (double) bfreqs2a.N_w;
+    freq_params[8]  = (double) bfreqs2a.number_of_gridpoints;
     freq_params[9]  = bfreqs2a.w_upper;
     freq_params[10] = bfreqs2a.w_lower;
     freq_params[11] = bfreqs2a.W_scale;
-    freq_params[12] = (double) ffreqs2a.N_w;
+    freq_params[12] = (double) ffreqs2a.number_of_gridpoints;
     freq_params[13] = ffreqs2a.w_upper;
     freq_params[14] = ffreqs2a.w_lower;
     freq_params[15] = ffreqs2a.W_scale;
-    freq_params[32]  = (double) bfreqs2p.N_w;
+    freq_params[32]  = (double) bfreqs2p.number_of_gridpoints;
     freq_params[33]  = bfreqs2p.w_upper;
     freq_params[34] = bfreqs2p.w_lower;
     freq_params[35] = bfreqs2p.W_scale;
-    freq_params[36] = (double) ffreqs2p.N_w;
+    freq_params[36] = (double) ffreqs2p.number_of_gridpoints;
     freq_params[37] = ffreqs2p.w_upper;
     freq_params[38] = ffreqs2p.w_lower;
     freq_params[39] = ffreqs2p.W_scale;
-    freq_params[40]  = (double) bfreqs2t.N_w;
+    freq_params[40]  = (double) bfreqs2t.number_of_gridpoints;
     freq_params[41]  = bfreqs2t.w_upper;
     freq_params[42] = bfreqs2t.w_lower;
     freq_params[43] = bfreqs2t.W_scale;
-    freq_params[44] = (double) ffreqs2t.N_w;
+    freq_params[44] = (double) ffreqs2t.number_of_gridpoints;
     freq_params[45] = ffreqs2t.w_upper;
     freq_params[46] = ffreqs2t.w_lower;
     freq_params[47] = ffreqs2t.W_scale;
 
-    convert_vec_to_type(bfreqs2a.get_ws_vec(), bfreqs2a_buffer);
-    convert_vec_to_type(ffreqs2a.get_ws_vec(), ffreqs2a_buffer);
-    convert_vec_to_type(bfreqs2p.get_ws_vec(), bfreqs2p_buffer);
-    convert_vec_to_type(ffreqs2p.get_ws_vec(), ffreqs2p_buffer);
-    convert_vec_to_type(bfreqs2t.get_ws_vec(), bfreqs2t_buffer);
-    convert_vec_to_type(ffreqs2t.get_ws_vec(), ffreqs2t_buffer);
+    convert_vec_to_type(bfreqs2a.get_all_frequencies(), bfreqs2a_buffer);
+    convert_vec_to_type(ffreqs2a.get_all_frequencies(), ffreqs2a_buffer);
+    convert_vec_to_type(bfreqs2p.get_all_frequencies(), bfreqs2p_buffer);
+    convert_vec_to_type(ffreqs2p.get_all_frequencies(), ffreqs2p_buffer);
+    convert_vec_to_type(bfreqs2t.get_all_frequencies(), bfreqs2t_buffer);
+    convert_vec_to_type(ffreqs2t.get_all_frequencies(), ffreqs2t_buffer);
 
         for(int i=0; i<K2_dim; ++i) {                                // write K2 into buffer
             K2_class_a[i].re = std::real(state_in.vertex.avertex().K2.acc(i));
@@ -917,37 +919,37 @@ template <typename Q>
         FrequencyGrid ffreqs3p = state_in.vertex.pvertex().K3.frequencies.get_freqGrid_f();
         FrequencyGrid bfreqs3t = state_in.vertex.tvertex().K3.frequencies.get_freqGrid_b();
         FrequencyGrid ffreqs3t = state_in.vertex.tvertex().K3.frequencies.get_freqGrid_f();
-        freq_params[16] = (double) bfreqs3a.N_w;
+        freq_params[16] = (double) bfreqs3a.number_of_gridpoints;
         freq_params[17] = bfreqs3a.w_upper;
         freq_params[18] = bfreqs3a.w_lower;
         freq_params[19] = bfreqs3a.W_scale;
-        freq_params[20] = (double) ffreqs3a.N_w;
+        freq_params[20] = (double) ffreqs3a.number_of_gridpoints;
         freq_params[21] = ffreqs3a.w_upper;
         freq_params[22] = ffreqs3a.w_lower;
         freq_params[23] = ffreqs3a.W_scale;
-        freq_params[48] = (double) bfreqs3p.N_w;
+        freq_params[48] = (double) bfreqs3p.number_of_gridpoints;
         freq_params[49] = bfreqs3p.w_upper;
         freq_params[50] = bfreqs3p.w_lower;
         freq_params[51] = bfreqs3p.W_scale;
-        freq_params[52] = (double) ffreqs3p.N_w;
+        freq_params[52] = (double) ffreqs3p.number_of_gridpoints;
         freq_params[53] = ffreqs3p.w_upper;
         freq_params[54] = ffreqs3p.w_lower;
         freq_params[55] = ffreqs3p.W_scale;
-        freq_params[56] = (double) bfreqs3t.N_w;
+        freq_params[56] = (double) bfreqs3t.number_of_gridpoints;
         freq_params[57] = bfreqs3t.w_upper;
         freq_params[58] = bfreqs3t.w_lower;
         freq_params[59] = bfreqs3t.W_scale;
-        freq_params[60] = (double) ffreqs3t.N_w;
+        freq_params[60] = (double) ffreqs3t.number_of_gridpoints;
         freq_params[61] = ffreqs3t.w_upper;
         freq_params[62] = ffreqs3t.w_lower;
         freq_params[63] = ffreqs3t.W_scale;
 
-    convert_vec_to_type(bfreqs3a.get_ws_vec(), bfreqs3a_buffer);
-    convert_vec_to_type(ffreqs3a.get_ws_vec(), ffreqs3a_buffer);
-    convert_vec_to_type(bfreqs3p.get_ws_vec(), bfreqs3p_buffer);
-    convert_vec_to_type(ffreqs3p.get_ws_vec(), ffreqs3p_buffer);
-    convert_vec_to_type(bfreqs3t.get_ws_vec(), bfreqs3t_buffer);
-    convert_vec_to_type(ffreqs3t.get_ws_vec(), ffreqs3t_buffer);
+    convert_vec_to_type(bfreqs3a.get_all_frequencies(), bfreqs3a_buffer);
+    convert_vec_to_type(ffreqs3a.get_all_frequencies(), ffreqs3a_buffer);
+    convert_vec_to_type(bfreqs3p.get_all_frequencies(), bfreqs3p_buffer);
+    convert_vec_to_type(ffreqs3p.get_all_frequencies(), ffreqs3p_buffer);
+    convert_vec_to_type(bfreqs3t.get_all_frequencies(), bfreqs3t_buffer);
+    convert_vec_to_type(ffreqs3t.get_all_frequencies(), ffreqs3t_buffer);
 
         for(int i=0; i<K3_dim; ++i) {                                // write K3 into buffer
             K3_class_a[i].re = std::real(state_in.vertex.avertex().K3.acc(i));
@@ -967,10 +969,12 @@ template <typename Q>
 // Wrapper for static cast from int to hsize_t, used in class Dims
 hsize_t h5_cast(int dim);
 
+  */
 /**
  * Class containing dimension arrays for data sets in file and for the buffers.
  * Constructor initializes them to fixed values specified via buffer lengths.
  */
+ /*
 class Dims {
 public:
     hsize_t Lambda[1];
@@ -1041,7 +1045,7 @@ public:
         irreducible_buffer {h5_cast(buffer.irred_dim)}
     {}
 };
-
+*/
 /**
  * Class containing HDF5 data sets for all objects that should be stored in the file.
  * There are two sets of members:
@@ -1051,6 +1055,7 @@ public:
  *  - When writing file, new data sets need to be created if the file does not yet exist.
  *  - When reading file, existing data sets are opened from the file.
  */
+ /*
 class DataSets {
 public:
     // Data sets for new file: Pointers
@@ -1095,6 +1100,7 @@ public:
      * @param mtype_comp      : Data type of selfenergy and vertex (complex number).
      * @param plist_vert      : Initial value for vertex data sets.
      */
+ /*
     DataSets(H5::H5File* file, bool file_exists,
              H5::DataSpace& dataSpaces_Lambda,
              H5::DataSpace& dataSpaces_selfenergy,
@@ -1241,10 +1247,12 @@ public:
 #endif
         }
     }
+    */
     /**
      * Initialize the data sets when reading from file.
      * @param file : File from which data sets are loaded.
      */
+     /*
     DataSets(H5::H5File* file) {
         lambda = file->openDataSet("lambdas");
         self = file->openDataSet("selflist");
@@ -1287,9 +1295,11 @@ public:
         K3_t = file->openDataSet("K3_t");
 #endif
     }
+      */
     /**
      * Close all data sets when writing/reading is finished.
      */
+     /*
     void close(bool file_exists) {
         if (!file_exists) {
             lambda_p -> close();
@@ -1368,8 +1378,9 @@ public:
 #endif
         }
     }
-};
 
+};
+*/
 
 /// --- Functions for reading data from file --- ///
 
@@ -1380,11 +1391,13 @@ public:
  */
 rvec read_Lambdas_from_hdf(H5std_string FILE_NAME);
 
+
 /**
  * Initialize the frequency grids of the result using the parameters stored in buffer.
  * @param result : Empty State object into which result is copied.
  * @param buffer : Buffer from which result is read. Should contain data read from a file.
  */
+ /*
 template <typename Q>
 void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     // create new frequency grids
@@ -1393,19 +1406,19 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     FrequencyGrid bfreqst ('b', 1, Lambda_ini);
     FrequencyGrid ffreqs ('f', 1, Lambda_ini);
     // read grid parameters from buffer
-    bfreqsa.N_w = (int)buffer.freq_params[0];
+    bfreqsa.number_of_gridpoints = (int)buffer.freq_params[0];
     bfreqsa.w_upper = buffer.freq_params[1];
     bfreqsa.w_lower = buffer.freq_params[2];
     bfreqsa.W_scale = buffer.freq_params[3];
-    ffreqs.N_w = (int)buffer.freq_params[4];
+    ffreqs.number_of_gridpoints = (int)buffer.freq_params[4];
     ffreqs.w_upper = buffer.freq_params[5];
     ffreqs.w_lower = buffer.freq_params[6];
     ffreqs.W_scale = buffer.freq_params[7];
-    bfreqsp.N_w = (int)buffer.freq_params[24];
+    bfreqsp.number_of_gridpoints = (int)buffer.freq_params[24];
     bfreqsp.w_upper = buffer.freq_params[25];
     bfreqsp.w_lower = buffer.freq_params[26];
     bfreqsp.W_scale = buffer.freq_params[27];
-    bfreqst.N_w = (int)buffer.freq_params[28];
+    bfreqst.number_of_gridpoints = (int)buffer.freq_params[28];
     bfreqst.w_upper = buffer.freq_params[29];
     bfreqst.w_lower = buffer.freq_params[30];
     bfreqst.W_scale = buffer.freq_params[31];
@@ -1426,27 +1439,27 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     FrequencyGrid ffreqs2p ('f', 2, Lambda_ini);
     FrequencyGrid bfreqs2t ('b', 2, Lambda_ini);
     FrequencyGrid ffreqs2t ('f', 2, Lambda_ini);
-    bfreqs2a.N_w = (int)buffer.freq_params[8];
+    bfreqs2a.number_of_gridpoints = (int)buffer.freq_params[8];
     bfreqs2a.w_upper = buffer.freq_params[9];
     bfreqs2a.w_lower = buffer.freq_params[10];
     bfreqs2a.W_scale = buffer.freq_params[11];
-    ffreqs2a.N_w = (int)buffer.freq_params[12];
+    ffreqs2a.number_of_gridpoints = (int)buffer.freq_params[12];
     ffreqs2a.w_upper = buffer.freq_params[13];
     ffreqs2a.w_lower = buffer.freq_params[14];
     ffreqs2a.W_scale = buffer.freq_params[15];
-    bfreqs2p.N_w = (int)buffer.freq_params[32];
+    bfreqs2p.number_of_gridpoints = (int)buffer.freq_params[32];
     bfreqs2p.w_upper = buffer.freq_params[33];
     bfreqs2p.w_lower = buffer.freq_params[34];
     bfreqs2p.W_scale = buffer.freq_params[35];
-    ffreqs2p.N_w = (int)buffer.freq_params[36];
+    ffreqs2p.number_of_gridpoints = (int)buffer.freq_params[36];
     ffreqs2p.w_upper = buffer.freq_params[37];
     ffreqs2p.w_lower = buffer.freq_params[38];
     ffreqs2p.W_scale = buffer.freq_params[39];
-    bfreqs2t.N_w = (int)buffer.freq_params[40];
+    bfreqs2t.number_of_gridpoints = (int)buffer.freq_params[40];
     bfreqs2t.w_upper = buffer.freq_params[41];
     bfreqs2t.w_lower = buffer.freq_params[42];
     bfreqs2t.W_scale = buffer.freq_params[43];
-    ffreqs2t.N_w = (int)buffer.freq_params[44];
+    ffreqs2t.number_of_gridpoints = (int)buffer.freq_params[44];
     ffreqs2t.w_upper = buffer.freq_params[45];
     ffreqs2t.w_lower = buffer.freq_params[46];
     ffreqs2t.W_scale = buffer.freq_params[47];
@@ -1470,27 +1483,27 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     FrequencyGrid ffreqs3p ('f', 3, Lambda_ini);
     FrequencyGrid bfreqs3t ('b', 3, Lambda_ini);
     FrequencyGrid ffreqs3t ('f', 3, Lambda_ini);
-    bfreqs3a.N_w = (int)buffer.freq_params[16];
+    bfreqs3a.number_of_gridpoints = (int)buffer.freq_params[16];
     bfreqs3a.w_upper = buffer.freq_params[17];
     bfreqs3a.w_lower = buffer.freq_params[18];
     bfreqs3a.W_scale = buffer.freq_params[19];
-    ffreqs3a.N_w = (int)buffer.freq_params[20];
+    ffreqs3a.number_of_gridpoints = (int)buffer.freq_params[20];
     ffreqs3a.w_upper = buffer.freq_params[21];
     ffreqs3a.w_lower = buffer.freq_params[22];
     ffreqs3a.W_scale = buffer.freq_params[23];
-    bfreqs3p.N_w = (int)buffer.freq_params[48];
+    bfreqs3p.number_of_gridpoints = (int)buffer.freq_params[48];
     bfreqs3p.w_upper = buffer.freq_params[49];
     bfreqs3p.w_lower = buffer.freq_params[50];
     bfreqs3p.W_scale = buffer.freq_params[51];
-    ffreqs3p.N_w = (int)buffer.freq_params[52];
+    ffreqs3p.number_of_gridpoints = (int)buffer.freq_params[52];
     ffreqs3p.w_upper = buffer.freq_params[53];
     ffreqs3p.w_lower = buffer.freq_params[54];
     ffreqs3p.W_scale = buffer.freq_params[55];
-    bfreqs3t.N_w = (int)buffer.freq_params[56];
+    bfreqs3t.number_of_gridpoints = (int)buffer.freq_params[56];
     bfreqs3t.w_upper = buffer.freq_params[57];
     bfreqs3t.w_lower = buffer.freq_params[58];
     bfreqs3t.W_scale = buffer.freq_params[59];
-    ffreqs3t.N_w = (int)buffer.freq_params[60];
+    ffreqs3t.number_of_gridpoints = (int)buffer.freq_params[60];
     ffreqs3t.w_upper = buffer.freq_params[61];
     ffreqs3t.w_lower = buffer.freq_params[62];
     ffreqs3t.W_scale = buffer.freq_params[63];
@@ -1508,12 +1521,13 @@ void result_set_frequency_grids(State<Q>& result, Buffer& buffer) {
     result.vertex.tvertex().K3.frequencies.f = ffreqs3t;
 #endif
 }
-
+*/
 /**
  * Copy results that are read from a file to a buffer into a State object.
  * @param result : Empty State object into which result is copied.
  * @param buffer : Buffer from which result is read. Should contain data read from a file.
  */
+ /*
 template <typename Q>
 void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     Q val; // buffer value
@@ -1609,7 +1623,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     }
 #endif
 }
-
+*/
 /**
  * Read results from an existing file to a State object. Useful when resuming a computation (checkpointing).
  * @param FILE_NAME   : File name.
@@ -1618,8 +1632,9 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  * @return            : State object containing the result.
  */
+ /*
 State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it);
-
+*/
 
 /// --- Functions for writing data to file --- ///
 
@@ -1634,6 +1649,7 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it);
  *                        - If not, create new file.
  *                        - If yes, write data to existing file at iteration Lambda_it.
  */
+ /*
 template <typename  Q>
 void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
                  const State<Q>& state_in, rvec& Lambdas, bool file_exists, const bool verbose=true) {
@@ -2045,7 +2061,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         return;
     }
 }
-
+*/
 /**
  * Write the inital state to an HDF5 file.
  * @param FILE_NAME   : File name. Creates a new file if it does not exist.
@@ -2054,6 +2070,7 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
  * @param Lambda_size : Total number of Lambda iterations to be saved in the file.
  * @param state_in    : State to be written to the file.
  */
+ /*
 template <typename Q>
 void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, const State<Q>& state_in) {
 #ifdef USE_MPI
@@ -2073,7 +2090,7 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
     save_to_hdf(FILE_NAME, Lambda_it, Lambda_size, state_in, Lambdas, false);
     }
 }
-
+*/
 /**
  * Add the state of a new iteration to an existing HDF5 file.
  * @param FILE_NAME   : File name.
@@ -2082,6 +2099,7 @@ void write_hdf(const H5std_string FILE_NAME, double Lambda_i, long Lambda_size, 
  * @param state_in    : State to be written to the file.
  * @param Lambdas     : Vector containing all Lambda values for which results can be saved in file.
  */
+ /*
 template <typename Q>
 void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_in, rvec& Lambdas, const bool verbose=true) {
 #ifdef USE_MPI
@@ -2109,17 +2127,19 @@ void add_hdf(const H5std_string FILE_NAME, const double Lambda_now, const int La
         add_hdf<Q>(FILE_NAME, Lambda_it, state_in, Lambdas, verbose);
     }
 }
-
+*/
 
 /** overload of add_hdf for non-States, does not do anything */
+/*
 template <typename Q>
 void add_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
              Q& state_in, rvec& Lambdas) {}
+*/
 
 /// --- Test function --- ///
-
+/*
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state);
-
+*/
 bool test_read_write_data_hdf(bool verbose);
 bool test_read_write_state_hdf(bool verbose);
 

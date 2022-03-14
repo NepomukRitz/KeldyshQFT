@@ -373,8 +373,8 @@ template <typename Q>
 auto Propagator<Q>::norm() const -> double {
     double out = 0.;
     for (int i = 0; i < nPROP; i++) {
-        if (KELDYSH) out += pow(std::abs(GR(selfenergy.Sigma.frequencies.b.get_ws(i), 0)), 2.);
-        else         out += pow(std::abs(GM(selfenergy.Sigma.frequencies.b.get_ws(i), 0)), 2.);
+        if (KELDYSH) out += pow(std::abs(GR(selfenergy.Sigma.frequencies.b.get_frequency(i), 0)), 2.);
+        else         out += pow(std::abs(GM(selfenergy.Sigma.frequencies.b.get_frequency(i), 0)), 2.);
     }
     return sqrt(out);
 }

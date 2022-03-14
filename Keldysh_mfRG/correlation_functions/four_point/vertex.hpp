@@ -169,10 +169,12 @@ public:
 
     // Interpolate vertex to updated grid
     void update_grid(double Lambda);
+    /*
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid);
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data);
+    */
 
     void findBestFreqGrid(bool verbose=true);
 
@@ -1063,6 +1065,7 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
     this->pvertex.update_grid(Lambda);
     this->tvertex.update_grid(Lambda);
 }
+/*
 template <typename Q>
 template<K_class k>
 void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid) {
@@ -1079,6 +1082,7 @@ void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<
     this->tvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.tvertex);
     //Fullvert4data.set_initializedInterpol(false);
 }
+ */
 
 template<class Q>
 void fullvert<Q>::calculate_all_cross_projections() {
@@ -1106,6 +1110,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
 }
 
 template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
+#if MAX_DIAG_CLASS > 1
     if(p==0) {//infinity (max) norm
         double max = this->avertex.K2.get_vec().max_norm();
         double compare = this->pvertex.K2.get_vec().max_norm();
@@ -1120,8 +1125,12 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
         double norm = std::abs((this->avertex.K2.get_vec().get_elements().pow(p) + this->pvertex.K2.get_vec().get_elements().pow(p) + this->tvertex.K2.get_vec().get_elements().pow(p)).sum());
         return pow(norm, 1./((double)p));
     }
+#else
+    return 0.;
+#endif
 }
 template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
+#if MAX_DIAG_CLASS > 2
     if(p==0) {//infinity (max) norm
         double max = this->avertex.K3.get_vec().max_norm();
         double compare = this->pvertex.K3.get_vec().max_norm();
@@ -1136,6 +1145,9 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
         double norm = std::abs((this->avertex.K3.get_vec().get_elements().pow(p) + this->pvertex.K3.get_vec().get_elements().pow(p) + this->tvertex.K3.get_vec().get_elements().pow(p)).sum());
         return pow(norm, 1./((double)p));
     }
+#else
+    return 0.;
+#endif
 }
 template <typename Q> auto fullvert<Q>::sum_norm(const int p) const -> double {
     double result = 0.;

@@ -36,7 +36,7 @@ public:
         rvec integrand_diff_im (npoints);
         double spacing = 2. / (double)npoints;
         for (int i=1; i<npoints-1; ++i) {
-            double vpp = bfreqs.grid_transf_inv(-1 + i * spacing);
+            double vpp = bfreqs.frequency_from_t(-1 + i * spacing);
             IndicesSymmetryTransformations indices (0, 0, vpp, 0, 0., 0, 'a', k1, 0,'a');
             Q integrand_value = FOPTstate.vertex.half1().avertex.K1.interpolate(indices);
             freqs[i] = vpp;
@@ -81,8 +81,8 @@ public:
         for (int i=1; i<npoints-1; ++i) {
             for (int j=1; j<npoints-1; ++j) {
 
-                double w = bfreqs2.grid_transf_inv(-1 + i * spacing);
-                double v = ffreqs2.grid_transf_inv(-1 + j * spacing);
+                double w = bfreqs2.frequency_from_t(-1 + i * spacing);
+                double v = ffreqs2.frequency_from_t(-1 + j * spacing);
                 IndicesSymmetryTransformations indices (0, 0, w, v, 0., 0, 'a', k1, 0,'a');
                 Q integrand_value = FOPTstate.vertex.half1().avertex.K2.interpolate(indices);
                 bfreqsK2[i] = w;
@@ -113,7 +113,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -126,7 +126,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_frequency(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.b.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -178,6 +178,7 @@ namespace {
 
     template<typename Q>
     class Cost_pick_Wscale_4_K1 {
+        using gridType = typename rvert<Q>::freqGrid_type_K1;
         State<Q> bareState;
         State<Q> K2aexact;
         Bubble<Q> Pi;
@@ -210,7 +211,7 @@ namespace {
             // set freqgrid parameter and update SOPTvertex on the new grid
 
             State<Q> SOPTstate(Lambda);
-            VertexFrequencyGrid<k1> bfreq = SOPTstate.vertex.half1().avertex.get_VertexFreqGrid();
+            gridType bfreq = SOPTstate.vertex.half1().avertex.get_VertexFreqGrid();
             bfreq.b.update_Wscale(wscale_test);
             SOPTstate.vertex.half1().template update_grid<k1>(bfreq, SOPTstate.vertex.half1());
             vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);

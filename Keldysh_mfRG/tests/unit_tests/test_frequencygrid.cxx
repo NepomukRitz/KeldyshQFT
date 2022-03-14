@@ -9,18 +9,18 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
     double issymmetric = 0.;
     double symmetry_tolerance = 1e-10;
     FrequencyGrid Bosfreqs('b', 1, 0.);
-    bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.get_ws_vec());
+    bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.get_all_frequencies());
     for (int i = 0; i < nBOS; i++) {
 
-        // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
+        // It doesn't harm if get_grid_index() retrieves a neighboring index. get_grid_index() is only needed for interpolations.
 
-        int index = Bosfreqs.fconv(Bosfreqs.get_ws(i));
+        int index = Bosfreqs.get_grid_index(Bosfreqs.get_frequency(i));
         if (std::abs(index - i) > (dense ? 0 : 1))
             isright = false;
-        issymmetric += std::abs(Bosfreqs.get_ws(i) + Bosfreqs.get_ws(nBOS - i - 1));
+        issymmetric += std::abs(Bosfreqs.get_frequency(i) + Bosfreqs.get_frequency(nBOS - i - 1));
     }
 
-    SECTION( "Is the correct index retrieved by fconv()?" ) {
+    SECTION( "Is the correct index retrieved by get_grid_index()?" ) {
         REQUIRE( isright );
     }
 
@@ -41,18 +41,18 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
     double issymmetric = 0.;
     double symmetry_tolerance = 1e-10;
     FrequencyGrid Ferfreqs('f', 1, 0.);
-    bool existNoDoubleOccurencies = not is_doubleOccurencies(Ferfreqs.get_ws_vec());
+    bool existNoDoubleOccurencies = not is_doubleOccurencies(Ferfreqs.get_all_frequencies());
     for (int i = 0; i < nFER; i++) {
 
-        // It doesn't harm if fconv() retrieves a neighboring index. fconv() is only needed for interpolations.
-        if (std::abs(Ferfreqs.fconv(Ferfreqs.get_ws(i)) - i) > 1) isright = false;
-        issymmetric += std::abs(Ferfreqs.get_ws(i) + Ferfreqs.get_ws(nFER - i - 1));
-        if (std::abs(Ferfreqs.get_ws(i) + Ferfreqs.get_ws(nFER - i - 1)) > symmetry_tolerance) {
-            print(std::to_string(Ferfreqs.get_ws(i)) + " != " + std::to_string(Ferfreqs.get_ws(nFER - i - 1)) + "\n");
+        // It doesn't harm if get_grid_index() retrieves a neighboring index. get_grid_index() is only needed for interpolations.
+        if (std::abs(Ferfreqs.get_grid_index(Ferfreqs.get_frequency(i)) - i) > 1) isright = false;
+        issymmetric += std::abs(Ferfreqs.get_frequency(i) + Ferfreqs.get_frequency(nFER - i - 1));
+        if (std::abs(Ferfreqs.get_frequency(i) + Ferfreqs.get_frequency(nFER - i - 1)) > symmetry_tolerance) {
+            print(std::to_string(Ferfreqs.get_frequency(i)) + " != " + std::to_string(Ferfreqs.get_frequency(nFER - i - 1)) + "\n");
         }
     }
 
-    SECTION( "Is the correct index retrieved by fconv()?" ) {
+    SECTION( "Is the correct index retrieved by get_grid_index()?" ) {
         REQUIRE( isright );
     }
 

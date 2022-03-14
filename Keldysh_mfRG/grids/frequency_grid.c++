@@ -1,113 +1,152 @@
 #include "frequency_grid.hpp"
 
-auto FrequencyGrid::scale_factor(double Lambda) -> double {
-// TODO(medium): write function that automatically chooses grid parameters U_factor and Delta_factor (-> Marc, Julian)
-    if (REG==2) {
-        // scale the grid with Delta until Delta = T_K (Kondo temperature), then scale with T_K
-        double Delta = (Lambda + glb_Gamma) / 2.;
-        return Delta_factor * Delta;
-        //double TK = std::sqrt(glb_U * Delta / 2.) * std::exp(M_PI * (Delta / (2. * glb_U) - glb_U / (8. * Delta)));
-        //return Delta_factor * std::min(Delta, TK);
-        //return std::max(U_factor * glb_U, Delta_factor * (Lambda + glb_Gamma) / 2.);
-    }
-    else if (REG==3) {
-        return std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2. + Lambda * (Lambda + 1));
-    }
-    else {
-        return std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2.);
-    }
-}
 
 /**
  * This function initializes the frequency grid according to the grid parameters
  * w_upper(=-w_lower):  upper limit of frequency box
- * N_w:                 number of frequency points
- * W_scale:             non-linearity of the grid_transf function
+ * number_of_gridpoints:                 number of frequency points
+ * W_scale:             non-linearity of the t_from_frequency function
  */
 void FrequencyGrid::initialize_grid() {
+    derive_auxiliary_parameters();
     double W;
-    t_upper = grid_transf(w_upper);
-    t_lower = grid_transf(w_lower);
-    dt = (t_upper - t_lower) / ((double) (N_w-1));
-    for(int i=0; i<N_w; ++i) {
-        W = t_lower + i * dt;
-        ws[i] = grid_transf_inv(W);
-        assert(isfinite(ws[i]));
+    for(int i=0; i<number_of_gridpoints; ++i) {
+        W = t_lower + i * spacing_auxiliary_gridpoint;
+        all_frequencies[i] = frequency_from_t(W);
+        assert(isfinite(all_frequencies[i]));
         if (!KELDYSH && !ZERO_T){
-            if (type == 'b') ws[i] = round2bfreq(ws[i]);
-            else             ws[i] = round2ffreq(ws[i]);
+            if (type == 'b') all_frequencies[i] = round2bfreq(all_frequencies[i]);
+            else             all_frequencies[i] = round2ffreq(all_frequencies[i]);
         }
-        ts[i]= grid_transf(ws[i]);
+        auxiliary_grid[i]= t_from_frequency(all_frequencies[i]);
     }
-    if (N_w % 2 == 1) {
-        ws[(int) N_w / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
-        ts[(int) N_w / 2] = 0.;
+    if (number_of_gridpoints % 2 == 1) {
+        all_frequencies[(int) number_of_gridpoints / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+        auxiliary_grid[(int) number_of_gridpoints / 2] = 0.;
     }
-    if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(ws) == 0);
+    if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(all_frequencies) == 0);
 }
 
-/**
- * This function sets the grid parameters according to the scale obtained from scale_factor(Lambda)
- * @param scale
- */
-void FrequencyGrid::set_W_scale(double scale) {
-    // Pick the grid parameters in a sensible way
-    W_scale = scale;
-    if (!KELDYSH && !ZERO_T){
-#ifndef DENSEGRID
-        // for Matsubara T>0: pick grid such that no frequencies occur twice
-        if (type == 'b') {
-            W_scale = wscale_from_wmax(W_scale, 2*M_PI*glb_T, w_upper, (N_w-1)/2);
-        }
-        else {
-            W_scale = wscale_from_wmax(W_scale, M_PI*glb_T, w_upper, N_w-1);
-        }
+
+/// derive auxiliary parameters from essential parameters
+void FrequencyGrid::derive_auxiliary_parameters() {
+    t_upper = t_from_frequency(w_upper);
+    t_lower = t_from_frequency(w_lower);
+    spacing_auxiliary_gridpoint = (t_upper - t_lower) / ((double) (number_of_gridpoints-1));
+}
+void FrequencyGrid::guess_essential_parameters(double Lambda) {
+    switch (type) {
+        case 'b':
+            switch (diag_class) {
+                case 1:
+                    number_of_gridpoints = nBOS;
+                    if (KELDYSH) {
+                        U_factor = 0. / 3.;
+                        Delta_factor = 5.;
+                    }
+                    else {
+                        U_factor = 40./3.;
+                        Delta_factor = 40.;
+                    }
+                    break;
+                case 2:
+                    number_of_gridpoints = nBOS2;
+#ifdef ROTATEK2
+                    if (KELDYSH){
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
+                        }
+                        else{
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
+                        }
 #else
-        // for Matsubara T>0: pick grid such that no frequencies occur twice
-
-        W_scale = M_PI*glb_T;
-
+                    if (KELDYSH){
+                        U_factor = 0./3.;
+                        Delta_factor = 15.;
+                    }
+                    else{
+                        U_factor = 10./3.;
+                        Delta_factor = 10.;
+                    }
 #endif
-    }
-}
-/**
- * This function sets the grid parameters according to the scale obtained from scale_factor(Lambda)
- * @param scale
- */
-void FrequencyGrid::set_w_upper(double wmax) {
-    // Pick the grid parameters in a sensible way
-    w_upper = wmax; // grid_transf_inv( ((double) N_w - 3)/((double) N_w - 1) );
-
-    if (!KELDYSH && !ZERO_T){
-#ifndef DENSEGRID
-
-        // for Matsubara T>0: pick grid such that no frequencies occur twice
-        if (type == 'b') {
-            w_upper = std::max(round2bfreq(w_upper), glb_T * M_PI*(N_w+1));
-        }
-        else {
-            w_upper = std::max(round2ffreq(w_upper), glb_T * M_PI*(N_w+1));
-        }
+                    break;
+                case 3:
+                    number_of_gridpoints = nBOS3;
+                    break;
+                default:;
+            }
+            break;
+        case 'f':
+            switch (diag_class) {
+                case 1:
+                    number_of_gridpoints = nFER;
+                    if (KELDYSH) {
+                        U_factor = 0. / 3.;
+                        Delta_factor = 10.;
+                    }
+                    else {
+                        U_factor = 2./3.;
+                        Delta_factor = 2.;
+                    }
+                    if (HUBBARD_MODEL){ //TODO(medium): Just a hotfix for the Hubbard model. Avoids that one runs out of the frequency box when integrating for the bubble.
+                        U_factor *= 1.5;
+                        Delta_factor *= 1.5;
+                    }
+                    break;
+                case 2:
+                    number_of_gridpoints = nFER2;
+#ifdef ROTATEK2
+                    /// Needs to be the same as for 'b'!!!
+                        if (KELDYSH) {
+                            U_factor = 10. / 3.;
+                            Delta_factor = 10.;
+                        }
+                        else {
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
+                        }
 #else
-        // for Matsubara T>0: pick grid such that no frequencies occur twice
-
-        w_upper = glb_T * M_PI*(N_w-1);
-
+                    if (KELDYSH) {
+                        U_factor = 0. / 3.;
+                        Delta_factor = 20.;
+                    }
+                    else {
+                        U_factor = 4./3.;
+                        Delta_factor = 4.;
+                    }
 #endif
+                    break;
+                case 3:
+                    number_of_gridpoints = nFER3;
+                    break;
+                default:;
+            }
+            break;
+        default:;
     }
 
-    w_lower = - w_upper;
-}
+    double scale;
+    if (REG==2) {
+        // scale the grid with Delta until Delta = T_K (Kondo temperature), then scale with T_K
+        double Delta = (Lambda + glb_Gamma) / 2.;
+        scale = Delta_factor * Delta;
+    }
+    else if (REG==3) {
+        scale = std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2. + Lambda * (Lambda + 1));
+    }
+    else {
+        scale = std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2.);
+    }
 
-void FrequencyGrid::rescale_grid(double Lambda) {
-    double scale = scale_factor(Lambda);
-    set_w_upper(scale*15);
-    set_W_scale(scale);
+    all_frequencies = rvec(number_of_gridpoints);
+    auxiliary_grid = rvec(number_of_gridpoints);
+    set_essential_parameters(scale*15., scale);
     initialize_grid();
 }
 
 void FrequencyGrid::update_Wscale(double Wscale) {
-    set_W_scale(Wscale);
+    W_scale = Wscale;
     initialize_grid();
 }
 
@@ -115,34 +154,34 @@ void FrequencyGrid::update_Wscale(double Wscale) {
  *  It rounds down due to the narrowing conversion from double to int.
  *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
  */
-auto FrequencyGrid::fconv(const double w_in, const bool safety) const -> int {
+auto FrequencyGrid::get_grid_index(const double w_in) const -> int {
 #ifdef PARAMETRIZED_GRID
-    double t = grid_transf(w_in);
+    double t = t_from_frequency(w_in);
 
-    t = (t - t_lower) / dt;
+    t = (t - t_lower) / spacing_auxiliary_gridpoint;
 #ifdef DENSEGRID
-    auto index = ((int) (t + (safety ? 0.1 : 0.) )) ;
+    auto index = ((int) (t + 0.1 )) ;
 #else
     auto index = ((int) t) ;
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
+        index = std::min(number_of_gridpoints - 2, index);
     }
     else {
-        if (ws[index+1] < w_in) index++;
+        if (all_frequencies[index+1] < w_in) index++;
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
+        index = std::min(number_of_gridpoints - 2, index);
     }
 #endif
     return index;
 
 #else
     int j;
-    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
-    else {locate(ws, N_w, w_in, j, 0, N_w-1); }
+    if (INTERPOLATION==linear) {locate(all_frequencies, number_of_gridpoints, w_in, j, 0, number_of_gridpoints-1);} // we cannot interpolate with infinity
+    else {locate(all_frequencies, number_of_gridpoints, w_in, j, 0, number_of_gridpoints-1); }
     int index = j;
-        assert(ws[index] - w_in  <= 1e-5 or index == 0);
-        assert(w_in - ws[index+1] < 1e-5 or index == N_w-1);
+        assert(all_frequencies[index] - w_in  <= 1e-5 or index == 0);
+        assert(w_in - all_frequencies[index+1] < 1e-5 or index == number_of_gridpoints-1);
     return index;
 #endif
 }
@@ -151,46 +190,46 @@ auto FrequencyGrid::fconv(const double w_in, const bool safety) const -> int {
  *  It rounds down due to the narrowing conversion from double to int.
  *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
  */
-auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
-    t = grid_transf(w_in);
+auto FrequencyGrid::get_grid_index(double& t, double w_in) const -> int {
+    t = t_from_frequency(w_in);
 #ifdef PARAMETRIZED_GRID
 
-    double t_rescaled = (t - t_lower) / dt;
+    double t_rescaled = (t - t_lower) / spacing_auxiliary_gridpoint;
     auto index = ((int) t_rescaled) ;  // round down
     if constexpr(INTERPOLATION==linear) {
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
+        index = std::min(number_of_gridpoints - 2, index);
     }
     else {
-        if (ws[index+1] < w_in and index < N_w-1)
+        if (all_frequencies[index+1] < w_in and index < number_of_gridpoints-1)
             index++;
-        if (ws[index] > w_in and index > 0)
+        if (all_frequencies[index] > w_in and index > 0)
             index--;
         index = std::max(0, index);
-        index = std::min(N_w - 2, index);
-        assert(ws[index] - w_in  <= 1e-5*std::abs(w_in) or index == 0); /// TODO: If this is not satisfied -> use locate
-        assert(w_in - ws[index+1] < 1e-5 or index == N_w-2);
+        index = std::min(number_of_gridpoints - 2, index);
+        assert(all_frequencies[index] - w_in  <= 1e-5*std::abs(w_in) or index == 0); /// TODO: If this is not satisfied -> use locate
+        assert(w_in - all_frequencies[index+1] < 1e-5 or index == number_of_gridpoints-2);
     }
     return index;
 
 #else
     int j;
-    if (INTERPOLATION==linear) {locate(ws, N_w, w_in, j, 0, N_w-1);} // we cannot interpolate with infinity
-    else {locate(ts, N_w, t, j, 0, N_w-1); }
+    if (INTERPOLATION==linear) {locate(all_frequencies, number_of_gridpoints, w_in, j, 0, number_of_gridpoints-1);} // we cannot interpolate with infinity
+    else {locate(auxiliary_grid, number_of_gridpoints, t, j, 0, number_of_gridpoints-1); }
     int index = j;
-        assert(ws[index] - w_in  <= 1e-5 or index == 0);
-        assert(w_in - ws[index+1] < 1e-5 or index == N_w-1);
+        assert(all_frequencies[index] - w_in  <= 1e-5 or index == 0);
+        assert(w_in - all_frequencies[index+1] < 1e-5 or index == number_of_gridpoints-1);
     return index;
 #endif
 
 }
 
 /**
- * The used grid_transf function is determined here
+ * The used t_from_frequency function is determined here
  * @param w     frequency
  * @return
  */
-auto FrequencyGrid::grid_transf(double w) const -> double {
+auto FrequencyGrid::t_from_frequency(double w) const -> double {
     if (KELDYSH) return grid_transf_v2(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_v3(w, this->W_scale);
@@ -207,11 +246,11 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
 }
 
 /**
- * The used grid_transf_inv function is determined here
+ * The used frequency_from_t function is determined here
  * @param t     point on auxiliary grid
  * @return
  */
-auto FrequencyGrid::grid_transf_inv(double t) const -> double {
+auto FrequencyGrid::frequency_from_t(double t) const -> double {
     if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
@@ -228,7 +267,7 @@ auto FrequencyGrid::grid_transf_inv(double t) const -> double {
 
 /**
  * This function picks a suitable W_scale for a given wmax for Matsubara T>0
- * @return Wscale    non-linearity of grid_transf()
+ * @return Wscale    non-linearity of t_from_frequency()
  * @param w1        first positive Matsubara frequency
  * @param wmax      upper bound of frequency grid
  * @param N         relates tmax to t1 by t1=tmax/N (for bosons: (nBOS-1)/2; for fermions: nFER-1)
@@ -278,9 +317,9 @@ void setUpBosGrid(rvec& freqs, const int nfreqs) {
     double W_upper_b = grid_transf_b(glb_w_upper);
 
     // self-energy and K1
-    double dt = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
+    double spacing_auxiliary_gridpoint = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
     for(int i=0; i<nfreqs; ++i) {
-        W = W_lower_b + i*dt;
+        W = W_lower_b + i*spacing_auxiliary_gridpoint;
         freqs[i] = grid_transf_b_inv(W);
     }
 }
@@ -291,9 +330,9 @@ void setUpFerGrid(rvec& freqs, const int nfreqs) {
     double W_upper_f = grid_transf_f(glb_v_upper);
 
     // self-energy and K1
-    double dt = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
+    double spacing_auxiliary_gridpoint = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
     for(int i=0; i<nfreqs; ++i) {
-        W = W_lower_f + i*dt;
+        W = W_lower_f + i*spacing_auxiliary_gridpoint;
         freqs[i] =  grid_transf_f_inv(W);
     }
 }
@@ -547,72 +586,43 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
 }
 
 
-auto freqGrid::shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, const bool verbose) -> FrequencyGrid {
-        assert(freqGrid.get_ws_vec().size() == maxabs_along_x.size());
-
-        FrequencyGrid frequencies_new = freqGrid;
-
-        if (maxabs_along_x.max_norm() < 1e-20) return frequencies_new; // don't shrink if there is no data yet
-
-        int index = -1;
-        while (true) {
-            if (maxabs_along_x[index+1] >= rel_tail_threshold) break;
-            index++;
-        }
-        if (index > -1) { // if the frequency box is too big, shrink to appropriate size
-            if (verbose and mpi_world_rank() == 0) std::cout << "Shrinking frequency box ";
-            double t_belowthresh = freqGrid.get_ts(index); // auxiliary frequency point before passing threshold
-            double t_abovethresh = freqGrid.get_ts(index+1); // auxiliary frequency point after  passing threshold
-            double h = (rel_tail_threshold - maxabs_along_x[index]) * (t_abovethresh - t_belowthresh) / (maxabs_along_x[index+1] - maxabs_along_x[index]);
-            const double safety = 0.9;
-            frequencies_new.set_w_upper(std::abs(freqGrid.grid_transf_inv(t_belowthresh + h*safety)));
-        }
-        else if (index == -1){ // if data on outermost grid point is too big, then enlarge the box OR print warning
-            //double t_upper_new = 1 - maxmax*rel_tail_threshold * (1-freqGrid.t_upper) / (maxabs_along_x[maxabs_along_x.size() -1]);
-            //double w_upper_new = frequencies_new.grid_transf_inv(t_upper_new);
-            //frequencies_new.set_w_upper(w_upper_new);
-        }
-        frequencies_new.initialize_grid();
-
-        return frequencies_new;
-    }
 
 
 //void setUpBosGrid(rvec& freqs, int nfreqs) {
 //    double W;
-//    double W_lower_b = grid_transf(glb_w_lower);
-//    double W_upper_b = grid_transf(glb_w_upper);
+//    double W_lower_b = t_from_frequency(glb_w_lower);
+//    double W_upper_b = t_from_frequency(glb_w_upper);
 //    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
 //    for(int i=0; i<nfreqs; ++i) {
 //        W = W_lower_b + i*dW;
-//        freqs[i] = grid_transf_inv(W);
+//        freqs[i] = frequency_from_t(W);
 //    }
 //}
 //void setUpFerGrid(rvec& freqs, int nfreqs) {
 //    double W;
-//    double W_lower_f = grid_transf(glb_v_lower);
-//    double W_upper_f = grid_transf(glb_v_upper);
+//    double W_lower_f = t_from_frequency(glb_v_lower);
+//    double W_upper_f = t_from_frequency(glb_v_upper);
 //    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
 //    for(int i=0; i<nfreqs; ++i) {
 //        W = W_lower_f + i*dW;
-//        freqs[i] =  grid_transf_inv(W);
+//        freqs[i] =  frequency_from_t(W);
 //    }
 //}
 //
 //
 //auto fconv_bos(double w, int nfreqs) -> int {
-//    double W = grid_transf(w);
-//    double W_lower_b = grid_transf(glb_w_lower);
-//    double W_upper_b = grid_transf(glb_w_upper);
+//    double W = t_from_frequency(w);
+//    double W_lower_b = t_from_frequency(glb_w_lower);
+//    double W_upper_b = t_from_frequency(glb_w_upper);
 //    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
 //    W = (W-W_lower_b)/dW;
 //    auto index = (int)W;
 //    return index;
 //}
 //auto fconv_fer(double w, int nfreqs) -> int {
-//    double W = grid_transf(w);
-//    double W_lower_f = grid_transf(glb_v_lower);
-//    double W_upper_f = grid_transf(glb_v_upper);
+//    double W = t_from_frequency(w);
+//    double W_lower_f = t_from_frequency(glb_v_lower);
+//    double W_upper_f = t_from_frequency(glb_v_upper);
 //    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
 //    W = (W-W_lower_f)/dW;
 //    auto index = (int)W;
@@ -653,3 +663,169 @@ auto fconv_fer(const double v, const int nfreqs) -> int {
 // note: value must be positive before flooring via (int) so that interpolation works correectly
 
 #endif
+
+
+
+
+
+/*******************************************    HYBRID GRID    *****************************************************/
+
+void hybridGrid::derive_auxiliary_parameters() {
+    const double temp = (pos_section_boundaries[0] + 2.*pos_section_boundaries[1]);
+    const double temp_quad = temp * w_upper - pos_section_boundaries[1]*pos_section_boundaries[1];
+    aux_pos_section_boundaries[0] = (2.*t_upper*pos_section_boundaries[0]*w_upper)                              / temp_quad;
+    aux_pos_section_boundaries[1] = (t_upper*(pos_section_boundaries[0] + pos_section_boundaries[1]) * w_upper) / temp_quad;
+
+    recip_curvature_quad = (4.*t_upper*t_upper*pos_section_boundaries[0]*w_upper*w_upper) / (temp_quad*temp_quad );
+    recip_slope_lin = t_upper*w_upper / (temp_quad);
+    factor_rat = pos_section_boundaries[1]*pos_section_boundaries[1] / (temp);
+    rescale_rat = (t_upper * w_upper * temp) / temp_quad;
+    spacing_auxiliary_gridpoint = 2.*t_upper / ((double)number_of_gridpoints - 1.);
+}
+
+void hybridGrid::guess_essential_parameters(const double Lambda) {
+    const double Delta = (glb_Gamma + Lambda) * 0.5;
+
+    switch (diag_class) {
+        case 1:
+            if (type == 'b') {
+                number_of_gridpoints = nBOS;
+                pos_section_boundaries[0] = Delta;
+                pos_section_boundaries[1] = 5.*Delta;
+                w_upper = 15.*Delta;
+            }
+            else {
+                assert(type == 'f');
+                number_of_gridpoints = nFER;
+                pos_section_boundaries[0] = 0.;
+                pos_section_boundaries[1] = 20.*Delta;
+                w_upper = 200.*Delta;
+            }
+            break;
+        case 2:
+            if (type == 'b') {
+                number_of_gridpoints = nBOS2;
+                pos_section_boundaries[0] = Delta;
+                pos_section_boundaries[1] = 3.*Delta;
+                w_upper = 30.*Delta;
+            }
+            else {
+                assert(type == 'f');
+                number_of_gridpoints = nFER2;
+                pos_section_boundaries[0] = Delta;
+                pos_section_boundaries[1] = 3.*Delta;
+                w_upper = 30.*Delta;
+            }
+            break;
+        case 3:
+            if (type == 'b') {
+                number_of_gridpoints = nBOS3;
+                pos_section_boundaries[0] = Delta;
+                pos_section_boundaries[1] = 3.*Delta;
+                w_upper = 30.*Delta;
+            }
+            else {
+                assert(type == 'f');
+                number_of_gridpoints = nFER3;
+                pos_section_boundaries[0] = Delta;
+                pos_section_boundaries[1] = 3.*Delta;
+                w_upper = 30.*Delta;
+            }
+            break;
+        default:
+            break;
+    }
+
+    w_lower = -w_upper;
+    all_frequencies = rvec(number_of_gridpoints);
+    auxiliary_grid = rvec(number_of_gridpoints);
+    initialize_grid();
+}
+
+double hybridGrid::frequency_from_t(const double t) const {
+    const double t_abs = std::abs(t);
+    if (t_abs < aux_pos_section_boundaries[0]) {
+        // quaddratic part
+        const double result = t_abs*t_abs / recip_curvature_quad * sgn(t);
+        assert(isfinite(result));
+        return result;
+    }
+    else if (t_abs < aux_pos_section_boundaries[1]) {
+        // linear part
+        const double result = (pos_section_boundaries[0] + (t_abs - aux_pos_section_boundaries[0]) / recip_slope_lin)* sgn(t);
+        assert(isfinite(result));
+        return result;
+    }
+    else {
+        // rational part
+        const double result = factor_rat / (1. - t_abs / rescale_rat) * sgn(t);
+        assert(isfinite(result));
+        return result;
+    }
+
+}
+
+double hybridGrid::t_from_frequency(const double w) const {
+    const double w_abs = std::abs(w);
+    if (w_abs < pos_section_boundaries[0]) {
+        // quadratic part
+        const double result = sqrt(w_abs * recip_curvature_quad) * sgn(w);
+        assert(isfinite(result));
+        return result;
+    }
+    else if (w_abs < pos_section_boundaries[1]) {
+        // linear part
+        const double result = ((w_abs - pos_section_boundaries[0]) * recip_slope_lin + aux_pos_section_boundaries[0]) * sgn(w);
+        assert(isfinite(result));
+        return result;
+    }
+    else {
+        // rational part
+        const double result = (1. - factor_rat / w_abs) * rescale_rat * sgn(w);
+        assert(isfinite(result));
+        return result;
+    }
+}
+
+void hybridGrid::initialize_grid() {
+    derive_auxiliary_parameters();
+    for (int i = 0; i < number_of_gridpoints; i++) {
+        const double t = t_lower + spacing_auxiliary_gridpoint * (double)i;
+        auxiliary_grid[i] = t;
+        all_frequencies[i] = frequency_from_t(t);
+        if constexpr(!KELDYSH && !ZERO_T){
+            if (type == 'b') all_frequencies[i] = round2bfreq(all_frequencies[i]);
+            else             all_frequencies[i] = round2ffreq(all_frequencies[i]);
+        }
+    }
+    if (number_of_gridpoints % 2 == 1) {
+        all_frequencies[(int) number_of_gridpoints / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+        auxiliary_grid[(int) number_of_gridpoints / 2] = 0.;
+    }
+    if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(all_frequencies) == 0);
+}
+
+int hybridGrid::get_grid_index(const double frequency)const {
+    /// Do I need this? The next function basically does the same
+    const double t = t_from_frequency(frequency);
+#ifdef DENSEGRID
+    auto index = ((int) ((t - t_base) / spacing_auxiliary_gridpoint + 0.1 )) ;
+#else
+    int index = int((t - t_lower) / spacing_auxiliary_gridpoint + 1e-12);
+    index = std::max(0, index);
+    index = std::min(number_of_gridpoints - 2, index);
+#endif
+    return index;
+}
+
+int hybridGrid::get_grid_index(double& t, const double frequency) const{
+    t = t_from_frequency(frequency);
+#ifdef DENSEGRID
+    auto index = ((int) ((t - t_base) / spacing_auxiliary_gridpoint + 0.1 )) ;
+#else
+    int index = int((t - t_lower) / spacing_auxiliary_gridpoint + 1e-12);
+    index = std::max(0, index);
+    index = std::min(number_of_gridpoints - 2, index);
+#endif
+    return index;
+}

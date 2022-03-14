@@ -1,13 +1,15 @@
 #include "HUBBARD_sopt_selfenergy.hpp"
 #include <omp.h>
 
-auto Integrand_SE_SOPT_Hubbard::operator()(const double w_a) const -> comp {
+template <typename gridType>
+auto Integrand_SE_SOPT_Hubbard<gridType>::operator()(const double w_a) const -> comp {
     const double v1 = v + w_a;
     return interpolate_lin2D<comp>(v1, w_a, prop_grid, vertex_grid,
                                    [&](int i, int j) -> comp {return integrand[composite_index(i, j)];});
 }
 
-int Integrand_SE_SOPT_Hubbard::composite_index(const int iv1, const int iw_1) const {
+template <typename gridType>
+int Integrand_SE_SOPT_Hubbard<gridType>::composite_index(const int iv1, const int iw_1) const {
     return iv1 * nBOS * glb_N_transfer + iw_1 * glb_N_transfer + i_in;
 }
 
@@ -66,7 +68,7 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrands(vec<comp>& integrand
 void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp>& vertex_values,
                                                    const int iK, const int iK_internal,
                                                    const int iv1, const int iw1) const {
-    const double v1 = barePropagator.selfenergy.Sigma.frequencies.b.get_ws(iv1);
+    const double v1 = barePropagator.selfenergy.Sigma.frequencies.b.get_frequency(iv1);
     int it_spin = 0;
     for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
         switch (iK_internal) {
@@ -98,7 +100,7 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrals(const vec<comp>& inte
                                                            const int iK, const int iK_internal) {
 #pragma omp parallel for schedule(dynamic)
     for (int iv = 0; iv < nFER; ++iv) {
-        const double v = SOPT_SE_Hubbard.Sigma.frequencies.b.get_ws(iv);
+        const double v = SOPT_SE_Hubbard.Sigma.frequencies.b.get_frequency(iv);
         for (int i_in = 0; i_in < glb_N_transfer; ++i_in) {
             Integrand_SE_SOPT_Hubbard integrand_w \
                 (integrand, v, i_in,
@@ -140,7 +142,7 @@ void Hubbard_SE_SOPT_Computer::save_integrand(const vec<comp>& integrand, const 
 
     write_h5_rvecs(filename,
                    {"prop_freq", "vert_freq", "integrand_re", "integrand_im"},
-                   {barePropagator.selfenergy.Sigma.frequencies.b.get_ws_vec(),
-                    vertex_in_SOPT.avertex().K1.frequencies.get_freqGrid_b().get_ws_vec(),
+                   {barePropagator.selfenergy.Sigma.frequencies.b.get_all_frequencies(),
+                    vertex_in_SOPT.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(),
                     integrand.real(), integrand.imag()});
 }

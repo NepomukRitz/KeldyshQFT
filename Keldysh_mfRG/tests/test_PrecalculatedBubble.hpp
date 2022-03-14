@@ -84,9 +84,9 @@ template<typename Q> double test_PrecalculateBubble<Q>::find_largest_deviation_f
 
     for (int iK = 0; iK < glb_number_of_Keldysh_components_bubble; ++iK) {
         for (int iw = 0; iw < nBOS; ++iw) {
-            const double w = g.selfenergy.Sigma.frequencies.b.get_ws(iw);
+            const double w = g.selfenergy.Sigma.frequencies.b.get_frequency(iw);
             for (int ivpp = 0; ivpp < nFER; ++ivpp) {
-                const double vpp = g.selfenergy.Sigma.frequencies.b.get_ws(ivpp);
+                const double vpp = g.selfenergy.Sigma.frequencies.b.get_frequency(ivpp);
                 for (int i_in = 0; i_in < n_in; ++i_in) {
                     Q Bubble_Value = Usual_Bubble.value(iK, w, vpp, i_in, channel);
                     Q Pre_Bubble_Value = Pre_Bubble.value(iK, w, vpp, i_in);
@@ -124,7 +124,7 @@ write_h5_rvecs(filename,
                 "RealValuesOfPrecalculatedBubble", "RealValuesOfUsualBubble",
                 "ImaginaryValuesOfPrecalculatedBubble", "ImaginaryValuesOfUsualBubble",
                 "AbsoluteDeviations"},
-               {g.selfenergy.Sigma.frequencies.b.ws,
+               {g.selfenergy.Sigma.frequencies.b.all_frequencies,
                 ValuesOfPreBubble.real(), ValuesOfUsualBubble.real(),
                 ValuesOfPreBubble.imag(), ValuesOfUsualBubble.imag(),
                 AbsoluteDeviations});
@@ -200,9 +200,9 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
     for (int iteration = 0; iteration < iterations; ++iteration) {
         for (int iK = 0; iK < glb_number_of_Keldysh_components_bubble; ++iK) {
             for (int iw = 0; iw < nBOS; ++iw) {
-                const double w = g.selfenergy.Sigma.frequencies.b.get_ws(iw);
+                const double w = g.selfenergy.Sigma.frequencies.b.get_frequency(iw);
                 for (int ivpp = 0; ivpp < nFER; ++ivpp) {
-                    const double vpp = g.selfenergy.Sigma.frequencies.b.get_ws(ivpp);
+                    const double vpp = g.selfenergy.Sigma.frequencies.b.get_frequency(ivpp);
                     for (int i_in = 0; i_in < n_in; ++i_in) {
                         if (precalculated){
                             Q Pre_Bubble_Value = Pre_Bubble.value(iK, w, vpp, i_in);

@@ -24,41 +24,68 @@ hsize_t h5_cast(int dim) {
 }
 
 namespace hdf5_impl {
-    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const FrequencyGrid& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose) {
+    template <typename gridType>
+    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose) {
         write_to_hdf_LambdaLayer<char>(group, "type", std::vector<char>({freqgrid.get_type()}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<int>(group, "diag_class", std::vector<int>({freqgrid.get_diag_class()}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<int>(group, "N_w", std::vector<int>({freqgrid.N_w}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<int>(group, "number_of_gridpoints", std::vector<int>({freqgrid.number_of_gridpoints}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(group, "w_upper", std::vector<double>({freqgrid.w_upper}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(group, "w_lower", std::vector<double>({freqgrid.w_lower}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(group, "Delta_factor", std::vector<double>({freqgrid.Delta_factor}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(group, "U_factor", std::vector<double>({freqgrid.U_factor}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(group, "W_scale", std::vector<double>({freqgrid.W_scale}), Lambda_it, numberLambdaLayers, file_exists);
+        if constexpr(std::is_same_v<gridType,FrequencyGrid>)
+        {
+            write_to_hdf_LambdaLayer<double>(group, "Delta_factor", std::vector<double>({freqgrid.Delta_factor}),
+                                             Lambda_it, numberLambdaLayers, file_exists);
+            write_to_hdf_LambdaLayer<double>(group, "U_factor", std::vector<double>({freqgrid.U_factor}), Lambda_it,
+                                             numberLambdaLayers, file_exists);
+            write_to_hdf_LambdaLayer<double>(group, "W_scale", std::vector<double>({freqgrid.W_scale}), Lambda_it,
+                                             numberLambdaLayers, file_exists);
+
+        }
+        else {
+            write_to_hdf_LambdaLayer<double>(group, "pos_section_boundaries0", std::vector<double>({freqgrid.pos_section_boundaries[0]}),
+                                             Lambda_it, numberLambdaLayers, file_exists);
+            write_to_hdf_LambdaLayer<double>(group, "pos_section_boundaries1", std::vector<double>({freqgrid.pos_section_boundaries[1]}), Lambda_it,
+                                             numberLambdaLayers, file_exists);
+        }
     }
 
-    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, const int Lambda_it, const double Lambda) {
+    template<typename gridType>
+    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, const int Lambda_it, const double Lambda) {
         std::vector<char> type;
         std::vector<int> diag_class;
-        std::vector<int> N_w;
+        std::vector<int> number_of_gridpoints;
         std::vector<double> w_upper;
         std::vector<double> w_lower;
-        std::vector<double> Delta_factor;
-        std::vector<double> U_factor;
-        std::vector<double> W_scale;
         read_from_hdf_LambdaLayer<char>(group, "type", type, Lambda_it);
         read_from_hdf_LambdaLayer<int>(group, "diag_class", diag_class, Lambda_it);
-        read_from_hdf_LambdaLayer<int>(group, "N_w", N_w, Lambda_it);
+        read_from_hdf_LambdaLayer<int>(group, "number_of_gridpoints", number_of_gridpoints, Lambda_it);
         read_from_hdf_LambdaLayer<double>(group, "w_upper", w_upper, Lambda_it);
         read_from_hdf_LambdaLayer<double>(group, "w_lower", w_lower, Lambda_it);
-        read_from_hdf_LambdaLayer<double>(group, "Delta_factor", Delta_factor, Lambda_it);
-        read_from_hdf_LambdaLayer<double>(group, "U_factor", U_factor, Lambda_it);
-        read_from_hdf_LambdaLayer<double>(group, "W_scale", W_scale, Lambda_it);
 
-        FrequencyGrid freqgrid_new(type[0], diag_class[0], Lambda);
+        gridType freqgrid_new(type[0], diag_class[0], Lambda);
         freqgrid_new.w_upper = w_upper[0];
         freqgrid_new.w_lower = w_lower[0];
-        freqgrid_new.Delta_factor = Delta_factor[0];
-        freqgrid_new.U_factor = U_factor[0];
-        freqgrid_new.W_scale = W_scale[0];
+
+        if constexpr(std::is_same_v<gridType,FrequencyGrid>) {
+            std::vector<double> Delta_factor;
+            std::vector<double> U_factor;
+            std::vector<double> W_scale;
+            read_from_hdf_LambdaLayer<double>(group, "Delta_factor", Delta_factor, Lambda_it);
+            read_from_hdf_LambdaLayer<double>(group, "U_factor", U_factor, Lambda_it);
+            read_from_hdf_LambdaLayer<double>(group, "W_scale", W_scale, Lambda_it);
+            freqgrid_new.Delta_factor = Delta_factor[0];
+            freqgrid_new.U_factor = U_factor[0];
+            freqgrid_new.W_scale = W_scale[0];
+        }
+        else {
+            std::vector<double> pos_section_boundaries0;
+            std::vector<double> pos_section_boundaries1;
+            read_from_hdf_LambdaLayer<double>(group, "pos_section_boundaries0", pos_section_boundaries0, Lambda_it);
+            read_from_hdf_LambdaLayer<double>(group, "pos_section_boundaries1", pos_section_boundaries1, Lambda_it);
+            freqgrid_new.pos_section_boundaries = std::array<double,2>({pos_section_boundaries0[0], pos_section_boundaries1[0]});
+        }
+
+
         freqgrid_new.initialize_grid();
         freqgrid = freqgrid_new;
     }
@@ -235,14 +262,14 @@ rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
 
     // Create the data spaces for the data sets in file and for buffer objects
     H5::DataSpace dataSpace_Lambda = lambda_dataset.getSpace();
-    /*
-     * Get the number of dimensions in the dataspace.
-     */
+    //
+    // Get the number of dimensions in the dataspace.
+    //
     int rank = dataSpace_Lambda.getSimpleExtentNdims();
-    /*
-     * Get the dimension size of each dimension in the dataspace and
-     * display them.
-     */
+    //
+    //Get the dimension size of each dimension in the dataspace and
+    //display them.
+    //
     hsize_t dims_out[2];
     int ndims = dataSpace_Lambda.getSimpleExtentDims( dims_out, NULL);
     //std::cout << "rank " << rank << ", dimensions " <<
@@ -275,6 +302,7 @@ rvec read_Lambdas_from_hdf(const H5std_string FILE_NAME){
 
 }
 
+/*
 State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it){
     State<state_datatype> result(Lambda_ini);   // Initialize with ANY frequency grid, read grid from HDF file later
     long Lambda_size = read_Lambdas_from_hdf(FILE_NAME).size();
@@ -373,6 +401,7 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it){
          * Get the dimension size of each dimension in the dataspace and
          * display them.
          */
+/*
         hsize_t dims_out[2];
         int ndims = dataSpaces_Lambda.getSimpleExtentDims( dims_out, NULL);
         //std::cout << "rank " << rank << ", dimensions " <<
@@ -459,9 +488,9 @@ State<state_datatype> read_hdf(const H5std_string FILE_NAME, size_t Lambda_it){
         throw std::runtime_error("Cannot read from file " + FILE_NAME + " since Lambda layer out of range");
     }
 }
+*/
 
-
-
+/*
 void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     // test hdf5: read files and compare to original file
     int cnt = 0;
@@ -531,7 +560,7 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
     if (cnt == 0) print("HDF5 test successful.", true);
     else print("HDF5 test failed. Number of differences: ", cnt, true);
 }
-
+*/
 
 bool test_read_write_data_hdf(bool verbose) {
     //if (verbose) print("Testing HDF input and output:", true);
@@ -651,8 +680,8 @@ bool test_read_write_state_hdf(bool verbose) {
             print("PROBLEM during read / write of state data to LambdaLayer of HDF file. deviation : ",
                   state_diff.norm(), true);
         }
-        if ((state_output.selfenergy.Sigma.frequencies.b.get_ws_vec() -
-             state_input.selfenergy.Sigma.frequencies.b.get_ws_vec()).max_norm() < 1e-10)
+        if ((state_output.selfenergy.Sigma.frequencies.b.get_all_frequencies() -
+             state_input.selfenergy.Sigma.frequencies.b.get_all_frequencies()).max_norm() < 1e-10)
             print("Read / write of frequency grid to LambdaLayer of HDF file successful.", true);
         else {
             passed = false;

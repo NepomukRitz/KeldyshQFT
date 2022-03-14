@@ -24,7 +24,7 @@ void compute_Phi_tilde(const std::string filename) {
             for (int i_in=0; i_in<n_in; ++i_in) {
 //    #pragma omp parallel for schedule(dynamic) // For some reason, this pragma can become problematic...
                 for (int iv=0; iv<nFER; ++iv) {
-                    double v = state.selfenergy.Sigma.frequencies.b.get_ws(iv);
+                    double v = state.selfenergy.Sigma.frequencies.b.get_frequency(iv);
                     vs[iLambda * nFER + iv * n_in + i_in] = v;
                     // lhs of Ward identity
                     ImSigma[iLambda * nFER + iv * n_in + i_in] = -2. * myimag(state.selfenergy.val(0, iv, i_in));
@@ -95,7 +95,7 @@ void check_Kramers_Kronig(const std::string filename) {
     for (int i=0; i<iLambdas.size(); ++i) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
         // check Kramers-Kronig for retarded self-energy
-        rvec vSigma = state.selfenergy.Sigma.frequencies.b.get_ws_vec();  // frequency grid points
+        rvec vSigma = state.selfenergy.Sigma.frequencies.b.get_all_frequencies();  // frequency grid points
         // get retarded component (first half of stored data points)
         std::array<my_index_t ,3> start_SE = {0, 0, 0};
         std::array<my_index_t,3> end_SE   = {0,nSE-1, n_in};
@@ -109,7 +109,7 @@ void check_Kramers_Kronig(const std::string filename) {
         std::array<my_index_t,4> start_K1 = {0, 0, 0, 0};
         std::array<my_index_t,4> end_K1   = {0,0,nBOS-1, n_in_K1};
         // check Kramers-Kronig for retarded component of K1r
-        rvec wK1 = state.vertex.avertex().K1.get_VertexFreqGrid().b.get_ws_vec();  // frequency grid points
+        rvec wK1 = state.vertex.avertex().K1.get_VertexFreqGrid().b.get_all_frequencies();  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
         auto K1aR = state.vertex.avertex().K1.get_vec().eigen_segment(start_K1, end_K1);
         vec<comp> K1aR_vec = vec<comp>(K1aR.data(), K1aR.data() + K1aR.size());

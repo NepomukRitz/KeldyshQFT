@@ -19,7 +19,7 @@ constexpr bool MPI_FLAG = false;
 //Tolerance for closeness to grid points when interpolating
 constexpr double inter_tol = 1e-5;
 
-enum interpolMethod {linear=0, linear_on_aux=1, sloppycubic=2, cubic=4};
+enum interpolMethod {linear=0, linear_on_aux=1, cubic=4};
 constexpr interpolMethod INTERPOLATION = cubic;
 
 //Tolerance for loop convergence
@@ -33,10 +33,10 @@ constexpr double converged_tol = 1e-7;
 // 4: GSL
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
 // 6: PAID with Clenshaw-Curtis rule
-constexpr int INTEGRATOR_TYPE = 5;
+constexpr int INTEGRATOR_TYPE = 4;
 
 //Integrator tolerance
-constexpr double integrator_tol = 1e-5;
+constexpr double integrator_tol = 1e-8;
 
 //Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
 constexpr int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));

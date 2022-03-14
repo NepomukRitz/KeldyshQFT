@@ -24,7 +24,7 @@ void test_Bubble_in_Momentum_Space(){
     vec<comp> s_K (nFER * n_in);
     for (int iv = 0; iv < nFER; ++iv) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
-            double v = g.selfenergy.Sigma.frequencies.b.get_ws(iv);
+            double v = g.selfenergy.Sigma.frequencies.b.get_frequency(iv);
             g_R[iv * n_in + i_in] = g.valsmooth(0, v, i_in);
             g_K[iv * n_in + i_in] = g.valsmooth(1, v, i_in);
             s_R[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
@@ -42,7 +42,7 @@ void test_Bubble_in_Momentum_Space(){
                     "RealValuesOfKeldyshSingleScale", "ImaginaryValuesOfKeldyshSingleScale",
                     "RealValuesOfBubble", "ImaginaryValuesOfBubble",
                     "RealValuesOfDottedBubble", "ImaginaryValuesOfDottedBubble"},
-                   {g.selfenergy.Sigma.frequencies.b.get_ws_vec(), Bubble.fermionic_grid.get_ws_vec(),
+                   {g.selfenergy.Sigma.frequencies.b.get_all_frequencies(), Bubble.fermionic_grid.get_all_frequencies(),
                     g_R.real(), g_R.imag(), g_K.real(), g_K.imag(),
                     s_R.real(), s_R.imag(), s_K.real(), s_K.imag(),
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
@@ -52,7 +52,7 @@ void test_Bubble_in_Momentum_Space(){
     vec<comp> single_scale (nFER * n_in);
     for (int iv = 0; iv < nFER; ++iv) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
-            double v = g.selfenergy.Sigma.frequencies.b.get_ws(iv);
+            double v = g.selfenergy.Sigma.frequencies.b.get_frequency(iv);
             prop[iv * n_in + i_in]         = g.valsmooth(0, v, i_in);
             single_scale[iv * n_in + i_in] = s.valsmooth(0, v, i_in);
         }
@@ -66,7 +66,7 @@ void test_Bubble_in_Momentum_Space(){
                     "RealValuesOfSingleScale", "ImaginaryValuesOfSingleScale",
                     "RealValuesOfBubble", "ImaginaryValuesOfBubble",
                     "RealValuesOfDottedBubble", "ImaginaryValuesOfDottedBubble"},
-                   {g.selfenergy.Sigma.frequencies.b.get_ws_vec(), Bubble.fermionic_grid.get_ws_vec(),
+                   {g.selfenergy.Sigma.frequencies.b.get_all_frequencies(), Bubble.fermionic_grid.get_all_frequencies(),
                     prop.real(), prop.imag(), single_scale.real(), single_scale.imag(),
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
                     DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
@@ -80,8 +80,8 @@ void save_PreBubble_in_freq_space(const PrecalculatedBubble<comp>& Pi, const int
     for (int iK_bubble = 0; iK_bubble < glb_number_of_Keldysh_components_bubble; ++iK_bubble) {
         for (int iv1 = 0; iv1 < nFER; ++iv1) {
             for (int iv2 = 0; iv2 < nFER; ++iv2) {
-                const double v1 = Pi.fermionic_grid.get_ws(iv1);
-                const double v2 = Pi.fermionic_grid.get_ws(iv2);
+                const double v1 = Pi.fermionic_grid.get_frequency(iv1);
+                const double v2 = Pi.fermionic_grid.get_frequency(iv2);
                 comp val = Pi.value_on_fermionic_grid(iK_bubble, v1, v2, i_in);
                 pi[iK_bubble * nFER * nFER + iv1 * nFER + iv2] = val;
             }
@@ -89,5 +89,5 @@ void save_PreBubble_in_freq_space(const PrecalculatedBubble<comp>& Pi, const int
     }
     write_h5_rvecs(filename,
                    {"frequencies", "RealBubble", "ImagBubble"},
-                   {Pi.fermionic_grid.get_ws_vec(), pi.real(), pi.imag()});
+                   {Pi.fermionic_grid.get_all_frequencies(), pi.real(), pi.imag()});
 }

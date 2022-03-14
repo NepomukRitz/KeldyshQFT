@@ -77,8 +77,9 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
     double y_ini = exp(Lambda_i);
     double result;
     //ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, rhs_exp, lambda_checkpoints, "", 0, 2000, true);
-
-    boost::numeric::odeint::ode_solver_boost<double, flowgrid::exp_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(), lambda_checkpoints, "", 0, 500, false);
+    ODE_solver_config config;
+    config.maximal_number_of_ODE_steps = 500;
+    boost::numeric::odeint::ode_solver_boost<double, flowgrid::exp_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(),  config, false);
 
 
     double result_exact = exp(Lambda_f);

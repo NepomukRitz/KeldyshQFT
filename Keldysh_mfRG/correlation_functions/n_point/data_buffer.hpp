@@ -47,8 +47,8 @@ public:
 
         std::array<my_index_t,numberFrequencyDims> freq_idx;
         std::array<double,numberFrequencyDims> dw_normalized;
-        if constexpr(inter == linear) base_class::frequencies.fconv(freq_idx, dw_normalized, frequencies);
-        else if constexpr(inter == linear_on_aux) base_class::frequencies.fconv_on_aux(freq_idx, dw_normalized, frequencies);
+        if constexpr(inter == linear) base_class::frequencies.get_grid_index(freq_idx, dw_normalized, frequencies);
+        else if constexpr(inter == linear_on_aux) base_class::frequencies.get_auxgrid_index(freq_idx, dw_normalized, frequencies);
         else assert(false);
 
         for (my_index_t i = 0; i < numberFrequencyDims; i++) {
@@ -446,7 +446,7 @@ public:
 
     void update_grid(double Lambda) {
         frequencyGrid_type frequencies_new = base_class::get_VertexFreqGrid();  // new frequency grid
-        frequencies_new.rescale_grid(Lambda);                     // rescale new frequency grid
+        frequencies_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
         update_grid(frequencies_new, *this);
     }
 
@@ -479,7 +479,7 @@ public:
 
         std::array<my_index_t,numberFrequencyDims> freq_idx;
         std::array<double,numberFrequencyDims> dw_normalized;
-        base_class::frequencies.fconv(freq_idx, dw_normalized, frequencies);
+        base_class::frequencies.get_grid_index(freq_idx, dw_normalized, frequencies);
         for (my_index_t i = 0; i < numberFrequencyDims; i++) {
             idx_low[pos_first_freqpoint+i] = freq_idx[i];
         }

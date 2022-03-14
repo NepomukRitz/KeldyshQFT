@@ -17,6 +17,7 @@
 
 template <typename Q>
 class PrecalculatedBubble{
+    using gridType = typename SelfEnergy<Q>::freqGrid_type::grid_type;
     const Bubble<Q> Helper_Bubble;
 
     void compute_FermionicBubble();
@@ -46,7 +47,7 @@ public:
     const Propagator<Q>& g; // Access needed when computing the full bubble
     const Propagator<Q>& s;
     const bool diff;
-    FrequencyGrid fermionic_grid;
+    gridType fermionic_grid;
     vec<Q> FermionicBubble = vec<Q> (glb_number_of_Keldysh_components_bubble * nFER * nFER * n_in); // 9 non-zero Keldysh components
 
     PrecalculatedBubble(const Propagator<Q>& G_in, const Propagator<Q>& S_in,
@@ -138,8 +139,8 @@ template <typename Q> void PrecalculatedBubble<Q>::compute_FermionicBubble_SIAM(
 }
 
 template <typename Q> void PrecalculatedBubble<Q>::perform_internal_sum(const int iK, const int iv1, const int iv2){
-    double v1 = fermionic_grid.get_ws(iv1);
-    double v2 = fermionic_grid.get_ws(iv2);
+    double v1 = fermionic_grid.get_frequency(iv1);
+    double v2 = fermionic_grid.get_frequency(iv2);
     for (int i_in = 0; i_in < n_in; ++i_in) {
         FermionicBubble[composite_index(get_iK_bubble(iK), iv1, iv2, i_in)] =
                 Helper_Bubble.value(iK, v1, v2, i_in);
@@ -199,8 +200,8 @@ int PrecalculatedBubble<Q>::get_iK_actual(const int iK_bubble) const {
 template<typename Q>
 void PrecalculatedBubble<Q>::perform_internal_sum_2D_Hubbard(const int iK, const int iv1, const int iv2,
                                                              Minimal_2D_FFT_Machine& Swave_Bubble_Calculator) {
-    const double v1 = fermionic_grid.get_ws(iv1);
-    const double v2 = fermionic_grid.get_ws(iv2);
+    const double v1 = fermionic_grid.get_frequency(iv1);
+    const double v2 = fermionic_grid.get_frequency(iv2);
 
     vec<comp> values_of_bubble (n_in);
     compute_internal_bubble(iK, v1, v2, Swave_Bubble_Calculator, values_of_bubble);
