@@ -274,7 +274,7 @@ namespace multidimensional
 
             if constexpr (numberFrequencyDims == 1) {
                 for (int i = 0; i < sample_size; i++) {
-                    auto res = at_vectorized<vecsize>(flat_ini + m_length_cumulative[pos_first_freqpoint]*i);
+                    const auto res = at_vectorized<vecsize>(flat_ini + m_length_cumulative[pos_first_freqpoint]*i);
                     result.col(i) = res;
                 }
             }

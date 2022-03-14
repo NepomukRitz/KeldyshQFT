@@ -5,13 +5,11 @@
 #include "../../symmetries/Keldysh_symmetries.hpp"
 #include "data_container.hpp"
 #include "../interpolations/InterpolatorSpline1D.hpp"
-/*
-template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type, interpolMethod inter>
-class Interpolator {
-    explicit Interpolator(double Lambda) {
-        assert(false);
-    }
-};*/
+
+///  TODO: Profile and improve:
+/// * get_weights()
+/// * get_values()
+/// * handling of frequency-/index-arrays (avoid copies)
 
 template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type, interpolMethod inter>
 class Interpolator : public dataContainer_type {
@@ -234,25 +232,25 @@ public:
             // get weights from frequency Grid
             index_type idx_tmp = indices;
             //index_type vertex_index;
-            weights_type weights = get_weights(frequencies, indices);
+            const weights_type weights = get_weights(frequencies, indices);
             // fetch vertex values
-            values_type values = base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 2>(indices);
+            const values_type values = base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 2>(indices);
             assert(weights.allFinite());
             assert(values.allFinite());
 
             if constexpr(std::is_same_v<result_type, Q>) {
-                Q result = values * weights;
+                const Q result = values * weights;
                 assert(isfinite(result));
                 return result;
             }
             else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){
-                Eigen::Matrix<Q, vecsize,1> result = values * weights;
+                const Eigen::Matrix<Q, vecsize,1> result = values * weights;
                 assert(result.allFinite());
                 return result;
             }
             else {
                 assert(false);
-                result_type result;
+                const result_type result;
                 return result;
             }
 
@@ -413,7 +411,16 @@ public:
 
 
 
-
+/**
+ * Stores and interpolates data
+ * @tparam Q                    type of data
+ * @tparam k                    K_class selfenergy / k1 / k2 / k2b / k3
+ * @tparam rank                 number of dimensions
+ * @tparam numberFrequencyDims  number of frequency indices
+ * @tparam pos_first_freqpoint  position of first frequency index
+ * @tparam frequencyGrid_type   frequency grid
+ * @tparam inter                interpolation method
+ */
 template <typename Q, K_class k, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type, interpolMethod inter,
         typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
 class dataBuffer: public Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>, inter> {
