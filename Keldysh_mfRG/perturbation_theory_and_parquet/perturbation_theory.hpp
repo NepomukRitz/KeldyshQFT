@@ -33,10 +33,10 @@ template <typename Q, class Bubble_Object>
 void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
     std::string channels = "apt";
     for (char r: channels) {
-#if not defined(NDEBUG)
+//#if not defined(NDEBUG)
         print("Computing the vertex in SOPT in channel ", false);
         print_add(r, true);
-#endif
+//#endif
         bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
     }
 }
@@ -82,8 +82,8 @@ void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, 
     bubble_function(PsiVertex, bareState.vertex, bubblevertex_a + bubblevertex_t, Pi, 'p'); // Eye diagram for K2p'
     bubble_function(PsiVertex, bareState.vertex, bubblevertex_a + bubblevertex_p, Pi, 't'); // Eye diagram for K2t'
 #else
-    //bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'a'); // TOPT diagram for K1a // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric solution should be constructed
-    //bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'p'); // TOPT diagram for K1p // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric solution should be constructed
+    //bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'a'); // TOPT diagram for K1a // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
+    //bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'p'); // TOPT diagram for K1p // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
     bubble_function(PsiVertex, SoptPsi.vertex, bareState.vertex, Pi, 't'); // Eye diagram for K2t and TOPT diagram for K1t
     bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'a'); // Eye diagram for K2a
     bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'p'); // Eye diagram for K2p
@@ -108,8 +108,8 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
 
 #ifdef DEBUG_SYMMETRIES
-    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bubblevertex_p + bubblevertex_t, Pi, 'a'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric solution should be constructed
-    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bubblevertex_a + bubblevertex_t, Pi, 'p'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric solution should be constructed
+    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bubblevertex_p + bubblevertex_t, Pi, 'a'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bubblevertex_a + bubblevertex_t, Pi, 'p'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
 #else
     bubble_function(PsiVertex, bubblevertex_p, bubblevertex_p, Pi, 'a');
     bubble_function(PsiVertex, bubblevertex_a, bubblevertex_a, Pi, 'p');
@@ -126,7 +126,7 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
  * @param state        : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
-void sopt_state(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
+void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
     State<Q> bareState (Psi, Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
@@ -163,7 +163,7 @@ void sopt_state(State<Q>& Psi, const double Lambda) {
     print("...done.", true);
 #endif
 
-    sopt_state(Psi, Pi, Lambda);
+    sopt_state_impl(Psi, Pi, Lambda);
 }
 
 
@@ -179,7 +179,7 @@ void topt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> SoptPsi (Psi, Lambda);
     //SoptPsi.initialize();
-    sopt_state(SoptPsi, Pi, Lambda);
+    sopt_state_impl(SoptPsi, Pi, Lambda);
 
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
@@ -202,7 +202,7 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> SoptPsi (Psi, Lambda);
     //SoptPsi.initialize();
-    sopt_state(SoptPsi, Pi, Lambda);
+    sopt_state_impl(SoptPsi, Pi, Lambda);
 
 
     //SoptPsi.findBestFreqGrid(Lambda);

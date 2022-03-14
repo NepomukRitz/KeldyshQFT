@@ -3,7 +3,6 @@
 #include <bits/stdc++.h>
 #include "parameters/master_parameters.hpp"
 #include "symmetries/Keldysh_symmetries.hpp"
-#include <mpi.h>
 #include <omp.h>
 #include "utilities/mpi_setup.hpp"
 #include "mfRG_flow/flow.hpp"
@@ -12,7 +11,9 @@
 #include "utilities/util.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
-
+#ifdef USE_MPI
+#include <mpi.h>
+#endif
 
 std::string generate_filename() {
     std::string klass = "K" + std::to_string(MAX_DIAG_CLASS) + "_";
@@ -45,9 +46,11 @@ std::string generate_filename() {
 
 auto main() -> int {
 
+#ifdef USE_MPI
     if (MPI_FLAG) {
         MPI_Init(nullptr, nullptr);
     }
+#endif
 #ifdef STATIC_FEEDBACK
     assert(MAX_DIAG_CLASS == 1);
 #endif
@@ -65,7 +68,7 @@ auto main() -> int {
     if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
     print("U for this run is: ", glb_U, true);
-    print("temperature T = ", glb_T, true);
+    print("temperature T: ", glb_T, true);
     print("Lambda flows from ", Lambda_ini);
     print_add(" to ", Lambda_fin, true);
     print("nODE for this run: ", nODE, true);
@@ -115,14 +118,17 @@ auto main() -> int {
     //
     //test_PT4(0.5, true);
     //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
+    //test_compare_with_Vienna_code();
     //findBestWscale4K1<state_datatype>(1.8);
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string name = data_dir+filename+job;
-    n_loop_flow(name, true);
-    //test_symmetries(1.8);
+    //n_loop_flow(name,  true);
+    test_symmetries(19.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
+
+
 
     print("Hello world \n");
 #ifdef __linux__
@@ -131,8 +137,10 @@ auto main() -> int {
     print("on apple.\n");
 #endif
 
+#ifdef USE_MPI
     if (MPI_FLAG) {
         MPI_Finalize();
     }
+#endif
     return 0;
 }

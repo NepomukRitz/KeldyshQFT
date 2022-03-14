@@ -13,18 +13,18 @@ void compute_Phi_tilde(const std::string filename) {
         rvec Phi_integrated (Lambdas.size() * n_in);
 
         for (int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
-            State<state_datatype> state = read_hdf(filename, iLambda);
+            State<state_datatype> state = read_state_from_hdf(filename, iLambda);
             state.selfenergy.asymp_val_R = glb_U / 2.;
 
-            double vmin = state.selfenergy.frequencies.w_lower;
-            double vmax = state.selfenergy.frequencies.w_upper;
+            double vmin = state.selfenergy.Sigma.frequencies.b.w_lower;
+            double vmax = state.selfenergy.Sigma.frequencies.b.w_upper;
 
             Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
 
             for (int i_in=0; i_in<n_in; ++i_in) {
 //    #pragma omp parallel for schedule(dynamic) // For some reason, this pragma can become problematic...
                 for (int iv=0; iv<nFER; ++iv) {
-                    double v = state.selfenergy.frequencies.get_ws(iv);
+                    double v = state.selfenergy.Sigma.frequencies.b.get_ws(iv);
                     vs[iLambda * nFER + iv * n_in + i_in] = v;
                     // lhs of Ward identity
                     ImSigma[iLambda * nFER + iv * n_in + i_in] = -2. * myimag(state.selfenergy.val(0, iv, i_in));
@@ -34,11 +34,11 @@ void compute_Phi_tilde(const std::string filename) {
                             = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
                 }
                 // integrate difference of lhs and rhs of Ward identity
-                Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.frequencies, Phi, state.selfenergy,
+                Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.Sigma.frequencies.b, Phi, state.selfenergy,
                                                                         iLambda, i_in);
                 // integrate lhs of Ward identity (for computing relative error): set Phi to zero (empty vector)
                 rvec Phi_0 (Lambdas.size() * nFER * n_in);
-                Integrand_Ward_id_integrated integrandWardIdIntegrated_0 (state.selfenergy.frequencies, Phi_0, state.selfenergy,
+                Integrand_Ward_id_integrated integrandWardIdIntegrated_0 (state.selfenergy.Sigma.frequencies.b, Phi_0, state.selfenergy,
                                                                           iLambda, i_in);
                 // compute relative error
                 Phi_integrated[iLambda * n_in + i_in]
@@ -68,9 +68,9 @@ void sum_rule_K1tK(const std::string filename) {
     rvec sum_rule (nLambda);
 
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {
-        State<state_datatype> state = read_hdf(filename, iLambda);           // read state
+        State<state_datatype> state = read_state_from_hdf(filename, iLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
-        double wmax = state.vertex.tvertex().K1.K1_get_wupper();   // upper integration boundary
+        double wmax = state.vertex.tvertex().K1.frequencies.get_wupper_b();   // upper integration boundary
 
         if (KELDYSH){
             sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
@@ -89,29 +89,44 @@ void check_Kramers_Kronig(const std::string filename) {
     vec<int> iLambdas {}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
     if (nODE == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
     else if (nODE == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
+    using buffer_type_SE = multidimensional::multiarray<comp,3>;
+    using buffer_type = multidimensional::multiarray<comp,4>;
 
     for (int i=0; i<iLambdas.size(); ++i) {
-        State<state_datatype> state = read_hdf(filename, iLambdas[i]);  // read data from file
+        State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
         // check Kramers-Kronig for retarded self-energy
-        rvec vSigma = state.selfenergy.frequencies.get_ws_vec();  // frequency grid points
+        rvec vSigma = state.selfenergy.Sigma.frequencies.b.get_ws_vec();  // frequency grid points
         // get retarded component (first half of stored data points)
-        rvec SigmaR_re = state.selfenergy.Sigma(0, nSE-1).real();  // real part from flow
-        rvec SigmaR_im = state.selfenergy.Sigma(0, nSE-1).imag();  // imaginary part from flow
+        std::array<my_index_t ,3> start_SE = {0, 0, 0};
+        std::array<my_index_t,3> end_SE   = {0,nSE-1, n_in};
+
+        auto SigmaR = state.selfenergy.Sigma.eigen_segment(start_SE, end_SE);
+        vec<comp> SigmaR_vec = vec<comp>(SigmaR.data(), SigmaR.data() + SigmaR.size());
+        rvec SigmaR_re = SigmaR_vec.real();  // real part from flow
+        rvec SigmaR_im = SigmaR_vec.imag();  // imaginary part from flow
         rvec SigmaR_re_KK = KKi2r(vSigma, SigmaR_im, 0);  // compute real part from imaginary part via KK
 
+        std::array<my_index_t,4> start_K1 = {0, 0, 0, 0};
+        std::array<my_index_t,4> end_K1   = {0,0,nBOS-1, n_in_K1};
         // check Kramers-Kronig for retarded component of K1r
         rvec wK1 = state.vertex.avertex().K1.get_VertexFreqGrid().b.get_ws_vec();  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
-        rvec K1aR_re = state.vertex.avertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
-        rvec K1aR_im = state.vertex.avertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
+        auto K1aR = state.vertex.avertex().K1.get_vec().eigen_segment(start_K1, end_K1);
+        vec<comp> K1aR_vec = vec<comp>(K1aR.data(), K1aR.data() + K1aR.size());
+        rvec K1aR_re = K1aR_vec.real();  // real part from flow
+        rvec K1aR_im = K1aR_vec.imag();  // imaginary part from flow
         rvec K1aR_re_KK = KKi2r(wK1, K1aR_im, 0);  // compute real part from imaginary part via KK
         // get retarded component of K1p (first half of stored data points)
-        rvec K1pR_re = state.vertex.pvertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
-        rvec K1pR_im = state.vertex.pvertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
+        auto K1pR = state.vertex.pvertex().K1.get_vec().eigen_segment(start_K1, end_K1);
+        vec<comp> K1pR_vec = vec<comp>(K1pR.data(), K1pR.data() + K1pR.size());
+        rvec K1pR_re = K1pR_vec.real();  // real part from flow
+        rvec K1pR_im = K1pR_vec.imag();  // imaginary part from flow
         rvec K1pR_re_KK = KKi2r(wK1, K1pR_im, 0);  // compute real part from imaginary part via KK
         // get retarded component of K1t (first half of stored data points)
-        rvec K1tR_re = state.vertex.tvertex().K1.get_vec()(0, nw1-1).real();  // real part from flow
-        rvec K1tR_im = state.vertex.tvertex().K1.get_vec()(0, nw1-1).imag();  // imaginary part from flow
+        auto K1tR = state.vertex.tvertex().K1.get_vec().eigen_segment(start_K1, end_K1);
+        vec<comp> K1tR_vec = vec<comp>(K1tR.data(), K1tR.data() + K1tR.size());
+        rvec K1tR_re = K1tR_vec.real();  // real part from flow
+        rvec K1tR_im = K1tR_vec.imag();  // imaginary part from flow
         rvec K1tR_re_KK = KKi2r(wK1, K1tR_im, 0);  // compute real part from imaginary part via KK
 
         // save data to file

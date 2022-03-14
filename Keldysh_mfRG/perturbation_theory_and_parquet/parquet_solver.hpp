@@ -9,6 +9,7 @@
 #include "../utilities/hdf5_routines.hpp"  // read data from HDF5 file
 #include "../bubble/bubble_function.hpp"        // compute bubble function
 #include "../loop/loop.hpp"           // compute loop function
+#include "../postprocessing/causality_FDT_checks.hpp"
 
 /**
  * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
@@ -22,7 +23,7 @@ template <typename Q>
 void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_BSE_R,
                  const State<Q>& state_in, const double Lambda) {
     Vertex<Q> Gamma = state_in.vertex;  // full vertex
-    Vertex<Q> Ir = state_in.vertex;     // irreducible vertex
+    GeneralVertex<Q,symmetric_r_irred> Ir(state_in.vertex.half1());     // irreducible vertex
     Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g'); // full propagator
 
@@ -55,8 +56,8 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
 #ifndef NDEBUG
     State<Q> state_L(Gamma_BSE_L, state_in.selfenergy);
     State<Q> state_R(Gamma_BSE_R, state_in.selfenergy);
-    add_hdf(data_dir + "Parquet_GammaL", Lambda, it_Lambda, state_L); // save input into 0-th layer of hdf5 file
-    add_hdf(data_dir + "Parquet_GammaR", Lambda, it_Lambda, state_R); // save input into 0-th layer of hdf5 file
+    add_state_to_hdf(data_dir + "Parquet_GammaL", it_Lambda, state_L); // save input into 0-th layer of hdf5 file
+    add_state_to_hdf(data_dir + "Parquet_GammaR", it_Lambda, state_R); // save input into 0-th layer of hdf5 file
 #endif
 }
 
@@ -78,39 +79,49 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
     // compute the a bubble with full vertex on the right
-    Vertex<Q> bubble_a_r (Lambda);
+    GeneralVertex<Q,symmetric_r_irred> bubble_a_r (Lambda);
+    bubble_a_r.set_Ir(true);
     bubble_a_r.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_a_r, Gamma_0, state_in.vertex, G, G, 'a', false);  // full vertex on the right
 
     // compute the a bubble with full vertex on the left
-    Vertex<Q> bubble_a_l (Lambda);
+    GeneralVertex<Q,symmetric_r_irred> bubble_a_l (Lambda);
+    bubble_a_l.set_Ir(true);
     bubble_a_l.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_a_l, state_in.vertex, Gamma_0, G, G, 'a', false);  // full vertex on the left
 
-    Vertex<Q> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
+    GeneralVertex<Q,symmetric_r_irred> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
 
     // compute the self-energy via SDE using the a bubble
-    Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
+    Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_a, bubble_a, G, false);
+    print("Check causality of Sigma_SDE_a: \n");
+    check_SE_causality(Sigma_SDE_a);
 
     // compute the p bubble with full vertex on the right
-    Vertex<Q> bubble_p_r (Lambda);
+    GeneralVertex<Q,symmetric_r_irred> bubble_p_r (Lambda);
+    bubble_p_r.set_Ir(true);
     bubble_p_r.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_p_r, Gamma_0, state_in.vertex, G, G, 'p', false);  // full vertex on the right
 
     // compute the p bubble with full vertex on the left
-    Vertex<Q> bubble_p_l (Lambda);
+    GeneralVertex<Q,symmetric_r_irred> bubble_p_l (Lambda);
+    bubble_p_l.set_Ir(true);
     bubble_p_l.set_frequency_grid(state_in.vertex);
     bubble_function(bubble_p_l, state_in.vertex, Gamma_0, G, G, 'p', false);  // full vertex on the left
 
-    Vertex<Q> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
+    GeneralVertex<Q,symmetric_r_irred> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
 
     // compute the self-energy via SDE using the p bubble
-    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric case
+    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_p, bubble_p, G, false);
+    print("Check causality of Sigma_SDE_p: \n");
+    check_SE_causality(Sigma_SDE_p);
 
     // symmetrize the contributions computed via a/p bubble
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
+    print("Check causality of Sigma_SDE: \n");
+    check_SE_causality(Sigma_SDE);
 }
 
 /**
@@ -121,8 +132,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
  */
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
-    SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy.frequencies);
-    SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy.frequencies);
+    SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy.Sigma.frequencies);
+    SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy.Sigma.frequencies);
     compute_SDE(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
 }
 
@@ -161,13 +172,13 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
         Gamma_Gamma0_half1.set_frequency_grid(Gamma);
         bubble_function(Gamma_Gamma0_half1, Gamma, Gamma_0, G, G, r, false);
 
-        // construct non-symmetric vertices out of the two half1 vertices above
-        GeneralVertex<Q, non_symmetric> Gamma0_Gamma (Lambda);
+        // construct non-symmetric_full vertices out of the two half1 vertices above
+        GeneralVertex<Q, non_symmetric_diffleft> Gamma0_Gamma (Lambda);
         Gamma0_Gamma.half1() = Gamma0_Gamma_half1.half1();
         Gamma0_Gamma.half2() = Gamma_Gamma0_half1.half1();
         Gamma0_Gamma.set_only_same_channel(true);  // left/right bubble need to be in the same channel
 
-        GeneralVertex<Q, non_symmetric> Gamma_Gamma0 (Lambda);
+        GeneralVertex<Q, non_symmetric_diffright> Gamma_Gamma0 (Lambda);
         Gamma_Gamma0.half1() = Gamma_Gamma0_half1.half1();
         Gamma_Gamma0.half2() = Gamma0_Gamma_half1.half1();
 
@@ -245,15 +256,15 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     double relative_difference_vertex = 1.;
     double relative_difference_selfenergy = 1.;
 
-    State<Q> state_out (Lambda);   // lhs of the parquet equations
-    State<Q> state_diff (Lambda);  // difference between input and output of the parquet equations
+    State<Q> state_out (state_in, Lambda);   // lhs of the parquet equations
+    State<Q> state_diff (state_in, Lambda);  // difference between input and output of the parquet equations
 
-    write_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
 
 #ifndef NDEBUG
-    write_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
-    write_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_state_to_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
 #endif
 
 
@@ -263,7 +274,7 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         print("iteration ", iteration, true);
         parquet_iteration(state_out, state_in, Lambda, iteration);  // compute lhs of parquet equations
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
-        add_hdf(filename, iteration, state_out, Lambdas);  // store result into file
+        add_state_to_hdf(filename, iteration, state_out);  // store result into file
 
         // compute relative differences between input and output w.r.t. output
         relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();

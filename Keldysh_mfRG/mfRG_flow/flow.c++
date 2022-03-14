@@ -4,7 +4,7 @@
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
  * Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.
  */
-State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_intermediate_results=false){
+State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_intermediate_results=false){
 
     State<state_datatype> state_fin (Lambda_fin), state_ini(Lambda_ini);   // create final and initial state
 
@@ -35,20 +35,20 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
     // initialize the flow with SOPT at Lambda_ini (important!)
     sopt_state(state_ini, Lambda_ini);
 
-    parquet_solver(data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_ini, Lambda_ini);
+    std::string parquet_filename = data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-6, 5);
 
 
     //// better: read state from converged parquet solution
-    //state_ini = read_hdf(data_dir + "parqueInit4_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", 4, 51);
-    //state_ini.selfenergy.asymp_val_R = glb_U / 2.;
+    state_ini = read_state_from_hdf(parquet_filename, 5);
 
 
-    write_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    write_state_to_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
     state_ini.vertex.half1().check_vertex_resolution();
 #ifdef ADAPTIVE_GRID
     state_ini.findBestFreqGrid(true);
     state_ini.vertex.half1().check_vertex_resolution();
-    write_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+    write_state_to_hdf(outputFileName+"_postOpt", Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 #endif
 
     compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, true, nODE + U_NRG.size() + 1);
@@ -82,23 +82,23 @@ State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_in
 State<state_datatype> n_loop_flow(const std::string& inputFileName, const int it_start, bool save_intermediate_results=false) {
     if (it_start < nODE + U_NRG.size() + 1) { // start iteration needs to be within the range of values
 
-        State<state_datatype> state_ini = read_hdf(inputFileName, it_start); // read initial state
+        State<state_datatype> state_ini = read_state_from_hdf(inputFileName, it_start); // read initial state
+        double Lambda_now = state_ini.Lambda;
         State<state_datatype> state_fin (Lambda_fin);
-        if (save_intermediate_results) {
-            write_hdf(inputFileName+"_RKstep1", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-            write_hdf(inputFileName+"_RKstep2", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-            write_hdf(inputFileName+"_RKstep3", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);
-            write_hdf(inputFileName+"_RKstep4", 0*Lambda_ini, nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
-        }
-        state_ini.findBestFreqGrid(true);
-        state_ini.vertex.half1().check_vertex_resolution();
+
+        //state_ini.findBestFreqGrid(true);
+        //state_ini.vertex.half1().check_vertex_resolution();
 
         std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
-        compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, inputFileName, true, nODE + U_NRG.size() + 1);
+        compare_with_FDTs(state_ini.vertex, Lambda_now, 0, inputFileName, true, nODE + U_NRG.size() + 1);
 
         //ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
         //                                                                  Lambda_checkpoints, inputFileName, it_start);
+
+        // construct the flowgrid for ODE solver with non-adaptive step-size
+        // for the adaptive algorithms this only determines the maximal number of ODE steps
+        vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::linear_parametrization::t_from_lambda, flowgrid::linear_parametrization::lambda_from_t, nODE, Lambda_checkpoints);
 
         rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
         ODE_solver_config config;
@@ -111,7 +111,8 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const int it
         return state_fin;
     }
     else {
-        print("Error: Start iteration is too large.", true);
+        std::runtime_error("Error: Start iteration is too large.");
+        return State<state_datatype>();
     }
 }
 

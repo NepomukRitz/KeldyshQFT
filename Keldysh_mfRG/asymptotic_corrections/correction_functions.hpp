@@ -9,7 +9,13 @@
 #include "loop_corrections.hpp"
 #include <cmath>                        // for log function
 
+/// Possible unit-tests:
+/// compare with quadrature routines for (semi-)infinite intervals
+
+
 // TODO(medium) Write a class containing functions for all correction functions to minimize the number of times that many arguments have to be given to functions.
+
+
 
 /**
  * Compute the analytical result for the asymptotic tails of the bubble integral, assuming the self-energy to be decayed
@@ -37,15 +43,15 @@
  * @param channel         : Diagrammatic channel
  * @return                : Value of the asymptotic correction
  */
-template <typename Q,
-          symmetryType symmetry_left,
-          symmetryType symmetry_right>
+template <char channel, typename Q,
+          vertexType symmetry_left,
+          vertexType symmetry_right>
 auto asymp_corrections_bubble(K_class k,
                               const GeneralVertex<Q, symmetry_left>& vertex1,
                               const GeneralVertex<Q, symmetry_right>& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, char channel, bool diff, int spin) -> Q {
+                              double w, double v, double vp, int i0_in, int i2, int i_in, bool diff, int spin) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
@@ -137,40 +143,40 @@ auto asymp_corrections_bubble(K_class k,
     // compute values of left/right vertex
     switch (k) {
         case k1:
-            res_l_V = vertex1.left_same_bare(input_l);
-            res_r_V = vertex2.right_same_bare(input_r);
+            res_l_V = vertex1.template left_same_bare<channel>(input_l);
+            res_r_V = vertex2.template right_same_bare<channel>(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_same_bare(input_l);
-            res_r_Vhat = vertex2.right_same_bare(input_r);
+            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
             break;
         case k2:
-            res_l_V = vertex1.left_diff_bare(input_l);
-            res_r_V = vertex2.right_same_bare(input_r);
+            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+            res_r_V = vertex2.template right_same_bare<channel>(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_diff_bare(input_l);
-            res_r_Vhat = vertex2.right_same_bare(input_r);
+            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
             break;
         case k2b:
-            res_l_V = vertex1.left_same_bare(input_l);
-            res_r_V = vertex2.right_diff_bare(input_r);
+            res_l_V = vertex1.template left_same_bare<channel>(input_l);
+            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_same_bare(input_l);
-            res_r_Vhat = vertex2.right_diff_bare(input_r);
+            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
 
             break;
         case k3:
-            res_l_V = vertex1.left_diff_bare(input_l);
-            res_r_V = vertex2.right_diff_bare(input_r);
+            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
 
             input_l.spin = 1 - spin;
             input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.left_diff_bare(input_l);
-            res_r_Vhat = vertex2.right_diff_bare(input_r);
+            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
             break;
         default:;
     }
@@ -235,8 +241,8 @@ auto asymp_corrections_bubble(K_class k,
  * @param all_spins  : Determines if spin sum in loop is performed.
  * @return
  */
-template <typename Q> // TODO(medium): split up into two functions
-auto asymp_corrections_loop(const Vertex<Q>& vertex,
+template <typename Q, vertexType vertType> // TODO(medium): split up into two functions
+auto asymp_corrections_loop(const GeneralVertex<Q,vertType>& vertex,
                             const Propagator<Q>& G,
                             double vmin, double vmax,
                             double v, int iK, int ispin, int i_in, const bool all_spins) -> Q {

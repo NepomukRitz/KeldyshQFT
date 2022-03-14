@@ -127,6 +127,7 @@ public:
     Q GM_REG4_SIAM_PHS(double v, int i_in) const;
     Q SM_REG4(double v, int i_in) const;
 
+    void initInterpolator() const;
 };
 
 
@@ -364,6 +365,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
         default:
             print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
+            return 0.;
     }
 }
 
@@ -371,8 +373,8 @@ template <typename Q>
 auto Propagator<Q>::norm() const -> double {
     double out = 0.;
     for (int i = 0; i < nPROP; i++) {
-        if (KELDYSH) out += pow(std::abs(GR(selfenergy.frequencies.get_ws(i), 0)), 2.);
-        else         out += pow(std::abs(GM(selfenergy.frequencies.get_ws(i), 0)), 2.);
+        if (KELDYSH) out += pow(std::abs(GR(selfenergy.Sigma.frequencies.b.get_ws(i), 0)), 2.);
+        else         out += pow(std::abs(GM(selfenergy.Sigma.frequencies.b.get_ws(i), 0)), 2.);
     }
     return sqrt(out);
 }
@@ -443,7 +445,8 @@ inline auto Propagator<double>::GR_REG2_Hubbard(const double v, const int i_in) 
 
 template <typename Q>
 auto Propagator<Q>::GR_REG2_SIAM(const double v, const int i_in) const -> Q {
-    return 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+    Q res = 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+    return res;
 }
 
 template <typename Q>
@@ -669,6 +672,12 @@ auto Propagator<Q>::SM_REG4(const double v, const int i_in) const -> Q {
     assert(isfinite(val));
     return val;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+}
+
+template <typename Q>
+void Propagator<Q>::initInterpolator() const {
+    selfenergy.Sigma.initInterpolator();
+    if (type == 'k' or type == 'e') diff_selfenergy.Sigma.initInterpolator();
 }
 
 #endif //KELDYSH_MFRG_PROPAGATOR_HPP

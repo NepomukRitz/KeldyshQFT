@@ -113,7 +113,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i);
+            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -126,7 +126,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies_K1.b.get_ws(i+1) * (1-frac);
+            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -148,7 +148,7 @@ public:
     }
 
     void save_state() {
-        write_hdf("SOPT_state.h5", 1.8, 1, FOPTstate);
+        write_state_to_hdf("SOPT_state.h5", 1.8, 1, FOPTstate);
     }
 
     auto operator() (double vpp) const -> Q {
@@ -191,7 +191,7 @@ namespace {
             for (int i = 0; i<nBOS2; i++) {
                 for (int j = 0; j<nFER2; j++) {
                     double w, v;
-                    K2aexact.vertex.avertex().K2_get_freqs_w(w, v, i, j);
+                    K2aexact.vertex.avertex().frequencies.get_freqs_w(w, v, i, j);
                     Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
                     double vmax = 100.;
                     double Delta = (glb_Gamma+Lambda)/2.;
@@ -203,7 +203,7 @@ namespace {
             }
             print("Finished computing exact result for K2.", true);
 
-            write_hdf("Cost_pick_Wscale_4_K1_K2aexact", Lambda, 1, K2aexact);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_K2aexact", Lambda, 1, K2aexact);
         };
 
         auto operator() (double wscale_test) -> double {
@@ -215,7 +215,7 @@ namespace {
             SOPTstate.vertex.half1().template update_grid<k1>(bfreq, SOPTstate.vertex.half1());
             vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);
 
-            write_hdf("Cost_pick_Wscale_4_K1_SOPTstate", Lambda, 1, SOPTstate);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_SOPTstate", Lambda, 1, SOPTstate);
 
             State<Q> TOPTstate(Lambda);
             // set freqgrid parameter and update TOPTvertex on the new grid
@@ -227,8 +227,8 @@ namespace {
 
 
             State<Q> diff = TOPTstate-K2aexact;
-            write_hdf("Cost_pick_Wscale_4_K1_K2diff", Lambda, 1, diff);
-            write_hdf("Cost_pick_Wscale_4_K1_K2cpp", Lambda, 1, TOPTstate);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_K2diff", Lambda, 1, diff);
+            write_state_to_hdf("Cost_pick_Wscale_4_K1_K2cpp", Lambda, 1, TOPTstate);
             double result = diff.vertex.half1().norm_K2(0);
             print("!!!!!!!! Maximal deviation in K2: ", result, true);
             return result;

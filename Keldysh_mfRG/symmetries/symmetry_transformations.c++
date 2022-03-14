@@ -1,12 +1,12 @@
 #include "symmetry_transformations.hpp"
 
 void switch_channel(IndicesSymmetryTransformations& indices) {
-    switch (indices.channel) {
+    switch (indices.channel_rvert) {
         case 'a':
-            indices.channel = 't';
+            indices.channel_rvert = 't';
             break;
         case 't':
-            indices.channel = 'a';
+            indices.channel_rvert = 'a';
             break;
         default:;
     }
@@ -28,7 +28,7 @@ void T1 (IndicesSymmetryTransformations& indices){
     indices.prefactor *= -1.;
     indices.conjugate ^= false;
 
-    if(indices.channel == 'p'){
+    if(indices.channel_rvert == 'p'){
         indices.w  *= 1.;
         if (MAX_DIAG_CLASS > 1) {
             indices.v1 *= 1.;
@@ -53,7 +53,7 @@ void T1 (IndicesSymmetryTransformations& indices){
 
     if (INTERPOL2D_FOR_K3) {
         if(indices.channel_bubble != 'p'){
-            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
         }
     }
 
@@ -67,7 +67,7 @@ void T2 (IndicesSymmetryTransformations& indices){
     indices.prefactor *= -1.;
     indices.conjugate ^= false;
 
-    if(indices.channel == 'p'){
+    if(indices.channel_rvert == 'p'){
         indices.w  *= 1.;
         if (MAX_DIAG_CLASS > 1) {
             indices.v1 *= -1.;
@@ -97,7 +97,7 @@ void TC (IndicesSymmetryTransformations& indices){
 
     indices.conjugate ^= true;
 
-    if (indices.channel == 't'){ //TC acts differently on t, not on p!!
+    if (indices.channel_rvert == 't'){ //TC acts differently on t, not on p!!
         indices.w  *= -1.;
 //        indices.v1 *= 1.;
 //        indices.v2 *= 1.;
@@ -115,7 +115,7 @@ void TC (IndicesSymmetryTransformations& indices){
 
     if (INTERPOL2D_FOR_K3) {
         if (indices.channel_bubble == 't') {
-            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
         }
     }
 
@@ -129,7 +129,7 @@ void TC (IndicesSymmetryTransformations& indices){
         indices.w *= -1;
         indices.v1 *= -1;
         indices.v2 *= -1;
-        indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+        indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
         if (!ZERO_T){// Matsubara T>0
             double rounding_correction = signFlipCorrection_MF(indices.w);  // correction due to rounding towards Matsubara frequencies
             indices.v1 += rounding_correction;
@@ -153,7 +153,7 @@ void Tph (IndicesSymmetryTransformations& indices){
         }
 
         if (INTERPOL2D_FOR_K3) {
-            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
         }
     }
 }
@@ -163,7 +163,7 @@ void TR (IndicesSymmetryTransformations& indices){
         indices.conjugate ^= true;
         indices.w *= -1;
         if (INTERPOL2D_FOR_K3) {
-            indices.iw = nBOS3 - 1 - indices.iw; // corresponds to "w *= -1"
+            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
         }
         if (MAX_DIAG_CLASS > 1) {
             indices.v1 *= -1;

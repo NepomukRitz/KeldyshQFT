@@ -6,6 +6,7 @@
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include <string>
+#include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
 #define NDEBUG
@@ -24,8 +25,8 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
-//#define SWITCH_SUM_N_INTEGRAL
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+#define SWITCH_SUM_N_INTEGRAL
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
@@ -41,9 +42,9 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 2
 
-constexpr int N_LOOPS = 3;  // Number of loops
+constexpr int N_LOOPS = 1;  // Number of loops
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
@@ -55,7 +56,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 #if not defined(ZERO_TEMP)
 constexpr double glb_T = 0.01; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 0.01;                     // Temperature
+constexpr double glb_T = 0.0;                     // Temperature
 #endif
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
@@ -79,6 +80,7 @@ constexpr int n_spin = 2;
 #else
 constexpr int n_spin = 1;
 #endif
+constexpr int n_spin_expanded = 2;
 
 /// Parameters for Fermi-polaron problem ///
 
@@ -102,7 +104,7 @@ constexpr int glb_N_ff = 1;                                 // Number of form fa
  * Ordered w.r.t. the form factor index. Currently at most 9 form factors are supported.
  *
  * The entries mean the following:
- * 1 : Multiply by one (nothing happens; form factor is symmetric
+ * 1 : Multiply by one (nothing happens; form factor is symmetric_full
  * -1: Multiply by minus one (form factor is antisymmetric)
  * i > 1: Need to access the i'th form factor component instead
  * i < 1: Need to access the |i|'th form factor component instead AND multiply by -1.*/
@@ -161,7 +163,7 @@ constexpr double dLambda_initial = 0.1;             //Initial step size for ODE 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+const std::vector<double> U_NRG {};//0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 #else
 const std::vector<double> U_NRG {};
 #endif
@@ -175,6 +177,8 @@ constexpr int param_size = 8;
 constexpr double parameter_list[param_size] = {REG, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V};
 #endif
+
+
 
 
 /// Set flags used in code; DO NOT TOUCH!!!///
