@@ -1,7 +1,6 @@
 #include "catch.hpp"
 #include "../../data_structures.hpp"
 #include "../../multidimensional/multiarray.hpp"
-#include "../../correlation_functions/four_point/vertex_buffer.hpp"
 #include "../../correlation_functions/four_point/r_vertex.hpp"
 #include "../../symmetries/symmetry_transformations.hpp"
 #include "../../utilities/hdf5_routines.hpp"
