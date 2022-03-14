@@ -5,6 +5,8 @@
 #include "../../symmetries/Keldysh_symmetries.hpp"
 #include "data_container.hpp"
 #include "../interpolations/InterpolatorSpline1D.hpp"
+#include "../interpolations/InterpolatorSpline2D.hpp"
+#include "../interpolations/InterpolatorSpline3D.hpp"
 
 ///  TODO: Profile and improve:
 /// * get_weights()

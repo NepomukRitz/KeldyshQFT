@@ -6,7 +6,6 @@
 #include <cassert>
 #include <cmath>
 #include <vector>
-#include "../correlation_functions/n_point/data_container.hpp"
 
 // not ideal but disable unused-function warnings
 // (we get them because we have implementations in the header file,
