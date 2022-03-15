@@ -290,185 +290,6 @@ auto FrequencyGrid::wscale_from_wmax(double & Wscale, const double w1, const dou
 
 /*******************************************    FREQUENCY GRID    *****************************************************/
 
-#if GRID==1
-/***********************************************    LOG GRID    *******************************************************/
-
-
-double sgn(const double x) {
-    return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
-}
-
-double grid_transf_b(const double w) {
-    return sgn(w) * log(1 + std::abs(w)/w_a) / k_w_b;
-}
-double grid_transf_b_inv(const double W) {
-    return sgn(W) * w_a * (exp(k_w_b*std::abs(W)) - 1);
-}
-double grid_transf_f(const double w) {
-    return sgn(w) * log(1 + std::abs(w)/w_a) / k_w_f;
-}
-double grid_transf_f_inv(const double W) {
-    return sgn(W) * w_a * (exp(k_w_f*std::abs(W)) - 1);
-}
-
-void setUpBosGrid(rvec& freqs, const int nfreqs) {
-    double W;
-    double W_lower_b = grid_transf_b(glb_w_lower);
-    double W_upper_b = grid_transf_b(glb_w_upper);
-
-    // self-energy and K1
-    double spacing_auxiliary_gridpoint = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
-    for(int i=0; i<nfreqs; ++i) {
-        W = W_lower_b + i*spacing_auxiliary_gridpoint;
-        freqs[i] = grid_transf_b_inv(W);
-    }
-}
-
-void setUpFerGrid(rvec& freqs, const int nfreqs) {
-    double W;
-    double W_lower_f = grid_transf_f(glb_v_lower);
-    double W_upper_f = grid_transf_f(glb_v_upper);
-
-    // self-energy and K1
-    double spacing_auxiliary_gridpoint = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
-    for(int i=0; i<nfreqs; ++i) {
-        W = W_lower_f + i*spacing_auxiliary_gridpoint;
-        freqs[i] =  grid_transf_f_inv(W);
-    }
-}
-
-
-auto fconv_bos(const double w, const int nfreqs) -> int {
-    double W = grid_transf_b(w);
-    double dW = 2./((double)(nfreqs-1.));
-    W = (W + 1.)/dW;
-    auto index = (int)W;
-    return index;
-}
-auto fconv_fer(const double w, const int nfreqs) -> int {
-    double W = grid_transf_f(w);
-    double dW = 2./((double)(nfreqs-1.));
-    W = (W + 1.)/dW;
-    auto index = (int)W;
-    return index;
-}
-
-#elif GRID==2
-/*********************************************    LINEAR GRID    ******************************************************/
-
-void setUpBosGrid(rvec& freqs, const int nfreqs)
-{
-    double dw = (glb_w_upper-glb_w_lower)/((double)(nfreqs-1));
-    for(int i=0; i<nfreqs; ++i)
-        freqs[i] = glb_w_lower + i*dw;
-}
-void setUpFerGrid(rvec& freqs, const int nfreqs)
-{
-    double dv = (glb_v_upper-glb_v_lower)/((double)(nfreqs-1));
-    for(int i=0; i<nfreqs; ++i)
-        freqs[i] = glb_v_lower + i*dv;
-}
-
-
-auto fconv_bos(const double w, const int nfreqs) -> int
-{
-    double dw = (glb_w_upper-glb_w_lower)/((double)(nfreqs-1));
-    return (int)((w-glb_w_lower)/dw);
-}
-auto fconv_fer(const double v, const int nfreqs) -> int
-{
-    double dv = (glb_v_upper-glb_v_lower)/((double)(nfreqs-1));
-    return (int)((v-glb_v_lower)/dv);
-}
-
-
-/*
-// only need these functions when using different grids for a,p,t
-
-#include <tuple>   // return several indices
-
-auto fconv_K1_a(double w) -> int
-{
-//    auto index = (int)((w-glb_w_lower)/dw);
-//    return index -(int)(index/nw1_a);
-    return fconv_bos(w);
-}
-auto fconv_K2_a(double w, double v1) -> tuple<int, int>
-{
-//    auto index_b = (int)((w-glb_w_lower)/dw);
-//    auto index_f = (int)((v1-glb_v_lower)/dv);
-//
-//    return make_tuple(index_b-(int)(index_b/nw2_a), index_f-(int)(index_f/nv2_a));
-    return make_tuple(fconv_bos(w), fconv_fer(v1));
-}
-auto fconv_K3_a(double w, double v1, double v2) -> tuple<int, int, int>
-{
-//    auto index_b = (int)((w-glb_w_lower)/dw);
-//    auto index_f = (int)((v1-glb_v_lower)/dv);
-//    auto index_fp = (int)((v2-glb_v_lower)/dv);
-//
-//    return make_tuple(index_b-(int)(index_b/nw3_a), index_f-(int)(index_f/nv3_a), index_fp-(int)(index_fp/nv3_a));
-    return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
-}
-
-auto fconv_K1_p(double w) -> int
-{
-//    auto index = (int)((w-glb_w_lower)/dw);
-//    return index - (int)(index/nw1_p);
-    return fconv_bos(w);
-}
-auto fconv_K2_p(double w, double v1) -> tuple<int, int>
-{
-//    auto index_b = (int)((w-glb_w_lower)/dw);
-//    auto index_f = (int)((v1-glb_v_lower)/dv);
-//
-//    return make_tuple(index_b-(int)(index_b/nw2_p), index_f-(int)(index_f/nv2_p));
-    return make_tuple(fconv_bos(w), fconv_fer(v1));
-}
-auto fconv_K3_p(double w, double v1, double v2) -> tuple<int, int, int>
-{
-//    auto index_b = (int)((w-glb_w_lower)/dw);
-//    auto index_f = (int)((v1-glb_v_lower)/dv);
-//    auto index_fp = (int)((v2-glb_v_lower)/dv);
-//
-//    return make_tuple(index_b-(int)(index_b/nw3_p), index_f-(int)(index_f/nv3_p), index_fp-(int)(index_fp/nv3_p));
-    return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
-
-}
-
-auto fconv_K1_t(double w) -> int
-{
-//    auto index = (int)((w-glb_w_lower)/dw);
-//    return index - (int)(index/nw1_t);
-    return fconv_bos(w);
-
-}
-auto fconv_K2_t(double w, double v1) -> tuple<int, int>
-{
-//    auto index_b = (int)((w-glb_w_lower)/dw);
-//    auto index_f = (int)((v1-glb_v_lower)/dv);
-//
-//    return make_tuple(index_b-(int)(index_b/nw2_t), index_f-(int)(index_f/nv2_t));
-    return make_tuple(fconv_bos(w), fconv_fer(v1));
-}
-auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>
-{
-//    auto index_b = (int)((w-glb_w_lower)/dw);
-//    auto index_f = (int)((v1-glb_v_lower)/dv);
-//    auto index_fp = (int)((v2-glb_v_lower)/dv);
-//
-//    return make_tuple(index_b-(int)(index_b/nw3_t), index_f-(int)(index_f/nv3_t), index_fp-(int)(index_fp/nv3_t));
-    return make_tuple(fconv_bos(w), fconv_fer(v1), fconv_fer(v2));
-}
-
-*/
-
-#elif GRID==3
-/*******************************************    NON-LINEAR GRID    ****************************************************/
-
-double sgn(const double x) {
-    return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
-}
 
 /**
  * Here are several functions which map the real axis to the compact interval [-1,1]
@@ -588,84 +409,6 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
 
 
 
-//void setUpBosGrid(rvec& freqs, int nfreqs) {
-//    double W;
-//    double W_lower_b = t_from_frequency(glb_w_lower);
-//    double W_upper_b = t_from_frequency(glb_w_upper);
-//    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
-//    for(int i=0; i<nfreqs; ++i) {
-//        W = W_lower_b + i*dW;
-//        freqs[i] = frequency_from_t(W);
-//    }
-//}
-//void setUpFerGrid(rvec& freqs, int nfreqs) {
-//    double W;
-//    double W_lower_f = t_from_frequency(glb_v_lower);
-//    double W_upper_f = t_from_frequency(glb_v_upper);
-//    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
-//    for(int i=0; i<nfreqs; ++i) {
-//        W = W_lower_f + i*dW;
-//        freqs[i] =  frequency_from_t(W);
-//    }
-//}
-//
-//
-//auto fconv_bos(double w, int nfreqs) -> int {
-//    double W = t_from_frequency(w);
-//    double W_lower_b = t_from_frequency(glb_w_lower);
-//    double W_upper_b = t_from_frequency(glb_w_upper);
-//    double dW = (W_upper_b-W_lower_b)/((double)(nfreqs-1.));
-//    W = (W-W_lower_b)/dW;
-//    auto index = (int)W;
-//    return index;
-//}
-//auto fconv_fer(double w, int nfreqs) -> int {
-//    double W = t_from_frequency(w);
-//    double W_lower_f = t_from_frequency(glb_v_lower);
-//    double W_upper_f = t_from_frequency(glb_v_upper);
-//    double dW = (W_upper_f-W_lower_f)/((double)(nfreqs-1.));
-//    W = (W-W_lower_f)/dW;
-//    auto index = (int)W;
-//    return index;
-//}
-
-#elif GRID==4
-/*********************************************    TAN GRID    ******************************************************/
-
-// grid formula is v = a/c * tan( (i-N/2)/(N/2) * c )
-// and             i = arctan(v*c/a) * (N/2)/c + N/2
-// we have         dv_at_zero = a / (N/2)
-// and define      Nh_dev_lin = (N/2) / c, note that ( c = dev_from_lin )
-// such that       v = dv_at_zero * Nh_dev_lin * tan( (i-N/2) / Nh_dev_lin ) )
-// and             i = arctan(v/(dev_at_zero*Nh_dev_lin)) * Nh_dev_lin + N/2
-
-//const double Nh_dev_lin_b = (double)(nBOS/2) / dev_from_lin_b;
-//const double Nh_dev_lin_f = (double)(nFER/2) / dev_from_lin_f;
-
-void setUpBosGrid(rvec& freqs, const int nfreqs) {
-    const double Nh_dev_lin_b = (double)(nfreqs/2) / dev_from_lin_b;
-    for(int i=0; i<nfreqs; ++i)
-        freqs[i] = dw_at_zero_b * Nh_dev_lin_b * tan( (double)(i - nfreqs/2) / Nh_dev_lin_b);
-}
-void setUpFerGrid(rvec& freqs, const int nfreqs) {
-    const double Nh_dev_lin_f = (double)(nfreqs/2) / dev_from_lin_f;
-    for(int i=0; i<nfreqs; ++i)
-        freqs[i] = dw_at_zero_f * Nh_dev_lin_f * tan( (double)(i - nfreqs/2) / Nh_dev_lin_f);
-}
-auto fconv_bos(const double w, const int nfreqs) -> int {
-    const double Nh_dev_lin_b = (double)(nfreqs/2) / dev_from_lin_b;
-    return (int) ( atan( w/(dw_at_zero_b*Nh_dev_lin_b) ) * Nh_dev_lin_b + (double)(nfreqs/2) );
-}
-auto fconv_fer(const double v, const int nfreqs) -> int {
-    const double Nh_dev_lin_f = (double)(nfreqs/2) / dev_from_lin_f;
-    return (int) ( atan( v/(dw_at_zero_f*Nh_dev_lin_f) ) * Nh_dev_lin_f + (double)(nfreqs/2) );
-}
-// note: value must be positive before flooring via (int) so that interpolation works correectly
-
-#endif
-
-
-
 
 
 /*******************************************    HYBRID GRID    *****************************************************/
@@ -690,16 +433,16 @@ void hybridGrid::guess_essential_parameters(const double Lambda) {
         case 1:
             if (type == 'b') {
                 number_of_gridpoints = nBOS;
-                pos_section_boundaries[0] = Delta;
-                pos_section_boundaries[1] = 5.*Delta;
-                w_upper = 15.*Delta;
+                pos_section_boundaries[0] = 20.*Delta;
+                pos_section_boundaries[1] = 30.*Delta;
+                w_upper = 40.*15.*Delta;
             }
             else {
                 assert(type == 'f');
                 number_of_gridpoints = nFER;
-                pos_section_boundaries[0] = 0.;
-                pos_section_boundaries[1] = 20.*Delta;
-                w_upper = 200.*Delta;
+                pos_section_boundaries[0] = 10.;
+                pos_section_boundaries[1] = 50.*Delta;
+                w_upper = 40.*15.*Delta;
             }
             break;
         case 2:
@@ -707,14 +450,14 @@ void hybridGrid::guess_essential_parameters(const double Lambda) {
                 number_of_gridpoints = nBOS2;
                 pos_section_boundaries[0] = Delta;
                 pos_section_boundaries[1] = 3.*Delta;
-                w_upper = 30.*Delta;
+                w_upper = 40.*15.*Delta;
             }
             else {
                 assert(type == 'f');
                 number_of_gridpoints = nFER2;
                 pos_section_boundaries[0] = Delta;
                 pos_section_boundaries[1] = 3.*Delta;
-                w_upper = 30.*Delta;
+                w_upper = 20.*15.*Delta;
             }
             break;
         case 3:
@@ -722,14 +465,14 @@ void hybridGrid::guess_essential_parameters(const double Lambda) {
                 number_of_gridpoints = nBOS3;
                 pos_section_boundaries[0] = Delta;
                 pos_section_boundaries[1] = 3.*Delta;
-                w_upper = 30.*Delta;
+                w_upper = 30.*15.*Delta;
             }
             else {
                 assert(type == 'f');
                 number_of_gridpoints = nFER3;
                 pos_section_boundaries[0] = Delta;
                 pos_section_boundaries[1] = 3.*Delta;
-                w_upper = 30.*Delta;
+                w_upper = 15*15.*Delta;
             }
             break;
         default:
@@ -815,6 +558,10 @@ int hybridGrid::get_grid_index(const double frequency)const {
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
 #endif
+    assert(all_frequencies[index] <= frequency);
+    assert(all_frequencies[index+1] >= frequency);
+    assert(auxiliary_grid[index] <= t);
+    assert(auxiliary_grid[index+1] >= t);
     return index;
 }
 
@@ -827,5 +574,9 @@ int hybridGrid::get_grid_index(double& t, const double frequency) const{
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
 #endif
+    assert(all_frequencies[index] <= frequency);
+    assert(all_frequencies[index+1] >= frequency);
+    assert(auxiliary_grid[index] <= t);
+    assert(auxiliary_grid[index+1] >= t);
     return index;
 }

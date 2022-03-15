@@ -17,6 +17,11 @@ auto heaviside (const double x) -> double {
     }
 }
 
+
+double sgn(const double x) {
+    return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
+}
+
 auto round2Infty(double x) -> double {
     const double tol = 1e-10;
     // trunc() rounds towards zero
@@ -172,3 +177,4 @@ void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function be
     v = v_tmp;
 #endif
 }
+

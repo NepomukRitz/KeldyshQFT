@@ -20,23 +20,23 @@ public:
         //FOPTstate = State<Q>(Lambda);
         FOPTstate.initialize();             // initialize state
 
-        fopt_state(FOPTstate, Lambda);
+        topt_state(FOPTstate, Lambda);
         FOPTstate.vertex.half1().initializeInterpol();
     }
 
     void save_integrand(double vmax) {
         int npoints = 1e5;
         /// K1:
-        FrequencyGrid bfreqs('b', 1, Lambda);
+        typename rvert<Q>::freqGrid_type_K1::grid_type bfreqs = FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().get_freqGrid_b();
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         rvec integrand_diff_re (npoints);
         rvec integrand_diff_im (npoints);
-        double spacing = 2. / (double)npoints;
-        for (int i=1; i<npoints-1; ++i) {
-            double vpp = bfreqs.frequency_from_t(-1 + i * spacing);
+        double spacing = 2. / (double)(npoints-1);
+        for (int i=0; i<npoints; ++i) {
+            double vpp = bfreqs.frequency_from_t(-1. + i * spacing);
             IndicesSymmetryTransformations indices (0, 0, vpp, 0, 0., 0, 'a', k1, 0,'a');
             Q integrand_value = FOPTstate.vertex.half1().avertex.K1.interpolate(indices);
             freqs[i] = vpp;

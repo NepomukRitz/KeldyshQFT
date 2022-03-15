@@ -17,10 +17,15 @@ constexpr Q my_integer_pow(const Q i) {
 }
 
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
+// gives -1 for x < 0
+//        0 for x = 0
+//        1 for x > 0
 template <typename T>
-auto sign(T x) -> double {
+auto sign(T x) -> double {              /// TODO: Which implementation is more efficient? This one or the one below? (with ternary operators)
     return (T(0) < x) - (x < T(0));
 }
+
+double sgn(double x);
 
 // Heaviside-Theta function for sharp regulator
 auto heaviside (const double x) -> double;

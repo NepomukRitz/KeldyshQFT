@@ -4,6 +4,7 @@
 #include <cmath>             // exp, tanh
 
 #include "../../data_structures.hpp" // real/complex vector classes, imag. unit
+#include "../../utilities/math_utils.hpp"
 #include "selfenergy.hpp"      // self-energy class
 #include "../../parameters/master_parameters.hpp"      // system parameters (lengths of vectors etc.)
 #include "../../grids/momentum_grid.hpp"   // momentum grid and FFT machinery for the 2D Hubbard model

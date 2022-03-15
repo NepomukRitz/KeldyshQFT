@@ -272,7 +272,7 @@ if (INTERPOLATION == cubic) {
     vec<double> errors(N);
     double w_limit = avertex.K1.frequencies.b.t_upper;
     double inter = 2.*w_limit / double(N - 1);
-    for (int iw = 1; iw < N - 1; iw++) {
+    for (int iw = 0; iw < N ; iw++) {
         indices.w = avertex.K1.frequencies.b.frequency_from_t(-w_limit + iw * inter);
 
         values[iw] = avertex.K1.interpolate(indices); ///TODO: Does not always return a double!!
