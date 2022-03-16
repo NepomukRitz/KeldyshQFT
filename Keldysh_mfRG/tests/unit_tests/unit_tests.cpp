@@ -17,6 +17,7 @@
 #include "../test_perturbation_theory.hpp"
 #include "../../perturbation_theory_and_parquet/perturbation_theory.hpp"
 #include "../../perturbation_theory_and_parquet/hartree_term.hpp"
+#include "mpi.h"
 
 
 #ifdef INTEGRATION_TESTS

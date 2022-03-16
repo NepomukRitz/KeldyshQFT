@@ -81,7 +81,7 @@ void Hartree_Solver::write_out_propagators() const {
     rvec GR_imag = {};
     rvec GK_real = {};
     rvec GK_imag = {};
-    rvec freqs = G.selfenergy.frequencies.get_ws_vec();
+    rvec freqs = G.selfenergy.Sigma.frequencies.b.get_ws_vec();
     for (double nu : freqs) {
         GR_real.push_back(G.GR(nu, 0).real());
         GR_imag.push_back(G.GR(nu, 0).imag());

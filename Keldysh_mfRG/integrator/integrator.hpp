@@ -48,7 +48,7 @@ auto integrator_gsl_qagil_helper(gsl_function& F, double a, int Nmax) -> double;
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 template <typename Q, typename Integrand> auto integrator_gsl_qag_tails(Integrand& integrand, double a, double b, int Nmax) -> Q {
-    if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+    if constexpr (std::is_same<Q,comp>::value){
 
         gsl_function F_real;
         gsl_function F_imag;
@@ -88,7 +88,7 @@ template <typename Q, typename Integrand> auto integrator_gsl_qag_tails(Integran
 
 /* Integration using routines from the GSL library (many different routines available, would need more testing) */
 template <typename Q, typename Integrand> auto integrator_gsl_qag_v2(Integrand& integrand, double a, double b, int Nmax, const bool isinf) -> Q {
-    if constexpr (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
+    if constexpr (std::is_same<Q,comp>::value){
 
         gsl_function F_real;
         gsl_function F_imag;
