@@ -28,7 +28,7 @@ namespace saveIntegrand {
 
     rvec get_freqs_equidistant_aux(const size_t nfreqs, const double tmin, const double tmax, FrequencyGrid& frequencyGrid);
 
-    template <typename Q, symmetryType symmetry_left, symmetryType symmetry_right, class Bubble_Object>
+    template <typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
     void saveIntegrandBubble(const std::string& filename_prefix, GeneralVertex<Q, symmetry_left>& vertex1, GeneralVertex<Q, symmetry_right>& vertex2,
                        const Bubble_Object& Pi, const bool diff, const rvec& freqs, const K_class k_class, const char channel,
                        const int i0, const int i2, const int spin, const double w, const double v, const double vp, const int i_in) {
@@ -37,22 +37,55 @@ namespace saveIntegrand {
         vertex2.initializeInterpol();
         switch (k_class) {
             case k1: {
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0, k1);
-                integrandK1.save_integrand(freqs, filename_prefix);
+                if (channel == 'a') {
+                    Integrand<k1, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    integrandK1.save_integrand(freqs, filename_prefix);
+                }
+                else if (channel == 'p') {
+                    Integrand<k1, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    integrandK1.save_integrand(freqs, filename_prefix);
+                }
+                else if (channel == 't') {
+                    Integrand<k1, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    integrandK1.save_integrand(freqs, filename_prefix);
+                }
                 break;
             }
             case k2: {
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0, k2);
-                integrandK2.save_integrand(freqs, filename_prefix);
+                if (channel == 'a') {
+                    Integrand<k2, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    integrandK2.save_integrand(freqs, filename_prefix);
+
+                }
+                else if (channel == 'p') {
+                    Integrand<k2, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    integrandK2.save_integrand(freqs, filename_prefix);
+
+                }
+                else if (channel == 't') {
+                    Integrand<k2, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    integrandK2.save_integrand(freqs, filename_prefix);
+
+                }
                 break;
             }
             case k3: {
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0, k3);
-                integrandK3.save_integrand(freqs, filename_prefix);
+                if (channel == 'a') {
+                    Integrand<k3, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    integrandK3.save_integrand(freqs, filename_prefix);
+
+                }
+                else if (channel == 'p') {
+                    Integrand<k3, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    integrandK3.save_integrand(freqs, filename_prefix);
+                }
+                else if (channel == 't') {
+                    Integrand<k3, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    integrandK3.save_integrand(freqs, filename_prefix);
+                }
                 break;
             }
             default:
-                Integrand<Q, symmetry_left, symmetry_right, Bubble_Object> integrand(vertex1, vertex2, Pi, i0, i2, 0, spin, w, 0., 0., i_in, channel, diff, 0, k1);
                 assert(false);
         }
 
@@ -69,9 +102,9 @@ namespace saveIntegrand {
 
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
+        State<Q> Psi = read_state_from_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
+        State<Q>dPsi = read_state_from_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -82,7 +115,7 @@ namespace saveIntegrand {
         const bool diff = true;
         Bubble<Q> dPi(G, dG, diff);
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -95,7 +128,7 @@ namespace saveIntegrand {
 
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
+        State<Q> Psi = read_state_from_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
 
         State<Q>dPsi = Psi; // copy Psi
@@ -113,7 +146,7 @@ namespace saveIntegrand {
         const bool diff = true;
         Bubble<Q> dPi(G, dG, diff);
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -123,9 +156,9 @@ namespace saveIntegrand {
                 const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
                 const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi,  it_Lambda); // read Psi
+        State<Q> Psi = read_state_from_hdf(file_Psi,  it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
+        State<Q>dPsi = read_state_from_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -137,7 +170,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
         saveIntegrandBubble(filename_prefix, dPsi.vertex, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -149,9 +182,9 @@ namespace saveIntegrand {
         /// TODO: Sanity check for input parameters
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi,it_Lambda); // read Psi
+        State<Q> Psi = read_state_from_hdf(file_Psi,it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
+        State<Q>dPsi = read_state_from_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -163,7 +196,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, dPsi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -174,15 +207,15 @@ namespace saveIntegrand {
                 const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
                 const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, 0); // read Psi
+        State<Q> Psi = read_state_from_hdf(file_Psi, 0); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi_L= read_hdf(file_dGammaL,it_Lambda); // read Psi
-        State<Q>dPsi_R= read_hdf(file_dGammaR,it_Lambda); // read Psi
+        State<Q>dPsi_L= read_state_from_hdf(file_dGammaL,it_Lambda); // read Psi
+        State<Q>dPsi_R= read_state_from_hdf(file_dGammaR,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
-        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<Q, non_symmetric> dGammaR (n_spin, Lambda);
+        // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+        GeneralVertex<Q, non_symmetric_diffright> dGammaR (n_spin, Lambda);
         dGammaR[0].half1() = dPsi_R.vertex[0].half1();  // assign half 1
         dGammaR[0].half2() = dPsi_L.vertex[0].half1();  // assign half 2 as half 1 of dGammaL
 
@@ -196,7 +229,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dGammaR.set_only_same_channel(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
         saveIntegrandBubble(filename_prefix, dGammaR, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -206,15 +239,15 @@ namespace saveIntegrand {
         const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
         const double v, const double vp, const int i_in) {
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
+        State<Q> Psi = read_state_from_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi_L= read_hdf(file_dGammaL,it_Lambda); // read Psi
-        State<Q>dPsi_R= read_hdf(file_dGammaR,it_Lambda); // read Psi
+        State<Q>dPsi_L= read_state_from_hdf(file_dGammaL,it_Lambda); // read Psi
+        State<Q>dPsi_R= read_state_from_hdf(file_dGammaR,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
-        // create non-symmetric vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<Q, non_symmetric> dGammaL (n_spin, Lambda);
+        // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
+        GeneralVertex<Q, non_symmetric_diffleft> dGammaL (n_spin, Lambda);
         dGammaL[0].half1() = dPsi_L.vertex[0].half1();  // assign half 1
         dGammaL[0].half2() = dPsi_R.vertex[0].half1();  // assign half 2 as half 1 of dGammaL
 
@@ -228,7 +261,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dGammaL.set_only_same_channel(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, dGammaL, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -239,9 +272,9 @@ namespace saveIntegrand {
                       const int i2, const double v, const int i_in) {
 
         // read Psi for vertex
-        State<Q> Psi = read_hdf(file_Psi, it_Lambda); // read Psi
+        State<Q> Psi = read_state_from_hdf(file_Psi, it_Lambda); // read Psi
         // read dPsi for differentiated selfenergy
-        State<Q>dPsi = read_hdf(file_dPsi,it_Lambda); // read Psi
+        State<Q>dPsi = read_state_from_hdf(file_dPsi,it_Lambda); // read Psi
 
         double Lambda = Psi.Lambda;
 
@@ -253,11 +286,11 @@ namespace saveIntegrand {
         const bool all_spins = true;
 
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.frequencies.w_lower, Psi.selfenergy.frequencies.w_upper);
-        IntegrandSE<Q> integrandR = IntegrandSE<Q> ('r', Psi.vertex, S, v, i_in, all_spins);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        IntegrandSE<Q,symmetric_full> integrandR = IntegrandSE<Q,symmetric_full> ('r', Psi.vertex, S, v, i_in, all_spins);
         integrandR.save_integrand(freqs);
         if (KELDYSH) {
-            IntegrandSE<Q> integrandK = IntegrandSE<Q>('k', Psi.vertex, S, v, i_in, all_spins);
+            IntegrandSE<Q,symmetric_full> integrandK = IntegrandSE<Q,symmetric_full>('k', Psi.vertex, S, v, i_in, all_spins);
             integrandK.save_integrand(freqs);
         }
     }

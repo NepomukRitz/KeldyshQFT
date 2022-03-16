@@ -6,42 +6,36 @@
 
 #include <vector>     // standard std::vector
 #include <algorithm>  // for find function in isInList
+#include "../data_structures.hpp"
 #include "../utilities/util.hpp"     // printing text output
 #include "../grids/frequency_grid.hpp"
 
 /// Keldysh index parameters ///
-#ifdef KELDYSH_FORMALISM
-#ifndef DEBUG_SYMMETRIES
-// Number of independent Keldysh components for the respective diagrammatic class
-const int nK_SE = 2;
-const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-                            // for channel p components 1 and 5
-const int nK_K2 = 5;        // For channels a, p and t -channel separately
-const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-                            // (independent components in order of appearance)
-#else // DEBUG_SYMMETRIES
-const int nK_SE = 2;
-const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-                            // for channel p components 1 and 5
-const int nK_K2 = 16;       // For channels a, p and t -channel separately
-const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-                            // (independent components in order of appearance)
-#endif // DEBUG_SYMMETRIES
-#else // KELDYSH_FORMALISM
-const int nK_SE = 1;
-const int nK_K1 = 1;
-const int nK_K2 = 1;
-const int nK_K3 = 1;
-#endif // KELDYSH_FORMALISM
 
-constexpr std::array<size_t,3> dimsSE = std::array<size_t,3>({nK_SE, nFER, n_in_K1});
-constexpr std::array<size_t,4> dimsK1 = std::array<size_t,4>({nK_K1, n_spin, nBOS, n_in_K1});
-constexpr std::array<size_t,5> dimsK2 = std::array<size_t,5>({nK_K2, n_spin, nBOS2, nFER2, n_in_K2});
-constexpr std::array<size_t,6> dimsK3 = std::array<size_t,6>({nK_K3, n_spin, nBOS3, nFER3, nFER3, n_in_K3});
-constexpr size_t dimsSE_flat = getFlatSize(dimsSE);
-constexpr size_t dimsK1_flat = getFlatSize(dimsK1);
-constexpr size_t dimsK2_flat = getFlatSize(dimsK2);
-constexpr size_t dimsK3_flat = getFlatSize(dimsK3);
+template <std::size_t _rank>
+struct buffer_config {
+    using index_type = std::array<my_index_t, _rank>;
+    using dimensions_type = std::array<my_index_t, _rank>;
+
+    dimensions_type dims;
+    const std::size_t dims_flat = getFlatSize(dims);
+    const size_t rank = _rank;
+
+    my_index_t num_freqs;
+    my_index_t position_first_freq_index;
+};
+
+constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ nK_SE, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1_config{.dims = std::array<size_t,4>({n_spin, nBOS, nK_K1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<5> K2_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, nK_K2, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, nK_K3, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+
+constexpr buffer_config<3> SE_expanded_config{.dims = std::array<size_t,3>({ KELDYSH ?  4 : 1, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1_expanded_config{.dims = std::array<size_t,4>({1, nBOS, KELDYSH ?  16 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<5> K2_expanded_config{.dims = std::array<size_t,5>({1, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<6> K3_expanded_config{.dims = std::array<size_t,6>({1, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+
+constexpr unsigned int pos_first_freq = 1;  // position of first frequency index
 
 #ifdef KELDYSH_FORMALISM
 // Vector of indices of the non-zero Keldysh components of the bubbles
@@ -92,6 +86,76 @@ auto convertToIndepIndex(int iK) -> int;
 
 // This function returns the values of the 4 alphas for a given index in the 0...15 set
 auto alphas(int index) -> std::vector<int>;
+
+
+
+template<char channel_bubble> void get_i0_left_right(const my_index_t iK, my_index_t& i0_left, my_index_t& i0_right)  {
+    constexpr std::array<my_index_t, 4> Keldysh4pointdims = {2,2,2,2};
+    std::array<my_index_t ,4> alpha;
+    getMultIndex(alpha, iK, Keldysh4pointdims);
+
+    if constexpr(channel_bubble == 'a') {
+        i0_left = alpha[0]*2 + alpha[3];
+        i0_right= alpha[2]*2 + alpha[1];
+    }
+    else if constexpr(channel_bubble == 'p') {
+        i0_left = alpha[0]*2 + alpha[1];
+        i0_right= alpha[2]*2 + alpha[3];
+    }
+    else {
+        static_assert(channel_bubble=='t', "Please use a, p or t for the channels.");
+        i0_left = alpha[1]*2 + alpha[3];
+        i0_right= alpha[2]*2 + alpha[0];
+    }
+}
+
+
+template<char channel_bubble, bool is_left_vertex> auto rotate_to_matrix(const my_index_t iK) -> my_index_t {
+    constexpr std::array<my_index_t, 4> Keldysh4pointdims = {2,2,2,2};
+    std::array<my_index_t ,4> alpha;
+    getMultIndex(alpha, iK, Keldysh4pointdims);
+
+    my_index_t i0_left, i0_right;
+    if constexpr(channel_bubble == 'a') {
+
+        if constexpr(is_left_vertex) {
+            i0_left  = alpha[0] * 2 + alpha[3];
+            i0_right = alpha[2] * 2 + alpha[1];
+        }
+        else {
+            i0_left  = alpha[2] * 2 + alpha[1];
+            i0_right = alpha[0] * 2 + alpha[3];
+        }
+    }
+    else if constexpr(channel_bubble == 'p') {
+        if constexpr(is_left_vertex) {
+            i0_left = alpha[0]*2 + alpha[1];
+            i0_right= alpha[2]*2 + alpha[3];
+        }
+        else {
+            i0_left = alpha[2]*2 + alpha[3];
+            i0_right= alpha[0]*2 + alpha[1];
+
+        }
+    }
+    else {
+        static_assert(channel_bubble=='t', "Please use a, p or t for the channels.");
+
+        if constexpr(is_left_vertex) {
+            i0_left  = alpha[3] * 2 + alpha[0];
+            i0_right = alpha[2] * 2 + alpha[1];
+        }
+        else {
+            i0_left  = alpha[1] * 2 + alpha[2];
+            i0_right = alpha[0] * 2 + alpha[3];
+
+        }
+    }
+
+    const my_index_t iK_read = i0_left * 4 + i0_right;
+    assert(iK_read < 16);
+    return iK_read;
+}
 
 /**
  * Function that returns, for an input i0, i2 in 0...15, the two Keldysh indices of the left [0] and right [1] vertices

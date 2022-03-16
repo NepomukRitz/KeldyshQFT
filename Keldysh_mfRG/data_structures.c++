@@ -12,9 +12,9 @@ std::ostream& operator << (std::ostream& out, K_class k) {
     return out;
 }
 
-std::ostream& operator << (std::ostream& out, symmetryType symmtype) {
-    if (symmtype == symmetric) {out << "symmetric";}
-    else {out << "non-symmetric" ;}
+std::ostream& operator << (std::ostream& out, vertexType symmtype) {
+    if (symmtype == symmetric_full) {out << "symmetric_full";}
+    else {out << "non-symmetric_full" ;}
     return out;
 }
 

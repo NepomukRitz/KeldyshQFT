@@ -6,6 +6,8 @@
 #include "../grids/frequency_grid.hpp"
 #include "../symmetries/symmetry_transformations.hpp"
 
+/// TODO: improve performance, allow more inlining
+
 /**
  * Interpolation functions:
  *  --> linear interpolation

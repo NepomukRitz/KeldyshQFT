@@ -128,10 +128,6 @@ auto FrequencyGrid::fconv(const double w_in, const bool safety) const -> int {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
     }
-    else if (INTERPOLATION==sloppycubic) {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
-    }
     else {
         if (ws[index+1] < w_in) index++;
         index = std::max(0, index);
@@ -161,13 +157,9 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
 
     double t_rescaled = (t - t_lower) / dt;
     auto index = ((int) t_rescaled) ;  // round down
-    if (INTERPOLATION==linear) {
+    if constexpr(INTERPOLATION==linear) {
         index = std::max(0, index);
         index = std::min(N_w - 2, index);
-    }
-    else if (INTERPOLATION==sloppycubic) {
-        index = std::max(1, index);
-        index = std::min(N_w - 3, index);
     }
     else {
         if (ws[index+1] < w_in and index < N_w-1)
@@ -199,7 +191,7 @@ auto FrequencyGrid::fconv(double& t, double w_in) const -> int {
  * @return
  */
 auto FrequencyGrid::grid_transf(double w) const -> double {
-    if (KELDYSH) return grid_transf_v4(w, this->W_scale);
+    if (KELDYSH) return grid_transf_v2(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_v3(w, this->W_scale);
         else return grid_transf_lin(w, this->W_scale);
@@ -220,7 +212,7 @@ auto FrequencyGrid::grid_transf(double w) const -> double {
  * @return
  */
 auto FrequencyGrid::grid_transf_inv(double t) const -> double {
-    if (KELDYSH) return grid_transf_inv_v4(t, this->W_scale);
+    if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
         else return grid_transf_inv_lin(t, this->W_scale);
@@ -249,6 +241,10 @@ auto FrequencyGrid::wscale_from_wmax(double & Wscale, const double w1, const dou
         else {
             return wscale_from_wmax_v1(Wscale, w1, wmax, N);
         }
+    }
+    else {
+        assert(false);
+        return 0;
     }
 }
 

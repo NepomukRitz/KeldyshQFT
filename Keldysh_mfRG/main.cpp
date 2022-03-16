@@ -3,7 +3,6 @@
 #include <bits/stdc++.h>
 #include "parameters/master_parameters.hpp"
 #include "symmetries/Keldysh_symmetries.hpp"
-#include <mpi.h>
 #include <omp.h>
 #include "utilities/mpi_setup.hpp"
 #include "mfRG_flow/flow.hpp"
@@ -13,13 +12,18 @@
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
 #include "perturbation_theory_and_parquet/perturbation_theory.hpp"
+#ifdef USE_MPI
+#include <mpi.h>
+#endif
 
 
 auto main() -> int {
 
+#ifdef USE_MPI
     if (MPI_FLAG) {
         MPI_Init(nullptr, nullptr);
     }
+#endif
 
     /*
     print_job_info();
@@ -34,13 +38,14 @@ auto main() -> int {
     //
     //test_PT4(0.5, true);
     //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
+    //test_compare_with_Vienna_code();
     //findBestWscale4K1<state_datatype>(1.8);
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string name = data_dir+filename+job;
-    //n_loop_flow(name, true);
-    test_symmetries(1.8);
+    //n_loop_flow(name,  true);
+    test_symmetries(19.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
     */
 
@@ -56,8 +61,10 @@ auto main() -> int {
 
     hello_world();
 
+#ifdef USE_MPI
     if (MPI_FLAG) {
         MPI_Finalize();
     }
+#endif
     return 0;
 }

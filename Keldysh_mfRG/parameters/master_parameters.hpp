@@ -6,6 +6,7 @@
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include <string>
+#include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
 //#define NDEBUG
@@ -53,7 +54,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 1.; //0.01;                     // Temperature
+constexpr double glb_T = 0.01; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -79,6 +80,7 @@ constexpr int n_spin = 2;
 #else
 constexpr int n_spin = 1;
 #endif
+constexpr int n_spin_expanded = 2;
 
 /// Parameters for Fermi-polaron problem ///
 
@@ -142,7 +144,7 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 //#define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 10;
+constexpr int nODE = 50;
 constexpr double epsODE_rel = 1e-6;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
@@ -150,7 +152,7 @@ constexpr double epsODE_abs = 1e-8;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 3
+#define ODEsolver 1
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;// 1e4;                // NOLINT(cert-err58-cpp)
@@ -161,7 +163,7 @@ constexpr double dLambda_initial = 0.1;             //Initial step size for ODE 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+const std::vector<double> U_NRG {};//0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 #else
 const std::vector<double> U_NRG {};
 #endif
@@ -175,6 +177,8 @@ constexpr int param_size = 8;
 constexpr double parameter_list[param_size] = {REG, MAX_DIAG_CLASS, N_LOOPS,
                                            glb_T, glb_mu, glb_U, glb_epsilon, glb_V};
 #endif
+
+
 
 
 /// Set flags used in code; DO NOT TOUCH!!!///

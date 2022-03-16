@@ -2,11 +2,19 @@
 #define FPP_MFRG_MATH_UTILS_H
 
 #include "../data_structures.hpp"
+#include "../multidimensional/multiarray.hpp"
 #include "template_utils.hpp"
 #include "runtime_error.hpp"
 #include "util.hpp"
 #include <iostream>
 #include <cassert>
+
+template<unsigned int n, typename Q>
+constexpr Q my_integer_pow(const Q i) {
+    if constexpr(n == 0) return 1;
+    else if constexpr(n == 1) return i;
+    else return i * my_integer_pow<n-1,Q>(i);
+}
 
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
 template <typename T>
@@ -53,7 +61,7 @@ int signFlipCorrection_MF_int(const double w);
 // Check whether there are doubly occuring frequencies
 auto is_doubleOccurencies(const rvec& freqs) -> int;
 
-// Check whether the frequency grid is symmetric
+// Check whether the frequency grid is symmetric_full
 auto is_symmetric(const rvec& freqs) -> double;
 
 
@@ -187,8 +195,10 @@ inline int getFlatIndex(const Types &&... i, const std::array<size_t,rank>&  dim
 //    indx[0] = iflat;
 //}
 
-template<size_t rank>
-inline void getMultIndex(std::array<size_t,rank>&  indx, const size_t iflat, const std::array<size_t,rank>&  dims) {
+template<size_t rank, typename I = size_t,
+        typename std::enable_if_t<std::is_integral<I>::value, bool> = true
+        >
+inline void getMultIndex(std::array<I,rank>&  indx, const size_t iflat, const std::array<I,rank>&  dims) {
     size_t temp = iflat;
     size_t dimtemp = 1;
     for (int it = 1; it < rank; it++) {
@@ -215,6 +225,36 @@ inline void getMultIndex(Types &... i, const size_t iflat, const std::array<size
     getMultIndex<rank>(temp, iflat, dims);
     int it = 0;
     ((i = temp[it], it++), ...);
+}
+
+/// Convert iflat into a multi-index while keeping the idim-th dimension fixed
+/// (i.e. assuming that the idim-th direction has dimension = 1)
+template <size_t rank, size_t idim>
+inline void getMultIndexSkippingOneDimension(std::array<size_t,rank>&  indx, const size_t iflat, const std::array<size_t,rank>&  dims)
+{
+    static_assert(idim < rank, "idim must be smaller than rank.");
+    size_t temp = iflat;
+    size_t dimtemp = 1;
+    for (int it = 1; it < idim; it++) {
+        dimtemp *= dims[it];
+    }
+    for (int it = idim+1; it < rank; it++) {
+        dimtemp *= dims[it];
+    }
+    if constexpr (idim != 0) {
+        indx[0] = temp / dimtemp;
+        temp -= indx[0] * dimtemp;
+    }
+    for (int it = 1; it < idim; it++) {
+        dimtemp = dimtemp / dims[it];
+        indx[it] = temp / dimtemp;
+        temp -= indx[it] * dimtemp;
+    }
+    for (int it = idim+1; it < rank; it++) {
+        dimtemp = dimtemp / dims[it];
+        indx[it] = temp / dimtemp;
+        temp -= indx[it] * dimtemp;
+    }
 }
 
 /**
@@ -717,6 +757,12 @@ vec<T> partial_deriv_v2(const vec<T>& data, const  vec<double>& xs, const std::a
     return get_finite_differences_v4<T,rank>(data, xs, dims_permuted, permutation, order);
 }
 
+template<typename T, size_t rank>
+multidimensional::multiarray<T,rank> partial_deriv(const multidimensional::multiarray<T,rank>& data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
+    return multidimensional::multiarray<T,rank>(data.length(), partial_deriv<T,rank>(vec<T>(data.begin(), data.end()), xs, data.length(), i_dim, order));
+}
+
+
 
 /**
  *  Collapses the dimensions of a vector using an operator op
@@ -745,8 +791,8 @@ vec<T> collapse(const vec<T>& data, const binaryOp& op, const std::array<size_t,
     for (size_t i = 0; i < rank; i++) {
         bool is_new = false;
         size_t j;
-        for (j = 0; j < rank_new; j++) {
-            if (i == i_dims[j]) is_new = true; iter_new = j; // break;
+        for (j = 0; j < rank_new; j++) { // is i in i_dims?
+            if (i == i_dims[j]) {is_new = true; iter_new = j;} // break;
         }
         if (is_new) {
             perm_rot[iter_new] = i;
@@ -786,6 +832,7 @@ T collapse_all(const vec<T>& data, const binaryOp& op) {
     size_t dim_collapse = data.size(); // flat dimension of dimensions that are to be collapsed
     assert(dim_collapse > 1); //otherwise nothing to collapse with binary operator
     T result = data[0];
+#pragma omp parallel for
     for (size_t j = 1; j < dim_collapse; j++) result = op(result, data[j]);
     return result;
 }
@@ -860,6 +907,10 @@ template<typename T> vec<T> power2(const vec<T>& vec_in) {
     return result;
 }
 
+template<typename T, std::size_t rank> vec<T> power2(const multidimensional::multiarray<T,rank>& data) {
+    return power2(vec<T>(data.begin(), data.end()));
+}
+
 /// Computes maximum along axis i_dim
 template<size_t rank, typename T> vec<double> maxabs(const vec<T>& data, const std::array<size_t,rank>& dims, const size_t i_dim) {
     vec<double> result (dims[i_dim]);
@@ -872,6 +923,13 @@ template<size_t rank, typename T> vec<double> maxabs(const vec<T>& data, const s
         //else result = collapse_rev(data, [](const T& l, const T& r) -> T {return l + r;}, dims, i_dim).abs();
     return result;
 }
+
+template<std::size_t rank, typename T> vec<double> maxabs(const multidimensional::multiarray<T,rank>& data, const std::array<size_t,rank>& dims, const size_t i_dim) {
+    //vec<T> data_temp = vec<T>(data.begin(),data.end());
+    return maxabs<rank,T>(vec<T>(data.begin(),data.end()), data.length(), i_dim);
+}
+
+
 
 
 /**

@@ -13,8 +13,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_COMPILER mpicxx)
 
 if(WORKSTATION)
+    # for DEBUG build:
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3 -fopenmp -march=native -flto")
     set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -O3 -march=native -flto")
+    # for RELEASE build:
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto -fopenmp")
+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -march=native -flto")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
@@ -30,7 +34,7 @@ if(WORKSTATION)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
     #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
     #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
-endif()
+#endif()
 
 project(Keldysh_mfRG)
 
@@ -59,6 +63,7 @@ if(WORKSTATION OR ASC)
     include_directories(/usr/include/mpi/)
     include_directories(/usr/lib/gcc/x86_64-linux-gnu/7/include/) # omp.h
     include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include/)
+    include_directories(/usr/include/eigen3 /usr/include/eigen3/unsupported)
 
     target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG -lgsl -lgslcblas)

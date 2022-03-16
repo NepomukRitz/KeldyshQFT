@@ -13,7 +13,6 @@
 #include "../asymptotic_corrections/correction_functions.hpp"            // correction terms due to finite integration range
 #include "../utilities/write_data2file.hpp"      // write vectors into hdf5 file
 #include "../grids/momentum_grid.hpp"            // Momentum grid specific to the 2D Hubbard model
-#include "../correlation_functions/four_point/vertex_data.hpp"
 #include "bubble.hpp"
 
 template <typename Q>
@@ -54,7 +53,7 @@ public:
                         const bool diff_in)
                        :g(G_in), s(S_in), diff(diff_in),
                        Helper_Bubble(G_in, S_in, diff),
-                       fermionic_grid(G_in.selfenergy.frequencies){
+                       fermionic_grid(G_in.selfenergy.Sigma.frequencies.b){
         if (diff) {print("Precalculating a differentiated bubble...", true);}
         else {print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();

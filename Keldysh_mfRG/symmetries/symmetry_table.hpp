@@ -11,8 +11,130 @@
 
 #include "../data_structures.hpp"
 
-/// TODO: flatten below vectors of vectors
+const inline std::vector<int> Components_Keldysh_a_channel = {// K1:
+                                                -1,  0,  0,  1,
+                                                0,  1, -1,  0,
+                                                0, -1,  1,  0,
+                                                1,  0,  0, -1,    // spin comp. V
 
+                                                -1,  0,  0,  1,
+                                                0,  1, -1,  0,
+                                                0, -1,  1,  0,
+                                                1,  0,  0, -1,   // spin comp. Vhat
+                                                // K2:
+                                                0,  1,  2,  3,
+                                                2,  3,  0,  1,
+                                                1, -1,  3,  4,
+                                                3,  4,  1, -1,    // spin comp. V
+
+                                                0,  1,  2,  3,
+                                                2,  3,  0,  1,
+                                                1, -1,  3,  4,
+                                                3,  4,  1, -1,   // spin comp. Vhat
+                                                // K2b:
+                                                0,  2,  1,  3,
+                                                1,  3, -1,  4,
+                                                2,  0,  3,  1,
+                                                3,  1,  4, -1,    // spin comp. V
+
+                                                0,  2,  1,  3,
+                                                1,  3, -1,  4,
+                                                2,  0,  3,  1,
+                                                3,  1,  4, -1,   // spin comp. Vhat
+                                                // K3:
+                                                0,  1,  1,  2,
+                                                1,  3,  4,  5,
+                                                1,  4,  3,  5,
+                                                2,  5,  5, -1,    // spin comp. V
+
+                                                0,  1,  1,  2,
+                                                1,  4,  3,  5,
+                                                1,  3,  4,  5,
+                                                2,  5,  5, -1};   // spin comp. Vhat
+
+const inline std::vector<int> Components_Keldysh_p_channel = {// K1:
+                                                -1,  0,  0, -1,
+                                                0,  1,  1,  0,
+                                                0,  1,  1,  0,
+                                                -1,  0,  0, -1,    // spin comp. V
+
+                                                -1,  0,  0, -1,
+                                                0,  1,  1,  0,
+                                                0,  1,  1,  0,
+                                                -1,  0,  0, -1,   // spin comp. Vhat
+                                                // K2:
+                                                0,  1,  1,  0,
+                                                2,  3,  3,  2,
+                                                2,  3,  3,  2,
+                                                -1,  4,  4, -1,    // spin comp. V
+
+                                                0,  1,  1,  0,
+                                                2,  3,  3,  2,
+                                                2,  3,  3,  2,
+                                                -1,  4,  4, -1,   // spin comp. Vhat
+                                                // K2b:
+                                                0,  2,  2, -1,
+                                                1,  3,  3,  4,
+                                                1,  3,  3,  4,
+                                                0,  2,  2, -1,    // spin comp. V
+
+                                                0,  2,  2, -1,
+                                                1,  3,  3,  4,
+                                                1,  3,  3,  4,
+                                                0,  2,  2, -1,   // spin comp. Vhat
+                                                // K3:
+                                                0,  1,  1,  2,
+                                                1,  3,  4,  5,
+                                                1,  4,  3,  5,
+                                                2,  5,  5, -1,    // spin comp. V
+
+                                                0,  1,  1,  2,
+                                                1,  4,  3,  5,
+                                                1,  3,  4,  5,
+                                                2,  5,  5, -1};   // spin comp. Vhat
+
+
+const inline std::vector<int> Components_Keldysh_t_channel = {// K1:
+                                               -1,  0,  0,  1,
+                                                0, -1,  1,  0,
+                                                0,  1, -1,  0,
+                                                1,  0,  0, -1,    // spin comp. V
+
+                                               -1,  0,  0,  1,
+                                                0, -1,  1,  0,
+                                                0,  1, -1,  0,
+                                                1,  0,  0, -1,   // spin comp. Vhat
+                                                // K2:
+                                                0,  1,  2,  3,
+                                                1, -1,  3,  4,
+                                                2,  3,  0,  1,
+                                                3,  4,  1, -1,    // spin comp. V
+
+                                                0,  1,  2,  3,
+                                                1, -1,  3,  4,
+                                                2,  3,  0,  1,
+                                                3,  4,  1, -1,   // spin comp. Vhat
+                                                // K2b:
+                                                0,  2,  1,  3,
+                                                2,  0,  3,  1,
+                                                1,  3, -1,  4,
+                                                3,  1,  4, -1,    // spin comp. V
+
+                                                0,  2,  1,  3,
+                                                2,  0,  3,  1,
+                                                1,  3, -1,  4,
+                                                3,  1,  4, -1,   // spin comp. Vhat
+                                                // K3:
+                                                0,  1,  1,  2,
+                                                1,  3,  4,  5,
+                                                1,  4,  3,  5,
+                                                2,  5,  5, -1,    // spin comp. V
+
+                                                0,  1,  1,  2,
+                                                1,  4,  3,  5,
+                                                1,  3,  4,  5,
+                                                2,  5,  5, -1};
+const std::vector<int> Components_Matsubara = {0, 0, 0, 0, 0, 0, 0, 0};
 /** Relate the Keldysh components in each diagrammatic class to the independent ones:
 * -1 = this component is zero
 *  0 = related to component 0
@@ -20,244 +142,173 @@
 *  ...
 */
 struct Components {
-    std::vector<std::vector<std::vector<int> > > K
-        = std::vector<std::vector<std::vector<int> > > (4,
-                                         std::vector<std::vector<int> > (2,
-                                                               std::vector<int> (16)));
+    using buffer_type = multidimensional::multiarray<int,3>;
+    using dimensions_type = buffer_type::dimensions_type;
+
+    constexpr static  dimensions_type K_dims = dimensions_type({4, 2, KELDYSH ? 16 : 1}) ;
+    buffer_type K;
 
     Components() = default;
-    explicit Components(const char channel) {
+    explicit Components(const char channel) : K(buffer_type(K_dims)) {
         if (KELDYSH){
             switch (channel) {
                 case 'a':
-                    K[k1] = {std::vector<int> ({-1,  0,  0,  1,
-                                                0,  1, -1,  0,
-                                                0, -1,  1,  0,
-                                                1,  0,  0, -1}),    // spin comp. V
-                             std::vector<int> ({-1,  0,  0,  1,
-                                                0,  1, -1,  0,
-                                                0, -1,  1,  0,
-                                                1,  0,  0, -1})};   // spin comp. Vhat
-                    K[k2] = {std::vector<int> ({ 0,  1,  2,  3,
-                                                 2,  3,  0,  1,
-                                                 1, -1,  3,  4,
-                                                 3,  4,  1, -1}),    // spin comp. V
-                             std::vector<int> ({ 0,  1,  2,  3,
-                                                 2,  3,  0,  1,
-                                                 1, -1,  3,  4,
-                                                 3,  4,  1, -1})};   // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({0,  2,  1,  3,
-                                                 1,  3, -1,  4,
-                                                 2,  0,  3,  1,
-                                                 3,  1,  4, -1}),    // spin comp. V
-                              std::vector<int> ({0,  2,  1,  3,
-                                                 1,  3, -1,  4,
-                                                 2,  0,  3,  1,
-                                                 3,  1,  4, -1})};   // spin comp. Vhat
-                    K[k3] =  {std::vector<int> ({0,  1,  1,  2,
-                                                 1,  3,  4,  5,
-                                                 1,  4,  3,  5,
-                                                 2,  5,  5, -1}),    // spin comp. V
-                              std::vector<int> ({0,  1,  1,  2,
-                                                 1,  4,  3,  5,
-                                                 1,  3,  4,  5,
-                                                 2,  5,  5, -1})};   // spin comp. Vhat
+                    K = buffer_type(K_dims, Components_Keldysh_a_channel);
                     break;
                 case 'p':
-                    K[k1] = {std::vector<int> ({-1,  0,  0, -1,
-                                                0,  1,  1,  0,
-                                                0,  1,  1,  0,
-                                                -1,  0,  0, -1}),    // spin comp. V
-                             std::vector<int> ({-1,  0,  0, -1,
-                                                0,  1,  1,  0,
-                                                0,  1,  1,  0,
-                                                -1,  0,  0, -1})};   // spin comp. Vhat
-                    K[k2] = {std::vector<int> ({ 0,  1,  1,  0,
-                                                 2,  3,  3,  2,
-                                                 2,  3,  3,  2,
-                                                 -1,  4,  4, -1}),    // spin comp. V
-                             std::vector<int> ({ 0,  1,  1,  0,
-                                                 2,  3,  3,  2,
-                                                 2,  3,  3,  2,
-                                                 -1,  4,  4, -1})};   // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({0,  2,  2, -1,
-                                                 1,  3,  3,  4,
-                                                 1,  3,  3,  4,
-                                                 0,  2,  2, -1}),    // spin comp. V
-                              std::vector<int> ({0,  2,  2, -1,
-                                                 1,  3,  3,  4,
-                                                 1,  3,  3,  4,
-                                                 0,  2,  2, -1})};   // spin comp. Vhat
-                    K[k3] =  {std::vector<int> ({0,  1,  1,  2,
-                                                 1,  3,  4,  5,
-                                                 1,  4,  3,  5,
-                                                 2,  5,  5, -1}),    // spin comp. V
-                              std::vector<int> ({0,  1,  1,  2,
-                                                 1,  4,  3,  5,
-                                                 1,  3,  4,  5,
-                                                 2,  5,  5, -1})};   // spin comp. Vhat
+                    K = buffer_type(K_dims, Components_Keldysh_p_channel);
                     break;
                 case 't':
-                    K[k1] = {std::vector<int> ({-1,  0,  0,  1,
-                                                0, -1,  1,  0,
-                                                0,  1, -1,  0,
-                                                1,  0,  0, -1}),    // spin comp. V
-                             std::vector<int> ({-1,  0,  0,  1,
-                                                0, -1,  1,  0,
-                                                0,  1, -1,  0,
-                                                1,  0,  0, -1})};   // spin comp. Vhat
-                    K[k2] = {std::vector<int> ({ 0,  1,  2,  3,
-                                                 1, -1,  3,  4,
-                                                 2,  3,  0,  1,
-                                                 3,  4,  1, -1}),    // spin comp. V
-                             std::vector<int> ({ 0,  1,  2,  3,
-                                                 1, -1,  3,  4,
-                                                 2,  3,  0,  1,
-                                                 3,  4,  1, -1})};   // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({0,  2,  1,  3,
-                                                 2,  0,  3,  1,
-                                                 1,  3, -1,  4,
-                                                 3,  1,  4, -1}),    // spin comp. V
-                              std::vector<int> ({0,  2,  1,  3,
-                                                 2,  0,  3,  1,
-                                                 1,  3, -1,  4,
-                                                 3,  1,  4, -1})};   // spin comp. Vhat
-                    K[k3]  = {std::vector<int> ({0,  1,  1,  2,
-                                                 1,  3,  4,  5,
-                                                 1,  4,  3,  5,
-                                                 2,  5,  5, -1}),    // spin comp. V
-                              std::vector<int> ({0,  1,  1,  2,
-                                                 1,  4,  3,  5,
-                                                 1,  3,  4,  5,
-                                                 2,  5,  5, -1})};   // spin comp. Vhat
+                    K = buffer_type(K_dims, Components_Keldysh_t_channel);
                     break;
                 default:;
             }
         }
         else{
-            K[k1]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
-            K[k2]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
-            K[k2b] = { std::vector<int> ({0}), std::vector<int> ({0}) };
-            K[k3]  = { std::vector<int> ({0}), std::vector<int> ({0}) };
+            K = buffer_type(K_dims, Components_Matsubara);
         }
     }
 };
+
+const inline std::vector<int> Transformations_Keldysh_a_channel = {// K1:
+                                                    0,  0,  3,  0,
+                                                    3,  0,  0,  0,
+                                                    0,  0,  0,  3,
+                                                    0,  3,  0,  0,    // spin comp. V
+                                                    0,  2,  1,  1,
+                                                    1,  1,  0,  2,
+                                                    2,  0,  1,  1,
+                                                    1,  1,  2,  0,   // spin comp. Vhat
+                                                    // K2:
+                                                    0,  0,  0,  0,
+                                                    0,  0,  0,  0,
+                                                    43, 0, 43,  0,
+                                                    43, 0, 43,  0,   // spin comp. V
+                                                    2,  2,  2,  2,
+                                                    2,  2,  2,  2,
+                                                    41, 0, 41,  2,
+                                                    41, 2, 41,  0,  // spin comp. Vhat
+                                                    // K2b
+                                                    3,  3,  3,  3,
+                                                    4,  4,  0,  3,
+                                                    3,  3,  3,  3,
+                                                    4,  4,  3,  0,   // spin comp. V
+                                                    1,  1,  1,  1,
+                                                    14,14,  0,  1,
+                                                    1,  1,  1,  1,
+                                                    14, 14,  1,  0, // spin comp. Vhat
+                                                    // K3:
+                                                    0,  0,  3,  0,
+                                                    4,  0,  0,  0,
+                                                    43, 3,  3,  3,
+                                                    4,  4, 43,  0,    // spin comp. V
+                                                    1,  2,  1,  1,
+                                                    14, 1,  1,  1,
+                                                    41, 2,  2,  2,            //Uses TCT2 = T1TC
+                                                    14, 41,14,  0};  //spin comp. Vhat
+
+const inline std::vector<int> Transformations_Keldysh_p_channel = {// K1:
+                                                    0,  0,  0,  0,
+                                                    4,  0,  0,  4,
+                                                    4,  0,  0,  4,
+                                                    0,  0,  0,  0,        // spin comp. V
+                                                    0,  1,  1,  0,
+                                                    14, 1,  1, 14,
+                                                    14, 1,  1, 14,
+                                                    0,  1,  1,  0,    // spin comp. Vhat
+                                                    // K2:
+                                                    0,  0,  0,  0,
+                                                    0,  0,  0,  0,
+                                                    3,  3,  3,  3,
+                                                    0,  0,  0,  0,    // spin comp. V
+                                                    1,  1,  1,  1,
+                                                    1,  1,  1,  1,
+                                                    2,  2,  2,  2,
+                                                    0,  1,  1,  0,   // spin comp. Vhat
+                                                    // K2b:
+                                                    4,  4, 43,  0,
+                                                    4,  4, 43,  4,
+                                                    4,  4, 43,  4,
+                                                    4,  4, 43,  0,    // spin comp. V
+                                                    41,41, 14,  0,
+                                                    14,41, 14, 41,
+                                                    14,41, 14, 41,
+                                                    41,41, 14,  0,   // spin comp. Vhat
+                                                    // K3:
+                                                    0,  0,  3,  0,
+                                                    4,  0,  0,  0,
+                                                    43, 3,  3,  3,
+                                                    4,  4, 43,  0,    // spin comp. V
+                                                    1,  2,  1,  1,
+                                                    14, 1,  1,  1,
+                                                    41, 2,  2,  2,
+                                                    14,41, 14,  0};  // spin comp. Vhat
+
+const inline std::vector<int> Transformations_Keldysh_t_channel = {// K1:
+                                                    0,  0,  3,  0,
+                                                    0,  0,  0,  3,
+                                                    3,  0,  0,  0,
+                                                    0,  3,  0,  0,        // spin comp. V
+                                                    0,  2,  1,  1,
+                                                    2,  0,  1,  1,
+                                                    1,  1,  0,  2,
+                                                    1,  1,  2,  0,       // spin comp. Vhat
+                                                    // K2:
+                                                    0,  0,  0,  0,
+                                                    4,  0,  4,  0,
+                                                    0,  0,  0,  0,
+                                                    4,  0,  4,  0,        // spin comp. V
+                                                    2,  2,  2,  2,
+                                                    14, 0, 14,  2,
+                                                    2,  2,  2,  2,
+                                                    14, 2, 14,  0,  // spin comp. Vhat
+                                                    // K2b:
+                                                    3,  3,  3,  3,
+                                                    3,  3,  3,  3,
+                                                    43,43,  0,  3,
+                                                    43,43,  3,  0,  // spin comp. V
+                                                    1,  1,  1,  1,
+                                                    1,  1,  1,  1,
+                                                    41,41,  0,  1,
+                                                    41,41,  1,  0, // spin comp. Vhat
+                                                    // K3:
+                                                    0,  0,  3,  0,
+                                                    4,  0,  0,  0,
+                                                    43, 3,  3,  3,
+                                                    4,  4, 43,  0,    // spin comp. V
+                                                    1,  2,  1,  1,
+                                                    14, 1,  1,  1,
+                                                    41, 2,  2,  2,
+                                                    14,41, 14,  0}; // spin comp. Vhat
+
+const inline std::vector<int> Transformations_Matsubara_a_channel{0, 1, 0, 2, 3,  1, 0, 2};
+const inline std::vector<int> Transformations_Matsubara_p_channel{0, 1, 0, 1, 4, 41, 0, 1};
+const inline std::vector<int> Transformations_Matsubara_t_channel{0, 1, 0, 2, 3,  1, 0, 2};
+
 
 /** Transformations that need to be applied to the respective stored components to get the correct actual components:
 * 0 = nothing, 1 = T1, 2 = T2, 3 = T3, 4 = TC
 * Convention for composite trafos: 43 = first apply 4, then 3 etc. Careful, some operations do not commute!
 */
 struct Transformations {
-    std::vector<std::vector<std::vector<int> > > K
-            = std::vector<std::vector<std::vector<int> > > (4,
-                                             std::vector<std::vector<int> > (2,
-                                                                   std::vector<int> (16)));
+    using buffer_type = multidimensional::multiarray<int,3>;
+    using dimensions_type = buffer_type::dimensions_type;
+
+    constexpr static  dimensions_type K_dims = dimensions_type({4, 2, KELDYSH ? 16 : 1}) ;
+    buffer_type K;
 
     Transformations() = default;
-    explicit Transformations(const char channel) {
+    explicit Transformations(const char channel) : K(buffer_type(K_dims)){
         if (KELDYSH){
             switch (channel) {
                 case 'a':
-                    K[k1] = {std::vector<int> ({ 0,  0,  3,  0,
-                                                 3,  0,  0,  0,
-                                                 0,  0,  0,  3,
-                                                 0,  3,  0,  0}),    // spin comp. V
-                             std::vector<int> ({ 0,  2,  1,  1,
-                                                 1,  1,  0,  2,
-                                                 2,  0,  1,  1,
-                                                 1,  1,  2,  0})};   // spin comp. Vhat
-                    K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
-                                                 0,  0,  0,  0,
-                                                 43,  0, 43,  0,
-                                                 43,  0, 43,  0}),   // spin comp. V
-                             std::vector<int> ({ 2,  2,  2,  2,
-                                                 2,  2,  2,  2,
-                                                 41,  0, 41,  2,
-                                                 41,  2, 41,  0})};  // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({ 3,  3,  3,  3,
-                                                  4,  4,  0,  3,
-                                                  3,  3,  3,  3,
-                                                  4,  4,  3,  0}),   // spin comp. V
-                              std::vector<int> ({ 1,  1,  1,  1,
-                                                  14, 14,  0,  1,
-                                                  1,  1,  1,  1,
-                                                  14, 14,  1,  0})}; // spin comp. Vhat
-                    K[k3] =  {std::vector<int> ({ 0,  0,  3,  0,
-                                                  4,  0,  0,  0,
-                                                  43,  3,  3,  3,
-                                                  4,  4, 43,  0}),    // spin comp. V
-                              std::vector<int> ({ 1,  2,  1,  1,
-                                                  14,  1,  1,  1,
-                                                  41,  2,  2,  2,            //Uses TCT2 = T1TC
-                                                  14, 41, 14,  0})};  //spin comp. Vhat
+                    K = buffer_type(K_dims, Transformations_Keldysh_a_channel);
                     break;
                 case 'p':
-                    K[k1] = {std::vector<int> ({ 0,  0,  0,  0,
-                                                 4,  0,  0,  4,
-                                                 4,  0,  0,  4,
-                                                 0,  0,  0,  0}),        // spin comp. V
-                             std::vector<int> ({ 0,  1,  1,  0,
-                                                 14,  1,  1, 14,
-                                                 14,  1,  1, 14,
-                                                 0,  1,  1,  0})};    // spin comp. Vhat
-                    K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
-                                                 0,  0,  0,  0,
-                                                 3,  3,  3,  3,
-                                                 0,  0,  0,  0}),    // spin comp. V
-                             std::vector<int> ({ 1,  1,  1,  1,
-                                                 1,  1,  1,  1,
-                                                 2,  2,  2,  2,
-                                                 0,  1,  1,  0})};   // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({4,  4, 43,  0,
-                                                 4,  4, 43,  4,
-                                                 4,  4, 43,  4,
-                                                 4,  4, 43,  0}),    // spin comp. V
-                              std::vector<int> ({41, 41, 14,  0,
-                                                 14, 41, 14, 41,
-                                                 14, 41, 14, 41,
-                                                 41, 41, 14,  0})};   // spin comp. Vhat
-                    K[k3] = {std::vector<int> ({ 0,  0,  3,  0,
-                                                 4,  0,  0,  0,
-                                                 43,  3,  3,  3,
-                                                 4,  4, 43,  0}),    // spin comp. V
-                             std::vector<int> ({ 1,  2,  1,  1,
-                                                 14,  1,  1,  1,
-                                                 41,  2,  2,  2,
-                                                 14, 41, 14,  0})};  // spin comp. Vhat
+                    K = buffer_type(K_dims, Transformations_Keldysh_p_channel);
                     break;
                 case 't':
-                    K[k1] = {std::vector<int> ({ 0,  0,  3,  0,
-                                                 0,  0,  0,  3,
-                                                 3,  0,  0,  0,
-                                                 0,  3,  0,  0}),        // spin comp. V
-                             std::vector<int> ({ 0,  2,  1,  1,
-                                                 2,  0,  1,  1,
-                                                 1,  1,  0,  2,
-                                                 1,  1,  2,  0})};       // spin comp. Vhat
-                    K[k2] = {std::vector<int> ({ 0,  0,  0,  0,
-                                                 4,  0,  4,  0,
-                                                 0,  0,  0,  0,
-                                                 4,  0,  4,  0}),        // spin comp. V
-                             std::vector<int> ({ 2,  2,  2,  2,
-                                                 14,  0, 14,  2,
-                                                 2,  2,  2,  2,
-                                                 14,  2, 14,  0})};  // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({3,  3,  3,  3,
-                                                 3,  3,  3,  3,
-                                                 43, 43,  0,  3,
-                                                 43, 43,  3,  0}),  // spin comp. V
-                              std::vector<int> ({ 1,  1,  1,  1,
-                                                  1,  1,  1,  1,
-                                                  41, 41,  0,  1,
-                                                  41, 41,  1,  0})}; // spin comp. Vhat
-                    K[k3] = {std::vector<int> ({ 0,  0,  3,  0,
-                                                 4,  0,  0,  0,
-                                                 43,  3,  3,  3,
-                                                 4,  4, 43,  0}),    // spin comp. V
-                             std::vector<int> ({ 1,  2,  1,  1,
-                                                 14,  1,  1,  1,
-                                                 41,  2,  2,  2,
-                                                 14, 41, 14,  0})}; // spin comp. Vhat
+                    K = buffer_type(K_dims, Transformations_Keldysh_t_channel);
                     break;
                 default:;
             }
@@ -265,34 +316,13 @@ struct Transformations {
         else{
             switch (channel) {
                 case 'a':
-                    K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 1})};   // spin comp. Vhat
-                    K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 2})};   // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
-                              std::vector<int> ({ 1})};   // spin comp. Vhat
-                    K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 2})};   //spin comp. Vhat
+                    K = buffer_type(K_dims, Transformations_Matsubara_a_channel);
                     break;
                 case 'p':
-                    K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 1})};   // spin comp. Vhat
-                    K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 1})};   // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({ 4}),    // spin comp. V
-                              std::vector<int> ({41})};   // spin comp. Vhat
-                    K[k3]  = {std::vector<int> ({  0}),   // spin comp. V
-                              std::vector<int> ({  1})};  // spin comp. Vhat
+                    K = buffer_type(K_dims, Transformations_Matsubara_p_channel);
                     break;
                 case 't':
-                    K[k1]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 1})};   // spin comp. Vhat
-                    K[k2]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 2})};   // spin comp. Vhat
-                    K[k2b] = {std::vector<int> ({ 3}),    // spin comp. V
-                              std::vector<int> ({ 1})};   // spin comp. Vhat
-                    K[k3]  = {std::vector<int> ({ 0}),    // spin comp. V
-                              std::vector<int> ({ 2})};   // spin comp. Vhat
+                    K = buffer_type(K_dims, Transformations_Matsubara_t_channel);
                     break;
                 default:;
             }

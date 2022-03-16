@@ -61,9 +61,9 @@ int main(int argc, char* argv[]) {
 #endif
 
     // run unit tests
-//#ifdef INTEGRATION_TESTS
+#ifdef INTEGRATION_TESTS
     if (MPI_FLAG) MPI_Init(nullptr, nullptr);
-//#endif
+#endif
     print("   -----   Performing unit tests   -----", true);
 
     check_input();
@@ -75,20 +75,20 @@ int main(int argc, char* argv[]) {
     //runtime_tester.test_runtimes(100);
 
     //if (ZERO_T and REG==2) {
-        /*data_dir = "../Data_tests/";
-        makedir(data_dir);
-        std::string filename = "test_PTstate.h5";
-        test_PT_state<state_datatype>(data_dir + filename, 1.8, false);*/
+        //data_dir = "../Data_MFU=1.000000/";
+        //makedir(data_dir);
+        //std::string filename = "test_PTstate.h5";
+        //test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
     //}
 
     //compute_non_symmetric_diags(0.8, true, 1, true);
 
     //test_Bubble_in_Momentum_Space();
 
-    /*double lambda = 1;
-    State<state_datatype> state_ini (lambda);
-    state_ini.initialize();
-    sopt_state(state_ini, lambda);*/
+    //double lambda = 1;
+    //State<state_datatype> state_ini (lambda);
+    //state_ini.initialize();
+    //sopt_state(state_ini, lambda);
 
     /*
     Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
 
     const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/";
     const std::string filename  = "SOPT_test_Nq_" + std::to_string(glb_N_q) + "_T_" + std::to_string(glb_T) + "_Lambda_" + std::to_string(lambda) + "_no_Hartree";
-    write_hdf<comp>(directory+filename, lambda, 1, state_ini);
+    write_state_to_hdf<comp>(directory+filename, lambda, 1, state_ini);
     */
 
 

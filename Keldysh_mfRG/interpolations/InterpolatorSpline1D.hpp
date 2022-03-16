@@ -5,9 +5,9 @@
 /// source:    https://kluge.in-chemnitz.de/opensource/SplineK1/SplineK1.h
 /// alternative: https://github.com/igmhub/likely/blob/master/likely/TriCubicInterpolator.h
 /*
- * SplineK1.h
+ * Spline1D.h
  *
- * simple cubic SplineK1 interpolation library without external
+ * simple cubic Spline1D interpolation library without external
  * dependencies
  *
  * ---------------------------------------------------------------------
@@ -34,30 +34,35 @@
 #include <cassert>
 #include <cmath>
 #include <vector>
-#include "../correlation_functions/four_point/vertex_data.hpp"
+#include "../correlation_functions/n_point/data_container.hpp"
 
-
-
+template <typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freq_index, class DataContainer>
+class Spline {};
 
 /**
- * SplineK1 interpolation
- * @tparam DataContainer  contains vertex data and frequency grid frequencies_K1.b
+ * Spline1D interpolation
+ * @tparam DataContainer  contains vertex data and frequency grid frequencies.b
  *                          computes derivative of data
  * @tparam Q              double or comp
  */
-template <class DataContainer, typename Q>
-class SplineK1 : public DataContainer
+template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
+class Spline<Q,rank,1,pos_first_freq_index,DataContainer> : public DataContainer
 {
+    using weights_type = Eigen::Matrix<double, 4, 1>;
+    weights_type get_weights (int idx, double t) const;
+    using coeffs_type = Eigen::Matrix<Q, Eigen::Dynamic,4>;
+
 public:
 
 
     mutable bool initialized = false;
 
 protected:
-    //std::vector<double> m_x = DataContainer::frequencies_K1.b.ts;
-    size_t n;   // flat size of data vector (and interpolation coefficients)
-    size_t i_x; // index of w dimension in DataContainer::dims
-    mutable vec<Q> m_b = vec<Q>(n),m_c= vec<Q>(n),m_d= vec<Q>(n);        // SplineK1 coefficients
+    //std::vector<double> m_x = DataContainer::frequencies.b.ts;
+    size_t n=0;   // flat size of data vector (and interpolation coefficients)
+    size_t i_x = pos_first_freq_index; // index of w dimension in DataContainer::dims
+    mutable vec<Q> m_b = vec<Q>(n);//, m_c, m_d;        // Spline coefficients
+    mutable coeffs_type all_coefficients = coeffs_type(n, 4);
     //Q m_c0;                            // for left extrapolation
     bd_type m_left = third_deriv, m_right = third_deriv;    /// set const?
     Q  m_left_value = 0.0, m_right_value = 0.0;   /// known values of first or second derivative (corresponding to bd_type)
@@ -65,15 +70,22 @@ protected:
     void set_coeffs_from_b() const;               // calculate c_i, d_i from b_i
 
 public:
-    explicit SplineK1(double Lambda)
-            :   DataContainer(Lambda), n(getFlatSize(DataContainer::dims)), i_x(2)
+    using index_type = typename DataContainer::index_type;
+    using frequencies_type = std::array<double, 1>;
+
+    Spline() : initialized(false) {};
+    explicit Spline(double Lambda, index_type dims)
+            :   DataContainer(Lambda, dims), n(getFlatSize(DataContainer::get_dims()))//, i_x(1)
     {
         //this->initializeK1();
+        //print("Size of all_coeffs:", all_coefficients.size(), "\n");
+        //print("n::", n, "\n");
     }
 
     void initInterpolator() const;
+    void set_initializedInterpol(bool is_init) const {initialized = is_init;}
 
-    // adjust coefficients so that the SplineK1 becomes piecewise monotonic
+    // adjust coefficients so that the Spline becomes piecewise monotonic
     // where possible
     //   this is done by adjusting slopes at grid points by a non-negative
     //   factor and this will break C^2
@@ -82,8 +94,8 @@ public:
     // returns false if no adjustments have been made, true otherwise
     //bool make_monotonic();
 
-    // evaluates the SplineK1 at point x
-    Q interpolK1 (int iK, int ispin, double x, int i_in) const;
+    // evaluates the Spline at point x
+    template <typename result_type> result_type interpolate_spline (const frequencies_type& frequencies, const index_type& indices) const;
     // evaluates derivative of interpolant
     //Q deriv(int order, double x) const;
 
@@ -91,28 +103,46 @@ public:
 };
 
 
-    template <class DataContainer, typename Q>
-    void SplineK1<DataContainer,Q>::set_coeffs_from_b() const
-    {
-        size_t n_x = DataContainer::frequencies_K1.b.get_ws_vec().size();
-        size_t n_nonx = n/n_x;
+template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
+void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::set_coeffs_from_b() const
+{
+    size_t n_x = DataContainer::frequencies.b.get_ws_vec().size();
+    size_t n_nonx = n/n_x;
+    Eigen::Matrix<double,4,4> A;
+    A << 1, 0, 0, 0,
+         0, 0, 1, 0,
+        -3, 3,-2,-1,
+         2,-2, 1, 1;
 
     for(size_t i=0; i<n_nonx; i++) {
         for (size_t j=0; j<n_x-1; j++) { /// i=n_x-1 not treated (only used for extrapolation to the right)
-            const double h  = DataContainer::frequencies_K1.b.get_ts(j+1)-DataContainer::frequencies_K1.b.get_ts(j);      /// spacing
+            const double h  = DataContainer::frequencies.b.get_ts(j+1)-DataContainer::frequencies.b.get_ts(j);      /// spacing
+            int idx_base = ::rotateFlatIndex(i*n_x+j  , DataContainer::get_dims(), i_x);
+            int idx_plus = ::rotateFlatIndex(i*n_x+j+1, DataContainer::get_dims(), i_x);
+            Eigen::Matrix<Q,4,1> fs;
+            fs << DataContainer::data[idx_base], DataContainer::data[idx_plus], m_b[idx_base]*h, m_b[idx_plus]*h;
             // from continuity and differentiability condition
-            m_c[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] = (3.0 * (DataContainer::data[::rotateFlatIndex(i*n_x+j+1, DataContainer::dims, i_x)] - DataContainer::data[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)]) / h - (2.0 * m_b[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] + m_b[::rotateFlatIndex(i*n_x+j+1, DataContainer::dims, i_x)]) ) / h;   /// checked
+            //m_c[idx_base] = (3.0 * (DataContainer::data[idx_plus] - DataContainer::data[idx_base]) / h - (2.0 * m_b[idx_base] + m_b[idx_plus]) ) / h;   /// checked
             // from differentiability condition
-            m_d[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] = ( (m_b[::rotateFlatIndex(i*n_x+j+1, DataContainer::dims, i_x)]-m_b[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)])/(3.0*h) - 2.0/3.0*m_c[::rotateFlatIndex(i*n_x+j, DataContainer::dims, i_x)] ) / h;
+            //m_d[idx_base] = ( (m_b[idx_plus]-m_b[idx_base])/(3.0*h) - 2.0/3.0*m_c[idx_base] ) / h;
+            all_coefficients.row(idx_base) = (A * fs).transpose();
+            all_coefficients(idx_base,1) /= (h);
+            all_coefficients(idx_base,2) /= (h*h);
+            all_coefficients(idx_base,3) /= (h*h*h);
+            //Q c_compare = all_coefficients(idx_base,2);
+            //Q d_compare = all_coefficients(idx_base,3);
+            //assert(std::abs(c_compare - m_c[idx_base]) < 1e-10 * (1. + std::abs(c_compare)));
+            //assert(std::abs(d_compare - m_d[idx_base]) < 1e-10 * (1. + std::abs(d_compare)));
+
         }
 
     }
 
-    }
+}
 
-    template <class DataContainer, typename Q>
-    void SplineK1<DataContainer,Q>::initInterpolator() const
-    {
+template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
+void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::initInterpolator() const
+{
 
     // hermite cubic splines which are C^1 (cont. differentiable)
     // and derivatives are specified on each grid point
@@ -155,20 +185,29 @@ public:
      */
     //n = DataContainer::data.size();
         m_b = vec<Q>(n);
-        m_c = vec<Q>(n);
-        m_d = vec<Q>(n);
-    m_b = DataContainer::get_deriv_K1_x();
+        //m_c = vec<Q>(n);
+        //m_d = vec<Q>(n);
+        multidimensional::multiarray<Q,rank> temp = DataContainer::get_deriv_x();
+    m_b = vec<Q>(temp.begin(), temp.end());
+
 
     // parameters c and d are determined by continuity and differentiability
     set_coeffs_from_b();
 
+    //all_coefficients.col(0) = DataContainer::get_vec().get_elements();
+    //for (int i = 0; i < n; i++) {
+    //    all_coefficients(i,1) = m_b[i];
+    //    all_coefficients(i,2) = m_c[i];
+    //    all_coefficients(i,3) = m_d[i];
+    //}
+
     initialized = true;
 
-    }
+}
 
     /*
     template <class DataContainer, typename Q>
-    bool SplineK1<DataContainer,Q>::make_monotonic()
+    bool Spline<DataContainer,Q>::make_monotonic()
     {
     assert(m_x.size() == DataContainer::data.size());
     assert(m_x.size()==m_b.size());
@@ -218,29 +257,71 @@ public:
     }
      */
 
-    template <class DataContainer, typename Q>
-    Q SplineK1<DataContainer,Q>::interpolK1 (int iK, int ispin, double x, int i_in) const
-    {
+
+
+    template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
+    auto Spline<Q,rank,1,pos_first_freq_index,DataContainer>::get_weights (int idx, double t) const -> weights_type{
+
+        double t_low = DataContainer::frequencies.b.get_ts(idx);
+        double t_high= DataContainer::frequencies.b.get_ts(idx+1);
+        double h = (t - t_low);
+        //assert(h>-1e-10);
+        //assert(t<t_high+1e-6);
+        weights_type weights;
+        weights << 1., h, h*h, h*h*h;
+        return weights;
+    }
+
+template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
+template <typename result_type>
+result_type Spline<Q,rank,1,pos_first_freq_index,DataContainer>::interpolate_spline (const frequencies_type& frequencies,const index_type& indices) const //int iK, int ispin, double x, int i_in
+{
     assert(initialized);
     double t;
-    int idx=DataContainer::frequencies_K1.b.fconv(t, x);
+    int idx=DataContainer::frequencies.b.fconv(t, frequencies[0]);
+    index_type index_tmp = indices;
+    index_tmp[pos_first_freq_index] = idx;
+    int i_row = getFlatIndex<rank>(index_tmp, DataContainer::get_dims());
 
-    double h = t - DataContainer::frequencies_K1.b.get_ts(idx);
-    Q interpol;
-    interpol   =((m_d[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx, i_in, DataContainer::dims)]*h
-                + m_c[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx, i_in, DataContainer::dims)])*h
-                + m_b[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx, i_in, DataContainer::dims)])*h
-+ DataContainer::data[::getFlatIndex<4,int,int,int,int>(iK, ispin, idx, i_in, DataContainer::dims)];
+    double h = t - DataContainer::frequencies.b.get_ts(idx);
+    weights_type weights = get_weights(idx, t);
 
-    assert(isfinite(interpol));
-    return interpol;
+    if constexpr(std::is_same_v<result_type,Q>) {
+        Q result;
+        Eigen::Matrix<Q, 1, 4> values = all_coefficients.row(i_row);
+        result = (values * weights).eval()[0];
+
+        //Q result_compare;
+        //result_compare   =((m_d[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())]*h
+        //                    + m_c[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())])*h
+        //                    + m_b[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())])*h
+        //    + DataContainer::data[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())];
+        //assert(std::abs(result - result_compare) < 1e-10);
+
+        assert(isfinite(result));
+        //assert(std::abs(result) < 1e-10);
+        return result;
     }
+    else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){
+        Eigen::Matrix<Q,result_type::RowsAtCompileTime,1> result;
+        Eigen::Matrix<Q, result_type::RowsAtCompileTime, 4> values = all_coefficients.template block<result_type::RowsAtCompileTime,4>(i_row,0);
+        result = (values * weights).eval();
+
+        assert(result.allFinite());
+        return result;
+    }
+    else {
+        assert(false);
+        result_type result;
+        return result;
+    }
+}
     /*
     template <class DataContainer, typename Q>
-    Q SplineK1<DataContainer,Q>::deriv(int order, double x) const
+    Q Spline<DataContainer,Q>::deriv(int order, double x) const
     {
     assert(order>0);
-    size_t idx = DataContainer::frequencies_K1.b.fconv(x);
+    size_t idx = DataContainer::frequencies.b.fconv(x);
 
     double h=x-m_x[idx];
     Q interpol;

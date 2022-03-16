@@ -19,4 +19,6 @@
 void test_symmetries(double Lambda);
 
 
+void test_compare_with_Vienna_code();
+
 #endif //FPP_MFRG_TEST_SYMMETRIES_H
