@@ -61,7 +61,7 @@ constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.
 #ifdef PARTICLE_HOLE_SYMM
     constexpr double glb_Vg = glb_mu;               // Impurity level shift -- has to be the same as the chemical potential when we have particle-hole symmetry
 #else
-    constexpr double glb_Vg = 2.5;                  // Impurity level shift
+    constexpr double glb_Vg = 0.05;                  // Impurity level shift
 #endif
 constexpr double glb_U = 5.0;                      // Impurity on-site interaction strength
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)

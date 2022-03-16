@@ -3,7 +3,7 @@
 
 double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) {
     double diff = 1.;
-    int n_iter = 0.;
+    int n_iter = 0;
     while (std::abs(diff) > convergence_threshold) {
         n_iter++;
         //double filling_new = integrator<double>(*this, v_lower, v_upper, 0., 0., glb_T);
@@ -13,6 +13,37 @@ double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) 
         SelfEnergy<comp> Sigma_new (Lambda);
         Sigma_new.initialize(glb_U * filling, 0);
         Sigma = Sigma_new;
+    }
+    print_add("  ", true);
+    print("Determined filling of: " + std::to_string(filling), true);
+    print("Number of iterations needed: " + std::to_string(n_iter), true);
+    friedel_sum_rule_check();
+    return glb_U * filling;
+}
+
+double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_threshold) {
+    double LHS = 1.;
+    int n_iter = 0;
+    double filling_min = 0.;
+    double filling_max = 1.;
+    while (std::abs(LHS) > convergence_threshold) {
+        assert(n_iter < 1e5); // Avoid infinite loop
+        n_iter++;
+        filling = (filling_min + filling_max) / 2.;
+        SelfEnergy<comp> Sigma_new (Lambda);
+        Sigma_new.initialize(glb_U * filling, 0);
+        Sigma = Sigma_new;
+        LHS = integrator_Matsubara_T0<double, 1>(*this, v_lower, v_upper, 10, {0}, 0, true) - filling;
+        if (LHS > 0.) {
+            filling_min = filling;
+        }
+        else if (LHS < 0.) {
+            filling_max = filling;
+        }
+        else { // LHS == 0.0 exactly
+            print("Warning, obtained a numerically exact result for the filling. Might be suspicious.", true);
+            return glb_U * filling;
+        }
     }
     print_add("  ", true);
     print("Determined filling of: " + std::to_string(filling), true);
@@ -34,7 +65,14 @@ void Hartree_Solver::friedel_sum_rule_check() const {
     const double filling_friedel = 1./2. - 1./M_PI * atan((glb_epsilon + glb_U * filling)/(Delta));
     print("Filling determined self-consistently = " + std::to_string(filling), true);
     print("Filling from the Friedel sum rule, valid at zero T = " + std::to_string(filling_friedel), true);
-    print("Relative difference = " + std::to_string(std::abs((filling - filling_friedel) / filling)), true);
+    const double relative_difference = std::abs((filling - filling_friedel) / filling);
+    print("Relative difference = " + std::to_string(relative_difference), true);
+    if (ZERO_T and (relative_difference > 1e-3)){
+        print(" ", true);
+        print("ERROR! The computed value of the filling does not agree with the result from the Friedel rule. Maybe the integrator's accuracy isn't high enough?", true);
+        print(" ", true);
+        assert(false);
+    }
 }
 
 void Hartree_Solver::write_out_propagators() const {
@@ -60,7 +98,7 @@ void Hartree_Solver::write_out_propagators() const {
 
 }
 
-double Hartree_Solver::fermi_distribution(const double nu) const {
+double Hartree_Solver::fermi_distribution(const double nu) {
     if constexpr (not ZERO_T){
         return 1 / (exp(nu / glb_T) + 1.);
     }
@@ -72,3 +110,4 @@ double Hartree_Solver::fermi_distribution(const double nu) const {
     }
 
 }
+

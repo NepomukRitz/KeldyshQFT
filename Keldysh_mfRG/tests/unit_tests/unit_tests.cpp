@@ -100,20 +100,19 @@ int main(int argc, char* argv[]) {
     write_hdf<comp>(directory+filename, lambda, 1, state_ini);
     */
 
-    /*
-    // Test Hartree functionality
-    const double Lambda = 9.;
-    Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
-    const double hartree_value = Hartree_Term.compute_Hartree_term();
-    Hartree_Term.friedel_sum_rule_check();
-    data_dir = "../../../Hartree_Propagators/";
-    makedir(data_dir);
-    Hartree_Term.write_out_propagators();
-     */
 
-    const double Lambda = 9.;
-    PT_Machine<state_datatype> PT_Calculator (2, Lambda, false);
-    PT_Calculator.debug_TOPT();
+    // Test Hartree functionality
+    const double Lambda = 999.;
+    Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
+    const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing();
+    //data_dir = "../../../Hartree_Propagators/";
+    //makedir(data_dir);
+    //Hartree_Term.write_out_propagators();
+
+
+    //const double Lambda = 9.;
+    //PT_Machine<state_datatype> PT_Calculator (2, Lambda, false);
+    //PT_Calculator.debug_TOPT();
 
 
 
