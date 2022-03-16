@@ -118,8 +118,8 @@ int main(int argc, char* argv[]) {
 
 
     //return Catch::Session().run(argc, argv);
-//#ifdef INTEGRATION_TESTS
+#ifdef INTEGRATION_TESTS
     if (MPI_FLAG) MPI_Finalize();
-//#endif
+#endif
     return 0;
 }
