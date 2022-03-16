@@ -20,6 +20,15 @@ public:
         //FOPTstate = State<Q>(Lambda);
         FOPTstate.initialize();             // initialize state
 
+#ifdef ADAPTIVE_GRID
+        State<Q> state_temp = FOPTstate;
+        state_temp.initialize();
+        topt_state(state_temp, Lambda);
+        state_temp.findBestFreqGrid(true);
+
+        FOPTstate.set_frequency_grid(state_temp);
+#endif
+
         topt_state(FOPTstate, Lambda);
         FOPTstate.vertex.half1().initializeInterpol();
     }
@@ -58,52 +67,54 @@ public:
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
-                       {"v", "integrand_re", "integrand_im"},
-                       {freqs, integrand_re, integrand_im});
+                       {"v", "integrand_re", "integrand_im", "bfreqs_a"},
+                       {freqs, integrand_re, integrand_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().b.get_all_frequencies()});
 
         std::string filename_diff = data_dir + "integrand_diff_K1";
         filename_diff += channel;
         filename_diff += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename_diff,
-                       {"v", "integrand_diff_re", "integrand_diff_im"},
-                       {freqs, integrand_diff_re, integrand_diff_im});
+                       {"v", "integrand_diff_re", "integrand_diff_im", "bfreqs_a"},
+                       {freqs, integrand_diff_re, integrand_diff_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().b.get_all_frequencies()});
 
-        /// K2:
-        npoints = 1e3;
-        FrequencyGrid bfreqs2('b', 2, Lambda);
-        FrequencyGrid ffreqs2('f', 2, Lambda);
-        rvec bfreqsK2 (npoints);
-        rvec ffreqsK2 (npoints);
+        if constexpr(MAX_DIAG_CLASS > 1) {
+            /// K2:
+            npoints = 1e3;
+            FrequencyGrid bfreqs2('b', 2, Lambda);
+            FrequencyGrid ffreqs2('f', 2, Lambda);
+            rvec bfreqsK2 (npoints);
+            rvec ffreqsK2 (npoints);
 
-        rvec K2_re (npoints*npoints);
-        rvec K2_im (npoints*npoints);
-        spacing = 2. / (double)npoints;
-        for (int i=1; i<npoints-1; ++i) {
-            for (int j=1; j<npoints-1; ++j) {
+            rvec K2_re (npoints*npoints);
+            rvec K2_im (npoints*npoints);
+            spacing = 2. / (double)npoints;
+            for (int i=1; i<npoints-1; ++i) {
+                for (int j=1; j<npoints-1; ++j) {
 
-                double w = bfreqs2.frequency_from_t(-1 + i * spacing);
-                double v = ffreqs2.frequency_from_t(-1 + j * spacing);
-                IndicesSymmetryTransformations indices (0, 0, w, v, 0., 0, 'a', k1, 0,'a');
-                Q integrand_value = FOPTstate.vertex.half1().avertex.K2.interpolate(indices);
-                bfreqsK2[i] = w;
-                ffreqsK2[i] = v;
+                    double w = bfreqs2.frequency_from_t(-1 + i * spacing);
+                    double v = ffreqs2.frequency_from_t(-1 + j * spacing);
+                    IndicesSymmetryTransformations indices (0, 0, w, v, 0., 0, 'a', k1, 0,'a');
+                    Q integrand_value = FOPTstate.vertex.half1().avertex.K2.interpolate(indices);
+                    bfreqsK2[i] = w;
+                    ffreqsK2[i] = v;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-                K2_re[i*npoints + j] = integrand_value;
-                K2_im[i*npoints + j] = 0.;
-#else
-                K2_re[i*npoints + j] = integrand_value.real();
-                K2_im[i*npoints + j] = integrand_value.imag();
-#endif
+    #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+                    K2_re[i*npoints + j] = integrand_value;
+                    K2_im[i*npoints + j] = 0.;
+    #else
+                    K2_re[i*npoints + j] = integrand_value.real();
+                    K2_im[i*npoints + j] = integrand_value.imag();
+    #endif
+                }
             }
-        }
 
-        std::string filenameK2 = data_dir + "/integrand_K2";
-        filename += channel;
-        filename += ".h5";
-        write_h5_rvecs(filenameK2,
-                       {"w", "v", "K2_re", "K2_im"},
-                       {bfreqsK2, ffreqsK2, K2_re, K2_im});
+            std::string filenameK2 = data_dir + "/integrand_K2";
+            filename += channel;
+            filename += ".h5";
+            write_h5_rvecs(filenameK2,
+                           {"w", "v", "K2_re", "K2_im"},
+                           {bfreqsK2, ffreqsK2, K2_re, K2_im});
+        }
 
     }
     void save_integrand() {

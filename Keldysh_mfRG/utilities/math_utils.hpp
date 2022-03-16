@@ -906,7 +906,7 @@ template<typename T> vec<T> power2(const vec<T>& vec_in) {
     vec <T> result (flatdim);
     T temp;
     for (int it = 0; it < flatdim; it++) {
-        temp = vec_in[it];
+        temp = std::abs(vec_in[it]);
         result[it] = temp * temp;
     }
     return result;

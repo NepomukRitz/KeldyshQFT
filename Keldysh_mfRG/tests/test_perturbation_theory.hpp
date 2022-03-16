@@ -1629,11 +1629,12 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
 
-    const int N_iterations = 0;
     State<Q> state_cpp (Lambda);   // create final and initial state
     state_cpp.initialize();             // initialize state
-    //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
-    //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+#ifdef ADAPTIVE_GRID
+    const int N_iterations = 1;
+    write_state_to_hdf(data_dir+"PTstate_preOpt.h5", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+    write_state_to_hdf(data_dir+"PTstate_postOpt.h5", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
 
     for (int it = 0; it < N_iterations; it++) {
         State<Q> state_temp (state_cpp, Lambda);   // copy frequency grids //
@@ -1641,16 +1642,18 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         fopt_state(state_temp, Lambda);
 
 
-        add_state_to_hdf("PTstate_preOpt", it+1, state_temp);  // save the initial state to hdf5 file
-        state_temp.vertex.half1().check_vertex_resolution();
-        state_temp.vertex.half1().findBestFreqGrid(true);
+        add_state_to_hdf(data_dir+"PTstate_preOpt.h5", it+1, state_temp);  // save the initial state to hdf5 file
+        //state_temp.vertex.half1().check_vertex_resolution();
+        state_temp.findBestFreqGrid(true);
         state_temp.vertex.half1().check_vertex_resolution();
         state_temp.analyze_tails();
 
         state_cpp.set_frequency_grid(state_temp);
-        add_state_to_hdf("PTstate_postOpt", it+1, state_temp);  // save the initial state to hdf5 file
-    }
 
+
+        add_state_to_hdf(data_dir + "PTstate_postOpt.h5", it+1, state_temp);  // save the initial state to hdf5 file
+    }
+#endif
 
     fopt_state(state_cpp, Lambda);
     //state_cpp.vertex.half1().check_vertex_resolution();

@@ -308,33 +308,12 @@ public:
 };
 
 template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
-    double rel_tail_threshold = 1e-3;
 
-    freqGrid_type frequencies_new = shrink_freq_box(rel_tail_threshold);
-    update_grid(frequencies_new);
-
-    SelfEnergy<Q> SEtemp = *this;
-    //SEtemp.update_grid(Lambda);
-
-    //double wmax_current = SEtemp.frequencies.w_upper;
-    double a_Wscale = SEtemp.Sigma.frequencies.b.W_scale / 10.;
-    double m_Wscale = SEtemp.Sigma.frequencies.b.W_scale;
-    double b_Wscale = SEtemp.Sigma.frequencies.b.W_scale * 10;
-    CostSE_Wscale<Q> cost(SEtemp, verbose);
-    minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose, false, 1., 0.);
-#ifdef HYBRID_GRID
-
-#else
-    frequencies_new.b.update_Wscale(m_Wscale);
-#endif
-
-    update_grid(frequencies_new);
-
-
+    Sigma.optimize_grid(verbose);
 }
 
 template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> freqGrid_type {
-    freqGrid_type frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold);
+    freqGrid_type frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold, false, asymp_val_R);
     return frequencies_new;
 }
 

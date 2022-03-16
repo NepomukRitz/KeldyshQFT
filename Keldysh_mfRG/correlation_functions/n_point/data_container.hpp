@@ -19,6 +19,8 @@
 template <typename Q> class rvert; // forward declaration of rvert
 //template <typename Q> class fullvert; // forward declaration of fullvert
 template <typename Q> class State; // forward declaration of State
+template<typename Q, std::size_t depth, typename H5object>
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
 //template <typename Q, vertexType symm_type> class GeneralVertex;
 ////template <typename Q>class symmetric_full;
 //template <typename Q>using Vertex = GeneralVertex<Q, symmetric_full>;
@@ -204,11 +206,11 @@ class Buffer;
         template<unsigned int idim,
                 typename std::enable_if_t<(idim < numberFrequencyDims), bool> = true
                 >
-        double analyze_tails() const {
+        double analyze_tails(const int index = 0) const {
             double maxabs_total = base_class::data.max_norm();
             vec<double> maxabs_along_w = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint+idim);
 
-            return maxabs_along_w[0] / maxabs_total;
+            return maxabs_along_w[index] / maxabs_total;
         };
 
 
@@ -267,7 +269,9 @@ class Buffer;
             if constexpr (numberFrequencyDims == 1) {
                 double Kmax = base_class::get_vec().max_norm();
                 double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
-                double max = (::power2(get_deriv_x() * dtb * (1/Kmax))
+                const buffer_type deriv = get_deriv_x();
+                const vec<Q> deriv_vec = vec<Q>(deriv.begin(), deriv.end());
+                double max = (::power2(deriv_vec * dtb * (1/Kmax))
                 ).max_norm();
                 return max;
             }
@@ -297,7 +301,8 @@ class Buffer;
             if constexpr (numberFrequencyDims == 1) {
                 double Kmax = base_class::get_vec().max_norm();
                 double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
-                double max = (     ::power2(get_deriv_xx()*dtb*dtb*(1/Kmax))
+                buffer_type curvature = get_deriv_xx();
+                double max = (     ::power2(curvature*dtb*dtb*(1/Kmax))
                 ).max_norm();
                 return max;
             }
@@ -343,7 +348,6 @@ class Buffer;
                 index++;
             }
             if (index > -1) { // if the frequency box is too big, shrink to appropriate size
-                if (verbose and mpi_world_rank() == 0) std::cout << "Shrinking frequency box ";
                 double t_belowthresh = freqGrid.get_auxiliary_gridpoint(
                         index); // auxiliary frequency point before passing threshold
                 double t_abovethresh = freqGrid.get_auxiliary_gridpoint(
@@ -362,7 +366,7 @@ class Buffer;
             return frequencies_new;
         }
 
-        auto shrink_freq_box(const double rel_tail_threshold, bool verbose = true) const -> frequencyGrid_type;
+        auto shrink_freq_box(const double rel_tail_threshold, bool verbose = true, double constant = 0.) const -> frequencyGrid_type;
 
     };
 
@@ -387,16 +391,17 @@ class Buffer;
 
 
     template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type>
-    auto DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>::shrink_freq_box(const double rel_tail_threshold,
-                                                         const bool verbose) const -> frequencyGrid_type {
+    auto DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>::shrink_freq_box(const double rel_tail_threshold, const bool verbose, const double constant) const -> frequencyGrid_type {
         if constexpr(numberFrequencyDims == 1) {
             frequencyGrid_type frequencies_new = frequencies;
-            double maxmax = base_class::data.max_norm();
+            typename base_class::buffer_type data_tmp = base_class::data;
+            double maxmax = (data_tmp - constant).max_norm();
             vec<double> maxabs_along_w = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint) * (1 / maxmax);
 
-        frequencies_new.b = shrink_freq_box_impl(frequencies.b, rel_tail_threshold, maxabs_along_w, verbose);
+            const double wmax_old = frequencies_new.b.w_upper;
+            frequencies_new.b = shrink_freq_box_impl(frequencies.b, rel_tail_threshold, maxabs_along_w, verbose);
         if (verbose and mpi_world_rank() == 0)
-            std::cout << "in direction w to " << frequencies_new.b.w_upper << std::endl;
+            std::cout << "Shrinking frequency box in direction w from " << wmax_old << " to " << frequencies_new.b.w_upper << std::endl;
 
         return frequencies_new;
         }
@@ -407,13 +412,15 @@ class Buffer;
             vec<double> maxabs_along_w = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint  ) * (1 / maxmax);
             vec<double> maxabs_along_v = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint+1) * (1 / maxmax);
 
-
+            const double wmax_old = frequencies_new.b.w_upper;
+            const double vmax_old = frequencies_new.f.w_upper;
             frequencies_new.b = shrink_freq_box_impl(frequencies.b, rel_tail_threshold, maxabs_along_w, verbose);
             if (verbose and mpi_world_rank() == 0)
-                std::cout << "in direction w to " << frequencies_new.b.w_upper << std::endl;
+                std::cout << "Shrinking frequency box in direction w from " << wmax_old << " to " << frequencies_new.b.w_upper << std::endl;
             frequencies_new.f = shrink_freq_box_impl(frequencies.f, rel_tail_threshold, maxabs_along_v, verbose);
             if (verbose and mpi_world_rank() == 0)
-                std::cout << "in direction v to " << frequencies_new.f.w_upper << std::endl;
+                std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.f.w_upper << std::endl;
+
 
             return frequencies_new;
         }
