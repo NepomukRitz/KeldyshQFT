@@ -30,12 +30,13 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
                 sum += val;
             }
         }
+        selfEnergy.Sigma.initInterpolator();
         if (cnt > 0) {
             print("Selfenergy is non-causal: ", true);
             print(cnt, " values of Im(Sigma^R) are positive, with a sum of ", sum, true);
+            print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
         } else {
             print("Selfenergy is causal.", true);
-            selfEnergy.Sigma.initInterpolator();
             print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
         }
 

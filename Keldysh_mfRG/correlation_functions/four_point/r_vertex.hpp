@@ -1273,120 +1273,10 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     if (MAX_DIAG_CLASS >= 3) {
         K3.update_grid(Lambda);
     }
-    /*
-    if (MAX_DIAG_CLASS >= 1) {
-
-        freqGrid_type_K1 frequenciesK1_new = K1.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK1_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
-        update_grid<k1>(frequenciesK1_new, *this);
-    }
-    if (MAX_DIAG_CLASS >= 2) {
-
-        freqGrid_type_K2 frequenciesK2_new = K2.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK2_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
-        update_grid<k2>(frequenciesK2_new, *this);
-    }
-    if (MAX_DIAG_CLASS >= 3) {
-        freqGrid_type_K3 frequenciesK3_new = K3.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK3_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
-        update_grid<k3>(frequenciesK3_new, *this);
-    }
-     */
 }
 
 
 
-/*
-namespace {
-
-    template <K_class k, typename Q>
-    class UpdateGrid { }; // TODO(high): Make the UpdateGrid functionality also update the cross-projected parts.
-    template<typename Q>
-    class UpdateGrid<k1,Q> {
-        using freqGrid_type_K1 = typename rvert<Q>::freqGrid_type_K1;
-    public:
-        void operator()(rvert<Q>& vertex, const freqGrid_type_K1& frequencies_new, const rvert<Q>& rvert4data) {
-            using buffer_type = multidimensional::multiarray<Q,K1_config.rank>;
-            buffer_type K1_new (K1_config.dims);  // temporary K1 vector
-            for (int iflat=0; iflat < K1_config.dims_flat; ++iflat) {
-                my_defs::K1::index_type idx;
-                getMultIndex<rank_K1>(idx, iflat, vertex.K1.get_dims());
-                int iK              = (int) idx[my_defs::K1::keldysh];
-                my_index_t ispin    = idx[my_defs::K1::spin];
-                my_index_t iw       = idx[my_defs::K1::omega];
-                my_index_t i_in     = idx[my_defs::K1::internal];
-                double w;
-                frequencies_new.get_freqs_w(w, iw);
-                IndicesSymmetryTransformations indices(iK, ispin, w, 0., 0., i_in, vertex.channel, k1, iw,
-                                                       rvert4data.channel);
-                // interpolate old values to new vector
-                K1_new.at(idx) = rvert4data.K1.interpolate(indices);
-            }
-            vertex.K1.set_vec(std::move(K1_new)); // update vertex to new interpolated values
-            vertex.K1.set_VertexFreqGrid(frequencies_new);
-        }
-    };
-    template<typename Q>
-    class UpdateGrid<k2,Q> {
-        using freqGrid_type_K2 = typename rvert<Q>::freqGrid_type_K2;
-    public:
-         void operator()(rvert<Q>& vertex, const freqGrid_type_K2& frequencies_new, const rvert<Q>& rvert4data) {
-             using buffer_type = multidimensional::multiarray<Q,K2_config.rank>;
-             buffer_type K2_new(K2_config.dims); // temporary K2 vector
-            for (std::size_t i_flat = 0; i_flat < K2_config.dims_flat; i_flat++) {
-                my_defs::K2::index_type idx;
-                getMultIndex<rank_K2>(idx, i_flat, vertex.K2.get_dims());
-                int iK              = (int) idx[my_defs::K2::keldysh];
-                my_index_t ispin    = idx[my_defs::K2::spin];
-                my_index_t iw       = idx[my_defs::K2::omega];
-                my_index_t iv       = idx[my_defs::K2::nu];
-                my_index_t i_in     = idx[my_defs::K2::internal];
-
-                double w, v;
-                frequencies_new.get_freqs_w(w, v, iw, iv);
-                IndicesSymmetryTransformations indices(iK, ispin,
-                                                       w, v, 0.,
-                                                       i_in, vertex.channel, k2, iw, rvert4data.channel);
-                // interpolate old values to new vector
-                K2_new.at(idx) = rvert4data.K2.interpolate(indices);
-            }
-            vertex.K2.set_vec(std::move(K2_new)); // update vertex to new interpolated values
-             vertex.K2.set_VertexFreqGrid(frequencies_new);
-        }
-    };
-    template<typename Q>
-    class UpdateGrid<k3,Q> {
-        using freqGrid_type_K3 = typename rvert<Q>::freqGrid_type_K3;
-    public:
-        void operator() (rvert<Q>& vertex, const freqGrid_type_K3& frequencies_new, const rvert<Q>& rvert4data) {
-            assert(vertex.channel == rvert4data.channel);
-            using buffer_type = multidimensional::multiarray<Q,K3_config.rank>;
-            buffer_type K3_new(K3_config.dims);  // temporary K3 vector
-            for (std::size_t i_flat = 0; i_flat < K3_config.dims_flat; i_flat++) {
-                my_defs::K3::index_type idx;
-                getMultIndex<rank_K3>(idx, i_flat, vertex.K3.get_dims());
-                int iK              = (int) idx[my_defs::K3::keldysh];
-                my_index_t ispin    = idx[my_defs::K3::spin];
-                my_index_t iw       = idx[my_defs::K3::omega];
-                my_index_t iv       = idx[my_defs::K3::nu];
-                my_index_t ivp      = idx[my_defs::K3::nup];
-                my_index_t i_in     = idx[my_defs::K3::internal];
-
-                double w, v, vp;
-                frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp);
-                IndicesSymmetryTransformations indices (iK, ispin,
-                                                        w, v, vp,
-                                                        i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
-                // interpolate old values to new vector
-                K3_new.at(idx) = rvert4data.K3.interpolate(indices);
-            }
-            vertex.K3.set_vec(std::move(K3_new)); // update vertex to new interpolated values
-            vertex.K3.set_VertexFreqGrid(frequencies_new);
-        }
-
-    };
-}
-*/
 
 template <typename Q>
 template<K_class k, typename FGrid>
@@ -1632,7 +1522,20 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
     }
 
 #ifdef HYBRID_GRID
+// in v-direction:
+    if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w AND v:\n";
+    std::array<double,2> sections_K1 = K1.get_VertexFreqGrid().b.pos_section_boundaries;
+    vec<double> start_params = {sections_K1[0], sections_K1[1]};
 
+    // minimize the curvature of the K2 vertex
+    CostFullvert_Wscale_K1<Q> cost_K1(*this, verbose);
+    double ini_stepsize = std::min(Wscale_f, Wscale_b)/100.;
+    double epsrel = 0.01;
+    double epsabs = 0.1;
+    vec<double> result_K1 = minimizer_nD(cost_K1, start_params, ini_stepsize, 100, verbose, false, 0.1, 0.01);
+    frequenciesK1_new.b.update_pos_section_boundaries(std::array<double,2>({result_K1[0], result_K1[1]}));
+    frequenciesK1_new.f.update_pos_section_boundaries(std::array<double,2>({result_K1[2], result_K1[3]}));
+    update_grid<k1>(frequenciesK1_new, *this);
 #else
 
     double a_Wscale = K1.get_VertexFreqGrid().b.W_scale / 2.;

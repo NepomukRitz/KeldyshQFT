@@ -43,8 +43,8 @@ constexpr int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((in
 
 // Number of bosonic and fermionic frequency points
 //#ifdef KELDYSH_FORMALISM
-constexpr int nBOS = 101;
-constexpr int nFER = 100;
+constexpr int nBOS = 201;
+constexpr int nFER = 201;
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 51;//nBOS;
 constexpr int nFER2 = 51;//nFER;

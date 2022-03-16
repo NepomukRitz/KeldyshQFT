@@ -448,16 +448,16 @@ void hybridGrid::guess_essential_parameters(const double Lambda) {
         case 2:
             if (type == 'b') {
                 number_of_gridpoints = nBOS2;
-                pos_section_boundaries[0] = Delta;
-                pos_section_boundaries[1] = 3.*Delta;
+                pos_section_boundaries[0] = 3.*Delta;
+                pos_section_boundaries[1] = 10.*Delta;
                 w_upper = 40.*15.*Delta;
             }
             else {
                 assert(type == 'f');
                 number_of_gridpoints = nFER2;
-                pos_section_boundaries[0] = Delta;
-                pos_section_boundaries[1] = 3.*Delta;
-                w_upper = 20.*15.*Delta;
+                pos_section_boundaries[0] = 3.*Delta;
+                pos_section_boundaries[1] = 10.*Delta;
+                w_upper = 40.*15.*Delta;
             }
             break;
         case 3:

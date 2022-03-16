@@ -41,6 +41,7 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
 }
 
 
+inline int SDE_counter = 0;
 /**
  * Wrapper for the above function, with only the symmetrized result Gamma_BSE returned.
  * @param Gamma_BSE  : Vertex computed as the lhs of the BSE
@@ -118,10 +119,21 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     print("Check causality of Sigma_SDE_p: \n");
     check_SE_causality(Sigma_SDE_p);
 
+
     // symmetrize the contributions computed via a/p bubble
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
     print("Check causality of Sigma_SDE: \n");
     check_SE_causality(Sigma_SDE);
+
+    std::string filename = data_dir + "SDE_iteration" + std::to_string(SDE_counter);
+    H5::H5File file_out = H5::H5File(filename, H5F_ACC_TRUNC);
+    write_to_hdf(file_out, "Sigma_SDE_a", Sigma_SDE_a.Sigma.get_vec(), false);
+    write_to_hdf(file_out, "Sigma_SDE_p", Sigma_SDE_p.Sigma.get_vec(), false);
+    write_to_hdf(file_out, "Sigma_SDE"  , Sigma_SDE.Sigma.get_vec(), false);
+    file_out.close();
+
+    SDE_counter++;
+
 }
 
 /**
