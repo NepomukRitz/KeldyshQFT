@@ -461,6 +461,20 @@ namespace {
                     frequencies.f.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
                 }
 
+                }
+                /*
+                std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
+                rvec v = rVert.K1.frequencies.get_freqGrid_b().get_all_frequencies();
+                rvec SE_re = rVert.K1.get_vec().real();
+                rvec SE_im = rVert.K1.get_vec().imag();
+                write_h5_rvecs(filename,
+                               {"v", "SE_re", "SE_im"},
+                               {v, SE_re, SE_im});
+                */
+                return result;
+            }
+        }
+    };
 
                 buffer.update_grid(frequencies, buffer_backup);
                 //rVert.K1.analyze_tails_K1();
