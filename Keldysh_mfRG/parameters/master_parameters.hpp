@@ -152,7 +152,7 @@ constexpr double epsODE_abs = 1e-8;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 1
+#define ODEsolver 3
 
 // Limits of the fRG flow
 constexpr double Lambda_ini = 20.;// 1e4;                // NOLINT(cert-err58-cpp)
