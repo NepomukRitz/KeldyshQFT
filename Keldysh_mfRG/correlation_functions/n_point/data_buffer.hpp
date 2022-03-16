@@ -403,12 +403,75 @@ public:
 
 
 
-/**
- * data buffers store the data and frequency grids and interpolates data points on the grid.
- */
+namespace {
 
+    template<typename Q, typename dataBuffer_type, typename freqGrid_type>
+    class CostFullvert_Wscale_b {
+        //using freqGrid_type = bufferFrequencyGrid<k1>;
 
+        const dataBuffer_type& buffer_backup;
+        bool verbose;
+    public:
+        dataBuffer_type buffer;
+        freqGrid_type frequencies = buffer.get_VertexFreqGrid();
 
+        explicit CostFullvert_Wscale_b(const dataBuffer_type& buffer_in, bool verbose) : buffer(buffer_in), buffer_backup(buffer_in),
+                                                                             verbose(verbose) {};
+
+        auto operator()(double wscale_test) -> double {
+            if constexpr(! std::is_same_v<freqGrid_type, FrequencyGrid>) {assert(false); return 0.;}
+            else {
+                frequencies.b.update_Wscale(wscale_test);
+
+                buffer.update_grid(frequencies, buffer_backup);
+                //rVert.K1.analyze_tails_K1();
+                double result = buffer.get_curvature_max();
+
+                if (verbose and mpi_world_rank() == 0) {
+                    std::cout << "max. Curvature in buffer"; // << std::endl;
+                    std::cout << "\t \t" << result << "\t\t with wscale = " << wscale_test << std::endl;
+
+                }
+                /*
+                std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
+                rvec v = rVert.K1.frequencies.get_freqGrid_b().get_all_frequencies();
+                rvec SE_re = rVert.K1.get_vec().real();
+                rvec SE_im = rVert.K1.get_vec().imag();
+                write_h5_rvecs(filename,
+                               {"v", "SE_re", "SE_im"},
+                               {v, SE_re, SE_im});
+                */
+                return result;
+            }
+        }
+
+        auto operator()(std::array<double,2> wscale_test) -> double {
+            if constexpr(! std::is_same_v<freqGrid_type, hybridGrid>) {assert(false); return 0.;}
+            else {
+                buffer.template update_grid(frequencies, buffer_backup);
+                //rVert.K1.analyze_tails_K1();
+                double result = buffer.get_curvature_max();
+
+                if (verbose and mpi_world_rank() == 0) {
+                    std::cout << "max. Curvature in buffer"; // << std::endl;
+                    std::cout << "\t \t" << result << "\t\t with wscale = " << wscale_test << std::endl;
+
+                }
+                /*
+                std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
+                rvec v = rVert.K1.frequencies.get_freqGrid_b().get_all_frequencies();
+                rvec SE_re = rVert.K1.get_vec().real();
+                rvec SE_im = rVert.K1.get_vec().imag();
+                write_h5_rvecs(filename,
+                               {"v", "SE_re", "SE_im"},
+                               {v, SE_re, SE_im});
+                */
+                return result;
+            }
+        }
+    };
+
+}
 
 
 
@@ -473,226 +536,10 @@ public:
         base_class::set_initializedInterpol(false);
     }
 
-    /*
-    Eigen::Matrix<double, numSamples(), 1> get_weights(const frequencies_type& frequencies, index_type& idx_low) const {
-        Eigen::Matrix<double, numSamples(), 1> weights;
-
-        std::array<my_index_t,numberFrequencyDims> freq_idx;
-        std::array<double,numberFrequencyDims> dw_normalized;
-        base_class::frequencies.get_grid_index(freq_idx, dw_normalized, frequencies);
-        for (my_index_t i = 0; i < numberFrequencyDims; i++) {
-            idx_low[pos_first_freqpoint+i] = freq_idx[i];
-        }
-
-        for (int j = 0; j < numSamples_half(); j++) {
-            weights[j  ] = 1-dw_normalized[0];
-            weights[numSamples_half()+j] = dw_normalized[0];
-        }
-
-        if constexpr (numberFrequencyDims == 2) {
-            for (int j = 0; j < numSamples_half(); j++) {
-                weights[2*j  ] *= 1-dw_normalized[1];
-                weights[2*j+1] *= dw_normalized[1];
-            }
-        }
-        if constexpr(numberFrequencyDims == 3) {
-            for (int j = 0; j < 2; j++) {
-                for (int i = 0; i < 2; i++) {
-                    weights[4*j+i]   *= 1-dw_normalized[1];
-                    weights[4*j+i+2] *= dw_normalized[1];
-                }
-            }
-            for (int j = 0; j < numSamples_half(); j++) {
-                weights[j*2]   *= 1-dw_normalized[2];
-                weights[1+j*2] *= dw_normalized[2];
-            }
-        }
-
-
-        return weights;
+    void optimize_grid() {
 
     }
 
-    template <typename result_type, my_index_t vecsize>
-    Eigen::Matrix<Q, vecsize, numSamples()> get_values(const index_type& vertex_index) const {
-        Eigen::Matrix<Q, vecsize, numSamples()> result;
-        if constexpr(std::is_same_v<result_type, Q>) {
-            if constexpr (numberFrequencyDims == 1) {
-                for (int i = 0; i < 2; i++) {
-                    index_type vertex_index_tmp = vertex_index;
-                    vertex_index_tmp[pos_first_freqpoint] += i;
-                    result[i] = base_class::val(vertex_index_tmp);
-                }
-            }
-            else if constexpr(numberFrequencyDims == 2){ // k2 and k2b
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        index_type vertex_index_tmp = vertex_index;
-                        vertex_index_tmp[pos_first_freqpoint] += i;
-                        vertex_index_tmp[pos_first_freqpoint+1] += j;
-                        result[i * 2 + j] = base_class::val(vertex_index_tmp);
-
-                    }
-                }
-            }
-            else if constexpr (numberFrequencyDims == 3) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        for (int l = 0; l < 2; l++) {
-                            index_type vertex_index_tmp = vertex_index;
-                            vertex_index_tmp[pos_first_freqpoint] += i;
-                            vertex_index_tmp[pos_first_freqpoint+1] += j;
-                            vertex_index_tmp[pos_first_freqpoint+2] += l;
-                            result[i * 4 + j * 2 + l] = base_class::val(vertex_index_tmp);
-                        }
-                    }
-                }
-            }
-            else {
-                assert(false); // numberFrequencyDims > 3 not supported
-            }
-
-        }
-        else { // typ == vec_left or vec_right
-
-            if constexpr (numberFrequencyDims == 1) {
-                for (int i = 0; i < 2; i++) {
-                    index_type vertex_index_tmp = vertex_index;
-                    vertex_index_tmp[pos_first_freqpoint] += i;
-                    auto res = base_class::template val_vectorized<numberFrequencyDims,vecsize>(vertex_index_tmp);
-                    result.col(i) = res;
-                }
-            }
-            else if constexpr(numberFrequencyDims == 2) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        index_type vertex_index_tmp = vertex_index;
-                        vertex_index_tmp[pos_first_freqpoint] += i;
-                        vertex_index_tmp[pos_first_freqpoint+1] += j;
-                        result.col(i * 2 + j) = base_class::template val_vectorized<numberFrequencyDims,vecsize>(vertex_index_tmp);
-
-                    }
-                }
-            }
-            else if constexpr (numberFrequencyDims == 3) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        for (int l = 0; l < 2; l++) {
-                            index_type vertex_index_tmp = vertex_index;
-                            vertex_index_tmp[pos_first_freqpoint] += i;
-                            vertex_index_tmp[pos_first_freqpoint+1] += j;
-                            vertex_index_tmp[pos_first_freqpoint+2] += l;
-                            result.col(i * 4 + j * 2 + l) = base_class::template val_vectorized<numberFrequencyDims,vecsize>(vertex_index_tmp);
-                        }
-                    }
-                }
-            }
-            else {
-                assert(false); // numberFrequencyDims > 3 not supported
-            }
-
-        }
-
-
-
-        return result;
-    }
-
-
-
-
-    template <typename result_type = Q,
-            typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
-    auto interpolate(const frequencies_type& frequencies, index_type indices) const -> result_type {
-
-        constexpr my_index_t vecsize = get_vecsize<result_type>();
-        using weights_type = Eigen::Matrix<double, numSamples(), 1>;
-        using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
-
-        // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (base_class::frequencies.is_in_box(frequencies))
-        {
-
-#ifdef DENSEGRID
-            Q result;
-            if constexpr(k == k1)
-            {
-                result = interpolate_nearest1D<Q>(indices.w, base_class::get_VertexFreqGrid().b,
-                                                  [&](int i) -> Q {
-                                                      return base_class::val(indices.spin, i,
-                                                                                             indices.iK,
-                                                                                             indices.i_in);
-                                                  });
-            }
-            else if constexpr(k==k2){
-                result =  interpolate_nearest2D<Q>(indices.w, indices.v1,
-                                                   base_class::get_VertexFreqGrid().b,
-                                                   base_class::get_VertexFreqGrid().f,
-                                                   [&](int i, int j) -> Q {
-                                                       return base_class::val(indices.spin, i,
-                                                                                              j, indices.iK,
-                                                                                              indices.i_in);
-                                                   });
-            }
-            else if constexpr(k==k2b){
-                result =  interpolate_nearest2D<Q>(indices.w, indices.v2,
-                                                   base_class::get_VertexFreqGrid().b,
-                                                   base_class::get_VertexFreqGrid().f,
-                                                   [&](int i, int j) -> Q {
-                                                       return base_class::val(indices.spin, i,
-                                                                                              j, indices.iK,
-                                                                                              indices.i_in);
-                                                   });
-            }
-            else if constexpr(k == k3)
-            {
-                result =  interpolate_nearest3D<Q>(indices.w, indices.v1, indices.v2,
-                                                   base_class::get_VertexFreqGrid().b,
-                                                   base_class::get_VertexFreqGrid().f,
-                                                   base_class::get_VertexFreqGrid().f,
-                                                   [&](int i, int j, int l) -> Q {
-                                                       return base_class::val(indices.spin, i,
-                                                                                              j, l, indices.iK,
-                                                                                              indices.i_in);
-                                                   });
-            }
-
-            return result;
-#else
-            // get weights from frequency Grid
-
-            //index_type vertex_index;
-            weights_type weights = get_weights(frequencies, indices);
-            // fetch vertex values
-            values_type values = get_values<result_type, vecsize>(indices);
-            assert(weights.allFinite());
-            assert(values.allFinite());
-
-            if constexpr(std::is_same_v<result_type, Q>) {
-                Q result = values * weights;
-                assert(isfinite(result));
-                return result;
-            }
-            else {
-                Eigen::Matrix<Q, vecsize,1> result = values * weights;
-                assert(result.allFinite());
-                return result;
-            }
-
-
-#endif
-
-            //assert(isfinite(result));
-            //return result;
-
-        } else { //asymptotic value
-            if constexpr (std::is_same_v<result_type,Q>) return result_type{};
-            else return result_type::Zero();
-
-        }
-
-    };
-*/
     auto operator+= (const this_class& rhs) -> this_class {base_class::data += rhs.data; return *this;}
     auto operator-= (const this_class& rhs) -> this_class {base_class::data -= rhs.data; return *this;}
     auto operator*= (const this_class& rhs) -> this_class {base_class::data *= rhs.data; return *this;}
