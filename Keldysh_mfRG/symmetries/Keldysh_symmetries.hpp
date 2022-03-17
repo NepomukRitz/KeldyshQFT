@@ -23,17 +23,21 @@ struct buffer_config {
 
     my_index_t num_freqs;
     my_index_t position_first_freq_index;
+
+    constexpr buffer_config(dimensions_type dims_in, my_index_t num_freqs_in,
+                  my_index_t position_first_freq_index_in): dims(dims_in),
+                  num_freqs(num_freqs_in), position_first_freq_index(position_first_freq_index_in){};
 };
 
-constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ nK_SE, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<4> K1_config{.dims = std::array<size_t,4>({n_spin, nBOS, nK_K1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<5> K2_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, nK_K2, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
-constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, nK_K3, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+constexpr buffer_config<3> SE_config(std::array<size_t,3>({ nK_SE, nFER, n_in_K1}), 1, 1);
+constexpr buffer_config<4> K1_config(std::array<size_t,4>({n_spin, nBOS, nK_K1, n_in_K1}), 1, 1);
+constexpr buffer_config<5> K2_config(std::array<size_t,5>({n_spin, nBOS2, nFER2, nK_K2, n_in_K2}), 2, 1);
+constexpr buffer_config<6> K3_config(std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, nK_K3, n_in_K3}), 3, 1);
 
-constexpr buffer_config<3> SE_expanded_config{.dims = std::array<size_t,3>({ KELDYSH ?  4 : 1, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<4> K1_expanded_config{.dims = std::array<size_t,4>({1, nBOS, KELDYSH ?  16 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<5> K2_expanded_config{.dims = std::array<size_t,5>({1, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
-constexpr buffer_config<6> K3_expanded_config{.dims = std::array<size_t,6>({1, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+constexpr buffer_config<3> SE_expanded_config(std::array<size_t,3>({ KELDYSH ?  4 : 1, nFER, n_in_K1}), .1, 1);
+constexpr buffer_config<4> K1_expanded_config(std::array<size_t,4>({1, nBOS, KELDYSH ?  16 : 1, n_in_K1}), 1, 1);
+constexpr buffer_config<5> K2_expanded_config(std::array<size_t,5>({1, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2}), 2, 1);
+constexpr buffer_config<6> K3_expanded_config(std::array<size_t,6>({1, nBOS3, nFER3, nFER3, KELDYSH ?  16 : 1, n_in_K3}), 3, 1);
 
 constexpr unsigned int pos_first_freq = 1;  // position of first frequency index
 
