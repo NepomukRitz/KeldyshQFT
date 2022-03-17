@@ -11,14 +11,16 @@ if [ "$1" == "--ASC" ]
 elif [ "$1" == "--KCS" ]
 then
   export CLUSTER=KCS
-  module unload gcc # in case some old version has been loaded previously
+  module unload spack gcc hdf5 fftw gsl boost cmake # in case some old versions have been loaded previously
+
+  module load spack/staging/20.2.0
   module load gcc/9
-  module unload hdf5 # in case some old version has been loaded previously
-  module load hdf5/1.8.20-cxx-frt-threadsafe
+  module load hdf5/1.8.21-intel19
   module load fftw
   module load gsl
-  module load boost/1.61_icc
+  module load boost/1.70.0-intel19
   module load cmake
+  module load eigen/3.3.7-intel19
 elif [ "$1" == "--JSC" ]
 then
   export CLUSTER=JSC

@@ -81,10 +81,11 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
 elseif(KCS)
-    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.20-gcc-3dhdqfy/include) # $HDF5_INC
-    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/fftw/3.3.8-intel-wrfank7/include) # $FFTW_INC
-    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/include) # $GSL_INC
-    include_directories(/lrz/sys/libraries/boost/1.61_icc_serial/include) # $BOOST_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/staging/sles12/20.2.0/opt/skylake/hdf5/1.8.21-intel-dl3qq3w/include) # $HDF5_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/staging/sles12/20.2.0/opt/skylake/fftw/3.3.8-intel-ep2gqz4/include) # $FFTW_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/staging/sles12/20.2.0/opt/skylake/gsl/2.5-intel-7ymj233/include) # $GSL_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/staging/sles12/20.2.0/opt/skylake/boost/1.70.0-intel-ic5m2g6/include) # $BOOST_INC
+    include_directories(/dss/dsshome1/lrz/sys/spack/staging/sles12/20.2.0/opt/skylake/eigen/3.3.7-intel-ddkdpcb/include)
 
     target_link_libraries(Keldysh_mfRG $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB} $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
