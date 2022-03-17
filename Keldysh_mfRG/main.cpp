@@ -50,13 +50,12 @@ auto main() -> int {
     */
 
     // SIAM PT4 specific:
-    data_dir = "../Data_SIAM_PT4/integrator_tolerance/";
+    data_dir = "../Data_SIAM_PT4/no-phs/";
     makedir(data_dir);
 
     const rvec lambdas = {999., 199., 99., 19., 9.};
     for (const double lambda : lambdas) {
         PT_Machine<state_datatype> PT_Calculator (4, lambda, true);
-        //PT_Calculator.debug_FOPT_K1();
     }
 
     hello_world();
