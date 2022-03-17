@@ -18,7 +18,7 @@ then
   module load intel intel-mpi/2019.8.254
 
   module load gcc/9
-  module load hdf5/1.8.21-intel19-impi
+  module load hdf5/1.10.6-intel19
   module load fftw
   module load gsl
   module load boost/1.70.0-intel19
