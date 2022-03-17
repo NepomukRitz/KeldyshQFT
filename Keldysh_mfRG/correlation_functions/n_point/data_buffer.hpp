@@ -421,21 +421,19 @@ namespace {
         auto operator()(double wscale_test) -> double {
             // cost function for resolution  =  curvature + magnitude in the tails
 
-            double tail_height;
+            //double tail_height;
             if constexpr(direction == 'b') {
                 frequencies.b.update_Wscale(wscale_test);
-                tail_height = buffer.template analyze_tails<0>(1);
+                //tail_height = buffer.template analyze_tails<0>(1);
             }
             else {
                 frequencies.f.update_Wscale(wscale_test);
-                tail_height = buffer.template analyze_tails<1>(1);
+                //tail_height = buffer.template analyze_tails<1>(1);
             }
 
             assert(false);
             buffer.update_grid(frequencies, buffer_backup);
             //rVert.K1.analyze_tails_K1();
-            maxbuffer = buffer.get_vec().max_norm();
-            print("max of buffer: ", maxbuffer, "\n");
             const double result = buffer.get_curvature_max();
 
             if (verbose) {
@@ -443,7 +441,7 @@ namespace {
 
             }
 
-            return std::max(result, tail_height*0);
+            return result; // std::max(result, tail_height*0);
             //}
         }
 
@@ -461,20 +459,7 @@ namespace {
                     frequencies.f.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
                 }
 
-                }
-                /*
-                std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
-                rvec v = rVert.K1.frequencies.get_freqGrid_b().get_all_frequencies();
-                rvec SE_re = rVert.K1.get_vec().real();
-                rvec SE_im = rVert.K1.get_vec().imag();
-                write_h5_rvecs(filename,
-                               {"v", "SE_re", "SE_im"},
-                               {v, SE_re, SE_im});
-                */
-                return result;
-            }
-        }
-    };
+
 
                 buffer.update_grid(frequencies, buffer_backup);
                 //rVert.K1.analyze_tails_K1();
@@ -558,8 +543,6 @@ public:
     }
 
     void optimize_grid(bool verbose) {
-        double max_Buffer = base_class::get_vec().max_norm();
-        print("max of buffer: ", max_Buffer);
         if (verbose) print("---> Now Optimize grid for ", k, " in direction w:\n");
         frequencyGrid_type frequencies_new = base_class::get_VertexFreqGrid();
 
@@ -574,18 +557,28 @@ public:
 #ifdef HYBRID_GRID
         /// Optimize grid parameters
         const bool superverbose = true;
-        //std::array<double,2> Wscale_f = base_class::get_VertexFreqGrid().f.pos_section_boundaries;
-        std::array<double,2> section_boundaries = base_class::get_VertexFreqGrid().b.pos_section_boundaries;
-        vec<double> start_params = {section_boundaries[0], section_boundaries[1]};
+        const double epsrel = 0.01;
+        const double epsabs = 0.1;
+
+        std::array<double,2> section_boundaries_b = base_class::get_VertexFreqGrid().b.pos_section_boundaries;
+        vec<double> start_params_b = {section_boundaries_b[0], section_boundaries_b[1]};
 
         CostResolution<'b',this_class,frequencyGrid_type> cost_b(*this, verbose);
-        double ini_stepsize = (section_boundaries[0] + section_boundaries[1])/10.;
-        double epsrel = 0.01;
-        double epsabs = 0.1;
-        vec<double> result_b = minimizer_nD(cost_b, start_params, ini_stepsize, 100, verbose, superverbose, 0.1, 0.01);
+        double ini_stepsize_b = (section_boundaries_b[0] + section_boundaries_b[1])/10.;
+        vec<double> result_b = minimizer_nD(cost_b, start_params_b, ini_stepsize_b, 100, verbose, superverbose, epsabs, epsrel);
         frequencies_new.b.update_pos_section_boundaries(std::array<double,2>({result_b[0], result_b[1]}));
         update_grid(frequencies_new, *this);
 
+        if constexpr (numberFrequencyDims > 1) {
+            std::array<double,2> section_boundaries_f = base_class::get_VertexFreqGrid().f.pos_section_boundaries;
+            vec<double> start_params_f = {section_boundaries_f[0], section_boundaries_f[1]};
+
+            CostResolution<'f',this_class,frequencyGrid_type> cost_f(*this, verbose);
+            double ini_stepsize_f = (section_boundaries_f[0] + section_boundaries_f[1])/10.;
+            vec<double> result_f = minimizer_nD(cost_f, start_params_f, ini_stepsize_f, 100, verbose, superverbose, epsabs, epsrel);
+            frequencies_new.f.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
+            update_grid(frequencies_new, *this);
+        }
 
 #else
         /// Optimize grid parameters
