@@ -62,6 +62,7 @@ public:
     vec (InputIterator first, InputIterator last)
      : std::vector<T> (first, last) {};                   // constructor from iterators to copy parts of existing vector
     vec(std::initializer_list<T> m) : std::vector<T> (m) {};   // constructor from initializer list
+    vec(std::vector<T> vect) : std::vector<T> (vect) {};
 
     T operator() (int i) {return (*this)[i]; }	     // operator for element access
     vec<T> operator() (int i1, int i2);              // get a subvector {x[i1], ..., x[i2]}
@@ -405,10 +406,84 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 
-enum K_class {k1=0, k2=1, k2b=2, k3=3};
+
+
+
+/// Keldysh index parameters ///
+#ifdef KELDYSH_FORMALISM
+#ifndef DEBUG_SYMMETRIES
+// Number of independent Keldysh components for the respective diagrammatic class
+const int nK_SE = 2;
+const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
+// for channel p components 1 and 5
+const int nK_K2 = 5;        // For channels a, p and t -channel separately
+const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
+// (independent components in order of appearance)
+#else // DEBUG_SYMMETRIES
+const int nK_SE = 2;
+const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
+                            // for channel p components 1 and 5
+const int nK_K2 = 16;       // For channels a, p and t -channel separately
+const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
+                            // (independent components in order of appearance)
+#endif // DEBUG_SYMMETRIES
+#else // KELDYSH_FORMALISM
+const int nK_SE = 1;
+const int nK_K1 = 1;
+const int nK_K2 = 1;
+const int nK_K3 = 1;
+#endif // KELDYSH_FORMALISM
+
+
+using my_index_t = std::size_t;
+enum K_class {selfenergy = -1, k1=0, k2=1, k2b=2, k3=3};
 std::ostream& operator << (std::ostream& out, K_class k);
-enum symmetryType {symmetric=0, non_symmetric=1};
-std::ostream& operator << (std::ostream& out, symmetryType symmtype);
+enum vertexType {symmetric_full, symmetric_r_irred, non_symmetric_diffleft, non_symmetric_diffright};
+std::ostream& operator << (std::ostream& out, vertexType symmtype);
+
+constexpr size_t rank_SE = 3;
+constexpr size_t rank_K1 = 4;
+constexpr size_t rank_K2 = 5;
+constexpr size_t rank_K3 = 6;
+namespace my_defs {
+    namespace SE {
+        constexpr my_index_t rank = 3;
+        enum names {keldysh, nu, internal};
+        using index_type = std::array<my_index_t, rank>;
+        using dimensions_type = std::array<my_index_t, rank>;
+        using frequencies_type = std::array<double, 1>;
+    }
+    namespace K1 {
+        constexpr my_index_t rank = 4;
+        enum names {spin,  omega,  keldysh,  internal};
+        using index_type = std::array<my_index_t, rank>;
+        using dimensions_type = std::array<my_index_t, rank>;
+        using frequencies_type = std::array<double, 1>;
+    }
+    namespace K2 {
+        constexpr my_index_t rank = 5;
+        enum names {spin,  omega,  nu,  keldysh,  internal};
+        using index_type = std::array<my_index_t, rank>;
+        using dimensions_type = std::array<my_index_t, rank>;
+        using frequencies_type = std::array<double, 2>;
+    }
+    namespace K2b{
+        constexpr my_index_t rank = 5;
+        enum names {spin,  omega,  nup,  keldysh,  internal};
+        using index_type = std::array<my_index_t, rank>;
+        using dimensions_type = std::array<my_index_t, rank>;
+        using frequencies_type = std::array<double, 2>;
+    }
+    namespace K3 {
+        constexpr  my_index_t rank = 6;
+        enum names {spin,  omega,  nu,  nup,  keldysh,  internal};
+        using index_type = std::array<my_index_t, rank>;
+        using dimensions_type = std::array<my_index_t, rank>;
+        using frequencies_type = std::array<double, 3>;
+    }
+}
+
+
 
 /** auxiliary struct that contains all input variables of vertices
  * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
@@ -420,21 +495,111 @@ std::ostream& operator << (std::ostream& out, symmetryType symmtype);
 struct VertexInput{
     int iK;
     double w, v1, v2;
-    int i_in;
-    int spin;
-    char channel;
+    my_index_t i_in;
+    my_index_t spin;
+    char channel_bubble;
     K_class kClass_aim;
-    int iw_r;
+    my_index_t iw_r;
 
-    VertexInput(int iK_in, int spin_in, double w_in, double v1_in, double v2_in, int i_in_in, char channel_in, K_class k_in=k1, int iw_in=0)
+    VertexInput(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)
             :
 //#ifdef KELDYSH_FORMALISM
             iK(iK_in),
 //#else
 //            iK(0),
 //#endif
-            spin(spin_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel(channel_in), kClass_aim(k_in), iw_r(iw_in)
-    {}
+            spin(spin_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel_bubble(channel_in), kClass_aim(k_in), iw_r(iw_in)
+    {assert(iK < 16);}
+
+    template<K_class k>
+    auto get_freqs() const {
+        if constexpr(k == k1) {
+            my_defs::K1::frequencies_type freqs = {w};
+            return freqs;
+        }
+        else
+        if constexpr(k == k2) {
+            my_defs::K2::frequencies_type freqs = {w, v1};
+            return freqs;
+        }
+        else
+        if constexpr(k == k2b) {
+            my_defs::K2b::frequencies_type freqs = {w, v2};
+            return freqs;
+        }
+        else
+        if constexpr(k == k3) {
+            my_defs::K3::frequencies_type freqs = {w, v1, v2};
+            return freqs;
+        }
+        else assert(false);
+    }
+
+    template<K_class k>
+    auto get_indices() const {
+        if constexpr(k == k1) {
+            my_defs::K1::index_type idx;
+            idx[my_defs::K1::spin] = spin;
+            idx[my_defs::K1::keldysh] = iK;
+            idx[my_defs::K1::internal] = i_in;
+
+            return idx;
+        }
+        else
+        if constexpr(k == k2) {
+            my_defs::K2::index_type idx;
+            idx[my_defs::K2::spin] = spin;
+            idx[my_defs::K2::keldysh] = iK;
+            idx[my_defs::K2::internal] = i_in;
+
+            return idx;
+        }
+        else
+        if constexpr(k == k2b) {
+            my_defs::K2b::index_type idx;
+            idx[my_defs::K2b::spin] = spin;
+            idx[my_defs::K2b::keldysh] = iK;
+            idx[my_defs::K2b::internal] = i_in;
+            return idx;
+        }
+        else
+        if constexpr(k == k3) {
+            my_defs::K3::index_type idx;
+            idx[my_defs::K3::spin] = spin;
+            idx[my_defs::K3::keldysh] = iK;
+            idx[my_defs::K3::internal] = i_in;
+            return idx;
+        }
+        else assert(false);
+    }
+};
+
+/**
+ * specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
+ */
+struct IndicesSymmetryTransformations: VertexInput{
+    //int iK;
+    double prefactor = 1.; // fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)
+    bool conjugate = false;
+    bool asymmetry_transform = false;
+    //int spin;
+    //int iw_r;
+    //double w, v1, v2; int i_in;
+    //K_class kClass_aim;     // we only distinguish kClass==k3 from kClass!=k3 --> important for interpolation in K3
+    char channel_rvert;
+    //char channel_bubble;
+    char channel_parametrization = channel_bubble; // W.r.t. which channel is the vertex parametrized? Used for the Hubbard model.
+
+    IndicesSymmetryTransformations(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_rvert_in, K_class k_in, my_index_t iw_in, char channel_bubble_in)
+            : VertexInput(iK_in, spin_in, w_in, v1_in, v2_in, i_in_in, channel_bubble_in, k_in, iw_in), channel_rvert(channel_rvert_in)
+    {assert(iK < 16);}
+
+    IndicesSymmetryTransformations(VertexInput input, char channel_in)
+            : VertexInput(input), channel_rvert(channel_in)
+    {assert(iK < 16);}
+    IndicesSymmetryTransformations(VertexInput&& input, char channel_in)
+            : VertexInput(input), channel_rvert(channel_in)
+    {assert(iK < 16);}
 };
 
 

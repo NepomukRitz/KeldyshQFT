@@ -31,12 +31,6 @@ namespace old_ode_solvers {
 
 
         x_run += dx; // update x
-        //if (save_intermediate_results) {
-        //    add_hdf(filename+"_RKstep1", iteration + 1, x_vals.size(), y1, x_vals); // save intermediate result to hdf5 file
-        //    add_hdf(filename+"_RKstep2", iteration + 1, x_vals.size(), y2, x_vals); // save intermediate result to hdf5 file
-        //    add_hdf(filename+"_RKstep3", iteration + 1, x_vals.size(), y3, x_vals); // save intermediate result to hdf5 file
-        //    add_hdf(filename+"_RKstep4", iteration + 1, x_vals.size(), y4, x_vals); // save intermediate result to hdf5 file
-        //}
     }
 
     /** Perform Runge-Kutta-4 step and write result into output file in a specified Lambda layer, and print info to log */
@@ -56,7 +50,7 @@ namespace old_ode_solvers {
         check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
         if (KELDYSH) check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
         if (filename != "") {
-            add_hdf(filename, iteration + 1,  y_run, x_vals); // save result to hdf5 file
+            add_state_to_hdf(filename, iteration + 1,  y_run); // save result to hdf5 file
         }
     }
 

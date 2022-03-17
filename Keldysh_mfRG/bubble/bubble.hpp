@@ -12,7 +12,6 @@
 #include "../asymptotic_corrections/correction_functions.hpp"            // correction terms due to finite integration range
 #include "../utilities/write_data2file.hpp"      // write vectors into hdf5 file
 #include "../grids/momentum_grid.hpp"            // Momentum grid specific to the 2D Hubbard model
-#include "../correlation_functions/four_point/vertex_data.hpp"
 
 
 /// Class combining two propagators, either GG or GS+SG
@@ -29,7 +28,10 @@ public:
      * @param diff_in      : whether to compute standard (false) or differentiated (true) bubble
      */
     Bubble(const Propagator<Q>& propagatorG, const Propagator<Q>& propagatorS, const bool diff_in)
-        :g(propagatorG), s(propagatorS), diff(diff_in) {};
+        :g(propagatorG), s(propagatorS), diff(diff_in) {
+        g.initInterpolator();
+        s.initInterpolator();
+    };
 
     /**
      * Call operator:
@@ -127,6 +129,27 @@ public:
         return ans;
     }
 
+    template<char ch_bubble>
+    Q value_Matsubara(const double w, const double vpp, int i_in) const {
+        Q result;
+
+        double v1 = convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w);
+        double v2 = convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w);
+        if (diff) {
+            result = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+
+        }
+        else {
+            result = g.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
+
+        }
+        if constexpr(PARTICLE_HOLE_SYMMETRY) {
+            result *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
+        }
+        assert(isfinite(result));
+        return result;
+    }
+
     /**
      * Wrapper for value function above, providing the natural arguments for evaluation of the bubble in each channel:
      * @param iK      : Keldysh index of combined bubble object (0 <= iK <= 15)
@@ -160,6 +183,89 @@ public:
         }
         assert(isfinite(Pival) == true);
         return Pival;
+    }
+
+    template<char ch_bubble>
+    auto convert_to_fermionic_frequencies_1(double vpp, double w) const -> double {
+        if constexpr(KELDYSH || ZERO_T) {
+            if constexpr(ch_bubble == 'p') return vpp + w * 0.5;
+            else return vpp - w * 0.5;
+        }
+        else { // Matsubata zeroT
+            if constexpr(ch_bubble == 'p') return vpp + ceil2bfreq(w * 0.5);
+            else return vpp - floor2bfreq(w * 0.5);
+        }
+    }
+    template<char ch_bubble>
+    auto convert_to_fermionic_frequencies_2(double vpp, double w) const -> double {
+        if constexpr(KELDYSH || ZERO_T) {
+            if constexpr(ch_bubble == 'p') return w * 0.5 - vpp;
+            else return vpp + w * 0.5;
+        }
+        else { // Matsubata zeroT
+            if constexpr(ch_bubble == 'p') return floor2bfreq(w * 0.5) - vpp;
+            else return vpp + ceil2bfreq(w * 0.5);
+        }
+    }
+
+
+    template<char ch_bubble>
+    auto value_vectorized(const double w, const double vpp, const int i_in) const {
+        if constexpr(KELDYSH)
+        {
+            //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
+            using result_type = Eigen::Matrix<Q, 4, 4>;
+            Q GR_1 = g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            Q GA_1 = conj(GR_1);
+            Q GK_1 = g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            Q GR_2 = g.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+            Q GA_2 = conj(GR_2);
+            Q GK_2 = g.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+
+            result_type result;
+
+        if (diff) {
+            Q SR_1 = s.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w),i_in);
+            Q SA_1 = conj(SR_1);
+            Q SK_1 = s.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w),i_in);
+            Q SR_2 = s.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w),i_in);
+            Q SA_2 = conj(SR_2);
+            Q SK_2 = s.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w),i_in);
+            if constexpr(ch_bubble == 'p') {
+                result << 0.,                 0.,                        0.,           SA_1*GA_2+GA_1*SA_2,
+                        0.,                   0.,                 SA_1*GR_2+GA_1*SR_2, SA_1*GK_2+GA_1*SK_2,
+                        0.,                  SR_1*GA_2+GR_1*SA_2,        0.,           SK_1*GA_2+GK_1*SA_2,
+                        SR_1*GR_2+GR_1*SR_2, SR_1*GK_2+GR_1*SK_2, SK_1*GR_2+GK_1*SR_2, SK_1*GK_2+GK_1*SK_2;
+            }
+            else { // a or t -channel
+                result << 0.,                 0.,                        0.,           SA_1*GR_2+GA_1*SR_2,
+                        0.,                  0.,                  SA_1*GA_2+GA_1*SA_2, SA_1*GK_2+GA_1*SK_2,
+                        0.,                  SR_1*GR_2+GR_1*SR_2,        0.,           SK_1*GR_2+GK_1*SR_2,
+                        SR_1*GA_2+GR_1*SA_2, SR_1*GK_2+GR_1*SK_2, SK_1*GA_2+GK_1*SA_2, SK_1*GK_2+GK_1*SK_2;
+            }
+        }
+        else {
+            if constexpr(ch_bubble=='p') {
+                result <<    0.,         0.,         0., GA_1*GA_2,
+                        0.,         0.,       GA_1*GR_2, GA_1*GK_2,
+                        0.,        GR_1*GA_2,        0., GK_1*GA_2,
+                        GR_1*GR_2, GR_1*GK_2, GK_1*GR_2, GK_1*GK_2;
+            }
+            else { // a or t -channel
+                result <<    0.,         0.,       0.,   GA_1*GR_2,
+                        0.,         0.,       GA_1*GA_2, GA_1*GK_2,
+                        0.,        GR_1*GR_2,        0., GK_1*GR_2,
+                        GR_1*GA_2, GR_1*GK_2, GK_1*GA_2, GK_1*GK_2;
+
+                }
+            }
+            return result;
+        }
+        else {
+            Q result = value_Matsubara<ch_bubble>(w, vpp, i_in);
+            return result;
+        }
+
     }
 };
 

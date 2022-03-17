@@ -18,14 +18,12 @@ class State{
     friend State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_intermediate_results);
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool diff);
 
-private:
-    void set_frequency_grid(const State<Q>& state_in);
 public:
     double Lambda;
     SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
 
-    State(): Lambda(std::numeric_limits<double>::infinity()) , vertex(fullvert<Q>(std::numeric_limits<double>::infinity(), true)), selfenergy(SelfEnergy<Q>(std::numeric_limits<double>::infinity())) {
+    State(): Lambda(0.) , vertex(fullvert<Q>(0., true)), selfenergy(SelfEnergy<Q>(0.)) {
 #ifndef NDEBUG
         print("Watch out! Use of default constructor for State<Q>!", true);
 #endif
@@ -37,7 +35,7 @@ public:
 
     /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
     State(const State<Q>& state_in, const double Lambda_in)
-    : selfenergy(SelfEnergy<Q> (state_in.selfenergy.frequencies)), vertex(Vertex<Q> (0)), Lambda(Lambda_in) {vertex.set_frequency_grid(state_in.vertex);};
+    : selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)), vertex(Vertex<Q> (0)), Lambda(Lambda_in) {vertex.set_frequency_grid(state_in.vertex);};
 
     /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
     State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in)
@@ -46,6 +44,7 @@ public:
     void initialize();
     void update_grid(double Lambda);
     void findBestFreqGrid(bool verbose);
+    void set_frequency_grid(const State<Q>& state_in);
 
     // operators containing State objects
     auto operator+= (const State& state) -> State {
@@ -57,12 +56,12 @@ public:
         lhs += rhs;
         return lhs;
     }
-    auto operator+= (const double& alpha) -> State {
+    auto operator+= (const double alpha) -> State {
         this->vertex += alpha;
         this->selfenergy += alpha;
         return (*this);
     }
-    friend State<Q> operator+ (State<Q> lhs, const double& rhs) {
+    friend State<Q> operator+ (State<Q> lhs, const double rhs) {
         lhs += rhs;
         return lhs;
     }
@@ -109,10 +108,10 @@ public:
 
     auto abs() const -> State<Q> {
         State<Q> state_abs = (*this);
-        state_abs.selfenergy.Sigma = selfenergy.Sigma.template abs<Q>();
-        state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
-        state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
-        state_abs.vertex.tvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.template abs<Q>();});
+        state_abs.selfenergy.Sigma.set_vec(selfenergy.Sigma.data.abs());
+        state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
+        state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
+        state_abs.vertex.tvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
         return state_abs;
     }
 
@@ -131,7 +130,7 @@ template <typename Q> void State<Q>::initialize() {
         if (std::abs(glb_Vg) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
             assert (not PARTICLE_HOLE_SYMMETRY);
             Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
-            const double hartree_value = Hartree_Term.compute_Hartree_term();
+            const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing();
             this->selfenergy.initialize(hartree_value, 0.);
         }
     }
@@ -160,7 +159,7 @@ template <typename Q> void State<Q>::findBestFreqGrid(const bool verbose) {
 }
 
 template <typename Q> void State<Q>::check_resolution() const {
-    vertex.half1().check_resolution();
+    vertex.half1().check_vertex_resolution();
     selfenergy.check_resolution();
 }
 

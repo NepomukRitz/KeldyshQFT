@@ -93,8 +93,8 @@ TEST_CASE("K1 BZ Average", "Test that the q-sum over the reduced BZ is normalize
         int i_spin = 0;
 
         for (int i_in = 0; i_in < n_in; ++i_in) {
-            test_vertex_comp.K1.setvert(1., 0, i_spin, 0, i_in);
-            test_vertex_double.K1.setvert(1., 0, i_spin, 0, i_in);
+            test_vertex_comp.K1.setvert(1., i_spin, 0, 0, i_in);
+            test_vertex_double.K1.setvert(1., i_spin, 0, 0, i_in);
         }
 
         comp K1_BZ_sum_comp = test_vertex_comp.K1_BZ_average(0, i_spin, 0);

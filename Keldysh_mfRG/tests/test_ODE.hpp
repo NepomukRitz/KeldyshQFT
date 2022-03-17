@@ -418,12 +418,12 @@ auto rhs_PT4_K1a_nonladder_flow(const State<state_datatype>& Psi, const double L
     bubble_function(PT3_K2a_dot_half1.vertex, PT2_K1p_dot.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT3_K2a_dot_half2.vertex, bare.vertex, PT2_K1p_dot.vertex, G, G, 'a', false);
 
-    // construct non-symmetric K2a with differentiated p bubble
+    // construct non-symmetric_full K2a with differentiated p bubble
     GeneralVertex<state_datatype, non_symmetric> PT3_K2a_dot (n_spin, Lambda);
     PT3_K2a_dot[0].half1() = PT3_K2a_dot_half1.vertex[0].half1();
     PT3_K2a_dot[0].half2() = PT3_K2a_dot_half2.vertex[0].half1();
 
-    // construct non-symmetric K2ab with differentiated p bubble
+    // construct non-symmetric_full K2ab with differentiated p bubble
     GeneralVertex<state_datatype, non_symmetric> PT3_K2ab_dot (n_spin, Lambda);
     PT3_K2ab_dot[0].half1() = PT3_K2a_dot_half2.vertex[0].half1();
     PT3_K2ab_dot[0].half2() = PT3_K2a_dot_half1.vertex[0].half1();
@@ -473,8 +473,8 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
     // compute PT4 K1a non-ladder at initial Lambda
     State<state_datatype> state_ini = compute_PT4_K1a_nonladder(Lambda_i);
     // save result to 0-th layer in hdf5 file (for both flow and direct computation)
-    write_hdf(filename, 0, Lambda_size, state_ini);
-    write_hdf(filename + "_dir", 0, Lambda_size, state_ini);
+    write_state_to_hdf(filename, 0, Lambda_size, state_ini);
+    write_state_to_hdf(filename + "_dir", 0, Lambda_size, state_ini);
 
     // generate Lambda grid
     rvec Lambdas = construct_flow_grid(Lambda_f, Lambda_i, sq_substitution, sq_resubstitution, nODE);
@@ -483,7 +483,7 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
         // compute direct result of PT4 K1a non-ladder at each Lambda step
         State<state_datatype> state_dir = compute_PT4_K1a_nonladder(Lambdas[i]);
         // save result to last layer in hdf5 file
-        add_hdf(filename + "_dir", i, state_dir, Lambdas);
+        add_state_to_hdf(filename + "_dir", i, state_dir);
     }
 
     // compute flow of PT4 K1a non-ladder from initial to final Lambda

@@ -53,7 +53,7 @@ cmake -DWORKSTATION=OFF -D$CLUSTER=ON -S$src_dir -B$build_dir
 TARGET=Keldysh_mfRG
 cmake --build . --target $TARGET -- -j 9
 
-mv ./Keldysh_mfRG $src_dir
+mv ./$TARGET $src_dir
 
 GREEN='\033[1;32m' # green
 NC='\033[0m' # no color
