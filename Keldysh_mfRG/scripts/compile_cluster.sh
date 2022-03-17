@@ -12,8 +12,11 @@ elif [ "$1" == "--KCS" ]
 then
   export CLUSTER=KCS
   module unload spack gcc hdf5 fftw gsl boost cmake # in case some old versions have been loaded previously
+  module unload devEnv/Intel/2019 itac/2019
 
   module load spack/staging/20.2.0
+  module load intel intel-mpi/2019.8.254
+
   module load gcc/9
   module load hdf5/1.8.21-intel19
   module load fftw
