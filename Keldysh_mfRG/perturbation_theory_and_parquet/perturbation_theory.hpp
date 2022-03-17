@@ -392,9 +392,15 @@ template<typename Q>
 void PT_Machine<Q>::write_out_results() const {
     // Always fully retarded components, up-down spin component, and at zero frequencies
     assert(KELDYSH);
-    const std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
-    + std::to_string(U_over_Delta) + "_and_eVg_over_U_" + std::to_string(glb_Vg / glb_U)\
-    + "_and_T_over_Delta_" +std::to_string(glb_T / Delta) + ".h5";
+    std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
+    + std::to_string(U_over_Delta);
+#ifndef PARTICLE_HOLE_SYMM
+    filename += "_and_eVg_over_U_" + std::to_string(glb_Vg / glb_U);
+#endif
+#ifndef ZERO_TEMP
+    filname += "_and_T_over_Delta_" + std::to_string(glb_T / Delta);
+#endif
+    filename += ".h5";
 
     print("Write out results to file " + filename + "...", false);
 

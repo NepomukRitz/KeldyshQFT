@@ -36,7 +36,7 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 
 // Determines whether particle-hole symmetry is assumed
-//#define PARTICLE_HOLE_SYMM
+#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 
@@ -54,7 +54,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.01; //0.01;                     // Temperature
+constexpr double glb_T = 0.01;                    // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
