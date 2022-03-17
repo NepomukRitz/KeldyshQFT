@@ -32,16 +32,16 @@ class Buffer;
     template<typename Q, std::size_t rank>
     class dataContainerBase {
         friend class State<Q>;
-        template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
-        template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
-        template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
-        template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
-        template<typename T> friend rvert<T> operator/ (rvert<T> lhs, const rvert<T>& rhs);
-        template<typename T> friend rvert<T> rvert<T>::operator/= (const rvert<T>& rhs);
-        template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
-        template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
-        template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const double& alpha);
-        template<typename T> friend rvert<T> rvert<T>::operator+= (double alpha);
+        //template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
+        //template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
+        //template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
+        //template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
+        //template<typename T> friend rvert<T> operator/ (rvert<T> lhs, const rvert<T>& rhs);
+        //template<typename T> friend rvert<T> rvert<T>::operator/= (const rvert<T>& rhs);
+        //template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
+        //template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
+        //template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const double& alpha);
+        //template<typename T> friend rvert<T> rvert<T>::operator+= (double alpha);
         friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
 
 
