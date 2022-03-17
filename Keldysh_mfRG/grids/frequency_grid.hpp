@@ -34,7 +34,6 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 template<typename Q> class State; // forward declaration
 
 #define PARAMETRIZED_GRID
-#define HYBRID_GRID
 #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
 #define DENSEGRID
 #endif
@@ -51,8 +50,13 @@ namespace hdf5_impl {
     template<typename gridType> void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose);
 }
 
+enum frequencyGridType {eliasGrid, hybridGrid};
 
-class FrequencyGrid {
+template <frequencyGridType freqGridType>
+class FrequencyGrid {};
+
+template <>
+class FrequencyGrid<eliasGrid> {
     template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type> friend class DataContainer;
     template<typename gridType> friend void hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, int Lambda_it, double Lambda);
     template<typename gridType> friend void hdf5_impl::write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose);
@@ -164,7 +168,8 @@ public:
     auto frequency_from_t(double t) const -> double;    // w(t)
 };
 
-class hybridGrid {
+template<>
+class FrequencyGrid<hybridGrid> {
     template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type>
     friend class DataContainer;
 
@@ -206,7 +211,7 @@ public:
 
 public:
     /// constructor:
-    hybridGrid(const char type_in, const unsigned int diag_class_in, const double Lambda) : type(type_in), diag_class(diag_class_in) {
+    FrequencyGrid(const char type_in, const unsigned int diag_class_in, const double Lambda) : type(type_in), diag_class(diag_class_in) {
 #ifndef DENSEGRID
         assert(KELDYSH || ZERO_T);  // for Matsubara T>0 only allow dense grid
 #endif
@@ -251,9 +256,9 @@ template<K_class k>
 class bufferFrequencyGrid {
 public:
 #ifdef HYBRID_GRID
-     using grid_type = hybridGrid;
+     using grid_type = FrequencyGrid<hybridGrid>;
 #else
-     using grid_type = FrequencyGrid;
+     using grid_type = FrequencyGrid<eliasGrid>;
 #endif
     grid_type b;
     grid_type f;

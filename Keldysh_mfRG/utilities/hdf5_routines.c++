@@ -31,7 +31,7 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<int>(group, "number_of_gridpoints", std::vector<int>({freqgrid.number_of_gridpoints}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(group, "w_upper", std::vector<double>({freqgrid.w_upper}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(group, "w_lower", std::vector<double>({freqgrid.w_lower}), Lambda_it, numberLambdaLayers, file_exists);
-        if constexpr(std::is_same_v<gridType,FrequencyGrid>)
+        if constexpr(std::is_same_v<gridType,FrequencyGrid<eliasGrid>>)
         {
             write_to_hdf_LambdaLayer<double>(group, "Delta_factor", std::vector<double>({freqgrid.Delta_factor}),
                                              Lambda_it, numberLambdaLayers, file_exists);
@@ -41,11 +41,14 @@ namespace hdf5_impl {
                                              numberLambdaLayers, file_exists);
 
         }
-        else {
+        else if constexpr(std::is_same_v<gridType,FrequencyGrid<hybridGrid>>) {
             write_to_hdf_LambdaLayer<double>(group, "pos_section_boundaries0", std::vector<double>({freqgrid.pos_section_boundaries[0]}),
                                              Lambda_it, numberLambdaLayers, file_exists);
             write_to_hdf_LambdaLayer<double>(group, "pos_section_boundaries1", std::vector<double>({freqgrid.pos_section_boundaries[1]}), Lambda_it,
                                              numberLambdaLayers, file_exists);
+        }
+        else {
+            assert(false);
         }
     }
 
@@ -66,7 +69,7 @@ namespace hdf5_impl {
         freqgrid_new.w_upper = w_upper[0];
         freqgrid_new.w_lower = w_lower[0];
 
-        if constexpr(std::is_same_v<gridType,FrequencyGrid>) {
+        if constexpr(std::is_same_v<gridType,FrequencyGrid<eliasGrid>>) {
             std::vector<double> Delta_factor;
             std::vector<double> U_factor;
             std::vector<double> W_scale;
@@ -77,12 +80,15 @@ namespace hdf5_impl {
             freqgrid_new.U_factor = U_factor[0];
             freqgrid_new.W_scale = W_scale[0];
         }
-        else {
+        else if constexpr(std::is_same_v<gridType,FrequencyGrid<hybridGrid>>){
             std::vector<double> pos_section_boundaries0;
             std::vector<double> pos_section_boundaries1;
             read_from_hdf_LambdaLayer<double>(group, "pos_section_boundaries0", pos_section_boundaries0, Lambda_it);
             read_from_hdf_LambdaLayer<double>(group, "pos_section_boundaries1", pos_section_boundaries1, Lambda_it);
             freqgrid_new.pos_section_boundaries = std::array<double,2>({pos_section_boundaries0[0], pos_section_boundaries1[0]});
+        }
+        else {
+            assert(false);
         }
 
 

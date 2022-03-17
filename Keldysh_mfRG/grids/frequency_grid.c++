@@ -7,7 +7,7 @@
  * number_of_gridpoints:                 number of frequency points
  * W_scale:             non-linearity of the t_from_frequency function
  */
-void FrequencyGrid::initialize_grid() {
+void FrequencyGrid<eliasGrid>::initialize_grid() {
     derive_auxiliary_parameters();
     double W;
     for(int i=0; i<number_of_gridpoints; ++i) {
@@ -29,12 +29,12 @@ void FrequencyGrid::initialize_grid() {
 
 
 /// derive auxiliary parameters from essential parameters
-void FrequencyGrid::derive_auxiliary_parameters() {
+void FrequencyGrid<eliasGrid>::derive_auxiliary_parameters() {
     t_upper = t_from_frequency(w_upper);
     t_lower = t_from_frequency(w_lower);
     spacing_auxiliary_gridpoint = (t_upper - t_lower) / ((double) (number_of_gridpoints-1));
 }
-void FrequencyGrid::guess_essential_parameters(double Lambda) {
+void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
     switch (type) {
         case 'b':
             switch (diag_class) {
@@ -145,7 +145,7 @@ void FrequencyGrid::guess_essential_parameters(double Lambda) {
     initialize_grid();
 }
 
-void FrequencyGrid::update_Wscale(double Wscale) {
+void FrequencyGrid<eliasGrid>::update_Wscale(double Wscale) {
     W_scale = Wscale;
     initialize_grid();
 }
@@ -154,7 +154,7 @@ void FrequencyGrid::update_Wscale(double Wscale) {
  *  It rounds down due to the narrowing conversion from double to int.
  *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
  */
-auto FrequencyGrid::get_grid_index(const double w_in) const -> int {
+auto FrequencyGrid<eliasGrid>::get_grid_index(const double w_in) const -> int {
 #ifdef PARAMETRIZED_GRID
     double t = t_from_frequency(w_in);
 
@@ -190,7 +190,7 @@ auto FrequencyGrid::get_grid_index(const double w_in) const -> int {
  *  It rounds down due to the narrowing conversion from double to int.
  *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
  */
-auto FrequencyGrid::get_grid_index(double& t, double w_in) const -> int {
+auto FrequencyGrid<eliasGrid>::get_grid_index(double& t, double w_in) const -> int {
     t = t_from_frequency(w_in);
 #ifdef PARAMETRIZED_GRID
 
@@ -229,7 +229,7 @@ auto FrequencyGrid::get_grid_index(double& t, double w_in) const -> int {
  * @param w     frequency
  * @return
  */
-auto FrequencyGrid::t_from_frequency(double w) const -> double {
+auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
     if (KELDYSH) return grid_transf_v2(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_v3(w, this->W_scale);
@@ -250,7 +250,7 @@ auto FrequencyGrid::t_from_frequency(double w) const -> double {
  * @param t     point on auxiliary grid
  * @return
  */
-auto FrequencyGrid::frequency_from_t(double t) const -> double {
+auto FrequencyGrid<eliasGrid>::frequency_from_t(double t) const -> double {
     if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
@@ -272,7 +272,7 @@ auto FrequencyGrid::frequency_from_t(double t) const -> double {
  * @param wmax      upper bound of frequency grid
  * @param N         relates tmax to t1 by t1=tmax/N (for bosons: (nBOS-1)/2; for fermions: nFER-1)
  */
-auto FrequencyGrid::wscale_from_wmax(double & Wscale, const double w1, const double wmax, const int N) -> double {
+auto FrequencyGrid<eliasGrid>::wscale_from_wmax(double & Wscale, const double w1, const double wmax, const int N) -> double {
     if (!KELDYSH && !ZERO_T){
         if (this->type == 'f' and this->diag_class == 1) {
             return wscale_from_wmax_v3(Wscale, w1, wmax, N);
@@ -413,7 +413,8 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
 
 /*******************************************    HYBRID GRID    *****************************************************/
 
-void hybridGrid::derive_auxiliary_parameters() {
+
+void FrequencyGrid<hybridGrid>::derive_auxiliary_parameters() {
     const double temp = (pos_section_boundaries[0] + 2.*pos_section_boundaries[1]);
     const double temp_quad = temp * w_upper - pos_section_boundaries[1]*pos_section_boundaries[1];
     aux_pos_section_boundaries[0] = (2.*t_upper*pos_section_boundaries[0]*w_upper)                              / temp_quad;
@@ -426,7 +427,7 @@ void hybridGrid::derive_auxiliary_parameters() {
     spacing_auxiliary_gridpoint = 2.*t_upper / ((double)number_of_gridpoints - 1.);
 }
 
-void hybridGrid::guess_essential_parameters(const double Lambda) {
+void FrequencyGrid<hybridGrid>::guess_essential_parameters(const double Lambda) {
     const double Delta = (glb_Gamma + Lambda) * 0.5;
 
     switch (diag_class) {
@@ -485,7 +486,7 @@ void hybridGrid::guess_essential_parameters(const double Lambda) {
     initialize_grid();
 }
 
-double hybridGrid::frequency_from_t(const double t) const {
+double FrequencyGrid<hybridGrid>::frequency_from_t(const double t) const {
     const double t_abs = std::abs(t);
     if (t_abs < aux_pos_section_boundaries[0]) {
         // quaddratic part
@@ -508,7 +509,7 @@ double hybridGrid::frequency_from_t(const double t) const {
 
 }
 
-double hybridGrid::t_from_frequency(const double w) const {
+double FrequencyGrid<hybridGrid>::t_from_frequency(const double w) const {
     const double w_abs = std::abs(w);
     if (w_abs < pos_section_boundaries[0]) {
         // quadratic part
@@ -530,7 +531,7 @@ double hybridGrid::t_from_frequency(const double w) const {
     }
 }
 
-void hybridGrid::initialize_grid() {
+void FrequencyGrid<hybridGrid>::initialize_grid() {
     derive_auxiliary_parameters();
     for (int i = 0; i < number_of_gridpoints; i++) {
         const double t = t_lower + spacing_auxiliary_gridpoint * (double)i;
@@ -548,7 +549,7 @@ void hybridGrid::initialize_grid() {
     if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(all_frequencies) == 0);
 }
 
-int hybridGrid::get_grid_index(const double frequency)const {
+int FrequencyGrid<hybridGrid>::get_grid_index(const double frequency)const {
     /// Do I need this? The next function basically does the same
     const double t = t_from_frequency(frequency);
 #ifdef DENSEGRID
@@ -565,7 +566,7 @@ int hybridGrid::get_grid_index(const double frequency)const {
     return index;
 }
 
-int hybridGrid::get_grid_index(double& t, const double frequency) const{
+int FrequencyGrid<hybridGrid>::get_grid_index(double& t, const double frequency) const{
     t = t_from_frequency(frequency);
 #ifdef DENSEGRID
     auto index = ((int) ((t - t_base) / spacing_auxiliary_gridpoint + 0.1 )) ;
