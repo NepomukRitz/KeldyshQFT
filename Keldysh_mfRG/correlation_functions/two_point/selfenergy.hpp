@@ -285,7 +285,7 @@ public:
     };
 
     auto operator() (double wscale_test) -> double {
-        selfEnergy.Sigma.frequencies.b.update_Wscale(wscale_test);
+        selfEnergy.Sigma.frequencies.primary_grid.update_Wscale(wscale_test);
         selfEnergy.update_grid(selfEnergy.Sigma.frequencies, selfEnergy_backup);
         double result = selfEnergy.get_curvature_maxSE(verbose);
         /*

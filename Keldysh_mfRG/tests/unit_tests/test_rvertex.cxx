@@ -117,12 +117,12 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 #ifndef HYBRID_GRID
         if (INTERPOLATION==linear) {
             auto bfreqK1 = testvertex1.K1.get_VertexFreqGrid();
-            double Wscale_old = bfreqK1.b.W_scale;
-            double wmax_old = bfreqK1.b.w_upper;
+            double Wscale_old = bfreqK1.primary_grid.W_scale;
+            double wmax_old = bfreqK1.primary_grid.w_upper;
             double factor = 0.5;
-            bfreqK1.b.set_w_upper(factor * wmax_old);
-            bfreqK1.b.W_scale = (factor * Wscale_old);
-            bfreqK1.b.initialize_grid();
+            bfreqK1.  primary_grid.set_w_upper(factor * wmax_old);
+            bfreqK1.  primary_grid.W_scale = (factor * Wscale_old);
+            bfreqK1.  primary_grid.initialize_grid();
 
             testvertex1.update_grid<k1>(bfreqK1, testvertex1);
 
@@ -156,17 +156,17 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 #ifndef HYBRID_GRID
             if (INTERPOLATION==linear) {
                 rvert<state_datatype>::freqGrid_type_K2 bfreqK2 = testvertex1.K2.get_VertexFreqGrid();
-                double Wscale_old_b = bfreqK2.b.W_scale;
-                double wmax_old_b = bfreqK2.b.w_upper;
-                double Wscale_old_f = bfreqK2.f.W_scale;
-                double wmax_old_f = bfreqK2.f.w_upper;
+                double Wscale_old_b = bfreqK2.  primary_grid.W_scale;
+                double wmax_old_b = bfreqK2.  primary_grid.w_upper;
+                double Wscale_old_f = bfreqK2.secondary_grid.W_scale;
+                double wmax_old_f = bfreqK2.secondary_grid.w_upper;
                 double factor = 0.5;
-                bfreqK2.b.set_w_upper(factor * wmax_old_b);
-                bfreqK2.b.W_scale = (factor * Wscale_old_b);
-                bfreqK2.f.set_w_upper(factor * wmax_old_f);
-                bfreqK2.f.W_scale = (factor * Wscale_old_f);
-                bfreqK2.b.initialize_grid();
-                bfreqK2.f.initialize_grid();
+                bfreqK2.  primary_grid.set_w_upper(factor * wmax_old_b);
+                bfreqK2.  primary_grid.W_scale = (factor * Wscale_old_b);
+                bfreqK2.secondary_grid.set_w_upper(factor * wmax_old_f);
+                bfreqK2.secondary_grid.W_scale = (factor * Wscale_old_f);
+                bfreqK2.  primary_grid.initialize_grid();
+                bfreqK2.secondary_grid.initialize_grid();
 
                 testvertex1.update_grid<k2>(bfreqK2, testvertex1);
 
@@ -209,17 +209,17 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 #ifndef HYBRID_GRID
             if (INTERPOLATION==linear) {
                 rvert<state_datatype>::freqGrid_type_K3 bfreqK3 = testvertex1.K3.get_VertexFreqGrid();
-                double Wscale_old_b = bfreqK3.b.W_scale;
-                double wmax_old_b = bfreqK3.b.w_upper;
-                double Wscale_old_f = bfreqK3.f.W_scale;
-                double wmax_old_f = bfreqK3.f.w_upper;
+                double Wscale_old_b = bfreqK3.  primary_grid.W_scale;
+                double wmax_old_b = bfreqK3.  primary_grid.w_upper;
+                double Wscale_old_f = bfreqK3.secondary_grid.W_scale;
+                double wmax_old_f = bfreqK3.secondary_grid.w_upper;
                 double factor = 0.5;
-                bfreqK3.b.set_w_upper(factor * wmax_old_b);
-                bfreqK3.b.W_scale = (factor * Wscale_old_b);
-                bfreqK3.f.set_w_upper(factor * wmax_old_f);
-                bfreqK3.f.W_scale = (factor * Wscale_old_f);
-                bfreqK3.b.initialize_grid();
-                bfreqK3.f.initialize_grid();
+                bfreqK3.  primary_grid.set_w_upper(factor * wmax_old_b);
+                bfreqK3.  primary_grid.W_scale = (factor * Wscale_old_b);
+                bfreqK3.secondary_grid.set_w_upper(factor * wmax_old_f);
+                bfreqK3.secondary_grid.W_scale = (factor * Wscale_old_f);
+                bfreqK3.  primary_grid.initialize_grid();
+                bfreqK3.secondary_grid.initialize_grid();
 
                 testvertex1.update_grid<k3>(bfreqK3, testvertex1);
 

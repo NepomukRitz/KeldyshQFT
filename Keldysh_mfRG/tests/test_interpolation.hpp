@@ -68,14 +68,14 @@ public:
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
                        {"v", "integrand_re", "integrand_im", "bfreqs_a"},
-                       {freqs, integrand_re, integrand_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().b.get_all_frequencies()});
+                       {freqs, integrand_re, integrand_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().  primary_grid.get_all_frequencies()});
 
         std::string filename_diff = data_dir + "integrand_diff_K1";
         filename_diff += channel;
         filename_diff += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename_diff,
                        {"v", "integrand_diff_re", "integrand_diff_im", "bfreqs_a"},
-                       {freqs, integrand_diff_re, integrand_diff_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().b.get_all_frequencies()});
+                       {freqs, integrand_diff_re, integrand_diff_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().  primary_grid.get_all_frequencies()});
 
         if constexpr(MAX_DIAG_CLASS > 1) {
             /// K2:
@@ -124,7 +124,7 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_frequency(i);
+            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
@@ -137,7 +137,7 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_frequency(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.b.get_frequency(i+1) * (1-frac);
+            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
@@ -223,7 +223,7 @@ namespace {
 
             State<Q> SOPTstate(Lambda);
             gridType bfreq = SOPTstate.vertex.half1().avertex.get_VertexFreqGrid();
-            bfreq.b.update_Wscale(wscale_test);
+            bfreq.  primary_grid.update_Wscale(wscale_test);
             SOPTstate.vertex.half1().template update_grid<k1>(bfreq, SOPTstate.vertex.half1());
             vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);
 

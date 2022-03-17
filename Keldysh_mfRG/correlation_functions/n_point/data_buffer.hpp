@@ -189,7 +189,7 @@ public:
             Q result;
             if constexpr(k == k1)
             {
-                result = interpolate_nearest1D<Q>(indices.w, base_class::get_VertexFreqGrid().b,
+                result = interpolate_nearest1D<Q>(indices.w, base_class::get_VertexFreqGrid().primary_grid,
                                                   [&](int i) -> Q {
                                                       return base_class::val(indices.spin, i,
                                                                                              indices.iK,
@@ -198,8 +198,8 @@ public:
             }
             else if constexpr(k==k2){
                 result =  interpolate_nearest2D<Q>(indices.w, indices.v1,
-                                                   base_class::get_VertexFreqGrid().b,
-                                                   base_class::get_VertexFreqGrid().f,
+                                                   base_class::get_VertexFreqGrid().  primary_grid,
+                                                   base_class::get_VertexFreqGrid().secondary_grid,
                                                    [&](int i, int j) -> Q {
                                                        return base_class::val(indices.spin, i,
                                                                                               j, indices.iK,
@@ -208,8 +208,8 @@ public:
             }
             else if constexpr(k==k2b){
                 result =  interpolate_nearest2D<Q>(indices.w, indices.v2,
-                                                   base_class::get_VertexFreqGrid().b,
-                                                   base_class::get_VertexFreqGrid().f,
+                                                   base_class::get_VertexFreqGrid().  primary_grid,
+                                                   base_class::get_VertexFreqGrid().secondary_grid,
                                                    [&](int i, int j) -> Q {
                                                        return base_class::val(indices.spin, i,
                                                                                               j, indices.iK,
@@ -219,9 +219,9 @@ public:
             else if constexpr(k == k3)
             {
                 result =  interpolate_nearest3D<Q>(indices.w, indices.v1, indices.v2,
-                                                   base_class::get_VertexFreqGrid().b,
-                                                   base_class::get_VertexFreqGrid().f,
-                                                   base_class::get_VertexFreqGrid().f,
+                                                   base_class::get_VertexFreqGrid().  primary_grid,
+                                                   base_class::get_VertexFreqGrid().secondary_grid,
+                                                   base_class::get_VertexFreqGrid().secondary_grid,
                                                    [&](int i, int j, int l) -> Q {
                                                        return base_class::val(indices.spin, i,
                                                                                               j, l, indices.iK,
@@ -423,11 +423,11 @@ namespace {
 
             //double tail_height;
             if constexpr(direction == 'b') {
-                frequencies.b.update_Wscale(wscale_test);
+                frequencies.  primary_grid.update_Wscale(wscale_test);
                 //tail_height = buffer.template analyze_tails<0>(1);
             }
             else {
-                frequencies.f.update_Wscale(wscale_test);
+                frequencies.secondary_grid.update_Wscale(wscale_test);
                 //tail_height = buffer.template analyze_tails<1>(1);
             }
 
@@ -453,10 +453,10 @@ namespace {
             else {
 
                 if constexpr(direction == 'b') {
-                    frequencies.b.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
+                    frequencies.  primary_grid.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
                 }
                 else {
-                    frequencies.f.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
+                    frequencies.secondary_grid.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
                 }
 
 
@@ -546,7 +546,7 @@ public:
 
         if (verbose) print("---> Now Optimize grid for ", k, " in direction w:\n");
 
-        const bool superverbose = true;
+        const bool superverbose = false;
         const double epsrel_elias = 0.01;
         const double epsabs_elias = 0.0;
         const double epsrel_hybrid = 0.01;
@@ -566,44 +566,44 @@ public:
         /// Optimize grid parameters
         /// in first direction
         if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<eliasGrid>>) {
-            double a_Wscale_b = base_class::get_VertexFreqGrid().b.W_scale / 2.;
-            double m_Wscale_b = base_class::get_VertexFreqGrid().b.W_scale;
-            double b_Wscale_b = base_class::get_VertexFreqGrid().b.W_scale * 2;
+            double a_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale / 2.;
+            double m_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale;
+            double b_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale * 2;
             CostResolution<'b', this_class, frequencyGrid_type> cost_b(*this, verbose);
             minimizer(cost_b, a_Wscale_b, m_Wscale_b, b_Wscale_b, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
-            frequencies_new.b.update_Wscale(m_Wscale_b);
+            frequencies_new.  primary_grid.update_Wscale(m_Wscale_b);
 
         }
         else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<hybridGrid>>) {
 
-            std::array<double,2> section_boundaries_b = base_class::get_VertexFreqGrid().b.pos_section_boundaries;
+            std::array<double,2> section_boundaries_b = base_class::get_VertexFreqGrid().  primary_grid.pos_section_boundaries;
             vec<double> start_params_b = {section_boundaries_b[0], section_boundaries_b[1]};
 
             CostResolution<'b',this_class,frequencyGrid_type> cost_b(*this, verbose);
             double ini_stepsize_b = (section_boundaries_b[0] + section_boundaries_b[1])/10.;
             vec<double> result_b = minimizer_nD(cost_b, start_params_b, ini_stepsize_b, 100, verbose, superverbose, epsabs_hybrid, epsrel_hybrid);
-            frequencies_new.b.update_pos_section_boundaries(std::array<double,2>({result_b[0], result_b[1]}));
+            frequencies_new.  primary_grid.update_pos_section_boundaries(std::array<double,2>({result_b[0], result_b[1]}));
         }
         update_grid(frequencies_new, *this);
 
         /// in other direction(s)
         if constexpr (numberFrequencyDims > 1) {
             if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<eliasGrid>>) {
-                double a_Wscale_f = base_class::get_VertexFreqGrid().f.W_scale / 2.;
-                double m_Wscale_f = base_class::get_VertexFreqGrid().f.W_scale;
-                double b_Wscale_f = base_class::get_VertexFreqGrid().f.W_scale * 2;
+                double a_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale / 2.;
+                double m_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale;
+                double b_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale * 2;
                 CostResolution<'f', this_class, frequencyGrid_type> cost_f(*this, verbose);
                 minimizer(cost_f, a_Wscale_f, m_Wscale_f, b_Wscale_f, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
-                frequencies_new.f.update_Wscale(m_Wscale_f);
+                frequencies_new.secondary_grid.update_Wscale(m_Wscale_f);
             }
             else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<hybridGrid>>) {
-                std::array<double,2> section_boundaries_f = base_class::get_VertexFreqGrid().f.pos_section_boundaries;
+                std::array<double,2> section_boundaries_f = base_class::get_VertexFreqGrid().secondary_grid.pos_section_boundaries;
                 vec<double> start_params_f = {section_boundaries_f[0], section_boundaries_f[1]};
 
                 CostResolution<'f',this_class,frequencyGrid_type> cost_f(*this, verbose);
                 double ini_stepsize_f = (section_boundaries_f[0] + section_boundaries_f[1])/10.;
                 vec<double> result_f = minimizer_nD(cost_f, start_params_f, ini_stepsize_f, 100, verbose, superverbose, epsabs_hybrid, epsrel_hybrid);
-                frequencies_new.f.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
+                frequencies_new.secondary_grid.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
             }
         }
         update_grid(frequencies_new, *this);

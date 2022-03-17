@@ -919,11 +919,11 @@ template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) c
     write_to_hdf(file, "K2b"+ ch, K2b_symmetry_expanded.get_vec(), false);
     write_to_hdf(file, "K3" + ch, K3_symmetry_expanded .get_vec(), false);
 
-    write_to_hdf(file, "bfreqs1", K1_symmetry_expanded.get_VertexFreqGrid().b.get_all_frequencies(), false);
-    write_to_hdf(file, "bfreqs2", K2_symmetry_expanded.get_VertexFreqGrid().b.get_all_frequencies(), false);
-    write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().f.get_all_frequencies(), false);
-    write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().b.get_all_frequencies(), false);
-    write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().f.get_all_frequencies(), false);
+    write_to_hdf(file, "bfreqs1", K1_symmetry_expanded.get_VertexFreqGrid().  primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "bfreqs2", K2_symmetry_expanded.get_VertexFreqGrid().  primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().secondary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().  primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().secondary_grid.get_all_frequencies(), false);
 
     file.close();
 

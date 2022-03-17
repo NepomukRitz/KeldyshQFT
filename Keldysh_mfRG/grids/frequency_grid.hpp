@@ -260,8 +260,8 @@ public:
 #else
      using grid_type = FrequencyGrid<eliasGrid>;
 #endif
-    grid_type b;
-    grid_type f;
+    grid_type   primary_grid;
+    grid_type secondary_grid;
 
     int get_diagclass() {
         if constexpr(k == selfenergy or k == k1) return 1;
@@ -269,38 +269,38 @@ public:
         else return 3;
     }
 
-    bufferFrequencyGrid() :  b(k == selfenergy ? 'f' : 'b', get_diagclass(), 0), f('f', get_diagclass(), 0) {};
-    bufferFrequencyGrid(double Lambda) : b(k == selfenergy ? 'f' : 'b', get_diagclass(), Lambda), f('f', get_diagclass(), Lambda) {};
+    bufferFrequencyGrid() :    primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), 0), secondary_grid('f', get_diagclass(), 0) {};
+    bufferFrequencyGrid(double Lambda) :   primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), Lambda), secondary_grid('f', get_diagclass(), Lambda) {};
 
     void guess_essential_parameters(double Lambda) {
-        b.guess_essential_parameters(Lambda);
-        if constexpr(k != k1 and k != selfenergy)f.guess_essential_parameters(Lambda);
+          primary_grid.guess_essential_parameters(Lambda);
+        if constexpr(k != k1 and k != selfenergy)secondary_grid.guess_essential_parameters(Lambda);
     }
 
     /// getter functions:
-    auto get_freqGrid_b() const -> const grid_type& {return b;};
-    auto get_freqGrid_f() const -> const grid_type& {if constexpr(k != k1 and k != selfenergy)return f; else assert(false);};//, "Exists no fermionic grid");};
-    const double& get_wlower_b() const {return b.w_lower;};
-    const double& get_wupper_b() const {return b.w_upper;};
-    const double& get_wlower_f() const {if constexpr(k != k1 and k != selfenergy) return f.w_lower; else assert(false);};//, "Exists no second grid");};
-    const double& get_wupper_f() const {if constexpr(k != k1 and k != selfenergy) return f.w_upper; else assert(false);};//, "Exists no second grid");};
-    const double& get_tlower_b_aux() const {return b.t_lower;};
-    const double& get_tupper_b_aux() const {return b.t_upper;};
-    const double& get_tlower_f_aux() const {if constexpr(k != k1 and k != selfenergy) return f.t_lower; else assert(false);};//, "Exists no second grid");};
-    const double& get_tupper_f_aux() const {if constexpr(k != k1 and k != selfenergy) return f.t_upper; else assert(false);};//, "Exists no second grid");};
+    auto get_freqGrid_b() const -> const grid_type& {return   primary_grid;};
+    auto get_freqGrid_f() const -> const grid_type& {if constexpr(k != k1 and k != selfenergy)return secondary_grid; else assert(false);};//, "Exists no fermionic grid");};
+    const double& get_wlower_b() const {return   primary_grid.w_lower;};
+    const double& get_wupper_b() const {return   primary_grid.w_upper;};
+    const double& get_wlower_f() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.w_lower; else assert(false);};//, "Exists no second grid");};
+    const double& get_wupper_f() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.w_upper; else assert(false);};//, "Exists no second grid");};
+    const double& get_tlower_b_aux() const {return   primary_grid.t_lower;};
+    const double& get_tupper_b_aux() const {return   primary_grid.t_upper;};
+    const double& get_tlower_f_aux() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.t_lower; else assert(false);};//, "Exists no second grid");};
+    const double& get_tupper_f_aux() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.t_upper; else assert(false);};//, "Exists no second grid");};
 
     /// Check whether frequencies are in the frequency box:
     bool is_in_box(std::array<double,1> freqs) const {
-        if constexpr(k == k1 or k == selfenergy) return std::abs(freqs[0]) < b.w_upper + inter_tol;
+        if constexpr(k == k1 or k == selfenergy) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     bool is_in_box(std::array<double,2> freqs) const {
         K2_convert2internalFreqs(freqs[0], freqs[1]);
-        if constexpr(k == k2) return std::abs(freqs[0]) < b.w_upper + inter_tol and std::abs(freqs[1]) < f.w_upper + inter_tol;
+        if constexpr(k == k2) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     bool is_in_box(std::array<double,3> freqs) const {
-        if constexpr(k == k3) return std::abs(freqs[0]) < b.w_upper + inter_tol and std::abs(freqs[1]) < f.w_upper + inter_tol and std::abs(freqs[2]) < f.w_upper + inter_tol;
+        if constexpr(k == k3) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol and std::abs(freqs[2]) < secondary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
 
@@ -308,10 +308,10 @@ public:
     void get_grid_index(std::array<my_index_t,1>& idx, std::array<double,1>& dw_normalized, const std::array<double,1>& freqs) const {
         if constexpr(k == k1 or k == selfenergy)  {
             double w = freqs[0];
-            int iw = b.get_grid_index(w);
+            int iw =   primary_grid.get_grid_index(w);
             idx[0] = iw;
-            double w_low = b.get_frequency(iw);
-            double w_high= b.get_frequency(iw+1);
+            double w_low =   primary_grid.get_frequency(iw);
+            double w_high=   primary_grid.get_frequency(iw+1);
             dw_normalized[0] = (w - w_low) / (w_high - w_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
@@ -323,14 +323,14 @@ public:
     #ifdef ROTATEK2
             K2_convert2internalFreqs(w, v);
     #endif
-            int iw = b.get_grid_index(w);
-            int iv = f.get_grid_index(v);
+            int iw =   primary_grid.get_grid_index(w);
+            int iv = secondary_grid.get_grid_index(v);
             idx[0] = iw;
             idx[1] = iv;
-            double w_low = b.get_frequency(iw);
-            double w_high= b.get_frequency(iw+1);
-            double v_low = f.get_frequency(iv);
-            double v_high= f.get_frequency(iv+1);
+            double w_low =   primary_grid.get_frequency(iw);
+            double w_high=   primary_grid.get_frequency(iw+1);
+            double v_low = secondary_grid.get_frequency(iv);
+            double v_high= secondary_grid.get_frequency(iv+1);
             dw_normalized[0] = (w - w_low) / (w_high - w_low);
             dw_normalized[1] = (v - v_low) / (v_high - v_low);
         }
@@ -341,18 +341,18 @@ public:
             double w  = freqs[0];
             double v  = freqs[1];
             double vp = freqs[2];
-            int iw = b.get_grid_index(freqs[0]);
-            int iv = f.get_grid_index(freqs[1]);
-            int ivp= f.get_grid_index(freqs[2]);
+            int iw =   primary_grid.get_grid_index(freqs[0]);
+            int iv = secondary_grid.get_grid_index(freqs[1]);
+            int ivp= secondary_grid.get_grid_index(freqs[2]);
             idx[0] = iw;
             idx[1] = iv;
             idx[2] = ivp;
-            double w_low = b.get_frequency(iw);
-            double w_high= b.get_frequency(iw+1);
-            double v_low = f.get_frequency(iv);
-            double v_high= f.get_frequency(iv+1);
-            double vp_low =f.get_frequency(ivp);
-            double vp_high=f.get_frequency(ivp+1);
+            double w_low =   primary_grid.get_frequency(iw);
+            double w_high=   primary_grid.get_frequency(iw+1);
+            double v_low = secondary_grid.get_frequency(iv);
+            double v_high= secondary_grid.get_frequency(iv+1);
+            double vp_low =secondary_grid.get_frequency(ivp);
+            double vp_high=secondary_grid.get_frequency(ivp+1);
             dw_normalized[0] = (w - w_low) / (w_high - w_low);
             dw_normalized[1] = (v - v_low) / (v_high - v_low);
             dw_normalized[2] = (vp-vp_low) / (vp_high-vp_low);
@@ -364,10 +364,10 @@ public:
         if constexpr(k == k1 or k == selfenergy)  {
             //double w = freqs[0];
             double tw;
-            int iw = b.get_grid_index(tw, freqs[0]);
+            int iw =   primary_grid.get_grid_index(tw, freqs[0]);
             idx[0] = iw;
-            double tw_low = b.get_auxiliary_gridpoint(iw);
-            double tw_high= b.get_auxiliary_gridpoint(iw+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
             dt_normalized[0] = (tw - tw_low) / (tw_high - tw_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
@@ -380,14 +380,14 @@ public:
             K2_convert2internalFreqs(w, v);
     #endif
             double tw, tv;
-            int iw = b.get_grid_index(tw, w);
-            int iv = f.get_grid_index(tv, v);
+            int iw =   primary_grid.get_grid_index(tw, w);
+            int iv = secondary_grid.get_grid_index(tv, v);
             idx[0] = iw;
             idx[1] = iv;
-            double tw_low = b.get_auxiliary_gridpoint(iw);
-            double tw_high= b.get_auxiliary_gridpoint(iw+1);
-            double tv_low = f.get_auxiliary_gridpoint(iv);
-            double tv_high= f.get_auxiliary_gridpoint(iv+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
             dt_normalized[0] = (tw - tw_low) / (tw_high - tw_low);
             dt_normalized[1] = (tv - tv_low) / (tv_high - tv_low);
         }
@@ -399,18 +399,18 @@ public:
             //double v  = freqs[1];
             //double vp = freqs[2];
             double tw, tv, tvp;
-            int iw = b.get_grid_index(tw, freqs[0]);
-            int iv = f.get_grid_index(tv, freqs[1]);
-            int ivp= f.get_grid_index(tvp,freqs[2]);
+            int iw =   primary_grid.get_grid_index(tw, freqs[0]);
+            int iv = secondary_grid.get_grid_index(tv, freqs[1]);
+            int ivp= secondary_grid.get_grid_index(tvp,freqs[2]);
             idx[0] = iw;
             idx[1] = iv;
             idx[2] = ivp;
-            double tw_low = b.get_auxiliary_gridpoint(iw);
-            double tw_high= b.get_auxiliary_gridpoint(iw+1);
-            double tv_low = f.get_auxiliary_gridpoint(iv);
-            double tv_high= f.get_auxiliary_gridpoint(iv+1);
-            double tvp_low =f.get_auxiliary_gridpoint(ivp);
-            double tvp_high=f.get_auxiliary_gridpoint(ivp+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
+            double tvp_low =secondary_grid.get_auxiliary_gridpoint(ivp);
+            double tvp_high=secondary_grid.get_auxiliary_gridpoint(ivp+1);
             dt_normalized[0] = (tw - tw_low) / (tw_high - tw_low);
             dt_normalized[1] = (tv - tv_low) / (tv_high - tv_low);
             dt_normalized[2] = (tvp-tvp_low) / (tvp_high-tvp_low);
@@ -422,10 +422,10 @@ public:
         if constexpr(k == k1 or k == selfenergy)  {
             //double w = freqs[0];
             double tw;
-            int iw = b.get_grid_index(tw, freqs[0]);
+            int iw =   primary_grid.get_grid_index(tw, freqs[0]);
             idx[0] = iw;
-            double tw_low = b.get_auxiliary_gridpoint(iw);
-            double tw_high= b.get_auxiliary_gridpoint(iw+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
@@ -438,14 +438,14 @@ public:
             K2_convert2internalFreqs(w, v);
     #endif
             double tw, tv;
-            int iw = b.get_grid_index(tw, w);
-            int iv = f.get_grid_index(tv, v);
+            int iw =   primary_grid.get_grid_index(tw, w);
+            int iv = secondary_grid.get_grid_index(tv, v);
             idx[0] = iw;
             idx[1] = iv;
-            double tw_low = b.get_auxiliary_gridpoint(iw);
-            double tw_high= b.get_auxiliary_gridpoint(iw+1);
-            double tv_low = f.get_auxiliary_gridpoint(iv);
-            double tv_high= f.get_auxiliary_gridpoint(iv+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
             dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
         }
@@ -457,18 +457,18 @@ public:
             //double v  = freqs[1];
             //double vp = freqs[2];
             double tw, tv, tvp;
-            int iw = b.get_grid_index(tw, freqs[0]);
-            int iv = f.get_grid_index(tv, freqs[1]);
-            int ivp= f.get_grid_index(tvp,freqs[2]);
+            int iw =   primary_grid.get_grid_index(tw, freqs[0]);
+            int iv = secondary_grid.get_grid_index(tv, freqs[1]);
+            int ivp= secondary_grid.get_grid_index(tvp,freqs[2]);
             idx[0] = iw;
             idx[1] = iv;
             idx[2] = ivp;
-            double tw_low = b.get_auxiliary_gridpoint(iw);
-            double tw_high= b.get_auxiliary_gridpoint(iw+1);
-            double tv_low = f.get_auxiliary_gridpoint(iv);
-            double tv_high= f.get_auxiliary_gridpoint(iv+1);
-            double tvp_low =f.get_auxiliary_gridpoint(ivp);
-            double tvp_high=f.get_auxiliary_gridpoint(ivp+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
+            double tvp_low =secondary_grid.get_auxiliary_gridpoint(ivp);
+            double tvp_high=secondary_grid.get_auxiliary_gridpoint(ivp+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
             dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
             dt_unnormalized[2] = (tvp-tvp_low); // / (tvp_high-tvp_low);
@@ -478,23 +478,23 @@ public:
 
     /// get frequencies corresponding to a set of grid indices
     void get_freqs_w(double &w, const int iw) const {
-        if constexpr(k == k1 or k == selfenergy) w = b.get_frequency(iw);
+        if constexpr(k == k1 or k == selfenergy) w =   primary_grid.get_frequency(iw);
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_w(double &w, double &v, const int iw, const int iv) const {
         if constexpr(k == k2)
         {
-            w = b.get_frequency(iw);
-            v = f.get_frequency(iv);
+            w =   primary_grid.get_frequency(iw);
+            v = secondary_grid.get_frequency(iv);
             K2_convert2naturalFreqs(w, v);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_w(double &w, double &v,  double &vp, const int iw, const int iv, const int ivp) const {
         if constexpr(k == k3) {
-            w = b.get_frequency(iw);
-            v = f.get_frequency(iv);
-            vp = f.get_frequency(ivp);
+            w =   primary_grid.get_frequency(iw);
+            v = secondary_grid.get_frequency(iv);
+            vp = secondary_grid.get_frequency(ivp);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
@@ -516,25 +516,25 @@ public:
 
     /// only used in test_functions:
     void get_freqs_aux(double &w, const int iw) const {
-        if constexpr(k == k1 or k == selfenergy) w = b.get_auxiliary_gridpoint(iw);
+        if constexpr(k == k1 or k == selfenergy) w =   primary_grid.get_auxiliary_gridpoint(iw);
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_aux(double &w, double &v, const int iw, const int iv) const {
         if constexpr(k == k2) {
-            w = b.get_auxiliary_gridpoint(iw);
-            v = f.get_auxiliary_gridpoint(iv);
+            w =   primary_grid.get_auxiliary_gridpoint(iw);
+            v = secondary_grid.get_auxiliary_gridpoint(iv);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_aux(double &w, double &v, double &vp, const int iw, const int iv, const int ivp) const {
         if constexpr(k == k3) {
-            w = b.get_auxiliary_gridpoint(iw);
-            v = f.get_auxiliary_gridpoint(iv);
-            vp= f.get_auxiliary_gridpoint(ivp);
+            w =   primary_grid.get_auxiliary_gridpoint(iw);
+            v = secondary_grid.get_auxiliary_gridpoint(iv);
+            vp= secondary_grid.get_auxiliary_gridpoint(ivp);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    auto gridtransf_f(double w) const -> double {if constexpr(k != k1 and k != selfenergy) return f.t_from_frequency(w); else assert(false);};//, "Exists no second grid");};
+    auto gridtransf_f(double w) const -> double {if constexpr(k != k1 and k != selfenergy) return secondary_grid.t_from_frequency(w); else assert(false);};//, "Exists no second grid");};
 
 };
 

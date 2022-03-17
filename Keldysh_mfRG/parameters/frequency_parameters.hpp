@@ -8,7 +8,7 @@
 // 1: log-grid, 2: linear grid, 3: non-linear grid, 4: tangent grid
 #define GRID 3
 
-//#define HYBRID_GRID   // if defined: use hybrid grid;          if undefined: use Elias' grid
+#define HYBRID_GRID   // if defined: use hybrid grid;          if undefined: use Elias' grid
 #define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
@@ -19,10 +19,10 @@
 constexpr int nBOS = 201;
 constexpr int nFER = 200;
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 101;//nBOS;
-constexpr int nFER2 = 101;//nFER;
-constexpr int nBOS3 = 51; //nBOS;
-constexpr int nFER3 = 51; //nFER;
+constexpr int nBOS2 = 51;//nBOS;
+constexpr int nFER2 = 51;//nFER;
+constexpr int nBOS3 = 21; //nBOS;
+constexpr int nFER3 = 21; //nFER;
 //#else
 const int COUNT = 4;
 //constexpr int nBOS = COUNT * 64 * 2 + 1;

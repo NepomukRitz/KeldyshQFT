@@ -157,8 +157,8 @@ void BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmet
         vmax = dgamma.avertex().K1.frequencies.get_wupper_b();
     }
     else{
-        vmin = std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.b.w_lower);
-        vmax = std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.b.w_upper);
+        vmin = std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
+        vmax = std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_upper);
     }
 
     if constexpr(MAX_DIAG_CLASS >= 2){

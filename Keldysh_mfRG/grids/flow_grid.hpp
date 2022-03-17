@@ -9,7 +9,7 @@
 #include <algorithm>               // needed for std::find_if
 #include <cmath>                   // for log10, pow
 
-// TODO(low): make flow grid more flexible (c.f. Marcel; also ask Marc about adaptive flow grid?)
+// TODO(low): make flow grid more flexible (c.secondary_grid. Marcel; also ask Marc about adaptive flow grid?)
 
 namespace flowgrid {
 

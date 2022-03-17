@@ -116,7 +116,7 @@ namespace saveIntegrand {
         const bool diff = true;
         Bubble<Q> dPi(G, dG, diff);
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -147,7 +147,7 @@ namespace saveIntegrand {
         const bool diff = true;
         Bubble<Q> dPi(G, dG, diff);
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -171,7 +171,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, dPsi.vertex, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -197,7 +197,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, dPsi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -230,7 +230,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dGammaR.set_only_same_channel(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, dGammaR, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -262,7 +262,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dGammaL.set_only_same_channel(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, dGammaL, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -287,7 +287,7 @@ namespace saveIntegrand {
         const bool all_spins = true;
 
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         IntegrandSE<Q,symmetric_full> integrandR = IntegrandSE<Q,symmetric_full> ('r', Psi.vertex, S, v, i_in, all_spins);
         integrandR.save_integrand(freqs);
         if (KELDYSH) {

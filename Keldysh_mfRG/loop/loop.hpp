@@ -30,7 +30,7 @@ class LoopCalculator{
     const int spin = 0;
     const int i_in;
 
-    const double v = self.Sigma.frequencies.b.get_frequency(iv);
+    const double v = self.Sigma.frequencies.primary_grid.get_frequency(iv);
 
     double v_lower, v_upper;
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
@@ -71,8 +71,8 @@ void LoopCalculator<Q,vertType>::set_v_limits() {
     /// (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v',
     /// needing both extensions of the integration domain in both directions
     if (KELDYSH || ZERO_T){
-        v_lower = prop.selfenergy.Sigma.frequencies.b.w_lower;
-        v_upper = prop.selfenergy.Sigma.frequencies.b.w_upper;
+        v_lower = prop.selfenergy.Sigma.frequencies.primary_grid.w_lower;
+        v_upper = prop.selfenergy.Sigma.frequencies.primary_grid.w_upper;
     }
     else{
         // make sure that the limits for the Matsubara sum are fermionic

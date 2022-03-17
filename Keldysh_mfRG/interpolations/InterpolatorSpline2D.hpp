@@ -24,7 +24,7 @@ class Spline;
  * SplineK2 interpolation
  * @tparam rank             number of dimensions (of dataContainer)
  * @tparam pos_first_freq_index     position of first frequency index (second frequency index is as position pos_first_freq_index+1)
- * @tparam DataContainer  contains vertex data and frequency grids frequencies.b and frequencies.f
+ * @tparam DataContainer  contains vertex data and frequency grids frequencies.  primary_grid and frequencies.secondary_grid
  *                          computes partial derivative of data in x, y and x&y direction
  * @tparam Q              double or comp
  */
@@ -95,16 +95,16 @@ void Spline<Q,rank,2,pos_first_freq_index,DataContainer>::get_coeffs_from_derivs
             4, -4, -4,  4,  2,  2, -2, -2,  2, -2,  2, -2,  1,  1,  1,  1;
 
 
-    const size_t n_x = DataContainer::frequencies.b.number_of_gridpoints;
-    const size_t n_y = DataContainer::frequencies.f.number_of_gridpoints;
+    const size_t n_x = DataContainer::frequencies.  primary_grid.number_of_gridpoints;
+    const size_t n_y = DataContainer::frequencies.secondary_grid.number_of_gridpoints;
     const size_t n_nonx = n/n_x/n_y;
 
     for (size_t i = 0; i < n_nonx; i++) {
         for (size_t j = 0; j < n_x-1; j++) {
             for (size_t k = 0; k < n_y-1; k++) {
 
-                const double dw = DataContainer::frequencies.b.get_auxiliary_gridpoint(j+1) - DataContainer::frequencies.b.get_auxiliary_gridpoint(j);
-                const double dv = DataContainer::frequencies.f.get_auxiliary_gridpoint(k+1) - DataContainer::frequencies.f.get_auxiliary_gridpoint(k);
+                const double dw = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j+1) - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j);
+                const double dv = DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(k+1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(k);
                 int idx_base_base = ::rotateFlatIndex(i*n_x*n_y + (j  )*n_y + k  , DataContainer::get_dims(), pos_first_freq_index+1);
                 int idx_plus_base = ::rotateFlatIndex(i*n_x*n_y + (j+1)*n_y + k  , DataContainer::get_dims(), pos_first_freq_index+1);
                 int idx_base_plus = ::rotateFlatIndex(i*n_x*n_y + (j  )*n_y + k+1, DataContainer::get_dims(), pos_first_freq_index+1);
@@ -202,8 +202,8 @@ void Spline<Q,rank,2,pos_first_freq_index,DataContainer>::initInterpolator() con
 
 template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
 Eigen::Matrix<Q,16,1> Spline<Q,rank,2,pos_first_freq_index,DataContainer>::get_weights (const std::array<my_index_t,2>& freq_idx, const std::array<double,2>& dt_unnormalized) const {
-    //const double dw = DataContainer::frequencies.b.get_auxiliary_gridpoint(iw+1) - DataContainer::frequencies.b.get_auxiliary_gridpoint(iw);
-    //const double dv = DataContainer::frequencies.f.get_auxiliary_gridpoint(iv+1) - DataContainer::frequencies.f.get_auxiliary_gridpoint(iv);
+    //const double dw = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(iw+1) - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(iw);
+    //const double dv = DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv+1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv);
     const double hw = dt_unnormalized[0];
     const double hv = dt_unnormalized[1];
 
@@ -236,9 +236,9 @@ result_type Spline<Q,rank,2,pos_first_freq_index,DataContainer>::interpolate_spl
     DataContainer::frequencies.get_auxgrid_index_unnormalized(freq_idx, dt_unnormalized, frequencies);
 
     //double tw;
-    //const size_t iw=DataContainer::frequencies.b.get_grid_index(tw, frequencies[0]);
+    //const size_t iw=DataContainer::frequencies.  primary_grid.get_grid_index(tw, frequencies[0]);
     //double tv;
-    //const size_t iv=DataContainer::frequencies.f.get_grid_index(tv, frequencies[1]);
+    //const size_t iv=DataContainer::frequencies.secondary_grid.get_grid_index(tv, frequencies[1]);
     index_type index_temp = indices;
     index_temp[pos_first_freq_index  ] = freq_idx[0];
     index_temp[pos_first_freq_index+1] = freq_idx[1];
