@@ -19,6 +19,7 @@ then
 
   module load gcc/9
   module load hdf5/1.8.21-gcc8
+  module load fftw
   module load gsl
   module load boost/1.70.0-intel19
   module load cmake
