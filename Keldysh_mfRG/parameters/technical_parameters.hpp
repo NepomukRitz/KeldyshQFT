@@ -33,7 +33,7 @@ constexpr double converged_tol = 1e-7;
 // 4: GSL
 // 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
 // 6: PAID with Clenshaw-Curtis rule
-constexpr int INTEGRATOR_TYPE = 4;
+constexpr int INTEGRATOR_TYPE = 5;
 
 //Integrator tolerance
 constexpr double integrator_tol = 1e-8;

@@ -436,10 +436,9 @@ namespace {
             //rVert.K1.analyze_tails_K1();
             const double result = buffer.get_curvature_max();
 
-            if (verbose) {
-                print( "max. Curvature in buffer:\t \t", result , "\t\t with wscale = " , wscale_test , "\n");
-
-            }
+            //if (verbose) {
+            //    print( "max. Curvature in buffer:\t \t", result , "\t\t with wscale = " , wscale_test , "\n");
+            //}
 
             return result; // std::max(result, tail_height*0);
             //}

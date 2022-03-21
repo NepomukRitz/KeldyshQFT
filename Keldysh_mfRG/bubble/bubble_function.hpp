@@ -367,9 +367,10 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     double vmin_temp = vmin;
     double vmax_temp = vmax;
 #ifndef SWITCH_SUM_N_INTEGRAL
+    static_assert(n_spin == 1, "SWITCH_SUM_N_INTEGRAL not ready for DEBUG_SYMMETRIES.");
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
-        if ((channel == 't' and ispin == 0) or (channel == 'a' and ispin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
+        if (channel == 't') n_spin_sum = 3;  // in the t channel, spin sum includes three terms
         for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
 #else
             int i2 = 0;

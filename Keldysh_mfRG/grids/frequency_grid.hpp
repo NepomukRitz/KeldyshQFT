@@ -190,10 +190,10 @@ public:
     int diag_class;
 
     /// auxiliary grid parameters:
-    double t_upper = 1.;                    // largest point on auxiliary grid
-    double t_lower =-1.;                    // smallest point on auxiliary grid
+    double t_upper;                    // largest point on auxiliary grid
+    double t_lower;                    // smallest point on auxiliary grid
     std::array<double,2> aux_pos_section_boundaries;
-    double spacing_auxiliary_gridpoint;     // linear spacing on auxiliary grid for t
+    double spacing_auxiliary_gridpoint=1.;  // linear spacing on auxiliary grid for t
     double recip_curvature_quad;            // defines quadratic function f(t) = t^2 / recip_curvature_quad
     double recip_slope_lin;                 // defines linear function f(t) = pos_section_boundaries[0] + (t - aux_pos_section_boundaries[0]) / recip_slope_lin
     double factor_rat;                      // defines rational function f(t) = factor_rat / (1 - rescale_rat * t)

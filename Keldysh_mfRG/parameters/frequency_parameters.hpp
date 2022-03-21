@@ -8,8 +8,14 @@
 // 1: log-grid, 2: linear grid, 3: non-linear grid, 4: tangent grid
 #define GRID 3
 
-#define HYBRID_GRID   // if defined: use hybrid grid;          if undefined: use Elias' grid
-#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
+//#define HYBRID_GRID   // if defined: use hybrid grid;          if undefined: use Elias' grid
+//#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
+
+//#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
+constexpr bool BOSONIC_PARAM_FOR_K3 = false; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
+
+constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
+
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
@@ -17,7 +23,7 @@
 // Number of bosonic and fermionic frequency points
 //#ifdef KELDYSH_FORMALISM
 constexpr int nBOS = 201;
-constexpr int nFER = 200;
+constexpr int nFER = 201;
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 51;//nBOS;
 constexpr int nFER2 = 51;//nFER;

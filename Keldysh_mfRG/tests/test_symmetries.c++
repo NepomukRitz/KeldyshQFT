@@ -8,7 +8,31 @@ void test_symmetries(const double Lambda) {
     State<state_datatype> state_ini(Lambda);   // create final and initial state
 
     state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
-    // initialize the flow with SOPT at Lambda_ini (important!)
+
+
+#ifdef ADAPTIVE_GRID
+    /// Iterate:
+    /// 1. compute parquet solution
+    /// 2. optimize grid
+    /// 3. restart with optimized grid
+    for (int i = 0; i < 1; i++) {
+
+        State<state_datatype> state_temp = state_ini;
+        state_temp.initialize();             // initialize state with bare vertex and Hartree term in selfenergy
+        // initialize the flow with SOPT at Lambda_ini (important!)
+        sopt_state(state_temp, Lambda_ini);
+        // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
+
+        const std::string parquet_temp_filename = data_dir + "parquetInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) : "" ) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
+        parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1e-4, 1);
+
+        state_temp.vertex.half1().check_vertex_resolution();
+        state_temp.findBestFreqGrid(true);
+        state_temp.vertex.half1().check_vertex_resolution();
+
+        state_ini.set_frequency_grid(state_temp); // copy frequency grid
+    }
+#endif
 
     sopt_state(state_ini, Lambda);
 

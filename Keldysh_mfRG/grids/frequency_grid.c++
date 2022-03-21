@@ -156,13 +156,11 @@ void FrequencyGrid<eliasGrid>::update_Wscale(double Wscale) {
  */
 auto FrequencyGrid<eliasGrid>::get_grid_index(const double w_in) const -> int {
 #ifdef PARAMETRIZED_GRID
-    double t = t_from_frequency(w_in);
-
-    t = (t - t_lower) / spacing_auxiliary_gridpoint;
+    const double t = (t_from_frequency(w_in) - t_lower) / spacing_auxiliary_gridpoint;
 #ifdef DENSEGRID
     auto index = ((int) (t + 0.1 )) ;
 #else
-    auto index = ((int) t) ;
+    int index = ((int) t) ;
     if (INTERPOLATION==linear) {
         index = std::max(0, index);
         index = std::min(number_of_gridpoints - 2, index);
@@ -481,6 +479,8 @@ void FrequencyGrid<hybridGrid>::guess_essential_parameters(const double Lambda) 
     }
 
     w_lower = -w_upper;
+    t_upper = ((double) number_of_gridpoints - 1) * 0.5;
+    t_lower =-((double) number_of_gridpoints - 1) * 0.5;
     all_frequencies = rvec(number_of_gridpoints);
     auxiliary_grid = rvec(number_of_gridpoints);
     initialize_grid();
@@ -555,7 +555,8 @@ int FrequencyGrid<hybridGrid>::get_grid_index(const double frequency)const {
 #ifdef DENSEGRID
     auto index = ((int) ((t - t_base) / spacing_auxiliary_gridpoint + 0.1 )) ;
 #else
-    int index = int((t - t_lower) / spacing_auxiliary_gridpoint + 1e-12);
+    assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
+    int index = int((t - t_lower) + 1e-12);
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
 #endif
@@ -571,7 +572,8 @@ int FrequencyGrid<hybridGrid>::get_grid_index(double& t, const double frequency)
 #ifdef DENSEGRID
     auto index = ((int) ((t - t_base) / spacing_auxiliary_gridpoint + 0.1 )) ;
 #else
-    int index = int((t - t_lower) / spacing_auxiliary_gridpoint + 1e-12);
+    assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
+    int index = int((t - t_lower) + 1e-12);
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
 #endif

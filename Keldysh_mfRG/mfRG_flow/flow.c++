@@ -21,7 +21,8 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_i
         sopt_state(state_temp, Lambda_ini);
         // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
-        parquet_solver(data_dir + "parqueInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5", state_temp, Lambda_ini, 1e-4, 2);
+        const std::string parquet_temp_filename = data_dir + "parquetInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) : "" ) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
+        parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1e-4, 1);
 
         state_temp.vertex.half1().check_vertex_resolution();
         state_temp.findBestFreqGrid(true);
@@ -35,7 +36,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_i
     // initialize the flow with SOPT at Lambda_ini (important!)
     sopt_state(state_ini, Lambda_ini);
 
-    std::string parquet_filename = data_dir + "parqueInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+    const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
     parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-6, 5);
 
 

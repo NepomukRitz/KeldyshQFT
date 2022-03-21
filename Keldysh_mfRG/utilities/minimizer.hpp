@@ -130,18 +130,25 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
         status = gsl_min_test_interval (a, b, epsabs, epsrel);
 
         if (superverbose and mpi_world_rank() == 0) {
-            if (status == GSL_SUCCESS)
-                printf("Converged:\n");
-
             printf("%5d [%.7f, %.7f] "
                    "%.7f %.7f\n",
                    iter, a, b,
                    m, b - a);
         }
+        if (verbose and mpi_world_rank() == 0 and status == GSL_SUCCESS) {
+
+            printf("Converged after %5d iterations:\n", iter);
+
+            printf("interval: [%.7f, %.7f] "
+                   "\t result: %.7f\n",
+                   a, b,
+                   m);
+        }
     }
     while (status == GSL_CONTINUE && iter < max_iter);
 
     gsl_min_fminimizer_free (s);
+    if (verbose and mpi_world_rank() == 0) std::cout << "-----   Exit minimizer   -----\n";
 
     //return status;
 }
@@ -205,7 +212,11 @@ vec<double> minimizer_nD (CostFunction& cost, const vec<double>& start_params, c
 
         if (status == GSL_SUCCESS and verbose and mpi_world_rank() == 0)
         {
-            printf ("converged to minimum at\n");
+            printf ("converged to minimum after iteration %5d: \n\t --> param0: %10.3e ,param1: %10.3e \t cost() = %7.3e simplex size = %.3f\n",
+                    iter,
+                    gsl_vector_get (s->x, 0),
+                    gsl_vector_get (s->x, 1),
+                    s->fval, size);
         }
 
         if (superverbose and mpi_world_rank() == 0) {
