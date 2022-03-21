@@ -13,7 +13,7 @@ auto heaviside (const double x) -> double {
     else {
         std::cout << "x ill-defined! \n";
         assert(false);
-        return 0;
+        return 0.;
     }
 }
 
