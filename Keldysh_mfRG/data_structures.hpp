@@ -420,11 +420,11 @@ const int nK_K2 = 5;        // For channels a, p and t -channel separately
 const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
 // (independent components in order of appearance)
 #else // DEBUG_SYMMETRIES
-const int nK_SE = 2;
-const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-                            // for channel p components 1 and 5
-const int nK_K2 = 16;       // For channels a, p and t -channel separately
-const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
+//const int nK_SE = 2;
+//const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
+//                            // for channel p components 1 and 5
+//const int nK_K2 = 16;       // For channels a, p and t -channel separately
+//const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
                             // (independent components in order of appearance)
 #endif // DEBUG_SYMMETRIES
 #else // KELDYSH_FORMALISM

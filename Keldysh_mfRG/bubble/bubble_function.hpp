@@ -496,7 +496,7 @@ template<char channel, typename Q, vertexType symmetry_result, vertexType symmet
 void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
-    assert( K2_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
+    //assert( K2_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
     switch (channel) {
         case 'a':
             dgamma.avertex().K2.add_vec(K2_ordered_result);
@@ -532,7 +532,7 @@ template<char channel, typename Q, vertexType symmetry_result, vertexType symmet
 void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::write_out_results_K2b(const vec<Q>& K2b_ordered_result){
-    assert( K2b_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
+    //assert( K2b_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
     switch (channel) {
         case 'a':
             dgamma.avertex().K2b.add_vec(K2b_ordered_result);
@@ -596,6 +596,9 @@ template<char channel, typename Q, vertexType symmetry_result, vertexType symmet
 void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, const K_class diag_class){
+    const int nK_K1 = channel == 'p' ? K1p_config.dims[my_defs::K1::keldysh] : K1at_config.dims[my_defs::K1::keldysh];
+    const int nK_K2 = channel == 'p' ? K2p_config.dims[my_defs::K2::keldysh] : K2at_config.dims[my_defs::K2::keldysh];
+    const int nK_K3 = K3_config.dims[my_defs::K3::keldysh];
     switch (diag_class) {
         case k1:
             n_mpi = nK_K1 * n_spin;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)

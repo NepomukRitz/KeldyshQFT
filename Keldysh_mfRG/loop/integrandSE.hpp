@@ -20,7 +20,7 @@
 template <typename Q, vertexType vertType>
 class IntegrandSE {
     const char type;
-    std::vector<int> components = std::vector<int>(6);
+    std::vector<int> components = std::vector<int>((CONTOUR_BASIS != 1 ? 6 : 16));
 
     const GeneralVertex<Q,vertType>& vertex;
     const Propagator<Q>& propagator;
@@ -60,6 +60,7 @@ public:
 
 template<typename Q, vertexType vertType>
 void IntegrandSE<Q,vertType>::set_Keldysh_components_to_be_calculated() {
+#if CONTOUR_BASIS != 1
     if(type=='r'){  //Check which kind of contribution is calculated
         components[0]=3;    //Vertex component associated to Retarded propagator
         components[1]=6;    //Vertex component associated to Advanced propagator
@@ -76,6 +77,33 @@ void IntegrandSE<Q,vertType>::set_Keldysh_components_to_be_calculated() {
         components[4]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
         components[5]=10;   //Vertex component associated to Keldysh propagator in symmetrized flow
     }
+#else
+    if(type=='0'){  //Check which kind of contribution is calculated
+        components[0]=0;    //Vertex component associated to propagator with contour indices 00
+        components[1]=4;    //Vertex component associated to propagator with contour indices 01
+        components[2]=1;    //Vertex component associated to propagator with contour indices 10
+        components[3]=5;    //Vertex component associated to propagator with contour indices 11
+    }
+    else if (type=='1'){
+        components[0]=2;    //Vertex component associated to propagator with contour indices 00
+        components[1]=6;    //Vertex component associated to propagator with contour indices 01
+        components[2]=3;    //Vertex component associated to propagator with contour indices 10
+        components[3]=7;    //Vertex component associated to propagator with contour indices 11
+    }
+    else if (type=='2'){
+        components[0]=8;    //Vertex component associated to propagator with contour indices 00
+        components[1]=12;    //Vertex component associated to propagator with contour indices 01
+        components[2]=9;   //Vertex component associated to propagator with contour indices 10
+        components[3]=13;   //Vertex component associated to propagator with contour indices 11
+    }
+    else {
+        assert(type == '3');
+        components[0]=10;   //Vertex component associated to propagator with contour indices 00
+        components[1]=14;   //Vertex component associated to propagator with contour indices 01
+        components[2]=11;   //Vertex component associated to propagator with contour indices 10
+        components[3]=15;   //Vertex component associated to propagator with contour indices 11
+    }
+#endif
 }
 
 template<typename Q, vertexType vertType>
@@ -190,6 +218,7 @@ Q IntegrandSE<Q,vertType>::Matsubara_value(const double vp) const {
 
 template <typename Q, vertexType vertType>
 void IntegrandSE<Q,vertType>::evaluate_propagator(Q &Gi, const int iK, const double vp) const {
+#if CONTOUR_BASIS != 1
     switch (iK) {
         case 0:
             Gi = propagator.valsmooth(0, vp, i_in);        // retarded propagator (full or single scale)
@@ -202,6 +231,10 @@ void IntegrandSE<Q,vertType>::evaluate_propagator(Q &Gi, const int iK, const dou
             break;
         default:;
     }
+#else
+    Gi = propagator.valsmooth(iK, vp, i_in);
+#endif
+
 }
 
 template<typename Q, vertexType vertType>

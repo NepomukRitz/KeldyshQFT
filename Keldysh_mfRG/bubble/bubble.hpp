@@ -211,7 +211,7 @@ public:
 
     template<char ch_bubble>
     auto value_vectorized(const double w, const double vpp, const int i_in) const {
-        if constexpr(KELDYSH)
+        if constexpr(KELDYSH and CONTOUR_BASIS != 1)
         {
             //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
             using result_type = Eigen::Matrix<Q, 4, 4>;
@@ -260,6 +260,64 @@ public:
                 }
             }
             return result;
+        }
+        else if constexpr(KELDYSH and CONTOUR_BASIS == 1) {
+            //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
+            using result_type = Eigen::Matrix<Q, 4, 4>;
+            const Eigen::Matrix<Q,2,2> G1 = g.valsmooth_vectorized(convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            const Eigen::Matrix<Q,2,2> G2 = g.valsmooth_vectorized(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+            const Q G00_1 = G1(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            const Q G01_1 = G1(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            const Q G10_1 = G1(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            const Q G11_1 = G1(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            const Q G00_2 = G2(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+            const Q G01_2 = G2(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+            const Q G10_2 = G2(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+            const Q G11_2 = G2(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+
+            result_type result;
+
+            if (diff) {
+                const Eigen::Matrix<Q,2,2> S1 = s.valsmooth_vectorized(convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+                const Eigen::Matrix<Q,2,2> S2 = s.valsmooth_vectorized(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+                const Q S00_1 = S1(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+                const Q S01_1 = S1(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+                const Q S10_1 = S1(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+                const Q S11_1 = S1(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+                const Q S00_2 = S2(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+                const Q S01_2 = S2(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+                const Q S10_2 = S2(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+                const Q S11_2 = S2(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+
+                if constexpr(ch_bubble=='p') {
+                    result <<    S00_1*G00_2 + G00_1*S00_2, S00_1*G01_2 + G00_1*S01_2, S01_1*G00_2 + G01_1*S00_2, S01_1*G01_2 + G01_1*S01_2,
+                                 S00_1*G10_2 + G00_1*S10_2, S00_1*G11_2 + G00_1*S11_2, S01_1*G10_2 + G01_1*S10_2, S01_1*G11_2 + G01_1*S11_2,
+                                 S10_1*G00_2 + G10_1*S00_2, S10_1*G01_2 + G10_1*S01_2, S11_1*G00_2 + G11_1*S00_2, S11_1*G01_2 + G11_1*S01_2,
+                                 S10_1*G10_2 + G10_1*S10_2, S10_1*G11_2 + G10_1*S11_2, S11_1*G10_2 + G11_1*S10_2, S11_1*G11_2 + G11_1*S11_2;
+                }
+                else { // a or t -channel
+                    result <<    S00_1*G00_2 + G00_1*S00_2, S00_1*G10_2 + G00_1*S10_2, S01_1*G00_2 + G01_1*S00_2, S01_1*G10_2 + G01_1*S10_2,
+                                 S00_1*G01_2 + G00_1*S01_2, S00_1*G11_2 + G00_1*S11_2, S01_1*G01_2 + G01_1*S01_2, S01_1*G11_2 + G01_1*S11_2,
+                                 S10_1*G00_2 + G10_1*S00_2, S10_1*G10_2 + G10_1*S10_2, S11_1*G00_2 + G11_1*S00_2, S11_1*G10_2 + G11_1*S10_2,
+                                 S10_1*G01_2 + G10_1*S01_2, S10_1*G11_2 + G10_1*S11_2, S11_1*G01_2 + G11_1*S01_2, S11_1*G11_2 + G11_1*S11_2;
+                }
+            }
+            else {
+                if constexpr(ch_bubble=='p') {
+                    result <<    G00_1*G00_2, G00_1*G01_2, G01_1*G00_2, G01_1*G01_2,
+                                 G00_1*G10_2, G00_1*G11_2, G01_1*G10_2, G01_1*G11_2,
+                                 G10_1*G00_2, G10_1*G01_2, G11_1*G00_2, G11_1*G01_2,
+                                 G10_1*G10_2, G10_1*G11_2, G11_1*G10_2, G11_1*G11_2;
+                }
+                else { // a or t -channel
+                    result <<    G00_1*G00_2, G00_1*G10_2, G01_1*G00_2, G01_1*G10_2,
+                                 G00_1*G01_2, G00_1*G11_2, G01_1*G01_2, G01_1*G11_2,
+                                 G10_1*G00_2, G10_1*G10_2, G11_1*G00_2, G11_1*G10_2,
+                                 G10_1*G01_2, G10_1*G11_2, G11_1*G01_2, G11_1*G11_2;
+                }
+            }
+            return result;
+
         }
         else {
             Q result = value_Matsubara<ch_bubble>(w, vpp, i_in);

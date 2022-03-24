@@ -63,6 +63,7 @@ public:
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in) { }
 
     auto valsmooth(int, double, int i_in) const -> Q;
+    auto valsmooth_vectorized(double, int i_in) const -> Eigen::Matrix<Q,2,2>;
 
     // Keldysh propagators
     auto GR(double v, int i_in) const -> Q;
@@ -296,14 +297,34 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
     switch (type){
         case 'g' :                              //Good ol' regular propagator
             if constexpr (KELDYSH){
-                switch (iK){
-                    case 0:
-                        return GR(v, i_in);
-                    case 1:
-                        return GK(v, i_in);
-                    default:
-                        print("ERROR! Invalid Keldysh index. Abort.");
-                        assert(false);
+                if constexpr(CONTOUR_BASIS != 1) {
+                    switch (iK) {
+                        case 0:
+                            return GR(v, i_in);
+                        case 1:
+                            return GK(v, i_in);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
+                }
+                else {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    switch (iK){
+                        case 0:
+                            return 0.5*(GA_ + GR_ + GK_);
+                        case 1:
+                            return 0.5*(GA_ - GR_ + GK_);
+                        case 2:
+                            return 0.5*(-GA_ + GR_ + GK_);
+                        case 3:
+                            return 0.5*(-GA_ - GR_ + GK_);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
                 }
             }
             else{
@@ -312,14 +333,36 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
 
         case 's':
             if constexpr (KELDYSH){
-                switch (iK){
-                    case 0:
-                        return SR(v, i_in);
-                    case 1:
-                        return SK(v, i_in);
-                    default:
-                        print("ERROR! Invalid Keldysh index. Abort.");
-                        assert(false);
+                if constexpr(CONTOUR_BASIS != 1) {
+                    // Keldysh basis:
+                    switch (iK){
+                        case 0:
+                            return SR(v, i_in);
+                        case 1:
+                            return SK(v, i_in);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
+                }
+                else {
+                    // Contour basis:
+                    const Q SR_ = SR(v, i_in);
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ = SK(v, i_in);
+                    switch (iK){
+                        case 0:
+                            return 0.5*(SA_ + SR_ + SK_);
+                        case 1:
+                            return 0.5*(SA_ - SR_ + SK_);
+                        case 2:
+                            return 0.5*(-SA_ + SR_ + SK_);
+                        case 3:
+                            return 0.5*(-SA_ - SR_ + SK_);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
                 }
             }
             else{
@@ -328,17 +371,46 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
 
         case 'k': // including the Katanin extension
             if constexpr (KELDYSH){
-                switch (iK){
-                    case 0:
-                        return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-                    case 1:
-                        return SK(v, i_in)
-                               + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                               + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                               + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
-                    default:
-                        print("ERROR! Invalid Keldysh index. Abort.");
-                        assert(false);
+                if constexpr(CONTOUR_BASIS != 1) {
+                    switch (iK) {
+                        case 0:
+                            return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
+                        case 1:
+                            return SK(v, i_in)
+                                   + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                                   + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                                   + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
+                }
+                else {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                    const Q dSigmaA_ = conj(dSigmaR_);
+                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                    const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ = SK(v, i_in)
+                                 + GR_ * dSigmaR_ * GK_
+                                 + GR_ * dSigmaK_ * GA_
+                                 + GK_ * dSigmaA_ * GA_;
+                    switch (iK){
+                        case 0:
+                            return 0.5*(SA_ + SR_ + SK_);
+                        case 1:
+                            return 0.5*(SA_ - SR_ + SK_);
+                        case 2:
+                            return 0.5*(-SA_ + SR_ + SK_);
+                        case 3:
+                            return 0.5*(-SA_ - SR_ + SK_);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
                 }
             }
             else{
@@ -348,16 +420,44 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
 
         case 'e': // purely the Katanin extension
             if constexpr (KELDYSH){
-                switch (iK){
-                    case 0:
-                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-                    case 1:
-                        return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                               + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                               + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in))* GA(v, i_in);
-                    default:
-                        print("ERROR! Invalid Keldysh index. Abort.");
-                        assert(false);
+                if constexpr(CONTOUR_BASIS != 1) {
+                    switch (iK) {
+                        case 0:
+                            return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
+                        case 1:
+                            return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                                   + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
+                                   + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
+                }
+                else {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                    const Q dSigmaA_ = conj(dSigmaR_);
+                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                    const Q SR_ = GR_ * dSigmaR_ * GR_;
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ =  GR_ * dSigmaR_ * GK_
+                                 + GR_ * dSigmaK_ * GA_
+                                 + GK_ * dSigmaA_ * GA_;
+                    switch (iK){
+                        case 0:
+                            return 0.5*(SA_ + SR_ + SK_);
+                        case 1:
+                            return 0.5*(SA_ - SR_ + SK_);
+                        case 2:
+                            return 0.5*(-SA_ + SR_ + SK_);
+                        case 3:
+                            return 0.5*(-SA_ - SR_ + SK_);
+                        default:
+                            print("ERROR! Invalid Keldysh index. Abort.");
+                            assert(false);
+                    }
                 }
             }
             else{
@@ -369,6 +469,187 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             return 0.;
     }
 }
+
+
+template <typename Q>
+auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -> Eigen::Matrix<Q,2,2> {
+    using return_type = Eigen::Matrix<Q,2,2>;
+    switch (type){
+        case 'g' :                              //Good ol' regular propagator
+            if constexpr (KELDYSH){
+                if constexpr(CONTOUR_BASIS != 1) {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    if constexpr(!EQUILIBRIUM) assert(false); // not implemented for non-equilibrium yet
+
+                    return_type result;
+                    result << 0., GA_,
+                             GR_, GK_;
+                    return result;
+
+                }
+                else {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    const Q G00 = 0.5*( GA_ + GR_ + GK_);
+                    const Q G01 = 0.5*( GA_ - GR_ + GK_);
+                    const Q G10 = 0.5*(-GA_ + GR_ + GK_);
+                    const Q G11 = 0.5*(-GA_ - GR_ + GK_);
+                    return_type result;
+                    result << G00, G01,
+                              G10, G11;
+                    return result;
+                    }
+                }
+
+            else{
+                return GM(v, i_in);
+            }
+
+        case 's':
+            if constexpr (KELDYSH){
+                if constexpr(CONTOUR_BASIS != 1) {
+                    const Q SR_ = GR(v, i_in);
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ = GK(v, i_in);
+                    if constexpr(!EQUILIBRIUM) assert(false); // not implemented for non-equilibrium yet
+
+                    return_type result;
+                    result << 0., SA_,
+                             SR_, SK_;
+                    return result;
+
+                }
+                else {
+                    const Q SR_ = SR(v, i_in);
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ = SK(v, i_in);
+                    const Q S00 = 0.5*( SA_ + SR_ + SK_);
+                    const Q S01 = 0.5*( SA_ - SR_ + SK_);
+                    const Q S10 = 0.5*(-SA_ + SR_ + SK_);
+                    const Q S11 = 0.5*(-SA_ - SR_ + SK_);
+                    return_type result;
+                    result << S00, S01,
+                              S10, S11;
+                    return result;
+                }
+            }
+            else{
+                return SM(v, i_in);
+            }
+
+        case 'k': // including the Katanin extension
+            if constexpr (KELDYSH){
+                if constexpr(CONTOUR_BASIS != 1) {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                    const Q dSigmaA_ = conj(dSigmaR_);
+                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                    const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ = SK(v, i_in)
+                                  + GR_ * dSigmaR_ * GK_
+                                  + GR_ * dSigmaK_ * GA_
+                                  + GK_ * dSigmaA_ * GA_;
+                    const Q S00 = 0.5*( SA_ + SR_ + SK_);
+                    const Q S01 = 0.5*( SA_ - SR_ + SK_);
+                    const Q S10 = 0.5*(-SA_ + SR_ + SK_);
+                    const Q S11 = 0.5*(-SA_ - SR_ + SK_);
+                    return_type result;
+                    result << S00, S01,
+                              S10, S11;
+                    return result;
+                }
+                else {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                    const Q dSigmaA_ = conj(dSigmaR_);
+                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                    const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ = SK(v, i_in)
+                                  + GR_ * dSigmaR_ * GK_
+                                  + GR_ * dSigmaK_ * GA_
+                                  + GK_ * dSigmaA_ * GA_;
+                    const Q S00 = 0.5*( SA_ + SR_ + SK_);
+                    const Q S01 = 0.5*( SA_ - SR_ + SK_);
+                    const Q S10 = 0.5*(-SA_ + SR_ + SK_);
+                    const Q S11 = 0.5*(-SA_ - SR_ + SK_);
+
+                    return_type result;
+                    result << S00, S01,
+                              S10, S11;
+                    return result;
+                }
+            }
+            else{
+                return SM(v, i_in)
+                       + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
+            }
+
+        case 'e': // purely the Katanin extension
+            if constexpr (KELDYSH){
+                if constexpr(CONTOUR_BASIS != 1) {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                    const Q dSigmaA_ = conj(dSigmaR_);
+                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                    const Q SR_ = GR_ * diff_selfenergy.valsmooth(0, v, i_in) * GR_;
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ = SK(v, i_in)
+                                  + GR_ * dSigmaR_ * GK_
+                                  + GR_ * dSigmaK_ * GA_
+                                  + GK_ * dSigmaA_ * GA_;
+                    const Q S00 = 0.5*( SA_ + SR_ + SK_);
+                    const Q S01 = 0.5*( SA_ - SR_ + SK_);
+                    const Q S10 = 0.5*(-SA_ + SR_ + SK_);
+                    const Q S11 = 0.5*(-SA_ - SR_ + SK_);
+                    return_type result;
+                    result << S00, S01,
+                              S10, S11;
+                    return result;
+                }
+                else {
+                    const Q GR_ = GR(v, i_in);
+                    const Q GA_ = conj(GR_);
+                    const Q GK_ = GK(v, i_in);
+                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                    const Q dSigmaA_ = conj(dSigmaR_);
+                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                    const Q SR_ = GR_ * dSigmaR_ * GR_;
+                    const Q SA_ = conj(SR_);
+                    const Q SK_ =  GR_ * dSigmaR_ * GK_
+                                   + GR_ * dSigmaK_ * GA_
+                                   + GK_ * dSigmaA_ * GA_;
+                    const Q S00 = 0.5*( SA_ + SR_ + SK_);
+                    const Q S01 = 0.5*( SA_ - SR_ + SK_);
+                    const Q S10 = 0.5*(-SA_ + SR_ + SK_);
+                    const Q S11 = 0.5*(-SA_ - SR_ + SK_);
+
+                    return_type result;
+                    result << S00, S01,
+                              S10, S11;
+                    return result;
+                }
+            }
+            else{
+                return GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
+            }
+        default:
+            print("ERROR! Invalid Keldysh index. Abort.");
+            assert(false);
+            return return_type::Zero();
+    }
+}
+
 
 template <typename Q>
 auto Propagator<Q>::norm() const -> double {

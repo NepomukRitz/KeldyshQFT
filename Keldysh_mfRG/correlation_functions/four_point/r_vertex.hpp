@@ -34,9 +34,9 @@ public:
     using freqGrid_type_K1 = bufferFrequencyGrid<k1>;
     using freqGrid_type_K2 = bufferFrequencyGrid<k2>;
     using freqGrid_type_K3 = bufferFrequencyGrid<k3>;
-    using buffer_type_K1 = dataBuffer<Q, k1, K1_config.rank, K1_config.num_freqs, K1_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION>;
-    using buffer_type_K2 = dataBuffer<Q, k2, K2_config.rank, K2_config.num_freqs, K2_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2,Q,INTERPOLATION>; //
-    using buffer_type_K2b= dataBuffer<Q, k2b,K2_config.rank, K2_config.num_freqs, K2_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2b,Q,INTERPOLATION>;//
+    using buffer_type_K1 = dataBuffer<Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION>;
+    using buffer_type_K2 = dataBuffer<Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2,Q,INTERPOLATION>; //
+    using buffer_type_K2b= dataBuffer<Q, k2b,K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2b,Q,INTERPOLATION>;//
     using buffer_type_K3 = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>; // vertexBuffer<k3,Q,INTERPOLATION>; //
 
 
@@ -49,8 +49,7 @@ private:
                                                                    // components to relate them to the independent ones
     FrequencyTransformations freq_transformations = FrequencyTransformations(channel);  // lists providing information on which transformations to apply on
                                                                                         // frequencies to relate them to the independent ones
-    FrequencyComponents freq_components = FrequencyComponents(channel);  // lists providing information on which transformations to apply on
-                                                                         // frequencies to relate them to the independent ones
+
 public:
     /// When you add a vertex buffer, also adapt the following:
     /// apply_unary_op_to_all_vertexBuffers()
@@ -147,19 +146,19 @@ public:
     : channel(channel_in)
       {
         if (is_reserve) {
-            if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, K1_config.dims);
-            if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, K2_config.dims);
+            if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
+            if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
             if (MAX_DIAG_CLASS >= 3) K3 = buffer_type_K3(Lambda, K3_config.dims);
             if constexpr(HUBBARD_MODEL) {
                 if (MAX_DIAG_CLASS >= 1) {
-                    K1_a_proj = buffer_type_K1(Lambda, K1_config.dims);
-                    K1_p_proj = buffer_type_K1(Lambda, K1_config.dims);
-                    K1_t_proj = buffer_type_K1(Lambda, K1_config.dims);
+                    K1_a_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
+                    K1_p_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
+                    K1_t_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
                 }
                 if (MAX_DIAG_CLASS >= 2) {
-                    K2_a_proj = buffer_type_K2(Lambda, K2_config.dims);
-                    K2_p_proj = buffer_type_K2(Lambda, K2_config.dims);
-                    K2_t_proj = buffer_type_K2(Lambda, K2_config.dims);
+                    K2_a_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
+                    K2_p_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
+                    K2_t_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
                 }
                 if (MAX_DIAG_CLASS >= 3) {
                     K3_a_proj = buffer_type_K3(Lambda, K3_config.dims);
@@ -169,7 +168,7 @@ public:
             }
 
 #ifdef DEBUG_SYMMETRIES
-            K2b = buffer_type_K2b(Lambda, K2_config.dims);
+            K2b = buffer_type_K2b(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
 #endif
         }
       };
@@ -398,10 +397,12 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
     //int res_iK;
     //locate(all_Keldysh, 16, itK, res_iK, -1, 16);
     if constexpr (k == k1) {
-        indices.iK = (indices.channel_rvert == 'a' ? non_zero_Keldysh_K1a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K1p[itK] : non_zero_Keldysh_K1t[itK]);
+        assert((channel == 'p' and itK < 3) or (channel != 'p' and itK < 2 ));
+        indices.iK = itK < 0 ? itK : (indices.channel_rvert == 'a' ? non_zero_Keldysh_K1a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K1p[itK] : non_zero_Keldysh_K1t[itK]);
     }
     else if constexpr (k == k2 or k == k2b) {
-        indices.iK = (indices.channel_rvert == 'a' ? non_zero_Keldysh_K2a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K2p[itK] : non_zero_Keldysh_K2t[itK]);
+        assert((channel == 'p' and itK < 6) or (channel != 'p' and itK < 4 ));
+        indices.iK = itK < 0 ? itK : (indices.channel_rvert == 'a' ? non_zero_Keldysh_K2a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K2p[itK] : non_zero_Keldysh_K2t[itK]);
     }
     else {
         indices.iK = non_zero_Keldysh_K3[itK];
@@ -569,6 +570,8 @@ template<K_class k, typename result_type> auto rvert<Q>::valsmooth_symmetry_expa
 template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
 #ifdef  DEBUG_SYMMETRIES
     print("maximal deviation in symmetry in " + identifier +"_channel" + channel + " (normalized by maximal absolute value of K_i)", "\n");
+    initInterpolator();
+
 
     // K1:
     multidimensional::multiarray<Q,4> deviations_K1(K1.get_dims());
@@ -592,7 +595,8 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         Q deviation = value_direct - value_symmet;
         //if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
             deviations_K1.at(idx) = deviation;
-        //}
+            if (std::abs(deviation) > 1000) print("DEVIATION ", deviation, "for iK, ispin, iw = ", iK, ispin, iw, "\n");
+                //}
 
         // test frequency symmetries for symmetry-reduced Keldysh components:
         if (transformations.K(k1, input.spin, input.iK) == 0 and components.K(k1, input.spin, input.iK) != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K1a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K1p) : isInList(iK, non_zero_Keldysh_K1t) ) )) {
@@ -614,7 +618,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         }
     }
 
-    if ( K1.get_vec().max_norm() > 1e-30) print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
+    if ( K1.get_vec().max_norm() > 1e-30) print("K1: \t", deviations_K1.max_norm(), "\n");
 
     //rvec deviations_K2(getFlatSize(K2.get_dims()));
     //rvec deviations_K2b(getFlatSize(K2b.get_dims()));
@@ -754,7 +758,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
     std::string filename = data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + ".h5";
     H5::H5File file(filename.c_str(), H5F_ACC_TRUNC);
-    write_to_hdf(file, "K1", deviations_K1 * (1/K1 .get_vec().max_norm()), false);
+    write_to_hdf(file, "K1", deviations_K1, false);
 #if MAX_DIAG_CLASS > 1
     write_to_hdf(file, "K2", deviations_K2 * (1/K2 .get_vec().max_norm()), false);
     write_to_hdf(file, "K2b",deviations_K2b* (1/K2b.get_vec().max_norm()), false);
@@ -794,7 +798,8 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         K3_symmetry_expanded.set_VertexFreqGrid(rvert_crossing.K3.get_VertexFreqGrid());
     }
 
-
+    // bare interaction:
+    // in Keldysh basis: no change required
 
     // K1:
     //vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
@@ -1348,6 +1353,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 template<typename Q>
 void rvert<Q>::K1_crossproject(const char channel_out) {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
+    const int nK_K1 = channel == 'p' ? K1p_config.dims[my_defs::K1::keldysh] : K1at_config.dims[my_defs::K1::keldysh];
     for (int iK = 0; iK < nK_K1; ++iK) {
         for (int it_spin = 0; it_spin < n_spin; it_spin++) {
 #pragma omp parallel for schedule(dynamic)

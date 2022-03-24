@@ -549,9 +549,19 @@ template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
 
 template <typename Q> void irreducible<Q>::initialize(Q val) {
     if (KELDYSH){
-        for (auto i:odd_Keldysh) {
+        if (CONTOUR_BASIS != 1) {
+            // Keldysh basis:
+            for (auto i:odd_Keldysh) {
+                for (int i_in=0; i_in<n_in; ++i_in) {
+                    this->setvert(i, i_in, val);
+                }
+            }
+        }
+        else {
+            // Contour basis:
             for (int i_in=0; i_in<n_in; ++i_in) {
-                this->setvert(i, i_in, val);
+                this->setvert( 0, i_in, val); // for forward contour
+                this->setvert(15, i_in,-val); // for backward contour
             }
         }
     }

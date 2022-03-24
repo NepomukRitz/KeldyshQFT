@@ -113,17 +113,20 @@ void TC (IndicesSymmetryTransformations& indices){
         }
     }
 
-    if (INTERPOL2D_FOR_K3) {
+    if constexpr(INTERPOL2D_FOR_K3) {
         if (indices.channel_bubble == 't') {
             indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
         }
     }
 
-    if (KELDYSH){
+    if constexpr(KELDYSH and CONTOUR_BASIS != 1){
         if(isInList(indices.iK, odd_Keldysh))
             indices.prefactor *= 1.;
         else
             indices.prefactor *= -1.;
+    }
+    else if constexpr(KELDYSH and CONTOUR_BASIS == 1){
+        indices.prefactor *= -1;
     }
     else{
         indices.w *= -1;
@@ -202,6 +205,10 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             T1(indices);
             TC(indices);
             break;
+        case 24:
+            T2(indices);
+            TC(indices);
+            break;
         case 41:
             TC(indices);
             T1(indices);
@@ -251,7 +258,7 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
                 break;
             }
         default:
-            print("A Transformation in the symmetry table is not covered in Ti! Abort."); assert(false);
+            print("The Transformation ", i, " in the symmetry table is not covered in Ti! Abort."); assert(false);
     }
 }
 

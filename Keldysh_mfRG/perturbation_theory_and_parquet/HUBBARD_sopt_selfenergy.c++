@@ -14,7 +14,7 @@ int Integrand_SE_SOPT_Hubbard<gridType>::composite_index(const int iv1, const in
 }
 
 void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
-    for (int iK = 0; iK < nK_SE; ++iK) { // loop over the Keldysh index of the resulting self-energy
+    for (int iK = 0; iK < SE_config.dims[my_defs::SE::keldysh]; ++iK) { // loop over the Keldysh index of the resulting self-energy
         // TODO: Add further loop over spin (necessary for SOPT??)
         for (int iK_internal = 0; iK_internal < 3; ++iK_internal) {
             // iK_internal : index for Keldysh sum
