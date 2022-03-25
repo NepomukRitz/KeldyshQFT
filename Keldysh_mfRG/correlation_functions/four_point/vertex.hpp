@@ -412,7 +412,9 @@ public:
     }
 
     void check_symmetries(const std::string identifier) const {
+        vertex.initializeInterpol();
         vertex.check_symmetries(identifier);
+        vertex.set_initializedInterpol(false);
     }
     template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
         vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded, fullvert<Q>(0., false));
