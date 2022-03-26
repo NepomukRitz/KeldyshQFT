@@ -626,7 +626,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     iK1 = i_mpi * n_omp + i_omp;
 
     my_defs::K1::index_type idx;
-    getMultIndex<rank_K1>(idx, iK1, vertex1.avertex().K1.get_dims());
+    getMultIndex<rank_K1>(idx, iK1, vertex1.get_rvertex(channel).K1.get_dims());
     i0       = (int) idx[my_defs::K1::keldysh];
     ispin    = (int) idx[my_defs::K1::spin];
     iw       = (int) idx[my_defs::K1::omega];
@@ -648,7 +648,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     iK2 = i_mpi * n_omp + i_omp;
 
     my_defs::K2::index_type idx;
-    getMultIndex<rank_K2>(idx, iK2, vertex1.avertex().K2.get_dims());
+    getMultIndex<rank_K2>(idx, iK2, vertex1.get_rvertex(channel).K2.get_dims());
     i0       = (int) idx[my_defs::K2::keldysh];
     ispin    = (int) idx[my_defs::K2::spin];
     iw       = (int) idx[my_defs::K2::omega];
@@ -671,7 +671,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     iK2 = i_mpi * n_omp + i_omp;
 
     my_defs::K2::index_type idx;
-    getMultIndex<rank_K2>(idx, iK2, vertex1.avertex().K2b.get_dims());
+    getMultIndex<rank_K2>(idx, iK2, vertex1.get_rvertex(channel).K2b.get_dims());
     i0       = (int) idx[my_defs::K2b::keldysh];
     ispin    = (int) idx[my_defs::K2b::spin];
     iw       = (int) idx[my_defs::K2b::omega];
@@ -694,7 +694,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     iK3 = i_mpi * n_omp + i_omp;
 
     my_defs::K3::index_type idx;
-    getMultIndex<rank_K3>(idx, iK3, vertex1.avertex().K3.get_dims());
+    getMultIndex<rank_K3>(idx, iK3, vertex1.get_rvertex(channel).K3.get_dims());
     i0       = (int) idx[my_defs::K3::keldysh];
     ispin    = (int) idx[my_defs::K3::spin];
     iw       = (int) idx[my_defs::K3::omega];
@@ -733,6 +733,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         default:
             print("Something went wrong in get_trafo_K1! Abort."); assert(false);
     }
+#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP)
+    if (is_zero_due_to_FDTs<k1>(i0, w, 0, 0, channel)) trafo = -1; // components zero according to FDTs
+#endif // CONTOUR_BASIS
 #endif
     return trafo;
 }
@@ -769,7 +772,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     if constexpr(!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
         trafo = 0;
     }
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+#if defined(USE_FDT)
+    if (EQUILIBRIUM and ! HUBBARD_MODEL) {
+#if CONTOUR_BASIS != 1
     switch (channel) {
         case 'a':
             if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>glb_T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
@@ -783,9 +788,15 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         default:
             break;
     }
-#endif
+#else
+#if defined(ZERO_TEMP) and defined(USE_FDT)
+    if (is_zero_due_to_FDTs<k2>(i0, w, v, 0, channel)) trafo = -1; // components zero according to FDTs
+#endif //ZERO_TEMP
+#endif // CONTOUR_BASIS
+    }
+#endif // EQUILIBRIUM...
 
-#endif
+#endif // DEBUG_SYMMETRIES
     return trafo;
 }
 
@@ -826,11 +837,21 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         //std::cout << "omitted frequencies: " << v << "\t" << vp << std::endl;
         //std::cout << "with limits " << vertex1.avertex().K3.frequencies.get_wlower_f() << std::endl;
     }
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
-    if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
-#endif
+#if defined(USE_FDT)
+    if (EQUILIBRIUM and ! HUBBARD_MODEL) {
+#if CONTOUR_BASIS != 1
+        if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+#else
+//#ifdef ZERO_TEMP
 
-#endif
+        if (is_zero_due_to_FDTs<k3>(i0, w, v, vp, channel)) trafo = -1; // components zero according to FDTs
+
+//#endif //ZERO_TEMP
+#endif // CONTOUR_BASIS
+    }
+#endif //EQUILIBRIUM...
+
+#endif // DEBUG_SYMMETRIES
     return trafo;
 }
 

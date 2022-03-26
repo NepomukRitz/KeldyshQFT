@@ -563,6 +563,74 @@ template<K_class k, typename result_type> auto rvert<Q>::valsmooth_symmetry_expa
 }
 
 
+
+template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const double w, const double v, const double vp, const char channel) {
+    assert(k != k2b);
+
+    int iK;
+    if constexpr (k == k1) {
+        switch (channel) {
+            case 'a':
+                iK = non_zero_Keldysh_K1a[iK_symmreduced];
+                break;
+            case 'p':
+                iK = non_zero_Keldysh_K1p[iK_symmreduced];
+                break;
+            case 't':
+                iK = non_zero_Keldysh_K1t[iK_symmreduced];
+                break;
+            default:
+                break;
+        }
+    }
+    else if constexpr(k == k2) {
+        switch (channel) {
+            case 'a':
+                iK = non_zero_Keldysh_K2a[iK_symmreduced];
+                break;
+            case 'p':
+                iK = non_zero_Keldysh_K2p[iK_symmreduced];
+                break;
+            case 't':
+                iK = non_zero_Keldysh_K2t[iK_symmreduced];
+                break;
+            default:
+                break;
+        }
+    }
+    else {
+        iK = non_zero_Keldysh_K3[iK_symmreduced];
+    }
+    std::array<int,4> dimsKeldysh = {2,2,2,2};
+    std::array<int,4> contourIndices;
+    getMultIndex(contourIndices, iK, dimsKeldysh);
+
+    std::array<double,4> frequenciesFermionic;
+    switch (channel) {
+        case 'a':
+            frequenciesFermionic = {v-w*0.5, vp+w*0.5, -(vp-w*0.5), -(v+w*0.5)};
+            break;
+        case 'p':
+            frequenciesFermionic = {v+w*0.5, -v+w*0.5, -(vp+w*0.5), -(-vp+w*0.5)};
+            break;
+        case 't':
+            frequenciesFermionic = {vp+w*0.5, v-w*0.5, -(vp-w*0.5), -(v+w*0.5)};
+            break;
+        default:
+            break;
+    }
+
+    double freq_check = 0;
+    for (int i = 0; i < 4; i++) {
+        freq_check += contourIndices[i] * frequenciesFermionic[i];
+    }
+
+    if (freq_check <-1e-15) return true;
+    else return false;
+
+}
+
+
 /**
  * Iterates over all vertex components and compares with the value obtained from application of the symmetry relations
  * @tparam Q
@@ -605,7 +673,8 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             int sign_w = sign_index(indices_f.w);
             int itK;
             // find position of iK and store it in itK:
-            locate((channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p' ? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t)), non_zero_Keldysh_K1t.size(), iK, itK, 0, non_zero_Keldysh_K1t.size());
+            int non_zero_size = (channel == 'a' ? non_zero_Keldysh_K1a.size() : (channel == 'p' ? non_zero_Keldysh_K1p.size() : non_zero_Keldysh_K1t.size()));
+            locate((channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p' ? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t)), non_zero_size, iK, itK, 0, non_zero_size);
             int trafo_index = freq_transformations.K1[itK][sign_w];
             if (trafo_index != 0){
                 Ti(indices_f, trafo_index);
@@ -615,6 +684,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 deviation = value_direct - result_freqsymm;
                 deviations_K1.at(idx) = deviation;
             }
+
+#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and defined(USE_FDT)
+            if (is_zero_due_to_FDTs<k1>(itK, w, 0, 0, channel)) deviations_K1.at(idx) = value_direct;
+#endif
+
         }
     }
 
@@ -659,9 +733,10 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 int sign_w = sign_index(w);
                 int sign_v1 = sign_index(v);
                 int itK;
+                int non_zero_size = (channel == 'a' ? non_zero_Keldysh_K2a.size() : (channel == 'p' ? non_zero_Keldysh_K2p.size() : non_zero_Keldysh_K2t.size()));
                 locate((channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p' ? non_zero_Keldysh_K2p
                                                                                 : non_zero_Keldysh_K2t)),
-                       non_zero_Keldysh_K2t.size(), iK, itK, 0, non_zero_Keldysh_K2t.size());
+                       non_zero_size, iK, itK, 0, non_zero_size);
                 int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
                 Ti(indices, trafo_index);
                 //indices.iK = itK;
@@ -669,6 +744,10 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
                 deviation = value_direct - result_freqsymm;
                 deviations_K2.at(idx) = deviation;
+
+#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and defined(USE_FDT)
+                if (is_zero_due_to_FDTs<k2>(itK, w, v, 0, channel)) deviations_K2.at(idx) = value_direct;
+#endif
             }
         }
 
@@ -750,6 +829,10 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
                 deviation = value_direct - result_freqsymm;
                 deviations_K3.at(idx) = deviation;
+
+#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and defined(USE_FDT)
+                if (is_zero_due_to_FDTs<k3>(itK, w, v, 0, channel)) deviations_K3.at(idx) = value_direct;
+#endif
             }
         }
 

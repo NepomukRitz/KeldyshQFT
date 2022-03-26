@@ -9,7 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 
 //#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of symmetries
@@ -24,6 +24,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
+#define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 
@@ -31,7 +32,7 @@ constexpr bool VERBOSE = false;
 
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM
+//#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 
@@ -65,7 +66,7 @@ constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson mo
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
-
+//#define USE_FDT
 
 /// Spin parameters ///
 
