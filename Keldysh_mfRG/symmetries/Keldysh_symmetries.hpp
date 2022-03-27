@@ -41,12 +41,21 @@ constexpr buffer_config<5> K2at_config{.dims = std::array<size_t,5>({n_spin, nBO
 constexpr buffer_config<5> K2p_config {.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 5, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
 constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, 6, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
 #else
+#ifndef PARTICLE_HOLE_SYMM
 constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ 2, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
 constexpr buffer_config<4> K1at_config{.dims = std::array<size_t,4>({n_spin, nBOS, 2, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
 constexpr buffer_config<4> K1p_config {.dims = std::array<size_t,4>({n_spin, nBOS, 3, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
 constexpr buffer_config<5> K2at_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 4, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
 constexpr buffer_config<5> K2p_config {.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 6, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
 constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, 7, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+#else
+constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ 2, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1at_config{.dims = std::array<size_t,4>({n_spin, nBOS, 2, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1p_config {.dims = std::array<size_t,4>({n_spin, nBOS, 2, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<5> K2at_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 3, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<5> K2p_config {.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 3, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, 5, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+#endif
 #endif
 #endif
 
@@ -72,6 +81,7 @@ const std::vector<int> non_zero_Keldysh_K1t({1,3});
 const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
 const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
 #else
+#ifndef PARTICLE_HOLE_SYMM
 const std::vector<int> non_zero_Keldysh_K1a({0,6});
 const std::vector<int> non_zero_Keldysh_K2a({0,1,6,8});
 const std::vector<int> non_zero_Keldysh_K1p({0,3,12});
@@ -79,7 +89,15 @@ const std::vector<int> non_zero_Keldysh_K2p({0,3,4,7,12,15});
 const std::vector<int> non_zero_Keldysh_K1t({0,5});
 const std::vector<int> non_zero_Keldysh_K2t({0,1,4,5});
 const std::vector<int> non_zero_Keldysh_K3({0,1,3,4,5,6,12});
-
+#else
+const std::vector<int> non_zero_Keldysh_K1a({0,6});
+const std::vector<int> non_zero_Keldysh_K2a({0,1,6});
+const std::vector<int> non_zero_Keldysh_K1p({0,3});
+const std::vector<int> non_zero_Keldysh_K2p({0,3,4});
+const std::vector<int> non_zero_Keldysh_K1t({0,5});
+const std::vector<int> non_zero_Keldysh_K2t({0,1,5});
+const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6});
+#endif
 #endif
 
 // Vector of indices whose respective Keldysh indices add up to an odd number

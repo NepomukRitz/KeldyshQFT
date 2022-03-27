@@ -136,6 +136,7 @@ const inline std::vector<int> Components_Keldysh_t_channel = {// K1:
                                                 1,  3,  4,  5,
                                                 2,  5,  5, -1};
 #else
+#ifndef PARTICLE_HOLE_SYMM
 const inline std::vector<int> Components_Keldysh_a_channel = {// K1:
         0, -1, -1, -2,
         -3, -4, 1, -1,
@@ -259,6 +260,131 @@ const inline std::vector<int> Components_Keldysh_t_channel = {// K1:
         3, 5, 4, 1,
         3, 4, 5, 1,
         6, 3, 3, 0};
+#else
+const inline std::vector<int> Components_Keldysh_a_channel = {// K1:
+        0, -1, -1, -2,
+        -1, -3, 1, -1,
+        -1, 1, -3, -1,
+        -2, -1, -1, 0,     // spin comp. V
+
+        0, -1, -1, -2,
+        -1, -3, 1, -1,
+        -1, 1, -3, -1,
+        -2, -1, -1, 0,   // spin comp. Vhat
+        // K2:
+        0, 1, -1, -2,
+        -1, -3, 2, 1,
+        1, 2, -3, -1,
+        -2, -1, 1, 0,    // spin comp. V
+
+        0, 1, -1, -2,
+        -1, -3, 2, 1,
+        1, 2, -3, -1,
+        -2, -1, 1, 0,   // spin comp. Vhat
+        // K2b:
+        0, -1, 1, -2,
+        1, -3, 2, -1,
+        -1, 2, -3, 1,
+        -2, 1, -1, 0,    // spin comp. V
+
+        0, -1, 1, -2,
+        1, -3, 2, -1,
+        -1, 2, -3, 1,
+        -2, 1, -1, 0,   // spin comp. Vhat
+        // K3:
+        0, 1, 1, 2,
+        1, 3, 4, 1,
+        1, 4, 3, 1,
+        2, 1, 1, 0,    // spin comp. V
+
+        0, 1, 1, 2,
+        1, 4, 3, 1,
+        1, 3, 4, 1,
+        2, 1, 1, 0};   // spin comp. Vhat
+
+const inline std::vector<int> Components_Keldysh_p_channel = {// K1:
+        0, -1, -1, 1,
+        -1, -2, -3, -1,
+        -1, -3, -2, -1,
+        1, -1, -1, 0,     // spin comp. V
+
+        0, -1, -1, 1,
+        -1, -3, -2, -1,
+        -1, -2, -3, -1,
+        1, -1, -1, 0,    // spin comp. Vhat
+        // K2:
+        0, -1, -1, 1,
+        2, -2, -3, 2,
+        2, -3, -2, 2,
+        1, -1, -1, 0,     // spin comp. V
+
+        0, -1, -1, 1,
+        2, -3, -2, 2,
+        2, -2, -3, 2,
+        1, -1, -1, 0,    // spin comp. Vhat
+        // K2b:
+        0, 2, 2, 1,
+        -1, -2, -3, -1,
+        -1, -3, -2, -1,
+        1, 2, 2, 0,    // spin comp. V
+
+        0, 2, 2, 1,
+        -1, -3, -2, -1,
+        -1, -2, -3, -1,
+        1, 2, 2, 0,    // spin comp. Vhat
+        // K3:
+        0, 1, 1, 2,
+        1, 3, 4, 1,
+        1, 4, 3, 1,
+        2, 1, 1, 0,    // spin comp. V
+
+        0, 1, 1, 2,
+        1, 4, 3, 1,
+        1, 3, 4, 1,
+        2, 1, 1, 0};   // spin comp. Vhat
+
+
+const inline std::vector<int> Components_Keldysh_t_channel = {// K1:
+        0, -1, -1, -2,
+        -1, 1, -3, -1,
+        -1, -3, 1, -1,
+        -2, -1, -1, 0,    // spin comp. V
+
+        0, -1, -1, -2,
+        -1, 1, -3, -1,
+        -1, -3, 1, -1,
+        -2, -1, -1, 0,   // spin comp. Vhat
+        // K2:
+        0, 1, -1, -2,
+        1, 2, -3, -1,
+        -1, -3, 2, 1,
+        -2, -1, 1, 0,    // spin comp. V
+
+        0, 1, -1, -2,
+        1, 2, -3, -1,
+        -1, -3, 2, 1,
+        -2, -1, 1, 0,    // spin comp. Vhat
+        // K2b:
+        0, -1, 1, -2,
+        -1, 2, -3, 1,
+        1, -3, 2, -1,
+        -2, 1, -1, 0,    // spin comp. V
+
+        0, -1, 1, -2,
+        -1, 2, -3, 1,
+        1, -3, 2, -1,
+        -2, 1, -1, 0,    // spin comp. Vhat
+        // K3:
+        0, 1, 1, 2,
+        1, 3, 4, 1,
+        1, 4, 3, 1,
+        2, 1, 1, 0,    // spin comp. V
+
+        0, 1, 1, 2,
+        1, 4, 3, 1,
+        1, 3, 4, 1,
+        2, 1, 1, 0};
+#endif
 #endif
 const std::vector<int> Components_Matsubara = {0, 0, 0, 0, 0, 0, 0, 0};
 /** Relate the Keldysh components in each diagrammatic class to the independent ones:
@@ -409,6 +535,7 @@ const inline std::vector<int> Transformations_Keldysh_t_channel = {// K1:
                                                     14,41, 14,  0}; // spin comp. Vhat
 
 #else
+#ifndef PARTICLE_HOLE_SYMM
 const inline std::vector<int> Transformations_Keldysh_a_channel = {// K1:
         0, 0, 0, 0,
         0, 0, 0, 0,
@@ -518,7 +645,119 @@ const inline std::vector<int> Transformations_Keldysh_t_channel = {// K1:
         1, 2, 1, 1,
         1, 1, 1, 24,
         2, 2, 2, 14,
-        1, 14, 24, 14,}; // spin comp. Vhat
+        1, 14, 24, 14}; // spin comp. Vhat
+#else
+const inline std::vector<int> Transformations_Keldysh_a_channel = {// K1:
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 6, 0, 0,
+        0, 0, 0, 4,    // spin comp. V
+        1, 0, 0, 0,
+        0, 0, 1, 0,
+        0, 2, 0, 0,
+        0, 0, 0, 14,    // spin comp. Vhat
+        // K2:
+        0, 0, 0, 0,
+        0, 0, 0, 34,
+        346, 6, 0, 0,
+        0, 0, 6, 6,   // spin comp. V
+        2, 2, 0, 0,
+        0, 0, 24, 24,
+        246, 2, 0, 0,
+        0, 0, 26, 24,  // spin comp. Vhat
+        // K2b
+        3, 0, 3, 0,
+        46, 0, 4, 0,
+        0, 3, 0, 4,
+        0, 36, 0, 4,    // spin comp. V
+        1, 0, 1, 0,
+        146, 0, 1, 0,
+        0, 14, 0, 14,
+        0, 16, 0, 14,  // spin comp. Vhat
+        // K3:
+        0, 0, 3, 0,
+        46, 0, 0, 34,
+        346, 6, 4, 4,
+        6, 36, 6, 4,    // spin comp. V
+        1, 2, 1, 1,
+        146, 1, 1, 24,
+        246, 2, 2, 14,
+        16, 16, 26, 14};  //spin comp. Vhat
+
+const inline std::vector<int> Transformations_Keldysh_p_channel = {// K1:
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        6, 0, 0, 4,        // spin comp. V
+        1, 0, 0, 1,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        16, 0, 0, 14,    // spin comp. Vhat
+        // K2:
+        0, 0, 0, 0,
+        0, 0, 0, 36,
+        3, 0, 0, 6,
+        6, 0, 0, 6,    // spin comp. V
+        1, 0, 0, 1,
+        1, 0, 0, 26,
+        2, 0, 0, 16,
+        16, 0, 0, 16,    // spin comp. Vhat
+        // K2b:
+        46, 46, 346, 4,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        46, 34, 4, 4,    // spin comp. V
+        146, 246, 146, 14,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        146, 14, 24, 14,    // spin comp. Vhat
+        // K3:
+        0, 0, 3, 0,
+        46, 0, 0, 34,
+        346, 6, 4, 4,
+        6, 36, 6, 4,    // spin comp. V
+        1, 2, 1, 1,
+        146, 1, 1, 24,
+        246, 2, 2, 14,
+        16, 16, 26, 14};  // spin comp. Vhat
+
+const inline std::vector<int> Transformations_Keldysh_t_channel = {// K1:
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 4, 0,
+        0, 0, 0, 4,        // spin comp. V
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 14,       // spin comp. Vhat
+        // K2:
+        0, 0, 0, 0,
+        46, 0, 0, 0,
+        0, 0, 4, 4,
+        0, 0, 6, 4,         // spin comp. V
+        2, 2, 0, 0,
+        146, 14, 0, 0,
+        0, 0, 2, 14,
+        0, 0, 26, 14,  // spin comp. Vhat
+        // K2b:
+        3, 0, 3, 0,
+        0, 34, 0, 34,
+        346, 0, 3, 0,
+        0, 36, 0, 34,  // spin comp. V
+        1, 0, 1, 0,
+        0, 1, 0, 24,
+        246, 0, 16, 0,
+        0, 16, 0, 16, // spin comp. Vhat
+        // K3:
+        0, 0, 3, 0,
+        46, 0, 0, 34,
+        346, 6, 4, 4,
+        6, 36, 6, 4,     // spin comp. V
+        1, 2, 1, 1,
+        146, 1, 1, 24,
+        246, 2, 2, 14,
+        16, 16, 26, 14}; // spin comp. Vhat
+#endif
 #endif
 
 const inline std::vector<int> Transformations_Matsubara_a_channel{0, 1, 0, 2, 3,  1, 0, 2};
@@ -623,24 +862,15 @@ const std::vector<std::vector<int>> TransformaK3a {{0, 0, 0, 0, 3, 3, 3, 3}, {0,
 const std::vector<std::vector<int>> TransformaK3p {{0, 0, 3, 3, 0, 0, 3, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 4, 34, 3, 0, 4, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 34, 34, 0, 0, 34, 34}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 4, 34, 3, 0, 4, 34, 3}};
 const std::vector<std::vector<int>> TransformaK3t {{0, 0, 0, 0, 3, 3, 3, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 34, 0, 34, 4, 3, 4, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 34, 0, 34, 0, 34, 0, 34}, {0, 0, 0, 0, 4, 4, 4, 4}, {0, 34, 0, 34, 4, 3, 4, 3}};
 #else
-const std::vector<std::vector<int>> ComponentsK1a {{0, 0}, {0, 0}};
-const std::vector<std::vector<int>> ComponentsK1p {{0, 0}, {0, 0}};
-const std::vector<std::vector<int>> ComponentsK1t {{0, 0}, {0, 0}};
-const std::vector<std::vector<int>> ComponentsK2a {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
-const std::vector<std::vector<int>> ComponentsK2p {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
-const std::vector<std::vector<int>> ComponentsK2t {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
-const std::vector<std::vector<int>> ComponentsK3a {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
-const std::vector<std::vector<int>> ComponentsK3p {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
-const std::vector<std::vector<int>> ComponentsK3t {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
-const std::vector<std::vector<int>> TransformaK1a {{0, 6}, {0, 3}};
-const std::vector<std::vector<int>> TransformaK1p {{0, 6}, {0, 6}};
-const std::vector<std::vector<int>> TransformaK1t {{0, 6}, {0, 3}};
-const std::vector<std::vector<int>> TransformaK2a {{0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}};
-const std::vector<std::vector<int>> TransformaK2p {{0, 3, 36, 6}, {0, 3, 36, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 3, 36, 6}};
-const std::vector<std::vector<int>> TransformaK2t {{0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}};
-const std::vector<std::vector<int>> TransformaK3a {{0, 4, 36, 346, 34, 3, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 346, 346, 34, 34, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
-const std::vector<std::vector<int>> TransformaK3p {{0, 4, 34, 3, 36, 346, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 3, 3, 36, 36, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 34, 34, 346, 346, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
-const std::vector<std::vector<int>> TransformaK3t {{0, 34, 36, 46, 4, 3, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 0, 46, 46, 4, 4, 6, 6}, {0, 34, 0, 34, 346, 6, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
+const std::vector<std::vector<int>> TransformaK1a {{0, 3}, {0, 0}};
+const std::vector<std::vector<int>> TransformaK1p {{0, 46}, {0, 0}};
+const std::vector<std::vector<int>> TransformaK1t {{0, 3}, {0, 0}};
+const std::vector<std::vector<int>> TransformaK2a {{0, 346, 0, 346}, {0, 0, 0, 0}, {0, 346, 0, 346}};
+const std::vector<std::vector<int>> TransformaK2p {{0, 3, 0, 3}, {0, 3, 0, 3}, {0, 0, 0, 0}};
+const std::vector<std::vector<int>> TransformaK2t {{0, 46, 0, 46}, {0, 0, 0, 0}, {0, 46, 0, 46}};
+const std::vector<std::vector<int>> TransformaK3a {{0, 0, 346, 346, 3, 3, 46, 46}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 4, 0, 4, 34, 3, 34, 3}, {0, 0, 36, 36, 34, 34, 46, 46}, {0, 4, 36, 346, 0, 4, 36, 346}};
+const std::vector<std::vector<int>> TransformaK3p {{0, 0, 3, 3, 346, 346, 46, 46}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 4, 34, 3, 0, 4, 34, 3}, {0, 0, 34, 34, 36, 36, 46, 46}, {0, 4, 0, 4, 36, 346, 36, 346}};
+const std::vector<std::vector<int>> TransformaK3t {{0, 0, 46, 46, 3, 3, 346, 346}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 34, 0, 34, 4, 3, 4, 3}, {0, 34, 36, 46, 0, 34, 36, 46}, {0, 0, 36, 36, 4, 4, 346, 346}};
 #endif
 #endif
 #else

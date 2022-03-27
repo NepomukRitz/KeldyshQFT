@@ -842,11 +842,9 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 #if CONTOUR_BASIS != 1
         if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
 #else
-//#ifdef ZERO_TEMP
-
+#ifdef ZERO_TEMP
         if (is_zero_due_to_FDTs<k3>(i0, w, v, vp, channel)) trafo = -1; // components zero according to FDTs
-
-//#endif //ZERO_TEMP
+#endif //ZERO_TEMP
 #endif // CONTOUR_BASIS
     }
 #endif //EQUILIBRIUM...

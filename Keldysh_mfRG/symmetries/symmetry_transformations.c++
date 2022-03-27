@@ -144,10 +144,15 @@ void TC (IndicesSymmetryTransformations& indices){
 void Tph (IndicesSymmetryTransformations& indices){
     if (KELDYSH && PARTICLE_HOLE_SYMMETRY){ // Used only for Keldysh calculations with particle-hole symmetry
         indices.conjugate ^= true;
-        if (isInList(indices.iK, odd_Keldysh))
-            indices.prefactor *= 1.;
-        else
+        if constexpr (CONTOUR_BASIS != 1) {
+            if (isInList(indices.iK, odd_Keldysh))
+                indices.prefactor *= 1.;
+            else
+                indices.prefactor *= -1.;
+        }
+        else {
             indices.prefactor *= -1.;
+        }
 
         indices.w *= -1;
         if (MAX_DIAG_CLASS > 1) {
@@ -225,13 +230,31 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
                 case 6:
                     Tph(indices);
                 break;
+                case 16:
+                    T1(indices);
+                    Tph(indices);
+                    break;
+                case 26:
+                    T2(indices);
+                    Tph(indices);
+                    break;
                 case 36:
+                    T3(indices);
                     Tph(indices);
-                T3(indices);
-                break;
+                    break;
                 case 46:
+                    TC(indices);
                     Tph(indices);
-                TC(indices);
+                break;
+                case 146:
+                    T1(indices);
+                    TC(indices);
+                    Tph(indices);
+                break;
+                case 246:
+                    T2(indices);
+                    TC(indices);
+                    Tph(indices);
                 break;
                 case 346:
                     Tph(indices);
