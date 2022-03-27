@@ -141,7 +141,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
 
     all_frequencies = rvec(number_of_gridpoints);
     auxiliary_grid = rvec(number_of_gridpoints);
-    set_essential_parameters(scale*15., scale);
+    set_essential_parameters(scale*5000., scale);
     initialize_grid();
 }
 
@@ -417,12 +417,21 @@ void FrequencyGrid<hybridGrid>::derive_auxiliary_parameters() {
     const double temp_quad = temp * w_upper - pos_section_boundaries[1]*pos_section_boundaries[1];
     aux_pos_section_boundaries[0] = (2.*t_upper*pos_section_boundaries[0]*w_upper)                              / temp_quad;
     aux_pos_section_boundaries[1] = (t_upper*(pos_section_boundaries[0] + pos_section_boundaries[1]) * w_upper) / temp_quad;
-
     recip_curvature_quad = (4.*t_upper*t_upper*pos_section_boundaries[0]*w_upper*w_upper) / (temp_quad*temp_quad );
     recip_slope_lin = t_upper*w_upper / (temp_quad);
     factor_rat = pos_section_boundaries[1]*pos_section_boundaries[1] / (temp);
     rescale_rat = (t_upper * w_upper * temp) / temp_quad;
     spacing_auxiliary_gridpoint = 2.*t_upper / ((double)number_of_gridpoints - 1.);
+
+
+
+    //aux_pos_section_boundaries[0] = (2.*t_upper*pos_section_boundaries[0])                              / temp;
+    //aux_pos_section_boundaries[1] = (t_upper*(pos_section_boundaries[0] + pos_section_boundaries[1])) / temp;
+    //recip_curvature_quad = (4.*t_upper*t_upper*pos_section_boundaries[0]) / (temp*temp);
+    //recip_slope_lin = t_upper / (temp);
+    //factor_rat = pos_section_boundaries[1]*pos_section_boundaries[1] / (temp);
+    //rescale_rat = (t_upper);
+    //spacing_auxiliary_gridpoint = 2.*t_upper / ((double)number_of_gridpoints - 1.);
 }
 
 void FrequencyGrid<hybridGrid>::guess_essential_parameters(const double Lambda) {
@@ -434,22 +443,22 @@ void FrequencyGrid<hybridGrid>::guess_essential_parameters(const double Lambda) 
                 number_of_gridpoints = nBOS;
                 pos_section_boundaries[0] = 20.*Delta;
                 pos_section_boundaries[1] = 30.*Delta;
-                w_upper = 40.*15.*Delta;
+                w_upper = 5000.*15.*Delta;
             }
             else {
                 assert(type == 'f');
                 number_of_gridpoints = nFER;
-                pos_section_boundaries[0] = 10.;
-                pos_section_boundaries[1] = 50.*Delta;
+                pos_section_boundaries[0] = 25.;
+                pos_section_boundaries[1] = 27.*Delta;
                 w_upper = 40.*15.*Delta;
             }
             break;
         case 2:
             if (type == 'b') {
                 number_of_gridpoints = nBOS2;
-                pos_section_boundaries[0] = 3.*Delta;
-                pos_section_boundaries[1] = 10.*Delta;
-                w_upper = 40.*15.*Delta;
+                pos_section_boundaries[0] = 6.*Delta;
+                pos_section_boundaries[1] = 20.*Delta;
+                w_upper = 80.*15.*Delta;
             }
             else {
                 assert(type == 'f');
@@ -533,6 +542,8 @@ double FrequencyGrid<hybridGrid>::t_from_frequency(const double w) const {
 
 void FrequencyGrid<hybridGrid>::initialize_grid() {
     derive_auxiliary_parameters();
+    //auxiliary_grid[0] = t_lower; auxiliary_grid[number_of_gridpoints-1] = t_upper;
+    //all_frequencies[0] = -std::numeric_limits<double>::infinity(); all_frequencies[number_of_gridpoints-1] = std::numeric_limits<double>::infinity();
     for (int i = 0; i < number_of_gridpoints; i++) {
         const double t = t_lower + spacing_auxiliary_gridpoint * (double)i;
         auxiliary_grid[i] = t;
@@ -560,10 +571,10 @@ int FrequencyGrid<hybridGrid>::get_grid_index(const double frequency)const {
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
 #endif
-    assert(all_frequencies[index] <= frequency);
-    assert(all_frequencies[index+1] >= frequency);
-    assert(auxiliary_grid[index] <= t);
-    assert(auxiliary_grid[index+1] >= t);
+    //assert(all_frequencies[index] <= frequency + (std::abs(frequency)+1)*1e-12);
+    //assert(all_frequencies[index+1] >= frequency);
+    assert(auxiliary_grid[index] <= t+inter_tol);
+    assert(auxiliary_grid[index+1] >= t-inter_tol);
     return index;
 }
 
@@ -577,9 +588,7 @@ int FrequencyGrid<hybridGrid>::get_grid_index(double& t, const double frequency)
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
 #endif
-    assert(all_frequencies[index] <= frequency);
-    assert(all_frequencies[index+1] >= frequency);
-    assert(auxiliary_grid[index] <= t);
-    assert(auxiliary_grid[index+1] >= t);
+    assert(auxiliary_grid[index] <= t + inter_tol);
+    assert(auxiliary_grid[index+1] >= t - inter_tol);
     return index;
 }

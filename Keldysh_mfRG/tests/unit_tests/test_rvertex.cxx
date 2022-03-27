@@ -3,6 +3,7 @@
 #include "../../multidimensional/multiarray.hpp"
 #include "../../utilities/math_utils.hpp"
 #include "../../utilities/hdf5_routines.hpp"
+#include "../../symmetries/Keldysh_symmetries.hpp"
 
 // TODO(high): Write unit tests for cross projection functionality!
 
@@ -76,7 +77,7 @@ namespace {
 TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "[update grid]") {
     rvert<state_datatype> testvertex1('a', Lambda_ini, true);
 
-    multidimensional::multiarray<state_datatype,4> v1(K1_config.dims);
+    multidimensional::multiarray<state_datatype,4> v1(K1at_config.dims);
     for (int iw = 0; iw < nBOS; iw++) {
         double w;
         testvertex1.K1.frequencies.get_freqs_w(w, iw);
@@ -127,7 +128,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             testvertex1.update_grid<k1>(bfreqK1, testvertex1);
 
 
-            multidimensional::multiarray<state_datatype,4> errors(K1_config.dims);
+            multidimensional::multiarray<state_datatype,4> errors(K1at_config.dims);
             for (int iw = 0; iw < nBOS; iw++) {
                 double w;
                 testvertex1.K1.frequencies.get_freqs_w(w, iw);
@@ -171,7 +172,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 testvertex1.update_grid<k2>(bfreqK2, testvertex1);
 
 
-                multidimensional::multiarray<state_datatype,5> errors(K2_config.dims);
+                multidimensional::multiarray<state_datatype,5> errors(K2at_config.dims);
                 for (int iw = 0; iw < nBOS2; iw++) {
                     for (int iv = 0; iv < nFER2; iv++) {
                         double w, v;

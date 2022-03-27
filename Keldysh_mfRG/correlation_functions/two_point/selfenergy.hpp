@@ -141,13 +141,13 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
     // in particle-hole symmetric_full case (Matsubara formalism) the self-energy vector only stores the imaginary part -> initialize to zero
     // in all other cases: initialize to the Hartree value
     if (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
-#pragma omp parallel for
-        for (int iv=0; iv<nSE; ++iv) {
-            for (int i_in=0; i_in<n_in_K1; ++i_in) {
-                this->setself(0, iv, i_in, valR);
-                if (KELDYSH) this->setself(1, iv, i_in, valK);
-            }
-        }
+//#pragma omp parallel for
+//        for (int iv=0; iv<nSE; ++iv) {
+//            for (int i_in=0; i_in<n_in_K1; ++i_in) {
+//                this->setself(0, iv, i_in, valR);
+//                if (KELDYSH) this->setself(1, iv, i_in, valK);
+//            }
+//        }
         this-> asymp_val_R = valR;
     }
 }
@@ -208,7 +208,7 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         index_type idx;
         idx[my_defs::SE::keldysh]= iK;
         idx[my_defs::SE::internal]= i_in;
-    result = Sigma.interpolate_impl(freqs, idx);
+    result = Sigma.interpolate_impl(freqs, idx) + (1.-(double)iK)*(this->asymp_val_R);
 #endif
     return result;
     }

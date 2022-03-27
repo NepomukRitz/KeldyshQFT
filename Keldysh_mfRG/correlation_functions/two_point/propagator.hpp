@@ -65,6 +65,31 @@ public:
     auto valsmooth(int, double, int i_in) const -> Q;
     auto valsmooth_vectorized(double, int i_in) const -> Eigen::Matrix<Q,2,2>;
 
+    void save_propagator_values(const std::string& filename, const rvec& frequencies) const {
+        using buffer_type = multidimensional::multiarray<Q, 3>;
+        const size_t number_of_frequencies = frequencies.size();
+
+        std::array<size_t,3> dims = {number_of_frequencies, 2, 2};
+        buffer_type values (dims);
+
+        selfenergy.Sigma.initInterpolator();
+        if (type != 'g')diff_selfenergy.Sigma.initInterpolator();
+        for (size_t i = 0; i < number_of_frequencies; i++) {
+            const double v = frequencies[i];
+            Eigen::Matrix<Q,2,2> value = valsmooth_vectorized(v, 0);
+            values(i, 0, 0) = value(0, 0);
+            values(i, 0, 1) = value(0, 1);
+            values(i, 1, 0) = value(1, 0);
+            values(i, 1, 1) = value(1, 1);
+        }
+
+        //std::string filename = data_dir + "";
+        H5::H5File file(filename, H5F_ACC_TRUNC);
+        write_to_hdf(file, "propagator", values, false);
+        file.close();
+
+    }
+
     // Keldysh propagators
     auto GR(double v, int i_in) const -> Q;
     auto GA(double v, int i_in) const -> Q;

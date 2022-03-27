@@ -220,8 +220,8 @@ public:
     }
 
     ///getter functions:
-    double get_frequency(const int index) const {assert(index>=0); assert(index<number_of_gridpoints); assert(isfinite(all_frequencies[index])); return all_frequencies[index];};
-    double get_auxiliary_gridpoint(const int index) const {assert(index>=0); assert(index<number_of_gridpoints); assert(isfinite(all_frequencies[index])); return auxiliary_grid[index];};
+    double get_frequency(const int index) const {assert(index>=0); return all_frequencies[index];};
+    double get_auxiliary_gridpoint(const int index) const {assert(index>=0); assert(index<number_of_gridpoints); return auxiliary_grid[index];};
     const rvec& get_all_frequencies() const {return all_frequencies;};
     const rvec& get_all_auxiliary_gridpoints() const {return auxiliary_grid;};
     double get_spacing_auxiliary_gridpoints() const {return spacing_auxiliary_gridpoint;}

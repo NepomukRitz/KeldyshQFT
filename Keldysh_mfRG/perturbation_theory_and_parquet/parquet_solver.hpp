@@ -79,6 +79,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
+    //G.save_propagator_values(data_dir + "parquetPropagator.h5", G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies());
+
     // compute the a bubble with full vertex on the right
     GeneralVertex<Q,symmetric_r_irred> bubble_a_r (Lambda);
     bubble_a_r.set_Ir(true);

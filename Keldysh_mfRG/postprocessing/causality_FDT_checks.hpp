@@ -16,7 +16,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
         using SE_buffertype = typename SelfEnergy<Q>::buffer_type;
         SE_buffertype Sigma = selfEnergy.Sigma;                        // take self-energy
-        vec<Q> Sigma_R(Sigma.get_vec().begin(), Sigma.get_vec().begin() + (Sigma.get_vec().size() / 2));     // take first half of self-energy (retarded comp.)
+        vec<Q> Sigma_R(Sigma.get_vec().begin(), Sigma.get_vec().begin() + (nFER));     // take first half of self-energy (retarded comp.)
         assert(Sigma_R.size() == nFER);
 
 

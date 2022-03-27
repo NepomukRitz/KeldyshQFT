@@ -901,10 +901,13 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         assert(idx[my_defs::K1::spin] == 0);
         double w;
         K1_symmetry_expanded.frequencies.get_freqs_w(w, iw);
-        VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
-        Q value = rvert_this.template valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        if (std::isfinite(w)) {
+            VertexInput input(rotate_to_matrix<channel_bubble, is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
+            Q value = rvert_this.template valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel,
+                                                        vertex_half2_switchedchannel);
 
-        K1_symmetry_expanded.setvert(value, idx);
+            K1_symmetry_expanded.setvert(value, idx);
+        }
 
     }
     K1_symmetry_expanded.initInterpolator();

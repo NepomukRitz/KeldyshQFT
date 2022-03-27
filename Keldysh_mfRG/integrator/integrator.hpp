@@ -243,7 +243,7 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
             result_real_temp = 0.;
             error_real_temp = 0.;
             if (intervals[i][0] < intervals[i][1])
-                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_real,
+                gsl_integration_qag(&F_real, intervals[i][0], intervals[i][1], 0, integrator_tol, Nmax, 1, W_real,
                                     &result_real_temp, &error_real_temp);
             result_real += result_real_temp;
             error_real += error_real_temp;
@@ -268,7 +268,7 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
             result_imag_temp = 0.;
             error_imag_temp = 0.;
             if (intervals[i][0] < intervals[i][1])
-                gsl_integration_qag(&F_imag, intervals[i][0], intervals[i][1], 10e-8, integrator_tol, Nmax, 1, W_imag,
+                gsl_integration_qag(&F_imag, intervals[i][0], intervals[i][1], 0, integrator_tol, Nmax, 1, W_imag,
                                     &result_imag_temp, &error_imag_temp);
             result_imag += result_imag_temp;
             error_imag += error_imag_temp;
