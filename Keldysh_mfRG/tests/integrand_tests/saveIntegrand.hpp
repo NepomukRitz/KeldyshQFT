@@ -288,10 +288,10 @@ namespace saveIntegrand {
 
 
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
-        IntegrandSE<Q,symmetric_full> integrandR = IntegrandSE<Q,symmetric_full> ('r', Psi.vertex, S, v, i_in, all_spins);
+        IntegrandSE<Q,symmetric_full,true> integrandR = IntegrandSE<Q,symmetric_full,true> ('r', Psi.vertex, S, v, i_in, all_spins);
         integrandR.save_integrand(freqs);
         if (KELDYSH) {
-            IntegrandSE<Q,symmetric_full> integrandK = IntegrandSE<Q,symmetric_full>('k', Psi.vertex, S, v, i_in, all_spins);
+            IntegrandSE<Q,symmetric_full,true> integrandK = IntegrandSE<Q,symmetric_full,true>('k', Psi.vertex, S, v, i_in, all_spins);
             integrandK.save_integrand(freqs);
         }
     }

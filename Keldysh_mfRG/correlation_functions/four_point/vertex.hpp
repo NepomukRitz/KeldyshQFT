@@ -145,6 +145,7 @@ public:
 
 
     template<char ch_bubble, typename result_type> auto gammaRb_symmetry_expanded(const VertexInput& input) const -> result_type;
+    template<char ch_bubble, typename result_type, bool r_irred> auto value_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred> auto left_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto left_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
@@ -354,6 +355,17 @@ public:
     template <char ch_bubble> auto right_diff_bare(const VertexInput& input) const -> Q {
         if constexpr(symmtype == symmetric_full or symmtype == symmetric_r_irred ) return vertex.template right_diff_bare<ch_bubble,symmtype==symmetric_r_irred,symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright>(input);
         else                              return vertex.template right_diff_bare<ch_bubble,symmtype==symmetric_r_irred,symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright>(input, vertex_half2);
+    }
+    template <int spin, char ch_bubble, typename result_type> auto value_expanded(const VertexInput& input)  const -> result_type {
+        static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+        assert(input.spin == 0);
+        return vertices_bubbleintegrand[spin].template value_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
+    }
+
+template <int spin, char ch_bubble, typename result_type> auto value_symmetry_expanded(const VertexInput& input)  const -> result_type {
+    static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+    assert(input.spin == 0);
+    return vertices_bubbleintegrand[spin].template value_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
     template <int spin, char ch_bubble, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
@@ -915,6 +927,19 @@ template <typename Q> template<char ch_bubble, typename result_type> auto fullve
     //else {
     //    print("Something's going wrong with gammaRb. Abort."); assert(false);
     //}
+}
+template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::value_symmetry_expanded(const VertexInput& input) const  -> result_type{
+    result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
+    if constexpr(r_irred) {
+        result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
+        return gamma0 + gamma_Rb;
+    }
+    else {
+        return gamma0
+                + avertex.template value_symmetry_expanded<ch_bubble,result_type>(input, tvertex)
+                + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, pvertex)
+                + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, avertex);
+    }
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
     result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);

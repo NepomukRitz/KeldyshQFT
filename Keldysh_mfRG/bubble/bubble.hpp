@@ -264,8 +264,10 @@ public:
         else if constexpr(KELDYSH and CONTOUR_BASIS == 1) {
             //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
             using result_type = Eigen::Matrix<Q, 4, 4>;
-            const Eigen::Matrix<Q,2,2> G1 = g.valsmooth_vectorized(convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            const Eigen::Matrix<Q,2,2> G2 = g.valsmooth_vectorized(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+            using buffertype_propagator = Eigen::Matrix<Q, 2, 2>;
+            const buffertype_propagator G1 = g.template valsmooth_vectorized<buffertype_propagator>(convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
+            const buffertype_propagator G2 = g.template valsmooth_vectorized<buffertype_propagator>(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+
             const Q G00_1 = G1(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
             const Q G01_1 = G1(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
             const Q G10_1 = G1(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
@@ -278,8 +280,10 @@ public:
             result_type result;
 
             if (diff) {
-                const Eigen::Matrix<Q,2,2> S1 = s.valsmooth_vectorized(convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-                const Eigen::Matrix<Q,2,2> S2 = s.valsmooth_vectorized(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+                const buffertype_propagator S1 = s.template valsmooth_vectorized<buffertype_propagator>(convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);;
+                const buffertype_propagator S2 = s.template valsmooth_vectorized<buffertype_propagator>(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);;
+
+
                 const Q S00_1 = S1(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
                 const Q S01_1 = S1(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
                 const Q S10_1 = S1(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);

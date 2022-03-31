@@ -2634,14 +2634,37 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     }
 }
 #else
+template <int type = 2>
 auto SOPT_K1a(double w, double Lambda) -> comp {
-    double Delta = (glb_Gamma + Lambda) / 2.;
-    comp result;
-    if (w == 0.)
-        result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) * 0.5;
-    else
-        result = - glb_U*glb_U * Delta/M_PI / ((glb_i * w)*(2*Delta + (glb_i * w))) * log(1. + ((glb_i * w)*(2*Delta + (glb_i * w)))/(Delta*Delta + glb_mu*glb_mu)) * 0.5;
-    return result;
+
+    double Delta = REG == 2 ? (glb_Gamma + Lambda) / 2. : glb_Gamma * 0.5;
+
+    auto advanced = [Delta](const double w_) -> comp {
+        if (w_ == 0.)
+            return - glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) * 0.5;
+        else
+            return - glb_U*glb_U * Delta/M_PI / ((glb_i * w_)*(2*Delta + (glb_i * w_))) * log(1. + ((glb_i * w_)*(2*Delta + (glb_i * w_)))/(Delta*Delta + glb_mu*glb_mu)) * 0.5;
+    };
+
+    if (type == 2) {
+        /// advanced component of K1a in SOPT:
+        comp result = advanced(w);
+        return result;
+    }
+    else if (type == 1) {
+        /// retarded component of K1a in SOPT:
+        comp result = conj(advanced(w));
+        return result;
+    }
+    else {
+        assert(type == 0);
+        /// Keldysh component of K1a in SOPT:
+        const comp adv = advanced(w);
+        const comp ret = conj(adv);
+        const comp result = sgn(w) * (ret - adv);
+        return result;
+    }
+
 }
 auto SOPT_K1a_diff(double w, double Lambda) -> comp {
     double Delta = (glb_Gamma + Lambda) / 2.;
@@ -2657,6 +2680,76 @@ auto SOPT_K1a_diff(double w, double Lambda) -> comp {
     return term1 + term2 + term3;
 }
 
+template <typename Q, int type>
+class Integrand_SOPT_SE {
+    const double v;
+    const double Lambda;
+    const double Delta;
+    const Propagator<Q>& barePropagator;
+
+public:
+    Integrand_SOPT_SE(const double v, const double Lambda, const Propagator<Q>& propagator) :
+    v(v), Lambda(Lambda), Delta(REG == 2 ? (Lambda + glb_Gamma) * 0.5 : glb_Gamma * 0.5), barePropagator(propagator) {};
+
+    auto value(const double vp) const -> Q {
+        const Q KR = SOPT_K1a<2>(vp - v, Lambda);
+        const Q KA = conj(KR);
+        const Q KK = SOPT_K1a<0>(vp - v, Lambda);
+        const Q K00 = ( KR + KA + KK);// * 0.5;
+        const Q K01 = ( KR - KA - KK);// * 0.5;
+        const Q K10 = (-KR + KA - KK);// * 0.5;
+        const Q K11 = (-KR - KA + KK);// * 0.5;
+
+        using buffertype_propagator = Eigen::Matrix<Q,2,2>;
+        const buffertype_propagator G = barePropagator.template valsmooth_vectorized<buffertype_propagator>(vp, 0);
+#if CONTOUR_BASIS == 1
+        const Q G00 = G(0,0);
+        const Q G01 = G(0,1);
+        const Q G10 = G(1,0);
+        const Q G11 = G(1,1);
+#else
+        const Q GA_ = G(0,1);
+        const Q GR_ = G(1,0);
+        const Q GK_ = G(1,1);
+        const Q G00 = 0.5*( GA_ + GR_ + GK_);
+        const Q G01 = 0.5*( GA_ - GR_ + GK_);
+        const Q G10 = 0.5*(-GA_ + GR_ + GK_);
+        const Q G11 = 0.5*(-GA_ - GR_ + GK_);
+#endif
+
+        const Q Sigma00 = K00 * G00;
+        const Q Sigma01 = K01 * G01;
+        const Q Sigma10 = K10 * G10;
+        const Q Sigma11 = K11 * G11;
+
+        if (type == 1) {
+            /// retarded component of selfenergy:
+            const Q result = (Sigma00 + Sigma01 - Sigma10 - Sigma11) * 0.5;
+            return result * glb_i;
+        }
+        else if (type == 0){
+            /// Keldysh component of selfenergy;
+            const Q result = (Sigma00 - Sigma01 - Sigma10 + Sigma11) * 0.5;
+            return result * glb_i;
+        }
+        else {
+            assert(type == 3);
+            /// vanishing non-causal component
+            const Q result = (Sigma00 + Sigma01 + Sigma10 + Sigma11) * 0.5;
+            return result * glb_i;
+
+        }
+
+    }
+
+
+
+    auto operator() (const double vp) const -> Q {
+        return (value(vp) + value(-vp)) * 0.5;
+    }
+
+
+};
 
 #if REG==2
 template <typename Q>
@@ -2682,22 +2775,32 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     State<state_datatype> PT_state(state_cpp, Lambda);
 
     // compute SOPT self-energy (numerically exact)
-    //for (int i = 0; i<nFER; i++) {
-    //    double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
-    //    Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
-    //    Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
-    //    PT_state.selfenergy.setself(0, i, 0, val_SE);
-    //}
+    for (int i = 0; i<nFER; i++) {
+        double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
+        Integrand_SOPT_SE<Q,1> IntegrandSE_R(v, Lambda, barePropagator);
+        Q val_SE_R = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE_R, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        PT_state.selfenergy.setself(0, i, 0, val_SE_R);
+
+        Integrand_SOPT_SE<Q,0> IntegrandSE_K(v, Lambda, barePropagator);
+        Q val_SE_K = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE_K, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        PT_state.selfenergy.setself(1, i, 0, val_SE_K);
+    }
 
     // get SOPT K1 (exact)
     print("Compute exact solution for SOPT: \n");
 #pragma omp parallel for
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
-        Q val_K1;
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
-        Q val_K1_K = state_cpp.vertex.avertex().K1.val(it_spin, i, 1, 0); // - 2. * glb_i * Fermi_fac(w, glb_mu) * val_K1.imag();
+
+        const Q KR = SOPT_K1a<1>(w, Lambda);
+        const Q KA = conj(KR);
+        const Q KK = SOPT_K1a<0>(w, Lambda);
+        const Q K00 = ( KR + KA + KK);// * 0.5;
+        const Q K01 = ( KR - KA - KK);// * 0.5;
+        const Q K10 = (-KR + KA - KK);// * 0.5;
+        const Q K11 = (-KR - KA + KK);// * 0.5;
+        Q val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        Q val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1  , it_spin,  i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);

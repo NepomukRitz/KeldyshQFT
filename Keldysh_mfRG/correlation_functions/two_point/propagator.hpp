@@ -63,7 +63,7 @@ public:
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in) { }
 
     auto valsmooth(int, double, int i_in) const -> Q;
-    auto valsmooth_vectorized(double, int i_in) const -> Eigen::Matrix<Q,2,2>;
+    template <typename return_type> auto valsmooth_vectorized(double, int i_in) const -> return_type;
 
     void save_propagator_values(const std::string& filename, const rvec& frequencies) const {
         using buffer_type = multidimensional::multiarray<Q, 3>;
@@ -76,11 +76,12 @@ public:
         if (type != 'g')diff_selfenergy.Sigma.initInterpolator();
         for (size_t i = 0; i < number_of_frequencies; i++) {
             const double v = frequencies[i];
-            Eigen::Matrix<Q,2,2> value = valsmooth_vectorized(v, 0);
-            values(i, 0, 0) = value(0, 0);
-            values(i, 0, 1) = value(0, 1);
-            values(i, 1, 0) = value(1, 0);
-            values(i, 1, 1) = value(1, 1);
+            using buffertype_propagator = Eigen::Matrix<Q, 1, 4>;
+            const buffertype_propagator value = valsmooth_vectorized<buffertype_propagator>(v, 0);
+            values(i, 0, 0) = value(0);
+            values(i, 0, 1) = value(1);
+            values(i, 1, 0) = value(2);
+            values(i, 1, 1) = value(3);
         }
 
         //std::string filename = data_dir + "";
@@ -355,7 +356,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             else{
                 return GM(v, i_in);
             }
-
+        break;
         case 's':
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
@@ -393,7 +394,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             else{
                 return SM(v, i_in);
             }
-
+        break;
         case 'k': // including the Katanin extension
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
@@ -442,7 +443,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                 return SM(v, i_in)
                        + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
             }
-
+        break;
         case 'e': // purely the Katanin extension
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
@@ -488,6 +489,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             else{
                 return GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
             }
+        break;
         default:
             print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
@@ -497,8 +499,9 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
 
 
 template <typename Q>
-auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -> Eigen::Matrix<Q,2,2> {
-    using return_type = Eigen::Matrix<Q,2,2>;
+template <typename return_type>
+auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -> return_type{
+    //using return_type = Eigen::Matrix<Q,1,4>;
     switch (type){
         case 'g' :                              //Good ol' regular propagator
             if constexpr (KELDYSH){
@@ -530,9 +533,9 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
                 }
 
             else{
-                return GM(v, i_in);
+                assert(false);
             }
-
+        break;
         case 's':
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
@@ -562,9 +565,9 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
                 }
             }
             else{
-                return SM(v, i_in);
+                assert(false);
             }
-
+        break;
         case 'k': // including the Katanin extension
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
@@ -614,10 +617,9 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
                 }
             }
             else{
-                return SM(v, i_in)
-                       + GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
+                assert(false);
             }
-
+        break;
         case 'e': // purely the Katanin extension
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
@@ -666,12 +668,13 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
                 }
             }
             else{
-                return GM(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GM(v, i_in);
+                assert(false);
             }
+        break;
         default:
             print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
-            return return_type::Zero();
+            //return return_type::Zero();
     }
 }
 

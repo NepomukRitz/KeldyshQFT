@@ -431,7 +431,7 @@ namespace {
                 //tail_height = buffer.template analyze_tails<1>(1);
             }
 
-            assert(false);
+            //assert(false);
             buffer.update_grid(frequencies, buffer_backup);
             //rVert.K1.analyze_tails_K1();
             const double result = buffer.get_curvature_max();
