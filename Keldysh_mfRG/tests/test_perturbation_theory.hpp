@@ -15,6 +15,7 @@
 #include "../integrator/integrator.hpp"
 #include "../postprocessing/causality_FDT_checks.hpp"   // check causality and FDTs
 #include "../utilities/util.hpp"
+#include "../perturbation_theory_and_parquet/hartree_term.hpp"
 
 
 
@@ -2633,23 +2634,27 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 #else
 auto SOPT_K1a(double w, double Lambda) -> comp {
     double Delta = (glb_Gamma + Lambda) / 2.;
+    const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
+    const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
     comp result;
     if (w == 0.)
-        result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) * 0.5;
+        result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
     else
-        result = - glb_U*glb_U * Delta/M_PI / ((glb_i * w)*(2*Delta + (glb_i * w))) * log(1. + ((glb_i * w)*(2*Delta + (glb_i * w)))/(Delta*Delta + glb_mu*glb_mu)) * 0.5;
+        result = - glb_U*glb_U * Delta/M_PI / ((glb_i * w)*(2*Delta + (glb_i * w))) * log(1. + ((glb_i * w)*(2*Delta + (glb_i * w)))/(Delta*Delta + HF_corr*HF_corr)) * 0.5;
     return result;
 }
 auto SOPT_K1a_diff(double w, double Lambda) -> comp {
     double Delta = (glb_Gamma + Lambda) / 2.;
-    if (std::abs(w) < inter_tol) return - glb_U*glb_U      /2./ M_PI / (Delta*Delta + glb_mu*glb_mu)
-                                   + glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
-    comp term1 =  - glb_U*glb_U      /2./M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu));
-    comp term2 =  + glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu)) / (2.*Delta + (-glb_i * w));
-    comp term3 =  - glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w)))   /  (1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu))
+    const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
+    const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
+    if (std::abs(w) < inter_tol) return - glb_U*glb_U      /2./ M_PI / (Delta*Delta + HF_corr*HF_corr)
+                                   + glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta ;
+    const comp term1 =  - glb_U*glb_U      /2./M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + HF_corr*HF_corr));
+    const comp term2 =  + glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + HF_corr*HF_corr)) / (2.*Delta + (-glb_i * w));
+    const comp term3 =  - glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w)))   /  (1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + HF_corr*HF_corr))
                     *(
-                            std::abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
-                            -(-glb_i * w) * (2*Delta + (-glb_i * w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
+                            std::abs(w)                      / (Delta*Delta + HF_corr*HF_corr)
+                            -(-glb_i * w) * (2*Delta + (-glb_i * w)) / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta
                     );
     return term1 + term2 + term3;
 }

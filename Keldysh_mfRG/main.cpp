@@ -53,10 +53,14 @@ auto main() -> int {
     data_dir = "../Data_SIAM_PT4/no-phs/";
     makedir(data_dir);
 
+
     const rvec lambdas = {999., 199., 99., 19., 9.};
     for (const double lambda : lambdas) {
-        PT_Machine<state_datatype> PT_Calculator (4, lambda, true);
+        PT_Machine<state_datatype> PT_Calculator (2, lambda, true);
     }
+
+
+    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
 
     hello_world();
 
