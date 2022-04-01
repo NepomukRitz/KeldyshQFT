@@ -23,6 +23,16 @@ typedef std::complex<double> comp; // Complex number
 
 constexpr comp glb_i (0., 1.);    // Imaginary unit
 
+
+template <typename T> T myzero() {
+    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double>) {
+        return (T)0.;
+    }
+    else {
+        return T::Zero();
+    }
+}
+
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
 using state_datatype = double;
 #else
@@ -333,7 +343,7 @@ vec<T> vec<T>::diff() const {
 // sum of all elements
 template <typename T>
 T vec<T>::sum() const {
-    return std::accumulate(this->begin(), this->end(), (T)0);
+    return std::accumulate(this->begin(), this->end(), myzero<T>());
 }
 
 /// NON-MEMBER FUNCTIONS ///

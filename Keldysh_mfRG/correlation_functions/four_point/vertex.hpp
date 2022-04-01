@@ -546,13 +546,14 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
         }
     }
     else {
-        Eigen::Matrix<Q, 4, 1> result;
+        result_type result;
+        constexpr int rows = result_type::RowsAtCompileTime;
         switch (spin) {
             case 0:
-                result = bare.template at_vectorized<0,0,4>(iK,i_in);
+                result = bare.template at_vectorized<0,0,rows>(iK,i_in);
                 break;
             case 1:
-                result = -bare.template at_vectorized<0,0,4>(iK,i_in);
+                result = -bare.template at_vectorized<0,0,rows>(iK,i_in);
                 break;
             default:
                 print("Problems in irred.val. Abort.");
