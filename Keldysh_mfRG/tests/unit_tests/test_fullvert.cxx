@@ -8,7 +8,7 @@
 
 
 TEST_CASE("Does the vectorized interpolation work for the GeneralVertex?", "vectorized interpolation") {
-    if (KELDYSH and MAX_DIAG_CLASS==3) {
+    if constexpr(KELDYSH and MAX_DIAG_CLASS==3) {
         /// There was once a bug with automatic type deduction that produced wrong results when compiler optimization was switched on
 
         // construct vertex:

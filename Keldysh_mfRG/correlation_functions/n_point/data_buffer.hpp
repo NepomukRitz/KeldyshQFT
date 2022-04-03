@@ -4,6 +4,7 @@
 #include "../../data_structures.hpp"
 #include "../../symmetries/Keldysh_symmetries.hpp"
 #include "data_container.hpp"
+#include "../interpolations/InterpolatorLinOrSloppy.hpp"
 #include "../interpolations/InterpolatorSpline1D.hpp"
 #include "../interpolations/InterpolatorSpline2D.hpp"
 #include "../interpolations/InterpolatorSpline3D.hpp"
@@ -186,46 +187,36 @@ public:
         {
 
 #ifdef DENSEGRID
-            Q result;
-            if constexpr(k == k1)
+            result_type result;
+            if constexpr(numberFrequencyDims == 1)
             {
-                result = interpolate_nearest1D<Q>(indices.w, base_class::get_VertexFreqGrid().primary_grid,
-                                                  [&](int i) -> Q {
-                                                      return base_class::val(indices.spin, i,
-                                                                                             indices.iK,
-                                                                                             indices.i_in);
+                result = interpolate_nearest1D<result_type>(frequencies[0], base_class::get_VertexFreqGrid().primary_grid,
+                                                  [&](int i) -> result_type {
+                                                      indices[pos_first_freqpoint] = i;
+                                                      return base_class::val(indices);
                                                   });
             }
-            else if constexpr(k==k2){
-                result =  interpolate_nearest2D<Q>(indices.w, indices.v1,
+            else if constexpr(numberFrequencyDims == 2){
+                result =  interpolate_nearest2D<result_type>(frequencies[0], frequencies[1],
                                                    base_class::get_VertexFreqGrid().  primary_grid,
                                                    base_class::get_VertexFreqGrid().secondary_grid,
-                                                   [&](int i, int j) -> Q {
-                                                       return base_class::val(indices.spin, i,
-                                                                                              j, indices.iK,
-                                                                                              indices.i_in);
+                                                   [&](int i, int j) -> result_type {
+                                                       indices[pos_first_freqpoint  ] = i;
+                                                       indices[pos_first_freqpoint+1] = j;
+                                                       return base_class::val(indices);
                                                    });
             }
-            else if constexpr(k==k2b){
-                result =  interpolate_nearest2D<Q>(indices.w, indices.v2,
-                                                   base_class::get_VertexFreqGrid().  primary_grid,
-                                                   base_class::get_VertexFreqGrid().secondary_grid,
-                                                   [&](int i, int j) -> Q {
-                                                       return base_class::val(indices.spin, i,
-                                                                                              j, indices.iK,
-                                                                                              indices.i_in);
-                                                   });
-            }
-            else if constexpr(k == k3)
+            else if constexpr(numberFrequencyDims == 3)
             {
-                result =  interpolate_nearest3D<Q>(indices.w, indices.v1, indices.v2,
+                result =  interpolate_nearest3D<result_type>(frequencies[0], frequencies[1], frequencies[2],
                                                    base_class::get_VertexFreqGrid().  primary_grid,
                                                    base_class::get_VertexFreqGrid().secondary_grid,
                                                    base_class::get_VertexFreqGrid().secondary_grid,
-                                                   [&](int i, int j, int l) -> Q {
-                                                       return base_class::val(indices.spin, i,
-                                                                                              j, l, indices.iK,
-                                                                                              indices.i_in);
+                                                   [&](int i, int j, int l) -> result_type {
+                                                       indices[pos_first_freqpoint  ] = i;
+                                                       indices[pos_first_freqpoint+1] = j;
+                                                       indices[pos_first_freqpoint+2] = l;
+                                                       return base_class::val(indices);
                                                    });
             }
 

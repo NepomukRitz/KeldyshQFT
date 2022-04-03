@@ -26,20 +26,20 @@ struct buffer_config {
 };
 
 #ifdef DEBUG_SYMMETRIES
-constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({4, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<4> K1at_config{.dims = std::array<size_t,4>({n_spin, nBOS, 16, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<4> K1p_config {.dims = std::array<size_t,4>({n_spin, nBOS, 16, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<5> K2at_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 16, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
-constexpr buffer_config<5> K2p_config {.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 16, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
-constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, 16, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({KELDYSH ? 4 : 1, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1at_config{.dims = std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 16 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1p_config {.dims = std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 16 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<5> K2at_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 16 : 1, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<5> K2p_config {.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 16 : 1, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, KELDYSH ? 16 : 1, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
 #else
 #if CONTOUR_BASIS != 1
-constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ 2, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<4> K1at_config{.dims = std::array<size_t,4>({n_spin, nBOS, 2, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<4> K1p_config {.dims = std::array<size_t,4>({n_spin, nBOS, 2, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
-constexpr buffer_config<5> K2at_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 5, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
-constexpr buffer_config<5> K2p_config {.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, 5, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
-constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, 6, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
+constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ KELDYSH ? 2 : 1, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1at_config{.dims = std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 2 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<4> K1p_config {.dims = std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 2 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
+constexpr buffer_config<5> K2at_config{.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 5 : 1, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<5> K2p_config {.dims = std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 5 : 1, n_in_K2}), .num_freqs=2, .position_first_freq_index=1};
+constexpr buffer_config<6> K3_config{.dims = std::array<size_t,6>({n_spin, nBOS3, nFER3, nFER3, KELDYSH ? 6 : 1, n_in_K3}), .num_freqs=3, .position_first_freq_index=1};
 #else
 #ifndef PARTICLE_HOLE_SYMM
 constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({ 2, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
@@ -138,9 +138,9 @@ auto alphas(int index) -> std::vector<int>;
 
 
 
-template<char channel_bubble> void get_i0_left_right(const my_index_t iK, my_index_t& i0_left, my_index_t& i0_right)  {
-    constexpr std::array<my_index_t, 4> Keldysh4pointdims = {2,2,2,2};
-    std::array<my_index_t ,4> alpha;
+template<char channel_bubble, typename I> void get_i0_left_right(const my_index_t iK, I& i0_left, I& i0_right)  {
+    constexpr std::array<I, 4> Keldysh4pointdims = {2,2,2,2};
+    std::array<I ,4> alpha;
     getMultIndex(alpha, iK, Keldysh4pointdims);
 
     if constexpr(channel_bubble == 'a') {
@@ -159,7 +159,7 @@ template<char channel_bubble> void get_i0_left_right(const my_index_t iK, my_ind
 }
 
 
-template<char channel_bubble, bool is_left_vertex> auto rotate_to_matrix(const my_index_t iK) -> my_index_t {
+template<char channel_bubble, bool is_left_vertex> auto rotate_Keldysh_matrix(const my_index_t iK) -> my_index_t {
     constexpr std::array<my_index_t, 4> Keldysh4pointdims = {2,2,2,2};
     std::array<my_index_t ,4> alpha;
     getMultIndex(alpha, iK, Keldysh4pointdims);

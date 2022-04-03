@@ -455,7 +455,7 @@ template <int spin, char ch_bubble, typename result_type> auto value_symmetry_ex
             vertices_bubbleintegrand[ispin].template symmetry_expand<channel_bubble,is_left_vertex>(half1(), half2(), ispin);
             //print("expanded spin component ", ispin, "\n");
         }
-        set_initializedInterpol(false);
+
     }
     void save_expanded(const std::string& filename_prefix) {
         for (int i = 0; i < vertices_bubbleintegrand.size(); i++) {

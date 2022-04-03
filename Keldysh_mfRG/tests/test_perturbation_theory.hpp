@@ -1298,19 +1298,19 @@ void test_integrate_over_K1(double Lambda) {
     vec<double> freqs = {};
     int num_freqs = 0;
     double Delta = (glb_Gamma+Lambda)/2.;
-    Q result = integrator_Matsubara_T0<Q,0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
+    Q result = integrator_Matsubara_T0<0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a:", result, true);
     print("relative difference: ", (result-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', (v-vp)*2, v, vp);
-    Q result2 = integrator_Matsubara_T0<Q,0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
+    Q result2 = integrator_Matsubara_T0<0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from the t-channel:", result2, true);
     print("relative difference: ", (result2-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', (v+vp)*2, v, vp);
-    Q result3 = integrator_Matsubara_T0<Q,0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
+    Q result3 = integrator_Matsubara_T0<0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
     print("Result of the integration over K1a from p-channel:", result3, true);
     print("relative difference: ", (result3-exact_result)/exact_result, true);
 
@@ -1671,7 +1671,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         idx_SE[my_defs::SE::nu] = i;
         double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
-        Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
@@ -1712,7 +1712,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
             double w, v;
             PT_state.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
-            Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
+            Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
             PT_state.vertex.avertex().K2.setvert(val_K2, idx_K2);
             PT_state.vertex.pvertex().K2.setvert(val_K2, idx_K2);
             PT_state.vertex.tvertex().K2.setvert(val_K2, idx_K2);
@@ -1734,19 +1734,19 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 double w, v, vp;
                 PT_state.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
-                Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.avertex().K3.setvert(val_K3, idx_K3);
 
                 PT_state.vertex.pvertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
                 Integrand_FOPTK3a<Q> IntegrandK3_2(Lambda, w, v, vp, diff, Pi);
-                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_2, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<6>(IntegrandK3_2, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.pvertex().K3.setvert(-val_K3, idx_K3);
 
                 PT_state.vertex.tvertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
                 Integrand_FOPTK3a<Q> IntegrandK3_3(Lambda, w, v, vp, diff, Pi);
-                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<6>(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
-                Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0<6>(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.tvertex().K3.setvert(-2.*(val_K3-val_K3_ap), idx_K3);
             }
         }
@@ -2166,7 +2166,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
-        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,2>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp, vp}, Delta);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<2>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp, vp}, Delta);
         return -glb_U * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
@@ -2264,7 +2264,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
-        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,1>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp}, Delta);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<1>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp}, Delta);
         return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
@@ -2362,7 +2362,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, vpp, vp, false, Pi);
-        state_datatype val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,3>(IntegrandK3, -vmax, vmax, std::abs(w/2), {vpp, vp, std::abs(vpp)-std::abs(vp)}, Delta);
+        state_datatype val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<3>(IntegrandK3, -vmax, vmax, std::abs(w/2), {vpp, vp, std::abs(vpp)-std::abs(vp)}, Delta);
         return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K3;
         //return vpp*vpp;
     }
@@ -2497,7 +2497,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1rdot_PIa_K1p_exact.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
             K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
-                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0< 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
             K1rdot_PIa_K1p_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
             //    }
         }
@@ -2512,7 +2512,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1rdot_PIa_K1p_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
             K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                    integrator_Matsubara_T0< 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
                                                                                 std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta, true);
             K1rdot_PIa_K1p_exact.vertex.avertex().K3.setvert(val_K3, it_spin, i, j, k, 0, 0);
@@ -2548,7 +2548,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1p_PIa_K1rdot_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
             K1p_PIa_K1rdot_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                    integrator_Matsubara_T0< 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
                                                                                 std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta, true);
             K1p_PIa_K1rdot_exact.vertex.avertex().K3.setvert(val_K3, 0, it_spin, i, j, k, 0);
@@ -2577,7 +2577,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             dGammaC_exact.vertex.avertex().K1.frequencies.get_freqs_w(w, i);
             IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
             state_datatype val_K1 =
-                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 0>(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta, true);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0< 0>(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta, true);
             dGammaC_exact.vertex.avertex().K1.setvert(val_K1, it_spin, i, 0, 0);
         }
 
@@ -2591,7 +2591,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             dGammaC_exact.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
             IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
-                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0< 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
             dGammaC_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
             //    }
         }
@@ -2606,7 +2606,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             dGammaC_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
             IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator_Matsubara_T0<state_datatype, 3>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                    integrator_Matsubara_T0< 3>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                   {v, vp, std::abs(v) - std::abs(vp)}, Delta, true);
             dGammaC_exact.vertex.avertex().K3.setvert(val_K3, it_spin, i, j, k, 0, 0);
             //    }
@@ -2778,11 +2778,11 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     for (int i = 0; i<nFER; i++) {
         double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
         Integrand_SOPT_SE<Q,1> IntegrandSE_R(v, Lambda, barePropagator);
-        Q val_SE_R = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE_R, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        Q val_SE_R = 1./(2*M_PI) * integrator_Matsubara_T0<1>(IntegrandSE_R, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(0, i, 0, val_SE_R);
 
         Integrand_SOPT_SE<Q,0> IntegrandSE_K(v, Lambda, barePropagator);
-        Q val_SE_K = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE_K, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        Q val_SE_K = 1./(2*M_PI) * integrator_Matsubara_T0<1>(IntegrandSE_K, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(1, i, 0, val_SE_K);
     }
 

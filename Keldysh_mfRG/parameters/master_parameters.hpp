@@ -24,21 +24,22 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
-#define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
+#define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL
+#define VECTORIZED_INTEGRATION 0 // 0 for False; 1 for True
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
 
 
 
 
 // Determines whether particle-hole symmetry is assumed
-//#define PARTICLE_HOLE_SYMM
+#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 3
 
 constexpr int N_LOOPS = 1;  // Number of loops
 #define KATANIN

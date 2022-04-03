@@ -564,7 +564,7 @@ int FrequencyGrid<hybridGrid>::get_grid_index(const double frequency)const {
     /// Do I need this? The next function basically does the same
     const double t = t_from_frequency(frequency);
 #ifdef DENSEGRID
-    auto index = ((int) ((t - t_base) / spacing_auxiliary_gridpoint + 0.1 )) ;
+    auto index = ((int) ((t - t_lower) / spacing_auxiliary_gridpoint + 0.1 )) ;
 #else
     assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
     int index = int((t - t_lower) + 1e-12);
@@ -581,7 +581,7 @@ int FrequencyGrid<hybridGrid>::get_grid_index(const double frequency)const {
 int FrequencyGrid<hybridGrid>::get_grid_index(double& t, const double frequency) const{
     t = t_from_frequency(frequency);
 #ifdef DENSEGRID
-    auto index = ((int) ((t - t_base) / spacing_auxiliary_gridpoint + 0.1 )) ;
+    auto index = ((int) ((t - t_lower) / spacing_auxiliary_gridpoint + 0.1 )) ;
 #else
     assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
     int index = int((t - t_lower) + 1e-12);

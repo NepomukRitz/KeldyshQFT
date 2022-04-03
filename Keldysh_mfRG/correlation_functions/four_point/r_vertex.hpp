@@ -47,10 +47,10 @@ private:
                                                               // independent ones
     Transformations transformations = Transformations(channel);    // lists providing information on which transformations to apply on Keldysh
                                                                    // components to relate them to the independent ones
+public:
     FrequencyTransformations freq_transformations = FrequencyTransformations(channel);  // lists providing information on which transformations to apply on
                                                                                         // frequencies to relate them to the independent ones
 
-public:
     /// When you add a vertex buffer, also adapt the following:
     /// apply_unary_op_to_all_vertexBuffers()
     /// apply_binary_op_to_all_vertexBuffers()
@@ -398,10 +398,27 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
     //locate(all_Keldysh, 16, itK, res_iK, -1, 16);
     if constexpr (k == k1) {
         assert((channel == 'p' and itK < 3) or (channel != 'p' and itK < 2 ));
+#if CONTOUR_BASIS
+        #ifndef PARTIPARTICLE_HOLE_SYMM
+        assert((channel == 'p' and itK < 3) or (channel != 'p' and itK < 2 ));
+#else
+        assert(itK < 2 );
+#endif
+#else
+        assert(itK < 2 );
+#endif
         indices.iK = itK < 0 ? itK : (indices.channel_rvert == 'a' ? non_zero_Keldysh_K1a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K1p[itK] : non_zero_Keldysh_K1t[itK]);
     }
     else if constexpr (k == k2 or k == k2b) {
+#if CONTOUR_BASIS
+#ifndef PARTIPARTICLE_HOLE_SYMM
         assert((channel == 'p' and itK < 6) or (channel != 'p' and itK < 4 ));
+#else
+        assert(itK < 3 );
+#endif
+#else
+        assert(itK < 5 );
+#endif
         indices.iK = itK < 0 ? itK : (indices.channel_rvert == 'a' ? non_zero_Keldysh_K2a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K2p[itK] : non_zero_Keldysh_K2t[itK]);
     }
     else {
@@ -902,7 +919,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         double w;
         K1_symmetry_expanded.frequencies.get_freqs_w(w, iw);
         if (std::isfinite(w)) {
-            VertexInput input(rotate_to_matrix<channel_bubble, is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble, is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
             Q value = rvert_this.template valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel,
                                                         vertex_half2_switchedchannel);
 
@@ -932,7 +949,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
             double w, v;
             K2_symmetry_expanded.frequencies.get_freqs_w(w, v, iw, iv);
-            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
             Q value = rvert_this.template valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K2_symmetry_expanded.setvert(value, idx);
@@ -957,7 +974,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
             double w, vp;
             K2b_symmetry_expanded.frequencies.get_freqs_w(w, vp, iw, iv);
-            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
             Q value = rvert_this.template valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K2b_symmetry_expanded.setvert(value, idx);
@@ -989,7 +1006,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
             double w, v, vp;
             K3_symmetry_expanded.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
-            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
             Q value = rvert_this.template valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K3_symmetry_expanded.setvert(value, idx);

@@ -30,7 +30,7 @@
 template <typename Q, typename Grid>
 static auto interpolate_nearest1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)> val) -> Q {
 
-    int index = frequencies.get_grid_index(x, true);
+    int index = frequencies.get_grid_index(x);
 
     Q result = val(index);
 
@@ -54,7 +54,7 @@ static auto interpolate_nearest2D(const double& x, const double& y,
                               const Grid& xfrequencies, const Grid& yfrequencies,
                               const std::function<Q(const int&, const int&)> val) -> Q {
 
-    int index = xfrequencies.get_grid_index(x, true);
+    int index = xfrequencies.get_grid_index(x);
 
     Q result = interpolate_nearest1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
 
@@ -82,7 +82,7 @@ static auto interpolate_nearest3D(const double& x, const double& y, const double
                               const Grid& xfrequencies, const Grid& yfrequencies, const Grid& zfrequencies,
                               const std::function<Q(const int&, const int&, const int&)> val) -> Q {
 
-    int index = xfrequencies.get_grid_index(x, true);
+    int index = xfrequencies.get_grid_index(x);
 
     Q result = interpolate_nearest2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
 

@@ -12,23 +12,6 @@
 
 /// possible tests: ---> See bubble integrand
 
-template <typename T> constexpr int myRowsAtCompileTime() {
-    if constexpr(std::is_same_v<T,double> || std::is_same_v<T,comp>) {
-        return 1;
-    }
-    else {
-        return T::RowsAtCompileTime;
-    }
-}
-
-template <typename T> constexpr int myColsAtCompileTime() {
-    if constexpr(std::is_same_v<T,double> || std::is_same_v<T,comp>) {
-        return 1;
-    }
-    else {
-        return T::ColsAtCompileTime;
-    }
-}
 
 /**
  * Class for the integrand of the Retarded SelfEnergy
@@ -323,7 +306,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_vertex_vectorized(c
     if constexpr(all_spins) {
         const VertexInput inputClosedAbove_spin0(i0_vertex_right, 0, 0, vp, v, i_in, 't');
         const VertexInput inputClosedAbove_spin1(i0_vertex_right, 0, 0, vp, v, i_in, 't');
-#ifdef VECTORIZED_INTEGRATION
+#if VECTORIZED_INTEGRATION == 1
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result0 = vertex.template value_symmetry_expanded<0,'t',valuetype_fetch>(inputClosedAbove_spin0);
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result1 = vertex.template value_symmetry_expanded<1,'t',valuetype_fetch>(inputClosedAbove_spin1);
@@ -339,7 +322,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_vertex_vectorized(c
     }
     else {
         VertexInput inputClosedAbove(i0_vertex_right, 0, 0, vp, v, i_in, 't');
-#ifdef VECTORIZED_INTEGRATION
+#if VECTORIZED_INTEGRATION == 1
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result = vertex.template value_symmetry_expanded<0,'t',valuetype_fetch>(inputClosedAbove);
         result.resize(4,return_type::ColsAtCompileTime);

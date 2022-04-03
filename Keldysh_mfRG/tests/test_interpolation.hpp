@@ -207,7 +207,7 @@ namespace {
                     Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
                     double vmax = 100.;
                     double Delta = (glb_Gamma+Lambda)/2.;
-                    Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
+                    Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
                     K2aexact.vertex.avertex().K2_setvert(0, i, j, 0, val_K2);
                     K2aexact.vertex.pvertex().K2_setvert(0, i, j, 0, val_K2);
                     K2aexact.vertex.tvertex().K2_setvert(0, i, j, 0, val_K2);

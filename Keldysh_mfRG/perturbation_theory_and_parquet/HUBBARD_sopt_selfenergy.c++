@@ -106,7 +106,7 @@ void Hubbard_SE_SOPT_Computer::compute_frequency_integrals(const vec<comp>& inte
                 (integrand, v, i_in,
                  barePropagator.selfenergy.Sigma.frequencies.primary_grid,                              // frequency grid of propagator
                  vertex_in_SOPT.avertex().K1.frequencies.get_freqGrid_b());     // frequency grid of SOPT vertex
-            auto val = integrator<comp>(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, 0, Delta);
+            auto val = integrator(integrand_w, v_lower - std::abs(v), v_upper + std::abs(v), -v, 0, Delta);
             // TODO: What about asymptotic corrections?
             SOPT_SE_Hubbard.addself(iK, iv, i_in, prefactor*val);
         }

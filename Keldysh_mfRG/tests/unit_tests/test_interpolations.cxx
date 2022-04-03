@@ -80,6 +80,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     vec<double> errors (nBOS2*nFER2);
+    vec<comp> values (nBOS2*nFER2);
+    vec<comp> values_inter (nBOS2*nFER2);
     int iter = 0;
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
     for (int iw = 0; iw<nBOS2; iw++){
@@ -88,6 +90,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
             idx[my_defs::K2::nu]            = iv;
             avertex.K2.frequencies.get_freqs_w(indices.w, indices.v1, iw, iv);
 
+            values[iter] = avertex.K2.val(idx);
+            values_inter[iter] = avertex.K2.interpolate(indices);
             double error = std::abs(avertex.K2.interpolate(indices) -  avertex.K2.val(idx));
             cumul_interpolation_error += error;
             errors[iter] = error;
@@ -632,7 +636,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
 
 
 TEST_CASE("Does the vectorized interpolation reproduce the results of repeated scalar interpolation?", "vectorized interpolation") {
-    if (KELDYSH) {
+    if constexpr(KELDYSH) {
 
         using result_type = Eigen::Matrix<state_datatype, 4, 1>;
         using result_type_full = Eigen::Matrix<state_datatype, 4, K1_expanded_config.dims_flat/4>;

@@ -33,6 +33,24 @@ template <typename T> T myzero() {
     }
 }
 
+template <typename T> constexpr int myRowsAtCompileTime() {
+    if constexpr(std::is_same_v<T,double> || std::is_same_v<T,comp>) {
+        return 1;
+    }
+    else {
+        return T::RowsAtCompileTime;
+    }
+}
+
+template <typename T> constexpr int myColsAtCompileTime() {
+    if constexpr(std::is_same_v<T,double> || std::is_same_v<T,comp>) {
+        return 1;
+    }
+    else {
+        return T::ColsAtCompileTime;
+    }
+}
+
 #if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
 using state_datatype = double;
 #else
@@ -420,29 +438,7 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 /// Keldysh index parameters ///
-#ifdef KELDYSH_FORMALISM
-#ifndef DEBUG_SYMMETRIES
-// Number of independent Keldysh components for the respective diagrammatic class
-const int nK_SE = 2;
-const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-// for channel p components 1 and 5
-const int nK_K2 = 5;        // For channels a, p and t -channel separately
-const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-// (independent components in order of appearance)
-#else // DEBUG_SYMMETRIES
-//const int nK_SE = 2;
-//const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-//                            // for channel p components 1 and 5
-//const int nK_K2 = 16;       // For channels a, p and t -channel separately
-//const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-                            // (independent components in order of appearance)
-#endif // DEBUG_SYMMETRIES
-#else // KELDYSH_FORMALISM
-const int nK_SE = 1;
-const int nK_K1 = 1;
-const int nK_K2 = 1;
-const int nK_K3 = 1;
-#endif // KELDYSH_FORMALISM
+
 
 
 using my_index_t = std::size_t;
