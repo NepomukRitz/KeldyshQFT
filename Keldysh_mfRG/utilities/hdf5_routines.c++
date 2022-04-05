@@ -118,7 +118,7 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2_a, state.vertex.avertex().K2.data, Lambda_it);
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2_p, state.vertex.pvertex().K2.data, Lambda_it);
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2_t, state.vertex.tvertex().K2.data, Lambda_it);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2b_a, state.vertex.avertex().K2b.data, Lambda_it);
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2b_p, state.vertex.pvertex().K2b.data, Lambda_it);
     read_from_hdf_LambdaLayer<state_datatype>(file_out, DATASET_K2b_t, state.vertex.tvertex().K2b.data, Lambda_it);
@@ -164,7 +164,7 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs2a,state.vertex.avertex().K2.frequencies.secondary_grid, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs2p,state.vertex.pvertex().K2.frequencies.secondary_grid, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs2t,state.vertex.tvertex().K2.frequencies.secondary_grid, Lambda_it, Lambda[0]);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs2ba,state.vertex.avertex().K2b.frequencies.  primary_grid, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs2bp,state.vertex.pvertex().K2b.frequencies.  primary_grid, Lambda_it, Lambda[0]);
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_bfreqs2bt,state.vertex.tvertex().K2b.frequencies.  primary_grid, Lambda_it, Lambda[0]);

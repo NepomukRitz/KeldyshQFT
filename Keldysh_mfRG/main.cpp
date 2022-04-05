@@ -95,14 +95,14 @@ auto main() -> int {
 
     /// Data directory
     std::string job = "U=" + std::to_string(glb_U);
-#ifdef KELDYSH_FORMALISM
-#ifdef DEBUG_SYMMETRIES
+#if KELDYSH_FORMALISM
+#if DEBUG_SYMMETRIES
     data_dir = "../Data_KF_debug/";
 #else
     data_dir = "../Data_KF" + job + "/";
 #endif
 #else
-    #ifdef DEBUG_SYMMETRIES
+    #if DEBUG_SYMMETRIES
     data_dir = "../Data_MF_debug/";
 
 #else

@@ -809,7 +809,7 @@ struct Transformations {
     }
 };
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
 #if CONTOUR_BASIS != 1
 #ifndef PARTICLE_HOLE_SYMM
 const std::vector<std::vector<int>> ComponentsK1a {{0, 0}, {0, 0}};

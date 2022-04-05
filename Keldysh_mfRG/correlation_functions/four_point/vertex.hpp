@@ -334,6 +334,23 @@ public:
                 break;
         }
     }
+    rvert<Q>& get_rvertex(const char r) {
+        switch(r) {
+            case 'a':
+                return vertex.avertex;
+                break;
+            case 'p':
+                return vertex.pvertex;
+                break;
+            case 't':
+                return vertex.tvertex;
+                break;
+            default:
+                assert(false);
+                return vertex.tvertex;
+                break;
+        }
+    }
 
     // wrappers for access functions of fullvert
     template<char ch_bubble> auto value(const VertexInput& input) const -> Q           {

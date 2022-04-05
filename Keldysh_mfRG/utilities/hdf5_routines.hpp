@@ -483,7 +483,7 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, file_exists);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_a, state.vertex.avertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_p, state.vertex.pvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_t, state.vertex.tvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, file_exists);
@@ -607,7 +607,7 @@ namespace hdf5_impl {
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2a,state.vertex.avertex().K2.frequencies.get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2p,state.vertex.pvertex().K2.frequencies.get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_ffreqs2t,state.vertex.tvertex().K2.frequencies.get_freqGrid_f(), Lambda_it, numberLambdaLayers, file_exists, verbose);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2ba,state.vertex.avertex().K2b.frequencies.get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2bp,state.vertex.pvertex().K2b.frequencies.get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
         write_freqparams_to_hdf_LambdaLayer(group_freqparams_bfreqs2bt,state.vertex.tvertex().K2b.frequencies.get_freqGrid_b(), Lambda_it, numberLambdaLayers, file_exists, verbose);
@@ -693,7 +693,7 @@ public:
     double * bfreqst_buffer;
     double * ffreqs_buffer;
     const size_t self_dim = SE_config.dims_flat;    // length of self-energy buffer
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     const int irred_dim = 16 * n_in;                                  // length of irreducible vertex buffer
 #else
     const int irred_dim = n_in;                                       // length of irreducible vertex buffer
@@ -837,7 +837,7 @@ template <typename Q>
     convert_vec_to_type(ffreqs.get_all_frequencies(), ffreqs_buffer);
 
         for (int i=0; i<self_dim; ++i) {                        // write self-energy into buffer
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM and not defined(HUBBARD)
             // in the particle-hole symmetric_full case in Matsubara we only save the imaginary part of the selfenergy
             selfenergy[i].re = glb_U/2.;
             selfenergy[i].im = state_in.selfenergy.acc(i);
@@ -1535,7 +1535,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     result.Lambda = *buffer.lambda;
 
     for (int i=0; i<buffer.self_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.selfenergy[i].re, buffer.selfenergy[i].im};
 #else
         val = buffer.selfenergy[i].im;
@@ -1543,7 +1543,7 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
         result.selfenergy.direct_set(i, val);
     }
     for (int i=0; i<buffer.irred_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.irreducible_class[i].re, buffer.irreducible_class[i].im};
 #else
         val = buffer.irreducible_class[i].re;
@@ -1552,21 +1552,21 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
     }
 #if MAX_DIAG_CLASS >= 1
     for (int i=0; i<buffer.K1_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_a[i].re, buffer.K1_class_a[i].im};
 #else
         val = buffer.K1_class_a[i].re;
 #endif
         result.vertex.avertex().K1.direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_p[i].re, buffer.K1_class_p[i].im};
 #else
         val = buffer.K1_class_p[i].re;
 #endif
         result.vertex.pvertex().K1.direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K1_class_t[i].re, buffer.K1_class_t[i].im};
 #else
         val = buffer.K1_class_t[i].re;
@@ -1576,21 +1576,21 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
 #endif
 #if MAX_DIAG_CLASS >= 2
     for (int i=0; i<buffer.K2_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_a[i].re, buffer.K2_class_a[i].im};
 #else
         val = buffer.K2_class_a[i].re;
 #endif
         result.vertex.avertex().K2.direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_p[i].re, buffer.K2_class_p[i].im};
 #else
         val = buffer.K2_class_p[i].re;
 #endif
         result.vertex.pvertex().K2.direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K2_class_t[i].re, buffer.K2_class_t[i].im};
 #else
         val = buffer.K2_class_t[i].re;
@@ -1600,21 +1600,21 @@ void copy_buffer_to_result(State<Q>& result, Buffer& buffer) {
 #endif
 #if MAX_DIAG_CLASS >= 3
     for (int i=0; i<buffer.K3_dim; ++i) {
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_a[i].re, buffer.K3_class_a[i].im};
 #else
         val = buffer.K3_class_a[i].re;
 #endif
         result.vertex.avertex().K3.direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_p[i].re, buffer.K3_class_p[i].im};
 #else
         val = buffer.K3_class_p[i].re;
 #endif
         result.vertex.pvertex().K3.direct_set(i, val);
 
-#if defined(KELDYSH_FORMALISM) or not defined(PARTICLE_HOLE_SYMM)
+#if KELDYSH_FORMALISM or not defined(PARTICLE_HOLE_SYMM)
         val = {buffer.K3_class_t[i].re, buffer.K3_class_t[i].im};
 #else
         val = buffer.K3_class_t[i].re;

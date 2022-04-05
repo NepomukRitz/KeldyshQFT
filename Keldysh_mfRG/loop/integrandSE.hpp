@@ -327,7 +327,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_vertex_vectorized(c
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result = vertex.template value_symmetry_expanded<0,'t',valuetype_fetch>(inputClosedAbove);
         result.resize(4,return_type::ColsAtCompileTime);
 #else
-        buffertype_vertex result = vertex.template value_symmetry_expanded<0,'t',buffertype_vertex>(inputClosedAbove);
+        const buffertype_vertex result = vertex.template value_symmetry_expanded<0,'t',buffertype_vertex>(inputClosedAbove);
 #endif
         return result;
     }

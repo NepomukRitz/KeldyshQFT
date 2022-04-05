@@ -104,7 +104,7 @@ private:
     const double w, v = 0., vp = 0.;
     const bool diff;
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     using buffer_type_vertex_l = Eigen::Matrix<Q,myRowsAtCompileTime<return_type>(),4>;
     using buffer_type_vertex_r = Eigen::Matrix<Q,4,myColsAtCompileTime<return_type>()>; // buffer_type_vertex_l;
 #else
@@ -176,33 +176,46 @@ private:
 
 template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object,typename return_type>
 void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object,return_type>::set_Keldysh_index_i0(const int i0_in) {
-    if (KELDYSH){
-#if not defined(DEBUG_SYMMETRIES) and not VECTORIZED_INTEGRATION
-        switch (diag_class) {
-            case k1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
-                switch (channel) {
-                    case 'a': i0 = non_zero_Keldysh_K1a[i0_in]; break;
-                    case 'p': i0 = non_zero_Keldysh_K1p[i0_in]; break;
-                    case 't': i0 = non_zero_Keldysh_K1t[i0_in]; break;
-                    default: ;
-                }
-                break;
-            case k2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
-                switch (channel) {
-                    case 'a': i0 = non_zero_Keldysh_K2a[i0_in]; break;
-                    case 'p': i0 = non_zero_Keldysh_K2p[i0_in]; break;
-                    case 't': i0 = non_zero_Keldysh_K2t[i0_in]; break;
-                    default: ;
-                }
-                break;
-            case k3:
-                i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
-                break;
-            default: ;
+    if constexpr(KELDYSH){
+        if constexpr(not DEBUG_SYMMETRIES and not VECTORIZED_INTEGRATION) {
+            switch (diag_class) {
+                case k1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+                    switch (channel) {
+                        case 'a':
+                            i0 = non_zero_Keldysh_K1a[i0_in];
+                            break;
+                        case 'p':
+                            i0 = non_zero_Keldysh_K1p[i0_in];
+                            break;
+                        case 't':
+                            i0 = non_zero_Keldysh_K1t[i0_in];
+                            break;
+                        default:;
+                    }
+                    break;
+                case k2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
+                    switch (channel) {
+                        case 'a':
+                            i0 = non_zero_Keldysh_K2a[i0_in];
+                            break;
+                        case 'p':
+                            i0 = non_zero_Keldysh_K2p[i0_in];
+                            break;
+                        case 't':
+                            i0 = non_zero_Keldysh_K2t[i0_in];
+                            break;
+                        default:;
+                    }
+                    break;
+                case k3:
+                    i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
+                    break;
+                default:;
+            }
         }
-#else
-    i0 = i0_in;
-#endif
+        else {
+            i0 = i0_in;
+        }
         set_Keldysh_index_i0_left_right(i0);
     }
     else{
@@ -223,59 +236,57 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
 }
 
 template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object,typename return_type>
-void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object,return_type>::precompute_vertices(){
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object,return_type>::precompute_vertices() {
     // For K1 class, left and right vertices do not depend on integration frequency
     // -> precompute them to save time
-#ifndef DEBUG_SYMMETRIES
-#ifdef KELDYSH_FORMALISM
-    std::vector<int> indices = indices_sum(i0, i2, channel);
+    if constexpr(not DEBUG_SYMMETRIES) {
+#if KELDYSH_FORMALISM
+        std::vector<int> indices = indices_sum(i0, i2, channel);
 
-    VertexInput input_l (indices[0], spin, w, 0., 0., i_in, channel);
-    VertexInput input_r (indices[1], spin, w, 0., 0., i_in, channel);
+        VertexInput input_l(indices[0], spin, w, 0., 0., i_in, channel);
+        VertexInput input_r(indices[1], spin, w, 0., 0., i_in, channel);
 #else
-    VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
-    VertexInput &input_r = input_l;
+        VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
+        VertexInput &input_r = input_l;
 #endif
-    res_l_V_initial = vertex1.template left_same_bare<channel>(input_l);
-    res_r_V_initial = vertex2.template right_same_bare<channel>(input_r);
-    if (channel == 't') {
-        input_l.spin = 1;
-        input_r.spin = 1;
-        res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
-        res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
+        res_l_V_initial = vertex1.template left_same_bare<channel>(input_l);
+        res_r_V_initial = vertex2.template right_same_bare<channel>(input_r);
+        if (channel == 't') {
+            input_l.spin = 1;
+            input_r.spin = 1;
+            res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
+            res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
+        }
     }
-#else // DEBUG_SYMMETRIES
+    else {// DEBUG_SYMMETRIES
 
-#ifdef KELDYSH_FORMALISM
-    std::vector<int> indices = indices_sum(i0, i2, channel);
-
-    VertexInput input_l (indices[0], spin, w, 0., 0., i_in, channel);
-    VertexInput input_r (indices[1], spin, w, 0., 0., i_in, channel);
-#else
-    VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
-    VertexInput &input_r = input_l;
-#endif
-    res_l_V_initial = vertex1.template left_same_bare<channel>(input_l);
-    res_r_V_initial = vertex2.template right_same_bare<channel>(input_r);
-    if (channel == 't' and spin == 0) {
-        input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
-        input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
-        res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
-        res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
-    }
-    else if (channel == 'a' and spin == 1) {
-        input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
-        input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
-        res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
-        res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
-    }
-    else if (channel == 'p' and spin == 1) {
-        input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
-        input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
-        res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
-        res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
-    }
-#endif // DEBUG_SYMMETRIES
+    #if KELDYSH_FORMALISM
+        std::vector<int> indices = indices_sum(i0, i2, channel);
+        VertexInput input_l(indices[0], spin, w, 0., 0., i_in, channel);
+        VertexInput input_r(indices[1], spin, w, 0., 0., i_in, channel);
+    #else
+        VertexInput input_l (0, spin, w, 0., 0., i_in, channel);
+        VertexInput &input_r = input_l;
+    #endif
+        res_l_V_initial = vertex1.template left_same_bare<channel>(input_l);
+        res_r_V_initial = vertex2.template right_same_bare<channel>(input_r);
+        if (channel == 't' and spin == 0) {
+            input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
+            input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
+            res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
+            res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
+        } else if (channel == 'a' and spin == 1) {
+            input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
+            input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
+            res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
+            res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
+        } else if (channel == 'p' and spin == 1) {
+            input_l.spin = 1 - input_l.spin; // flip spin 0 <-> 1
+            input_r.spin = 1 - input_r.spin; // flip spin 0 <-> 1
+            res_l_Vhat_initial = vertex1.template left_same_bare<channel>(input_l);
+            res_r_Vhat_initial = vertex2.template right_same_bare<channel>(input_r);
+        }
+    } // DEBUG_SYMMETRIES
 }
 
 template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object,typename return_type>
@@ -308,7 +319,7 @@ auto Integrand<diag_class, channel, spin, Q, symmetry_left, symmetry_right, Bubb
             default:;
         }
     }
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
     if (spin == 0 and channel ==  'p') {
         result = (res_l_V * Pival * res_r_V);
     }
@@ -421,7 +432,7 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
                 res_r_V = vertex2.template right_diff_bare<channel>(input_r);
             else
                 res_r_V = vertex2.template right_same_bare<channel>(input_r);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
             if (channel == 'p') {  // res_l_Vhat * Pival * res_r_Vhat
                 // compute res_l_Vhat
                 input_l.spin = 1 - spin;
@@ -441,7 +452,7 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
         else { // relevant for t-channel (spin component 0) and a-channel (spin component 1): there i_spin = 0, 1, 2
 
             if constexpr(channel == 't'
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
                 or channel == 'a'
 #endif
             ) {
@@ -680,7 +691,7 @@ Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_O
     Q result;
     // load other spin component
     if constexpr ((channel == 't' and spin == 0)
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         or (channel == 'a' and spin == 1)
 #endif
             ){
@@ -700,7 +711,7 @@ Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_O
                       values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other));
         }
     }
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         /*else if (channel == 'p' and input_external.spin == 0) {
         buffer_type_vertex_l values_vertex_l_other;
         buffer_type_vertex_r values_vertex_r_other;
@@ -750,7 +761,7 @@ Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_O
 
             // load other spin component
             if ((channel == 't' and input_external.spin == 0)
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
                 or (channel == 'a' and input_external.spin == 1) or (channel == 'p')
 #endif
                     ){
@@ -823,7 +834,7 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
     return_type result;
     // load other spin component
     if constexpr ((channel == 't' and spin == 0)
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         or (channel == 'a' and spin == 1)
 #endif
             ){
@@ -833,14 +844,17 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
 
         load_vertex_keldyshComponents_left_vectorized <1-spin>(values_vertex_l_other, input_l);
         load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_other, input_r);
-#if VECTORIZED_INTEGRATION
-        assert(input_external.iK == 0);
-        result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r + values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval();
-#else
-        result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r + values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
-#endif
+        if constexpr(VECTORIZED_INTEGRATION) {
+            assert(input_external.iK == 0);
+            result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
+                      values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval();
+        }
+        else {
+            result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
+                      values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
+        }
     }
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
     //else if (channel == 'p' and input_external.spin == 0) {
     //    buffer_type_vertex_l values_vertex_l_other;
     //    buffer_type_vertex_r values_vertex_r_other;
@@ -859,20 +873,21 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
 
         load_vertex_keldyshComponents_left_vectorized <1-spin>(values_vertex_l_other, input_l);
         load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_other, input_r);
-#if VECTORIZED_INTEGRATION
-        result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval();
-
-#else
-        result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval()[0];
-#endif
+        if constexpr (VECTORIZED_INTEGRATION) {
+            result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval();
+        }
+        else {
+            result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval()[0];
+        }
     }
 #endif
     else {
-#if VECTORIZED_INTEGRATION
-        result = (values_vertex_l * Pi_matrix * values_vertex_r).eval();
-#else
-        result = (values_vertex_l * Pi_matrix * values_vertex_r).eval()[0];
-#endif
+        if constexpr(VECTORIZED_INTEGRATION) {
+            result = (values_vertex_l * Pi_matrix * values_vertex_r).eval();
+        }
+        else {
+            result = (values_vertex_l * Pi_matrix * values_vertex_r).eval()[0];
+        }
     }
 
 
@@ -898,7 +913,7 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
 
             // load other spin component
             if ((channel == 't' and input_external.spin == 0)
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
                 or (channel == 'a' and input_external.spin == 1) or (channel == 'p')
 #endif
                     ){

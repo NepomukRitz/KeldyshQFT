@@ -81,7 +81,7 @@ public:
     auto operator() (double w) const -> state_datatype {
         state_datatype result;
         // Keldysh component (Keldysh index 3) in the t channel
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
         VertexInput input(3, it_spin,  w, 0., 0., 0, 't');
 #else
         VertexInput input(0, w, 0., 0., 0, 0, 't');

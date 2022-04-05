@@ -25,7 +25,7 @@ struct buffer_config {
     my_index_t position_first_freq_index;
 };
 
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
 constexpr buffer_config<3> SE_config{.dims = std::array<size_t,3>({KELDYSH ? 4 : 1, nFER, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
 constexpr buffer_config<4> K1at_config{.dims = std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 16 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
 constexpr buffer_config<4> K1p_config {.dims = std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 16 : 1, n_in_K1}), .num_freqs=1, .position_first_freq_index=1};
@@ -66,7 +66,7 @@ constexpr buffer_config<6> K3_expanded_config{.dims = std::array<size_t,6>({1, n
 
 constexpr unsigned int pos_first_freq = 1;  // position of first frequency index
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
 // Vector of indices of the non-zero Keldysh components of the bubbles
 const std::vector<int> glb_non_zero_Keldysh_bubble({3,6,7,9,11,12,13,14,15});
 constexpr int glb_number_of_Keldysh_components_bubble = 9; // length of the previous vector

@@ -91,7 +91,7 @@ auto asymp_corrections_bubble(K_class k,
                 return 0.;
         }
 
-#ifndef DEBUG_SYMMETRIES
+#if not DEBUG_SYMMETRIES
         // convert the input external Keldysh index from reduced set to [0,...,15]
         switch (k) {
             case k1:
@@ -190,7 +190,7 @@ auto asymp_corrections_bubble(K_class k,
             if (spin == 0) {
                 res = res_l_V * Pival * res_r_V;
             }
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
             else if (spin == 1) {
                 res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
@@ -200,7 +200,7 @@ auto asymp_corrections_bubble(K_class k,
             if (spin == 0) {
                 res = res_l_V * Pival * res_r_V;
             }
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
             else if (spin == 1) {
                 res = res_l_V * Pival * res_r_Vhat;
             }
@@ -210,7 +210,7 @@ auto asymp_corrections_bubble(K_class k,
             if (spin == 0) {
                 res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
             }
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
             else if (spin == 1) {
                  res = res_l_V * Pival * res_r_V;
             }

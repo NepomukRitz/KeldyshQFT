@@ -51,7 +51,7 @@ template <typename T> constexpr int myColsAtCompileTime() {
     }
 }
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM and not defined(HUBBARD)
 using state_datatype = double;
 #else
 using state_datatype = comp;
@@ -509,7 +509,7 @@ struct VertexInput{
 
     VertexInput(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)
             :
-//#ifdef KELDYSH_FORMALISM
+//#if KELDYSH_FORMALISM
             iK(iK_in),
 //#else
 //            iK(0),

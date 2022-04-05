@@ -567,7 +567,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
     }
 }
 
-//#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
+//#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
 /**
  * wrapper function, used for bubbles. Splits up integration interval in suitable pieces for Matsubara T=0
  * @param integrand

@@ -536,7 +536,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     print("--- CHECK RESULTS: ---", true);
     print("--- print relative error of quantities that should be zero ---", true);
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     int iK = 1;
 #else
     int iK = 0;
@@ -546,7 +546,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     VertexInput input_p (iK, it_spin, 0., 0., 0., 0, 'p');
     VertexInput input_t (iK, it_spin, 0., 0., 0., 0, 't');
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     vec<int> iK2s = {1, 2, 4}; // Keldysh indices of fully retarded components of K2
 #else
     vec<int> iK2s = {0}; // Keldysh indices of Matsubara component of K2
@@ -557,38 +557,38 @@ void test_PT4(double Lambda, bool write_flag = false) {
                            "PT2: K1a - exact: ", "PT2: K1p - exact: ",
                            "PT3: K1a - exact: ", "PT3: K1p - exact: ", "PT3: K1t - exact: ",
                            "PT3: K2a[1] - exact: ", "PT3: K2p[1] - exact: ", "PT3: K2t[1] - exact: ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT3: K2a[2] - exact: ", "PT3: K2p[2] - exact: ", "PT3: K2t[2] - exact: ",
                            "PT3: K2a[4] - exact: ", "PT3: K2p[4] - exact: ", "PT3: K2t[4] - exact: "
                             ,
 #endif
                            "PT4: (K2a[1] <- K1p) + (K2p[1] <- K1a): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1p) + (K2p[2] <- K1a): ",
                            "PT4: (K2a[4] <- K1p) + (K2p[4] <- K1a): ",
 #endif
                            "PT4: (K2a[1] <- K1t) + (K2p[1] <- K1t): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1t) + (K2p[2] <- K1t): ",
                            "PT4: (K2a[4] <- K1t) + (K2p[4] <- K1t): ",
 #endif
                            "PT4: (K2a[1] <- K2a) + (K2p[1] <- K2p): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2a) + (K2p[2] <- K2p): ",
                            "PT4: (K2a[4] <- K2a) + (K2p[4] <- K2p): ",
 #endif
                            "PT4: (K2a[1] <- K2p) + (K2p[1] <- K2a): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2p) + (K2p[2] <- K2a): ",
                            "PT4: (K2a[4] <- K2p) + (K2p[4] <- K2a): ",
 #endif
                            "PT4: (K2a[1] <- K2t) + (K2p[1] <- K2t): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2t) + (K2p[2] <- K2t): ",
                            "PT4: (K2a[4] <- K2t) + (K2p[4] <- K2t): ",
 #endif
                            "PT4: (K2t[1] <- K2a) + (K2t[1] <- K2t): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2t[2] <- K2a) + (K2t[2] <- K2t): ",
                            "PT4: (K2t[4] <- K2a) + (K2t[4] <- K2t): ",
 #endif
@@ -605,7 +605,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT3_K1a_0 = PT3_K1a.vertex.avertex().valsmooth<k1>(input_a, PT3_K1a.vertex.tvertex());
     state_datatype PT3_K1p_0 = PT3_K1p.vertex.pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex.pvertex());
     state_datatype PT3_K1t_0 = PT3_K1t.vertex.tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex.avertex());
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     state_datatype PT2_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
     state_datatype PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
@@ -671,7 +671,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
             PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex.tvertex().valsmooth<k2>(input_t, PT4_31_t_t2.vertex.avertex());
         }
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
         state_datatype PT3_K2_exact =
                 -(1. / 2.) * (2. - M_PI * M_PI / 4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
@@ -713,7 +713,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             , (PT3_K2a_0[0] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2p_0[0] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2t_0[0] - PT3_K2_exact)/PT3_K2_exact
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT3_K2a_0[1] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2p_0[1] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2t_0[1] - PT3_K2_exact)/PT3_K2_exact
@@ -722,32 +722,32 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             , (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact
 #endif
                             , (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(std::abs(PT4_K2a_0_p1[0]) + std::abs(PT4_K2p_0_a1[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(std::abs(PT4_K2a_0_p1[1]) + std::abs(PT4_K2p_0_a1[1]))
                             , (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(std::abs(PT4_K2a_0_p1[2]) + std::abs(PT4_K2p_0_a1[2]))
 #endif
                             , (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(std::abs(PT4_K2a_0_t1[0]) + std::abs(PT4_K2p_0_t1[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(std::abs(PT4_K2a_0_t1[1]) + std::abs(PT4_K2p_0_t1[1]))
                             , (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(std::abs(PT4_K2a_0_t1[2]) + std::abs(PT4_K2p_0_t1[2]))
 #endif
                             , (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(std::abs(PT4_K2a_0_a2[0]) + std::abs(PT4_K2p_0_p2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(std::abs(PT4_K2a_0_a2[1]) + std::abs(PT4_K2p_0_p2[1]))
                             , (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(std::abs(PT4_K2a_0_a2[2]) + std::abs(PT4_K2p_0_p2[2]))
 #endif
                             , (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(std::abs(PT4_K2a_0_p2[0]) + std::abs(PT4_K2p_0_a2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(std::abs(PT4_K2a_0_p2[1]) + std::abs(PT4_K2p_0_a2[1]))
                             , (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(std::abs(PT4_K2a_0_p2[2]) + std::abs(PT4_K2p_0_a2[2]))
 #endif
                             , (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(std::abs(PT4_K2a_0_t2[0]) + std::abs(PT4_K2p_0_t2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(std::abs(PT4_K2a_0_t2[1]) + std::abs(PT4_K2p_0_t2[1]))
                             , (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(std::abs(PT4_K2a_0_t2[2]) + std::abs(PT4_K2p_0_t2[2]))
 #endif
                             , (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(std::abs(PT4_K2t_0_a2[0]) + std::abs(PT4_K2t_0_t2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(std::abs(PT4_K2t_0_a2[1]) + std::abs(PT4_K2t_0_t2[1]))
                             , (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(std::abs(PT4_K2t_0_a2[2]) + std::abs(PT4_K2t_0_t2[2]))
 #endif
@@ -1211,7 +1211,7 @@ class TestIntegrandK1a{
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1239,7 +1239,7 @@ class TestIntegrandK1a{
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1251,7 +1251,7 @@ class TestIntegrandK1a{
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1320,7 +1320,7 @@ void test_integrate_over_K1(double Lambda) {
     IntegrandK1a.save_state();
 }
 
-#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
 auto SOPT_K1a(double w, double Lambda) -> double {
     double Delta = (glb_Gamma + Lambda) / 2.;
     double result;
@@ -1374,7 +1374,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1402,7 +1402,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1414,7 +1414,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1467,7 +1467,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1495,7 +1495,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1507,7 +1507,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1557,7 +1557,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1585,7 +1585,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1597,7 +1597,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1763,13 +1763,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
     print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
     print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
-#ifdef DEBUG_SYMMETRIES
-    print("K1a_hat-difference: ", (state_cpp.vertex[1].avertex().K1.get_vec() + state_cpp.vertex.tvertex().K1.get_vec()).max_norm() /  state_cpp.vertex.tvertex().K1.get_vec().max_norm(), true);
-    print("K1p_hat-difference: ", (state_cpp.vertex[1].pvertex().K1.get_vec() + state_cpp.vertex.pvertex().K1.get_vec()).max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
-    print("K1t_hat-difference: ", (state_cpp.vertex[1].tvertex().K1.get_vec() + state_cpp.vertex.avertex().K1.get_vec()).max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
-    write_h5_rvecs("../Data_MF/PT_hat.h5", {"K1a_hat", "K1p_hat", "K1t_hat"}, {state_cpp.vertex[1].avertex().K1.get_vec().real(), state_cpp.vertex[1].pvertex().K1.get_vec().real(), state_cpp.vertex[1].tvertex().K1.get_vec().real()});
 
-#endif
 
     if (MAX_DIAG_CLASS > 1) {
         print("K2a-difference: ", state_diff.vertex.avertex().K2.get_vec().max_norm() / PT_state.vertex.avertex().K2.get_vec().max_norm(), true);
@@ -1818,7 +1812,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1846,7 +1840,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1858,7 +1852,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1915,7 +1909,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1943,7 +1937,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1955,7 +1949,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2008,7 +2002,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2036,7 +2030,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2048,7 +2042,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2106,7 +2100,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2134,7 +2128,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2146,7 +2140,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2204,7 +2198,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2232,7 +2226,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2244,7 +2238,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2302,7 +2296,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2330,7 +2324,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2342,7 +2336,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2422,7 +2416,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
         Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
-#ifndef DEBUG_SYMMETRIES
+#if not DEBUG_SYMMETRIES
         dGammaL_half1.half1().reorder_due2antisymmetry(dGammaR_half1.half1());
 #endif
         K1rdot_PIa_K1p.vertex = dGammaL_half1;

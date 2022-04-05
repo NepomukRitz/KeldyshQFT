@@ -99,7 +99,7 @@ void check_input() {
     assert (nBOS2 == nFER2);
 #endif
 
-#if not defined(KELDYSH_FORMALISM)
+#if not KELDYSH_FORMALISM
     static_assert(nFER % 2 == 0, "nFER must be an even number.");
 #endif
 
@@ -107,7 +107,7 @@ void check_input() {
         assert(nBOS3 == nFER3); // Frequency grids must be equal in all three dimensions
     }
 
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
     static_assert(nBOS %2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
     static_assert(nBOS2%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
     static_assert(nBOS3%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");

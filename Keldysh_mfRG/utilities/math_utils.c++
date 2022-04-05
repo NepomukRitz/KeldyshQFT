@@ -84,7 +84,7 @@ auto round2ffreq(double w) -> double {
 }
 
 auto signFlipCorrection_MF(const double w) -> double {
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
     double correction = signFlipCorrection_MF_int(w) * (2 * M_PI * glb_T);
     return correction;
 #else
@@ -94,7 +94,7 @@ auto signFlipCorrection_MF(const double w) -> double {
 }
 
 int signFlipCorrection_MF_int(const double w) {
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
     int correction = -((int) (std::abs(w / (2. * M_PI * glb_T)) + 0.1) ) % 2;
     assert(correction==0 or correction == -1);
     return correction;

@@ -19,7 +19,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex data exactly 0?" ) {
         REQUIRE( testvertex1.K1.get_vec().max_norm() < 1e-10 );
         if (MAX_DIAG_CLASS > 1) REQUIRE( testvertex1.K2.get_vec().max_norm() < 1e-10 );
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( testvertex1.K2b.get_vec().max_norm() < 1e-10 );
 #endif
         if (MAX_DIAG_CLASS > 2) REQUIRE( testvertex1.K3.get_vec().max_norm() < 1e-10 );
@@ -30,7 +30,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex data exactly 1?" ) {
         REQUIRE( std::abs(testvertex1.K1.get_vec()[0] - 1.)  < 1e-10 );
         if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex1.K2.get_vec()[0] - 1.)  < 1e-10);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex1.K2b.get_vec()[0] - 1.)  < 1e-10 );
 #endif
         if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex1.K3.get_vec()[0] - 1.) < 1e-10);
@@ -42,7 +42,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex2 data exactly 1?" ) {
         REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 1.)  < 1e-10 );
         if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 1.)  < 1e-10);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 1.)  < 1e-10 );
 #endif
         if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 1.) < 1e-10);
@@ -55,7 +55,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex2 data exactly 3?" ) {
         REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 3.)  < 1e-10 );
         if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 3.)  < 1e-10);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 3.)  < 1e-10 );
 #endif
         if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 3.) < 1e-10);
@@ -265,7 +265,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
 }
 
-#ifndef KELDYSH_FORMALISM
+#if not KELDYSH_FORMALISM
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for K1a?", "[frequency_symmetries]" ) {
     rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK = 0;

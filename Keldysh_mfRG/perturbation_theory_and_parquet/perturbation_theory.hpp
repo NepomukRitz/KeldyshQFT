@@ -67,7 +67,7 @@ void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, 
     bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
 
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
     Vertex<Q> bubblevertex_t(Lambda);
     bubblevertex_t.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
@@ -107,7 +107,7 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
     bubblevertex_t.initialize(0.);
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
 
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
     bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bubblevertex_p + bubblevertex_t, Pi, 'a'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
     bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bubblevertex_a + bubblevertex_t, Pi, 'p'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
 #else

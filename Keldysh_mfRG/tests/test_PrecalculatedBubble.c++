@@ -17,7 +17,7 @@ void test_Bubble_in_Momentum_Space(){
     diff = (end_time - starting_time);
     std::cout << "Time for undifferentiated Bubble = " << diff << " s." << "\n";
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     vec<comp> g_R (nFER * n_in);
     vec<comp> g_K (nFER * n_in);
     vec<comp> s_R (nFER * n_in);
