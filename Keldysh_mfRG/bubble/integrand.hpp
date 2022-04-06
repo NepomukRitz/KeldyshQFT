@@ -956,7 +956,7 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
         double wl, wu;
         switch (diag_class) {
             case k1:
-                wl = vertex1.avertex().K1.frequencies.get_wupper_b();
+                wl = vertex1.avertex().K1.frequencies.get_wlower_b();
                 wu = vertex1.avertex().K1.frequencies.get_wupper_b();
                 wl *= 2.;
                 wu *= 2.;

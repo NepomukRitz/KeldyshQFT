@@ -84,6 +84,8 @@ class BubbleFunctionCalculator{
 
     Q bubble_value_prefactor();
 
+    const bool store_integrand_for_PT = false; // set to true if the integrand for the fully retarded up-down component at zero frequency shall be saved
+
     public:
     void perform_computation();
 
@@ -373,7 +375,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 #ifndef SWITCH_SUM_N_INTEGRAL
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
-        if ((channel == 't' and ispin == 0) or (channel == 'a' and ispin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
+        if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
         for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
 #else
             int i2 = 0;
@@ -382,6 +384,15 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             // initialize the integrand object and perform frequency integration
             Integrand<k, channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object>
                     integrand(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, i_spin, diff);
+
+            if (store_integrand_for_PT){ // for PT-Calculations: Store the integrand for the fully retarded up-down component at zero frequency:
+#ifdef SWITCH_SUM_N_INTEGRAL
+                assert(false); // Cannot do it this way if the integration is vectorized over the internal Keldysh sum
+#endif
+                if (channel == 'a' and i0 == 7 and i_spin == 0 and w == 0 and v == 0 and vp == 0) integrand.save_integrand();
+            }
+
+
             if constexpr(ZERO_T) {
                 switch (k) {
                     case k1:
