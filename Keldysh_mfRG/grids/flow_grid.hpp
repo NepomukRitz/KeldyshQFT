@@ -75,7 +75,7 @@ namespace flowgrid {
 
         inline static double dlambda_dt(double t)
         {
-            return -Lambda_scale*pow(10, t) * log(10);
+            return -Lambda_scale*pow(10, -t) * log(10);
         }
     };
 
@@ -98,7 +98,7 @@ namespace flowgrid {
         inline static double dlambda_dt(double t)
         {
             double temp = sqrt(1-t*t);
-            return a*std::abs(t)*(t*t-2.) / (temp*temp*temp);
+            return a*std::abs(t) * (2. - t*t) / (temp*temp*temp);
         }
     };
 
