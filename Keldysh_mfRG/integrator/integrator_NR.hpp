@@ -9,14 +9,7 @@
 #include <limits>
 #include "../data_structures.hpp"
 
-template <typename T> double myabs(const T& x) {
-    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double>) {
-        return std::abs(x);
-    }
-    else {
-        return x.template lpNorm<Eigen::Infinity>();
-    }
-}
+
 
 
 

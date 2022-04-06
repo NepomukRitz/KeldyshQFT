@@ -307,8 +307,9 @@ namespace ode_solver_impl
         {
             err += k[stage] * stepsize * tableau.get_error_b(stage);
         }
-        Y y_scale = (abs(result) + abs(dydx*stepsize)) * config.relative_error + config.absolute_error;
+        Y y_scale = (abs(result) * config.a_State + abs(dydx*stepsize) * config.a_dState_dLambda) * config.relative_error + config.absolute_error;
         maxrel_error = max_rel_err(err, y_scale); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
+        if (VERBOSE) print("ODE solver error estimate: ", maxrel_error, "\n");
         //assert(isfinite(result));
         //assert(isfinite(maxrel_error));
     }

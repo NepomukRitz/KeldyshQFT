@@ -539,9 +539,9 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         case 's':
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
-                    const Q SR_ = GR(v, i_in);
+                    const Q SR_ = SR(v, i_in);
                     const Q SA_ = conj(SR_);
-                    const Q SK_ = GK(v, i_in);
+                    const Q SK_ = SK(v, i_in);
                     if constexpr(!EQUILIBRIUM) assert(false); // not implemented for non-equilibrium yet
 
                     return_type result;

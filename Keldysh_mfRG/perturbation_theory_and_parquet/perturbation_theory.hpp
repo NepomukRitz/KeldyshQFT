@@ -147,7 +147,7 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
 template<typename Q>
-void sopt_state(State<Q>& Psi, const double Lambda) {
+void sopt_state(State<Q>& Psi, const double Lambda, const bool diff = false) {
     State<Q> bareState (Psi, Lambda); // copy frequency grids
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value (except currently for the Hubbard model)
 
@@ -157,7 +157,9 @@ void sopt_state(State<Q>& Psi, const double Lambda) {
 
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-    auto Pi = PT_initialize_Bubble(barePropagator);
+    Propagator<Q> bareSingleScalePropagator(Lambda, bareState.selfenergy, diff ? 's' : 'g');    //Bare propagator
+    //auto Pi = PT_initialize_Bubble(barePropagator);
+    Bubble<Q> Pi (barePropagator, bareSingleScalePropagator, diff);
 
 #if not defined(NDEBUG)
     print("...done.", true);

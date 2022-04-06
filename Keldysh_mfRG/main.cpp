@@ -11,6 +11,7 @@
 #include "utilities/util.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
+#include "tests/test_ODE.hpp"
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
@@ -117,7 +118,7 @@ auto main() -> int {
 
     //
     //test_PT4(0.5, true);
-    //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
+    //test_PT_state<state_datatype>( data_dir+filename, 1.8, true);
     //test_interpolate_K12<state_datatype>(1.8);
     //test_compare_with_Vienna_code();
     //findBestWscale4K1<state_datatype>(1.8);
@@ -125,9 +126,14 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string name = data_dir+filename+job;
-    //n_loop    _flow(name,  true);
-    test_symmetries(19.8);
+    //n_loop_flow(name,  true);
+    //test_symmetries(19.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
+
+    const int N_ODE = 100;
+    double Lambda_i = 19.8;
+    double Lambda_f =  0.8;
+    test_rhs_bubbles_flow_wstate<state_datatype>(N_ODE, Lambda_i, Lambda_f, true);
 
 
 

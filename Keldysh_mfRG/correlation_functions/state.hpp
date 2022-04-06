@@ -160,19 +160,19 @@ template<typename Q>
 auto State<Q>::norm() const -> double {
     double max_vert = vertex.half1().sum_norm(0);
     double max_self = selfenergy.norm(0);
+    //print("norm von dGamma und dSigma: ", max_vert, max_self, "\n");
     return std::max(max_self, max_vert);
 }
 
 
 template<typename Q>
 auto max_rel_err(const State<Q>& err, const State<Q>& scale_State) -> double {
-    double scale_Vert = scale_State.vertex.half1().sum_norm(0);
-    double max_vert = err.vertex.half1().sum_norm(0) / scale_Vert;
+    /// element-wise relative deviation
+    //State<Q> relState = (err / scale_State);
+    //return relState.norm();
 
-    double scale_SE = scale_State.selfenergy.norm(0);
-
-    double max_self = err.selfenergy.norm(0) /scale_SE;
-    return std::max(max_self, max_vert);
+    /// alternative: relative deviation of norm
+    return err.norm() / scale_State.norm();
 
 }
 

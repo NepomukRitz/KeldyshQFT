@@ -60,9 +60,12 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_i
     ODE_solver_config config;// = ODE_solver_config_standard;
     config.lambda_checkpoints = Lambda_checkpoints;
     config.filename = outputFileName;
+
+    /// old Runge-Kutta solver:
+    //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
     // compute the flow using an ODE solver
-    //ode_solver<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
-    //                                                                   ODE_solver_config_standard, true);
+    //ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+    //                                                            config, true);
 
     using namespace boost::numeric::odeint;
     ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,

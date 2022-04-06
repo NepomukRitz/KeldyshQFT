@@ -17,12 +17,26 @@
 #include <cassert>
 #include <numeric>
 #include "parameters/master_parameters.hpp"
+#include "Eigen/Dense"
 //#include "utilities/math_utils.h"
+
+template<typename Q> class State;
 
 typedef std::complex<double> comp; // Complex number
 
 constexpr comp glb_i (0., 1.);    // Imaginary unit
 
+template <typename T> double myabs(const T& x) {
+    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double>) {
+        return std::abs(x);
+    }
+    else if constexpr(std::is_same_v<T, State<comp>> or std::is_same_v<T, State<double>>) {
+        return x.abs();
+    }
+    else {
+        return x.template lpNorm<Eigen::Infinity>();
+    }
+}
 
 template <typename T> T myzero() {
     if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double>) {

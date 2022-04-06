@@ -2660,18 +2660,46 @@ auto SOPT_K1a(double w, double Lambda) -> comp {
     }
 
 }
+template <int type = 2>
 auto SOPT_K1a_diff(double w, double Lambda) -> comp {
     double Delta = (glb_Gamma + Lambda) / 2.;
-    if (std::abs(w) < inter_tol) return - glb_U*glb_U      /2./ M_PI / (Delta*Delta + glb_mu*glb_mu)
-                                   + glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
-    comp term1 =  - glb_U*glb_U      /2./M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu));
-    comp term2 =  + glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu)) / (2.*Delta + (-glb_i * w));
-    comp term3 =  - glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w)))   /  (1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + glb_mu*glb_mu))
-                    *(
-                            std::abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
-                            -(-glb_i * w) * (2*Delta + (-glb_i * w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
-                    );
-    return term1 + term2 + term3;
+
+    auto advanced = [Delta](const double w_) -> comp {
+        if (std::abs(w_)  == 0) return (- glb_U*glb_U / M_PI / (Delta*Delta + glb_mu*glb_mu) * 0.5
+                                        + glb_U*glb_U / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta * Delta )*0.5 ;
+        else {
+            comp term1 = -glb_U * glb_U * 0.5   / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + glb_mu * glb_mu));
+            comp term2 = +glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + glb_mu * glb_mu)) /
+                         (2. * Delta + (glb_i * w_));
+            comp term3 = -glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) /    (1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + glb_mu * glb_mu))
+                         * (
+                                 (glb_i * w_) / (Delta * Delta + glb_mu * glb_mu)
+                                 - (glb_i * w_) * (2 * Delta + (glb_i * w_)) / (Delta * Delta + glb_mu * glb_mu) /
+                                   (Delta * Delta + glb_mu * glb_mu) * Delta
+                         );
+            return (term1 + term2 + term3) * 0.5;
+        }
+    };
+
+
+    if (type == 2) {
+        /// advanced component of K1a in SOPT:
+        comp result = advanced(w);
+        return result;
+    }
+    else if (type == 1) {
+        /// retarded component of K1a in SOPT:
+        comp result = conj(advanced(w));
+        return result;
+    }
+    else {
+        assert(type == 0);
+        /// Keldysh component of K1a in SOPT:
+        const comp adv = advanced(w);
+        const comp ret = conj(adv);
+        const comp result = sgn(w) * (ret - adv);
+        return result;
+    }
 }
 
 template <typename Q, int type>
@@ -2748,6 +2776,9 @@ public:
 #if REG==2
 template <typename Q>
 void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
+#ifndef ZERO_TEMP
+    assert(false);
+#endif
     const int it_spin = 0;
     double vmax = 100;
     double Delta = (glb_Gamma + Lambda) / 2.;
@@ -2760,7 +2791,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     state_cpp.initialize();             // initialize state
     //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
     //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
-    sopt_state(state_cpp, Lambda);
+    sopt_state(state_cpp, Lambda, diff);
     //state_cpp.vertex.half1().check_vertex_resolution();
     //state_cpp.analyze_tails();
 
@@ -2786,9 +2817,9 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
 
-        const Q KR = SOPT_K1a<1>(w, Lambda);
+        const Q KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
         const Q KA = conj(KR);
-        const Q KK = SOPT_K1a<0>(w, Lambda);
+        const Q KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
         const Q K00 = ( KR + KA + KK);// * 0.5;
         const Q K01 = ( KR - KA - KK);// * 0.5;
         const Q K10 = (-KR + KA - KK);// * 0.5;

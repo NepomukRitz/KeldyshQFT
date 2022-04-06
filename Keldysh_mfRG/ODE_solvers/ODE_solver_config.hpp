@@ -14,7 +14,7 @@ struct ODE_solver_config {
                 relative_error(epsODE_rel),
                 absolute_error(epsODE_abs),
                 a_State(1.),
-                a_dState_dLambda(1.){}
+                a_dState_dLambda(0.){}
 
     ODE_solver_config(int maximal_number_of_ODE_steps_in, int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in)
             :   maximal_number_of_ODE_steps(maximal_number_of_ODE_steps_in),
@@ -25,7 +25,7 @@ struct ODE_solver_config {
                 relative_error(relative_error_in),
                 absolute_error(absolute_error_in),
                 a_State(1.),
-                a_dState_dLambda(1.){}
+                a_dState_dLambda(0.){}
 
     ODE_solver_config(int maximal_number_of_ODE_steps_in, int iter_start_in, std::vector<double> lambda_checkpoints_in, std::string filename_in,
                       int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in, double a_State_in, double a_dState_dLambda_in)

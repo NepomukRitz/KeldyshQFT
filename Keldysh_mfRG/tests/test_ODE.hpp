@@ -14,10 +14,7 @@
 #include "../grids/frequency_grid.hpp"
 
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
-FrequencyGrid frequencyGrid_bos ('b', 1, Lambda_ini);
-FrequencyGrid frequencyGrid_fer ('f', 1, Lambda_ini);
-rvec bfreqs = frequencyGrid_bos.all_frequencies;
-rvec ffreqs = frequencyGrid_fer.all_frequencies;
+
 
 /**
  * to be used as rhs in test below --> test_ODE_solvers()
@@ -32,6 +29,7 @@ double test_rhs_ODE_exp(const double& y, const double x) {
 /**
  * test ODE solvers in solving dy/dx = y from x=0 to x=1 with y(0)=1; solution is y(x)=e^x, y(1)=e;
  */
+ /*
 void test_ODE_solvers() {
     double y_ini, y_fin_Euler, y_fin_RK4, x_ini, x_fin; // necessary variables
     y_ini = 1.; x_ini = 0.; x_fin = 1.; // boundary values
@@ -83,7 +81,7 @@ void test_SCE_solver() { // test SCE solvers in solving y=-x/(1-y); solution is 
     SCE_solver(y_fin, y_ini, x, test_rhs_SCE_sqrt, N_SCE, 0.);
     std::cout << "Exact result is " << (1.-sqrt(5.))/2. << ". Using " << N_SCE << " iterations yields " << y_fin << "." << std::endl;
 }
-
+*/
 
 
 /**
@@ -93,19 +91,36 @@ void test_SCE_solver() { // test SCE solvers in solving y=-x/(1-y); solution is 
  * @return          : State carrying in the K1 vertex the results of the computation
  */
 template <typename Q>
-auto rhs_bubbles_flow_wstate(const State<Q>& input, double Lambda) -> State<Q>{
-    State<Q> ans (Lambda);    //Initialize the answer-object
+auto rhs_bubbles_flow_wstate(const State<Q>& input, double Lambda, vec<size_t>) -> State<Q>{
+    State<Q> ans (input, Lambda);    //Initialize the answer-object
+    ans.initialize();
 
     //Calculating propagator objects of the required types
     Propagator<Q> g(Lambda, input.selfenergy, 'g');
     Propagator<Q> s(Lambda, input.selfenergy, 's');
 
-    bubble_function(ans.vertex, input.vertex, input.vertex, g, s, 'a', true);
+    bubble_function(ans.vertex, ans.vertex, ans.vertex, g, s, 'a', true);
     return ans;
 }
 
+template <typename Q>
+class rhs_bubbles_flow_wstate_class {
+    public:
+        mutable std::size_t rk_step = 0;
+        mutable std::size_t iteration = 0;
+        void operator() (const State<Q>& input, State<Q>& result, double& Lambda) const {
+            result = rhs_bubbles_flow_wstate(input, Lambda, {});
+            print("norm of dState_dLambda: ", result.norm(), "\n");
+            rk_step++;
+        }
+    };
+
+
+
 /**
- * Function to call when testing the rhs of the bubbles flow with the State class
+ * Test ODE solver:
+ *      -> does the ODE solver reproduce the pure ladder diagram for the vertex?
+ *         which settings do I need to achieve a certain accuracy?
  * @param N_ODE : Number of ODE steps to take between the globally defined Lambda_ini and Lambda_fin
  * @param Lambda_i : initial Lambda value of flow
  * @param Lambda_f : final Lambda value of flow
@@ -113,24 +128,37 @@ auto rhs_bubbles_flow_wstate(const State<Q>& input, double Lambda) -> State<Q>{
  */
 template <typename Q>
 void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, bool write_flag = true) {
-    State<Q> state_dir (Lambda_f), state_fin (Lambda_f), state_ini (Lambda_i); // direct, final, initial K1a_1
+    State<Q> state_ini (Lambda_i);
+    State<Q> state_dir (Lambda_f), state_fin (Lambda_f); // direct, final, initial K1a_1
+
     state_dir.initialize(); // initialize
     state_ini.initialize(); // initialize
 
     Propagator<Q> G0ini(Lambda_i, state_ini.selfenergy, 'g'); // initial propagator
     Propagator<Q> G0dir(Lambda_f, state_dir.selfenergy, 'g'); // final propagator
 
-    sopt_state(state_ini, Lambda_i); // direct calculation of initial K1a
-    sopt_state(state_dir, Lambda_f); // direct calculation of direct K1a
+    bubble_function(state_dir.vertex, state_ini.vertex, state_ini.vertex, G0dir, G0dir, 'a', false); // direct calculation of  direct K1a
+    bubble_function(state_ini.vertex, state_ini.vertex, state_ini.vertex, G0ini, G0ini, 'a', false); // direct calculation of initial K1a
 
-    ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
-    cvec K1a_dif = state_dir.vertex[0].avertex().K1 + ( state_fin.vertex[0].avertex().K1*(-1.) ); // difference in results
+    //ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_bubbles_flow_wstate, flowgrid::sq_substitution, flowgrid::sq_resubstitution, N_ODE); // final K1a from ODE
+
+    using namespace boost::numeric::odeint;
+    ODE_solver_config config;
+    config.maximal_number_of_ODE_steps = N_ODE;
+    rhs_bubbles_flow_wstate_class<Q> rhs;
+    ode_solver_boost<State<Q>, flowgrid::sqrt_parametrization,rhs_bubbles_flow_wstate_class<Q>>(state_fin, Lambda_f, state_ini, Lambda_i, rhs, config, false);
+    //ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization,rhs_bubbles_flow_wstate_class<Q>>(state_fin, Lambda_f, state_ini, Lambda_i, rhs, config, true);
+
+    multidimensional::multiarray<Q,4> K1a_dif = state_dir.vertex.avertex().K1.get_vec() + ( state_fin.vertex.avertex().K1.get_vec()*(-1.) ); // difference in results
     print("Testing ODE for bare K1a_0 with State class. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
-    if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
-                                  {"v", "state_dir_R", "state_dir_I", "state_fin_R", "state_fin_I", "state_ini_R", "state_ini_I"},
-                                  {bfreqs, state_dir.vertex[0].avertex().K1.real(), state_dir.vertex[0].avertex().K1.imag(),
-                                   state_fin.vertex[0].avertex().K1.real(), state_fin.vertex[0].avertex().K1.imag(),
-                                   state_ini.vertex[0].avertex().K1.real(), state_ini.vertex[0].avertex().K1.imag()});
+    if(write_flag) {
+
+        H5::H5File file_out(data_dir + "rhs_bubbles_flow_wstate.h5", H5F_ACC_TRUNC);
+        write_to_hdf(file_out, "v", bfreqs, false);
+        write_to_hdf(file_out, "state_dir", state_dir.vertex.avertex().K1.get_vec(), false);
+        write_to_hdf(file_out, "state_fin", state_fin.vertex.avertex().K1.get_vec(), false);
+        write_to_hdf(file_out, "state_ini", state_ini.vertex.avertex().K1.get_vec(), false);
+    }
 }
 
 /**
@@ -139,6 +167,7 @@ void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, b
  * @param Lambda    : Lambda at which to calculate the rhs of the eq.
  * @return          : The results of the calculation
  */
+ /*
 template <typename Q>
 auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
     cvec ans(nw1_a);   //Initialize the answer
@@ -166,11 +195,12 @@ auto rhs_bubbles_flow(const cvec& input, double Lambda) -> cvec{
 
     return ans;
 }
-
+*/
 /**
  * Function to call when testing the rhs of the bubbles flow with cvecs
  * @param N_ODE : Number of ODE steps to take between the globally defined Lambda_ini and Lambda_fin
  */
+ /*
 template <typename Q>
 void test_rhs_bubbles_flow(int N_ODE){
     bool write_flag = true; // whether to write output in hdf5
@@ -217,7 +247,7 @@ void test_rhs_bubbles_flow(int N_ODE){
                                   {"v", "K1a_dir_R", "K1a_dir_I", "K1a_fin_R", "K1a_fin_I", "K1a_ini_R", "K1a_ini_I"},
                                   {bfreqs, K1a_dir.real(), K1a_dir.imag(), K1a_fin.real(), K1a_fin.imag(), K1a_ini.real(), K1a_ini.imag()});
 }
-
+*/
 
 /**
  * Function to implement the flow of a State in SOPT.
@@ -225,6 +255,7 @@ void test_rhs_bubbles_flow(int N_ODE){
  * @param Lambda:  Scale at which the calculation is being performed
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
+ /*
 template <typename Q>
 auto rhs_state_flow_SOPT(const State<Q>& Psi, const double Lambda, const int feedback) -> State<Q>{
     State<Q> dPsi (Lambda);   //Answer object
@@ -294,11 +325,13 @@ template <typename Q>
 auto rhs_state_flow_SOPT_5(const State<Q>& Psi, const double Lambda) -> State<Q>{
     return rhs_state_flow_SOPT(Psi, Lambda, 5);
 }
+  */
 
 /**
  * Function to test the correctness of the flow of the State
  * @param N_ODE : Numbres of ODE-solver steps to be taken
  */
+ /*
 template <typename Q>
 void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
     bool write_flag = true; // whether to write output in hdf5
@@ -491,7 +524,7 @@ void test_PT4_K1a_nonladder_flow(const double Lambda_i, const double Lambda_f, c
     ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_PT4_K1a_nonladder_flow,
                    sq_substitution, sq_resubstitution, nODE, filename);
 }
-
+*/
 
 
 #endif //FPP_MFRG_TEST_ODE_H
