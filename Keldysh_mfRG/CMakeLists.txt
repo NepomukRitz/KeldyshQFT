@@ -82,7 +82,7 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL fftw3)
 elseif(KCS)
     include_directories($ENV{HDF5_INC} $ENV{GSL_INC} $ENV{BOOST_INC} $ENV{FFTW_INC} )
-    include_directories(/dss/dsshome1/lrz/sys/spack/staging/sles12/20.2.0/opt/skylake/eigen/3.3.7-intel-ddkdpcb/include/eigen3)
+    include_directories($ENV{EIGEN_BASE}/include/eigen3)
 
     target_link_libraries(Keldysh_mfRG $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB} $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
