@@ -14,16 +14,25 @@ then
   module unload spack gcc hdf5 fftw gsl boost cmake # in case some old versions have been loaded previously
   module unload devEnv/Intel/2019 itac/2019
 
-  module load spack/staging/20.2.0
-  module load intel intel-mpi/2019.8.254
+  module load spack/22.2.1
+  module load intel-mpi/2019-intel
+  module load gcc/11
+  module load hdf5/1.8.22-gcc11
+  module load fftw/3.3.10
+  module load gsl/2.7-intel21
+  module load boost/1.75.0-intel21
+  module load eigen/3.4.0-intel21
+  module load cmake/3.21.4
 
-  module load gcc/9
-  module load hdf5/1.8.21-gcc8
-  module load fftw
-  module load gsl
-  module load boost/1.70.0-intel19
-  module load cmake
-  module load eigen/3.3.7-intel19
+  #module load intel intel-mpi/2019.8.254
+
+  #module load gcc/9
+  #module load hdf5/1.8.21-gcc8
+  #module load fftw
+  #module load gsl
+  #module load boost/1.70.0-intel19
+  #module load cmake
+  #module load eigen/3.3.7-intel19
 elif [ "$1" == "--JSC" ]
 then
   export CLUSTER=JSC
