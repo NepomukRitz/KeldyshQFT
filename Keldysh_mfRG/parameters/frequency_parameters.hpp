@@ -46,8 +46,8 @@ constexpr int nFER = (int)(glb_n_p*(glb_v_upper-glb_v_lower)/(glb_T)) + (1-(((in
 constexpr int nBOS = 201;
 constexpr int nFER = 201;
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 21;//nBOS;
-constexpr int nFER2 = 21;//nFER;
+constexpr int nBOS2 = 41;//nBOS;
+constexpr int nFER2 = 41;//nFER;
 constexpr int nBOS3 = 21; //nBOS;
 constexpr int nFER3 = 21; //nFER;
 //#else
