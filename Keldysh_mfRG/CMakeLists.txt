@@ -84,10 +84,10 @@ elseif(KCS)
     include_directories($ENV{HDF5_INC} $ENV{GSL_INC} $ENV{BOOST_INC} $ENV{FFTW_INC} )
     include_directories($ENV{EIGEN_BASE}/include/eigen3)
 
-    string(STRIP $ENV{HDF5_CPP_SHLIB} HDF5_CPP_SHLIB)
-    string(STRIP $ENV{HDF5_SHLIB} HDF5_SHLIB)
-
-    target_link_libraries(Keldysh_mfRG $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB} $ENV{SZIP_LIB} -lz)
+    string(STRIP HDF5_CPP_SHLIB "$ENV{HDF5_CPP_SHLIB}")
+    string(STRIP HDF5_SHLIB "$ENV{HDF5_SHLIB}")
+    
+    target_link_libraries(Keldysh_mfRG $HDF5_CPP_SHLIB $HDF5_SHLIB $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
 elseif(JSC)
     include_directories(/p/software/juwelsbooster/stages/2022/software/HDF5/1.12.1-iompi-2021b/include) # $HDF5_INC
