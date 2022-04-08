@@ -16,7 +16,7 @@ then
 
   module load spack/22.2.1
   module load intel-mpi/2019-intel
-  module load gcc/11
+  module load gcc/9
   module load hdf5/1.8.22-gcc11
   module load fftw/3.3.10
   module load gsl/2.7-intel21
