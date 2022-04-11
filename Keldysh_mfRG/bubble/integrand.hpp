@@ -94,6 +94,7 @@ private:
     const GeneralVertex<Q, symmetry_left>& vertex1;
     const GeneralVertex<Q, symmetry_right>& vertex2;
     const Bubble_Object& Pi;
+    int i0_symmred;
     int i0 = 0;
     int i0_left;
     int i0_right;
@@ -133,30 +134,24 @@ private:
     return_type sum_over_internal_vectorized(const VertexInput& input_external, double vpp) const;
         public:
     /**
-     * Constructor for K1-class:
+     * Constructor for asymptotic class Ki:
      * @param vertex1_in : left vertex
      * @param vertex2_in : right vertex
      * @param Pi_in      : Bubble object connecting the left and right vertex
-     * @param i0_in      : index (0 or 1) specifying the (external) Keldysh component of integrand object
+     * @param i0_in      : index specifying the (external) Keldysh component of integrand object; i0_in = [0, .. nK_Ki]
+     *                     where nK_Ki is the number of symmetry-reduced Keldysh components in the result
      *                     (converted into actual Keldysh index i0 within the constructor)
      * @param w_in       : external bosonic frequency \omega
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble
      */
-
-
-    /**
-     * Constructor for K3-class:
-     * Same as for K2 plus additionally
-     * @param vp_in      : external fermionic frequency \nu'
-     */
     Integrand(const GeneralVertex<Q, symmetry_left>& vertex1_in,
               const GeneralVertex<Q, symmetry_right>& vertex2_in,
               const Bubble_Object& Pi_in,
               int i0_in, int i2_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
               const int i_spin_in, const bool diff_in)
-              :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in),
+              :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), i0_symmred(i0_in),
               i2(i2_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), diff(diff_in){
         set_Keldysh_index_i0(i0_in);
         if (MAX_DIAG_CLASS < 2) {precompute_vertices();}
@@ -171,7 +166,7 @@ private:
 
     void save_integrand() const;
     void save_integrand(const rvec& freqs, const std::string& filename_prefix) const;
-    void get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im)  const;
+    void get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& Pivals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals1, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals2)  const;
 };
 
 template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object,typename return_type>
@@ -944,34 +939,55 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
 }
 
 template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object,typename return_type>
-void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object,return_type>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im, rvec& Pival_re, rvec& Pival_im) const {
+void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object,return_type>::get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& Pivals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals1, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals2) const {
     int npoints = freqs.size();
+    VertexInput input_external (i0, 0, w, v, vp, i_in, channel, diag_class, iw);
+
+    Pivals = Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>(KELDYSH?16:1, npoints);
+    integrand_vals = Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>(VECTORIZED_INTEGRATION?16:1, npoints);
     for (int i=0; i<npoints; ++i) {
 
         double vpp = freqs[i];
 
+        VertexInput input_l = input_external, input_r = input_external;
+        input_l.v2 = vpp; input_r.v1 = vpp;
+        input_l.iK = i0_left; input_r.iK = i0_right;
+        input_l.spin = 0;
+        input_r.spin = 0;
 
-        Q Pival, integrand_value;
-        if (not KELDYSH and std::abs(std::abs(w/2)-std::abs(vpp)) < 1e-6) {
-            Pival = std::numeric_limits<Q>::infinity();
-            integrand_value = std::numeric_limits<Q>::infinity();
-        }
-        else {
-            Pival = Pi.value(i2, w, vpp, i_in, channel);
-            integrand_value = (*this)(vpp);
-        }
-        if constexpr (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
-            integrand_re[i] = myreal(integrand_value);
-            integrand_im[i] = 0.;
-            Pival_re[i] = myreal(Pival);
-            Pival_im[i] = 0.;
-        }
-        else{
-            integrand_re[i] = myreal(integrand_value);
-            integrand_im[i] = myimag(integrand_value);
-            Pival_re[i] = myreal(Pival);
-            Pival_im[i] = myimag(Pival);
-        }
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> Pival;
+#if VECTORIZED_INTEGRATION
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_value;
+        Eigen::Matrix<Q,4,4> vertex_val1(4,4);
+        Eigen::Matrix<Q,4,4> vertex_val2(4,4);
+#else
+        Q integrand_value;
+#endif
+
+        Pival = Pi.template value_vectorized<channel>(w, vpp, i_in);
+        integrand_value = (*this)(vpp);
+        load_vertex_keldyshComponents_left_vectorized<0> (vertex_val1, input_l);
+        load_vertex_keldyshComponents_right_vectorized<0>(vertex_val2, input_r);
+
+
+#if VECTORIZED_INTEGRATION
+        integrand_value.resize(16,1);
+
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_val1_temp = vertex_val1;
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_val2_temp = vertex_val2;
+        vertex_val1_temp.resize(16,1);
+        vertex_val2_temp.resize(16,1);
+        integrand_vals.col(i) = integrand_value;
+        vertex_vals1.col(i) = vertex_val1_temp;
+        vertex_vals2.col(i) = vertex_val2_temp;
+#else
+        integrand_vals(i) = integrand_value;
+#endif
+
+
+        Pival.resize(KELDYSH?16:1,1);
+        Pivals.col(i) = Pival;
+
     }
 
 
@@ -1025,23 +1041,31 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
     rvec integrand_im (npoints);
     rvec Pival_re (npoints);
     rvec Pival_im (npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_vals(VECTORIZED_INTEGRATION ? 16 : 1, npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> Pivals(KELDYSH?16:1,npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_vals1(VECTORIZED_INTEGRATION ? 16 : 1, npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_vals2(VECTORIZED_INTEGRATION ? 16 : 1,npoints);
 
-    get_integrand_vals(freqs, integrand_re, integrand_im, Pival_re, Pival_im);
+    get_integrand_vals(freqs, integrand_vals, Pivals, vertex_vals1, vertex_vals2);
 
     std::string filename = "";
     if (not HUBBARD_MODEL) filename += data_dir;
-    filename += filename_prefix+"integrand_K" + std::to_string(diag_class);
+    filename += filename_prefix+"integrand_K" + (diag_class == k1 ? "1" : (diag_class == k2 ? "2" : (diag_class == k3 ? "3" : "2b")));
     filename += channel;
-    filename += "_i0=" + std::to_string(i0)
+    filename += "_i0=" + std::to_string(i0_symmred)
                 + "_i2=" + std::to_string(i2)
                 + "_w=" + std::to_string(w);
     if (diag_class == k2) {filename += "_v=" + std::to_string(v);}
     else if (diag_class == k3) {filename += "_vp=" + std::to_string(vp);}
     filename += "_i_in=" + std::to_string(i_in);
     filename += + ".h5";
-    write_h5_rvecs(filename,
-                   {"v", "integrand_re", "integrand_im", "Pival_re", "Pival_im"},
-                   {freqs, integrand_re, integrand_im, Pival_re, Pival_im});
+
+    H5::H5File file(filename, H5F_ACC_TRUNC);
+    write_to_hdf(file, "v", freqs, false);
+    write_to_hdf(file, "integrand", integrand_vals, false);
+    write_to_hdf(file, "Pival", Pivals, false);
+    write_to_hdf(file, "vertex1", vertex_vals1, false);
+    write_to_hdf(file, "vertex2", vertex_vals2, false);
 }
 
 

@@ -392,6 +392,21 @@ void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multi
     file_space.close();
 };
 
+/// Write Eigen::Matrix to HDF group/file
+template<typename Q, typename H5object>
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic>& data, const bool data_set_exists) {
+    hsize_t dims[2] = {(hsize_t)data.cols(), (hsize_t)data.rows()}; // standard Eigen::Matrix is stored in column-major format
+    H5::DataSpace file_space(2, dims);
+
+    H5::DataSet mydataset;
+    if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
+    else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+    hdf5_impl::write_data_to_Dataset(data, mydataset);
+
+    mydataset.close();
+    file_space.close();
+};
+
 /// Write vector to Lambda layer of HDF group/file
 template <typename Q, typename H5object>
 void write_to_hdf_LambdaLayer(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const hsize_t Lambda_it, const hsize_t numberLambda_layers, const bool data_set_exists) {
