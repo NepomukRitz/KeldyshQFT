@@ -313,15 +313,15 @@ template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
 }
 
 template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> freqGrid_type {
-    freqGrid_type frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold, false, asymp_val_R);
+    freqGrid_type frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold, false, 0.);
     return frequencies_new;
 }
 
 
 template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) const {
     buffer_type Sigma_temp = Sigma;
-    if(KELDYSH) for (int i = 0; i < Sigma.get_vec().size()/2; i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
-    else for (int i = 0; i < Sigma.get_vec().size(); i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
+    //if(KELDYSH) for (int i = 0; i < Sigma.get_vec().size()/2; i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
+    //else for (int i = 0; i < Sigma.get_vec().size(); i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
 
     double maxabs_SE_total = Sigma_temp.get_vec().max_norm();
     vec<double> maxabsSE_along_w = maxabs(Sigma_temp.get_vec(), Sigma_temp.get_dims(), 1);

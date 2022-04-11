@@ -35,10 +35,11 @@ void FrequencyGrid<eliasGrid>::derive_auxiliary_parameters() {
     spacing_auxiliary_gridpoint = (t_upper - t_lower) / ((double) (number_of_gridpoints-1));
 }
 void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
-    switch (type) {
-        case 'b':
-            switch (diag_class) {
-                case 1:
+
+    switch (diag_class) {
+        case 1:
+            switch (type) {
+                case 'b':
                     number_of_gridpoints = nBOS;
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
@@ -49,37 +50,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                         Delta_factor = 40.;
                     }
                     break;
-                case 2:
-                    number_of_gridpoints = nBOS2;
-#ifdef ROTATEK2
-                    if (KELDYSH){
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
-                        }
-                        else{
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
-                        }
-#else
-                    if (KELDYSH){
-                        U_factor = 0./3.;
-                        Delta_factor = 15.;
-                    }
-                    else{
-                        U_factor = 10./3.;
-                        Delta_factor = 10.;
-                    }
-#endif
-                    break;
-                case 3:
-                    number_of_gridpoints = nBOS3;
-                    break;
-                default:;
-            }
-            break;
-        case 'f':
-            switch (diag_class) {
-                case 1:
+                case 'f':
                     number_of_gridpoints = nFER;
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
@@ -94,37 +65,74 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                         Delta_factor *= 1.5;
                     }
                     break;
-                case 2:
-                    number_of_gridpoints = nFER2;
-#ifdef ROTATEK2
-                    /// Needs to be the same as for 'b'!!!
-                        if (KELDYSH) {
-                            U_factor = 10. / 3.;
-                            Delta_factor = 10.;
-                        }
-                        else {
+                default:
+                    break;
+                    }
+            break;
+        case 2:
+            switch (type) {
+                case 'b':
+                    number_of_gridpoints = nBOS2;
+                    #ifdef ROTATEK2
+                    if (KELDYSH){
                             U_factor = 10./3.;
                             Delta_factor = 10.;
                         }
-#else
+                        else{
+                            U_factor = 10./3.;
+                            Delta_factor = 10.;
+                        }
+                    #else
+                    if (KELDYSH){
+                        U_factor = 0./3.;
+                        Delta_factor = 20.;
+                    }
+                    else{
+                        U_factor = 10./3.;
+                        Delta_factor = 10.;
+                    }
+                    #endif
+                    break;
+                case 'f':
+                    number_of_gridpoints = nFER2;
+                    #ifdef ROTATEK2
+                    /// Needs to be the same as for 'b'!!!
+                    if (KELDYSH) {
+                        U_factor = 10. / 3.;
+                        Delta_factor = 10.;
+                    }
+                    else {
+                        U_factor = 10./3.;
+                        Delta_factor = 10.;
+                    }
+                    #else
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
-                        Delta_factor = 20.;
+                        Delta_factor = 10.;
                     }
                     else {
                         U_factor = 4./3.;
                         Delta_factor = 4.;
                     }
-#endif
+                    #endif
                     break;
-                case 3:
+                default:
+                    break;
+                }
+            break;
+        case 3:
+            switch (type) {
+                case 'b':
+                    number_of_gridpoints = nBOS3;
+                    break;
+                case 'f':
                     number_of_gridpoints = nFER3;
                     break;
                 default:;
-            }
-            break;
+                }
         default:;
     }
+
 
     double scale;
     if (REG==2) {
