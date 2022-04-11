@@ -638,7 +638,7 @@ template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const dou
         freq_check += contourIndices[i] * frequenciesFermionic[i];
     }
 
-    if (freq_check <-1e-15) return true;
+    if (freq_check <1e-15 and not (iK==0 or iK==15)) return true; // sets values at v=0 to zero; exclude cases where all Contour indices are identical
     else return false;
 
 }
@@ -1455,6 +1455,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             K1.setvert(result, idx);
         }
 
+        if (CONTOUR_BASIS and ZERO_T and USE_FDT  and is_zero_due_to_FDTs<k1>(itK, w_in, 0., 0., channel)) {
+            K1.setvert(0., idx);
+        }
+
     }
 }
 
@@ -1547,6 +1551,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
         }
         if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.frequencies.get_wlower_f()) {
             K2.setvert(0., idx);                    }
+        if (CONTOUR_BASIS and ZERO_T and USE_FDT and is_zero_due_to_FDTs<k2>(itK, w_in, v_in, 0., channel)) {
+            K2.setvert(0., idx);
+        }
     }
 
 }
@@ -1601,6 +1608,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         }
         if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f())) {
             K3.setvert(0., idx);
+        }
+
+        if (CONTOUR_BASIS and ZERO_T and USE_FDT and is_zero_due_to_FDTs<k3>(itK, w_in, v_in, vp_in, channel)) {
+            K3.setvert(0, idx);
         }
 
 
