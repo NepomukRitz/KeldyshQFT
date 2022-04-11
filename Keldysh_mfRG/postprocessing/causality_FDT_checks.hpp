@@ -741,41 +741,148 @@ void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out,
 template <typename Q, vertexType symmetry_type>
 void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
     if(KELDYSH) {
+        if (CONTOUR_BASIS and not ZERO_T) assert(false);
+        if (CONTOUR_BASIS and ZERO_T) {
+            print("Checking the FDTs for Lambda_it", Lambda_it, true);
 
-        GeneralVertex<Q,symmetry_type> vertex_out = vertex_in;
-        compute_components_through_FDTs(vertex_out, vertex_in);
+            State<Q> state_diff(Lambda);
 
-        print("Checking the FDTs for Lambda_it", Lambda_it, true);
-        GeneralVertex<Q,symmetry_type> vertex_diff = vertex_in - vertex_out;
-        print("K2: max-norm of deviation = ", false);
-        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
-        print("K2: relative deviation = ", false);
-        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_diff.half1().norm_K2(0)/vertex_out.half1().norm_K2(0) << std::scientific << '\n';
-        print("K2: max-norm = ", false);
-        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_out.half1().norm_K2(0) << std::scientific << '\n';
-        print("K3: max-norm of deviation = ", false);
-        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_diff.half1().norm_K3(0) << std::scientific << '\n';
-        print("K3: relative deviation = ", false);
-        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_diff.half1().norm_K3(0)/vertex_out.half1().norm_K3(0) << std::scientific << '\n';
-        print("K3: max-norm ", false);
-        if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_out.half1().norm_K3(0) << std::scientific << '\n';
-        //
+            double max_deviation_K1 = 0, max_deviation_K2 = 0, max_deviation_K3 = 0;
+            for (char r: {'a', 'p', 't'}) {
+                auto K1 = vertex_in.get_rvertex(r).K1;
+                for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
+                    my_defs::K1::index_type idx;
+                    getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
+                    int itK = (int) idx[my_defs::K1::keldysh];
+                    my_index_t it_spin = idx[my_defs::K1::spin];
+                    my_index_t itw = idx[my_defs::K1::omega];
+                    my_index_t i_in = idx[my_defs::K1::internal];
+                    double w;
+                    K1.frequencies.get_freqs_w(w, itw);
 
-        if (write_flag) {
-            SelfEnergy<Q> SE_empty(Lambda);
-            Vertex<Q> temp_diff(Lambda);
-            temp_diff.half1() = vertex_diff.half1();
-            Vertex<Q> temp_out(Lambda);
-            temp_out.half1() = vertex_out.half1();
-            State<Q> state_out(temp_out, SE_empty);
-            State<Q> state_diff(temp_diff, SE_empty);
-            if (Lambda_it == 0) {
-                write_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
-                write_state_to_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda, nLambda, state_diff);
+                    if (is_zero_due_to_FDTs<k1>(itK, w, 0., 0., r)) {
+                        Q value = K1.val(idx);
+                        state_diff.vertex.get_rvertex(r).K1.setvert(value, idx);
+                        max_deviation_K1 = std::max(max_deviation_K1, std::abs(value));
+
+                    }
+                }
             }
-            else {
-                add_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda_it, state_out);
-                add_state_to_hdf(data_dir + filename_prefix + "_FDTdiff"  , Lambda_it, state_diff);
+
+            if (MAX_DIAG_CLASS > 1) {
+                for (char r: {'a', 'p', 't'}) {
+                    auto K2 = vertex_in.get_rvertex(r).K2;
+                    for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
+                        my_defs::K2::index_type idx;
+                        getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
+                        int itK = (int) idx[my_defs::K2::keldysh];
+                        my_index_t it_spin = idx[my_defs::K2::spin];
+                        my_index_t itw = idx[my_defs::K2::omega];
+                        my_index_t itv = idx[my_defs::K2::nu];
+                        my_index_t i_in = idx[my_defs::K2::internal];
+                        double w, v;
+                        K2.frequencies.get_freqs_w(w, v, itw, itv);
+
+                        if (is_zero_due_to_FDTs<k2>(itK, w, v, 0., r)) {
+                            Q value = K2.val(idx);
+                            max_deviation_K2 = std::max(max_deviation_K2, std::abs(value));
+                            state_diff.vertex.get_rvertex(r).K2.setvert(value, idx);
+                        }
+                    }
+                }
+            }
+
+            if (MAX_DIAG_CLASS > 2) {
+                for (char r: {'a', 'p', 't'}) {
+                    auto K3 = vertex_in.get_rvertex(r).K3;
+                    for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
+                        my_defs::K3::index_type idx;
+                        getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
+                        int itK = (int) idx[my_defs::K3::keldysh];
+                        my_index_t it_spin = idx[my_defs::K3::spin];
+                        my_index_t itw = idx[my_defs::K3::omega];
+                        my_index_t itv = idx[my_defs::K3::nu];
+                        my_index_t itvp= idx[my_defs::K3::nup];
+                        my_index_t i_in = idx[my_defs::K3::internal];
+                        double w, v, vp;
+                        K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
+
+                        if (is_zero_due_to_FDTs<k3>(itK, w, v, vp, r)) {
+                            Q value = K3.val(idx);
+                            max_deviation_K3 = std::max(max_deviation_K3, std::abs(value));
+                            state_diff.vertex.get_rvertex(r).K3.setvert(value, idx);
+                        }
+                    }
+                }
+            }
+
+            if (mpi_world_rank() == 0) {
+                print("K1: max-norm of deviation = ", false);
+                std::cout << max_deviation_K1 << std::scientific << '\n';
+                print("K1: relative deviation = ", false);
+                std::cout << max_deviation_K1 / vertex_in.half1().norm_K1(0) << std::scientific << '\n';
+            }
+
+
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1) {
+                print("K2: max-norm of deviation = ", false);
+                std::cout << max_deviation_K2 << std::scientific << '\n';
+                print("K2: relative deviation = ", false);
+                std::cout << max_deviation_K2 / vertex_in.half1().norm_K2(0) << std::scientific << '\n';
+            }
+
+
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2) {
+                print("K3: max-norm of deviation = ", false);
+                std::cout << max_deviation_K3 << std::scientific << '\n';
+                print("K3: relative deviation = ", false);
+                std::cout << max_deviation_K3 / vertex_in.half1().norm_K3(0) << std::scientific << '\n';
+            }
+
+            write_state_to_hdf(data_dir + filename_prefix + "_FDTdiff", Lambda, nLambda, state_diff);
+
+        }
+        else {
+            GeneralVertex<Q, symmetry_type> vertex_out = vertex_in;
+            compute_components_through_FDTs(vertex_out, vertex_in);
+
+            print("Checking the FDTs for Lambda_it", Lambda_it, true);
+            GeneralVertex<Q, symmetry_type> vertex_diff = vertex_in - vertex_out;
+            print("K2: max-norm of deviation = ", false);
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
+                std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
+            print("K2: relative deviation = ", false);
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
+                std::cout << vertex_diff.half1().norm_K2(0) / vertex_out.half1().norm_K2(0) << std::scientific << '\n';
+            print("K2: max-norm = ", false);
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
+                std::cout << vertex_out.half1().norm_K2(0) << std::scientific << '\n';
+            print("K3: max-norm of deviation = ", false);
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2)
+                std::cout << vertex_diff.half1().norm_K3(0) << std::scientific << '\n';
+            print("K3: relative deviation = ", false);
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2)
+                std::cout << vertex_diff.half1().norm_K3(0) / vertex_out.half1().norm_K3(0) << std::scientific << '\n';
+            print("K3: max-norm ", false);
+            if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2)
+                std::cout << vertex_out.half1().norm_K3(0) << std::scientific << '\n';
+            //
+
+            if (write_flag) {
+                SelfEnergy<Q> SE_empty(Lambda);
+                Vertex<Q> temp_diff(Lambda);
+                temp_diff.half1() = vertex_diff.half1();
+                Vertex<Q> temp_out(Lambda);
+                temp_out.half1() = vertex_out.half1();
+                State<Q> state_out(temp_out, SE_empty);
+                State<Q> state_diff(temp_diff, SE_empty);
+                if (Lambda_it == 0) {
+                    write_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
+                    write_state_to_hdf(data_dir + filename_prefix + "_FDTdiff", Lambda, nLambda, state_diff);
+                } else {
+                    add_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda_it, state_out);
+                    add_state_to_hdf(data_dir + filename_prefix + "_FDTdiff", Lambda_it, state_diff);
+                }
             }
         }
 
