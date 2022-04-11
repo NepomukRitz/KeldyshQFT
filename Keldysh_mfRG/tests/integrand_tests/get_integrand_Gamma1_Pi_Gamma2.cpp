@@ -38,6 +38,8 @@ auto main(int argc, char * argv[]) -> int {
     vp = atof(argv[11]);
     i_in = atoi(argv[12]);
     K_class k_class = static_cast<K_class>(k_class_int);
+    std::string filename = argv[13]; // e.g. "Psi_SDE_a_l";
+    bool Gamma0_is_left = atoi(argv[14]);
 
     /// print input arguments:
     std::cout << "Check the input arguments: " << std::endl;
@@ -45,17 +47,16 @@ auto main(int argc, char * argv[]) -> int {
     << ", channel: " << channel << ", i0: " << i0 << ", i2: " << i2
     << ", w: " << w << ", v: " << v << ", vp: " << vp << ", i_in: " << i_in << std::endl;
 
-    dir_str = dir_str + "intermediateResults/";
-    const std::string file_Psi = dir_str + "Psi_RKstep"+std::to_string(rkStep);
-    const std::string file_dPsi= dir_str + "dPsi_RKstep"+std::to_string(rkStep);
+    //dir_str = dir_str;
+    const std::string file_Psi = dir_str + filename;
 
 
     std::string dir_integrand_str = "integrands/";
     makedir(data_dir + dir_integrand_str);
-    const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string filename_prefix = dir_integrand_str + "Gamma1_Pi_Gamma2_Gamma0left" + std::to_string(Gamma0_is_left);
 
 
-    saveIntegrand::dGamma_1Loop<state_datatype>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
+    saveIntegrand::Gamma1_Pi_Gamma2<state_datatype>(filename_prefix, file_Psi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in, Gamma0_is_left);
     std::cout << "Integrand for dGamma1_loop successfully created." << std::endl;
 
     return 0;

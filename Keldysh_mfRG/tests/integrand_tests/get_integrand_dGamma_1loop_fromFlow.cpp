@@ -6,6 +6,8 @@
 #include "saveIntegrand.hpp"
 
 auto main(int argc, char * argv[]) -> int {
+    std::string job = "U=" + std::to_string(glb_U);
+    data_dir = "../Data_KF" + job + "/";
     std::string dir_str, filename;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, i_in;
@@ -31,10 +33,11 @@ auto main(int argc, char * argv[]) -> int {
     channel = *(argv[5]);
     i0 = atoi(argv[6]);
     i2 = atoi(argv[7]);
-    w = atof(argv[8]);
-    v = atof(argv[9]);
-    vp = atof(argv[10]);
-    i_in = atoi(argv[11]);
+    int spin = atoi(argv[8]);
+    w = atof(argv[9]);
+    v = atof(argv[10]);
+    vp = atof(argv[11]);
+    i_in = atoi(argv[12]);
     K_class k_class = static_cast<K_class>(k_class_int);
 
     /// print input arguments:
