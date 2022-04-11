@@ -13,7 +13,7 @@
 template <typename Q>
 void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
     if (KELDYSH) {
-        print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
+        utils::print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
         using SE_buffertype = typename SelfEnergy<Q>::buffer_type;
         SE_buffertype Sigma = selfEnergy.Sigma;                        // take self-energy
         vec<Q> Sigma_R(Sigma.get_vec().begin(), Sigma.get_vec().begin() + (Sigma.get_vec().size() / 2));     // take first half of self-energy (retarded comp.)
@@ -31,17 +31,17 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
             }
         }
         if (cnt > 0) {
-            print("Selfenergy is non-causal: ", true);
-            print(cnt, " values of Im(Sigma^R) are positive, with a sum of ", sum, true);
+            utils::print("Selfenergy is non-causal: ", true);
+            utils::print(cnt, " values of Im(Sigma^R) are positive, with a sum of ", sum, true);
         } else {
-            print("Selfenergy is causal.", true);
+            utils::print("Selfenergy is causal.", true);
             selfEnergy.Sigma.initInterpolator();
-            print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
+            utils::print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
         }
 
     }
     else {
-        print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
+        utils::print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
 
         auto Sigma = selfEnergy.Sigma;                        // take self-energy
 
@@ -59,10 +59,10 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
             }
         }
         if (cnt > 0) {
-            print("Im[Selfenergy] is not negative for positive w (vice versa): ", true);
-            print(cnt, " values of Im(Sigma) have the wrong sign, with a sum of ", sum, true);
+            utils::print("Im[Selfenergy] is not negative for positive w (vice versa): ", true);
+            utils::print(cnt, " values of Im(Sigma) have the wrong sign, with a sum of ", sum, true);
         } else
-            print("Selfenergy has the right sign.", true);
+            utils::print("Selfenergy has the right sign.", true);
     }
 }
 
@@ -83,7 +83,7 @@ void check_SE_causality(const Q& selfEnergy) {}
 template <typename Q>
 void check_FDTs(const State<Q>& state, bool verbose) {
     if (verbose)
-        print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
+        utils::print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
 
     const double EPS = std::numeric_limits<double>::epsilon(); // double precision used as error estimate
 
@@ -94,13 +94,13 @@ void check_FDTs(const State<Q>& state, bool verbose) {
     double max_Sigma_K = Sigma_K.real().max_norm();                 // take max. value of Re(Sigma^K)
 
     if (verbose) {
-        print("Maximal value of Re(Sigma^K): ", max_Sigma_K, false);
-        if (max_Sigma_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
+        utils::print("Maximal value of Re(Sigma^K): ", max_Sigma_K, false);
+        if (max_Sigma_K < 10 * EPS) utils::print_add("  --> Check passed.", true);
+        else utils::print_add("  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
     }
     else {
         if (max_Sigma_K > 10 * EPS)
-            print("Maximal value of Re(Sigma^K): ", max_Sigma_K,
+            utils::print("Maximal value of Re(Sigma^K): ", max_Sigma_K,
                   "  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
     }
 
@@ -120,27 +120,27 @@ void check_FDTs(const State<Q>& state, bool verbose) {
     double max_K1t_K = K1t_K.real().max_norm();
 
     if (verbose) {
-        print("Maximal value of Re(K1a^K):   ", max_K1a_K, false);
-        if (max_K1a_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
+        utils::print("Maximal value of Re(K1a^K):   ", max_K1a_K, false);
+        if (max_K1a_K < 10 * EPS) utils::print_add("  --> Check passed.", true);
+        else utils::print_add("  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
 
-        print("Maximal value of Re(K1p^K):   ", max_K1p_K, false);
-        if (max_K1p_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
+        utils::print("Maximal value of Re(K1p^K):   ", max_K1p_K, false);
+        if (max_K1p_K < 10 * EPS) utils::print_add("  --> Check passed.", true);
+        else utils::print_add("  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
 
-        print("Maximal value of Re(K1t^K):   ", max_K1t_K, false);
-        if (max_K1t_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
+        utils::print("Maximal value of Re(K1t^K):   ", max_K1t_K, false);
+        if (max_K1t_K < 10 * EPS) utils::print_add("  --> Check passed.", true);
+        else utils::print_add("  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
     }
     else {
         if (max_K1a_K > 10 * EPS)
-            print("Maximal value of Re(K1a^K):   ", max_K1a_K,
+            utils::print("Maximal value of Re(K1a^K):   ", max_K1a_K,
                   "  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
         if (max_K1p_K > 10 * EPS)
-            print("Maximal value of Re(K1p^K):   ", max_K1p_K,
+            utils::print("Maximal value of Re(K1p^K):   ", max_K1p_K,
                   "  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
         if (max_K1t_K > 10 * EPS)
-            print("Maximal value of Re(K1t^K):   ", max_K1a_K,
+            utils::print("Maximal value of Re(K1t^K):   ", max_K1a_K,
                   "  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
     }
 }
@@ -744,19 +744,19 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
         GeneralVertex<Q,symmetry_type> vertex_out = vertex_in;
         compute_components_through_FDTs(vertex_out, vertex_in);
 
-        print("Checking the FDTs for Lambda_it", Lambda_it, true);
+        utils::print("Checking the FDTs for Lambda_it", Lambda_it, true);
         GeneralVertex<Q,symmetry_type> vertex_diff = vertex_in - vertex_out;
-        print("K2: max-norm of deviation = ", false);
+        utils::print("K2: max-norm of deviation = ", false);
         if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
-        print("K2: relative deviation = ", false);
+        utils::print("K2: relative deviation = ", false);
         if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_diff.half1().norm_K2(0)/vertex_out.half1().norm_K2(0) << std::scientific << '\n';
-        print("K2: max-norm = ", false);
+        utils::print("K2: max-norm = ", false);
         if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>1) std::cout << vertex_out.half1().norm_K2(0) << std::scientific << '\n';
-        print("K3: max-norm of deviation = ", false);
+        utils::print("K3: max-norm of deviation = ", false);
         if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_diff.half1().norm_K3(0) << std::scientific << '\n';
-        print("K3: relative deviation = ", false);
+        utils::print("K3: relative deviation = ", false);
         if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_diff.half1().norm_K3(0)/vertex_out.half1().norm_K3(0) << std::scientific << '\n';
-        print("K3: max-norm ", false);
+        utils::print("K3: max-norm ", false);
         if (mpi_world_rank() == 0 and MAX_DIAG_CLASS>2) std::cout << vertex_out.half1().norm_K3(0) << std::scientific << '\n';
         //
 

@@ -48,7 +48,7 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
         if (std::abs(Ferfreqs.fconv(Ferfreqs.get_ws(i)) - i) > 1) isright = false;
         issymmetric += std::abs(Ferfreqs.get_ws(i) + Ferfreqs.get_ws(nFER - i - 1));
         if (std::abs(Ferfreqs.get_ws(i) + Ferfreqs.get_ws(nFER - i - 1)) > symmetry_tolerance) {
-            print(std::to_string(Ferfreqs.get_ws(i)) + " != " + std::to_string(Ferfreqs.get_ws(nFER - i - 1)) + "\n");
+            utils::print(std::to_string(Ferfreqs.get_ws(i)) + " != " + std::to_string(Ferfreqs.get_ws(nFER - i - 1)) + "\n");
         }
     }
 

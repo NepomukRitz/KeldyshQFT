@@ -14,9 +14,9 @@ double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) 
         Sigma_new.initialize(glb_U * filling, 0);
         Sigma = Sigma_new;
     }
-    print_add("  ", true);
-    print("Determined filling of: " + std::to_string(filling), true);
-    print("Number of iterations needed: " + std::to_string(n_iter), true);
+    utils::print_add("  ", true);
+    utils::print("Determined filling of: " + std::to_string(filling), true);
+    utils::print("Number of iterations needed: " + std::to_string(n_iter), true);
     friedel_sum_rule_check();
     return glb_U * filling;
 }
@@ -41,13 +41,13 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
             filling_max = filling;
         }
         else { // LHS == 0.0 exactly
-            print("Warning, obtained a numerically exact result for the filling. Might be suspicious.", true);
+            utils::print("Warning, obtained a numerically exact result for the filling. Might be suspicious.", true);
             return glb_U * filling;
         }
     }
-    print_add("  ", true);
-    print("Determined filling of: " + std::to_string(filling), true);
-    print("Number of iterations needed: " + std::to_string(n_iter), true);
+    utils::print_add("  ", true);
+    utils::print("Determined filling of: " + std::to_string(filling), true);
+    utils::print("Number of iterations needed: " + std::to_string(n_iter), true);
     friedel_sum_rule_check();
     return glb_U * filling;
 }
@@ -63,14 +63,14 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
 
 void Hartree_Solver::friedel_sum_rule_check() const {
     const double filling_friedel = 1./2. - 1./M_PI * atan((glb_epsilon + glb_U * filling)/(Delta));
-    print("Filling determined self-consistently = " + std::to_string(filling), true);
-    print("Filling from the Friedel sum rule, valid at zero T = " + std::to_string(filling_friedel), true);
+    utils::print("Filling determined self-consistently = " + std::to_string(filling), true);
+    utils::print("Filling from the Friedel sum rule, valid at zero T = " + std::to_string(filling_friedel), true);
     const double relative_difference = std::abs((filling - filling_friedel) / filling);
-    print("Relative difference = " + std::to_string(relative_difference), true);
+    utils::print("Relative difference = " + std::to_string(relative_difference), true);
     if (ZERO_T and (relative_difference > 1e-3)){
-        print(" ", true);
-        print("ERROR! The computed value of the filling does not agree with the result from the Friedel rule. Maybe the integrator's accuracy isn't high enough?", true);
-        print(" ", true);
+        utils::print(" ", true);
+        utils::print("ERROR! The computed value of the filling does not agree with the result from the Friedel rule. Maybe the integrator's accuracy isn't high enough?", true);
+        utils::print(" ", true);
         assert(false);
     }
 }

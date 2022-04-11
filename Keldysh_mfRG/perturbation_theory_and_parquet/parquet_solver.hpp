@@ -95,7 +95,7 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     // compute the self-energy via SDE using the a bubble
     Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_a, bubble_a, G, false);
-    print("Check causality of Sigma_SDE_a: \n");
+    utils::print("Check causality of Sigma_SDE_a: \n");
     check_SE_causality(Sigma_SDE_a);
 
     // compute the p bubble with full vertex on the right
@@ -115,12 +115,12 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     // compute the self-energy via SDE using the p bubble
     Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop(Sigma_SDE_p, bubble_p, G, false);
-    print("Check causality of Sigma_SDE_p: \n");
+    utils::print("Check causality of Sigma_SDE_p: \n");
     check_SE_causality(Sigma_SDE_p);
 
     // symmetrize the contributions computed via a/p bubble
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
-    print("Check causality of Sigma_SDE: \n");
+    utils::print("Check causality of Sigma_SDE: \n");
     check_SE_causality(Sigma_SDE);
 }
 
@@ -271,7 +271,7 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     int iteration = 1;
     // first check if converged, and also stop if maximal number of iterations is reached
     while ((relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy) && iteration <= Nmax) {
-        print("iteration ", iteration, true);
+        utils::print("iteration ", iteration, true);
         parquet_iteration(state_out, state_in, Lambda, iteration);  // compute lhs of parquet equations
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
         add_state_to_hdf(filename, iteration, state_out);  // store result into file
@@ -279,8 +279,8 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         // compute relative differences between input and output w.r.t. output
         relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();
         relative_difference_selfenergy = state_diff.selfenergy.norm() / state_out.selfenergy.norm();
-        print("relative difference vertex:     ", relative_difference_vertex, true);
-        print("relative difference selfenergy: ", relative_difference_selfenergy, true);
+        utils::print("relative difference vertex:     ", relative_difference_vertex, true);
+        utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
 
         state_in = state_out;  // use output as input for next iteration
         ++iteration;

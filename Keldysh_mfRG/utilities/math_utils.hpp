@@ -163,13 +163,13 @@ namespace math_impl {
 template<size_t rank, typename... Types,    /// "..." is syntax for a parameter pack
         typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<int, Types...>::value), bool> = true>
 inline int getFlatIndex(const Types &... i, const std::array<size_t,rank>&  dims) {
-    auto temp = to_array<size_t, Types...>(i...);
+    auto temp = utils::to_array<size_t, Types...>(i...);
     return getFlatIndex<rank>(temp, dims);
 }
 template<size_t rank, typename... Types,    /// "..." is syntax for a parameter pack
         typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<int, Types...>::value), bool> = true>
 inline int getFlatIndex(const Types &&... i, const std::array<size_t,rank>&  dims) {
-    auto temp = to_array<size_t, Types...>(i...);
+    auto temp = utils::to_array<size_t, Types...>(i...);
     return getFlatIndex<rank>(temp, dims);
 }
 

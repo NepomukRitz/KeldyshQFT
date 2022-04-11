@@ -414,13 +414,13 @@ public:
     }
     template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
         vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded, fullvert<Q>(0., false));
-        //print("Start symmetry expansion\n");
+        //utils::print("Start symmetry expansion\n");
         initializeInterpol();
-        //print("Initialized Interpolator \n");
+        //utils::print("Initialized Interpolator \n");
 
         for (int ispin = 0; ispin < n_spin_expanded; ispin++) {
             vertices_bubbleintegrand[ispin].template symmetry_expand<channel_bubble,is_left_vertex>(half1(), half2(), ispin);
-            //print("expanded spin component ", ispin, "\n");
+            //utils::print("expanded spin component ", ispin, "\n");
         }
         set_initializedInterpol(false);
     }
@@ -507,7 +507,7 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
                 return -bare.at(iK, i_in);
                 break;
             default:
-                print("Problems in irred.val. Abort.");
+                utils::print("Problems in irred.val. Abort.");
                 assert(false);
                 return 0.;
         }
@@ -522,7 +522,7 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
                 result = -bare.template at_vectorized<0,0,4>(iK,i_in);
                 break;
             default:
-                print("Problems in irred.val. Abort.");
+                utils::print("Problems in irred.val. Abort.");
                 assert(false);
         }
         return result;
@@ -532,13 +532,13 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
 template <typename Q> auto irreducible<Q>::acc(int i) const -> Q {
    assert(i>=0 && i<bare.size());
    return bare.flat_at(i);
-   //else {print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
+   //else {utils::print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::direct_set(int i, Q value) {
     assert(i>=0 && i<bare.size());
     bare.flat_at(i)=value;
-    //else {print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
+    //else {utils::print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
@@ -601,7 +601,7 @@ template <typename Q> template<char ch_bubble> auto fullvert<Q>::gammaRb (const 
     }
     else {
         res = 0.;
-        print("Something's going wrong with gammaRb. Abort."); assert(false);
+        utils::print("Something's going wrong with gammaRb. Abort."); assert(false);
     }
     return res;
 }
@@ -619,7 +619,7 @@ template <typename Q> template<char ch_bubble>auto fullvert<Q>::gammaRb (const V
     }
     else {
         res = 0.;
-        print("Something's going wrong with gammaRb. Abort."); assert(false);
+        utils::print("Something's going wrong with gammaRb. Abort."); assert(false);
     }
     return res;
 }
@@ -882,7 +882,7 @@ template <typename Q> template<char ch_bubble, typename result_type> auto fullve
         return res;
     }
     //else {
-    //    print("Something's going wrong with gammaRb. Abort."); assert(false);
+    //    utils::print("Something's going wrong with gammaRb. Abort."); assert(false);
     //}
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{

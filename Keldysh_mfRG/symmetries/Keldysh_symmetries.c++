@@ -10,7 +10,7 @@ auto convertToIndepIndex(int iK) -> int
         else                                                                //  3           5
             return iK - 2;                                                  //  4           6
     } else{                                                                 //  5           7
-        print("convertToIndepIndex is throwing this error");
+        utils::print("convertToIndepIndex is throwing this error");
         return -1;
     }
 }

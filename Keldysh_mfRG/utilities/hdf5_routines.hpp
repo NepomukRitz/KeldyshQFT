@@ -638,9 +638,9 @@ void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int
     {
         hdf5_impl::write_state_to_hdf_LambdaLayer(FILE_NAME, state_in, 0, Lambda_size, false);
         if (verbose) {
-            print("Successfully saved in hdf5 file: ", FILE_NAME);
-            print_add(" in Lambda-layer ", 0, false);
-            print_add("", true);
+            utils::print("Successfully saved in hdf5 file: ", FILE_NAME);
+            utils::print_add(" in Lambda-layer ", 0, false);
+            utils::print_add("", true);
         }
     }
 }
@@ -661,12 +661,12 @@ void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q
         if (Lambda_it < Lambda_size) {
             hdf5_impl::write_state_to_hdf_LambdaLayer(FILE_NAME, state_in, Lambda_it, Lambda_size, true);
             if (verbose) {
-                print("Successfully saved in hdf5 file: ", FILE_NAME);
-                print_add(" in Lambda-layer ", Lambda_it, false);
-                print_add("", true);
+                utils::print("Successfully saved in hdf5 file: ", FILE_NAME);
+                utils::print_add(" in Lambda-layer ", Lambda_it, false);
+                utils::print_add("", true);
             }
         } else {
-            print("\t\t  ERROR: Cannot write to file ", FILE_NAME, " since Lambda layer", Lambda_it,
+            utils::print("\t\t  ERROR: Cannot write to file ", FILE_NAME, " since Lambda layer", Lambda_it,
                   " is out of range.", true);
         }
     }
@@ -807,7 +807,7 @@ public:
 
 template <typename Q>
     void initialize(const State<Q>& state_in) {
-        //print("Starting to copy to buffer...", true);
+        //utils::print("Starting to copy to buffer...", true);
         FrequencyGrid bfreqsa = state_in.vertex.avertex().K1.frequencies.get_freqGrid_b();
         FrequencyGrid bfreqsp = state_in.vertex.pvertex().K1.frequencies.get_freqGrid_b();
         FrequencyGrid bfreqst = state_in.vertex.tvertex().K1.frequencies.get_freqGrid_b();
@@ -960,7 +960,7 @@ template <typename Q>
             K3_class_t[i].im = std::imag(state_in.vertex.tvertex().K3.acc(i));
         }
 #endif
-        //print("Buffer ready. Preparing for saving into Hdf5 file...", true);
+        //utils::print("Buffer ready. Preparing for saving into Hdf5 file...", true);
     }
 };
 
@@ -2015,9 +2015,9 @@ void save_to_hdf(const H5std_string FILE_NAME, int Lambda_it, long Lambda_size,
         }
 #endif
         if (verbose) {
-            print("Successfully saved in hdf5 file: ", FILE_NAME);
-            if (file_exists) print_add(" in Lambda-layer ", Lambda_it, false);
-            print_add("", true);
+            utils::print("Successfully saved in hdf5 file: ", FILE_NAME);
+            if (file_exists) utils::print_add(" in Lambda-layer ", Lambda_it, false);
+            utils::print_add("", true);
         }
 
         // Terminate
@@ -2093,7 +2093,7 @@ void add_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q>& state_
         if (Lambda_it < Lambda_size) {
             save_to_hdf(FILE_NAME, Lambda_it, Lambda_size, state_in, Lambdas, true, verbose);
         } else {
-            print("Cannot write to file ", FILE_NAME, " since Lambda layer", Lambda_it, " is out of range.", true);
+            utils::print("Cannot write to file ", FILE_NAME, " since Lambda layer", Lambda_it, " is out of range.", true);
         }
     }
 }

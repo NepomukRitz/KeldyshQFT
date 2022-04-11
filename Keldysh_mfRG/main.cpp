@@ -26,14 +26,14 @@ auto main() -> int {
 #endif
 
     /*
-    print_job_info();
-    check_input();
+    utils::print_job_info();
+    utils::check_input(();
 
     /// Job and Data directory
     std::string job = "U=" + std::to_string(glb_U);
-    data_dir = generate_data_directory(job);
+    data_dir = utils::generate_data_directory(job);
 
-    std::string filename = generate_filename();
+    std::string filename = utils::generate_filename();
 
     //
     //test_PT4(0.5, true);
@@ -53,7 +53,7 @@ auto main() -> int {
     data_dir = "../Data_SIAM_PT4/better_resolution/";
     //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/SOPT_integrand/eVg_over_U_" + std::to_string(glb_Vg / glb_U) + "/";
     //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/switch_sum_and_integral/";
-    makedir(data_dir);
+    utils::makedir(data_dir);
 
 
     const rvec lambdas = {999., 199., 99., 19., 9.};
@@ -66,7 +66,7 @@ auto main() -> int {
 
     //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
 
-    hello_world();
+    utils::hello_world();
 
 #ifdef USE_MPI
     if (MPI_FLAG) {

@@ -74,7 +74,7 @@ public:
             default:
                 v1 = 0.;
                 v2 = 0.;
-                print("Error in IntegrandBubble! Abort.");
+                utils::print("Error in IntegrandBubble! Abort.");
                 assert(false);
         }
         //Make reference to the Bubble object of the actual code, making this into a useful test of code correctnes and compliance

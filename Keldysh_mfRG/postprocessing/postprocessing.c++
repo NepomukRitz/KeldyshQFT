@@ -60,7 +60,7 @@ void compute_Phi_tilde(const std::string filename) {
 }
 
 void sum_rule_K1tK(const std::string filename) {
-    print("Checking fullfilment of the sum rule for K1t", true);
+    utils::print("Checking fullfilment of the sum rule for K1t", true);
     int nLambda = nODE + U_NRG.size() + 1;
 
     rvec Lambdas = read_Lambdas_from_hdf(filename);

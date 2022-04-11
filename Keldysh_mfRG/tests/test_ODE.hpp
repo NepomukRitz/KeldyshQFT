@@ -125,7 +125,7 @@ void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, b
 
     ODE_solver_RK4(state_fin, Lambda_f, state_ini, Lambda_i, rhs_bubbles_flow_wstate, N_ODE); // final K1a from ODE
     cvec K1a_dif = state_dir.vertex[0].avertex().K1 + ( state_fin.vertex[0].avertex().K1*(-1.) ); // difference in results
-    print("Testing ODE for bare K1a_0 with State class. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
+    utils::print("Testing ODE for bare K1a_0 with State class. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow_wstate.h5",
                                   {"v", "state_dir_R", "state_dir_I", "state_fin_R", "state_fin_I", "state_ini_R", "state_ini_I"},
                                   {bfreqs, state_dir.vertex[0].avertex().K1.real(), state_dir.vertex[0].avertex().K1.imag(),
@@ -212,7 +212,7 @@ void test_rhs_bubbles_flow(int N_ODE){
 
     ODE_solver_RK4(K1a_fin, Lambda_fin, K1a_ini, Lambda_ini, rhs_bubbles_flow, N_ODE); // final K1a from ODE
     cvec K1a_dif = K1a_dir + ( K1a_fin*(-1.) ); // difference in results
-    print("Testing ODE for bare K1a_0. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
+    utils::print("Testing ODE for bare K1a_0. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) write_h5_rvecs("rhs_bubbles_flow.h5",
                                   {"v", "K1a_dir_R", "K1a_dir_I", "K1a_fin_R", "K1a_fin_I", "K1a_ini_R", "K1a_ini_I"},
                                   {bfreqs, K1a_dir.real(), K1a_dir.imag(), K1a_fin.real(), K1a_fin.imag(), K1a_ini.real(), K1a_ini.imag()});
@@ -351,7 +351,7 @@ void test_rhs_state_flow_SOPT(int N_ODE, int feedback){
     }
 
     if(mpi_world_rank()==0) {
-        print("Confirming correctness of the bubbles. The max diff between direct and final results is " +std::to_string(K1a0_dif.max_norm())+". \n "+
+        utils::print("Confirming correctness of the bubbles. The max diff between direct and final results is " +std::to_string(K1a0_dif.max_norm())+". \n "+
               "Testing ODE for SelfEnergyR. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +
               std::to_string(SER_dif.max_norm())+ ". \n" +
               "Testing ODE for SelfEnergyK. Using " + std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +

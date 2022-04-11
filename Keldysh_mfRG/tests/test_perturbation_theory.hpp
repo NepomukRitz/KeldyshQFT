@@ -139,8 +139,8 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
             }
         }
         //Print result of consistency check
-        if (empty) print("TOPT-consistency check passed. K2a or K2p with K1t is zero everywhere.", true);
-        else print("TOPT-consistency check failed. K2a or K2p with K1t is not zero everywhere.", true);
+        if (empty) utils::print("TOPT-consistency check passed. K2a or K2p with K1t is zero everywhere.", true);
+        else utils::print("TOPT-consistency check failed. K2a or K2p with K1t is not zero everywhere.", true);
     }
     else if(r=='t'){
 #pragma omp parallel
@@ -152,8 +152,8 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
             }
         }
         //Print result of consistency check
-        if (empty) print("TOPT-consistency check passed. K2t with K1a and K1p are zero everywhere.", true);
-        else print("TOPT-consistency check failed. K2t with K1a and K1p are not zero everywhere.", true);
+        if (empty) utils::print("TOPT-consistency check passed. K2t with K1a and K1p are zero everywhere.", true);
+        else utils::print("TOPT-consistency check failed. K2t with K1a and K1p are not zero everywhere.", true);
     }
 
     return empty;
@@ -164,7 +164,7 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
  * Function that computes K1 (and K2, K3) up to PT4, and performs FDT checks
  */
 void test_PT4(double Lambda, bool write_flag = false) {
-    print("Compute K1 (and K2, K3) up to PT4.", true);
+    utils::print("Compute K1 (and K2, K3) up to PT4.", true);
     const int it_spin = 0;
     // Initialize a bare state
     State<state_datatype> bare (Lambda);
@@ -178,12 +178,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<state_datatype> PT2_K1p (Lambda);
     State<state_datatype> PT2_K1t (Lambda);
 
-    double t0 = get_time();
+    double t0 = utils::get_time();
     bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
     bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
-    print("Computed K1 in PT2.", true);
-    get_time(t0);
+    utils::print("Computed K1 in PT2.", true);
+    utils::get_time(t0);
     if (write_flag) {
         write_state_to_hdf(data_dir + "PT2_K1a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1a);
         write_state_to_hdf(data_dir + "PT2_K1p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1p);
@@ -195,15 +195,15 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<state_datatype> PT3_K1p (Lambda);
     State<state_datatype> PT3_K1t (Lambda);
 
-    t0 = get_time();
+    t0 = utils::get_time();
     bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
     // for K1t in PT3, need a-vertex in PT2 due to a <-> t symmetry
     bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
     vec<state_datatype> zerosK2 (PT3_K1t.vertex.tvertex().K2.get_vec().size());
     if (MAX_DIAG_CLASS >= 2) PT3_K1t.vertex.tvertex().K2.set_vec(zerosK2); // set K2 part of this vertex to zero
-    print("Computed K1 in PT3.", true);
-    get_time(t0);
+    utils::print("Computed K1 in PT3.", true);
+    utils::get_time(t0);
     if (write_flag) {
         write_state_to_hdf(data_dir + "PT3_K1a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1a);
         write_state_to_hdf(data_dir + "PT3_K1p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1p);
@@ -217,7 +217,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<state_datatype> PT3_K2t_a (Lambda);
     State<state_datatype> PT3_K2t_p (Lambda);
 
-    t0 = get_time();
+    t0 = utils::get_time();
     bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3 (PT2_K1t = 0)
     bubble_function(PT3_K2p.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'p', false);   // K2p in PT3 (PT2_K1t = 0)
     bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false);   // contribution of K2t in PT3 obtained by inserting K1a in PT2
@@ -228,8 +228,8 @@ void test_PT4(double Lambda, bool write_flag = false) {
     PT3_K2t.vertex = PT3_K2t_a.vertex + PT3_K2t_p.vertex; // sum of contributions from a- and p-insertions
 
     // K2' in PT3 would be obtained by flipping the left and right vertex, but since K2' is not saved, these terms would give zero
-    print("Computed K2 in PT3.", true);
-    get_time(t0);
+    utils::print("Computed K2 in PT3.", true);
+    utils::get_time(t0);
     if (write_flag) {
         write_state_to_hdf(data_dir + "PT3_K2a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2a);
         write_state_to_hdf(data_dir + "PT3_K2p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2p);
@@ -294,7 +294,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<state_datatype> PT4_22_t_pa (Lambda);
     State<state_datatype> PT4_22_t_pp (Lambda);
 
-    t0 = get_time();
+    t0 = utils::get_time();
 
     // a-channel:
     // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
@@ -368,7 +368,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                              + PT4_22_a_pa.vertex.avertex()
                              + PT4_22_a_pp.vertex.avertex();
 
-    print("Computed a-channel in PT4.", true);
+    utils::print("Computed a-channel in PT4.", true);
 
     // p-channel:
     // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
@@ -442,7 +442,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                              + PT4_22_p_pa.vertex.pvertex()
                              + PT4_22_p_pp.vertex.pvertex();
 
-    print("Computed p-channel in PT4.", true);
+    utils::print("Computed p-channel in PT4.", true);
 
     // t-channel:
     // in the t-channel, we need to insert a and t simultaneously due to a <-> t symmetry // TODO: remove?
@@ -518,7 +518,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                              + PT4_22_t_pp.vertex.tvertex();
 
 
-    print("Computed t-channel in PT4.", true);
+    utils::print("Computed t-channel in PT4.", true);
 
     if (write_flag) {
         write_state_to_hdf(data_dir + "PT4_31_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31);
@@ -526,16 +526,16 @@ void test_PT4(double Lambda, bool write_flag = false) {
         write_state_to_hdf(data_dir + "PT4_22_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22);
     }
 
-    print("Computed K1, K2, K3 in PT4.", true);
-    get_time(t0);
+    utils::print("Computed K1, K2, K3 in PT4.", true);
+    utils::get_time(t0);
 
     /** Make automated checks of all diagrams: Compute the values of all diagrams at all frequencies equal to zero,
      * and for all pairs of diagrams that should cancel, compute the relative deviation of their sum from zero.
      * Print all results to log.
      * */
 
-    print("--- CHECK RESULTS: ---", true);
-    print("--- print relative error of quantities that should be zero ---", true);
+    utils::print("--- CHECK RESULTS: ---", true);
+    utils::print("--- print relative error of quantities that should be zero ---", true);
 
 #ifdef KELDYSH_FORMALISM
     int iK = 1;
@@ -759,10 +759,10 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
     // print to log
     for (int i=0; i<check_values.size(); ++i) {
-        print(check_labels[i], check_values[i], true);
+        utils::print(check_labels[i], check_values[i], true);
     }
 
-    print("----------------------", true);
+    utils::print("----------------------", true);
 
     /*
     // Compute K1a contributions in PT4, using
@@ -775,22 +775,22 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<Q> PT4_K1a13_2 (Lambda);
     State<Q> PT4_K1a31_2 (Lambda);
 
-    t0 = get_time();
+    t0 = utils::get_time();
     bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
     bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
     bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
     bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
-    print("Computed K1 in PT4.", true);
-    get_time(t0);
+    utils::print("Computed K1 in PT4.", true);
+    utils::get_time(t0);
 
     // FDT checks
-    print("Check K1a in PT4 (22):", true);
+    utils::print("Check K1a in PT4 (22):", true);
     check_FDTs(PT4_K1a22);
-    print("Check K1a in PT4 (13_1):", true);
+    utils::print("Check K1a in PT4 (13_1):", true);
     check_FDTs(PT4_K1a13_1);
-    print("Check K1a in PT4 (13_2):", true);
+    utils::print("Check K1a in PT4 (13_2):", true);
     check_FDTs(PT4_K1a13_2);
-    print("Check K1a in PT4 (31_2):", true);
+    utils::print("Check K1a in PT4 (31_2):", true);
     check_FDTs(PT4_K1a31_2);
     // */
 }
@@ -879,11 +879,11 @@ void test_K2_correctness(double Lambda){
     State<Q> PT2_K1t (Lambda);
 
     //Save K1-bubbles in separate objects - SOPT
-    double t0 = get_time();
+    double t0 = utils::get_time();
     bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
     bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
     bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
-    get_time(t0);
+    utils::get_time(t0);
 
     State<Q> PT2_SE_a (Lambda);
     State<Q> PT2_SE_p (Lambda);
@@ -917,7 +917,7 @@ void test_K2_correctness(double Lambda){
 
     //Do appropriate calculation for K2a with K1p and K1t being fed back into the left vertex. Notice part = 'L' to ensure
     //that the correct contributions are added on both sides. - TOPT
-    t0 = get_time();
+    t0 = utils::get_time();
     bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
 
 #ifdef DEBUG_MODE
@@ -937,7 +937,7 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
     bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
     PT3_K2t.vertex = PT3_K2t_a.vertex + PT3_K2t_p.vertex;
-    get_time(t0);
+    utils::get_time(t0);
 
     // full K2 in PT3
     State<Q> PT3_K2 (Lambda);
@@ -984,9 +984,9 @@ void test_K2_correctness(double Lambda){
 #endif
 
     State<Q> PT3_K1a (Lambda);    //Create state to compare with K1a
-    t0 = get_time();
+    t0 = utils::get_time();
     bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
-    get_time(t0);
+    utils::get_time(t0);
 
     State<Q> PT123_a = bare + PT2_K1a + PT3_K1a + PT3_K2a;  //Create vertex of the right side of BSE
 
@@ -1007,14 +1007,14 @@ void test_K2_correctness(double Lambda){
     State<Q> PT4_K1a13_2_iva (Lambda);
     State<Q> PT4_K1a13_2_ivb (Lambda);
 
-    t0 = get_time();
+    t0 = utils::get_time();
     bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
     bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
 
     bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
     bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
-    get_time(t0);
-    t0 = get_time();
+    utils::get_time(t0);
+    t0 = utils::get_time();
 #ifdef DEBUG_MODE
     bubble_function(PT4_K1a13_2_11e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 0, 16, 16, 16); // A
     bubble_function(PT4_K1a13_2_21e.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, 1, 16, 16, 16); // B
@@ -1030,14 +1030,14 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT4_K1a13_2_iva.vertex, bare.vertex, PT3_K2a_iva.vertex, G, G, 'a', false, 11, 15, 16, 16);
     bubble_function(PT4_K1a13_2_ivb.vertex, bare.vertex, PT3_K2a_ivb.vertex, G, G, 'a', false, 2, 9, 16, 16);
 #endif
-    get_time(t0);
+    utils::get_time(t0);
 
     cvec K1a_diff(nBOS);
     for(int iw=0; iw<nBOS; ++iw){
         K1a_diff[iw] = PT4_K1a22.vertex.avertex().K1_val(0, iw, 0) - PT2_K1a.vertex.avertex().K1_val(0, iw, 0);
     }
 
-    print("Testing correctness of K2a. Using U=" +std::to_string(glb_U)+ " and Lambda="+std::to_string(Lambda)
+    utils::print("Testing correctness of K2a. Using U=" +std::to_string(glb_U)+ " and Lambda="+std::to_string(Lambda)
         +", the maximal difference between direct K1a and K1a over integration of K2a is " +std::to_string(K1a_diff.max_norm())+"." , true);
     if(write_flag) write_h5_rvecs( data_dir + "/PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
@@ -1300,20 +1300,20 @@ void test_integrate_over_K1(double Lambda) {
     int num_freqs = 0;
     double Delta = (glb_Gamma+Lambda)/2.;
     Q result = integrator_Matsubara_T0<Q,0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
-    print("Result of the integration over K1a:", result, true);
-    print("relative difference: ", (result-exact_result)/exact_result, true);
+    utils::print("Result of the integration over K1a:", result, true);
+    utils::print("relative difference: ", (result-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', (v-vp)*2, v, vp);
     Q result2 = integrator_Matsubara_T0<Q,0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
-    print("Result of the integration over K1a from the t-channel:", result2, true);
-    print("relative difference: ", (result2-exact_result)/exact_result, true);
+    utils::print("Result of the integration over K1a from the t-channel:", result2, true);
+    utils::print("relative difference: ", (result2-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', (v+vp)*2, v, vp);
     Q result3 = integrator_Matsubara_T0<Q,0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
-    print("Result of the integration over K1a from p-channel:", result3, true);
-    print("relative difference: ", (result3-exact_result)/exact_result, true);
+    utils::print("Result of the integration over K1a from p-channel:", result3, true);
+    utils::print("relative difference: ", (result3-exact_result)/exact_result, true);
 
 
     IntegrandK1a2.save_integrand(vmax);
@@ -1757,27 +1757,27 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     State<Q> state_diff = state_cpp - PT_state;
 
     write_state_to_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
-    print("SE-difference: ", state_diff.selfenergy.Sigma.get_vec().max_norm() / PT_state.selfenergy.Sigma.get_vec().max_norm(), true);
-    print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
-    print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
-    print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
+    utils::print("SE-difference: ", state_diff.selfenergy.Sigma.get_vec().max_norm() / PT_state.selfenergy.Sigma.get_vec().max_norm(), true);
+    utils::print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
+    utils::print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
+    utils::print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
 #ifdef DEBUG_SYMMETRIES
-    print("K1a_hat-difference: ", (state_cpp.vertex[1].avertex().K1.get_vec() + state_cpp.vertex.tvertex().K1.get_vec()).max_norm() /  state_cpp.vertex.tvertex().K1.get_vec().max_norm(), true);
-    print("K1p_hat-difference: ", (state_cpp.vertex[1].pvertex().K1.get_vec() + state_cpp.vertex.pvertex().K1.get_vec()).max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
-    print("K1t_hat-difference: ", (state_cpp.vertex[1].tvertex().K1.get_vec() + state_cpp.vertex.avertex().K1.get_vec()).max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
+    utils::print("K1a_hat-difference: ", (state_cpp.vertex[1].avertex().K1.get_vec() + state_cpp.vertex.tvertex().K1.get_vec()).max_norm() /  state_cpp.vertex.tvertex().K1.get_vec().max_norm(), true);
+    utils::print("K1p_hat-difference: ", (state_cpp.vertex[1].pvertex().K1.get_vec() + state_cpp.vertex.pvertex().K1.get_vec()).max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
+    utils::print("K1t_hat-difference: ", (state_cpp.vertex[1].tvertex().K1.get_vec() + state_cpp.vertex.avertex().K1.get_vec()).max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
     write_h5_rvecs("../Data_MF/PT_hat.h5", {"K1a_hat", "K1p_hat", "K1t_hat"}, {state_cpp.vertex[1].avertex().K1.get_vec().real(), state_cpp.vertex[1].pvertex().K1.get_vec().real(), state_cpp.vertex[1].tvertex().K1.get_vec().real()});
 
 #endif
 
     if (MAX_DIAG_CLASS > 1) {
-        print("K2a-difference: ", state_diff.vertex.avertex().K2.get_vec().max_norm() / PT_state.vertex.avertex().K2.get_vec().max_norm(), true);
-        print("K2p-difference: ", state_diff.vertex.pvertex().K2.get_vec().max_norm() / PT_state.vertex.pvertex().K2.get_vec().max_norm(), true);
-        print("K2t-difference: ", state_diff.vertex.tvertex().K2.get_vec().max_norm() / PT_state.vertex.tvertex().K2.get_vec().max_norm(), true);
+        utils::print("K2a-difference: ", state_diff.vertex.avertex().K2.get_vec().max_norm() / PT_state.vertex.avertex().K2.get_vec().max_norm(), true);
+        utils::print("K2p-difference: ", state_diff.vertex.pvertex().K2.get_vec().max_norm() / PT_state.vertex.pvertex().K2.get_vec().max_norm(), true);
+        utils::print("K2t-difference: ", state_diff.vertex.tvertex().K2.get_vec().max_norm() / PT_state.vertex.tvertex().K2.get_vec().max_norm(), true);
     }
     if (MAX_DIAG_CLASS > 2) {
-        print("K3a-difference: ", state_diff.vertex.avertex().K3.get_vec().max_norm() / PT_state.vertex.avertex().K3.get_vec().max_norm(), true);
-        print("K3p-difference: ", state_diff.vertex.pvertex().K3.get_vec().max_norm() / PT_state.vertex.pvertex().K3.get_vec().max_norm(), true);
-        print("K3t-difference: ", state_diff.vertex.tvertex().K3.get_vec().max_norm() / PT_state.vertex.tvertex().K3.get_vec().max_norm(), true);
+        utils::print("K3a-difference: ", state_diff.vertex.avertex().K3.get_vec().max_norm() / PT_state.vertex.avertex().K3.get_vec().max_norm(), true);
+        utils::print("K3p-difference: ", state_diff.vertex.pvertex().K3.get_vec().max_norm() / PT_state.vertex.pvertex().K3.get_vec().max_norm(), true);
+        utils::print("K3t-difference: ", state_diff.vertex.tvertex().K3.get_vec().max_norm() / PT_state.vertex.tvertex().K3.get_vec().max_norm(), true);
     }
 
 }
@@ -2529,9 +2529,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
                   K1rdot_PIa_K1p_diff);
 
 
-        print("Relative maxabs difference in K1rdot_PIa_K1p --> K1: ", K1rdot_PIa_K1p_diff.vertex.half1().norm_K1(0) / K1rdot_PIa_K1p.vertex.half1().norm_K1(0) , true);
-        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in K1rdot_PIa_K1p --> K2: ", K1rdot_PIa_K1p_diff.vertex.half1().norm_K2(0) / K1rdot_PIa_K1p.vertex.half1().norm_K2(0) , true );
-        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in K1rdot_PIa_K1p --> K3: ", K1rdot_PIa_K1p_diff.vertex.half1().norm_K3(0) / K1rdot_PIa_K1p.vertex.half1().norm_K3(0) , true );
+        utils::print("Relative maxabs difference in K1rdot_PIa_K1p --> K1: ", K1rdot_PIa_K1p_diff.vertex.half1().norm_K1(0) / K1rdot_PIa_K1p.vertex.half1().norm_K1(0) , true);
+        if (MAX_DIAG_CLASS > 1) utils::print("Relative maxabs difference in K1rdot_PIa_K1p --> K2: ", K1rdot_PIa_K1p_diff.vertex.half1().norm_K2(0) / K1rdot_PIa_K1p.vertex.half1().norm_K2(0) , true );
+        if (MAX_DIAG_CLASS > 2) utils::print("Relative maxabs difference in K1rdot_PIa_K1p --> K3: ", K1rdot_PIa_K1p_diff.vertex.half1().norm_K3(0) / K1rdot_PIa_K1p.vertex.half1().norm_K3(0) , true );
 
 
         State<state_datatype> K1p_PIa_K1rdot_exact(Lambda);        // intermediate result: contains K2 and K3
@@ -2563,9 +2563,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
                   K1p_PIa_K1rdot_diff);
 
 
-        print("Relative maxabs difference in K1p_PIa_K1rdot --> K1: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K1(0) / K1p_PIa_K1rdot.vertex.half1().norm_K1(0) , true);
-        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in K1p_PIa_K1rdot --> K2: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K2(0) / K1p_PIa_K1rdot.vertex.half1().norm_K2(0) , true );
-        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in K1p_PIa_K1rdot --> K3: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K3(0) / K1p_PIa_K1rdot.vertex.half1().norm_K3(0) , true );
+        utils::print("Relative maxabs difference in K1p_PIa_K1rdot --> K1: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K1(0) / K1p_PIa_K1rdot.vertex.half1().norm_K1(0) , true);
+        if (MAX_DIAG_CLASS > 1) utils::print("Relative maxabs difference in K1p_PIa_K1rdot --> K2: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K2(0) / K1p_PIa_K1rdot.vertex.half1().norm_K2(0) , true );
+        if (MAX_DIAG_CLASS > 2) utils::print("Relative maxabs difference in K1p_PIa_K1rdot --> K3: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K3(0) / K1p_PIa_K1rdot.vertex.half1().norm_K3(0) , true );
 
         State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
 
@@ -2622,13 +2622,13 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         write_state_to_hdf(data_dir + "dGammaC_r_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   dGammaC_r_diff);
 
-        print("Relative maxabs difference in dGammaC_l --> K1: ", dGammaC_l_diff.vertex.half1().norm_K1(0) / dGammaC_l.vertex.half1().norm_K1(0)  , true);
-        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in dGammaC_l --> K2: ", dGammaC_l_diff.vertex.half1().norm_K2(0) / dGammaC_l.vertex.half1().norm_K2(0)  , true);
-        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in dGammaC_l --> K3: ", dGammaC_l_diff.vertex.half1().norm_K3(0) / dGammaC_l.vertex.half1().norm_K3(0)  , true);
+        utils::print("Relative maxabs difference in dGammaC_l --> K1: ", dGammaC_l_diff.vertex.half1().norm_K1(0) / dGammaC_l.vertex.half1().norm_K1(0)  , true);
+        if (MAX_DIAG_CLASS > 1) utils::print("Relative maxabs difference in dGammaC_l --> K2: ", dGammaC_l_diff.vertex.half1().norm_K2(0) / dGammaC_l.vertex.half1().norm_K2(0)  , true);
+        if (MAX_DIAG_CLASS > 2) utils::print("Relative maxabs difference in dGammaC_l --> K3: ", dGammaC_l_diff.vertex.half1().norm_K3(0) / dGammaC_l.vertex.half1().norm_K3(0)  , true);
 
-        print("Relative maxabs difference in dGammaC_r --> K1: ", dGammaC_r_diff.vertex.half1().norm_K1(0) / dGammaC_r.vertex.half1().norm_K1(0)  , true);
-        if (MAX_DIAG_CLASS > 1) print("Relative maxabs difference in dGammaC_r --> K2: ", dGammaC_r_diff.vertex.half1().norm_K2(0) / dGammaC_r.vertex.half1().norm_K2(0)  , true);
-        if (MAX_DIAG_CLASS > 2) print("Relative maxabs difference in dGammaC_r --> K3: ", dGammaC_r_diff.vertex.half1().norm_K3(0) / dGammaC_r.vertex.half1().norm_K3(0)  , true);
+        utils::print("Relative maxabs difference in dGammaC_r --> K1: ", dGammaC_r_diff.vertex.half1().norm_K1(0) / dGammaC_r.vertex.half1().norm_K1(0)  , true);
+        if (MAX_DIAG_CLASS > 1) utils::print("Relative maxabs difference in dGammaC_r --> K2: ", dGammaC_r_diff.vertex.half1().norm_K2(0) / dGammaC_r.vertex.half1().norm_K2(0)  , true);
+        if (MAX_DIAG_CLASS > 2) utils::print("Relative maxabs difference in dGammaC_r --> K3: ", dGammaC_r_diff.vertex.half1().norm_K3(0) / dGammaC_r.vertex.half1().norm_K3(0)  , true);
     }
 }
 #else
@@ -2692,7 +2692,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     //}
 
     // get SOPT K1 (exact)
-    print("Compute exact solution for SOPT: \n");
+    utils::print("Compute exact solution for SOPT: \n");
 #pragma omp parallel for
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.b.get_ws(i);
@@ -2722,10 +2722,10 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     State<Q> state_diff = state_cpp - PT_state;
 
     write_state_to_hdf(outputFileName + "_diff", Lambda, 1, state_diff);
-    print("SE-difference: ", state_diff.selfenergy.Sigma.get_vec().max_norm() / PT_state.selfenergy.Sigma.get_vec().max_norm(), true);
-    print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
-    print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
-    print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
+    utils::print("SE-difference: ", state_diff.selfenergy.Sigma.get_vec().max_norm() / PT_state.selfenergy.Sigma.get_vec().max_norm(), true);
+    utils::print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
+    utils::print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
+    utils::print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
 
 }
 #endif

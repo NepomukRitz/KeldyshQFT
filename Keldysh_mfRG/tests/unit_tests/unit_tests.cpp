@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     if (MPI_FLAG) MPI_Init(nullptr, nullptr);
 
     // run integration tests
-    print("Start integration tests.", true);
+    utils::print("Start integration tests.", true);
 
     /* check that the flow of the K1a-vertex (no selfenergy feedback) from Lambda_i = 20 to Lambda_f = 9.5
      * (initialized via SOPT) is very close to the SOPT solution at Lambda_f = 9.5.
@@ -65,9 +65,9 @@ int main(int argc, char* argv[]) {
 #ifdef INTEGRATION_TESTS
     if (MPI_FLAG) MPI_Init(nullptr, nullptr);
 #endif
-    print("   -----   Performing unit tests   -----", true);
+    utils::print("   -----   Performing unit tests   -----", true);
 
-    check_input();
+    utils::check_input();
 
     //test_PrecalculateBubble<comp> test_Bubble ;
     //test_Bubble.perform_test();
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 
     //if (ZERO_T and REG==2) {
         //data_dir = "../Data_MFU=1.000000/";
-        //makedir(data_dir);
+        //utils::makedir(data_dir);
         //std::string filename = "test_PTstate.h5";
         //test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
     //}
@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
     Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
     const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing();
     //data_dir = "../../../Hartree_Propagators/";
-    //makedir(data_dir);
+    //utils::makedir(data_dir);
     //Hartree_Term.write_out_propagators();
 
 

@@ -5,15 +5,15 @@ void test_Bubble_in_Momentum_Space(){
     Propagator<comp> g (Lambda, 'g');
     Propagator<comp> s (Lambda, 's');
 
-    double starting_time = get_time();
+    double starting_time = utils::get_time();
     PrecalculatedBubble<comp> DotBubble (g, s, true);
-    double end_time = get_time();
+    double end_time = utils::get_time();
     double diff = (end_time - starting_time); // time given in seconds
     std::cout << "Time for differentiated Bubble = " << diff << " s." << "\n";
 
-    starting_time =  get_time();
+    starting_time =  utils::get_time();
     PrecalculatedBubble<comp> Bubble (g, s, false);
-    end_time = get_time();
+    end_time = utils::get_time();
     diff = (end_time - starting_time);
     std::cout << "Time for undifferentiated Bubble = " << diff << " s." << "\n";
 

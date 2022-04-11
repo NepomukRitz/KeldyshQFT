@@ -25,7 +25,7 @@ public:
 
     State(): Lambda(0.) , vertex(fullvert<Q>(0., true)), selfenergy(SelfEnergy<Q>(0.)) {
 #ifndef NDEBUG
-        print("Watch out! Use of default constructor for State<Q>!", true);
+        utils::print("Watch out! Use of default constructor for State<Q>!", true);
 #endif
     }
     /// Initializes state with frequency grids corresponding to the given value of Lambda.

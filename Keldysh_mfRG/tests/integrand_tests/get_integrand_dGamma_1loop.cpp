@@ -48,7 +48,7 @@ auto main(int argc, char * argv[]) -> int {
 
 
     std::string dir_integrand_str = "integrands/";
-    makedir(data_dir + dir_integrand_str);
+    utils::makedir(data_dir + dir_integrand_str);
     const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
 
 

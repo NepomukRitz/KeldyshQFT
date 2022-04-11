@@ -196,7 +196,7 @@ void Runtime_comparison<Q>::test_runtimes(int max_number_of_iterations) {
 
 template<typename Q>
 double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated) {
-    double starting_time = get_time();
+    double starting_time = utils::get_time();
     for (int iteration = 0; iteration < iterations; ++iteration) {
         for (int iK = 0; iK < glb_number_of_Keldysh_components_bubble; ++iK) {
             for (int iw = 0; iw < nBOS; ++iw) {
@@ -215,7 +215,7 @@ double Runtime_comparison<Q>::run_iterations(int iterations, bool precalculated)
             }
         }
     }
-    double end_time = get_time();
+    double end_time = utils::get_time();
     return end_time - starting_time; // time given in milliseconds
 }
 

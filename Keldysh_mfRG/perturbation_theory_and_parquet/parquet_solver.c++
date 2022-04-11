@@ -10,23 +10,23 @@ void parquet_checks(const std::string filename) {
     rvec norm_SE_fRG (nL), norm_SE_SDE (nL), norm_SE_diff (nL);
 
     for (int i=0; i<Lambdas.size(); ++i) {
-        print("Iteration ", i, false);
-        print_add(", Lambda = ", Lambdas[i], true);
+        utils::print("Iteration ", i, false);
+        utils::print_add(", Lambda = ", Lambdas[i], true);
         State<state_datatype> state = read_state_from_hdf(filename, i);
         state.selfenergy.asymp_val_R = glb_U / 2.;
-        print("State read from file.", true);
+        utils::print("State read from file.", true);
 
         // compute vertex from BSE
         Vertex<state_datatype> Gamma_BSE (Lambdas[i]);
         compute_BSE(Gamma_BSE, state, Lambdas[i], i);       // compute the lhs of the BSE
         Vertex<state_datatype> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
-        print("Computed BSE.", true);
+        utils::print("Computed BSE.", true);
 
         // compute self-energy from SDE
         SelfEnergy<state_datatype> Sigma_SDE (Lambdas[i]);
         compute_SDE(Sigma_SDE, state, Lambdas[i]);               // compute the lhs of the SDE
         SelfEnergy<state_datatype> Sigma_diff = state.selfenergy - Sigma_SDE;  // compute the difference between input and lhs of SDE
-        print("Computed SDE.", true);
+        utils::print("Computed SDE.", true);
 
         // Hartree self-energy
         SelfEnergy<state_datatype> Sigma_Hartree(state.selfenergy.Sigma.frequencies);

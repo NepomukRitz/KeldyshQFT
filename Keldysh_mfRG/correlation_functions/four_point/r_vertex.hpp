@@ -569,7 +569,7 @@ template<K_class k, typename result_type> auto rvert<Q>::valsmooth_symmetry_expa
  */
 template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
 #ifdef  DEBUG_SYMMETRIES
-    print("maximal deviation in symmetry in " + identifier +"_channel" + channel + " (normalized by maximal absolute value of K_i)", "\n");
+    utils::print("maximal deviation in symmetry in " + identifier +"_channel" + channel + " (normalized by maximal absolute value of K_i)", "\n");
 
     // K1:
     multidimensional::multiarray<Q,4> deviations_K1(K1.get_dims());
@@ -615,7 +615,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         }
     }
 
-    if ( K1.get_vec().max_norm() > 1e-30) print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
+    if ( K1.get_vec().max_norm() > 1e-30) utils::print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
 
     //rvec deviations_K2(getFlatSize(K2.get_dims()));
     //rvec deviations_K2b(getFlatSize(K2b.get_dims()));
@@ -669,7 +669,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             }
         }
 
-        if (K2.get_vec().max_norm() > 1e-30) print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
+        if (K2.get_vec().max_norm() > 1e-30) utils::print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
 
 
         // K2b:
@@ -699,7 +699,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         }
 
         if (K2b.get_vec().max_norm() > 1e-30)
-            print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
+            utils::print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
     }
 
     //rvec deviations_K3(getFlatSize(K3.get_dims()));
@@ -750,7 +750,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             }
         }
 
-        if (K3.get_vec().max_norm() > 1e-30) print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
+        if (K3.get_vec().max_norm() > 1e-30) utils::print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
     }
 
     std::string filename = data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + ".h5";
@@ -1099,12 +1099,12 @@ void rvert<Q>::cross_project() {
                 }
                 break;
             default:
-                print("Error! Invalid channel index!"); assert(false);
+                utils::print("Error! Invalid channel index!"); assert(false);
         }
         calculated_crossprojections = true;
     }
     else{
-        print("Error! Crossprojections have already been calculated!");
+        utils::print("Error! Crossprojections have already been calculated!");
         assert(false);
     }
 }
@@ -1836,7 +1836,7 @@ void rvert<Q>::K1_crossproject(const char channel_out) {
                             K1_t_proj.setvert(projected_value, it_spin, iw, iK, i_in);
                             break;
                         default:
-                            print("Incompatible channel for K1 cross-projection!");
+                            utils::print("Incompatible channel for K1 cross-projection!");
                     }
                 }
             }

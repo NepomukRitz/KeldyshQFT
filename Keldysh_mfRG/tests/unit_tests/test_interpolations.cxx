@@ -197,7 +197,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
         avertex.K1.setvert(value, idx);
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
@@ -220,8 +220,8 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
 
         value +=1;
     }
-    print("K1 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K1 Interpolation performed - ");
+    utils::get_time(t_start);
 
 
 
@@ -262,7 +262,7 @@ if (INTERPOLATION == cubic) {
         avertex.K1.setvert(value, idx);
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
@@ -286,8 +286,8 @@ if (INTERPOLATION == cubic) {
 
         value += 1;
     }
-    print("K1 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K1 Interpolation performed - ");
+    utils::get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK1.h5",
                    {"values_re", "errors_re"},
@@ -339,7 +339,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
         }
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     int spin = 0;
@@ -368,8 +368,8 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     }
 
 
-    print("K2 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K2 Interpolation performed - ");
+    utils::get_time(t_start);
 
 
 
@@ -415,7 +415,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
             }
         }
 
-        double t_start = get_time();
+        double t_start = utils::get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
         int spin = 0;
@@ -443,8 +443,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
             }
         }
 
-        print("K2 Interpolation performed - ");
-        get_time(t_start);
+        utils::print("K2 Interpolation performed - ");
+        utils::get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK2.h5",
                    {"values_re", "errors"},
@@ -494,7 +494,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
         }
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     int spin = 0;
@@ -528,8 +528,8 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
         }
     }
 
-    print("K3 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K3 Interpolation performed - ");
+    utils::get_time(t_start);
 
 
 
@@ -573,7 +573,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
             }
         }
 
-        double t_start = get_time();
+        double t_start = utils::get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
         int spin = 0;
@@ -607,8 +607,8 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
             }
         }
 
-        print("K3 Interpolation performed - ");
-        get_time(t_start);
+        utils::print("K3 Interpolation performed - ");
+        utils::get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK3.h5",
                    {"values", "errors"},

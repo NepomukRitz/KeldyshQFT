@@ -50,13 +50,13 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     int iteration=-1;
     int rkStep=-1;
     bool save_intermediate = false;
-    double t0 = get_time();
+    double t0 = utils::get_time();
 
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
          save_intermediate = true;
-         if (rkStep==0 and iteration==0 and save_intermediate) makedir(dir_str);
+         if (rkStep==0 and iteration==0 and save_intermediate) utils::makedir(dir_str);
     }
 
 
@@ -103,7 +103,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     // Calculate all possible cross-projections already here to save time later.
     if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
 
-    if (VERBOSE) print("Compute 1-loop contribution: ", true);
+    if (VERBOSE) utils::print("Compute 1-loop contribution: ", true);
     vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
     if(VERBOSE) {
         dPsi.vertex.half1().check_vertex_resolution();
@@ -137,14 +137,14 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
         // when inserted in the 3-loop contribution below.
 
         GeneralVertex<Q, symmetric_r_irred> dGamma_1loop(dPsi.vertex.half1());
-        if (VERBOSE) print("Compute dGammaL (2-loop): ", true);
+        if (VERBOSE) utils::print("Compute dGammaL (2-loop): ", true);
         Vertex<Q> dGammaL_half1 = calculate_dGammaL(dGamma_1loop, Psi.vertex, Pi);
         if(VERBOSE) {
             dGammaL_half1.half1().check_vertex_resolution();
             compare_with_FDTs(dGammaL_half1, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, nLambda_layers);
         }
 
-        if (VERBOSE) print("Compute dGammaR (2-loop):", true);
+        if (VERBOSE) utils::print("Compute dGammaR (2-loop):", true);
         Vertex<Q> dGammaR_half1 = calculate_dGammaR(dGamma_1loop, Psi.vertex, Pi);
         if(VERBOSE) {
             dGammaR_half1.half1().check_vertex_resolution();
@@ -210,7 +210,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
 
                 // insert this non-symmetric_full vertex on the right of the bubble
-                if (VERBOSE) print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
+                if (VERBOSE) utils::print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
                 Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
                 if(VERBOSE) dGammaC_r.half1().check_vertex_resolution();
                 if (VERBOSE) {
@@ -257,16 +257,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
                     }
                     if (VERBOSE) {
-                        print("Analyze tails of dPsi_C");
+                        utils::print("Analyze tails of dPsi_C");
                         dPsi_C.analyze_tails();
                     }
                 }
 
 
-                if (VERBOSE) print("Compute dGammaL ( ", i,"-loop): \n");
+                if (VERBOSE) utils::print("Compute dGammaL ( ", i,"-loop): \n");
                 dGammaL_half1 = calculate_dGammaL(GeneralVertex<Q, symmetric_r_irred>(dGammaT.half1()), Psi.vertex, Pi);
                 if(VERBOSE) dGammaL_half1.half1().check_vertex_resolution();
-                if (VERBOSE) print("Compute dGammaR ( ", i,"-loop): \n");
+                if (VERBOSE) utils::print("Compute dGammaR ( ", i,"-loop): \n");
                 dGammaR_half1 = calculate_dGammaR(GeneralVertex<Q, symmetric_r_irred>(dGammaT.half1()), Psi.vertex, Pi);
                 if(VERBOSE) dGammaR_half1.half1().check_vertex_resolution();
 
@@ -314,11 +314,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
                     }
                     if (VERBOSE) {
-                        print("Analyze tails of dPsi_L");
+                        utils::print("Analyze tails of dPsi_L");
                         dPsi_L.analyze_tails();
-                        print("Analyze tails of dPsi_R");
+                        utils::print("Analyze tails of dPsi_R");
                         dPsi_R.analyze_tails();
-                        print("Analyze tails of dPsi_T");
+                        utils::print("Analyze tails of dPsi_T");
                         dPsi_T.analyze_tails();
                     }
                 }
@@ -359,8 +359,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
     }
 
     if (true and mpi_world_rank() == 0) { //
-        print("Time needed for evaluation of RHS --> ");
-        get_time(t0); // measure time for one iteration
+        utils::print("Time needed for evaluation of RHS --> ");
+        utils::get_time(t0); // measure time for one iteration
     }
 
     return dPsi;

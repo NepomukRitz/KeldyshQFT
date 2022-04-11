@@ -103,7 +103,7 @@ class BubbleFunctionCalculator{
 
         // For Hubbard model computations, make sure that the internal structures of the vertices are parametrized correctly.
         if (HUBBARD_MODEL && (MAX_DIAG_CLASS > 1) && missing_cross_projection()) { // Cross projected parts are only needed for the Hubbard model in K2 and K3.
-            print("Error! Needed crossprojection still has to be computed. Abort.");
+            utils::print("Error! Needed crossprojection still has to be computed. Abort.");
             assert(false);
         }
 #ifdef SWITCH_SUM_N_INTEGRAL
@@ -231,34 +231,34 @@ void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     if constexpr(MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function<k1>();
-        tK1 = get_time() - t_start;
-        //print("K1", channel, " done, ");
-        //get_time(t_start);
+        tK1 = utils::get_time() - t_start;
+        //utils::print("K1", channel, " done, ");
+        //utils::get_time(t_start);
     }
     if constexpr(MAX_DIAG_CLASS >= 2) {
-        t_start = get_time();
+        t_start = utils::get_time();
         calculate_bubble_function<k2>();
-        tK2 = get_time() - t_start;
-        //print("K2", channel, " done, ");
-        //get_time(t_start);
+        tK2 = utils::get_time() - t_start;
+        //utils::print("K2", channel, " done, ");
+        //utils::get_time(t_start);
 
 #ifdef DEBUG_SYMMETRIES
-        t_start = get_time();
+        t_start = utils::get_time();
         calculate_bubble_function<k2b>();
-        tK2 = get_time() - t_start;
-        //print("K2b", channel, " done, ");
-        //get_time(t_start);
+        tK2 = utils::get_time() - t_start;
+        //utils::print("K2b", channel, " done, ");
+        //utils::get_time(t_start);
 #endif
     }
     if constexpr(MAX_DIAG_CLASS >= 3) {
-        t_start = get_time();
+        t_start = utils::get_time();
         calculate_bubble_function<k3>();
-        tK3 = get_time() - t_start;
-        //print("K3", channel, " done, ");
-        //get_time(t_start);
+        tK3 = utils::get_time() - t_start;
+        //utils::print("K3", channel, " done, ");
+        //utils::get_time(t_start);
     }
 
 }
@@ -269,7 +269,7 @@ template<char channel, typename Q, vertexType symmetry_result, vertexType symmet
 void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_bubble_function(){
-    if (diag_class < k1 || diag_class > k3){print("Incompatible diagrammatic class! Abort."); assert(false); return;}
+    if (diag_class < k1 || diag_class > k3){utils::print("Incompatible diagrammatic class! Abort."); assert(false); return;}
 
     int n_mpi, n_omp;
     set_external_arguments_for_parallelization(n_mpi, n_omp, diag_class);
@@ -742,7 +742,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             trafo = TransformaK1t[i0][sign_w];
             break;
         default:
-            print("Something went wrong in get_trafo_K1! Abort."); assert(false);
+            utils::print("Something went wrong in get_trafo_K1! Abort."); assert(false);
     }
 #endif
     return trafo;
@@ -775,7 +775,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             trafo = TransformaK2t[i0][sign_w * 2 + sign_v];
             break;
         default:
-            print("Something went wrong in get_trafo_K2! Abort."); assert(false);
+            utils::print("Something went wrong in get_trafo_K2! Abort."); assert(false);
     }
     if constexpr(!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
         trafo = 0;
@@ -829,7 +829,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             trafo = TransformaK3t[i0][sign_w * 4 + sign_f * 2 + sign_fp];
             break;
         default:
-            print("Something went wrong in get_trafo_K3! Abort."); assert(false);
+            utils::print("Something went wrong in get_trafo_K3! Abort."); assert(false);
     }
 
     if constexpr (!KELDYSH and !ZERO_T and (-v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f() or -vp + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K3.frequencies.get_wlower_f())) {
@@ -924,7 +924,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 BubbleComputer (dgamma, vertex1, vertex2, Pi);
         BubbleComputer.perform_computation();
     }
-    //else {print("Error! Incompatible channel given to bubble_function. Abort"); }
+    //else {utils::print("Error! Incompatible channel given to bubble_function. Abort"); }
 
 }
 
