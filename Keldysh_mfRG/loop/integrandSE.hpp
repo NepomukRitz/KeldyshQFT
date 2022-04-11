@@ -36,6 +36,7 @@ class IntegrandSE {
     const int i_spin;
     const int i0_vertex_left;
     const int i0_vertex_right;
+    Eigen::Matrix<Q,4, 4> transform_to_KeldyshBasis;
 
     void set_Keldysh_components_to_be_calculated();
 
@@ -55,8 +56,14 @@ public:
                 const int iK_in, const int i_spin_in, const double v_in, const int i_in_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), i_spin(i_spin_in), v(v_in), i_in(i_in_in),
                  i0_vertex_left(type_in*4), i0_vertex_right(type_in*4){
-        if (KELDYSH){
+        if constexpr(KELDYSH){
             set_Keldysh_components_to_be_calculated();
+            //if constexpr(DEBUG_SYMMETRIES) {
+            transform_to_KeldyshBasis << 0.5, 0.5, 0.5, 0.5,
+                                        -0.5, 0.5,-0.5, 0.5,
+                                        -0.5,-0.5, 0.5, 0.5,
+                                         0.5,-0.5,-0.5, 0.5;
+
         }
     }
 
@@ -202,14 +209,20 @@ return_type IntegrandSE<Q,vertType,all_spins,return_type>::Keldysh_value(const d
     buffertype_vertex V1 = evaluate_vertex_vectorized( vp);
     buffertype_vertex V2 = evaluate_vertex_vectorized(-vp);
 
-    //const Q result = (G1*V1 + G2*V2).eval()[0] * 0.5;
 if constexpr(std::is_same_v<return_type,double> or std::is_same_v<return_type,comp>) {
     const return_type result = (G1*V1).eval()[0];
     return result;
 }
 else {
-    const return_type result = (G1*V1).eval();
-    return result;
+    if constexpr(CONTOUR_BASIS) {
+        const return_type result = (G1*V1*transform_to_KeldyshBasis).eval();
+        return result;
+
+    }
+    else {
+        const return_type result = (G1*V1).eval();
+        return result;
+    }
 }
 
 #else
