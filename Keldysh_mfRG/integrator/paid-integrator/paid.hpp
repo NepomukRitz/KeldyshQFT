@@ -91,8 +91,9 @@ class PAID {
     std::size_t counter = 0;
     std::size_t correct_error_counter = 1;
     std::size_t fevals = 0;
-
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp parallel
+#endif
     {
       // Private variables
       std::vector<Task<Dim, F, T, Key>> in_queue;
@@ -101,7 +102,9 @@ class PAID {
       std::size_t work_size = 0;
       error_type error_out = 0;
 
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp for schedule(static), nowait
+#endif
       // integration on initial/large intervals
       // the initial "tasks" are done and put into "out_queue", "fevals" is increased
       for (std::size_t i = 0; i < inputs.size(); ++i) {
@@ -112,13 +115,17 @@ class PAID {
         out_queue.push_back(
             Task<Dim, F, T, Key>{task.d, task.f, res.value, res.error, task.idx});
 
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp atomic
+#endif
         fevals += res.fevals_;
       }
 
         // we ensure that all the inital tasks are in the queue before entering
         // the while loop
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp critical(tasks)
+#endif
         // initial tasks are put in queue
       {
         error_out = 0;
@@ -129,13 +136,17 @@ class PAID {
         error_estimate += error_out;
       }
       out_queue.clear();
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp barrier
+#endif
 
       while (!done) {
         assert(counter >= 0);
         assert(fevals >= 0);
 
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp critical(tasks)
+#endif
         // tasks are moved from "out_queue" to "queue"
         {
           for (auto& task : out_queue) {
@@ -158,14 +169,19 @@ class PAID {
             }
 
             error_estimate += error_out - cur_error_in[thread_id];
+
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp flush(error_estimate)
+#endif
           }
 
           out_queue.clear();
           in_queue.clear();
 
           // now get new items
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp flush(tasks_in_flight)
+#endif
           tasks_in_flight -= work_size;
           work_size = std::min(q_.size() / num_threads + 1,
                                config_.ntasks_per_iteration);
@@ -176,7 +192,9 @@ class PAID {
             q_.pop();
           }
           tasks_in_flight += work_size;
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp flush(tasks_in_flight)
+#endif
 
           if (config_.correct_error) {
             cur_error_in[thread_id] = 0;
@@ -186,7 +204,9 @@ class PAID {
           }
 
             // check if done
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp master
+#endif
           {
             if (work_size > 0) counter++;
 
@@ -205,7 +225,9 @@ class PAID {
                     res.first + std::accumulate(cur_error_in.begin(),
                                                 cur_error_in.end(), 0.0);
                 error_estimate = error_update;
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp flush(error_estimate)
+#endif
               }
             }
 
@@ -225,7 +247,9 @@ class PAID {
             if (termination_reason != TerminationReason::Unknown) {
             //  std::cout << "termination reason: " << termination_reason << "\n";
               done = true;
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp flush(done)
+#endif
             }
 
           }  // omp master
@@ -241,14 +265,18 @@ class PAID {
             const auto res = rule_.apply<Dim, F, T, Args...>(task.f, af);
             out_queue.push_back(
                 Task<Dim, F, T, Key>{dom, task.f, res.value, res.error, task.idx});
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp atomic
+#endif
             fevals += res.fevals_;
           }
         }
 
       }  // End while
 
+#ifdef OMP_IN_PAID_INTEGRATOR
 #pragma omp critical(tasks)
+#endif
       {
         // We still have work_size items, so we store them!
         for (auto& task : out_queue) {
