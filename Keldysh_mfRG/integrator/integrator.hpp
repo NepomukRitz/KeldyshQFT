@@ -563,7 +563,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
         }
         paid::PAIDConfig config;
         paid::PAID<1, Integrand, return_type, int, double> paid_integral(config);
-        return paid_integral.solve(integrands)[0] + (isinf ? integrator_gsl_qag_tails<return_type>(integrand, intervals[0][0], intervals[num_intervals-1][1], nINT) : 0.);
+        return paid_integral.solve(integrands)[0]; // + (isinf ? integrator_gsl_qag_tails<return_type>(integrand, intervals[0][0], intervals[num_intervals-1][1], nINT) : 0.);
     }
 }
 
@@ -574,9 +574,10 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <int num_freqs, typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> std::result_of_t<Integrand(double)> {
+template <typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> std::result_of_t<Integrand(double)> {
     double tol = 1e-10;
     using return_type = std::result_of_t<Integrand(double)>;
+    const int num_freqs = freqs.size();
 
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
     vec<double> intersections;

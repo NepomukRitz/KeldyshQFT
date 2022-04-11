@@ -411,17 +411,17 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     if constexpr(ZERO_T) {
         switch (k) {
             case k1:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0<0>(integrand, vmin, vmax, std::abs(w / 2), {}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0.}, Delta, true);
 
                 break;
             case k2:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0<3>(integrand, vmin, vmax, std::abs(w / 2), {v, v + w, v - w}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {v, v + w, v - w}, Delta, true);
                 break;
             case k3:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0<6>(integrand, vmin, vmax, std::abs(w / 2), {v, vp, w - vp, w + vp, w - v, std::abs(w) + std::abs(v)}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {v, vp, w - vp, w + vp, w - v, std::abs(w) + std::abs(v)}, Delta, true);
                 break;
             case k2b:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0<3>(integrand, vmin, vmax, std::abs(w / 2), {vp, vp + w, vp - w}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {vp, vp + w, vp - w}, Delta, true);
                 break;
             default:
                 break;

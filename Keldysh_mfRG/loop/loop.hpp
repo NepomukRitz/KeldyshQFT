@@ -117,44 +117,159 @@ void LoopCalculator<Q,vertType,all_spins>::perform_computation() {
 template <typename Q, vertexType vertType, bool all_spins>
 void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
     if (isfinite(v)) {
-        if constexpr(CONTOUR_BASIS != 1) {
-        #ifdef SWITCH_SUM_N_INTEGRAL
-            if constexpr(VECTORIZED_INTEGRATION == 1) {
-                #if DEBUG_SYMMETRIES
-                    using integrand_vectype = Eigen::Matrix<Q, 1, 4>;
-                #else
-                    using integrand_vectype = Eigen::Matrix<Q,1,2>;
-                #endif // DEBUG_SYMMETRIES
-                using integrand_type = IntegrandSE<Q, vertType, all_spins, integrand_vectype>;
-                integrand_type integrand(0, fullvertex, prop, 0, 0, v, i_in);
-                integrand_vectype value = prefactor *
-                                          integrator_Matsubara_T0<1>(integrand, v_lower - std::abs(v), v_upper + std::abs(v),
-                                                                     0., {v}, Delta, true);
+#ifdef SWITCH_SUM_N_INTEGRAL
 
-                integratedK = value(0);
-                integratedR = conj(value(1));
+        if constexpr(VECTORIZED_INTEGRATION == 1) {
+            using integrand_vectype = Eigen::Matrix<Q, 1, 4>;
+            using integrand_type = IntegrandSE<Q, vertType, all_spins, integrand_vectype>;
+            integrand_type integrand(0, fullvertex, prop, 0, 0, v, i_in);
+            integrand_vectype value = prefactor *
+                                      integrator_Matsubara_T0(integrand, v_lower - std::abs(v), v_upper + std::abs(v),
+                                                              0., {v}, Delta, true);
 
-                self.setself(0, iv, i_in, integratedR);
-                self.setself(1, iv, i_in, integratedK);
-                if constexpr(DEBUG_SYMMETRIES) {
-                    self.setself(2, iv, i_in, value(3));
-                }
-            }
-            else {
+            integratedK = value(0);
+            integratedR = conj(value(1));
+
+            self.setself(0, iv, i_in, integratedR);
+            self.setself(1, iv, i_in, integratedK);
+            self.setself(2, iv, i_in, value(3));
+
+        }
+        else {
+
+            if constexpr(CONTOUR_BASIS != 1) {
                 IntegrandSE<Q, vertType, all_spins> integrandK(0, fullvertex, prop, 0, 0, v, i_in);
                 IntegrandSE<Q, vertType, all_spins> integrandR(2, fullvertex, prop, 0, 0, v, i_in);
 
-                integratedK = prefactor * integrator_Matsubara_T0<1>(integrandK, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
-                integratedR = prefactor * integrator_Matsubara_T0<1>(integrandR, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integratedK = prefactor *
+                              integrator_Matsubara_T0(integrandK, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v},
+                                                      Delta, true);
+                integratedR = prefactor *
+                              integrator_Matsubara_T0(integrandR, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v},
+                                                      Delta, true);
 
                 self.setself(0, iv, i_in, integratedR);
                 self.setself(1, iv, i_in, integratedK);
                 if constexpr(DEBUG_SYMMETRIES) {
                     IntegrandSE<Q, vertType, all_spins> integrand0(3, fullvertex, prop, 0, 0, v, i_in);
-                    const Q integrated0 = prefactor * integrator_Matsubara_T0<1>(integrand0, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                    const Q integrated0 = prefactor * integrator_Matsubara_T0(integrand0, v_lower - std::abs(v),
+                                                                              v_upper + std::abs(v), 0., {v}, Delta,
+                                                                              true);
                     self.setself(2, iv, i_in, integrated0);
                 }
             }
+            else {
+                Q integrated00, integrated01, integrated10, integrated11;
+                IntegrandSE<Q, vertType, all_spins> integrand00(0, fullvertex, prop, 0, 0, v, i_in);
+                IntegrandSE<Q, vertType, all_spins> integrand10(1, fullvertex, prop, 0, 0, v, i_in);
+                IntegrandSE<Q, vertType, all_spins> integrand01(2, fullvertex, prop, 0, 0, v, i_in);
+                IntegrandSE<Q, vertType, all_spins> integrand11(3, fullvertex, prop, 0, 0, v, i_in);
+
+                integrated00 = prefactor * integrator_Matsubara_T0(integrand00, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integrated01 = prefactor * integrator_Matsubara_T0(integrand01, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integrated10 = prefactor * integrator_Matsubara_T0(integrand10, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integrated11 = prefactor * integrator_Matsubara_T0(integrand11, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integratedR = ( integrated00 + integrated01 - integrated10 - integrated11)*0.5;
+                integratedK = ( integrated00 - integrated01 - integrated10 + integrated11)*0.5;
+                if constexpr(DEBUG_SYMMETRIES or true) {
+                    const Q integratedZero = (integrated00 + integrated01 + integrated11 + integrated10) * 0.5;
+                    self.setself(2, iv, i_in, integratedZero);
+                } // DEBUG_SYMMETRIES
+            }
+        }
+#else
+        if constexpr(CONTOUR_BASIS != 1) {
+            for (int iK=0; iK<3; ++iK) {
+                // V component
+                IntegrandSE<Q,vertType,all_spins> integrandR (1, fullvertex, prop, iK, 0, v, i_in);
+                IntegrandSE<Q,vertType,all_spins> integrandK (0, fullvertex, prop, iK, 0, v, i_in);
+                //integratedR = prefactor * integrator<Q>                (integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+                integratedR = prefactor * integrator_Matsubara_T0(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                //integratedK = prefactor * integrator<Q>                (integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+                integratedK = prefactor * integrator_Matsubara_T0(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+
+                // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
+                if (all_spins) {
+                    IntegrandSE<Q,vertType,all_spins> integrandR_Vhat (1, fullvertex, prop, iK, 1, v, i_in);
+                    IntegrandSE<Q,vertType,all_spins> integrandK_Vhat (0, fullvertex, prop, iK, 1, v, i_in);
+                    //integratedR = 2. * integratedR + prefactor * integrator<Q>                (integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+                    integratedR = 2. * integratedR + prefactor * integrator_Matsubara_T0(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    //integratedK = 2. * integratedK + prefactor * integrator<Q>                (integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
+                    integratedK = 2. * integratedK + prefactor * integrator_Matsubara_T0(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                }
+
+                // add analytical results for the tails
+                //integratedR += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+                //                                                     v, 0, spin, i_in, all_spins);
+                //integratedK += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+                //                                                     v, 1, spin, i_in, all_spins);
+
+                //The results are emplaced in the right place of the answer object.
+                self.addself(0, iv, i_in, integratedR);
+                self.addself(1, iv, i_in, integratedK);
+            }
+        }
+        else {
+            Q integrated00 = 0.;
+            Q integrated01 = 0.;
+            Q integrated10 = 0.;
+            Q integrated11 = 0.;
+
+            for (int iK=0; iK<4; ++iK) {
+                // V component
+                IntegrandSE<Q,vertType,all_spins> integrand00 (0, fullvertex, prop, iK, 0, v, i_in);
+                IntegrandSE<Q,vertType,all_spins> integrand01 (1, fullvertex, prop, iK, 0, v, i_in);
+                IntegrandSE<Q,vertType,all_spins> integrand10 (2, fullvertex, prop, iK, 0, v, i_in);
+                IntegrandSE<Q,vertType,all_spins> integrand11 (3, fullvertex, prop, iK, 0, v, i_in);
+
+                const Q integrated00_spin0 = prefactor * integrator_Matsubara_T0(integrand00, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                const Q integrated01_spin0 = prefactor * integrator_Matsubara_T0(integrand01, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                const Q integrated10_spin0 = prefactor * integrator_Matsubara_T0(integrand10, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                const Q integrated11_spin0 = prefactor * integrator_Matsubara_T0(integrand11, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+
+                // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
+                if (all_spins) {
+                    IntegrandSE<Q,vertType,all_spins> integrand00_spin1 (0, fullvertex, prop, iK, 1, v, i_in);
+                    IntegrandSE<Q,vertType,all_spins> integrand01_spin1 (1, fullvertex, prop, iK, 1, v, i_in);
+                    IntegrandSE<Q,vertType,all_spins> integrand10_spin1 (2, fullvertex, prop, iK, 1, v, i_in);
+                    IntegrandSE<Q,vertType,all_spins> integrand11_spin1 (3, fullvertex, prop, iK, 1, v, i_in);
+                    const Q integrated00_spin1 = prefactor * integrator_Matsubara_T0(integrand00_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    const Q integrated01_spin1 = prefactor * integrator_Matsubara_T0(integrand01_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    const Q integrated10_spin1 = prefactor * integrator_Matsubara_T0(integrand10_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    const Q integrated11_spin1 = prefactor * integrator_Matsubara_T0(integrand11_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    integrated00 += 2.*integrated00_spin0 + integrated00_spin1;
+                    integrated01 += 2.*integrated01_spin0 + integrated01_spin1;
+                    integrated10 += 2.*integrated10_spin0 + integrated10_spin1;
+                    integrated11 += 2.*integrated11_spin0 + integrated11_spin1;
+                }
+                else {
+                    integrated00 += integrated00_spin0;
+                    integrated01 += integrated01_spin0;
+                    integrated10 += integrated10_spin0;
+                    integrated11 += integrated11_spin0;
+                }
+
+                // add analytical results for the tails
+                //integratedR += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+                //                                                     v, 0, spin, i_in, all_spins);
+                //integratedK += prefactor * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v),
+                //                                                     v, 1, spin, i_in, all_spins);
+
+            }
+
+            integratedR = ( integrated00 + integrated01 - integrated10 - integrated11)*0.5;
+            integratedK = ( integrated00 - integrated01 - integrated10 + integrated11)*0.5;
+
+
+            self.setself(0, iv, i_in, integratedR);
+            self.setself(1, iv, i_in, integratedK);
+            const Q integratedZero = ( integrated00 + integrated01 + integrated11 + integrated10)*0.5;
+            self.setself(2, iv, i_in, integratedZero);
+
+        }
+#endif
+        if constexpr(CONTOUR_BASIS != 1) {
+        #ifdef SWITCH_SUM_N_INTEGRAL
                 //#endif
 
         #else
@@ -163,18 +278,18 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
                 IntegrandSE<Q,vertType,all_spins> integrandR (1, fullvertex, prop, iK, 0, v, i_in);
                 IntegrandSE<Q,vertType,all_spins> integrandK (0, fullvertex, prop, iK, 0, v, i_in);
                 //integratedR = prefactor * integrator<Q>                (integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                integratedR = prefactor * integrator_Matsubara_T0<1>(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                integratedR = prefactor * integrator_Matsubara_T0(integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
                 //integratedK = prefactor * integrator<Q>                (integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                integratedK = prefactor * integrator_Matsubara_T0<1>(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                integratedK = prefactor * integrator_Matsubara_T0(integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
 
                 // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
                 if (all_spins) {
                     IntegrandSE<Q,vertType,all_spins> integrandR_Vhat (1, fullvertex, prop, iK, 1, v, i_in);
                     IntegrandSE<Q,vertType,all_spins> integrandK_Vhat (0, fullvertex, prop, iK, 1, v, i_in);
                     //integratedR = 2. * integratedR + prefactor * integrator<Q>                (integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                    integratedR = 2. * integratedR + prefactor * integrator_Matsubara_T0<1>(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    integratedR = 2. * integratedR + prefactor * integrator_Matsubara_T0(integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
                     //integratedK = 2. * integratedK + prefactor * integrator<Q>                (integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                    integratedK = 2. * integratedK + prefactor * integrator_Matsubara_T0<1>(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    integratedK = 2. * integratedK + prefactor * integrator_Matsubara_T0(integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
                 }
 
                 // add analytical results for the tails
@@ -197,13 +312,14 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
                 using integrand_type = IntegrandSE<Q, vertType, all_spins, integrand_vectype>;
                 integrand_type integrand(0, fullvertex, prop, 0, 0, v, i_in);
                 integrand_vectype value = prefactor *
-                                          integrator_Matsubara_T0<1>(integrand, v_lower - std::abs(v), v_upper + std::abs(v),
-                                                                     0., {v}, Delta, true);
+                                          integrator_Matsubara_T0(integrand, v_lower - std::abs(v), v_upper + std::abs(v),
+                                                                     0., {0.,v,-v}, Delta, true);
 
-                integrated00 = value(0);
-                integrated01 = value(2);
-                integrated10 = value(1);
-                integrated11 = value(3);
+                integratedK = value(0);
+                integratedR = conj(value(1));
+                if constexpr(DEBUG_SYMMETRIES or true) {
+                    self.setself(2, iv, i_in, value(3));
+                } // DEBUG_SYMMETRIES
             }
             else {
                 IntegrandSE<Q, vertType, all_spins> integrand00(0, fullvertex, prop, 0, 0, v, i_in);
@@ -211,13 +327,17 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
                 IntegrandSE<Q, vertType, all_spins> integrand01(2, fullvertex, prop, 0, 0, v, i_in);
                 IntegrandSE<Q, vertType, all_spins> integrand11(3, fullvertex, prop, 0, 0, v, i_in);
 
-                integrated00 = prefactor * integrator_Matsubara_T0<1>(integrand00, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
-                integrated01 = prefactor * integrator_Matsubara_T0<1>(integrand01, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
-                integrated10 = prefactor * integrator_Matsubara_T0<1>(integrand10, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
-                integrated11 = prefactor * integrator_Matsubara_T0<1>(integrand11, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integrated00 = prefactor * integrator_Matsubara_T0(integrand00, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integrated01 = prefactor * integrator_Matsubara_T0(integrand01, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integrated10 = prefactor * integrator_Matsubara_T0(integrand10, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integrated11 = prefactor * integrator_Matsubara_T0(integrand11, v_lower - std::abs(v), v_upper + std::abs(v), 0., {v}, Delta, true);
+                integratedR = ( integrated00 + integrated01 - integrated10 - integrated11)*0.5;
+                integratedK = ( integrated00 - integrated01 - integrated10 + integrated11)*0.5;
+                if constexpr(DEBUG_SYMMETRIES or true) {
+                    const Q integratedZero = (integrated00 + integrated01 + integrated11 + integrated10) * 0.5;
+                    self.setself(2, iv, i_in, integratedZero);
+                } // DEBUG_SYMMETRIES
             }
-            integratedR = ( integrated00 + integrated01 - integrated10 - integrated11)*0.5;
-            integratedK = ( integrated00 - integrated01 - integrated10 + integrated11)*0.5;
 
             //self.setself(0, iv, i_in, integrated00);
             //self.setself(1, iv, i_in, integrated01);
@@ -226,10 +346,7 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
 
             self.setself(0, iv, i_in, integratedR);
             self.setself(1, iv, i_in, integratedK);
-            if constexpr(DEBUG_SYMMETRIES) {
-                const Q integratedZero = (integrated00 + integrated01 + integrated11 + integrated10) * 0.5;
-                self.setself(2, iv, i_in, integratedZero);
-            } // DEBUG_SYMMETRIES
+
 
         #else
                 Q integrated00 = 0.;
@@ -246,10 +363,10 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
 
                     //integratedR = prefactor * integrator<Q>                (integrandR, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
                     //integratedK = prefactor * integrator<Q>                (integrandK, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                    const Q integrated00_spin0 = prefactor * integrator_Matsubara_T0<1>(integrand00, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-                    const Q integrated01_spin0 = prefactor * integrator_Matsubara_T0<1>(integrand01, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-                    const Q integrated10_spin0 = prefactor * integrator_Matsubara_T0<1>(integrand10, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-                    const Q integrated11_spin0 = prefactor * integrator_Matsubara_T0<1>(integrand11, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    const Q integrated00_spin0 = prefactor * integrator_Matsubara_T0(integrand00, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    const Q integrated01_spin0 = prefactor * integrator_Matsubara_T0(integrand01, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    const Q integrated10_spin0 = prefactor * integrator_Matsubara_T0(integrand10, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                    const Q integrated11_spin0 = prefactor * integrator_Matsubara_T0(integrand11, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
 
                     // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
                     if (all_spins) {
@@ -259,10 +376,10 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
                         IntegrandSE<Q,vertType,all_spins> integrand11_spin1 (3, fullvertex, prop, iK, 1, v, i_in);
                         //integratedR = 2. * integratedR + prefactor * integrator<Q>                (integrandR_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
                         //integratedK = 2. * integratedK + prefactor * integrator<Q>                (integrandK_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0., 0., glb_T);
-                        const Q integrated00_spin1 = prefactor * integrator_Matsubara_T0<1>(integrand00_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-                        const Q integrated01_spin1 = prefactor * integrator_Matsubara_T0<1>(integrand01_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-                        const Q integrated10_spin1 = prefactor * integrator_Matsubara_T0<1>(integrand10_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
-                        const Q integrated11_spin1 = prefactor * integrator_Matsubara_T0<1>(integrand11_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                        const Q integrated00_spin1 = prefactor * integrator_Matsubara_T0(integrand00_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                        const Q integrated01_spin1 = prefactor * integrator_Matsubara_T0(integrand01_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                        const Q integrated10_spin1 = prefactor * integrator_Matsubara_T0(integrand10_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
+                        const Q integrated11_spin1 = prefactor * integrator_Matsubara_T0(integrand11_spin1, v_lower-std::abs(v), v_upper+std::abs(v), 0.,{v}, Delta, true);
                         integrated00 += 2.*integrated00_spin0 + integrated00_spin1;
                         integrated01 += 2.*integrated01_spin0 + integrated01_spin1;
                         integrated10 += 2.*integrated10_spin0 + integrated10_spin1;
@@ -316,7 +433,7 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Matsubara_zeroT() {
         // V component
         IntegrandSE<Q,vertType,all_spins> integrand = IntegrandSE<Q,vertType,all_spins> ('r', fullvertex, prop, 0, 0, v, i_in);
         // split up the integrand at discontinuities and (possible) kinks:
-        integratedR = prefactor * integrator_Matsubara_T0<1>(integrand, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
+        integratedR = prefactor * integrator_Matsubara_T0(integrand, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
                                                                  {v}, Delta, true);
 
         // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
@@ -324,7 +441,7 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Matsubara_zeroT() {
             integratedR *= 2.;
             IntegrandSE<Q,vertType,all_spins> integrand_Vhat = IntegrandSE<Q,vertType,all_spins> ('r', fullvertex, prop, 0, 1, v, i_in);
             // split up the integrand at discontinuities and (possible) kinks:
-            integratedR += prefactor * integrator_Matsubara_T0<1>(integrand_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
+            integratedR += prefactor * integrator_Matsubara_T0(integrand_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
                                                                     {v}, Delta, true);
         }
 
