@@ -32,7 +32,9 @@ public:
         Sigma.initialize(glb_U * filling, 0);
     };
     double compute_Hartree_term(double convergence_threshold = 1e-12);
-    double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12);
+    double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12, bool Friedel_check = true,
+                                           bool verbose = true);
+    double compute_Hartree_term_Friedel(double convergence_threshold = 1e-12);
     auto operator()(double nu) const -> double;
     void friedel_sum_rule_check() const;
     void write_out_propagators() const ;

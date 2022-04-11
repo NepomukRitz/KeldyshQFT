@@ -21,7 +21,8 @@ double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) 
     return glb_U * filling;
 }
 
-double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_threshold) {
+double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_threshold, const bool Friedel_check,
+                                                       const bool verbose) {
     double LHS = 1.;
     int n_iter = 0;
     double filling_min = 0.;
@@ -45,11 +46,30 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
             return glb_U * filling;
         }
     }
-    utils::print_add("  ", true);
-    utils::print("Determined filling of: " + std::to_string(filling), true);
-    utils::print("Number of iterations needed: " + std::to_string(n_iter), true);
-    friedel_sum_rule_check();
+    if (verbose) {
+        utils::print_add("  ", true);
+        utils::print("Determined filling of: " + std::to_string(filling), true);
+        utils::print("Number of iterations needed: " + std::to_string(n_iter), true);
+    }
+    if (Friedel_check) friedel_sum_rule_check();
     return glb_U * filling;
+}
+
+
+double Hartree_Solver::compute_Hartree_term_Friedel(const double convergence_threshold) {
+    assert(ZERO_T);
+    double n_ini = 1./2.;
+    double n = n_ini;
+    double diff = 1;
+    int counter = 0;
+    while (diff > convergence_threshold) {
+        assert(counter < 1e5);
+        n_ini = n;
+        n = 1./2. - 1./M_PI * atan(glb_Vg / Delta + glb_U / Delta * (n - 1./2.));
+        diff = std::abs(n_ini - n);
+        counter++;
+    }
+    return glb_U * n;
 }
 
 auto Hartree_Solver::operator()(const double nu) const -> double {
@@ -110,4 +130,5 @@ double Hartree_Solver::fermi_distribution(const double nu) {
     }
 
 }
+
 
