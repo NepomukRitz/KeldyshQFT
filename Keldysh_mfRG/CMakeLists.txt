@@ -57,6 +57,8 @@ add_executable(FPP_mfRG FPP/FPP_main.cpp ${keldysh_H} ${keldysh_SRC})
 
 ## executable for integrand tests
 add_executable(get_integrand_dGammaL tests/integrand_tests/get_integrand_dGammaL.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(get_integrand_dGamma_1loop tests/integrand_tests/get_integrand_dGamma_1loop.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(get_integrand_Gamma1_Pi_Gamma2 tests/integrand_tests/get_integrand_Gamma1_Pi_Gamma2.cpp ${keldysh_H} ${keldysh_SRC})
 
 ## rest works so far only on workstation and ASC
 if(WORKSTATION OR ASC)
@@ -79,6 +81,12 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
+    target_link_libraries(get_integrand_Gamma1_Pi_Gamma2 -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(get_integrand_Gamma1_Pi_Gamma2 -lgsl -lgslcblas)
+    target_link_libraries(get_integrand_Gamma1_Pi_Gamma2 fftw3)
+    target_link_libraries(get_integrand_dGamma_1loop -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(get_integrand_dGamma_1loop -lgsl -lgslcblas)
+    target_link_libraries(get_integrand_dGamma_1loop fftw3)
 elseif(KCS)
     include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.20-gcc-3dhdqfy/include) # $HDF5_INC
     include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/fftw/3.3.8-intel-wrfank7/include) # $FFTW_INC
