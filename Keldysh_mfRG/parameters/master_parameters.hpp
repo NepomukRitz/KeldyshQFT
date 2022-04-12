@@ -25,7 +25,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM
-//#define SWITCH_SUM_N_INTEGRAL
+#define SWITCH_SUM_N_INTEGRAL
 #define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 

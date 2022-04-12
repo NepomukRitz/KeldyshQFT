@@ -19,8 +19,8 @@ class Hartree_Solver {
     SelfEnergy<comp> Sigma = SelfEnergy<comp> (Lambda);
     double filling = 1./2.; // filling at the particle-hole symmetric point
 
-    const double v_lower = 1e3 * Sigma.Sigma.frequencies.b.w_lower; // arbitrary choice. Needs to be checked.
-    const double v_upper = 1e3 * Sigma.Sigma.frequencies.b.w_upper;
+    const double v_lower =  10 * Delta; // arbitrary choice. Needs to be checked.
+    const double v_upper = -10 * Delta;
 
     static double fermi_distribution (double nu) ;
 public:

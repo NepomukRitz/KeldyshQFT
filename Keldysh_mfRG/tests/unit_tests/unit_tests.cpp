@@ -110,8 +110,8 @@ int main(int argc, char* argv[]) {
     for (const double Lambda : lambdas) {
         const double Delta = (glb_Gamma + Lambda) / 2.; // Hybridization
         Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
-        const double hartree_value_num     = Hartree_Term.compute_Hartree_term_bracketing(1e-12, false, false);
-        const double hartree_value_friedel = Hartree_Term.compute_Hartree_term_Friedel(1e-12);
+        const double hartree_value_num     = Hartree_Term.compute_Hartree_term_bracketing(1e-15, false, false);
+        const double hartree_value_friedel = Hartree_Term.compute_Hartree_term_Friedel(1e-15);
 
         utils::print("For U/Delta = " + std::to_string(glb_U/Delta) + " we obtain a filling of:", true);
         utils::print(std::to_string(hartree_value_num / glb_U) + " (numerically)", true);
