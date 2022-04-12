@@ -81,7 +81,7 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
 elseif(KCS)
-    include_directories($ENV{HDF5_INC} $ENV{GSL_INC} $ENV{BOOST_INC} $ENV{FFTW_INC} )
+    include_directories($ENV{HDF5_BASE}/include $ENV{GSL_BASE}/include $ENV{BOOST_INCDIR} $ENV{FFTW_BASE}/include)
     include_directories($ENV{EIGEN_BASE}/include/eigen3)
 
     string(STRIP HDF5_CPP_SHLIB "$ENV{HDF5_CPP_SHLIB}")
