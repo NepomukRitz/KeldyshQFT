@@ -362,6 +362,9 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
             double freqw, freqv;
             if (INTERPOLATION == linear) {freqw = indices.w; freqv = indices.v1;}
             else {freqw = avertex.K2.frequencies.  primary_grid.t_from_frequency(indices.w); freqv = avertex.K2.frequencies.gridtransf_f(indices.v1);}
+            #ifdef ROTATEK2
+                K2_convert2naturalFreqs(indices.w, indices.v1);
+            #endif
             error = std::abs(avertex.K2.interpolate(indices) -  linearFunction2D(freqw, freqv));
             cumul_interpolation_error += error;
             errors[iw*M+iv] = error;
@@ -433,12 +436,17 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         double interf = (avertex.K2.frequencies.get_tupper_f_aux() - avertex.K2.frequencies.get_tlower_f_aux()) / double(M - 1);
         for (int iw = 0; iw < N; iw++) {
             for (int iv = 0; iv < M; iv++) {
-                indices.w  = avertex.K2.frequencies.  primary_grid.frequency_from_t(avertex.K2.frequencies.get_tlower_b_aux() + iw * interb);
-                indices.v1 = avertex.K2.frequencies.secondary_grid.frequency_from_t(avertex.K2.frequencies.get_tlower_f_aux() + iv * interf);
+                const double tw = avertex.K2.frequencies.get_tlower_b_aux() + iw * interb;
+                const double tv1= avertex.K2.frequencies.get_tlower_f_aux() + iv * interf;
+                indices.w  = avertex.K2.frequencies.  primary_grid.frequency_from_t(tw);
+                indices.v1 = avertex.K2.frequencies.secondary_grid.frequency_from_t(tv1);
+                #ifdef ROTATEK2
+                    K2_convert2naturalFreqs(indices.w, indices.v1);
+                #endif
 
                 values[iw * M + iv] = avertex.K2.interpolate(indices);
                 error = std::abs(avertex.K2.interpolate(indices) -
-                                 cubicFunction2D(avertex.K2.frequencies.  primary_grid.t_from_frequency(indices.w), avertex.K2.frequencies.gridtransf_f(indices.v1)));
+                                 cubicFunction2D(tw, tv1));
                 cumul_interpolation_error += error;
                 errors[iw * M + iv] = error;
                 if (error >= interpolation_tolerance) {
