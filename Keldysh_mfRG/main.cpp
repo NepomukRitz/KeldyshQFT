@@ -50,15 +50,15 @@ auto main() -> int {
     */
 
     // SIAM PT4 specific:
-    //data_dir = "../Data_SIAM_PT4/better_resolution/";
+    data_dir = "../Data_SIAM_PT4/better_resolution_for_K2/";
     //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/SOPT_integrand/eVg_over_U_" + std::to_string(glb_Vg / glb_U) + "/";
-    data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/smaller_integration_interval/";
+    //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/smaller_integration_interval/";
     utils::makedir(data_dir);
 
 
     const rvec lambdas = {999., 199., 99., 19., 9.};
     for (const double lambda : lambdas) {
-        PT_Machine<state_datatype> PT_Calculator (2, lambda, true);
+        PT_Machine<state_datatype> PT_Calculator (4, lambda, true);
     }
 
     //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
