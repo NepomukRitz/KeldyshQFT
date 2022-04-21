@@ -167,8 +167,8 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 namespace {
     // functions to test linear interpolation (below)
     auto linearFunction1D(double x) -> state_datatype {return 1. + x;}
-    auto linearFunction2D(double x, double y) -> state_datatype {return 1. + x + y;}
-    auto linearFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + y + z;}
+    auto linearFunction2D(double x, double y) -> state_datatype {return 1. + x + 2*y;}
+    auto linearFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 2*y + 3*z;}
 
     auto quadFunction2D(double x, double y) -> state_datatype {return 1. + x + y  + x*y + x*x + y*y;}
 
