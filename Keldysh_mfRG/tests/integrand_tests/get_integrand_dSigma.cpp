@@ -6,16 +6,12 @@
 #include "saveIntegrand.hpp"
 
 auto main(int argc, char * argv[]) -> int {
-#ifdef ROTATEK2
-    std::string job = "_rotK2";
-#else
-    std::string job = "_unrotK2";
-#endif
+    std::string job = "";
     data_dir = "../Data_KF" + job + "/";
     std::string dir_str;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, i_in;
-    double w, v, vp;
+    double v;
     std::cout << "----  Getting integrand  ----" << std::endl;
     std::cout << "number of args: " << argc-1 << ", expected: 11" << std::endl;
     /// Prompt user for input:
@@ -37,9 +33,7 @@ auto main(int argc, char * argv[]) -> int {
     i0 = atoi(argv[6]);
     i2 = atoi(argv[7]);
     int spin = atoi(argv[8]);
-    w = atof(argv[9]);
     v = atof(argv[10]);
-    vp = atof(argv[11]);
     i_in = atoi(argv[12]);
     K_class k_class = static_cast<K_class>(k_class_int);
     std::string filename = argv[13]; // e.g. "Psi_SDE_a_l";
@@ -60,7 +54,7 @@ auto main(int argc, char * argv[]) -> int {
     const std::string filename_prefix = dir_integrand_str + "Gamma1_Pi_Gamma2_Gamma0left" + std::to_string(Gamma0_is_left);
 
 
-    saveIntegrand::Gamma1_Pi_Gamma2<state_datatype>(filename_prefix, file_Psi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in, Gamma0_is_left);
+    saveIntegrand::Sigma_SDE<state_datatype>(filename_prefix, file_Psi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in, Gamma0_is_left);
     std::cout << "Integrand for dGamma1_loop successfully created." << std::endl;
 
     return 0;

@@ -960,14 +960,14 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_value;
         Eigen::Matrix<Q,4,4> vertex_val1(4,4);
         Eigen::Matrix<Q,4,4> vertex_val2(4,4);
+        load_vertex_keldyshComponents_left_vectorized<0> (vertex_val1, input_l);
+        load_vertex_keldyshComponents_right_vectorized<0>(vertex_val2, input_r);
 #else
         Q integrand_value;
 #endif
 
         Pival = Pi.template value_vectorized<channel>(w, vpp, i_in);
         integrand_value = (*this)(vpp);
-        load_vertex_keldyshComponents_left_vectorized<0> (vertex_val1, input_l);
-        load_vertex_keldyshComponents_right_vectorized<0>(vertex_val2, input_r);
 
 
 #if VECTORIZED_INTEGRATION
