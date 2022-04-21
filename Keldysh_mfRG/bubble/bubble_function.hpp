@@ -180,19 +180,19 @@ void BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmet
         vmax = dgamma.avertex().K1.frequencies.get_wupper_b();
     }
     else{
-        vmin = std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
-        vmax = std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_upper);
+        vmin = Delta * 10.; // std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
+        vmax = Delta * 10.; // std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_upper);
     }
 
     if constexpr(MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma.avertex().K2.frequencies.get_wlower_f());
-        vmax = std::max(vmax, dgamma.avertex().K2.frequencies.get_wupper_f());
+        //vmin = std::min(vmin, dgamma.avertex().K2.frequencies.get_wlower_f());
+        //vmax = std::max(vmax, dgamma.avertex().K2.frequencies.get_wupper_f());
     }
     if constexpr(MAX_DIAG_CLASS >= 3){
         // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-        vmin = std::min(vmin, dgamma.avertex().K3.frequencies.get_wlower_f());
-        vmax = std::max(vmax, dgamma.avertex().K3.frequencies.get_wupper_f());
+        //vmin = std::min(vmin, dgamma.avertex().K3.frequencies.get_wlower_f());
+        //vmax = std::max(vmax, dgamma.avertex().K3.frequencies.get_wupper_f());
     }
     if constexpr((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
@@ -415,13 +415,13 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
 
                 break;
             case k2:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {v, v + w, v - w}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0., v, v + w, v - w}, Delta, true);
                 break;
             case k3:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {v, vp, w - vp, w + vp, w - v, std::abs(w) + std::abs(v)}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0, v, vp, w - vp, w + vp, w - v, std::abs(w) + std::abs(v)}, Delta, true);
                 break;
             case k2b:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {vp, vp + w, vp - w}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0, vp, vp + w, vp - w}, Delta, true);
                 break;
             default:
                 break;
