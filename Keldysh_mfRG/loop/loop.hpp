@@ -150,7 +150,7 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
 
                 self.setself(0, iv, i_in, integratedR);
                 self.setself(1, iv, i_in, integratedK);
-                if constexpr(DEBUG_SYMMETRIES) {
+                if constexpr(DEBUG_SYMMETRIES or true) {
                     IntegrandSE<Q, vertType, all_spins> integrand0(3, fullvertex, prop, 0, 0, v, i_in);
                     const Q integrated0 = prefactor * integrator_Matsubara_T0(integrand0, v_lower - std::abs(v),
                                                                               v_upper + std::abs(v), 0., {v}, Delta,
