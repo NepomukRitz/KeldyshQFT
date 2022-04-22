@@ -362,9 +362,8 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
             double freqw, freqv;
             if (INTERPOLATION == linear) {freqw = indices.w; freqv = indices.v1;}
             else {freqw = avertex.K2.frequencies.  primary_grid.t_from_frequency(indices.w); freqv = avertex.K2.frequencies.gridtransf_f(indices.v1);}
-            #ifdef ROTATEK2
-                K2_convert2naturalFreqs(indices.w, indices.v1);
-            #endif
+            K2_convert2naturalFreqs(indices.w, indices.v1);
+
             error = std::abs(avertex.K2.interpolate(indices) -  linearFunction2D(freqw, freqv));
             cumul_interpolation_error += error;
             errors[iw*M+iv] = error;

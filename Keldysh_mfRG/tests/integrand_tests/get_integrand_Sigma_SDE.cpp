@@ -6,8 +6,13 @@
 #include "saveIntegrand.hpp"
 
 auto main(int argc, char * argv[]) -> int {
-    std::string job = "";
-    data_dir = "../Data_KF" + job + "/";
+    std::string job;
+#ifdef ROTATEK2
+    job = "_rotK2";
+#else
+    job = "_unrotK2";
+#endif
+    data_dir = "../Data_KF" + job + + "_GRID" + std::to_string(GRID) + "/";
     std::string dir_str;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, i_in;
@@ -33,17 +38,16 @@ auto main(int argc, char * argv[]) -> int {
     i0 = atoi(argv[6]);
     i2 = atoi(argv[7]);
     int spin = atoi(argv[8]);
-    v = atof(argv[10]);
-    i_in = atoi(argv[12]);
+    v = atof(argv[9]);
+    i_in = atoi(argv[10]);
     K_class k_class = static_cast<K_class>(k_class_int);
-    std::string filename = argv[13]; // e.g. "Psi_SDE_a_l";
-    bool Gamma0_is_left = atoi(argv[14]);
+    std::string filename = argv[11]; // e.g. "Psi_SDE_a_l";
 
     /// print input arguments:
     std::cout << "Check the input arguments: " << std::endl;
     std::cout << "dir_str: " << dir_str << ", it_Lambda: " << it_Lambda << ", k_class_int: " << k_class_int
     << ", channel: " << channel << ", i0: " << i0 << ", i2: " << i2
-    << ", w: " << w << ", v: " << v << ", vp: " << vp << ", i_in: " << i_in << std::endl;
+    << ", v: " << v << ", i_in: " << i_in << std::endl;
 
     //dir_str = dir_str;
     const std::string file_Psi = dir_str + filename;
@@ -51,10 +55,10 @@ auto main(int argc, char * argv[]) -> int {
 
     std::string dir_integrand_str = "integrands/";
     makedir(data_dir + dir_integrand_str);
-    const std::string filename_prefix = dir_integrand_str + "Gamma1_Pi_Gamma2_Gamma0left" + std::to_string(Gamma0_is_left);
+    const std::string filename_prefix = dir_integrand_str + "Sigma_SDE";
 
 
-    saveIntegrand::Sigma_SDE<state_datatype>(filename_prefix, file_Psi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in, Gamma0_is_left);
+    saveIntegrand::Sigma_SDE<state_datatype>(filename_prefix, file_Psi, it_Lambda, i2, v, i_in);
     std::cout << "Integrand for dGamma1_loop successfully created." << std::endl;
 
     return 0;

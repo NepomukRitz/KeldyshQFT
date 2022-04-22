@@ -146,7 +146,7 @@ namespace saveIntegrand {
         const bool diff = true;
         Bubble<Q> dPi(G, dG, diff);
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
+        const rvec& freqs = get_freqs_equidistant(nBOS*1e1, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -173,8 +173,8 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, G, false);
 
         const auto& grid = Psi.vertex.avertex().K1.frequencies.primary_grid;
-        const double wmin = grid.t_lower;
         const double wmax = grid.t_upper;
+        const double wmin = -wmax;
         const rvec& freqs = get_freqs_equidistant_aux(nBOS*1e1, wmin, wmax, grid);
         saveIntegrandBubble(filename_prefix, Gamma0_is_left ? Psi0.vertex : Psi.vertex, Gamma0_is_left ? Psi.vertex : Psi0.vertex, Pi, false, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
@@ -365,7 +365,11 @@ namespace saveIntegrand {
 #endif
         // read Psi for vertex
         State<Q> Psi = read_state_from_hdf(file_Psi, it_Lambda); // read Psi
-        // read dPsi for differentiated selfenergy
+        for (char r: {'a', 'p', 't'}) {
+            Psi.vertex.get_rvertex(r).K1 *= 0.;
+        }
+        Psi.vertex.get_rvertex('p').K2 *= 0.;
+        Psi.vertex.get_rvertex('t').K2 *= 0.;
 
         double Lambda = Psi.Lambda;
 
@@ -375,11 +379,17 @@ namespace saveIntegrand {
         const bool all_spins = false;
 
 
-        const rvec& freqs = get_freqs_equidistant_aux(nFER*10, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
-        IntegrandSE<Q,symmetric_full,false,return_type> integrandR(0, Psi.vertex, G, v, i_in, all_spins);
-        integrandR.save_integrand(freqs);
-        if (KELDYSH and not VECTORIZED_INTEGRATION) {
-            IntegrandSE<Q,symmetric_full,false,return_type> integrandK(1, Psi.vertex, G, v, i_in, all_spins);
+        const auto& grid = Psi.vertex.avertex().K1.frequencies.primary_grid;
+        const double wmax = grid.t_upper;
+        const double wmin = -wmax;
+        const rvec& freqs = get_freqs_equidistant_aux(nBOS*1e1, wmin, wmax, grid);
+
+        Psi.vertex.initializeInterpol();
+        Psi.vertex.template symmetry_expand<'t',false>();
+        IntegrandSE<Q,symmetric_full,false,return_type> integrandR(0, Psi.vertex, G, i2, 0, v, i_in);
+        integrandR.save_integrand(freqs, filename_prefix);
+        if constexpr(KELDYSH and not VECTORIZED_INTEGRATION) {
+            IntegrandSE<Q,symmetric_full,false,return_type> integrandK(1, Psi.vertex, G, i2, 0, v, i_in);
             integrandK.save_integrand(freqs);
         }
     }
@@ -586,6 +596,26 @@ void get_integrand_Sigma(std::string dir_str, const int it_Lambda, const int rkS
 
 }
 
+
+template <typename Q>
+void get_integrand_Sigma_SDE(std::string dir_str, const int it_Lambda, const int rkStep) {
+
+    dir_str = dir_str + "intermediateResults/";
+    const std::string file_Psi = dir_str + "Psi"+"_RKstep"+std::to_string(rkStep);
+
+
+    int i2 = 0;         /// currently not supported --> wait until order of sum and integration are interchanged by Elias
+    double v = 1.;
+    int i_in = 0;
+
+    /// In the following you can also iterate over different v/etc:
+
+    std::string dir_integrand_str = dir_str + "integrands/";
+    makedir(dir_integrand_str);
+    const std::string filename_prefix = "dSigma_RKstep"+std::to_string(rkStep);
+    saveIntegrand::Sigma_SDE<Q>(filename_prefix, file_Psi, it_Lambda, i2, v, i_in);
+
+}
 
 
 #endif //FPP_MFRG_PLOTINTEGRAND_H

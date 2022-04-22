@@ -555,7 +555,7 @@ public:
 
         /// Optimize grid parameters
         /// in first direction
-        if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<eliasGrid>>) {
+        if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type1, FrequencyGrid<eliasGrid>>) {
             double a_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale / 2.;
             double m_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale;
             double b_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale * 2;
@@ -564,7 +564,7 @@ public:
             frequencies_new.  primary_grid.update_Wscale(m_Wscale_b);
 
         }
-        else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<hybridGrid>>) {
+        else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type1, FrequencyGrid<hybridGrid>>) {
 
             std::array<double,2> section_boundaries_b = base_class::get_VertexFreqGrid().  primary_grid.pos_section_boundaries;
             vec<double> start_params_b = {section_boundaries_b[0], section_boundaries_b[1]};
@@ -578,7 +578,7 @@ public:
 
         /// in other direction(s)
         if constexpr (numberFrequencyDims > 1) {
-            if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<eliasGrid>>) {
+            if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type2, FrequencyGrid<eliasGrid>>) {
                 double a_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale / 2.;
                 double m_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale;
                 double b_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale * 2;
@@ -586,7 +586,7 @@ public:
                 minimizer(cost_f, a_Wscale_f, m_Wscale_f, b_Wscale_f, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
                 frequencies_new.secondary_grid.update_Wscale(m_Wscale_f);
             }
-            else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type, FrequencyGrid<hybridGrid>>) {
+            else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type2, FrequencyGrid<hybridGrid>>) {
                 std::array<double,2> section_boundaries_f = base_class::get_VertexFreqGrid().secondary_grid.pos_section_boundaries;
                 vec<double> start_params_f = {section_boundaries_f[0], section_boundaries_f[1]};
 
@@ -596,6 +596,7 @@ public:
                 frequencies_new.secondary_grid.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
             }
         }
+        /// no optimization for angular grid
         update_grid(frequencies_new, *this);
 
 

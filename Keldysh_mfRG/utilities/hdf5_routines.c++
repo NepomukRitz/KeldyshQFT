@@ -28,6 +28,7 @@ namespace hdf5_impl {
     void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose) {
         write_to_hdf_LambdaLayer<char>(group, "type", std::vector<char>({freqgrid.get_type()}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<int>(group, "diag_class", std::vector<int>({freqgrid.get_diag_class()}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<int>(group, "purely_positive", std::vector<int>({freqgrid.purely_positive}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<int>(group, "number_of_gridpoints", std::vector<int>({freqgrid.number_of_gridpoints}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(group, "w_upper", std::vector<double>({freqgrid.w_upper}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<double>(group, "w_lower", std::vector<double>({freqgrid.w_lower}), Lambda_it, numberLambdaLayers, file_exists);
@@ -47,6 +48,10 @@ namespace hdf5_impl {
             write_to_hdf_LambdaLayer<double>(group, "pos_section_boundaries1", std::vector<double>({freqgrid.pos_section_boundaries[1]}), Lambda_it,
                                              numberLambdaLayers, file_exists);
         }
+        else if constexpr(std::is_same_v<gridType,FrequencyGrid<angularGrid>>) {
+            write_to_hdf_LambdaLayer<int>(group, "number_of_intervals", std::vector<int>({freqgrid.number_of_intervals}),
+                                             Lambda_it, numberLambdaLayers, file_exists);
+        }
         else {
             assert(false);
         }
@@ -56,16 +61,18 @@ namespace hdf5_impl {
     void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, const int Lambda_it, const double Lambda) {
         std::vector<char> type;
         std::vector<int> diag_class;
+        std::vector<int> purely_positive;
         std::vector<int> number_of_gridpoints;
         std::vector<double> w_upper;
         std::vector<double> w_lower;
         read_from_hdf_LambdaLayer<char>(group, "type", type, Lambda_it);
         read_from_hdf_LambdaLayer<int>(group, "diag_class", diag_class, Lambda_it);
+        read_from_hdf_LambdaLayer<int>(group, "purely_positive", purely_positive, Lambda_it);
         read_from_hdf_LambdaLayer<int>(group, "number_of_gridpoints", number_of_gridpoints, Lambda_it);
         read_from_hdf_LambdaLayer<double>(group, "w_upper", w_upper, Lambda_it);
         read_from_hdf_LambdaLayer<double>(group, "w_lower", w_lower, Lambda_it);
 
-        gridType freqgrid_new(type[0], diag_class[0], Lambda);
+        gridType freqgrid_new(type[0], diag_class[0], Lambda, purely_positive[0]);
         freqgrid_new.w_upper = w_upper[0];
         freqgrid_new.w_lower = w_lower[0];
 
@@ -86,6 +93,11 @@ namespace hdf5_impl {
             read_from_hdf_LambdaLayer<double>(group, "pos_section_boundaries0", pos_section_boundaries0, Lambda_it);
             read_from_hdf_LambdaLayer<double>(group, "pos_section_boundaries1", pos_section_boundaries1, Lambda_it);
             freqgrid_new.pos_section_boundaries = std::array<double,2>({pos_section_boundaries0[0], pos_section_boundaries1[0]});
+        }
+        else if constexpr(std::is_same_v<gridType,FrequencyGrid<angularGrid>>){
+            std::vector<int> number_of_intervals;
+            read_from_hdf_LambdaLayer<int>(group, "number_of_intervals", number_of_intervals, Lambda_it);
+            freqgrid_new.number_of_intervals = number_of_intervals[0];
         }
         else {
             assert(false);

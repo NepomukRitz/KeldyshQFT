@@ -99,6 +99,10 @@ void check_input() {
     assert (nBOS2 == nFER2);
 #endif
 
+#if GRID==2
+    static_assert(INTERPOLATION!=linear, "Linear interpolation not possible for polar coordinates.");
+#endif
+
 #if not KELDYSH_FORMALISM
     static_assert(nFER % 2 == 0, "nFER must be an even number.");
 #endif

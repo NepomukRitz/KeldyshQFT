@@ -17,7 +17,7 @@
 
 template <typename Q>
 class PrecalculatedBubble{
-    using gridType = typename SelfEnergy<Q>::freqGrid_type::grid_type;
+    using gridType = typename SelfEnergy<Q>::freqGrid_type::grid_type1;
     const Bubble<Q> Helper_Bubble;
 
     void compute_FermionicBubble();

@@ -71,8 +71,8 @@ void LoopCalculator<Q,vertType, all_spins>::set_v_limits() {
     /// (i.e. (v,v',v) -> (v-v',*,*) and some transformations flip the sign of w=v-v',
     /// needing both extensions of the integration domain in both directions
     if (KELDYSH || ZERO_T){
-        v_lower = prop.selfenergy.Sigma.frequencies.primary_grid.w_lower;
-        v_upper = prop.selfenergy.Sigma.frequencies.primary_grid.w_upper;
+        v_lower = -Delta * 10.;
+        v_upper =  Delta * 10.;
     }
     else{
         // make sure that the limits for the Matsubara sum are fermionic

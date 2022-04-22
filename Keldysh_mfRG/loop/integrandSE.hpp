@@ -70,8 +70,8 @@ public:
     auto operator()(double vp) const -> return_type;
 
     void save_integrand() const;
-    void save_integrand(const rvec& freqs) const;
-    void get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im)  const;
+    void save_integrand(const rvec& freqs, const std::string& filename_prefix) const;
+    void get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals)  const;
 
 };
 
@@ -135,25 +135,25 @@ auto IntegrandSE<Q,vertType,all_spins,return_type>::operator()(const double vp) 
 }
 
 template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::get_integrand_vals(const rvec& freqs, rvec& integrand_re, rvec& integrand_im) const {
+void IntegrandSE<Q,vertType,all_spins,return_type>::get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals) const {
     int npoints = freqs.size();
+
     for (int i=0; i<npoints; ++i) {
 
         double vpp = freqs[i];
 
 
-        Q integrand_value;
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_value(1, 4);
+        //Q integrand_value;
 
-        integrand_value = (*this)(vpp);
+        integrand_value = (*this)(vpp).transpose();
+        integrand_vals.col(i) = integrand_value;
 
-        if (PARTICLE_HOLE_SYMMETRY && (!KELDYSH)){
-            integrand_re[i] = integrand_value;
-            integrand_im[i] = 0.;
-        }
-        else{
-            integrand_re[i] = myreal(integrand_value);
-            integrand_im[i] = myimag(integrand_value);
-        }
+        buffertype_vertex vertex_val = evaluate_vertex_vectorized(vpp);
+
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_val_temp = vertex_val;
+        vertex_val_temp.resize(16,1);
+        vertex_vals.col(i) = vertex_val_temp;
     }
 
 
@@ -176,27 +176,30 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand() const {
         freqs[i] = vpp;
     }
 
-    save_integrand(freqs);
+    save_integrand(freqs, "");
 
 }
 
 template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand(const rvec& freqs) const {
+void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
     int npoints = freqs.size();
 
-    rvec integrand_re (npoints);
-    rvec integrand_im (npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_vals(4, npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_vals(VECTORIZED_INTEGRATION ? 16 : 1, npoints);
 
-    get_integrand_vals(freqs, integrand_re, integrand_im);
+    get_integrand_vals(freqs, integrand_vals, vertex_vals);
 
-    std::string filename = data_dir + "integrand_SE";
+    std::string filename = data_dir + filename_prefix + "integrand_SE";
     filename += //"_i0=" + std::to_string(i0)       /// TODO: add this when Elias interchanged order of integration and Keldysh sum
                 //+ "_i2=" + std::to_string(i2)
                 + "_v=" + std::to_string(v);
     filename += + ".h5";
-    write_h5_rvecs(filename,
-                   {"v", "integrand_re", "integrand_im"},
-                   {freqs, integrand_re, integrand_im});
+
+    print("saving integrand to file ", filename, "\n");
+    H5::H5File file(filename, H5F_ACC_TRUNC);
+    write_to_hdf(file, "v", freqs, false);
+    write_to_hdf(file, "integrand", integrand_vals, false);
+    write_to_hdf(file, "vertex", vertex_vals, false);
 }
 
 template<typename Q, vertexType vertType, bool all_spins, typename return_type>

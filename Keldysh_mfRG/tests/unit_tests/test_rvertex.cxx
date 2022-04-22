@@ -115,7 +115,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
 
     SECTION( "Is K1 correctly updated??" ) {
-#ifndef HYBRID_GRID
+#if GRID == 0
         if (INTERPOLATION==linear) {
             auto bfreqK1 = testvertex1.K1.get_VertexFreqGrid();
             double Wscale_old = bfreqK1.primary_grid.W_scale;
@@ -154,7 +154,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
     }
     if (MAX_DIAG_CLASS>1) {
         SECTION( "Is K2 correctly updated??" ) {
-#ifndef HYBRID_GRID
+#if GRID == 0
             if (INTERPOLATION==linear) {
                 rvert<state_datatype>::freqGrid_type_K2 bfreqK2 = testvertex1.K2.get_VertexFreqGrid();
                 double Wscale_old_b = bfreqK2.  primary_grid.W_scale;
@@ -207,7 +207,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
     if (MAX_DIAG_CLASS>2) {
         SECTION( "Is K3 correctly updated??" ) {
-#ifndef HYBRID_GRID
+#if GRID == 0
             if (INTERPOLATION==linear) {
                 rvert<state_datatype>::freqGrid_type_K3 bfreqK3 = testvertex1.K3.get_VertexFreqGrid();
                 double Wscale_old_b = bfreqK3.  primary_grid.W_scale;

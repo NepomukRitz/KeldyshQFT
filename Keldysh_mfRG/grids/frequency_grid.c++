@@ -20,7 +20,12 @@ void FrequencyGrid<eliasGrid>::initialize_grid() {
         }
         auxiliary_grid[i]= t_from_frequency(all_frequencies[i]);
     }
-    if (number_of_gridpoints % 2 == 1) {
+
+    if (purely_positive) {
+        all_frequencies[0] = 0.;
+        auxiliary_grid[0] = 0.;
+    }
+    if (number_of_gridpoints % 2 == 1 and not purely_positive) {
         all_frequencies[(int) number_of_gridpoints / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
         auxiliary_grid[(int) number_of_gridpoints / 2] = 0.;
     }
@@ -43,7 +48,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                     number_of_gridpoints = nBOS;
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
-                        Delta_factor = 5.;
+                        Delta_factor = 10.;
                     }
                     else {
                         U_factor = 40./3.;
@@ -75,8 +80,8 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                     number_of_gridpoints = nBOS2;
                     #ifdef ROTATEK2
                     if (KELDYSH){
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
+                            U_factor = 0.;
+                            Delta_factor = 5.;
                         }
                         else{
                             U_factor = 10./3.;
@@ -98,8 +103,8 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                     #ifdef ROTATEK2
                     /// Needs to be the same as for 'b'!!!
                     if (KELDYSH) {
-                        U_factor = 10. / 3.;
-                        Delta_factor = 10.;
+                        U_factor = 0.;
+                        Delta_factor = 5.;
                     }
                     else {
                         U_factor = 10./3.;
@@ -198,6 +203,7 @@ auto FrequencyGrid<eliasGrid>::get_grid_index(const double w_in) const -> int {
  */
 auto FrequencyGrid<eliasGrid>::get_grid_index(double& t, double w_in) const -> int {
     t = t_from_frequency(w_in);
+    assert(isfinite(t));
 #ifdef PARAMETRIZED_GRID
 
     double t_rescaled = (t - t_lower) / spacing_auxiliary_gridpoint;
@@ -429,7 +435,7 @@ void FrequencyGrid<hybridGrid>::derive_auxiliary_parameters() {
     recip_slope_lin = t_upper*w_upper / (temp_quad);
     factor_rat = pos_section_boundaries[1]*pos_section_boundaries[1] / (temp);
     rescale_rat = (t_upper * w_upper * temp) / temp_quad;
-    spacing_auxiliary_gridpoint = 2.*t_upper / ((double)number_of_gridpoints - 1.);
+    spacing_auxiliary_gridpoint = (t_upper - t_lower) / ((double)number_of_gridpoints - 1.);
 
 
 
@@ -495,9 +501,16 @@ void FrequencyGrid<hybridGrid>::guess_essential_parameters(const double Lambda) 
             break;
     }
 
-    w_lower = -w_upper;
     t_upper = ((double) number_of_gridpoints - 1) * 0.5;
-    t_lower =-((double) number_of_gridpoints - 1) * 0.5;
+
+    if (purely_positive) {
+        w_lower = 0;
+        t_lower = 0;
+    }
+    else {
+        w_lower = -w_upper;
+        t_lower =-((double) number_of_gridpoints - 1) * 0.5;
+    }
     all_frequencies = rvec(number_of_gridpoints);
     auxiliary_grid = rvec(number_of_gridpoints);
     initialize_grid();
@@ -561,7 +574,11 @@ void FrequencyGrid<hybridGrid>::initialize_grid() {
             else             all_frequencies[i] = round2ffreq(all_frequencies[i]);
         }
     }
-    if (number_of_gridpoints % 2 == 1) {
+    if (purely_positive) {
+        all_frequencies[0] = 0.;
+        auxiliary_grid[0] = 0.;
+    }
+    if (number_of_gridpoints % 2 == 1 and not purely_positive) {
         all_frequencies[(int) number_of_gridpoints / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
         auxiliary_grid[(int) number_of_gridpoints / 2] = 0.;
     }
@@ -592,6 +609,129 @@ int FrequencyGrid<hybridGrid>::get_grid_index(double& t, const double frequency)
     auto index = ((int) ((t - t_lower) / spacing_auxiliary_gridpoint + 0.1 )) ;
 #else
     assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
+    int index = int((t - t_lower) + 1e-12);
+    index = std::max(0, index);
+    index = std::min(number_of_gridpoints - 2, index);
+#endif
+    assert(auxiliary_grid[index] <= t + inter_tol);
+    assert(auxiliary_grid[index+1] >= t - inter_tol);
+    return index;
+}
+
+
+
+/*******************************************    ANGULAR GRID    *****************************************************/
+
+
+void FrequencyGrid<angularGrid>::derive_auxiliary_parameters() {
+    spacing_auxiliary_gridpoint = (t_upper - t_lower) / (number_of_gridpoints - 1);
+    half_of_interval_length_for_t = (t_upper - t_lower) * 0.5 / number_of_intervals;
+    half_of_interval_length_for_w = (w_upper - w_lower) * 0.5 / number_of_intervals;
+}
+
+void FrequencyGrid<angularGrid>::guess_essential_parameters(const double Lambda) {
+    const double Delta = (glb_Gamma + Lambda) * 0.5;
+
+    switch (diag_class) {
+        case 1:
+            // nonsensical for 1D objects
+            number_of_gridpoints = nBOS;
+            w_upper = 2*M_PI;
+            number_of_intervals = 1;
+            break;
+        case 2:
+            if (type == 'b') {
+                assert(false);
+            }
+            else {
+                assert(type == 'f');
+                number_of_gridpoints = nFER2;
+                w_upper = 2*M_PI;
+                number_of_intervals = 8;
+                assert( (number_of_gridpoints - 1) % number_of_intervals == 0);
+            }
+            break;
+        case 3:
+            /// TODO: investigate structure in K3 and implement suitable grid
+            if (type == 'b') {
+                number_of_gridpoints = nBOS3;
+                number_of_intervals = 8;
+                w_upper = M_PI;
+            }
+            else {
+                assert(type == 'f');
+                number_of_gridpoints = nFER3;
+                number_of_intervals = 8;
+                w_upper = 2*M_PI;
+            }
+            break;
+        default:
+            break;
+    }
+
+    t_upper = ((double) number_of_gridpoints - 1);
+
+    w_lower = 0;
+    t_lower = 0;
+    all_frequencies = rvec(number_of_gridpoints);
+    auxiliary_grid = rvec(number_of_gridpoints);
+    initialize_grid();
+}
+
+double FrequencyGrid<angularGrid>::frequency_from_t(const double t) const {
+    const double i_interval = floor( (t + half_of_interval_length_for_t) * number_of_intervals / t_upper );
+    const double remainder  = t / half_of_interval_length_for_t - i_interval * 2;
+    const double result = ( i_interval + 0.5 * remainder * std::abs(remainder)) * w_upper / ((double) number_of_intervals);
+    assert(isfinite(result));
+    return result;
+
+}
+
+double FrequencyGrid<angularGrid>::t_from_frequency(const double w) const {
+    const double i_interval = floor( (w + half_of_interval_length_for_w) * number_of_intervals / w_upper );
+    const double remainder  = w / half_of_interval_length_for_w - i_interval * 2;
+    const double result = ( i_interval + 0.5 * sqrt(std::abs(remainder)) * sgn(remainder)) * t_upper / ((double) number_of_intervals);
+    assert(isfinite(result));
+    assert(result >= 0);
+    return result;
+}
+
+void FrequencyGrid<angularGrid>::initialize_grid() {
+    derive_auxiliary_parameters();
+
+    for (int i = 0; i < number_of_gridpoints; i++) {
+        const double t = t_lower + spacing_auxiliary_gridpoint * (double)i;
+        auxiliary_grid[i] = t;
+        all_frequencies[i] = frequency_from_t(t);
+    }
+    all_frequencies[0] = 0.;
+    auxiliary_grid[0] = 0.;
+}
+
+int FrequencyGrid<angularGrid>::get_grid_index(const double frequency)const {
+    /// Do I need this? The next function basically does the same
+    const double t = t_from_frequency(frequency);
+#ifdef DENSEGRID
+    static_assert(false, "angularGrid makes no sense for dense grid");
+#else
+    assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
+    int index = int((t - t_lower) + 1e-12);
+    index = std::max(0, index);
+    index = std::min(number_of_gridpoints - 2, index);
+#endif
+    //assert(all_frequencies[index] <= frequency + (std::abs(frequency)+1)*1e-12);
+    //assert(all_frequencies[index+1] >= frequency);
+    assert(auxiliary_grid[index] <= t+inter_tol);
+    assert(auxiliary_grid[index+1] >= t-inter_tol);
+    return index;
+}
+
+
+int FrequencyGrid<angularGrid>::get_grid_index(double& t, const double frequency) const{
+    t = t_from_frequency(frequency);
+#ifdef DENSEGRID
+    static_assert(false, "angularGrid makes no sense for dense grid");
+#else
     int index = int((t - t_lower) + 1e-12);
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);

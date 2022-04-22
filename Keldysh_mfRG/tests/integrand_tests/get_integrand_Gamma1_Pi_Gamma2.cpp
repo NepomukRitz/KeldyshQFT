@@ -11,7 +11,7 @@ auto main(int argc, char * argv[]) -> int {
 #else
     std::string job = "_unrotK2";
 #endif
-    data_dir = "../Data_KF" + job + "/";
+    data_dir = "../Data_KF" + job + (USE_FDT ? "useFDT" : "noFDT") + "/";
     std::string dir_str;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, i_in;

@@ -534,6 +534,7 @@ namespace hdf5_impl {
             write_to_hdf(group_params, "epsilon", glb_epsilon, file_exists);
             write_to_hdf(group_params, "V", glb_V, file_exists);
             write_to_hdf(group_params, "ODEsolver", ODEsolver, file_exists);
+            write_to_hdf(group_params, "GRID", GRID, file_exists);
         }
 
         H5::Group group_freqparams;

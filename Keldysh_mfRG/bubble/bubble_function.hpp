@@ -180,7 +180,7 @@ void BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmet
         vmax = dgamma.avertex().K1.frequencies.get_wupper_b();
     }
     else{
-        vmin = Delta * 10.; // std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
+        vmin =-Delta * 10.; // std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
         vmax = Delta * 10.; // std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_upper);
     }
 
@@ -534,7 +534,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
         if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK2(dgamma.get_rvertex(channel));
     }
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and USE_FDT
     compute_components_through_FDTs(dgamma.half1(), dgamma.half1(), dgamma.half1(), channel);
 #endif
 }
@@ -560,7 +560,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
         if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK3(dgamma.get_rvertex(channel));
     }
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and USE_FDT
     compute_components_through_FDTs(dgamma.half1(), dgamma.half1(), dgamma.half1(), channel);
 #endif
 }
@@ -714,7 +714,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
             trafo = dgamma.get_rvertex(channel).freq_transformations.K1[i0][sign_w];
 
-#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and defined(USE_FDT)
+#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
             if (is_zero_due_to_FDTs<k1>(i0, w, 0, 0, channel)) trafo = -1; // components zero according to FDTs
 #endif // CONTOUR_BASIS
         } // VECTORIZED_INTEGRATION
@@ -758,7 +758,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         if constexpr(!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
             trafo = 0;
         }
-    #if defined(USE_FDT)
+    #if USE_FDT
         if (EQUILIBRIUM and ! HUBBARD_MODEL) {
     #if CONTOUR_BASIS != 1
         switch (channel) {
@@ -775,7 +775,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                 break;
         }
     #else
-    #if defined(ZERO_TEMP) and defined(USE_FDT)
+    #if defined(ZERO_TEMP) and USE_FDT
         if (is_zero_due_to_FDTs<k2>(i0, w, v, 0, channel)) trafo = -1; // components zero according to FDTs
     #endif //ZERO_TEMP
     #endif // CONTOUR_BASIS
@@ -831,7 +831,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                 //std::cout << "omitted frequencies: " << v << "\t" << vp << std::endl;
                 //std::cout << "with limits " << vertex1.avertex().K3.frequencies.get_wlower_f() << std::endl;
             }
-#if defined(USE_FDT)
+#if USE_FDT
             if (EQUILIBRIUM and ! HUBBARD_MODEL) {
 #if CONTOUR_BASIS != 1
                 if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration

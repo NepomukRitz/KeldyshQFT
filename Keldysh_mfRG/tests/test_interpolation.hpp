@@ -36,7 +36,7 @@ public:
     void save_integrand(double vmax) {
         int npoints = 1e5;
         /// K1:
-        typename rvert<Q>::freqGrid_type_K1::grid_type bfreqs = FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().get_freqGrid_b();
+        typename rvert<Q>::freqGrid_type_K1::grid_type1 bfreqs = FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().get_freqGrid_b();
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);

@@ -706,7 +706,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     deviations_K1.at(idx) = deviation;
                 }
 
-    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and defined(USE_FDT)
+    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
                 if (is_zero_due_to_FDTs<k1>(itK, w, 0, 0, channel)) deviations_K1.at(idx) = value_direct;
     #endif
 
@@ -768,7 +768,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     deviation = value_direct - result_freqsymm;
                     deviations_K2.at(idx) = deviation;
 
-    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and defined(USE_FDT)
+    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
                     if (is_zero_due_to_FDTs<k2>(itK, w, v, 0, channel)) deviations_K2.at(idx) = value_direct;
     #endif
                 }
@@ -853,7 +853,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     deviation = value_direct - result_freqsymm;
                     deviations_K3.at(idx) = deviation;
 
-    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and defined(USE_FDT)
+    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
                     if (is_zero_due_to_FDTs<k3>(itK, w, v, vp, channel)) deviations_K3.at(idx) = value_direct;
     #endif
                 }

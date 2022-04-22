@@ -1,19 +1,28 @@
 /**
  * Set up the frequency grid //
  * Functions that initialize the grid and provide conversion between doubles and grid indices.
+ * The grid points are obtained as follows:
+ *      The values of t are evenly distributed between t_lower and t_upper.
+ *      The frequencies w(t) are obtained according to a function.
  * Three different grid types:
- * GRID=1: log grid -- to be implemented
- * GRID=2: linear grid
- * GRID=3: non-linear grid in different versions:
+ * GRID=0: non-linear grid according to a function in every direction:
+ *  W_scale determines 'how non-linear' the grid behaves.
  *     version 1: w(t) = W_scale t  /sqrt(1 - t^2)
  *     version 2: w(t) = W_scale t^2/sqrt(1 - t^2)
  *     version 3: w(t) = W_scale t  /    (1 - t^2)
  *     version 4: w(t) = W_scale t^2/    (1 - t^2)
- * The grid points are obtained as follows:
- *  The values of t are evenly distributed between t_lower and t_upper on a sub-interval of [-1,1].
- *  The frequencies w(t) are obtained according to the function.
- *  W_scale determines 'how non-linear' the grid behaves.
- * GRID=4: tangent grid w = c1 * tan( c2 * i + c3 )
+ * GRID=1: hybrid grid with
+ *     quadratic part -- linear part -- rational part
+ * GRID=2: polar coordinates
+ *     2D: (w/2, v) = rho * (cos phi, sin phi)
+ *     3D: /// TODO
+ */
+
+/**
+ * Things to do when introducing a new grid:
+ *      write new template specialization for FrequencyGrid
+ *      adapt hdf5_utilities
+ *      adapt grid optimization
  */
 
 #ifndef KELDYSH_MFRG_FREQUENCY_GRID_HPP
@@ -50,7 +59,7 @@ namespace hdf5_impl {
     template<typename gridType> void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose);
 }
 
-enum frequencyGridType {eliasGrid, hybridGrid};
+enum frequencyGridType {eliasGrid, hybridGrid, angularGrid};
 
 template <frequencyGridType freqGridType>
 class FrequencyGrid {};
@@ -78,6 +87,7 @@ public:
     /// grid identifier
     char type;
     unsigned int diag_class;
+    bool purely_positive;
 
     /// auxiliary grid parameters:
     double t_upper;                     // upper bound of auxiliary grid
@@ -96,7 +106,7 @@ public:
 public:
 
     ///This constructor initializes a frequency grid with the global values. This is not needed anymore!
-    FrequencyGrid(char type_in, unsigned int diag_class_in, double Lambda) : type(type_in), diag_class(diag_class_in) {
+    FrequencyGrid(char type_in, unsigned int diag_class_in, double Lambda, bool purely_positive=false) : type(type_in), diag_class(diag_class_in), purely_positive(purely_positive) {
         guess_essential_parameters(Lambda);
     };
 
@@ -131,7 +141,12 @@ public:
 #endif
         }
         w_upper = wmax_in;
-        w_lower =-wmax_in;
+        if (purely_positive) {
+            w_lower = 0;
+        }
+        else {
+            w_lower = -wmax_in;
+        }
 
         if constexpr(!KELDYSH && !ZERO_T)
         {
@@ -188,6 +203,7 @@ public:
     /// grid identifier:
     char type;
     int diag_class;
+    bool purely_positive;
 
     /// auxiliary grid parameters:
     double t_upper;                    // largest point on auxiliary grid
@@ -211,7 +227,7 @@ public:
 
 public:
     /// constructor:
-    FrequencyGrid(const char type_in, const unsigned int diag_class_in, const double Lambda) : type(type_in), diag_class(diag_class_in) {
+    FrequencyGrid(const char type_in, const unsigned int diag_class_in, const double Lambda, const bool purely_positive=false) : type(type_in), diag_class(diag_class_in), purely_positive(purely_positive) {
 #ifndef DENSEGRID
         assert(KELDYSH || ZERO_T);  // for Matsubara T>0 only allow dense grid
 #endif
@@ -251,17 +267,104 @@ public:
 };
 
 
+template<>
+class FrequencyGrid<angularGrid> {
+    template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type>
+    friend class DataContainer;
+
+public:
+    /// essential grid parameters:
+    int number_of_gridpoints;                       // total number of gridpoints
+    double w_upper;                                 // largest  angle
+    double w_lower;                                 // smallest angle
+    int number_of_intervals;    // defines the number of intervals between w_lower and w_upper on which we have quadratic functions
+
+    /// guess essential parameters from value of Lambda
+    void guess_essential_parameters(double Lambda);
+
+//private:
+
+    /// grid identifier:
+    char type;
+    int diag_class;
+    bool purely_positive;
+
+    /// auxiliary grid parameters:
+    double t_upper;                    // largest point on auxiliary grid
+    double t_lower;                    // smallest point on auxiliary grid
+
+    double spacing_auxiliary_gridpoint;  // linear spacing on auxiliary grid for t
+    double half_of_interval_length_for_t;
+    double half_of_interval_length_for_w;
+    void derive_auxiliary_parameters();     // derive auxiliary parameters from
+
+    /// list of all frequencies:
+    rvec all_frequencies;           // contains all frequencies w
+    rvec auxiliary_grid;            // contains all t such that w(t) is the frequency
+
+    /// grid functions:
+    double frequency_from_t(double t) const;
+    double t_from_frequency(double w) const;
+
+
+public:
+    /// constructor:
+    FrequencyGrid(const char type_in, const unsigned int diag_class_in, const double Lambda, const bool purely_positive) : type(type_in), diag_class(diag_class_in), purely_positive(purely_positive) {
+#ifndef DENSEGRID
+        assert(KELDYSH || ZERO_T);  // for Matsubara T>0 only allow dense grid
+#else
+        assert(false);
+#endif
+        guess_essential_parameters(Lambda);
+        initialize_grid();
+    }
+
+    ///getter functions:
+    double get_frequency(const int index) const {assert(index>=0); return all_frequencies[index];};
+    double get_auxiliary_gridpoint(const int index) const {assert(index>=0); assert(index<number_of_gridpoints); return auxiliary_grid[index];};
+    const rvec& get_all_frequencies() const {return all_frequencies;};
+    const rvec& get_all_auxiliary_gridpoints() const {return auxiliary_grid;};
+    double get_spacing_auxiliary_gridpoints() const {return spacing_auxiliary_gridpoint;}
+    char get_type() const {return type;};
+    char get_diag_class() const {return diag_class;};
+
+    /// setter functions:
+    void set_essential_parameters(double wmax_in, double number_of_intervals_in) {
+        w_upper = wmax_in;
+        w_lower = 0.;
+        number_of_intervals = number_of_intervals_in;
+    }
+    void set_w_upper(double wmax) {
+        set_essential_parameters(wmax, number_of_intervals);
+    }
+    void initialize_grid();
+    void update_number_of_intervals(double number_of_intervals_in) {
+        number_of_intervals = number_of_intervals_in;
+        initialize_grid();
+    }
+
+    /// core grid functionality (has to be super efficient)
+    int get_grid_index(double frequency)const;
+    int get_grid_index(double& t, double frequency) const;
+
+
+};
 
 template<K_class k>
 class bufferFrequencyGrid {
 public:
-#ifdef HYBRID_GRID
-     using grid_type = FrequencyGrid<hybridGrid>;
-#else
-     using grid_type = FrequencyGrid<eliasGrid>;
+#if GRID == 0
+     using grid_type1 = FrequencyGrid<eliasGrid>;
+     using grid_type2 = FrequencyGrid<eliasGrid>;
+#elif GRID == 1
+     using grid_type1 = FrequencyGrid<hybridGrid>;
+     using grid_type2 = FrequencyGrid<hybridGrid>;
+#else // GRID == 2
+    using grid_type1 = FrequencyGrid<eliasGrid>;
+    using grid_type2 = FrequencyGrid<k==k2 ? angularGrid : eliasGrid>;
 #endif
-    grid_type   primary_grid;
-    grid_type secondary_grid;
+    grid_type1   primary_grid;
+    grid_type2 secondary_grid;
 
     int get_diagclass() {
         if constexpr(k == selfenergy or k == k1) return 1;
@@ -269,8 +372,8 @@ public:
         else return 3;
     }
 
-    bufferFrequencyGrid() :    primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), 0), secondary_grid('f', get_diagclass(), 0) {};
-    bufferFrequencyGrid(double Lambda) :   primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), Lambda), secondary_grid('f', get_diagclass(), Lambda) {};
+    bufferFrequencyGrid() :    primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), 0, GRID==2), secondary_grid('f', get_diagclass(), 0, GRID==2) {};
+    bufferFrequencyGrid(double Lambda) :   primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), Lambda, GRID==2 and (k==k2 or k==k2b)), secondary_grid('f', get_diagclass(), Lambda, GRID==2 and (k==k2 or k==k2b)) {};
 
     void guess_essential_parameters(double Lambda) {
           primary_grid.guess_essential_parameters(Lambda);
@@ -278,8 +381,8 @@ public:
     }
 
     /// getter functions:
-    auto get_freqGrid_b() const -> const grid_type& {return   primary_grid;};
-    auto get_freqGrid_f() const -> const grid_type& {if constexpr(k != k1 and k != selfenergy)return secondary_grid; else assert(false);};//, "Exists no fermionic grid");};
+    auto get_freqGrid_b() const -> const grid_type1& {return   primary_grid;};
+    auto get_freqGrid_f() const -> const grid_type2& {if constexpr(k != k1 and k != selfenergy)return secondary_grid; else assert(false);};//, "Exists no fermionic grid");};
     const double& get_wlower_b() const {return   primary_grid.w_lower;};
     const double& get_wupper_b() const {return   primary_grid.w_upper;};
     const double& get_wlower_f() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.w_lower; else assert(false);};//, "Exists no second grid");};
@@ -320,9 +423,8 @@ public:
         if constexpr(k == k2)  {
             double w  = freqs[0];
             double v  = freqs[1];
-    #ifdef ROTATEK2
             K2_convert2internalFreqs(w, v);
-    #endif
+
             int iw =   primary_grid.get_grid_index(w);
             int iv = secondary_grid.get_grid_index(v);
             idx[0] = iw;
@@ -376,9 +478,8 @@ public:
         if constexpr(k == k2)  {
             double w  = freqs[0];
             double v  = freqs[1];
-    #ifdef ROTATEK2
             K2_convert2internalFreqs(w, v);
-    #endif
+
             double tw, tv;
             int iw =   primary_grid.get_grid_index(tw, w);
             int iv = secondary_grid.get_grid_index(tv, v);
@@ -434,9 +535,8 @@ public:
         if constexpr(k == k2)  {
             double w  = freqs[0];
             double v  = freqs[1];
-    #ifdef ROTATEK2
             K2_convert2internalFreqs(w, v);
-    #endif
+
             double tw, tv;
             int iw =   primary_grid.get_grid_index(tw, w);
             int iv = secondary_grid.get_grid_index(tv, v);
