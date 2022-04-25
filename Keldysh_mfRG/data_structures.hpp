@@ -39,7 +39,7 @@ template <typename T> double myabs(const T& x) {
 }
 
 template <typename T> T myzero() {
-    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double>) {
+    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double> or std::is_same_v<T, int>) {
         return (T)0.;
     }
     else {

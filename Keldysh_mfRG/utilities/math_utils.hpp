@@ -975,6 +975,8 @@ template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t)
 /// converts the frequencies to the parametrization that is used internally, e.g. rotate frequency plane
 void K2_convert2internalFreqs(double &w, double &v);
 void K2_convert2naturalFreqs(double &w, double &v);
+void K3_convert2internalFreqs(double &w, double &v, double &vp);
+void K3_convert2naturalFreqs(double &w, double &v, double &vp);
 
 
 /// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].

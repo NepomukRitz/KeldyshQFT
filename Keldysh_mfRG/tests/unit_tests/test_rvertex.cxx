@@ -99,7 +99,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
     if (MAX_DIAG_CLASS>2) {
         for (int iw = 0; iw < nBOS3; iw++) {
             for (int iv = 0; iv < nFER3; iv++) {
-                for (int ivp = 0; ivp < nFER3; ivp++) {
+                for (int ivp = 0; ivp < (GRID != 2 ? nFER3 : (nFER3-1)/2+1); ivp++) {
                     double w, v, vp;
                     testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
                     auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp);

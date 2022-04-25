@@ -95,12 +95,20 @@ auto main() -> int {
 
 
     /// Data directory
-    std::string job = "U=" + std::to_string(glb_U);
+    std::string job;
+    //job = "U=" + std::to_string(glb_U);
+#ifdef ROTATEK2
+  job = "_rotK2";
+#else
+  job = "_unrotK2";
+#endif
+    //job = "_SOPT";
+
 #if KELDYSH_FORMALISM
 #if DEBUG_SYMMETRIES
     data_dir = "../Data_KF_debug/";
 #else
-    data_dir = "../Data_KF" + job + "/";
+    data_dir = "../Data_KF" + job + "_GRID" + std::to_string(GRID) + "/";
 #endif
 #else
     #if DEBUG_SYMMETRIES
@@ -118,23 +126,35 @@ auto main() -> int {
 
     //
     //test_PT4(0.5, true);
-    //test_PT_state<state_datatype>( data_dir+filename, 1.8, true);
+    //test_PT_state<state_datatype>( data_dir+filename, 1.8, false);
     //test_interpolate_K12<state_datatype>(1.8);
     //test_compare_with_Vienna_code();
     //findBestWscale4K1<state_datatype>(1.8);
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
-    std::string name = data_dir+filename+job;
     //n_loop_flow(name,  true);
-    //test_symmetries(19.8);
+    test_symmetries(19.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
-    const int N_ODE = 100;
-    double Lambda_i = 19.8;
-    double Lambda_f =  0.8;
-    test_rhs_bubbles_flow_wstate<state_datatype>(N_ODE, Lambda_i, Lambda_f, true);
+    //const int N_ODE = 100;
+    //double Lambda_i = 19.8;
+    //double Lambda_f =  0.8;
+    //test_rhs_bubbles_flow_wstate<state_datatype>(N_ODE, Lambda_i, Lambda_f, true);
 
+    /*
+    vec<double> integrator_tols = {1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10};
+    filename = generate_filename();
+    for (double tol: integrator_tols) {
+        integrator_tol = tol;
+        std::stringstream ss;
+        ss << tol;
+        job = "_tol=" + ss.str();
+        std::string name = data_dir+filename+job;
+
+        test_PT_state<state_datatype>( name, 1.8, false);
+    }
+    */
 
 
     print("Hello world \n");

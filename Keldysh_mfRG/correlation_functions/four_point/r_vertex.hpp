@@ -718,7 +718,15 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         //rvec deviations_K2(getFlatSize(K2.get_dims()));
         //rvec deviations_K2b(getFlatSize(K2b.get_dims()));
         multidimensional::multiarray<Q, 5> deviations_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> original_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> symmrel_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> trafo_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> w_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> v_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> conj_K2(K2.get_dims());
         multidimensional::multiarray<Q, 5> deviations_K2b(K2b.get_dims());
+        multidimensional::multiarray<Q, 5> original_K2b(K2b.get_dims());
+        multidimensional::multiarray<Q, 5> symmrel_K2b(K2b.get_dims());
         if (MAX_DIAG_CLASS > 1) {
             // K2:
             for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
@@ -735,9 +743,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 VertexInput input(iK, ispin, w, v, 0., i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
                 Q value_direct = read_symmetryreduced_rvert<k2>(indices, *this);
+                original_K2.at(idx) = value_direct;
 
                 const rvert<Q> &readMe = symmetry_reduce<k2>(input, indices, rvert_this, rvert_crossing);
                 Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+                symmrel_K2.at(idx) = value_symmet;
 
                 Q deviation = value_direct - value_symmet;
                 if (components.K(k2, input.spin, input.iK) != -1) {// zero component is not being computed anyway
@@ -765,6 +775,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     //indices.iK = itK;
 
                     Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
+                    symmrel_K2.at(idx) = result_freqsymm;
+                    trafo_K2.at(idx) = trafo_index;
+                    conj_K2.at(idx) = indices.conjugate;
+                    w_K2.at(idx) = indices.w;
+                    v_K2.at(idx) = indices.v1;
                     deviation = value_direct - result_freqsymm;
                     deviations_K2.at(idx) = deviation;
 
@@ -793,9 +808,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
                 Q value_direct = read_symmetryreduced_rvert<k2b>(indices, *this);
+                original_K2b.at(idx) = value_direct;
 
                 const rvert<Q> &readMe = symmetry_reduce<k2b>(input, indices, rvert_this, rvert_crossing);
                 Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+                symmrel_K2b.at(idx) = value_symmet;
 
                 Q deviation = value_direct - value_symmet;
                 if (components.K[k2b, input.spin, input.iK] != -1) {// zero component is not being computed anyway
@@ -809,6 +826,8 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
         //rvec deviations_K3(getFlatSize(K3.get_dims()));
         multidimensional::multiarray<Q, 6> deviations_K3(K3.get_dims());
+        multidimensional::multiarray<Q, 6> original_K3(K3.get_dims());
+        multidimensional::multiarray<Q, 6> symmrel_K3(K3.get_dims());
         if (MAX_DIAG_CLASS > 2) {
             // K3:
             for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
@@ -826,9 +845,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 VertexInput input(iK, ispin, w, v, vp, i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
                 Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
+                original_K3.at(idx) = value_direct;
 
                 const rvert<Q> &readMe = symmetry_reduce<k3>(input, indices, rvert_this, rvert_crossing);
                 Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
+                symmrel_K3.at(idx) = value_symmet;
 
                 Q deviation = value_direct - value_symmet;
                 if (components.K[k1, input.spin, input.iK] != -1) { // zero component is not being computed anyway
@@ -852,8 +873,10 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
                     deviation = value_direct - result_freqsymm;
                     deviations_K3.at(idx) = deviation;
+                    symmrel_K3.at(idx) = result_freqsymm;
 
-    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
+
+#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
                     if (is_zero_due_to_FDTs<k3>(itK, w, v, vp, channel)) deviations_K3.at(idx) = value_direct;
     #endif
                 }
@@ -868,9 +891,19 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
     if constexpr(MAX_DIAG_CLASS > 1) {
         write_to_hdf(file, "K2", deviations_K2 * (1 / K2.get_vec().max_norm()), false);
         write_to_hdf(file, "K2b", deviations_K2b * (1 / K2b.get_vec().max_norm()), false);
+        write_to_hdf(file, "K2_original", original_K2, false);
+        write_to_hdf(file, "K2_symmet", symmrel_K2, false);
+        write_to_hdf(file, "K2_trafo", trafo_K2, false);
+        write_to_hdf(file, "K2_conj", conj_K2, false);
+        write_to_hdf(file, "K2_w", w_K2, false);
+        write_to_hdf(file, "K2_v", v_K2, false);
+        write_to_hdf(file, "K2b_original", original_K2b, false);
+        write_to_hdf(file, "K2b_symmet", symmrel_K2b, false);
     }
     if constexpr(MAX_DIAG_CLASS > 2) {
         write_to_hdf(file, "K3", deviations_K3 * (1 / K3.get_vec().max_norm()), false);
+        write_to_hdf(file, "K3_original", original_K3, false);
+        write_to_hdf(file, "K3_symmet", symmrel_K3, false);
     }
         file.close();
 
@@ -1037,6 +1070,7 @@ template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) c
     write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().secondary_grid.get_all_frequencies(), false);
     write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().  primary_grid.get_all_frequencies(), false);
     write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().secondary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "3freqs3", K3_symmetry_expanded.get_VertexFreqGrid(). tertiary_grid.get_all_frequencies(), false);
 
     file.close();
 

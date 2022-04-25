@@ -139,36 +139,16 @@ void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
 Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
 // set channel-specific frequency ranges and prefactor (1, 1, -1 for a, p, t) for sum over spins.
-    switch (channel) {
-        case 'a':
-            nw1_w = nw1_a;
-            nw2_w = nw2_a;
-            nw2_v = nv2_a;
-            nw3_w = nw3_a;
-            nw3_v = nv3_a;
-            nw3_v_p = nv3_a;
-            prefactor = 1.;
-            break;
-        case 'p':
-            nw1_w = nw1_p;
-            nw2_w = nw2_p;
-            nw2_v = nv2_p;
-            nw3_w = nw3_p;
-            nw3_v = nv3_p;
-            nw3_v_p = nv3_p;
-            prefactor = 1.;
-            break;
-        case 't':
-            nw1_w = nw1_t;
-            nw2_w = nw2_t;
-            nw2_v = nv2_t;
-            nw3_w = nw3_t;
-            nw3_v = nv3_t;
-            nw3_v_p = nv3_t;
-            prefactor = -1.;
-            break;
-        default: ;
-    }
+
+    nw1_w = dgamma.get_rvertex(channel).K1.get_dims()[my_defs::K1::omega];
+    nw2_w = dgamma.get_rvertex(channel).K2.get_dims()[my_defs::K2::omega];
+    nw2_v = dgamma.get_rvertex(channel).K2.get_dims()[my_defs::K2::nu];
+    nw3_w = dgamma.get_rvertex(channel).K3.get_dims()[my_defs::K3::omega];
+    nw3_v = dgamma.get_rvertex(channel).K3.get_dims()[my_defs::K3::nu];
+    nw3_v_p=dgamma.get_rvertex(channel).K3.get_dims()[my_defs::K3::nup];
+
+    prefactor = channel == 't' ? -1. : 1.;
+
 }
 
 template<char channel, typename Q, vertexType symmetry_result, vertexType symmetry_left,

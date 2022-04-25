@@ -93,3 +93,62 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
     REQUIRE(tdeviations.max_norm() < tolerance);
 
 }
+
+
+TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") {
+
+    SECTION("K2:") {
+        bufferFrequencyGrid<k2> gridK2(Lambda_ini);
+        vec<double> errors_K2(nBOS2 * nFER2);
+        /// for K2:
+        for (int iw = 1; iw < nBOS2; iw++) {
+            for (int iv = 0; iv < nFER2; iv++) {
+                double w, v;
+                gridK2.get_freqs_w(w, v, iw, iv);
+
+                std::array<double, 2> freqs = {w, v};
+                std::array<my_index_t, 2> idx;
+                std::array<double, 2> dw_normalized;
+                if constexpr(INTERPOLATION == linear) {gridK2.get_auxgrid_index(idx, dw_normalized, freqs);}
+                else {gridK2.get_grid_index(idx, dw_normalized, freqs);}
+                errors_K2[iw * nFER2 + iv] = std::abs(
+                        ((double) idx[0] - iw + dw_normalized[0]) + ((double) idx[1] - iv + dw_normalized[1]));
+
+            }
+        }
+
+
+        double total_dev_K2 = std::abs(errors_K2.sum());
+        REQUIRE(total_dev_K2 < 1e-10);
+    }
+
+    SECTION("K3: ") {
+        /// for K3:
+        bufferFrequencyGrid<k3> gridK3(Lambda_ini);
+        size_t nFER3_p = (GRID == 2 ? (nFER3 - 1) / 2 + 1 : nFER3);
+        vec<double> errors_K3(nBOS3 * nFER3 * nFER3_p);
+        for (int iw = 1; iw < nBOS3; iw++) {
+            for (int iv = 0; iv < nFER3; iv++) {
+                for (int ivp = 1; ivp < nFER3_p; ivp++) {
+                    double w, v, vp;
+                    gridK3.get_freqs_w(w, v, vp, iw, iv, ivp);
+
+                    std::array<double, 3> freqs = {w, v, vp};
+                    std::array<my_index_t, 3> idx;
+                    std::array<double, 3> dw_normalized;
+                    if constexpr(INTERPOLATION == linear) {gridK3.get_grid_index(idx, dw_normalized, freqs);}
+                    else {gridK3.get_auxgrid_index(idx, dw_normalized, freqs);}
+                    errors_K3[iw * nFER3 * nFER3_p + iv * nFER3_p + ivp] = std::abs(
+                            ((double) idx[0] - iw + dw_normalized[0])  +
+                            ((double) idx[1] - iv + dw_normalized[1])  +
+                            ((double) idx[2] - ivp + dw_normalized[2]));
+                }
+            }
+        }
+
+        double total_dev_K3 = std::abs(errors_K3.sum());
+        REQUIRE(total_dev_K3 < 1.e-15);
+    }
+
+
+}

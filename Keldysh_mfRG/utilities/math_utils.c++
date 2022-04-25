@@ -19,7 +19,7 @@ auto heaviside (const double x) -> double {
 
 
 double sgn(const double x) {
-    return (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
+    return (x >= 0) - (x <= 0); // (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
 }
 
 auto round2Infty(double x) -> double {
@@ -168,17 +168,20 @@ void K2_convert2internalFreqs(double &w, double &v) { /// Insert this function b
     v = v_tmp;
 #endif
     if constexpr (GRID == 2) {
+        /// convert frequencies w and v to polar coordinates rho and phi (with phi in [-Pi, Pi])
         const double rho = sqrt(w*w*0.25 + v*v);
-        const double phi = rho < 1e-15 ? 0. : acos(  w*0.5 / rho);
+        const double phi = atan2(v,  w*0.5); //rho < 1e-15 ? 0. : acos(  w*0.5 / rho);
         assert(isfinite(phi));
-        v = v >= 0 ? phi : 2*M_PI - phi;
-        assert(v >= 0);
+        assert(std::abs(phi) < M_PI + 1e-15);
+        assert(rho > -1e-15);
+        v = phi;// * (v > 0 ? 1. : -1.);
         w = rho;
     }
 }
 void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function before returning frequency values
     /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v)
     if constexpr (GRID == 2) {
+        /// convert polar coordinates to frequencies (w,v) = rho * (cos phi * 2, sin phi)
         const double w_temp = w * cos(v) * 2;
         const double v_temp = w * sin(v);
         w = w_temp;
@@ -190,5 +193,37 @@ void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function be
     w = w_tmp;
     v = v_tmp;
 #endif
+}
+
+
+void K3_convert2internalFreqs(double &w, double &v, double &vp) { /// Insert this function before interpolation
+    /// need to convert natural parametrization to internal coordinates when interpolating
+
+    if constexpr (GRID == 2) {
+        const double rho = sqrt(w*w*0.25 + v*v + vp*vp);
+        const double phi = atan2(  v, vp);
+        const double r = sqrt(vp*vp + v*v);
+        //const double theta= rho < 1e-15 ? 0. : acos(  vp / rho);
+        const double theta = atan2(r, w*0.5);
+        assert(isfinite(phi));
+        vp = theta;
+        v = phi;
+        assert(std::abs(phi) < M_PI + 1e-15);
+        assert(theta > -1e-15);
+        assert(rho > -1e-15);
+        w = rho;
+    }
+}
+void K3_convert2naturalFreqs(double &w, double &v, double &vp) { /// Insert this function before returning frequency values
+    /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v,vp)
+    if constexpr (GRID == 2) {
+        const double vp_temp = w * cos(v) * sin(vp);
+        const double v_temp  = w * sin(v) * sin(vp);
+        const double w_temp= w          * cos(vp) * 2;
+        w = w_temp;
+        v = v_temp;
+        vp = vp_temp;
+    }
+
 }
 

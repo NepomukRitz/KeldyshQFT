@@ -436,7 +436,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 #pragma omp parallel for collapse(5)
         for (int itw = 0; itw < nw3; itw++){
             for (int itv = 0; itv < nv3; itv++) {
-                for (int itvp = 0; itvp < nv3; itvp++) {
+                for (int itvp = 0; itvp < (GRID!=2 ? nv3 : (nv3-1)/2 + 1); itvp++) {
                     for (int itspin = 0; itspin < n_spin; itspin++) {
                         for (int itin = 0; itin < n_in; itin++) {
                             my_defs::K3::index_type idx;
@@ -530,7 +530,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 #pragma omp parallel for collapse(5)
         for (int itw = 0; itw < nw3; itw++){
             for (int itv = 0; itv < nv3; itv++) {
-                for (int itvp = 0; itvp < nv3; itvp++) {
+                for (int itvp = 0; itvp < (GRID!=2 ? nv3 : (nv3-1)/2 + 1); itvp++) {
                     for (int itspin = 0; itspin < n_spin; itspin++) {
                         for (int itin = 0; itin < n_in; itin++) {
                             my_defs::K3::index_type idx;
@@ -628,7 +628,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 #pragma omp parallel for collapse(5)
         for (int itw = 0; itw < nw3; itw++){
             for (int itv = 0; itv < nv3; itv++) {
-                for (int itvp = 0; itvp < nv3; itvp++) {
+                for (int itvp = 0; itvp < (GRID!=2 ? nv3 : (nv3-1)/2 + 1); itvp++) {
                     for (int itspin = 0; itspin < n_spin; itspin++) {
                         for (int itin = 0; itin < n_in; itin++) {
                             my_defs::K3::index_type idx;

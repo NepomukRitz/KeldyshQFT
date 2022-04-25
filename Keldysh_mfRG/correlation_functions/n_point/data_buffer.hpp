@@ -211,7 +211,7 @@ public:
                 result =  interpolate_nearest3D<result_type>(frequencies[0], frequencies[1], frequencies[2],
                                                    base_class::get_VertexFreqGrid().  primary_grid,
                                                    base_class::get_VertexFreqGrid().secondary_grid,
-                                                   base_class::get_VertexFreqGrid().secondary_grid,
+                                                   base_class::get_VertexFreqGrid(). tertiary_grid,
                                                    [&](int i, int j, int l) -> result_type {
                                                        indices[pos_first_freqpoint  ] = i;
                                                        indices[pos_first_freqpoint+1] = j;
@@ -419,6 +419,7 @@ namespace {
             }
             else {
                 frequencies.secondary_grid.update_Wscale(wscale_test);
+                frequencies. tertiary_grid.update_Wscale(wscale_test);
                 //tail_height = buffer.template analyze_tails<1>(1);
             }
 
@@ -447,6 +448,7 @@ namespace {
                 }
                 else {
                     frequencies.secondary_grid.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
+                    frequencies. tertiary_grid.update_pos_section_boundaries(std::array<double,2>({section_boundaries_test[0],section_boundaries_test[1]}));
                 }
 
 
@@ -577,7 +579,7 @@ public:
         update_grid(frequencies_new, *this);
 
         /// in other direction(s)
-        if constexpr (numberFrequencyDims > 1) {
+        if constexpr (numberFrequencyDims > 1 and GRID!=2) { /// no optimization for angular grid
             if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type2, FrequencyGrid<eliasGrid>>) {
                 double a_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale / 2.;
                 double m_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale;
@@ -585,6 +587,7 @@ public:
                 CostResolution<'f', this_class, frequencyGrid_type> cost_f(*this, verbose);
                 minimizer(cost_f, a_Wscale_f, m_Wscale_f, b_Wscale_f, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
                 frequencies_new.secondary_grid.update_Wscale(m_Wscale_f);
+                frequencies_new. tertiaary_grid.update_Wscale(m_Wscale_f);
             }
             else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type2, FrequencyGrid<hybridGrid>>) {
                 std::array<double,2> section_boundaries_f = base_class::get_VertexFreqGrid().secondary_grid.pos_section_boundaries;
@@ -594,10 +597,11 @@ public:
                 double ini_stepsize_f = (section_boundaries_f[0] + section_boundaries_f[1])/10.;
                 vec<double> result_f = minimizer_nD(cost_f, start_params_f, ini_stepsize_f, 100, verbose, superverbose, epsabs_hybrid, epsrel_hybrid);
                 frequencies_new.secondary_grid.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
+                frequencies_new. tertiary_grid.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
             }
+            update_grid(frequencies_new, *this);
         }
-        /// no optimization for angular grid
-        update_grid(frequencies_new, *this);
+
 
 
     }

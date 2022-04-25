@@ -119,7 +119,7 @@ TEST_CASE("Does the vectorized interpolation work for the GeneralVertex?", "vect
         char channel = 'a';
         VertexInput input(iK, spin, w, v, vp, internal, channel);
 
-        using result_type = Eigen::Matrix<state_datatype, 4, 1>;
+        using result_type = Eigen::Matrix<double, 4, 1>;
 
         SECTION("symmetric_full spin 0") {
             result_type result = vertex_symmetricfull.left_same_bare_symmetry_expanded<0,'a',result_type>(input);

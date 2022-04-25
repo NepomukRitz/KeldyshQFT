@@ -150,23 +150,24 @@ void Spline<Q,rank,3,pos_first_freq_index,DataContainer>::get_coeffs_from_derivs
 
     const size_t n_x = DataContainer::frequencies.  primary_grid.get_all_frequencies().size();
     const size_t n_y = DataContainer::frequencies.secondary_grid.get_all_frequencies().size();
-    const size_t n_nonx = n/n_x/n_y/n_y;
+    const size_t n_z = DataContainer::frequencies. tertiary_grid.get_all_frequencies().size();
+    const size_t n_nonx = n/n_x/n_y/n_z;
 
     for (size_t i = 0; i < n_nonx; i++) {
         for (size_t j = 0; j < n_x-1; j++) {
             for (size_t k = 0; k < n_y-1; k++) {
-                for (size_t l = 0; l < n_y - 1; l++) {
+                for (size_t l = 0; l < n_z - 1; l++) {
                     const double dw = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j+1) - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j);
                     const double dv = DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(k+1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(k);
-                    const double dvp= DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(l+1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(l);
-                    int idx_base_base_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k  )*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_base_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k  )*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_base_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k+1)*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k+1)*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_base_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k  )*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k  )*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_base_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k+1)*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k+1)*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                    const double dvp= DataContainer::frequencies. tertiary_grid.get_auxiliary_gridpoint(l+1) - DataContainer::frequencies. tertiary_grid.get_auxiliary_gridpoint(l);
+                    int idx_base_base_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k  )*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_base_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k  )*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_base_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k+1)*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k+1)*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_base_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k  )*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k  )*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_base_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k+1)*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k+1)*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
 
                     Eigen::Matrix<Q,64,1> _fs;
                     _fs << DataContainer::data[idx_base_base_base],   DataContainer::data[idx_plus_base_base],   DataContainer::data[idx_base_plus_base],   DataContainer::data[idx_plus_plus_base],   DataContainer::data[idx_base_base_plus],   DataContainer::data[idx_plus_base_plus],   DataContainer::data[idx_base_plus_plus],   DataContainer::data[idx_plus_plus_plus],

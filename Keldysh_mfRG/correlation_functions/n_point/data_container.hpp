@@ -223,7 +223,7 @@ class Buffer;
             return result;
         };
         buffer_type get_deriv_z () const {
-            buffer_type result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(),  pos_first_freqpoint+2);
+            buffer_type result = ::partial_deriv<Q,rank>(base_class::data, frequencies. tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(),  pos_first_freqpoint+2);
             return result;
         };
 
@@ -238,8 +238,8 @@ class Buffer;
             return result;
         }
         buffer_type get_deriv_zz() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
             return result;
         }
         buffer_type get_deriv_xy() const {
@@ -248,18 +248,18 @@ class Buffer;
             return result;
         }
         buffer_type get_deriv_xz() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.  primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies. primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
             return result;
         }
         buffer_type get_deriv_yz() const {
             buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+1);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies. tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
             return result;
         }
 
         buffer_type get_deriv_xyz() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies. tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
             buffer_type inter_result2= ::partial_deriv<Q,rank>(inter_result,     frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+1);
             buffer_type result       = ::partial_deriv<Q,rank>(inter_result2,    frequencies.  primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
             return result;
@@ -417,10 +417,36 @@ class Buffer;
             frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
             if (verbose and mpi_world_rank() == 0)
                 std::cout << "Shrinking frequency box in direction w from " << wmax_old << " to " << frequencies_new.  primary_grid.w_upper << std::endl;
-            frequencies_new.secondary_grid = shrink_freq_box_impl(frequencies.secondary_grid, rel_tail_threshold, maxabs_along_v, verbose);
-            if (verbose and mpi_world_rank() == 0)
-                std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.secondary_grid.w_upper << std::endl;
+            if (GRID != 2) {
+                frequencies_new.secondary_grid = shrink_freq_box_impl(frequencies.secondary_grid, rel_tail_threshold, maxabs_along_v, verbose);
+                if (verbose and mpi_world_rank() == 0)
+                    std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.secondary_grid.w_upper << std::endl;
+            }
 
+            return frequencies_new;
+        }
+        else if constexpr(numberFrequencyDims == 3) {
+            frequencyGrid_type frequencies_new = frequencies;
+
+            double maxmax = base_class::data.max_norm();
+            vec<double> maxabs_along_w = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint  ) * (1 / maxmax);
+            vec<double> maxabs_along_v = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint+1) * (1 / maxmax);
+            vec<double> maxabs_along_vp= maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint+2) * (1 / maxmax);
+
+            const double wmax_old = frequencies_new.  primary_grid.w_upper;
+            const double vmax_old = frequencies_new.secondary_grid.w_upper;
+            const double vpmax_old= frequencies_new. tertiary_grid.w_upper;
+            frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
+            if (verbose and mpi_world_rank() == 0)
+                std::cout << "Shrinking frequency box in direction w from " << wmax_old << " to " << frequencies_new.  primary_grid.w_upper << std::endl;
+            if (GRID != 2) {
+                frequencies_new.secondary_grid = shrink_freq_box_impl(frequencies.secondary_grid, rel_tail_threshold, maxabs_along_v, verbose);
+                if (verbose and mpi_world_rank() == 0)
+                    std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.secondary_grid.w_upper << std::endl;
+                frequencies_new.tertiary_grid = shrink_freq_box_impl(frequencies.tertiary_grid, rel_tail_threshold, maxabs_along_vp, verbose);
+                if (verbose and mpi_world_rank() == 0)
+                    std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.tertiary_grid.w_upper << std::endl;
+            }
 
             return frequencies_new;
         }

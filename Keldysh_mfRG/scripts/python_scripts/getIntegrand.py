@@ -40,28 +40,57 @@ def plot_integrand_alli2(ax, filename_pt1, filename_pt2, kwargs={}):
     ax.plot(freqs, integrand_re, **kwargs)
     ax.plot(freqs, integrand_im, **kwargs)
 
-def compile_get_integrand_dGamma_1loop_Cpp():
+def compile_stuff(cpp_target: string):
     text = """
 #!/bin/bash
 
-module load hdf5/1.10.5-gcc
+
+# load necessary modules
+export CLUSTER=ASC
+module load cmake
+
 
 export LANG=C
 export LC_ALL=C
 
-MPI="-I/usr/include/mpi/"
-HDF5="-I/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp"
-FFTW="-lfftw3"
+dir_path=$(dirname "$(realpath "$0")")    # directory of this script
+src_dir="$dir_path"/..                    # source directory
+build_dir="$src_dir"/build                # build directory
+mkdir "$build_dir"
 
-mpiCC --std=c++17  ../tests/get_integrand_dGamma_1loop.cpp -o ../tests/get_integrand_dGamma_1loop.o -fopenmp $MPI $HDF5 $FFTW
+# navigate to the directory with the CMakeLists.txt file
+cd "$build_dir" || exit
 
+
+# load cmake project
+cmake -S$src_dir -B$build_dir
+
+
+# build
+TARGET=""" + cpp_target + """
+cmake --build . --target $TARGET
+
+mv ./$TARGET $src_dir
+
+GREEN='\033[1;32m' # green
+NC='\033[0m' # no color
+echo -e "\n Moved executable ${GREEN}$TARGET ${NC}to Keldysh_mfRG source directory.\n"
     """
     f = open("./compile_asc_saveIntegrand.sh", "w")
     f.write(text)
     f.close()
-    print("Compiling get_integrand_dGamma_1loop")
+    print("Compiling " + cpp_target)
     os.system("bash ./compile_asc_saveIntegrand.sh")
     os.system("rm ./compile_asc_saveIntegrand.sh")
+
+
+def compile_get_integrand_Gamma1_Pi_Gamma2_Cpp():
+    cpp_target = "get_integrand_Gamma1_Pi_Gamma2"
+    compile_stuff(cpp_target)
+
+def compile_get_integrand_dGamma_1loop_Cpp():
+    cpp_target = "get_integrand_dGamma_1loop"
+    compile_stuff(cpp_target)
 
 def compile_get_integrand_dGamma_1loop_fromFlow_Cpp():
     text = """
@@ -135,6 +164,10 @@ mpiCC --std=c++17  ../tests/get_integrand_dGammaC.cpp -o ../tests/get_integrand_
     os.system("rm ./compile_asc_saveIntegrand.sh")
 
 
+def get_integrand_Gamma1_Pi_Gamma2(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, filename, Gamma0_is_left):
+    cmd = exe_dir + 'get_integrand_dGamma_1loop.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2)  + " " + str(spin) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in) + " " + filename + " " + str(Gamma0_is_left)
+    os.system(cmd)
+
 def get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in):
     cmd = exe_dir + 'get_integrand_dGamma_1loop_fromFlow.o ' + data_dir + " " + filename + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2)  + " " + str(spin) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in)
     os.system(cmd)
@@ -150,6 +183,25 @@ def get_integrand_dGammaL(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, cha
 def get_integrand_dGammaC(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, i_loop):
     cmd = exe_dir + 'get_integrand_dGammaC.o ' + data_dir + " " + str(it_Lambda) + " " + str(rkStep) + " " + str(k_class_int) + " " + str(channel) + " " + str(i0) + " " + str(i2)  + " " + str(spin) + " {}".format(w) + " {}".format(v) + " {}".format(vp) + " " + str(i_in) + " " + str(i_loop)
     os.system(cmd)
+
+
+def get_integrand_filename_Gamma1_Pi_Gamma2(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, Gamma0_is_left):
+    if k_class_int == 0:
+        k_class = '1'
+    elif k_class_int == 1:
+        k_class = '2'
+    elif k_class_int == 3:
+        k_class = '3'
+    else:
+        raise Exception("k_class_int " + str(k_class_int) + "not allowed!")
+    filename = data_dir + "integrands/Gamma1_Pi_Gamma2_" + "Gamm0left=" + str(Gamma0_is_left) + "integrand_K" + k_class + channel + "_i0=" + str(i0) + "_i2=" + str(i2) + "_w={:.6f}".format(w)
+    if k_class == '2':
+        filename = filename + "_v={:.6f}".format(v)
+    if k_class == '3':
+        filename = filename + "_vp={:.6f}".format(v)
+    filename = filename + ".h5"
+    return filename
+
 
 def get_integrand_filename_dGamma_1loop(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in):
     if k_class_int == 0:
@@ -213,7 +265,7 @@ if __name__ == '__main__':
     rkStep = 0 # Runge-Kutta step >= 0
     k_class_int = 3 # K1->0; K2->1; K3->3
     channel = 'a'
-    i0 = 0
+    i0 = 1
     i2 = 0
     spin = 0
     w = 0
@@ -222,6 +274,19 @@ if __name__ == '__main__':
     i_in = 0
 
 
+
+    compile_get_integrand_Gamma1_Pi_Gamma2_Cpp()
+    filename = "Psi_SDE_a_l"
+    Gamma0_is_left = 0
+    get_integrand_Gamma1_Pi_Gamma2(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, filename, Gamma0_is_left)
+
+    integrandFilename = get_integrand_filename_Gamma1_Pi_Gamma2(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, Gamma0_is_left)
+    fig0, axs0 = plt.subplots(num=0, nrows=1, ncols=1)
+    plot_integrand(axs0, integrandFilename, {"label": "testtest", "ls": "--"})
+    axs0.set_xlim([-100,100])
+    fig0.savefig(integrandFilename[:-3]+".png")
+
+    '''
     compile_get_integrand_dGamma_1loop_fromFlow_Cpp()
     filename = "flow_K3_3l_i6_freq_sym_asymp_corr_parquet_intersections2"
     get_integrand_dGamma_1loop_fromFlow(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in)
@@ -231,6 +296,7 @@ if __name__ == '__main__':
     plot_integrand(axs0, integrandFilename, {"label": "testtest", "ls": "--"})
     axs0.set_xlim([-100,100])
     fig0.savefig(integrandFilename[:-3]+".png")
+    '''
 
     '''
     #compile_get_integrand_dGamma_1loop_Cpp()
