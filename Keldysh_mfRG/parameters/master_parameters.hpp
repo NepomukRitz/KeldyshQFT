@@ -23,11 +23,11 @@ constexpr bool VERBOSE = false;
 //#define FERMI_POLARON_PROBLEM
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
-#define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
+#define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
+#define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL    // if defined: sum over internal indices within integrand
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
-#define ZERO_TEMP   // Determines whether to work in the T = 0 limit (in the Matsubara formalism)
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 
@@ -39,7 +39,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 3
 
 constexpr int N_LOOPS = 1;  // Number of loops
 #define KATANIN
@@ -51,7 +51,7 @@ constexpr int N_LOOPS = 1;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.01; //0.01;                     // Temperature
+constexpr double glb_T = 0.1; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature
 #endif
@@ -67,7 +67,7 @@ constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson mo
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
-//#define USE_FDT
+#define USE_FDT 0
 
 /// Spin parameters ///
 
@@ -139,11 +139,11 @@ constexpr int n_in = 1;
 
 // if the following is not defined, we flow with the parameter Lambda. The flowgrid just provides suggestions for stepsizes
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
-//#define REPARAMETRIZE_FLOWGRID
+#define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 50;
-constexpr double epsODE_rel = 1e-6;
-constexpr double epsODE_abs = 1e-8;
+constexpr int nODE = 1;
+constexpr double epsODE_rel = 1e-8;
+constexpr double epsODE_abs = 1e-10;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4;
 // 2 -> Bogacki–Shampine

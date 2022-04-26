@@ -20,13 +20,13 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 // Number of bosonic and fermionic frequency points
 //#if KELDYSH_FORMALISM
-constexpr int nBOS = 1001;
+constexpr int nBOS = 401;
 constexpr int nFER = 401;
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 41;//nBOS;
-constexpr int nFER2 = 41;//nFER;
+constexpr int nFER2 = 169;//nFER;
 constexpr int nBOS3 = 21; //nBOS;
-constexpr int nFER3 = 21; //nFER;
+constexpr int nFER3 = 81; //nFER;
 //#else
 const int COUNT = 4;
 //constexpr int nBOS = COUNT * 64 * 2 + 1;
