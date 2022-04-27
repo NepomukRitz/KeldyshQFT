@@ -298,6 +298,8 @@ public:
     double spacing_auxiliary_gridpoint;  // linear spacing on auxiliary grid for t
     double half_of_interval_length_for_t;
     double half_of_interval_length_for_w;
+    double half_of_interval_length_for_w_recip;
+    double interval_length_for_w_recip;
     double quad_fac_recip;
     void derive_auxiliary_parameters();     // derive auxiliary parameters from
 

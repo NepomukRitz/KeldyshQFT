@@ -209,9 +209,9 @@ void K3_convert2internalFreqs(double &w, double &v, double &vp) { /// Insert thi
         // theta = acos(w/2 / rho)
         const double rho = sqrt(w*w*0.25 + v*v + vp*vp);
         const double phi = atan2(  v, vp);
-        const double r = sqrt(v*v + vp*vp);
-        //const double theta = rho < 1e-15 ? 0. : acos(w*0.5/rho);
-        const double theta = atan2(r, w*0.5);
+        const double theta = rho < 1e-15 ? 0. : acos(w*0.5/rho);
+        //const double r = sqrt(v*v + vp*vp);
+        //const double theta = atan2(r, w*0.5);
         assert(isfinite(phi));
         vp = theta;
         v = phi;
