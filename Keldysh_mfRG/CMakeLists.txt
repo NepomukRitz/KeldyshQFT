@@ -25,9 +25,8 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp")
 endif()
 
-
-#if(WORKSTATION)
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp") # unnecessary??
+if(WORKSTATION)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp") # unnecessary??
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") // for code coverage analysis (slows down the code a lot!)
 
     ## enable profiling (will generate a gmon.out file which can be interpreted with gprof in Linux).
@@ -35,7 +34,7 @@ endif()
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
     #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
     #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
-#endif()
+endif()
 
 project(Keldysh_mfRG)
 
@@ -63,8 +62,10 @@ add_executable(get_integrand_Sigma_SDE tests/integrand_tests/get_integrand_Sigma
 
 ## rest works so far only on workstation and ASC
 if(WORKSTATION OR ASC)
+    include_directories(/usr/include/c++/7/)
     include_directories(/usr/include/mpi/)
-    include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include)
+    include_directories(/usr/lib/gcc/x86_64-linux-gnu/7/include/) # omp.h
+    include_directories(/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/include/)
     include_directories(/usr/include/eigen3 /usr/include/eigen3/unsupported)
 
     target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
@@ -92,12 +93,16 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_Sigma_SDE -lgsl -lgslcblas)
     target_link_libraries(get_integrand_Sigma_SDE fftw3)
 elseif(KCS)
-    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/hdf5/1.8.20-gcc-3dhdqfy/include) # $HDF5_INC
-    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/fftw/3.3.8-intel-wrfank7/include) # $FFTW_INC
-    include_directories(/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx512/gsl/2.5-intel-barwazv/include) # $GSL_INC
-    include_directories(/lrz/sys/libraries/boost/1.61_icc_serial/include) # $BOOST_INC
+    include_directories($ENV{HDF5_BASE}/include $ENV{GSL_BASE}/include $ENV{BOOST_INCDIR} $ENV{FFTW_BASE}/include)
+    include_directories($ENV{EIGEN_BASE}/include/eigen3)
 
-    target_link_libraries(Keldysh_mfRG $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB} $ENV{SZIP_LIB} -lz)
+    string(STRIP HDF5_CPP_SHLIB "$ENV{HDF5_CPP_SHLIB}")
+    string(STRIP HDF5_SHLIB "$ENV{HDF5_SHLIB}")
+
+    target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/22.2.1/opt/skylake_avx512/hdf5/1.8.22-gcc-dfod2rj/lib -lhdf5_hl_cpp -lhdf5_cpp) # $HDF5_CPP_SHLIB
+    target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/22.2.1/opt/skylake_avx512/hdf5/1.8.22-gcc-dfod2rj/lib -lhdf5_hl -lhdf5) # HDF5_SHLIB
+
+    target_link_libraries(Keldysh_mfRG $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
 elseif(JSC)
     include_directories(/p/software/juwelsbooster/stages/2022/software/HDF5/1.12.1-iompi-2021b/include) # $HDF5_INC
