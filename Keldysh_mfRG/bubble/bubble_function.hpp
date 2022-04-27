@@ -398,7 +398,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
                 integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0., v, v + w, v - w}, Delta, true);
                 break;
             case k3:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0, v, vp, w - vp, w + vp, w - v, std::abs(w) + std::abs(v)}, Delta, true);
+                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0, v, vp, w - vp, w + vp, w - v, w + v}, Delta, true);
                 break;
             case k2b:
                 integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0, vp, vp + w, vp - w}, Delta, true);
