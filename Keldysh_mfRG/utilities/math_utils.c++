@@ -120,6 +120,8 @@ auto is_symmetric(const rvec& freqs) -> double {
     return asymmetry;
 }
 
+/// Functions for change of coordinates (for 2D and 3D):
+
 template<> void switch2bosonicFreqs<'p'> (double& w_in, double& v1_in, double& v2_in) {
     double w, v1, v2;
     w  = -v1_in - v2_in;                    // input.w  = w_p
@@ -200,10 +202,15 @@ void K3_convert2internalFreqs(double &w, double &v, double &vp) { /// Insert thi
     /// need to convert natural parametrization to internal coordinates when interpolating
 
     if constexpr (GRID == 2) {
+        // for spherical coordinates:
+        // (vp, v, w/2) = rho * (cos phi * sin theta, cos phi * sin theta, cos theta)
+        // rho = || (vp, v, w/2) ||
+        // phi = atan(v / vp)
+        // theta = acos(w/2 / rho)
         const double rho = sqrt(w*w*0.25 + v*v + vp*vp);
         const double phi = atan2(  v, vp);
-        const double r = sqrt(vp*vp + v*v);
-        //const double theta= rho < 1e-15 ? 0. : acos(  vp / rho);
+        const double r = sqrt(v*v + vp*vp);
+        //const double theta = rho < 1e-15 ? 0. : acos(w*0.5/rho);
         const double theta = atan2(r, w*0.5);
         assert(isfinite(phi));
         vp = theta;
@@ -217,6 +224,8 @@ void K3_convert2internalFreqs(double &w, double &v, double &vp) { /// Insert thi
 void K3_convert2naturalFreqs(double &w, double &v, double &vp) { /// Insert this function before returning frequency values
     /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v,vp)
     if constexpr (GRID == 2) {
+        // for spherical coordinates:
+        // (vp, v, w/2) = rho * (cos phi * sin theta, cos phi * sin theta, cos theta)
         const double vp_temp = w * cos(v) * sin(vp);
         const double v_temp  = w * sin(v) * sin(vp);
         const double w_temp= w          * cos(vp) * 2;

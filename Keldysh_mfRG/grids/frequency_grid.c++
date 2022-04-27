@@ -627,6 +627,7 @@ void FrequencyGrid<angularGrid>::derive_auxiliary_parameters() {
     spacing_auxiliary_gridpoint = (t_upper - t_lower) / (number_of_gridpoints - 1);
     half_of_interval_length_for_t = (t_upper - t_lower) * 0.5 / number_of_intervals;
     half_of_interval_length_for_w = (w_upper - w_lower) * 0.5 / number_of_intervals;
+    quad_fac_recip = (1 + 2*lin_fac);
 }
 
 void FrequencyGrid<angularGrid>::guess_essential_parameters(const double Lambda) {
@@ -687,8 +688,8 @@ void FrequencyGrid<angularGrid>::guess_essential_parameters(const double Lambda)
 
 double FrequencyGrid<angularGrid>::frequency_from_t(const double t) const {
     const double i_interval = floor( (t + half_of_interval_length_for_t) * number_of_intervals / (t_upper - t_lower) );
-    const double remainder  = t / half_of_interval_length_for_t - i_interval * 2;
-    const double result = ( i_interval + 0.5 * remainder * std::abs(remainder)) * (w_upper - w_lower) / ((double) number_of_intervals);
+    const double remainder  = t / half_of_interval_length_for_t - i_interval * 2; // remainder in [-1, 1]
+    const double result = ( i_interval + 0.5 / quad_fac_recip * remainder * (std::abs(remainder) + 2.*lin_fac)) * half_of_interval_length_for_w * 2.;
     assert(isfinite(result));
     return result;
 
@@ -696,8 +697,8 @@ double FrequencyGrid<angularGrid>::frequency_from_t(const double t) const {
 
 double FrequencyGrid<angularGrid>::t_from_frequency(const double w) const {
     const double i_interval = floor( (w + half_of_interval_length_for_w) * (double)number_of_intervals / (w_upper - w_lower) );
-    const double remainder  = w / half_of_interval_length_for_w - i_interval * 2;
-    const double result = ( i_interval + 0.5 * sqrt(std::abs(remainder)) * sgn(remainder)) * (t_upper - t_lower) / ((double) number_of_intervals);
+    const double remainder  = w / half_of_interval_length_for_w - i_interval * 2; // remainder in [-1, 1]
+    const double result = ( i_interval + 0.5 * (sqrt(std::abs(remainder)*quad_fac_recip + lin_fac*lin_fac) - lin_fac) * sgn(remainder)) * half_of_interval_length_for_t * 2.;
     assert(isfinite(result));
     return result;
 }

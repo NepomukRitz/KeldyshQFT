@@ -116,13 +116,14 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 
 
     rvert<state_datatype> avertex('a', Lambda_ini, true);
+    const size_t nFER3_p = (GRID != 2 ? nFER3 : (nFER3-1)/2+1);
     int iK = 0;
     int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
     for (int iw = 0; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<(GRID != 2 ? nFER3 : (nFER3-1)/2+1); ivp++) {
+            for (int ivp = 0; ivp<nFER3_p; ivp++) {
                 avertex.K3.setvert(value, i_spin, iw, iv, ivp, iK, i_in);
                 value += 1;
             }
@@ -133,10 +134,11 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
     vec<double> errors ((nBOS3)*(nFER3)*(nFER3));
     vec<state_datatype> vals_interp ((nBOS3)*(nFER3)*(nFER3));
     avertex.initInterpolator();
+
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
-    for (int iw = 0; iw<nBOS3; iw++){
+    for (int iw = 1; iw<nBOS3; iw++){
         for (int iv = 0; iv<nFER3; iv++) {
-            for (int ivp = 0; ivp<(GRID != 2 ? nFER3 : (nFER3-1)/2+1); ivp++) {
+            for (int ivp = 1; ivp<nFER3_p; ivp++) {
                 avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
                 if (BOSONIC_PARAM_FOR_K3) {
                     switch2bosonicFreqs<'a'>(indices.w, indices.v1, indices.v2);
@@ -145,7 +147,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
                 state_datatype val_interp =  avertex.K3.interpolate(indices);
                 vals_interp[iw*(nFER3)*(nFER3) + iv*(nFER3) + ivp] = val_interp;
                 double error = std::abs( val_interp - avertex.K3.val(i_spin, iw, iv, ivp, iK, i_in));
-                errors[iw*(nFER3-1)*(nFER3-1) + iv*(nFER3-1) + ivp] = error;
+                errors[iw*(nFER3)*(nFER3_p) + iv*(nFER3_p) + ivp] = error;
                 if (error > 1e-6)
                     cumul_interpolation_error += error;
             }
@@ -167,7 +169,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 namespace {
     // functions to test linear interpolation (below)
     auto linearFunction1D(double x) -> state_datatype {return 1. + x;}
-    auto linearFunction2D(double x, double y) -> state_datatype {return 1. + x + 2*y;}
+    auto linearFunction2D(double x, double y) -> state_datatype {return 1. + 2*x + 3*y;}
     auto linearFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 2*y + 3*z;}
 
     auto quadFunction2D(double x, double y) -> state_datatype {return 1. + x + y  + x*y + x*x + y*y;}

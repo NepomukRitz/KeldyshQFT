@@ -279,6 +279,7 @@ public:
     double w_upper;                                 // largest  angle
     double w_lower;                                 // smallest angle
     int number_of_intervals;    // defines the number of intervals between w_lower and w_upper on which we have quadratic functions
+    double lin_fac = 1e-4;      // "ratio" between linear and quadratic contribution in the grid function
 
     /// guess essential parameters from value of Lambda
     void guess_essential_parameters(double Lambda);
@@ -297,6 +298,7 @@ public:
     double spacing_auxiliary_gridpoint;  // linear spacing on auxiliary grid for t
     double half_of_interval_length_for_t;
     double half_of_interval_length_for_w;
+    double quad_fac_recip;
     void derive_auxiliary_parameters();     // derive auxiliary parameters from
 
     /// list of all frequencies:

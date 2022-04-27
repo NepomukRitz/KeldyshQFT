@@ -69,7 +69,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
 TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
 
-        double Lambda_i = 100.;
+        double Lambda_i = 10.;
     double Lambda_f = 1e-2;
 
     double y_ini = exp(Lambda_i);

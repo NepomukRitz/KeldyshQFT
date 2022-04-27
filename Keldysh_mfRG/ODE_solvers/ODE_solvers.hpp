@@ -738,11 +738,11 @@ namespace boost {
 
                         ++integration_step_count;
                         if(integration_step_count >= MAXSTP) {
-                            if (verbose and mpi_world_rank()==0) print("ODE solver reached maximal number of steps.");
+                            if (mpi_world_rank()==0) print("ODE solver reached maximal number of steps.");
                             break;
                         }
                     }
-                    if (verbose and mpi_world_rank()==0) print(" ODE solver finished with ", integration_step_count, " integration steps.\n\n");
+                    if (mpi_world_rank()==0) print(" ODE solver finished with ", integration_step_count, " integration steps.\n\n");
                     return start_state;
                 }
 
