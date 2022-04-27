@@ -210,7 +210,8 @@ class Buffer;
             double maxabs_total = base_class::data.max_norm();
             vec<double> maxabs_along_w = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint+idim);
 
-            return maxabs_along_w[index] / maxabs_total;
+            const size_t number_of_frequency_points_along_w = base_class::get_dims()[pos_first_freqpoint+idim];
+            return maxabs_along_w[number_of_frequency_points_along_w - 1 - index] / maxabs_total;
         };
 
 
@@ -336,6 +337,7 @@ class Buffer;
         template<typename gridType>
         auto shrink_freq_box_impl(const gridType &freqGrid, const double rel_tail_threshold,
                                   const vec<double> &maxabs_along_x, const bool verbose) const -> gridType {
+            const size_t number_of_frequency_points_along_w = maxabs_along_x.size();
             assert(freqGrid.get_all_frequencies().size() == maxabs_along_x.size());
 
             gridType frequencies_new = freqGrid;
@@ -344,7 +346,7 @@ class Buffer;
 
             int index = -1;
             while (true) {
-                if (maxabs_along_x[index + 1] >= rel_tail_threshold) break;
+                if (maxabs_along_x[number_of_frequency_points_along_w - 1 - (index + 1)] >= rel_tail_threshold) break;
                 index++;
             }
             if (index > -1) { // if the frequency box is too big, shrink to appropriate size
@@ -352,8 +354,8 @@ class Buffer;
                         index); // auxiliary frequency point before passing threshold
                 double t_abovethresh = freqGrid.get_auxiliary_gridpoint(
                         index + 1); // auxiliary frequency point after  passing threshold
-                double h = (rel_tail_threshold - maxabs_along_x[index]) * (t_abovethresh - t_belowthresh) /
-                           (maxabs_along_x[index + 1] - maxabs_along_x[index]);
+                double h = (rel_tail_threshold - maxabs_along_x[number_of_frequency_points_along_w - 1 - index]) * (t_abovethresh - t_belowthresh) /
+                           (maxabs_along_x[number_of_frequency_points_along_w - 1 - (index + 1)] - maxabs_along_x[number_of_frequency_points_along_w - 1 - index]);
                 const double safety = 0.9;
                 frequencies_new.set_w_upper(std::abs(freqGrid.frequency_from_t(t_belowthresh + h * safety)));
             } else if (index == -1) { // if data on outermost grid point is too big, then enlarge the box OR print warning

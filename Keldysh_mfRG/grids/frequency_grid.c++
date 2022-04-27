@@ -242,7 +242,7 @@ auto FrequencyGrid<eliasGrid>::get_grid_index(double& t, double w_in) const -> i
  * @return
  */
 auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
-    if (KELDYSH) return grid_transf_v2(w, this->W_scale);
+    if (KELDYSH) return grid_transf_v4(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_v3(w, this->W_scale);
         else return grid_transf_lin(w, this->W_scale);
@@ -263,7 +263,7 @@ auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
  * @return
  */
 auto FrequencyGrid<eliasGrid>::frequency_from_t(double t) const -> double {
-    if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
+    if (KELDYSH) return grid_transf_inv_v4(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
         else return grid_transf_inv_lin(t, this->W_scale);
@@ -358,7 +358,8 @@ double integration_measure_v3(const double t, const double W_scale) {
 
 double grid_transf_v4(const double w, const double W_scale) {
     // Version 4: quadratic around w=0, good for w^(-1) tails
-    return sgn(w) * sqrt(std::abs(w)/(std::abs(w) + W_scale));
+    const double abs_w = std::abs(w);
+    return sgn(w) * sqrt(abs_w/(abs_w + W_scale));
 }
 double grid_transf_inv_v4(const double t, const double W_scale) {
     // Version 4: quadratic around w=0, good for w^(-1) tails

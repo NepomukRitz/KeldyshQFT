@@ -165,562 +165,558 @@ void check_FDTs(const Q& state) {}
  */
 template <typename Q, char channel>
 void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>& vertex_in, const fullvert<Q>& vertex_half2_in) {
-    //vertex_out = vertex_in;
-
-    /// FDTs for K1
-    if constexpr(channel == 'a') {
+    if constexpr(CONTOUR_BASIS) {
+        vertex_out = vertex_in;
+    } else {
+        /// FDTs for K1
+        if constexpr(channel == 'a') {
 #pragma omp parallel for collapse(3)
-        for (int itw = 0; itw < nw1; itw++ ) {
-            for (int itspin = 0; itspin < n_in; itspin++) {
-                for (int itin = 0; itin < n_in; itin++) {
-                    my_defs::K1::index_type idx;
-                    idx[my_defs::K1::keldysh] = 1;
-                    idx[my_defs::K1::spin] = itspin;
-                    idx[my_defs::K1::omega] = itw;
-                    idx[my_defs::K1::internal] = itin;
+            for (int itw = 0; itw < nw1; itw++) {
+                for (int itspin = 0; itspin < n_in; itspin++) {
+                    for (int itin = 0; itin < n_in; itin++) {
+                        my_defs::K1::index_type idx;
+                        idx[my_defs::K1::keldysh] = 1;
+                        idx[my_defs::K1::spin] = itspin;
+                        idx[my_defs::K1::omega] = itw;
+                        idx[my_defs::K1::internal] = itin;
 
-                    double w, v, vp, N1, N2, N3, N4;
-                    Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                        double w, v, vp, N1, N2, N3, N4;
+                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
-                    vertex_in.avertex.K1.frequencies.get_freqs_w(w, itw);
-                    if (std::abs(w) > glb_T*25.) {
-                        N1 = 1./Fermi_fac(w, glb_mu);
-                        VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
-                        G1 = vertex_in.avertex.template valsmooth<k1>(inputG1, vertex_in.tvertex,
-                                                                      vertex_half2_in.avertex,
-                                                                      vertex_half2_in.tvertex);
-                        G2 = N1 * (myconj(G1) - G1);
-                        vertex_out.avertex.K1.setvert(G2, idx);
+                        vertex_in.avertex.K1.frequencies.get_freqs_w(w, itw);
+                        if (std::abs(w) > glb_T * 25.) {
+                            N1 = 1. / Fermi_fac(w, glb_mu);
+                            VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
+                            G1 = vertex_in.avertex.template valsmooth<k1>(inputG1, vertex_in.tvertex,
+                                                                          vertex_half2_in.avertex,
+                                                                          vertex_half2_in.tvertex);
+                            G2 = N1 * (myconj(G1) - G1);
+                            vertex_out.avertex.K1.setvert(G2, idx);
+                        }
                     }
                 }
+
+            }
+        } else if constexpr(channel == 'p') {
+#pragma omp parallel for collapse(3)
+            for (int itw = 0; itw < nw1; itw++) {
+                for (int itspin = 0; itspin < n_in; itspin++) {
+                    for (int itin = 0; itin < n_in; itin++) {
+                        my_defs::K1::index_type idx;
+                        idx[my_defs::K1::keldysh] = 1;
+                        idx[my_defs::K1::spin] = itspin;
+                        idx[my_defs::K1::omega] = itw;
+                        idx[my_defs::K1::internal] = itin;
+
+                        double w, v, vp, N1, N2, N3, N4;
+                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+
+                        vertex_in.pvertex.K1.frequencies.get_freqs_w(w, itw);
+                        if (std::abs(w) > glb_T * 25.) {
+                            N1 = 1. / Fermi_fac(w, glb_mu);
+                            VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
+                            G1 = vertex_in.pvertex.template valsmooth<k1>(inputG1, vertex_in.pvertex,
+                                                                          vertex_half2_in.pvertex,
+                                                                          vertex_half2_in.pvertex);
+                            G2 = N1 * (myconj(G1) - G1);
+                            vertex_out.pvertex.K1.setvert(G2, idx);
+
+                        }
+                    }
+                }
+
+            }
+        } else {
+            static_assert(channel == 't', "Invalid channel");
+#pragma omp parallel for collapse(3)
+            for (int itw = 0; itw < nw1; itw++) {
+                for (int itspin = 0; itspin < n_in; itspin++) {
+                    for (int itin = 0; itin < n_in; itin++) {
+                        my_defs::K1::index_type idx;
+                        idx[my_defs::K1::keldysh] = 1;
+                        idx[my_defs::K1::spin] = itspin;
+                        idx[my_defs::K1::omega] = itw;
+                        idx[my_defs::K1::internal] = itin;
+
+                        double w, v, vp, N1, N2, N3, N4;
+                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+
+                        vertex_in.tvertex.K1.frequencies.get_freqs_w(w, itw);
+                        if (std::abs(w) > glb_T * 25.) {
+                            N1 = 1. / Fermi_fac(w, glb_mu);
+                            VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
+                            G1 = vertex_in.tvertex.template valsmooth<k1>(inputG1, vertex_in.avertex,
+                                                                          vertex_half2_in.tvertex,
+                                                                          vertex_half2_in.avertex);
+                            G2 = N1 * (myconj(G1) - G1);
+                            vertex_out.tvertex.K1.setvert(G2, idx);
+
+                        }
+                    }
+                }
+
             }
 
         }
-    }
-    else if constexpr(channel == 'p') {
-#pragma omp parallel for collapse(3)
-        for (int itw = 0; itw < nw1; itw++ ) {
-            for (int itspin = 0; itspin < n_in; itspin++) {
-                for (int itin = 0; itin < n_in; itin++) {
-                    my_defs::K1::index_type idx;
-                    idx[my_defs::K1::keldysh] = 1;
-                    idx[my_defs::K1::spin] = itspin;
-                    idx[my_defs::K1::omega] = itw;
-                    idx[my_defs::K1::internal] = itin;
-
-                    double w, v, vp, N1, N2, N3, N4;
-                    Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
-
-                    vertex_in.pvertex.K1.frequencies.get_freqs_w(w, itw);
-                    if (std::abs(w) > glb_T*25.) {
-                        N1 = 1./Fermi_fac(w, glb_mu);
-                        VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
-                        G1 = vertex_in.pvertex.template valsmooth<k1>(inputG1, vertex_in.pvertex,
-                                                                      vertex_half2_in.pvertex,
-                                                                      vertex_half2_in.pvertex);
-                        G2 = N1 * (myconj(G1) - G1);
-                        vertex_out.pvertex.K1.setvert(G2, idx);
-
-                    }
-                }
-            }
-
-        }
-    }
-    else {
-        static_assert(channel == 't', "Invalid channel");
-#pragma omp parallel for collapse(3)
-        for (int itw = 0; itw < nw1; itw++ ) {
-            for (int itspin = 0; itspin < n_in; itspin++) {
-                for (int itin = 0; itin < n_in; itin++) {
-                    my_defs::K1::index_type idx;
-                    idx[my_defs::K1::keldysh] = 1;
-                    idx[my_defs::K1::spin] = itspin;
-                    idx[my_defs::K1::omega] = itw;
-                    idx[my_defs::K1::internal] = itin;
-
-                    double w, v, vp, N1, N2, N3, N4;
-                    Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
-
-                    vertex_in.tvertex.K1.frequencies.get_freqs_w(w, itw);
-                    if (std::abs(w) > glb_T*25.) {
-                        N1 = 1./Fermi_fac(w, glb_mu);
-                        VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
-                        G1 = vertex_in.tvertex.template valsmooth<k1>(inputG1, vertex_in.avertex,
-                                                                      vertex_half2_in.tvertex,
-                                                                      vertex_half2_in.avertex);
-                        G2 = N1 * (myconj(G1) - G1);
-                        vertex_out.tvertex.K1.setvert(G2, idx);
-
-                    }
-                }
-            }
-
-        }
-
-    }
 
 
 #if MAX_DIAG_CLASS > 1 /// FDTs for K2 objects:
-    if constexpr(channel == 'a') {
+        if constexpr(channel == 'a') {
 #pragma omp parallel for collapse(4)
-        for (int itw = 0; itw < nw2; itw++) {
-            for (int itv = 0; itv < nv2; itv++) {
-                for (int itspin = 0; itspin < n_in; itspin++) {
-                    for (int itin = 0; itin < n_in; itin++) {
-                        my_defs::K2::index_type idx;
-                        //idx[my_defs::K2::keldysh] = ;
-                        idx[my_defs::K2::spin] = itspin;
-                        idx[my_defs::K2::omega] = itw;
-                        idx[my_defs::K2::nu] = itv;
-                        idx[my_defs::K2::internal] = itin;
+            for (int itw = 0; itw < nw2; itw++) {
+                for (int itv = 0; itv < nv2; itv++) {
+                    for (int itspin = 0; itspin < n_in; itspin++) {
+                        for (int itin = 0; itin < n_in; itin++) {
+                            my_defs::K2::index_type idx;
+                            //idx[my_defs::K2::keldysh] = ;
+                            idx[my_defs::K2::spin] = itspin;
+                            idx[my_defs::K2::omega] = itw;
+                            idx[my_defs::K2::nu] = itv;
+                            idx[my_defs::K2::internal] = itin;
 
-                        double w, v, vp, N1, N2, N3, N4;
-                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                            double w, v, vp, N1, N2, N3, N4;
+                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
-                        vertex_in.avertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
-                        if (std::abs(w) > glb_T){
-                            N1 = Fermi_fac(-v  - w/2, glb_mu);
-                            N2 = Fermi_fac( v  - w/2, glb_mu);
-                            N3 = 1./Fermi_fac(w, glb_mu);
-                            VertexInput inputG1(8, itspin, w, v, 0, itin, 'a');
-                            VertexInput inputG2(1, itspin, w, v, 0, itin, 'a');
-                            VertexInput inputG3(11,itspin, w, v, 0, itin, 'a');
-                            G1 = vertex_in.avertex.template valsmooth<k2>(inputG1, vertex_in.tvertex,
-                                                                          vertex_half2_in.avertex,
-                                                                          vertex_half2_in.tvertex);
-                            G2 = vertex_in.avertex.template valsmooth<k2>(inputG2, vertex_in.tvertex,
-                                                                          vertex_half2_in.avertex,
-                                                                          vertex_half2_in.tvertex);
-                            G3 = vertex_in.avertex.template valsmooth<k2>(inputG3, vertex_in.tvertex,
-                                                                          vertex_half2_in.avertex,
-                                                                          vertex_half2_in.tvertex);
+                            vertex_in.avertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
+                            if (std::abs(w) > glb_T) {
+                                N1 = Fermi_fac(-v - w / 2, glb_mu);
+                                N2 = Fermi_fac(v - w / 2, glb_mu);
+                                N3 = 1. / Fermi_fac(w, glb_mu);
+                                VertexInput inputG1(8, itspin, w, v, 0, itin, 'a');
+                                VertexInput inputG2(1, itspin, w, v, 0, itin, 'a');
+                                VertexInput inputG3(11, itspin, w, v, 0, itin, 'a');
+                                G1 = vertex_in.avertex.template valsmooth<k2>(inputG1, vertex_in.tvertex,
+                                                                              vertex_half2_in.avertex,
+                                                                              vertex_half2_in.tvertex);
+                                G2 = vertex_in.avertex.template valsmooth<k2>(inputG2, vertex_in.tvertex,
+                                                                              vertex_half2_in.avertex,
+                                                                              vertex_half2_in.tvertex);
+                                G3 = vertex_in.avertex.template valsmooth<k2>(inputG3, vertex_in.tvertex,
+                                                                              vertex_half2_in.avertex,
+                                                                              vertex_half2_in.tvertex);
 
-                            G123 = myconj(G1 + G2 + G3)
-                                   + myreal(G1 * N2 * N3
-                                            + N1 * G2 * N3
-                                            + N1 * N2 * G3) * 2.;
-                            G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
-                            G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
-                            G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
+                                G123 = myconj(G1 + G2 + G3)
+                                       + myreal(G1 * N2 * N3
+                                                + N1 * G2 * N3
+                                                + N1 * N2 * G3) * 2.;
+                                G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
+                                G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                                G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
 
-                            idx[my_defs::K2::keldysh] = 0;
-                            vertex_out.avertex.K2.setvert(G12 , idx);
-                            idx[my_defs::K2::keldysh] = 2;
-                            vertex_out.avertex.K2.setvert(G123, idx);
-                            idx[my_defs::K2::keldysh] = 3;
-                            vertex_out.avertex.K2.setvert(G23 , idx);
+                                idx[my_defs::K2::keldysh] = 0;
+                                vertex_out.avertex.K2.setvert(G12, idx);
+                                idx[my_defs::K2::keldysh] = 2;
+                                vertex_out.avertex.K2.setvert(G123, idx);
+                                idx[my_defs::K2::keldysh] = 3;
+                                vertex_out.avertex.K2.setvert(G23, idx);
 
-                        }
+                            }
 
-                    }
-                }
-            }
-        }
-    }
-    else if constexpr (channel == 'p') {
-#pragma omp parallel for collapse(4)
-        for (int itw = 0; itw < nw2; itw++) {
-            for (int itv = 0; itv < nv2; itv++) {
-                for (int itspin = 0; itspin < n_in; itspin++) {
-                    for (int itin = 0; itin < n_in; itin++) {
-                        my_defs::K2::index_type idx;
-                        //idx[my_defs::K2::keldysh] = ;
-                        idx[my_defs::K2::spin] = itspin;
-                        idx[my_defs::K2::omega] = itw;
-                        idx[my_defs::K2::nu] = itv;
-                        idx[my_defs::K2::internal] = itin;
-
-                        double w, v, vp, N1, N2, N3, N4;
-                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
-
-                        vertex_in.pvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
-                        if (std::abs(w) > glb_T*1.){//
-                            N1 = Fermi_fac( v  + w/2, glb_mu);
-                            N2 = Fermi_fac(-v  + w/2, glb_mu);
-                            N3 = 1./Fermi_fac(-w, glb_mu);
-                            VertexInput inputG1( 4, itspin, w, v, 0, itin, 'p');
-                            VertexInput inputG2( 8, itspin, w, v, 0, itin, 'p');
-                            VertexInput inputG3(13, itspin, w, v, 0, itin, 'p');
-                            G1 = vertex_in.pvertex.template valsmooth<k2>(inputG1, vertex_in.pvertex,
-                                                                          vertex_half2_in.pvertex,
-                                                                          vertex_half2_in.pvertex);
-                            G2 = vertex_in.pvertex.template valsmooth<k2>(inputG2, vertex_in.pvertex,
-                                                                          vertex_half2_in.pvertex,
-                                                                          vertex_half2_in.pvertex);
-                            G3 = vertex_in.pvertex.template valsmooth<k2>(inputG3, vertex_in.pvertex,
-                                                                          vertex_half2_in.pvertex,
-                                                                          vertex_half2_in.pvertex);
-
-                            G123 = myconj(G1 + G2 + G3)
-                                   + myreal(G1 * N2 * N3
-                                            + N1 * G2 * N3
-                                            + N1 * N2 * G3) * 2.;
-                            G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
-                            G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
-                            G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
-                            idx[my_defs::K2::keldysh] = 0;
-                            vertex_out.pvertex.K2.setvert(G12 , idx);
-                            idx[my_defs::K2::keldysh] = 1;
-                            vertex_out.pvertex.K2.setvert(G123, idx);
-                            idx[my_defs::K2::keldysh] = 3;
-                            vertex_out.pvertex.K2.setvert(G13 , idx);
-
-                        }
-
-                    }
-                }
-            }
-        }
-
-    }
-    else {
-        static_assert(channel == 't', "Invalid channel");
-#pragma omp parallel for collapse(4)
-        for (int itw = 0; itw < nw2; itw++) {
-            for (int itv = 0; itv < nv2; itv++) {
-                for (int itspin = 0; itspin < n_in; itspin++) {
-                    for (int itin = 0; itin < n_in; itin++) {
-                        my_defs::K2::index_type idx;
-                        idx[my_defs::K2::spin] = itspin;
-                        idx[my_defs::K2::omega] = itw;
-                        idx[my_defs::K2::nu] = itv;
-                        idx[my_defs::K2::internal] = itin;
-
-                        double w, v, vp, N1, N2, N3, N4;
-                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
-
-                        vertex_in.tvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
-                        if (std::abs(w) > glb_T*1.){
-                            N1 = Fermi_fac(-v  - w/2, glb_mu);
-                            N2 = Fermi_fac( v  - w/2, glb_mu);
-                            N3 = 1./Fermi_fac(w, glb_mu);
-                            VertexInput inputG1(4, itspin, w, v, 0, itin, 't');
-                            VertexInput inputG2(1, itspin, w, v, 0, itin, 't');
-                            VertexInput inputG3(7, itspin, w, v, 0, itin, 't');
-                            G1 = vertex_in.tvertex.template valsmooth<k2>(inputG1, vertex_in.avertex,
-                                                                          vertex_half2_in.tvertex,
-                                                                          vertex_half2_in.avertex);
-                            G2 = vertex_in.tvertex.template valsmooth<k2>(inputG2, vertex_in.avertex,
-                                                                          vertex_half2_in.tvertex,
-                                                                          vertex_half2_in.avertex);
-                            G3 = vertex_in.tvertex.template valsmooth<k2>(inputG3, vertex_in.avertex,
-                                                                          vertex_half2_in.tvertex,
-                                                                          vertex_half2_in.avertex);
-
-                            G123 = myconj(G1 + G2 + G3)
-                                   + myreal(G1 * N2 * N3
-                                            + N1 * G2 * N3
-                                            + N1 * N2 * G3) * 2.;
-                            G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
-                            G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
-                            G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
-                            idx[my_defs::K2::keldysh] = 0;
-                            vertex_out.tvertex.K2.setvert(G12 , idx);
-                            idx[my_defs::K2::keldysh] = 2;
-                            vertex_out.tvertex.K2.setvert(G123, idx);
-                            idx[my_defs::K2::keldysh] = 3;
-                            vertex_out.tvertex.K2.setvert(G23 , idx);
                         }
                     }
                 }
             }
+        } else if constexpr (channel == 'p') {
+#pragma omp parallel for collapse(4)
+            for (int itw = 0; itw < nw2; itw++) {
+                for (int itv = 0; itv < nv2; itv++) {
+                    for (int itspin = 0; itspin < n_in; itspin++) {
+                        for (int itin = 0; itin < n_in; itin++) {
+                            my_defs::K2::index_type idx;
+                            //idx[my_defs::K2::keldysh] = ;
+                            idx[my_defs::K2::spin] = itspin;
+                            idx[my_defs::K2::omega] = itw;
+                            idx[my_defs::K2::nu] = itv;
+                            idx[my_defs::K2::internal] = itin;
+
+                            double w, v, vp, N1, N2, N3, N4;
+                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+
+                            vertex_in.pvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
+                            if (std::abs(w) > glb_T * 1.) {//
+                                N1 = Fermi_fac(v + w / 2, glb_mu);
+                                N2 = Fermi_fac(-v + w / 2, glb_mu);
+                                N3 = 1. / Fermi_fac(-w, glb_mu);
+                                VertexInput inputG1(4, itspin, w, v, 0, itin, 'p');
+                                VertexInput inputG2(8, itspin, w, v, 0, itin, 'p');
+                                VertexInput inputG3(13, itspin, w, v, 0, itin, 'p');
+                                G1 = vertex_in.pvertex.template valsmooth<k2>(inputG1, vertex_in.pvertex,
+                                                                              vertex_half2_in.pvertex,
+                                                                              vertex_half2_in.pvertex);
+                                G2 = vertex_in.pvertex.template valsmooth<k2>(inputG2, vertex_in.pvertex,
+                                                                              vertex_half2_in.pvertex,
+                                                                              vertex_half2_in.pvertex);
+                                G3 = vertex_in.pvertex.template valsmooth<k2>(inputG3, vertex_in.pvertex,
+                                                                              vertex_half2_in.pvertex,
+                                                                              vertex_half2_in.pvertex);
+
+                                G123 = myconj(G1 + G2 + G3)
+                                       + myreal(G1 * N2 * N3
+                                                + N1 * G2 * N3
+                                                + N1 * N2 * G3) * 2.;
+                                G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
+                                G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                                G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
+                                idx[my_defs::K2::keldysh] = 0;
+                                vertex_out.pvertex.K2.setvert(G12, idx);
+                                idx[my_defs::K2::keldysh] = 1;
+                                vertex_out.pvertex.K2.setvert(G123, idx);
+                                idx[my_defs::K2::keldysh] = 3;
+                                vertex_out.pvertex.K2.setvert(G13, idx);
+
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        } else {
+            static_assert(channel == 't', "Invalid channel");
+#pragma omp parallel for collapse(4)
+            for (int itw = 0; itw < nw2; itw++) {
+                for (int itv = 0; itv < nv2; itv++) {
+                    for (int itspin = 0; itspin < n_in; itspin++) {
+                        for (int itin = 0; itin < n_in; itin++) {
+                            my_defs::K2::index_type idx;
+                            idx[my_defs::K2::spin] = itspin;
+                            idx[my_defs::K2::omega] = itw;
+                            idx[my_defs::K2::nu] = itv;
+                            idx[my_defs::K2::internal] = itin;
+
+                            double w, v, vp, N1, N2, N3, N4;
+                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+
+                            vertex_in.tvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
+                            if (std::abs(w) > glb_T * 1.) {
+                                N1 = Fermi_fac(-v - w / 2, glb_mu);
+                                N2 = Fermi_fac(v - w / 2, glb_mu);
+                                N3 = 1. / Fermi_fac(w, glb_mu);
+                                VertexInput inputG1(4, itspin, w, v, 0, itin, 't');
+                                VertexInput inputG2(1, itspin, w, v, 0, itin, 't');
+                                VertexInput inputG3(7, itspin, w, v, 0, itin, 't');
+                                G1 = vertex_in.tvertex.template valsmooth<k2>(inputG1, vertex_in.avertex,
+                                                                              vertex_half2_in.tvertex,
+                                                                              vertex_half2_in.avertex);
+                                G2 = vertex_in.tvertex.template valsmooth<k2>(inputG2, vertex_in.avertex,
+                                                                              vertex_half2_in.tvertex,
+                                                                              vertex_half2_in.avertex);
+                                G3 = vertex_in.tvertex.template valsmooth<k2>(inputG3, vertex_in.avertex,
+                                                                              vertex_half2_in.tvertex,
+                                                                              vertex_half2_in.avertex);
+
+                                G123 = myconj(G1 + G2 + G3)
+                                       + myreal(G1 * N2 * N3
+                                                + N1 * G2 * N3
+                                                + N1 * N2 * G3) * 2.;
+                                G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
+                                G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                                G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
+                                idx[my_defs::K2::keldysh] = 0;
+                                vertex_out.tvertex.K2.setvert(G12, idx);
+                                idx[my_defs::K2::keldysh] = 2;
+                                vertex_out.tvertex.K2.setvert(G123, idx);
+                                idx[my_defs::K2::keldysh] = 3;
+                                vertex_out.tvertex.K2.setvert(G23, idx);
+                            }
+                        }
+                    }
+                }
+            }
         }
-    }
 
 
 #endif
 
 #if MAX_DIAG_CLASS > 2
-    if constexpr(channel == 'a') {
+        if constexpr(channel == 'a') {
 #pragma omp parallel for collapse(5)
-        for (int itw = 0; itw < nw3; itw++){
-            for (int itv = 0; itv < nv3; itv++) {
-                for (int itvp = 0; itvp < (GRID!=2 ? nv3 : (nv3-1)/2 + 1); itvp++) {
-                    for (int itspin = 0; itspin < n_spin; itspin++) {
-                        for (int itin = 0; itin < n_in; itin++) {
-                            my_defs::K3::index_type idx;
-                            idx[my_defs::K3::spin] = itspin;
-                            idx[my_defs::K3::omega] = itw;
-                            idx[my_defs::K3::nu] = itv;
-                            idx[my_defs::K3::nup] = itvp;
-                            idx[my_defs::K3::internal] = itin;
+            for (int itw = 0; itw < nw3; itw++) {
+                for (int itv = 0; itv < nv3; itv++) {
+                    for (int itvp = 0; itvp < (GRID != 2 ? nv3 : (nv3 - 1) / 2 + 1); itvp++) {
+                        for (int itspin = 0; itspin < n_spin; itspin++) {
+                            for (int itin = 0; itin < n_in; itin++) {
+                                my_defs::K3::index_type idx;
+                                idx[my_defs::K3::spin] = itspin;
+                                idx[my_defs::K3::omega] = itw;
+                                idx[my_defs::K3::nu] = itv;
+                                idx[my_defs::K3::nup] = itvp;
+                                idx[my_defs::K3::internal] = itin;
 
-                            double w, v, vp, N1, N2, N3, N4;
-                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                                double w, v, vp, N1, N2, N3, N4;
+                                Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
-                            vertex_in.avertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
-                            N1 = Fermi_fac( v  - w/2, glb_mu);
-                            N2 = Fermi_fac( vp + w/2, glb_mu);
-                            N3 = Fermi_fac(-vp + w/2, glb_mu);
-                            N4 = Fermi_fac(-v  - w/2, glb_mu);
-                            VertexInput inputG1(7 ,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG2(11,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG3(13,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG4(14,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG12(3,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG13(5,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG14(6,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG23(9,  itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG24(10, itspin, w, v, vp, itin, 'a');
-                            VertexInput inputG34(12, itspin, w, v, vp, itin, 'a');
-                            G1 = vertex_in.avertex.template valsmooth<k3>(inputG1, vertex_in.tvertex,
-                                                                          vertex_half2_in.avertex,
-                                                                          vertex_half2_in.tvertex);
-                            G2 = vertex_in.avertex.template valsmooth<k3>(inputG2, vertex_in.tvertex,
-                                                                          vertex_half2_in.avertex,
-                                                                          vertex_half2_in.tvertex);
-                            G3 = vertex_in.avertex.template valsmooth<k3>(inputG3, vertex_in.tvertex,
-                                                                          vertex_half2_in.avertex,
-                                                                          vertex_half2_in.tvertex);
-                            G4 = vertex_in.avertex.template valsmooth<k3>(inputG4, vertex_in.tvertex,
-                                                                          vertex_half2_in.avertex,
-                                                                          vertex_half2_in.tvertex);
-                            G12 = vertex_in.avertex.template valsmooth<k3>(inputG12, vertex_in.tvertex,
-                                                                           vertex_half2_in.avertex,
-                                                                           vertex_half2_in.tvertex);
-                            G13 = vertex_in.avertex.template valsmooth<k3>(inputG13, vertex_in.tvertex,
-                                                                           vertex_half2_in.avertex,
-                                                                           vertex_half2_in.tvertex);
-                            G14 = vertex_in.avertex.template valsmooth<k3>(inputG14, vertex_in.tvertex,
-                                                                           vertex_half2_in.avertex,
-                                                                           vertex_half2_in.tvertex);
-                            G23 = vertex_in.avertex.template valsmooth<k3>(inputG23, vertex_in.tvertex,
-                                                                           vertex_half2_in.avertex,
-                                                                           vertex_half2_in.tvertex);
-                            G24 = vertex_in.avertex.template valsmooth<k3>(inputG24, vertex_in.tvertex,
-                                                                           vertex_half2_in.avertex,
-                                                                           vertex_half2_in.tvertex);
-                            G34 = vertex_in.avertex.template valsmooth<k3>(inputG34, vertex_in.tvertex,
-                                                                           vertex_half2_in.avertex,
-                                                                           vertex_half2_in.tvertex);
+                                vertex_in.avertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
+                                N1 = Fermi_fac(v - w / 2, glb_mu);
+                                N2 = Fermi_fac(vp + w / 2, glb_mu);
+                                N3 = Fermi_fac(-vp + w / 2, glb_mu);
+                                N4 = Fermi_fac(-v - w / 2, glb_mu);
+                                VertexInput inputG1(7, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG2(11, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG3(13, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG4(14, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG12(3, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG13(5, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG14(6, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG23(9, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG24(10, itspin, w, v, vp, itin, 'a');
+                                VertexInput inputG34(12, itspin, w, v, vp, itin, 'a');
+                                G1 = vertex_in.avertex.template valsmooth<k3>(inputG1, vertex_in.tvertex,
+                                                                              vertex_half2_in.avertex,
+                                                                              vertex_half2_in.tvertex);
+                                G2 = vertex_in.avertex.template valsmooth<k3>(inputG2, vertex_in.tvertex,
+                                                                              vertex_half2_in.avertex,
+                                                                              vertex_half2_in.tvertex);
+                                G3 = vertex_in.avertex.template valsmooth<k3>(inputG3, vertex_in.tvertex,
+                                                                              vertex_half2_in.avertex,
+                                                                              vertex_half2_in.tvertex);
+                                G4 = vertex_in.avertex.template valsmooth<k3>(inputG4, vertex_in.tvertex,
+                                                                              vertex_half2_in.avertex,
+                                                                              vertex_half2_in.tvertex);
+                                G12 = vertex_in.avertex.template valsmooth<k3>(inputG12, vertex_in.tvertex,
+                                                                               vertex_half2_in.avertex,
+                                                                               vertex_half2_in.tvertex);
+                                G13 = vertex_in.avertex.template valsmooth<k3>(inputG13, vertex_in.tvertex,
+                                                                               vertex_half2_in.avertex,
+                                                                               vertex_half2_in.tvertex);
+                                G14 = vertex_in.avertex.template valsmooth<k3>(inputG14, vertex_in.tvertex,
+                                                                               vertex_half2_in.avertex,
+                                                                               vertex_half2_in.tvertex);
+                                G23 = vertex_in.avertex.template valsmooth<k3>(inputG23, vertex_in.tvertex,
+                                                                               vertex_half2_in.avertex,
+                                                                               vertex_half2_in.tvertex);
+                                G24 = vertex_in.avertex.template valsmooth<k3>(inputG24, vertex_in.tvertex,
+                                                                               vertex_half2_in.avertex,
+                                                                               vertex_half2_in.tvertex);
+                                G34 = vertex_in.avertex.template valsmooth<k3>(inputG34, vertex_in.tvertex,
+                                                                               vertex_half2_in.avertex,
+                                                                               vertex_half2_in.tvertex);
 
-                            G123 = (1 + N1 * N2 + N1 * N3 + N2 * N3) * myconj(G4)
-                                   - (G1 * N2 * N3
-                                      + N1 * G2 * N3
-                                      + N1 * N2 * G3
-                                      + N1 * G23
-                                      + G12 * N3
-                                      + G13 * N2);
-                            G1234 = G1 * N2 * N3 * N4 * 2.
-                                    + N1 * G2 * N3 * N4 * 2.
-                                    + N1 * N2 * G3 * N4 * 2.
-                                    + N1 * N2 * N3 * G4 * 2.
-                                    + (N2 * N3 * N4 + N2 + N3 + N4) * myconj(G1)
-                                    + (N1 * N3 * N4 + N1 + N3 + N4) * myconj(G2)
-                                    + (N1 * N2 * N4 + N1 + N2 + N4) * myconj(G3)
-                                    + (N1 * N2 * N3 + N1 + N2 + N3) * myconj(G4)
-                                    + N3 * N4 * G12
-                                    + N2 * N4 * G13
-                                    + N2 * N3 * G14
-                                    + N1 * N4 * G23
-                                    + N1 * N3 * G24
-                                    + N1 * N2 * G34;
-                            idx[my_defs::K3::keldysh] = 0;
-                            vertex_out.avertex.K3.setvert(G1234, idx);
-                            idx[my_defs::K3::keldysh] = 1;
-                            vertex_out.avertex.K3.setvert(G123,  idx);
+                                G123 = (1 + N1 * N2 + N1 * N3 + N2 * N3) * myconj(G4)
+                                       - (G1 * N2 * N3
+                                          + N1 * G2 * N3
+                                          + N1 * N2 * G3
+                                          + N1 * G23
+                                          + G12 * N3
+                                          + G13 * N2);
+                                G1234 = G1 * N2 * N3 * N4 * 2.
+                                        + N1 * G2 * N3 * N4 * 2.
+                                        + N1 * N2 * G3 * N4 * 2.
+                                        + N1 * N2 * N3 * G4 * 2.
+                                        + (N2 * N3 * N4 + N2 + N3 + N4) * myconj(G1)
+                                        + (N1 * N3 * N4 + N1 + N3 + N4) * myconj(G2)
+                                        + (N1 * N2 * N4 + N1 + N2 + N4) * myconj(G3)
+                                        + (N1 * N2 * N3 + N1 + N2 + N3) * myconj(G4)
+                                        + N3 * N4 * G12
+                                        + N2 * N4 * G13
+                                        + N2 * N3 * G14
+                                        + N1 * N4 * G23
+                                        + N1 * N3 * G24
+                                        + N1 * N2 * G34;
+                                idx[my_defs::K3::keldysh] = 0;
+                                vertex_out.avertex.K3.setvert(G1234, idx);
+                                idx[my_defs::K3::keldysh] = 1;
+                                vertex_out.avertex.K3.setvert(G123, idx);
+                            }
+                        }
+                    }
+                }
+            }
+        } else if constexpr (channel == 'p') {
+#pragma omp parallel for collapse(5)
+            for (int itw = 0; itw < nw3; itw++) {
+                for (int itv = 0; itv < nv3; itv++) {
+                    for (int itvp = 0; itvp < (GRID != 2 ? nv3 : (nv3 - 1) / 2 + 1); itvp++) {
+                        for (int itspin = 0; itspin < n_spin; itspin++) {
+                            for (int itin = 0; itin < n_in; itin++) {
+                                my_defs::K3::index_type idx;
+                                idx[my_defs::K3::spin] = itspin;
+                                idx[my_defs::K3::omega] = itw;
+                                idx[my_defs::K3::nu] = itv;
+                                idx[my_defs::K3::nup] = itvp;
+                                idx[my_defs::K3::internal] = itin;
+
+                                double w, v, vp, N1, N2, N3, N4;
+                                Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+
+                                vertex_in.pvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
+                                N1 = Fermi_fac(v + w / 2, glb_mu);
+                                N2 = Fermi_fac(-v + w / 2, glb_mu);
+                                N3 = Fermi_fac(-vp - w / 2, glb_mu);
+                                N4 = Fermi_fac(vp - w / 2, glb_mu);
+                                VertexInput inputG1(7, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG2(11, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG3(13, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG4(14, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG12(3, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG13(5, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG14(6, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG23(9, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG24(10, itspin, w, v, vp, itin, 'p');
+                                VertexInput inputG34(12, itspin, w, v, vp, itin, 'p');
+                                G1 = vertex_in.pvertex.template valsmooth<k3>(inputG1, vertex_in.pvertex,
+                                                                              vertex_half2_in.pvertex,
+                                                                              vertex_half2_in.pvertex);
+                                G2 = vertex_in.pvertex.template valsmooth<k3>(inputG2, vertex_in.pvertex,
+                                                                              vertex_half2_in.pvertex,
+                                                                              vertex_half2_in.pvertex);
+                                G3 = vertex_in.pvertex.template valsmooth<k3>(inputG3, vertex_in.pvertex,
+                                                                              vertex_half2_in.pvertex,
+                                                                              vertex_half2_in.pvertex);
+                                G4 = vertex_in.pvertex.template valsmooth<k3>(inputG4, vertex_in.pvertex,
+                                                                              vertex_half2_in.pvertex,
+                                                                              vertex_half2_in.pvertex);
+                                G12 = vertex_in.pvertex.template valsmooth<k3>(inputG12, vertex_in.pvertex,
+                                                                               vertex_half2_in.pvertex,
+                                                                               vertex_half2_in.pvertex);
+                                G13 = vertex_in.pvertex.template valsmooth<k3>(inputG13, vertex_in.pvertex,
+                                                                               vertex_half2_in.pvertex,
+                                                                               vertex_half2_in.pvertex);
+                                G14 = vertex_in.pvertex.template valsmooth<k3>(inputG14, vertex_in.pvertex,
+                                                                               vertex_half2_in.pvertex,
+                                                                               vertex_half2_in.pvertex);
+                                G23 = vertex_in.pvertex.template valsmooth<k3>(inputG23, vertex_in.pvertex,
+                                                                               vertex_half2_in.pvertex,
+                                                                               vertex_half2_in.pvertex);
+                                G24 = vertex_in.pvertex.template valsmooth<k3>(inputG24, vertex_in.pvertex,
+                                                                               vertex_half2_in.pvertex,
+                                                                               vertex_half2_in.pvertex);
+                                G34 = vertex_in.pvertex.template valsmooth<k3>(inputG34, vertex_in.pvertex,
+                                                                               vertex_half2_in.pvertex,
+                                                                               vertex_half2_in.pvertex);
+
+                                G123 = (1 + N1 * N2 + N1 * N3 + N2 * N3) * myconj(G4)
+                                       - (G1 * N2 * N3
+                                          + N1 * G2 * N3
+                                          + N1 * N2 * G3
+                                          + N1 * G23
+                                          + G12 * N3
+                                          + G13 * N2);
+                                G1234 = G1 * N2 * N3 * N4 * 2.
+                                        + N1 * G2 * N3 * N4 * 2.
+                                        + N1 * N2 * G3 * N4 * 2.
+                                        + N1 * N2 * N3 * G4 * 2.
+                                        + (N2 * N3 * N4 + N2 + N3 + N4) * myconj(G1)
+                                        + (N1 * N3 * N4 + N1 + N3 + N4) * myconj(G2)
+                                        + (N1 * N2 * N4 + N1 + N2 + N4) * myconj(G3)
+                                        + (N1 * N2 * N3 + N1 + N2 + N3) * myconj(G4)
+                                        + N3 * N4 * G12
+                                        + N2 * N4 * G13
+                                        + N2 * N3 * G14
+                                        + N1 * N4 * G23
+                                        + N1 * N3 * G24
+                                        + N1 * N2 * G34;
+
+                                idx[my_defs::K3::keldysh] = 0;
+                                vertex_out.pvertex.K3.setvert(G1234, itspin, itw, itv, itvp, 0, itin);
+                                idx[my_defs::K3::keldysh] = 1;
+                                vertex_out.pvertex.K3.setvert(G123, itspin, itw, itv, itvp, 1, itin);
+
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            static_assert(channel == 't', "Invalid channel");
+
+#pragma omp parallel for collapse(5)
+            for (int itw = 0; itw < nw3; itw++) {
+                for (int itv = 0; itv < nv3; itv++) {
+                    for (int itvp = 0; itvp < (GRID != 2 ? nv3 : (nv3 - 1) / 2 + 1); itvp++) {
+                        for (int itspin = 0; itspin < n_spin; itspin++) {
+                            for (int itin = 0; itin < n_in; itin++) {
+                                my_defs::K3::index_type idx;
+                                idx[my_defs::K3::spin] = itspin;
+                                idx[my_defs::K3::omega] = itw;
+                                idx[my_defs::K3::nu] = itv;
+                                idx[my_defs::K3::nup] = itvp;
+                                idx[my_defs::K3::internal] = itin;
+
+                                double w, v, vp, N1, N2, N3, N4;
+                                Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+
+                                vertex_in.tvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
+                                N1 = Fermi_fac(vp + w / 2, glb_mu);
+                                N2 = Fermi_fac(v - w / 2, glb_mu);
+                                N3 = Fermi_fac(-vp + w / 2, glb_mu);
+                                N4 = Fermi_fac(-v - w / 2, glb_mu);
+
+                                VertexInput inputG1(7, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG2(11, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG3(13, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG4(14, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG12(3, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG13(5, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG14(6, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG23(9, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG24(10, itspin, w, v, vp, itin, 't');
+                                VertexInput inputG34(12, itspin, w, v, vp, itin, 't');
+                                G1 = vertex_in.tvertex.template valsmooth<k3>(inputG1, vertex_in.avertex,
+                                                                              vertex_half2_in.tvertex,
+                                                                              vertex_half2_in.avertex);
+                                G2 = vertex_in.tvertex.template valsmooth<k3>(inputG2, vertex_in.avertex,
+                                                                              vertex_half2_in.tvertex,
+                                                                              vertex_half2_in.avertex);
+                                G3 = vertex_in.tvertex.template valsmooth<k3>(inputG3, vertex_in.avertex,
+                                                                              vertex_half2_in.tvertex,
+                                                                              vertex_half2_in.avertex);
+                                G4 = vertex_in.tvertex.template valsmooth<k3>(inputG4, vertex_in.avertex,
+                                                                              vertex_half2_in.tvertex,
+                                                                              vertex_half2_in.avertex);
+                                G12 = vertex_in.tvertex.template valsmooth<k3>(inputG12, vertex_in.avertex,
+                                                                               vertex_half2_in.tvertex,
+                                                                               vertex_half2_in.avertex);
+                                G13 = vertex_in.tvertex.template valsmooth<k3>(inputG13, vertex_in.avertex,
+                                                                               vertex_half2_in.tvertex,
+                                                                               vertex_half2_in.avertex);
+                                G14 = vertex_in.tvertex.template valsmooth<k3>(inputG14, vertex_in.avertex,
+                                                                               vertex_half2_in.tvertex,
+                                                                               vertex_half2_in.avertex);
+                                G23 = vertex_in.tvertex.template valsmooth<k3>(inputG23, vertex_in.avertex,
+                                                                               vertex_half2_in.tvertex,
+                                                                               vertex_half2_in.avertex);
+                                G24 = vertex_in.tvertex.template valsmooth<k3>(inputG24, vertex_in.avertex,
+                                                                               vertex_half2_in.tvertex,
+                                                                               vertex_half2_in.avertex);
+                                G34 = vertex_in.tvertex.template valsmooth<k3>(inputG34, vertex_in.avertex,
+                                                                               vertex_half2_in.tvertex,
+                                                                               vertex_half2_in.avertex);
+
+                                G123 = (1 + N1 * N2 + N1 * N3 + N2 * N3) * myconj(G4)
+                                       - (G1 * N2 * N3
+                                          + N1 * G2 * N3
+                                          + N1 * N2 * G3
+                                          + N1 * G23
+                                          + G12 * N3
+                                          + G13 * N2);
+                                G1234 = G1 * N2 * N3 * N4 * 2.
+                                        + N1 * G2 * N3 * N4 * 2.
+                                        + N1 * N2 * G3 * N4 * 2.
+                                        + N1 * N2 * N3 * G4 * 2.
+                                        + (N2 * N3 * N4 + N2 + N3 + N4) * myconj(G1)
+                                        + (N1 * N3 * N4 + N1 + N3 + N4) * myconj(G2)
+                                        + (N1 * N2 * N4 + N1 + N2 + N4) * myconj(G3)
+                                        + (N1 * N2 * N3 + N1 + N2 + N3) * myconj(G4)
+                                        + N3 * N4 * G12
+                                        + N2 * N4 * G13
+                                        + N2 * N3 * G14
+                                        + N1 * N4 * G23
+                                        + N1 * N3 * G24
+                                        + N1 * N2 * G34;
+                                idx[my_defs::K3::keldysh] = 0;
+                                vertex_out.tvertex.K3.setvert(G1234, itspin, itw, itv, itvp, 0, itin);
+                                idx[my_defs::K3::keldysh] = 1;
+                                vertex_out.tvertex.K3.setvert(G123, itspin, itw, itv, itvp, 1, itin);
+
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    else if constexpr (channel == 'p') {
-#pragma omp parallel for collapse(5)
-        for (int itw = 0; itw < nw3; itw++){
-            for (int itv = 0; itv < nv3; itv++) {
-                for (int itvp = 0; itvp < (GRID!=2 ? nv3 : (nv3-1)/2 + 1); itvp++) {
-                    for (int itspin = 0; itspin < n_spin; itspin++) {
-                        for (int itin = 0; itin < n_in; itin++) {
-                            my_defs::K3::index_type idx;
-                            idx[my_defs::K3::spin] = itspin;
-                            idx[my_defs::K3::omega] = itw;
-                            idx[my_defs::K3::nu] = itv;
-                            idx[my_defs::K3::nup] = itvp;
-                            idx[my_defs::K3::internal] = itin;
-
-                            double w, v, vp, N1, N2, N3, N4;
-                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
-
-                            vertex_in.pvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
-                            N1 = Fermi_fac( v  + w/2, glb_mu);
-                            N2 = Fermi_fac(-v  + w/2, glb_mu);
-                            N3 = Fermi_fac(-vp - w/2, glb_mu);
-                            N4 = Fermi_fac( vp - w/2, glb_mu);
-                            VertexInput inputG1 (7 , itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG2 (11, itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG3 (13, itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG4 (14, itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG12(3 , itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG13(5 , itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG14(6 , itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG23(9 , itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG24(10, itspin, w, v, vp, itin, 'p');
-                            VertexInput inputG34(12, itspin, w, v, vp, itin, 'p');
-                            G1 = vertex_in.pvertex.template valsmooth<k3>(inputG1, vertex_in.pvertex,
-                                                                          vertex_half2_in.pvertex,
-                                                                          vertex_half2_in.pvertex);
-                            G2 = vertex_in.pvertex.template valsmooth<k3>(inputG2, vertex_in.pvertex,
-                                                                          vertex_half2_in.pvertex,
-                                                                          vertex_half2_in.pvertex);
-                            G3 = vertex_in.pvertex.template valsmooth<k3>(inputG3, vertex_in.pvertex,
-                                                                          vertex_half2_in.pvertex,
-                                                                          vertex_half2_in.pvertex);
-                            G4 = vertex_in.pvertex.template valsmooth<k3>(inputG4, vertex_in.pvertex,
-                                                                          vertex_half2_in.pvertex,
-                                                                          vertex_half2_in.pvertex);
-                            G12 = vertex_in.pvertex.template valsmooth<k3>(inputG12, vertex_in.pvertex,
-                                                                           vertex_half2_in.pvertex,
-                                                                           vertex_half2_in.pvertex);
-                            G13 = vertex_in.pvertex.template valsmooth<k3>(inputG13, vertex_in.pvertex,
-                                                                           vertex_half2_in.pvertex,
-                                                                           vertex_half2_in.pvertex);
-                            G14 = vertex_in.pvertex.template valsmooth<k3>(inputG14, vertex_in.pvertex,
-                                                                           vertex_half2_in.pvertex,
-                                                                           vertex_half2_in.pvertex);
-                            G23 = vertex_in.pvertex.template valsmooth<k3>(inputG23, vertex_in.pvertex,
-                                                                           vertex_half2_in.pvertex,
-                                                                           vertex_half2_in.pvertex);
-                            G24 = vertex_in.pvertex.template valsmooth<k3>(inputG24, vertex_in.pvertex,
-                                                                           vertex_half2_in.pvertex,
-                                                                           vertex_half2_in.pvertex);
-                            G34 = vertex_in.pvertex.template valsmooth<k3>(inputG34, vertex_in.pvertex,
-                                                                           vertex_half2_in.pvertex,
-                                                                           vertex_half2_in.pvertex);
-
-                            G123 = (1 + N1 * N2 + N1 * N3 + N2 * N3) * myconj(G4)
-                                   - (G1 * N2 * N3
-                                      + N1 * G2 * N3
-                                      + N1 * N2 * G3
-                                      + N1 * G23
-                                      + G12 * N3
-                                      + G13 * N2);
-                            G1234 = G1 * N2 * N3 * N4 * 2.
-                                    + N1 * G2 * N3 * N4 * 2.
-                                    + N1 * N2 * G3 * N4 * 2.
-                                    + N1 * N2 * N3 * G4 * 2.
-                                    + (N2 * N3 * N4 + N2 + N3 + N4) * myconj(G1)
-                                    + (N1 * N3 * N4 + N1 + N3 + N4) * myconj(G2)
-                                    + (N1 * N2 * N4 + N1 + N2 + N4) * myconj(G3)
-                                    + (N1 * N2 * N3 + N1 + N2 + N3) * myconj(G4)
-                                    + N3 * N4 * G12
-                                    + N2 * N4 * G13
-                                    + N2 * N3 * G14
-                                    + N1 * N4 * G23
-                                    + N1 * N3 * G24
-                                    + N1 * N2 * G34;
-
-                            idx[my_defs::K3::keldysh] = 0;
-                            vertex_out.pvertex.K3.setvert(G1234, itspin, itw, itv, itvp, 0, itin);
-                            idx[my_defs::K3::keldysh] = 1;
-                            vertex_out.pvertex.K3.setvert(G123 , itspin, itw, itv, itvp, 1, itin);
-
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else {
-        static_assert(channel == 't', "Invalid channel");
-
-#pragma omp parallel for collapse(5)
-        for (int itw = 0; itw < nw3; itw++){
-            for (int itv = 0; itv < nv3; itv++) {
-                for (int itvp = 0; itvp < (GRID!=2 ? nv3 : (nv3-1)/2 + 1); itvp++) {
-                    for (int itspin = 0; itspin < n_spin; itspin++) {
-                        for (int itin = 0; itin < n_in; itin++) {
-                            my_defs::K3::index_type idx;
-                            idx[my_defs::K3::spin] = itspin;
-                            idx[my_defs::K3::omega] = itw;
-                            idx[my_defs::K3::nu] = itv;
-                            idx[my_defs::K3::nup] = itvp;
-                            idx[my_defs::K3::internal] = itin;
-
-                            double w, v, vp, N1, N2, N3, N4;
-                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
-
-                            vertex_in.tvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
-                            N1 = Fermi_fac( vp + w/2, glb_mu);
-                            N2 = Fermi_fac( v  - w/2, glb_mu);
-                            N3 = Fermi_fac(-vp + w/2, glb_mu);
-                            N4 = Fermi_fac(-v  - w/2, glb_mu);
-
-                            VertexInput inputG1 (7 , itspin, w, v, vp, itin, 't');
-                            VertexInput inputG2 (11, itspin, w, v, vp, itin, 't');
-                            VertexInput inputG3 (13, itspin, w, v, vp, itin, 't');
-                            VertexInput inputG4 (14, itspin, w, v, vp, itin, 't');
-                            VertexInput inputG12(3 , itspin, w, v, vp, itin, 't');
-                            VertexInput inputG13(5 , itspin, w, v, vp, itin, 't');
-                            VertexInput inputG14(6 , itspin, w, v, vp, itin, 't');
-                            VertexInput inputG23(9 , itspin, w, v, vp, itin, 't');
-                            VertexInput inputG24(10, itspin, w, v, vp, itin, 't');
-                            VertexInput inputG34(12, itspin, w, v, vp, itin, 't');
-                            G1 = vertex_in.tvertex.template valsmooth<k3>(inputG1, vertex_in.avertex,
-                                                                          vertex_half2_in.tvertex,
-                                                                          vertex_half2_in.avertex);
-                            G2 = vertex_in.tvertex.template valsmooth<k3>(inputG2, vertex_in.avertex,
-                                                                          vertex_half2_in.tvertex,
-                                                                          vertex_half2_in.avertex);
-                            G3 = vertex_in.tvertex.template valsmooth<k3>(inputG3, vertex_in.avertex,
-                                                                          vertex_half2_in.tvertex,
-                                                                          vertex_half2_in.avertex);
-                            G4 = vertex_in.tvertex.template valsmooth<k3>(inputG4, vertex_in.avertex,
-                                                                          vertex_half2_in.tvertex,
-                                                                          vertex_half2_in.avertex);
-                            G12 = vertex_in.tvertex.template valsmooth<k3>(inputG12, vertex_in.avertex,
-                                                                           vertex_half2_in.tvertex,
-                                                                           vertex_half2_in.avertex);
-                            G13 = vertex_in.tvertex.template valsmooth<k3>(inputG13, vertex_in.avertex,
-                                                                           vertex_half2_in.tvertex,
-                                                                           vertex_half2_in.avertex);
-                            G14 = vertex_in.tvertex.template valsmooth<k3>(inputG14, vertex_in.avertex,
-                                                                           vertex_half2_in.tvertex,
-                                                                           vertex_half2_in.avertex);
-                            G23 = vertex_in.tvertex.template valsmooth<k3>(inputG23, vertex_in.avertex,
-                                                                           vertex_half2_in.tvertex,
-                                                                           vertex_half2_in.avertex);
-                            G24 = vertex_in.tvertex.template valsmooth<k3>(inputG24, vertex_in.avertex,
-                                                                           vertex_half2_in.tvertex,
-                                                                           vertex_half2_in.avertex);
-                            G34 = vertex_in.tvertex.template valsmooth<k3>(inputG34, vertex_in.avertex,
-                                                                           vertex_half2_in.tvertex,
-                                                                           vertex_half2_in.avertex);
-
-                            G123 = (1 + N1 * N2 + N1 * N3 + N2 * N3) * myconj(G4)
-                                   - (G1 * N2 * N3
-                                      + N1 * G2 * N3
-                                      + N1 * N2 * G3
-                                      + N1 * G23
-                                      + G12 * N3
-                                      + G13 * N2);
-                            G1234 = G1 * N2 * N3 * N4 * 2.
-                                    + N1 * G2 * N3 * N4 * 2.
-                                    + N1 * N2 * G3 * N4 * 2.
-                                    + N1 * N2 * N3 * G4 * 2.
-                                    + (N2 * N3 * N4 + N2 + N3 + N4) * myconj(G1)
-                                    + (N1 * N3 * N4 + N1 + N3 + N4) * myconj(G2)
-                                    + (N1 * N2 * N4 + N1 + N2 + N4) * myconj(G3)
-                                    + (N1 * N2 * N3 + N1 + N2 + N3) * myconj(G4)
-                                    + N3 * N4 * G12
-                                    + N2 * N4 * G13
-                                    + N2 * N3 * G14
-                                    + N1 * N4 * G23
-                                    + N1 * N3 * G24
-                                    + N1 * N2 * G34;
-                            idx[my_defs::K3::keldysh] = 0;
-                            vertex_out.tvertex.K3.setvert(G1234, itspin, itw, itv, itvp, 0, itin);
-                            idx[my_defs::K3::keldysh] = 1;
-                            vertex_out.tvertex.K3.setvert(G123 , itspin, itw, itv, itvp, 1, itin);
-
-                        }
-                    }
-                }
-            }
-        }
-    }
 #endif
+    }
 }
 
 /*
@@ -741,7 +737,7 @@ void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out,
 template <typename Q, vertexType symmetry_type>
 void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
     if(KELDYSH) {
-        if (CONTOUR_BASIS and not ZERO_T) assert(false);
+        if (CONTOUR_BASIS and not ZERO_T) {} //assert(false);
         if (CONTOUR_BASIS and ZERO_T) {
             print("Checking the FDTs for Lambda_it", Lambda_it, true);
 
