@@ -143,7 +143,10 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             //write_to_hdf(outfile, "errorsK1", errors, false);
             //outfile.close();
 
+            double error_max = errors.max_norm();
+            print(error_max);
             REQUIRE(errors.max_norm() < 1e-10);
+            REQUIRE(error_max<1e-10);
         }
         else {
             print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");

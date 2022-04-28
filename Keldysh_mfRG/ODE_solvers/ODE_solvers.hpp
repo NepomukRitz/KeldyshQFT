@@ -375,6 +375,10 @@ namespace ode_solver_impl
             };
             ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs, config);
 
+            if constexpr(std::is_same<State<state_datatype>, Y>::value) {
+                rhs.rk_step = 0;
+            }
+
             if (not tableau.adaptive) break;
 
 
@@ -538,7 +542,9 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
             print("i: ", i, true);
             print("Lambda: ", Lambda, true);
         };
-
+        if constexpr(std::is_same<State<state_datatype>, Y>::value) {
+            rhs.iteration = i;
+        }
 
         //if next step would get us outside the interval [Lambda_f, Lambda_i]
         if ((Lambda + h - Lambda_f) * (Lambda + h - Lambda_i) > 0.0)

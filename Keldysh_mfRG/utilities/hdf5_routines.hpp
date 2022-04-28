@@ -702,7 +702,7 @@ void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q
             }
         } else {
             print("\t\t  ERROR: Cannot write to file ", FILE_NAME, " since Lambda layer", Lambda_it,
-                  " is out of range.", true);
+                  " is out of range.", "\n");
         }
     }
 }

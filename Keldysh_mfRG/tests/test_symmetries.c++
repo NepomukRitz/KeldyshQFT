@@ -1,7 +1,7 @@
 #include "test_symmetries.hpp"
 #include "../perturbation_theory_and_parquet/parquet_solver.hpp"
 
-void test_symmetries(const double Lambda) {
+void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
 
     std::cout << " --- Testing symmetries --- " << std::endl;
 
@@ -124,12 +124,12 @@ void test_symmetries(const double Lambda) {
 
     state_ini.analyze_tails();
     check_SE_causality(state_ini); // check if the self-energy is causal at each step of the flow
-    rhs_n_loop_flow(state_ini, Lambda, {0,0});
+    rhs_n_loop_flow(state_ini, Lambda, {0,0}, frgConfig);
 
 }
 
 
-void test_compare_with_Vienna_code() {
+void test_compare_with_Vienna_code(const fRG_config & frgConfig) {
     /// For good agreement: set dGammaC = dGammaC_rightinsertion
     assert(glb_U == 4.);
     assert(glb_Gamma == 2.);
@@ -158,7 +158,7 @@ void test_compare_with_Vienna_code() {
     write_state_to_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
 
-    rhs_n_loop_flow_t<state_datatype> rhs_mfrg;
+    rhs_n_loop_flow_t<state_datatype> rhs_mfrg(frgConfig);
     ODE_solver_config config;// = ODE_solver_config_standard;
     config.filename = outputFileName;
     using namespace boost::numeric::odeint;

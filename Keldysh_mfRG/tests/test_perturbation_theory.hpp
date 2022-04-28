@@ -1033,7 +1033,7 @@ void test_K2_correctness(double Lambda){
 
     cvec K1a_diff(nBOS);
     for(int iw=0; iw<nBOS; ++iw){
-        K1a_diff[iw] = PT4_K1a22.vertex.avertex().K1_val(0, iw, 0) - PT2_K1a.vertex.avertex().K1_val(0, iw, 0);
+        K1a_diff[iw] = PT4_K1a22.vertex.avertex().K1.val(0, iw,0, 0) - PT2_K1a.vertex.avertex().K1.val(0, iw,0, 0);
     }
 
     print("Testing correctness of K2a. Using U=" +std::to_string(glb_U)+ " and Lambda="+std::to_string(Lambda)

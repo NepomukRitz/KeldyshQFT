@@ -20,7 +20,7 @@
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
  * Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.
  */
-State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_intermediate_results);
+State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_config& config, bool save_intermediate_results);
 
 /**
  * Checkpointing: Continue to compute an n-loop flow that has been canceled before, e.g. due to running into the wall
@@ -31,7 +31,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, bool save_i
  *        computed. (See log file: "Successfully saved in hdf5 file: <inputFileName> in Lambda layer <Nmax>.)
  *        Use this number <Nmax> as input <it_start> for this function.
  */
-State<state_datatype> n_loop_flow(const std::string& inputFileName, int it_start, bool save_intermediate_results);
+State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_config& config, int it_start, bool save_intermediate_results);
 
 
 #endif //KELDYSH_MFRG_FLOW_HPP

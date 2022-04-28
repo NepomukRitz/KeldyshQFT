@@ -154,7 +154,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
 
     all_frequencies = rvec(number_of_gridpoints);
     auxiliary_grid = rvec(number_of_gridpoints);
-    set_essential_parameters(scale*5000., scale);
+    set_essential_parameters(scale*500., scale);
     initialize_grid();
 }
 

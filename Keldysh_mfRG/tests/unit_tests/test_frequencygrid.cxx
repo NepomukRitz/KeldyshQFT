@@ -8,6 +8,7 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
 
     bool isright = true;
     double issymmetric = 0.;
+    double issymmetric_aux = 0.;
     double symmetry_tolerance = 1e-10;
     FrequencyGrid<eliasGrid> Bosfreqs('b', 1, 0.);
     bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.get_all_frequencies());
@@ -19,7 +20,14 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
         if (std::abs(index - i) > (dense ? 0 : 1))
             isright = false;
         issymmetric += std::abs(Bosfreqs.get_frequency(i) + Bosfreqs.get_frequency(nBOS - i - 1));
+        issymmetric_aux += std::abs(Bosfreqs.get_auxiliary_gridpoint(i) + Bosfreqs.get_auxiliary_gridpoint(nBOS - i - 1));
     }
+
+    H5::H5File outfile(data_dir + "frequency_grid.h5", H5F_ACC_TRUNC);
+    write_to_hdf(outfile, "bfreqs", Bosfreqs.get_all_frequencies(), false);
+    write_to_hdf(outfile, "bfreqs_aux", Bosfreqs.get_all_auxiliary_gridpoints(), false);
+    outfile.close();
+
 
     SECTION( "Is the correct index retrieved by get_grid_index()?" ) {
         REQUIRE( isright );
@@ -27,6 +35,7 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
 
     SECTION( "Is the frequency grid symmetric_full?" ) {
         REQUIRE( issymmetric < symmetry_tolerance );
+        REQUIRE( issymmetric_aux < symmetry_tolerance );
     }
 
     SECTION( "Are there frequencies which appear  more than once in the vector?" ) {

@@ -624,5 +624,13 @@ struct IndicesSymmetryTransformations: VertexInput{
 
 
 
+struct fRG_config {
+    int nODE_;
+    double epsODE_abs_;
+    double epsODE_rel_;
+    double U;
+};
+
+
 
 #endif // DATA_STRUCTURES_H

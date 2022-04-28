@@ -145,9 +145,11 @@ void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, b
     using namespace boost::numeric::odeint;
     ODE_solver_config config;
     config.maximal_number_of_ODE_steps = N_ODE;
+    config.relative_error = 1e-6;
+    config.absolute_error = 1e-8;
     rhs_bubbles_flow_wstate_class<Q> rhs;
-    ode_solver_boost<State<Q>, flowgrid::log_parametrization,rhs_bubbles_flow_wstate_class<Q>>(state_fin, Lambda_f, state_ini, Lambda_i, rhs, config, true);
-    //ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization,rhs_bubbles_flow_wstate_class<Q>>(state_fin, Lambda_f, state_ini, Lambda_i, rhs, config, true);
+    //ode_solver_boost<State<Q>, flowgrid::log_parametrization,rhs_bubbles_flow_wstate_class<Q>>(state_fin, Lambda_f, state_ini, Lambda_i, rhs, config, true);
+    ode_solver<State<state_datatype>, flowgrid::linear_parametrization,rhs_bubbles_flow_wstate_class<Q>>(state_fin, Lambda_f, state_ini, Lambda_i, rhs, config, true);
 
     multidimensional::multiarray<Q,4> K1a_dif = state_dir.vertex.avertex().K1.get_vec() + ( state_fin.vertex.avertex().K1.get_vec()*(-1.) ); // difference in results
     print("Testing ODE for bare K1a_0 with State class. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);

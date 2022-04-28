@@ -181,9 +181,9 @@ namespace {
 
 #ifndef DENSEGRID
 TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]" ) {
-    double interpolation_tolerance = 1e-11;
+    double interpolation_tolerance = 1e-10;
     bool geq_interpolation_tolerance = false;
-    double cumul_interpolation_tolerance = 1e-12 * nBOS;
+    double cumul_interpolation_tolerance = interpolation_tolerance * nBOS;
 
     rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK = 0;
