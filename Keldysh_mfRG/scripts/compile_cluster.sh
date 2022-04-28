@@ -14,10 +14,12 @@ then
   module unload gcc # in case some old version has been loaded previously
   module load gcc/9
   module unload hdf5 # in case some old version has been loaded previously
-  module load hdf5/1.8.20-cxx-frt-threadsafe
+  module load hdf5/1.10.7-intel21-impi
   module load fftw
   module load gsl
-  module load boost/1.61_icc
+  module unload boost
+  module load boost/1.75.0-intel21-impi
+  module load eigen
   module load cmake
 elif [ "$1" == "--JSC" ]
 then

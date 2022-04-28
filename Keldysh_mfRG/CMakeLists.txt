@@ -96,11 +96,7 @@ elseif(KCS)
     include_directories($ENV{HDF5_BASE}/include $ENV{GSL_BASE}/include $ENV{BOOST_INCDIR} $ENV{FFTW_BASE}/include)
     include_directories($ENV{EIGEN_BASE}/include/eigen3)
 
-    string(STRIP HDF5_CPP_SHLIB "$ENV{HDF5_CPP_SHLIB}")
-    string(STRIP HDF5_SHLIB "$ENV{HDF5_SHLIB}")
-
-    target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/22.2.1/opt/skylake_avx512/hdf5/1.8.22-gcc-dfod2rj/lib -lhdf5_hl_cpp -lhdf5_cpp) # $HDF5_CPP_SHLIB
-    target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/22.2.1/opt/skylake_avx512/hdf5/1.8.22-gcc-dfod2rj/lib -lhdf5_hl -lhdf5) # HDF5_SHLIB
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB}") # sets necessary compiler flags for HDF5 library
 
     target_link_libraries(Keldysh_mfRG $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
