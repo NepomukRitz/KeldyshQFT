@@ -638,7 +638,7 @@ template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const dou
         freq_check += contourIndices[i] * frequenciesFermionic[i];
     }
 
-    if (freq_check <1e-15 and not (iK==0 or iK==15)) return true; // sets values at v=0 to zero; exclude cases where all Contour indices are identical
+    if (freq_check <1e-15 and not (iK==0 or iK==15) and ZERO_T) return true; // sets values at v=0 to zero; exclude cases where all Contour indices are identical
     else return false;
 
 }

@@ -77,78 +77,100 @@ template <typename Q>
 void check_SE_causality(const Q& selfEnergy) {}
 
 /**
- * Function that checks FDTs for self-energy and K1 in all channels for given input state: Re(Sigma^K)=0, Re(K1r^K)=0.
- * If verbose is true, maximum values of Re(Sigma^K) and Re(K1r^K) are always printed. If verbose is false (default),
- * output is only printed if checks fail.
+ * Function that checks FDTs for self-energy and K1 in all channels for given input state:
  */
 template <typename Q>
-void check_FDTs(const State<Q>& state, bool verbose) {
-    if (verbose)
-        print("Check of FDTs for self-energy and K1: Re(Sigma^K)=0, Re(K1r^K)=0.", true);
+void check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const bool verbose) {
+    std::array<size_t,SE_config.rank> dims_K = SE_config.dims;
+    dims_K[my_defs::SE::keldysh] = 1;
+    using buffer_t = multidimensional::multiarray<Q,SE_config.rank>;
+    buffer_t SE_K_from_data(dims_K);
+    buffer_t SE_K_from_FDTs(dims_K);
 
-    const double EPS = std::numeric_limits<double>::epsilon(); // double precision used as error estimate
+    const size_t size_flat = getFlatSize<SE_config.rank>(dims_K);
+    for (int i = 0; i < size_flat; i++) {
+        std::array<my_index_t,SE_config.rank> idx_R;
+        getMultIndex<SE_config.rank>(idx_R,i,dims_K);
 
-    /** 1st check: real part of Keldysh component of the selfenergy has to be zero */
+        std::array<my_index_t,SE_config.rank> idx_K = idx_R;
+        idx_K[my_defs::SE::keldysh] = 1;
 
-    auto Sigma = state.selfenergy.Sigma;                          // take self-energy
-    vec<Q> Sigma_K (&Sigma.begin() + Sigma.size()/2, &Sigma.end());  // take second half of self-energy (Keldysh comp.)
-    double max_Sigma_K = Sigma_K.real().max_norm();                 // take max. value of Re(Sigma^K)
+        const Q val_K_from_data = selfenergy.Sigma.val(idx_K);
+        const Q val_R_from_data = selfenergy.Sigma.val(idx_R);
 
+        // Compute Keldysh component from FDTs:
+        int iv = idx_K[my_defs::SE::nu];
+        double v;
+        selfenergy.Sigma.frequencies.get_freqs_w(v, iv);
+
+        const Q val_K_from_FDTs = glb_i * 2. * Eff_fac(v) * myimag(val_R_from_data);
+
+        SE_K_from_data.at(idx_R) = val_K_from_data;
+        SE_K_from_FDTs.at(idx_R) = val_K_from_FDTs;
+    }
+
+    buffer_t difference = SE_K_from_data - SE_K_from_FDTs;
+    double max_deviation = difference.max_norm();
+    double max_norm_Kdat = SE_K_from_data.max_norm();
     if (verbose) {
-        print("Maximal value of Re(Sigma^K): ", max_Sigma_K, false);
-        if (max_Sigma_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
-    }
-    else {
-        if (max_Sigma_K > 10 * EPS)
-            print("Maximal value of Re(Sigma^K): ", max_Sigma_K,
-                  "  --> CHECK FAILED: Re(Sigma^K) is non-zero!", true);
-    }
-
-    /** 2nd check: real part of Keldysh component of K1 in all channels has to be zero */
-
-    // take K1 vertices in all channels
-    auto K1a = state.vertex.avertex().K1.get_vec();
-    auto K1p = state.vertex.pvertex().K1.get_vec();
-    auto K1t = state.vertex.tvertex().K1.get_vec();
-    // take second half of K1 vertices (Keldysh comp.)
-    vec<Q> K1a_K (&K1a.begin() + K1a.size()/2, &K1a.end());
-    vec<Q> K1p_K (&K1p.begin() + K1p.size()/2, &K1p.end());
-    vec<Q> K1t_K (&K1t.begin() + K1t.size()/2, &K1t.end());
-    // take max. value of Re(K1r^K)
-    double max_K1a_K = K1a_K.real().max_norm();
-    double max_K1p_K = K1p_K.real().max_norm();
-    double max_K1t_K = K1t_K.real().max_norm();
-
-    if (verbose) {
-        print("Maximal value of Re(K1a^K):   ", max_K1a_K, false);
-        if (max_K1a_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
-
-        print("Maximal value of Re(K1p^K):   ", max_K1p_K, false);
-        if (max_K1p_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
-
-        print("Maximal value of Re(K1t^K):   ", max_K1t_K, false);
-        if (max_K1t_K < 10 * EPS) print_add("  --> Check passed.", true);
-        else print_add("  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
-    }
-    else {
-        if (max_K1a_K > 10 * EPS)
-            print("Maximal value of Re(K1a^K):   ", max_K1a_K,
-                  "  --> CHECK FAILED: Re(K1a^K) is non-zero!", true);
-        if (max_K1p_K > 10 * EPS)
-            print("Maximal value of Re(K1p^K):   ", max_K1p_K,
-                  "  --> CHECK FAILED: Re(K1p^K) is non-zero!", true);
-        if (max_K1t_K > 10 * EPS)
-            print("Maximal value of Re(K1t^K):   ", max_K1a_K,
-                  "  --> CHECK FAILED: Re(K1t^K) is non-zero!", true);
+        print("Check FDT for selfenergy: \n");
+        print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
+        print("Maximal absolute value of Sigma^K: \t", max_norm_Kdat, "\n");
     }
 }
 
 
 template <typename Q>
-void check_FDTs(const Q& state) {}
+void check_FDTs_K1(const rvert<Q>& rvert4K1, const bool verbose) {
+    if constexpr(!CONTOUR_BASIS) {
+        std::array<size_t, K1at_config.rank> dims_K = rvert4K1.K1.get_dims();
+        dims_K[my_defs::K1::keldysh] = 1;
+        using buffer_t = multidimensional::multiarray<Q, K1at_config.rank>;
+        buffer_t Im_K1_R_from_data(dims_K);
+        buffer_t Im_K1_R_from_FDTs(dims_K);
+
+        const size_t size_flat = getFlatSize<K1at_config.rank>(dims_K);
+        for (int i = 0; i < size_flat; i++) {
+            std::array<my_index_t, K1at_config.rank> idx_R;
+            getMultIndex<K1at_config.rank>(idx_R, i, dims_K);
+
+            std::array<my_index_t, K1at_config.rank> idx_K = idx_R;
+            idx_K[my_defs::K1::keldysh] = 1;
+
+            const Q val_K_from_data = rvert4K1.K1.val(idx_K);
+            const Q val_Im_R_from_data = myimag(rvert4K1.K1.val(idx_R));
+
+            // Compute Keldysh component from FDTs:
+            int iv = idx_K[my_defs::K1::omega];
+            double v;
+            rvert4K1.K1.frequencies.get_freqs_w(v, iv);
+
+            const Q val_Im_R_from_FDTs = glb_i * 0.5 * Eff_fac(v) * val_K_from_data;
+
+            Im_K1_R_from_data.at(idx_R) = val_Im_R_from_data;
+            Im_K1_R_from_FDTs.at(idx_R) = val_Im_R_from_FDTs;
+        }
+
+        buffer_t difference = Im_K1_R_from_data - Im_K1_R_from_FDTs;
+        double max_deviation = difference.max_norm();
+        double max_norm_Kdat = Im_K1_R_from_data.max_norm();
+        if (verbose) {
+            print("Check FDT for K1", rvert4K1.channel, ": \n");
+            print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
+            print("Maximal absolute value of Im(K1^R): \t", max_norm_Kdat, "\n");
+        }
+    }
+}
+
+
+template <typename Q>
+void check_FDTs(const State<Q>& state, bool verbose) {
+    check_FDTs_selfenergy(state.selfenergy, verbose);
+    for (char ch : {'a', 'p', 't'}) {
+        check_FDTs_K1(state.vertex.get_rvertex(ch), verbose);
+    }
+}
+
 
 /**
  * Function that computes vertex components with the help of fluctuation-dissipation relations.
