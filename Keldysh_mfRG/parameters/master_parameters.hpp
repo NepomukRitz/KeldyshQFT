@@ -67,7 +67,7 @@ constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson mo
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
-#define USE_FDT 0
+#define USE_FDT 1
 
 /// Spin parameters ///
 
@@ -141,7 +141,7 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 1;
+constexpr int nODE = 40;
 constexpr double epsODE_rel = 1e-8;
 constexpr double epsODE_abs = 1e-10;
 // ODE solvers:

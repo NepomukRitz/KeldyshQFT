@@ -542,7 +542,7 @@ public:
         const double epsrel_elias = 0.01;
         const double epsabs_elias = 0.0;
         const double epsrel_hybrid = 0.01;
-        const double epsabs_hybrid = 0.1;
+        const double epsabs_hybrid = 0.0;
 
         frequencyGrid_type frequencies_new = base_class::get_VertexFreqGrid();
 

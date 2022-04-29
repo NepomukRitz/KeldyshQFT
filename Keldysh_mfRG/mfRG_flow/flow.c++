@@ -65,7 +65,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     config.relative_error = frgConfig.epsODE_rel_;
 
     /// old Runge-Kutta solver:
-    //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
+    //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
     // compute the flow using an ODE solver
     ode_solver<State<state_datatype>, flowgrid::exp_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
                                                                 config, true);

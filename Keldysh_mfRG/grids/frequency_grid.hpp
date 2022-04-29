@@ -367,9 +367,9 @@ public:
      using grid_type2 = FrequencyGrid<hybridGrid>;
      using grid_type3 = FrequencyGrid<hybridGrid>;
 #else // GRID == 2
-    using grid_type1 = FrequencyGrid<eliasGrid>;
-    using grid_type2 = FrequencyGrid<k==k2||k==k2b||k==k3 ? angularGrid : eliasGrid>;
-    using grid_type3 = FrequencyGrid<k==k2||k==k2b||k==k3 ? angularGrid : eliasGrid>;
+    using grid_type1 = FrequencyGrid<hybridGrid>;
+    using grid_type2 = FrequencyGrid<k==k2||k==k2b||k==k3 ? angularGrid : hybridGrid>;
+    using grid_type3 = FrequencyGrid<k==k2||k==k2b||k==k3 ? angularGrid : hybridGrid>;
 #endif
     grid_type1   primary_grid;
     grid_type2 secondary_grid;

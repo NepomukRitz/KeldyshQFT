@@ -242,7 +242,7 @@ auto FrequencyGrid<eliasGrid>::get_grid_index(double& t, double w_in) const -> i
  * @return
  */
 auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
-    if (KELDYSH) return grid_transf_v4(w, this->W_scale);
+    if (KELDYSH) return grid_transf_v2(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_v3(w, this->W_scale);
         else return grid_transf_lin(w, this->W_scale);
@@ -263,7 +263,7 @@ auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
  * @return
  */
 auto FrequencyGrid<eliasGrid>::frequency_from_t(double t) const -> double {
-    if (KELDYSH) return grid_transf_inv_v4(t, this->W_scale);
+    if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
         else return grid_transf_inv_lin(t, this->W_scale);
@@ -502,7 +502,7 @@ void FrequencyGrid<hybridGrid>::guess_essential_parameters(const double Lambda) 
             break;
     }
 
-    t_upper = ((double) number_of_gridpoints - 1) * 0.5;
+    t_upper = ((double) number_of_gridpoints - 1) * (purely_positive ? 1. : 0.5);
 
     if (purely_positive) {
         w_lower = 0;

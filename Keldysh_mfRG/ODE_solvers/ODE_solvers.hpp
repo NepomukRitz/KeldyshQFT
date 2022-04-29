@@ -22,6 +22,13 @@
 /// [IMPLEMENTED in unit_tests/test_ODE_solver] solve medium ODE with known solution and check accuracy of result with different choices of epsODE_rel
 
 
+template <typename Y>
+void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
+    std::cout << "current value: " << y.value << std::endl;
+}
+template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y_run, double x_run, vec<double> x_vals, int iteration, std::string filename, const bool verbose);
+
+
 /**
  * Explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step.
  * Allows for checkpointing: If last parameter it_start is given, ODE solver starts at this iteration (to continue
@@ -39,9 +46,9 @@
  * @param filename  : output file name
  * @param it_start  : Lambda iteration at which to start solving the flow
  */
-template <typename T>
+template <typename T, typename System>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
-                    T rhs (const T& y, const double x, const vec<size_t> opt),
+                    const System& rhs,
                     double subst(double x), double resubst(double x),
                     const int N_ODE,
                     const std::vector<double> lambda_checkpoints = {}, std::string filename="", const int it_start=0, bool save_intermediate_states=false) {
@@ -60,8 +67,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         old_ode_solvers::RK4_step(y_run, x_run, dx, rhs, x_vals, filename, i, save_intermediate_states);
 
         // update frequency grid, interpolate result to new grid
-        y_run.update_grid(x_run); // specific for state
-        //y_run.findBestFreqGrid(x_run); // specific for state
+        postRKstep_stuff<T>(y_run, x_run, x_vals, i, filename, true);
+
     }
     y_fin = y_run; // final y value
 }
@@ -463,12 +470,6 @@ namespace ode_solver_impl
 
 } // namespace ode_solver_impl
 
-
-template <typename Y>
-void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
-    std::cout << "current value: " << y.value << std::endl;
-}
-template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y_run, double x_run, vec<double> x_vals, int iteration, std::string filename, const bool verbose);
 
 
 /**

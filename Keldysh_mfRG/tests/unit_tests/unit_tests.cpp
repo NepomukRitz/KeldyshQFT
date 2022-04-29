@@ -46,20 +46,25 @@ int main(int argc, char* argv[]) {
 
     //test_K2_in_PT4(20.);
 
-    if (MAX_DIAG_CLASS >= 1 and false){
-    /* run a complete flow and check FDTs and causality */
-    std::string filename = "integration_test_flow_K2_8e";
-    State<state_datatype> state = n_loop_flow(filename, false);
-    check_FDTs(state);
-    check_SE_causality(state.selfenergy);
+    if constexpr(MAX_DIAG_CLASS >= 1 and false){
+        /* run a complete flow and check FDTs and causality */
+        std::string filename = "integration_test_flow_K2_8e";
+        fRG_config config;
+        config.nODE_ = 50;
+        config.epsODE_abs_ = 1e-8;
+        config.epsODE_rel_ = 1e-5;
+        config.U = 1.;
+        State<state_datatype> state = n_loop_flow(filename, config, false);
+        check_FDTs(state);
+        check_SE_causality(state.selfenergy);
 
-    /* run parquet checks */
-    parquet_checks(filename);
+        /* run parquet checks */
+        parquet_checks(filename);
     }
     if constexpr(MAX_DIAG_CLASS == 2 and false){
-    /* further K2 tests */
-    test_PT4(0.);
-    test_K2_correctness<state_datatype>(0.);
+        /* further K2 tests */
+        test_PT4(0.);
+        test_K2_correctness<state_datatype>(0.);
     }
 #if defined(USE_MPI)
         MPI_Finalize();

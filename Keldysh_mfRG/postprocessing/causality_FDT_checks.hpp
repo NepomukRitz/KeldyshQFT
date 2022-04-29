@@ -23,17 +23,19 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         // check if Im(Sigma^R) is positive for every data point
         int cnt = 0;
         double sum = 0.;
+        double max = 0.;
         for (int i = 0; i < Sigma_R.size(); ++i) {
             double val = myimag(Sigma_R[i]);
             if (val > 0.) {
                 cnt += 1;
                 sum += val;
+                max = std::max(max, val);
             }
         }
         selfEnergy.Sigma.initInterpolator();
         if (cnt > 0) {
             print("Selfenergy is non-causal: ", true);
-            print(cnt, " values of Im(Sigma^R) are positive, with a sum of ", sum, true);
+            print(cnt, " values of Im(Sigma^R) are positive, with a maximum of ", max, true);
             print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
         } else {
             print("Selfenergy is causal.", true);
