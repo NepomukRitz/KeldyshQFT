@@ -13,7 +13,7 @@
 
 //#define MULTIDIM_MINIMIZATION
 
-#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of any symmetries
+//#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of any symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -44,7 +44,7 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-constexpr int N_LOOPS = 1;  // Number of loops
+constexpr int N_LOOPS = 3;  // Number of loops
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
