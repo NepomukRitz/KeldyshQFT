@@ -129,7 +129,7 @@ namespace utils {
     #ifdef DEBUG_SYMMETRIES
         std::string data_directory = "../Data_KF_debug/";
     #else
-        std::string data_directory = "../Data_KF" + job + "/";
+        std::string data_directory = "../Data_KF_" + job + "/";
     #endif
     #else
         #ifdef DEBUG_SYMMETRIES

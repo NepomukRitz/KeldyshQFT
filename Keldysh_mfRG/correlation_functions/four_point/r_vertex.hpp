@@ -1980,7 +1980,7 @@ double rvert<Q>::max_norm() const {
 #ifdef DEBUG_SYMMETRIES
         norm += K2b.get_vec().max_norm();
 #else
-        norm += K2b_symmetry_expanded.get_vec().max_norm();
+        norm += K2.get_vec().max_norm();
 #endif
     }
     if constexpr(MAX_DIAG_CLASS >= 3) norm += K3.get_vec().max_norm();
