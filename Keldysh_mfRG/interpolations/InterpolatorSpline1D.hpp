@@ -34,7 +34,6 @@
 #include <cassert>
 #include <cmath>
 #include <vector>
-#include "../correlation_functions/n_point/data_container.hpp"
 
 template <typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freq_index, class DataContainer>
 class Spline {};
