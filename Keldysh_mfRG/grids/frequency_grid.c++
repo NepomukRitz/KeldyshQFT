@@ -428,6 +428,7 @@ double wscale_from_wmax_lin(double & Wscale, const double w1, const double wmax,
 
 
 void FrequencyGrid<hybridGrid>::derive_auxiliary_parameters() {
+#if HYBRID_GRID_OPTION==0
     const double temp = (pos_section_boundaries[0] + 2.*pos_section_boundaries[1]);
     const double temp_quad = temp * w_upper - pos_section_boundaries[1]*pos_section_boundaries[1];
     aux_pos_section_boundaries[0] = (2.*t_upper*pos_section_boundaries[0]*w_upper)                              / temp_quad;
@@ -436,17 +437,16 @@ void FrequencyGrid<hybridGrid>::derive_auxiliary_parameters() {
     recip_slope_lin = t_upper*w_upper / (temp_quad);
     factor_rat = pos_section_boundaries[1]*pos_section_boundaries[1] / (temp);
     rescale_rat = (t_upper * w_upper * temp) / temp_quad;
+#else
+    const double log_wmax_w2 = log(w_upper / pos_section_boundaries[1]);
+    const double factor = (pos_section_boundaries[1] - pos_section_boundaries[0]) / (1 - 2 * pos_section_boundaries[0] / (pos_section_boundaries[0] + pos_section_boundaries[1])) / pos_section_boundaries[1];
+    //aux_pos_section_boundaries[1] = t_upper / (1 + log(w_upper/pos_section_boundaries[1]) * (1 - 2. * pos_section_boundaries[0] / (pos_section_boundaries[0] + pos_section_boundaries[1]) / (pos_section_boundaries[1] - pos_section_boundaries[0])));
+    aux_pos_section_boundaries[1] = t_upper / (log_wmax_w2 / factor + 1);
+    aux_pos_section_boundaries[0] = 2. * pos_section_boundaries[0] * aux_pos_section_boundaries[1] / (pos_section_boundaries[0] + pos_section_boundaries[1]);
+    recip_slope_lin = (aux_pos_section_boundaries[1] - aux_pos_section_boundaries[0]) / (pos_section_boundaries[1] - pos_section_boundaries[0]);
+    recip_curvature_quad = aux_pos_section_boundaries[0]*aux_pos_section_boundaries[0] / pos_section_boundaries[0];
+#endif
     spacing_auxiliary_gridpoint = (t_upper - t_lower) / ((double)number_of_gridpoints - 1.);
-
-
-
-    //aux_pos_section_boundaries[0] = (2.*t_upper*pos_section_boundaries[0])                              / temp;
-    //aux_pos_section_boundaries[1] = (t_upper*(pos_section_boundaries[0] + pos_section_boundaries[1])) / temp;
-    //recip_curvature_quad = (4.*t_upper*t_upper*pos_section_boundaries[0]) / (temp*temp);
-    //recip_slope_lin = t_upper / (temp);
-    //factor_rat = pos_section_boundaries[1]*pos_section_boundaries[1] / (temp);
-    //rescale_rat = (t_upper);
-    //spacing_auxiliary_gridpoint = 2.*t_upper / ((double)number_of_gridpoints - 1.);
 }
 
 void FrequencyGrid<hybridGrid>::guess_essential_parameters(const double Lambda) {
@@ -532,10 +532,17 @@ double FrequencyGrid<hybridGrid>::frequency_from_t(const double t) const {
         return result;
     }
     else {
+#if HYBRID_GRID_OPTION==0
         // rational part
         const double result = factor_rat / (1. - t_abs / rescale_rat) * sgn(t);
         assert(isfinite(result));
         return result;
+#else
+        // exponential part
+        const double result = (pos_section_boundaries[1] * exp((t_abs - aux_pos_section_boundaries[1]) / (recip_slope_lin * pos_section_boundaries[1]))) * sgn(t);
+        assert(isfinite(result));
+        return result;
+#endif
     }
 
 }
@@ -555,10 +562,17 @@ double FrequencyGrid<hybridGrid>::t_from_frequency(const double w) const {
         return result;
     }
     else {
+#if HYBRID_GRID_OPTION==0
         // rational part
         const double result = (1. - factor_rat / w_abs) * rescale_rat * sgn(w);
         assert(isfinite(result));
         return result;
+#else
+        // exponential part
+        const double result = sgn(w) * (aux_pos_section_boundaries[1] + log(w_abs / pos_section_boundaries[1]) * pos_section_boundaries[1] * recip_slope_lin);
+        assert(isfinite(result));
+        return result;
+#endif
     }
 }
 

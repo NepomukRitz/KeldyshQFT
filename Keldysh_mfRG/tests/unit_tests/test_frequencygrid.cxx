@@ -87,7 +87,7 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
 
     std::vector<std::function<double(double, double)>> funcs = {grid_transf_lin, grid_transf_v1, grid_transf_v2, grid_transf_v3, grid_transf_v4, hybrid_func};
     std::vector<std::function<double(double, double)>> inver = {grid_transf_inv_lin, grid_transf_inv_v1, grid_transf_inv_v2, grid_transf_inv_v3, grid_transf_inv_v4, hybrid_inver};
-    std::vector<double> w_values = {-1e5, -1e3, -1e2, -1., -1e-5, 0., 1e-5, 1, 1e2, 1e3, 1e5};
+    std::vector<double> w_values = {-1e4, -1e3, -1e2, -1., -1e-5, 0., 1e-5, 1, 1e2, 1e3, 1e4};
 
     const double W_scale = 1.;
 

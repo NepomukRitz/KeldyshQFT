@@ -5,7 +5,7 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-#define INTEGRATION_TESTS
+//#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
         config.epsODE_rel_ = 1e-5;
         config.U = 1.;
         State<state_datatype> state = n_loop_flow(filename, config, false);
-        check_FDTs(state);
+        check_FDTs(state, true);
         check_SE_causality(state.selfenergy);
 
         /* run parquet checks */

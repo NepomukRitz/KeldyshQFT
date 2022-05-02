@@ -53,6 +53,7 @@ const bool dense = true;
 const bool dense = false;
 #endif
 
+#define HYBRID_GRID_OPTION 1
 
 
 namespace hdf5_impl {
