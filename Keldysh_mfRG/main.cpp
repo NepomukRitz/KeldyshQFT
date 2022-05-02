@@ -25,9 +25,9 @@ auto main() -> int {
     }
 #endif
 
-    /*
+
     utils::print_job_info();
-    utils::check_input(();
+    utils::check_input();
 
     /// Job and Data directory
     std::string job = "U=" + std::to_string(glb_U);
@@ -44,11 +44,11 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     std::string name = data_dir+filename+job;
-    //n_loop_flow(name,  true);
-    test_symmetries(19.8);
+    n_loop_flow(name,  true);
+    //test_symmetries(19.8);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
-    */
 
+    /*
     // SIAM PT4 specific:
     data_dir = "../Data_SIAM_PT4/better_resolution_for_K2/";
     //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/SOPT_integrand/eVg_over_U_" + std::to_string(glb_Vg / glb_U) + "/";
@@ -65,7 +65,7 @@ auto main() -> int {
 
 
     //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
-
+    */
     utils::hello_world();
 
 #ifdef USE_MPI

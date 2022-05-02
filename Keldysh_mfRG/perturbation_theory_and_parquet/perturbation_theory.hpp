@@ -399,7 +399,7 @@ void PT_Machine<Q>::write_out_results() const {
     filename += "_and_eVg_over_U_" + std::to_string(glb_Vg / glb_U);
 #endif
 #ifndef ZERO_TEMP
-    filname += "_and_T_over_Delta_" + std::to_string(glb_T / Delta);
+    filename += "_and_T_over_Delta_" + std::to_string(glb_T / Delta);
 #endif
     filename += ".h5";
 
