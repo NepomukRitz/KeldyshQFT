@@ -29,7 +29,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
     vec<double> errors (nBOS);
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
-    value = 0.;
+
     for (int iw = 0; iw<nBOS; iw++){
         idx[my_defs::K1::omega] = iw;
         avertex.K1.frequencies.get_freqs_w(indices.w, iw);
@@ -40,7 +40,6 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
         cumul_interpolation_error += error;
         errors[iw] = error;
 
-        value +=1;
     }
 
     double cumul_interpolation_tolerance = 1e-3;
@@ -203,7 +202,7 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
         avertex.K1.setvert(value, idx);
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
@@ -226,8 +225,8 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
 
         value +=1;
     }
-    print("K1 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K1 Interpolation performed - ");
+    utils::get_time(t_start);
 
 
 
@@ -268,7 +267,7 @@ if (INTERPOLATION == cubic) {
         avertex.K1.setvert(value, idx);
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
@@ -292,8 +291,8 @@ if (INTERPOLATION == cubic) {
 
         value += 1;
     }
-    print("K1 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K1 Interpolation performed - ");
+    utils::get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK1.h5",
                    {"values_re", "errors_re"},
@@ -345,7 +344,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
         }
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     int spin = 0;
@@ -385,11 +384,11 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     }
 
 
-    print("K2 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K2 Interpolation performed - ");
+    utils::get_time(t_start);
 
     std::string filename = data_dir + "linear_interpolated_K2.h5";
-    print("save file to ", filename, "\n");
+    utils::print("save file to ", filename, "\n");
     H5::H5File file(filename, H5F_ACC_TRUNC);
     write_to_hdf(file, "errors", errors, false);
     write_to_hdf(file, "values", values, false);
@@ -442,7 +441,7 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
             }
         }
 
-        double t_start = get_time();
+        double t_start = utils::get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
         int spin = 0;
@@ -475,8 +474,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
             }
         }
 
-        print("K2 Interpolation performed - ");
-        get_time(t_start);
+        utils::print("K2 Interpolation performed - ");
+        utils::get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK2.h5",
                    {"values_re", "errors"},
@@ -526,7 +525,7 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
         }
     }
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     double cumul_interpolation_error = 0;
     avertex.initInterpolator();
     int spin = 0;
@@ -573,12 +572,12 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
         }
     }
 
-    print("K3 Interpolation performed - ");
-    get_time(t_start);
+    utils::print("K3 Interpolation performed - ");
+    utils::get_time(t_start);
 
 
     std::string filename = data_dir + "linear_interpolated_K3.h5";
-    print("save file to ", filename, "\n");
+    utils::print("save file to ", filename, "\n");
     H5::H5File file(filename, H5F_ACC_TRUNC);
     write_to_hdf(file, "errors", errors, false);
     write_to_hdf(file, "values", values, false);
@@ -629,7 +628,7 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
             }
         }
 
-        double t_start = get_time();
+        double t_start = utils::get_time();
         double cumul_interpolation_error = 0;
         avertex.initInterpolator();
         int spin = 0;
@@ -663,8 +662,8 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
             }
         }
 
-        print("K3 Interpolation performed - ");
-        get_time(t_start);
+        utils::print("K3 Interpolation performed - ");
+        utils::get_time(t_start);
 
     write_h5_rvecs("unittest_interpolK3.h5",
                    {"values", "errors"},

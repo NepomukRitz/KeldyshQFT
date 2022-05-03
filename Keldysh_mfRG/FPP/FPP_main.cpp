@@ -34,7 +34,7 @@ int main() {
     std::cout << "Hello world!\n";
     std::cout << "test \n";
 
-    double t0 = get_time();
+    double t0 = utils::get_time();
 
     // Coordinate Transformations
     // =======================================
@@ -621,12 +621,12 @@ int main() {
     }
     */
 
-    double t_par = get_time();
+    double t_par = utils::get_time();
     /*
     std::cout << "now list fRG: \n";
     fRG_list_wq(10.,10.,'p',1e4,1e-10,1,0,201,101);
     fRG_list_wq(10.,10.,'a',1e4,1e-10,1,0,201,101);
-    get_time(t_par);
+    utils::get_time(t_par);
     std::cout << "now list ladder: \n";
     */ /*
     std::cout << "vacuum Gamma:\n";
@@ -745,7 +745,7 @@ int main() {
     std::cout << "ladder: int = analytical, reg = sharp: " << Gamm_ladder_exact << "\n";
     */
 
-    double t1 = get_time();
+    double t1 = utils::get_time();
     glb_ainv = sqrt(2.);
     glb_mud = -4.;
     //ladder_list('p',1e4,1e-6,1,0,-2.*sqrt(2),2.*sqrt(2),-10.,1e-10,100,1e-14,51);
@@ -760,19 +760,19 @@ int main() {
     //std::cout << "fRG: int = numerical, reg = soft: " << Gamm_fRG_num_soft << "\n";
     //double find_root_fRG_test_reg3 = find_root_fRG (0., 0., 1e4, 1e-6, 3, 0, -3.0, sqrt(2.0), 0.5, 100, 1e-10);
     //std::cout << "mu_d = " << find_root_fRG_test_reg3 << "\n";
-    get_time(t1);
+    utils::get_time(t1);
 
     comp integral_test;
     double v1_test, v2_test, q_test;
     /*
-    double dt_test = get_time();
+    double dt_test = utils::get_time();
     integral_test = perform_integral_Pi0_2D (0.3, -2.1, 4.3, 0,0);
     std::cout << "test paid Pi0 = " << integral_test << "\n";
-    get_time(dt_test);
-    dt_test = get_time();
+    utils::get_time(dt_test);
+    dt_test = utils::get_time();
     integral_test = perform_integral_Pi0_kpp(0.3,-2.1,4.3,0,0,1);
     std::cout << "test Gauss-Lobatto Pi0 = " << integral_test << "\n";
-    get_time(dt_test);
+    utils::get_time(dt_test);
     integral_test = exact_bare_bubble_v1v2(0.3,-2.1,4.3,0,0);
     std::cout << "exact = " << integral_test << "\n";
 
@@ -782,7 +782,7 @@ int main() {
     glb_mud = 0.0;
     comp gamma_p, gamma_a, Gamma;
     double Gamma0, dt;
-    dt = get_time();
+    dt = utils::get_time();
 
     // zero bosonic momentum
 
@@ -800,7 +800,7 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
     /*
     comp bubble_intp = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'p', 1e4, 1e-8, 0);
     comp bubble_inta = perform_Pi0_vpp_integral (0., 0., 'd', 'c', 'a', 1e4, 1e-8, 0);
@@ -811,7 +811,7 @@ int main() {
     std::cout << "exact bubble_a = " << exact_bubble_a << "\n";
     std::cout << "exact bubble_p = " << exact_bubble_p << "\n";
     */ /*
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = ladder_K1r(0.,0.,'p',1,1);
     gamma_a = ladder_K1r(0.,0.,'a',1,1);
     Gamma0 = -gint();
@@ -821,9 +821,9 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = ladder_K1r(0.,0.,'p',1,2);
     gamma_a = ladder_K1r(0.,0.,'a',1,2);
     Gamma0 = -gint();
@@ -833,9 +833,9 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = fRG_solve_K1r(0.,0.,'p',0);
     gamma_a = fRG_solve_K1r(0.,0.,'a',0);
     Gamma0 = -gint();
@@ -845,9 +845,9 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = fRG_solve_K1r(0.,0.,'p',1);
     gamma_a = fRG_solve_K1r(0.,0.,'a',1);
     Gamma0 = -gint();
@@ -857,24 +857,24 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     integral_bubble_w_vpp_list_PAID(0, 1, 'p', 10, 10, 10, 201, 201, 6);
-    get_time(dt);
+    utils::get_time(dt);
     /*
-    dt = get_time();
+    dt = utils::get_time();
     integral_bubble_w_vpp_list_integrator(0, 1, 1,'p', 10, 10, 10, 201, 201, 6);
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     integral_bubble_w_vpp_list_integrator(0, 1, 0,'p', 10, 10, 10, 201, 201, 6);
-    get_time(dt);
+    utils::get_time(dt);
     */
 
     // set REG = 3 for this
     /*
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = fRG_solve_K1r(0.,0.,'p',0);
     gamma_a = fRG_solve_K1r(0.,0.,'a',0);
     Gamma0 = -gint();
@@ -884,9 +884,9 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = fRG_solve_K1r(0.,0.,'p',1);
     gamma_a = fRG_solve_K1r(0.,0.,'a',1);
     Gamma0 = -gint();
@@ -896,11 +896,11 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt); */
+    utils::get_time(dt); */
 
     // finite bosonic momentum q != 0
     /*
-    dt = get_time();
+    dt = utils::get_time();
     std::cout << "ladder with analytical bubble integral:\n";
     gamma_p = ladder_K1r(0.,0.1,'p',1e4,1e-8,1,0);
     gamma_a = ladder_K1r(0.,0.1,'a',1e4,1e-8,1,0);
@@ -910,9 +910,9 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = ladder_K1r(0.,0.1,'p',1e4,1e-8,1,1);
     gamma_a = ladder_K1r(0.,0.1,'a',1e4,1e-8,1,1);
     Gamma0 = -gint(1e4,1e-8,1);
@@ -922,9 +922,9 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
-    dt = get_time();
+    dt = utils::get_time();
     gamma_p = fRG_solve_K1r(0.,0.1,'p',1e4,1e-8,1,0);
     gamma_a = fRG_solve_K1r(0.,0.1,'a',1e4,1e-8,1,0);
     Gamma0 = -gint(1e4,1e-8,1);
@@ -934,7 +934,7 @@ int main() {
     std::cout << "K1_p = " << gamma_p << "\n";
     std::cout << "Gamma0 = " << Gamma0 << "\n";
     std::cout << "K1 = " << Gamma << "\n";
-    get_time(dt);
+    utils::get_time(dt);
 
     dt = get_time();
     gamma_p = fRG_solve_K1r(0.,0.1,'p',1e4,1e-8,1,1);
@@ -1535,7 +1535,7 @@ int main() {
     comp hartree = hartree_term(0);
     std::cout << "hartree = " << hartree << "\n";
 
-    get_time(t0);
+    utils::get_time(t0);
 
     double t_test_loop_k = get_time();
 

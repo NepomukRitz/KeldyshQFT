@@ -1,5 +1,4 @@
 #include "HUBBARD_sopt_selfenergy.hpp"
-#include <omp.h>
 
 template <typename gridType>
 auto Integrand_SE_SOPT_Hubbard<gridType>::operator()(const double w_a) const -> comp {
@@ -20,24 +19,24 @@ void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
             // iK_internal : index for Keldysh sum
             // 0: retarded, 1: advanced, 2: Keldysh
 #if not defined(NDEBUG)
-            print("Now computing SOPT SE for iK = " + std::to_string(iK) + ", iK_internal = " + std::to_string(iK_internal),true);
+            utils::print("Now computing SOPT SE for iK = " + std::to_string(iK) + ", iK_internal = " + std::to_string(iK_internal),true);
 #endif
             vec<comp> integrand (nFER * nBOS * glb_N_transfer);
 
-            const double t_integrand_start = get_time();
+            const double t_integrand_start = utils::get_time();
 
             compute_frequency_integrands(integrand, iK, iK_internal);
 
-            const double t_integrand_end = get_time();
+            const double t_integrand_end = utils::get_time();
 
             save_integrand(integrand, iK, iK_internal);
 
             compute_frequency_integrals(integrand, iK, iK_internal);
 
-            const double t_integral_end = get_time();
+            const double t_integral_end = utils::get_time();
 #if not defined(NDEBUG)
-            print("Computing the integrand took " + std::to_string(t_integrand_end - t_integrand_start) + " s",true);
-            print("Computing the integral  took " + std::to_string(t_integral_end  - t_integrand_end)   + " s",true);
+            utils::print("Computing the integrand took " + std::to_string(t_integrand_end - t_integrand_start) + " s",true);
+            utils::print("Computing the integral  took " + std::to_string(t_integral_end  - t_integrand_end)   + " s",true);
 #endif
         }
     }
@@ -90,8 +89,8 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
         VertexInput input(vertex_Keldysh_component(iK, iK_internal), it_spin, w1, 0., 0., i_in, 'a'); // TODO: Spin sum!?
         vertex_values[i_in] = vertex_in_SOPT.avertex().template value<'a'>(input, vertex_in_SOPT.tvertex());
         //if (iK==1 && iK_internal==0 && iv1==0 && i_in==0) {
-        //    print("iw1 = " +std::to_string(iw1) + ", w1 = " + std::to_string(w1) + ": ", false);
-        //    print(vertex_values[i_in], true);
+        //    utils::print("iw1 = " +std::to_string(iw1) + ", w1 = " + std::to_string(w1) + ": ", false);
+        //    utils::print(vertex_values[i_in], true);
         //}
     }
 }

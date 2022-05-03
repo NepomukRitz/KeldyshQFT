@@ -32,7 +32,7 @@ namespace {
     public:
         void operator() (const double& y, double& dy_dx, const double x) {//, const vec<size_t> opt) {
             dy_dx = y;
-            //print("x:", x, "y: ", y, "\n");
+            //utils::print("x:", x, "y: ", y, "\n");
         }
     };
 
@@ -40,7 +40,7 @@ namespace {
     public:
         void operator() (const double& y, double& dy_dx, const double x) {//, const vec<size_t> opt) {
             dy_dx = x*x*x*4.;
-            //print("x:", x, "y: ", y, "\n");
+            //utils::print("x:", x, "y: ", y, "\n");
         }
     };
 }

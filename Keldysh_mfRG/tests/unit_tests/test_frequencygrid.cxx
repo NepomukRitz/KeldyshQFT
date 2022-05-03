@@ -9,7 +9,7 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
     bool isright = true;
     double issymmetric = 0.;
     double issymmetric_aux = 0.;
-    double symmetry_tolerance = 1e-10;
+    double symmetry_tolerance = 1e-9;
     FrequencyGrid<eliasGrid> Bosfreqs('b', 1, 0.);
     bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.get_all_frequencies());
     for (int i = 0; i < nBOS; i++) {
@@ -19,7 +19,8 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
         int index = Bosfreqs.get_grid_index(Bosfreqs.get_frequency(i));
         if (std::abs(index - i) > (dense ? 0 : 1))
             isright = false;
-        issymmetric += std::abs(Bosfreqs.get_frequency(i) + Bosfreqs.get_frequency(nBOS - i - 1));
+        const double abs_freq = std::abs(Bosfreqs.get_frequency(i));
+        issymmetric += std::abs(Bosfreqs.get_frequency(i) + Bosfreqs.get_frequency(nBOS - i - 1)) / (abs_freq < 1 ? 1 : abs_freq);
         issymmetric_aux += std::abs(Bosfreqs.get_auxiliary_gridpoint(i) + Bosfreqs.get_auxiliary_gridpoint(nBOS - i - 1));
     }
 
@@ -49,16 +50,17 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
 
     bool isright = true;
     double issymmetric = 0.;
-    double symmetry_tolerance = 1e-10;
+    double symmetry_tolerance = 1e-9;
     FrequencyGrid<eliasGrid> Ferfreqs('f', 1, 0.);
     bool existNoDoubleOccurencies = not is_doubleOccurencies(Ferfreqs.get_all_frequencies());
     for (int i = 0; i < nFER; i++) {
 
         // It doesn't harm if get_grid_index() retrieves a neighboring index. get_grid_index() is only needed for interpolations.
         if (std::abs(Ferfreqs.get_grid_index(Ferfreqs.get_frequency(i)) - i) > 1) isright = false;
-        issymmetric += std::abs(Ferfreqs.get_frequency(i) + Ferfreqs.get_frequency(nFER - i - 1));
+        const double abs_freq = std::abs(Ferfreqs.get_frequency(i));
+        issymmetric += std::abs(Ferfreqs.get_frequency(i) + Ferfreqs.get_frequency(nFER - i - 1)) / (abs_freq < 1 ? 1 : abs_freq);
         if (std::abs(Ferfreqs.get_frequency(i) + Ferfreqs.get_frequency(nFER - i - 1)) > symmetry_tolerance) {
-            print(std::to_string(Ferfreqs.get_frequency(i)) + " != " + std::to_string(Ferfreqs.get_frequency(nFER - i - 1)) + "\n");
+            utils::print(std::to_string(Ferfreqs.get_frequency(i)) + " != " + std::to_string(Ferfreqs.get_frequency(nFER - i - 1)) + "\n");
         }
     }
 

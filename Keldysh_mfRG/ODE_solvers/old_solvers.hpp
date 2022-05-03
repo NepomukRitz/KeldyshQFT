@@ -51,14 +51,14 @@ namespace old_ode_solvers {
     void RK4_step(T& y_run, double& x_run, const double dx,  const System& rhs,
                   rvec& x_vals, std::string filename, const int iteration, bool save_intermediate_states) {
         // print iteration number and Lambda to log file
-        print("i: ", iteration, true);
-        print("Lambda: ", x_run, true);
-        // print("y: ", y_run.value, true);
-        double t0 = get_time();
+        utils::print("i: ", iteration, true);
+        utils::print("Lambda: ", x_run, true);
+        // utils::print("y: ", y_run.value, true);
+        double t0 = utils::get_time();
 
         RK4_step(y_run, x_run, dx, rhs, save_intermediate_states, x_vals, filename, iteration); // compute RK4 step
 
-        get_time(t0); // measure time for one iteration
+        utils::get_time(t0); // measure time for one iteration
 
         check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
         if (KELDYSH) check_FDTs(y_run, true); // check FDTs for Sigma and K1r at each step of the flow

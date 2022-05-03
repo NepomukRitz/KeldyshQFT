@@ -5,9 +5,9 @@
 /// Frequency grid parameters ///
 
 // Grid type
-#define GRID 1      // 0: use Elias' grid;      1: use hybrid grid;     2: polar coordinates (currently not for K3 yet)
+#define GRID 0      // 0: use Elias' grid;      1: use hybrid grid;     2: polar coordinates (currently not for K3 yet)
 
-#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
+//#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
 constexpr bool BOSONIC_PARAM_FOR_K3 = false; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
@@ -25,8 +25,8 @@ constexpr int nFER = 401;
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 201;//nBOS;
 constexpr int nFER2 = 151;//nFER;
-constexpr int nBOS3 = 81; //nBOS;
-constexpr int nFER3 = 61; //nFER;
+constexpr int nBOS3 = 21; //nBOS;
+constexpr int nFER3 = 17; //nFER;
 //#else
 const int COUNT = 4;
 //constexpr int nBOS = COUNT * 64 * 2 + 1;

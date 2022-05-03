@@ -26,6 +26,9 @@ struct buffer_config {
     const std::size_t dims_flat = getFlatSize(dims);
     const size_t rank = _rank;
 
+    constexpr buffer_config(dimensions_type dims_in, my_index_t num_freqs_in,
+                  my_index_t position_first_freq_index_in): dims(dims_in),
+                  num_freqs(num_freqs_in), position_first_freq_index(position_first_freq_index_in){};
 };
 
 #if DEBUG_SYMMETRIES

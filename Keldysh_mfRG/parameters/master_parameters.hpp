@@ -24,10 +24,10 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
-#define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
+#define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL    // if defined: sum over internal indices within integrand
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
-#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 
@@ -39,7 +39,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 2
 
 constexpr int N_LOOPS = 1;  // Number of loops
 #define KATANIN
@@ -53,21 +53,21 @@ constexpr int N_LOOPS = 1;  // Number of loops
 #if not defined(ZERO_TEMP)
 constexpr double glb_T = 0.1; //0.01;                     // Temperature
 #else
-constexpr double glb_T = 0.0;                     // Temperature
+constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
+constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.o.g. ALWAYS set to zero (for the SIAM)
 #ifdef PARTICLE_HOLE_SYMM
-    constexpr double glb_mu = 0.000;                     // Chemical potential // set to zero as energy offset
+    constexpr double glb_Vg = glb_mu;               // Impurity level shift -- has to be the same as the chemical potential when we have particle-hole symmetry
 #else
-    constexpr double glb_mu = 0.000;                    // Chemical potential // set to zero as energy offset
+    constexpr double glb_Vg = 0.5;                  // Impurity level shift
 #endif
 constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
-constexpr double glb_Vg = glb_mu;                  // Impurity level shift
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
-#define USE_FDT 1
+#define USE_FDT 0
 
 /// Spin parameters ///
 
@@ -101,7 +101,7 @@ constexpr int glb_N_ff = 1;                                 // Number of form fa
  * Ordered w.r.t. the form factor index. Currently at most 9 form factors are supported.
  *
  * The entries mean the following:
- * 1 : Multiply by one (nothing happens; form factor is symmetric_full
+ * 1 : Multiply by one (nothing happens; form factor is symmetric
  * -1: Multiply by minus one (form factor is antisymmetric)
  * i > 1: Need to access the i'th form factor component instead
  * i < 1: Need to access the |i|'th form factor component instead AND multiply by -1.*/
@@ -141,9 +141,9 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 40;
-constexpr double epsODE_rel = 1e-8;
-constexpr double epsODE_abs = 1e-10;
+constexpr int nODE = 50;
+constexpr double epsODE_rel = 1e-4;
+constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4;
 // 2 -> Bogacki–Shampine

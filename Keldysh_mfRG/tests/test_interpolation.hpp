@@ -213,7 +213,7 @@ namespace {
                     K2aexact.vertex.tvertex().K2_setvert(0, i, j, 0, val_K2);
                 }
             }
-            print("Finished computing exact result for K2.", true);
+            utils::print("Finished computing exact result for K2.", true);
 
             write_state_to_hdf("Cost_pick_Wscale_4_K1_K2aexact", Lambda, 1, K2aexact);
         };
@@ -233,16 +233,16 @@ namespace {
             // set freqgrid parameter and update TOPTvertex on the new grid
             TOPTstate.vertex.half1().template update_grid<k1>(bfreq, TOPTstate.vertex.half1());
 
-            print("Starting to compute Vertex in TOPT: ", true);
+            utils::print("Starting to compute Vertex in TOPT: ", true);
             vertexInTOPT(TOPTstate.vertex, bareState, SOPTstate, Pi, Lambda);
-            print("Finished computing Vertex in TOPT: ", true);
+            utils::print("Finished computing Vertex in TOPT: ", true);
 
 
             State<Q> diff = TOPTstate-K2aexact;
             write_state_to_hdf("Cost_pick_Wscale_4_K1_K2diff", Lambda, 1, diff);
             write_state_to_hdf("Cost_pick_Wscale_4_K1_K2cpp", Lambda, 1, TOPTstate);
             double result = diff.vertex.half1().norm_K2(0);
-            print("!!!!!!!! Maximal deviation in K2: ", result, true);
+            utils::print("!!!!!!!! Maximal deviation in K2: ", result, true);
             return result;
         }
     };

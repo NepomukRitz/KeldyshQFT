@@ -428,7 +428,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
     /// In the following you can also iterate over different i0/i2/etc:
 
     std::string dir_integrand_str = "integrands/";
-    makedir(dir_integrand_str);
+    utils::makedir(dir_integrand_str);
     const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_RKstep"+std::to_string(rkStep);
 
     for (double w_temp: all_frequencies) {
@@ -476,7 +476,7 @@ void get_integrand_dGammaL(std::string dir_str, const int it_Lambda, const int r
     /// In the following you can also iterate over different i0/i2/etc:
 
     std::string dir_integrand_str = dir_str + "integrands/";
-    makedir(dir_integrand_str);
+    utils::makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaL_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_L<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
@@ -510,7 +510,7 @@ void get_integrand_dGammaR(std::string dir_str, const int it_Lambda, const int r
     /// In the following you can also iterate over different i0/i2/etc:
 
     std::string dir_integrand_str = dir_str + "integrands/";
-    makedir(dir_integrand_str);
+    utils::makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaR_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_R<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
@@ -540,7 +540,7 @@ void get_integrand_dGammaC_left(std::string dir_str, const int it_Lambda, const 
     /// In the following you can also iterate over different i0/i2/etc:
 
     std::string dir_integrand_str = dir_str + "integrands/";
-    makedir(dir_integrand_str);
+    utils::makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaC_left_insertion_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_C_left_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
@@ -569,7 +569,7 @@ void get_integrand_dGammaC_right(std::string dir_str, const int it_Lambda, const
     /// In the following you can also iterate over different i0/i2/etc:
 
     std::string dir_integrand_str = dir_str + "integrands/";
-    makedir(dir_integrand_str);
+    utils::makedir(dir_integrand_str);
     const std::string filename_prefix = "dGammaC_right_insertion_RKstep"+std::to_string(rkStep);
     saveIntegrand::dGamma_C_right_insertion<Q>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
@@ -590,7 +590,7 @@ void get_integrand_Sigma(std::string dir_str, const int it_Lambda, const int rkS
     /// In the following you can also iterate over different v/etc:
 
     std::string dir_integrand_str = dir_str + "integrands/";
-    makedir(dir_integrand_str);
+    utils::makedir(dir_integrand_str);
     const std::string filename_prefix = "dSigma_RKstep"+std::to_string(rkStep);
     saveIntegrand::dSigma<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, i2, v, i_in);
 
@@ -611,7 +611,7 @@ void get_integrand_Sigma_SDE(std::string dir_str, const int it_Lambda, const int
     /// In the following you can also iterate over different v/etc:
 
     std::string dir_integrand_str = dir_str + "integrands/";
-    makedir(dir_integrand_str);
+    utils::makedir(dir_integrand_str);
     const std::string filename_prefix = "dSigma_RKstep"+std::to_string(rkStep);
     saveIntegrand::Sigma_SDE<Q>(filename_prefix, file_Psi, it_Lambda, i2, v, i_in);
 

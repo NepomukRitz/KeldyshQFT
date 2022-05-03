@@ -55,10 +55,10 @@ public:
                        :g(G_in), s(S_in), diff(diff_in),
                        Helper_Bubble(G_in, S_in, diff),
                        fermionic_grid(G_in.selfenergy.Sigma.frequencies.primary_grid){
-        if (diff) {print("Precalculating a differentiated bubble...", true);}
-        else {print("Precalculating a regular bubble...", true);}
+        if (diff) {utils::print("Precalculating a differentiated bubble...", true);}
+        else {utils::print("Precalculating a regular bubble...", true);}
         compute_FermionicBubble();
-        print("...done.", true);
+        utils::print("...done.", true);
     }
     auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q;
     auto value_on_fermionic_grid(int iK_bubble, double v1, double v2, int i_in) const -> Q;
@@ -108,9 +108,9 @@ template <typename Q> void PrecalculatedBubble<Q>::compute_FermionicBubble(){
 }
 
 template <typename Q> void PrecalculatedBubble<Q>::compute_FermionicBubble_HUBBARD(){
-    double starting_time = get_time();
+    double starting_time = utils::get_time();
     std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
-    double end_time = get_time();
+    double end_time = utils::get_time();
     double time_diff = (end_time - starting_time); // time given in seconds
     //std::cout << "Time for FFT initialization = " << time_diff << " s." << "\n";
 
@@ -168,7 +168,7 @@ int PrecalculatedBubble<Q>::get_iK_bubble(const int iK_actual) const {
             case 14: iK_bubble = 7; break;
             case 15: iK_bubble = 8; break;
             default:
-                print("ERROR! Trivial Keldysh index not filtered out yet! Abort."); assert(false);
+                utils::print("ERROR! Trivial Keldysh index not filtered out yet! Abort."); assert(false);
         }
     }
     return iK_bubble;
@@ -190,7 +190,7 @@ int PrecalculatedBubble<Q>::get_iK_actual(const int iK_bubble) const {
             case 7: iK_actual = 14; break;
             case 8: iK_actual = 15; break;
             default:
-                print("ERROR! Number of nine non-trivial Keldysh-indices exceeded! Abort."); assert(false);
+                utils::print("ERROR! Number of nine non-trivial Keldysh-indices exceeded! Abort."); assert(false);
         }
     }
     return iK_actual;

@@ -18,7 +18,7 @@ void FrequencyGrid<eliasGrid>::initialize_grid() {
             if (type == 'b') all_frequencies[i] = round2bfreq(all_frequencies[i]);
             else             all_frequencies[i] = round2ffreq(all_frequencies[i]);
         }
-        auxiliary_grid[i]= t_from_frequency(all_frequencies[i]);
+        auxiliary_grid[i]= W;
     }
 
     if (purely_positive) {
@@ -154,7 +154,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
 
     all_frequencies = rvec(number_of_gridpoints);
     auxiliary_grid = rvec(number_of_gridpoints);
-    set_essential_parameters(scale*500., scale);
+    set_essential_parameters(scale*100., scale);
     initialize_grid();
 }
 
@@ -615,7 +615,7 @@ int FrequencyGrid<hybridGrid>::get_grid_index(const double frequency)const {
     //assert(all_frequencies[index] <= frequency + (std::abs(frequency)+1)*1e-12);
     //assert(all_frequencies[index+1] >= frequency);
     assert(auxiliary_grid[index] <= t+inter_tol);
-    assert(auxiliary_grid[index+1] >= t-inter_tol);
+    assert(auxiliary_grid[index+1] >= t-inter_tol or index == number_of_gridpoints-2);
     return index;
 }
 
@@ -630,7 +630,7 @@ int FrequencyGrid<hybridGrid>::get_grid_index(double& t, const double frequency)
     index = std::min(number_of_gridpoints - 2, index);
 #endif
     assert(auxiliary_grid[index] <= t + inter_tol);
-    assert(auxiliary_grid[index+1] >= t - inter_tol);
+    assert(auxiliary_grid[index+1] >= t - inter_tol or index == number_of_gridpoints-2);
     return index;
 }
 
@@ -752,7 +752,7 @@ int FrequencyGrid<angularGrid>::get_grid_index(const double frequency)const {
     //assert(all_frequencies[index] <= frequency + (std::abs(frequency)+1)*1e-12);
     //assert(all_frequencies[index+1] >= frequency);
     assert(auxiliary_grid[index] <= t+inter_tol);
-    assert(auxiliary_grid[index+1] >= t-inter_tol);
+    assert(auxiliary_grid[index+1] >= t-inter_tol or index == number_of_gridpoints-2);
     return index;
 }
 
@@ -768,6 +768,6 @@ int FrequencyGrid<angularGrid>::get_grid_index(double& t, const double frequency
     index = std::min(number_of_gridpoints - 2, index);
 #endif
     assert(auxiliary_grid[index] <= t + inter_tol);
-    assert(auxiliary_grid[index+1] >= t - inter_tol);
+    assert(auxiliary_grid[index+1] >= t - inter_tol or index == number_of_gridpoints-2);
     return index;
 }

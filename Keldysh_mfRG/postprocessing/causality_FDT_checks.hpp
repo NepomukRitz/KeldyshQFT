@@ -13,7 +13,7 @@
 template <typename Q>
 void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
     if (KELDYSH) {
-        print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
+        utils::print("Causality check of self-energy: Im(Sigma^R)<=0.", true);
         using SE_buffertype = typename SelfEnergy<Q>::buffer_type;
         SE_buffertype Sigma = selfEnergy.Sigma;                        // take self-energy
         vec<Q> Sigma_R(Sigma.get_vec().begin(), Sigma.get_vec().begin() + (nFER));     // take first half of self-energy (retarded comp.)
@@ -34,17 +34,17 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         }
         selfEnergy.Sigma.initInterpolator();
         if (cnt > 0) {
-            print("Selfenergy is non-causal: ", true);
-            print(cnt, " values of Im(Sigma^R) are positive, with a maximum of ", max, true);
-            print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
+            utils::print("Selfenergy is non-causal: ", true);
+            utils::print(cnt, " values of Im(Sigma^R) are positive, with a maximum of ", max, true);
+            utils::print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
         } else {
-            print("Selfenergy is causal.", true);
-            print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
+            utils::print("Selfenergy is causal.", true);
+            utils::print("value at v=0: ", selfEnergy.valsmooth(0, 0., 0), true);
         }
 
     }
     else {
-        print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
+        utils::print("Causality check of self-energy: Im[Sigma(w)]*w<=0.", true);
 
         auto Sigma = selfEnergy.Sigma;                        // take self-energy
 
@@ -62,10 +62,10 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
             }
         }
         if (cnt > 0) {
-            print("Im[Selfenergy] is not negative for positive w (vice versa): ", true);
-            print(cnt, " values of Im(Sigma) have the wrong sign, with a sum of ", sum, true);
+            utils::print("Im[Selfenergy] is not negative for positive w (vice versa): ", true);
+            utils::print(cnt, " values of Im(Sigma) have the wrong sign, with a sum of ", sum, true);
         } else
-            print("Selfenergy has the right sign.", true);
+            utils::print("Selfenergy has the right sign.", true);
     }
 }
 
@@ -115,9 +115,9 @@ void check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const bool verbose) 
     double max_deviation = difference.max_norm();
     double max_norm_Kdat = SE_K_from_data.max_norm();
     if (verbose) {
-        print("Check FDT for selfenergy: \n");
-        print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
-        print("Maximal absolute value of Sigma^K: \t", max_norm_Kdat, "\n");
+        utils::print("Check FDT for selfenergy: \n");
+        utils::print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
+        utils::print("Maximal absolute value of Sigma^K: \t", max_norm_Kdat, "\n");
     }
 }
 
@@ -157,9 +157,9 @@ void check_FDTs_K1(const rvert<Q>& rvert4K1, const bool verbose) {
         double max_deviation = difference.max_norm();
         double max_norm_Kdat = Im_K1_R_from_data.max_norm();
         if (verbose) {
-            print("Check FDT for K1", rvert4K1.channel, ": \n");
-            print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
-            print("Maximal absolute value of Im(K1^R): \t", max_norm_Kdat, "\n");
+            utils::print("Check FDT for K1", rvert4K1.channel, ": \n");
+            utils::print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
+            utils::print("Maximal absolute value of Im(K1^R): \t", max_norm_Kdat, "\n");
         }
     }
 }
@@ -763,7 +763,7 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
     if(KELDYSH) {
         if (CONTOUR_BASIS and not ZERO_T) {} //assert(false);
         if (CONTOUR_BASIS and ZERO_T) {
-            print("Checking the FDTs for Lambda_it", Lambda_it, true);
+            utils::print("Checking the FDTs for Lambda_it", Lambda_it, true);
 
             State<Q> state_diff(Lambda);
 
@@ -837,25 +837,25 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             }
 
             if (mpi_world_rank() == 0) {
-                print("K1: max-norm of deviation = ", false);
+                utils::print("K1: max-norm of deviation = ", false);
                 std::cout << max_deviation_K1 << std::scientific << '\n';
-                print("K1: relative deviation = ", false);
+                utils::print("K1: relative deviation = ", false);
                 std::cout << max_deviation_K1 / vertex_in.half1().norm_K1(0) << std::scientific << '\n';
             }
 
 
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1) {
-                print("K2: max-norm of deviation = ", false);
+                utils::print("K2: max-norm of deviation = ", false);
                 std::cout << max_deviation_K2 << std::scientific << '\n';
-                print("K2: relative deviation = ", false);
+                utils::print("K2: relative deviation = ", false);
                 std::cout << max_deviation_K2 / vertex_in.half1().norm_K2(0) << std::scientific << '\n';
             }
 
 
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2) {
-                print("K3: max-norm of deviation = ", false);
+                utils::print("K3: max-norm of deviation = ", false);
                 std::cout << max_deviation_K3 << std::scientific << '\n';
-                print("K3: relative deviation = ", false);
+                utils::print("K3: relative deviation = ", false);
                 std::cout << max_deviation_K3 / vertex_in.half1().norm_K3(0) << std::scientific << '\n';
             }
 
@@ -866,24 +866,24 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             GeneralVertex<Q, symmetry_type> vertex_out = vertex_in;
             compute_components_through_FDTs(vertex_out, vertex_in);
 
-            print("Checking the FDTs for Lambda_it", Lambda_it, true);
+            utils::print("Checking the FDTs for Lambda_it", Lambda_it, true);
             GeneralVertex<Q, symmetry_type> vertex_diff = vertex_in - vertex_out;
-            print("K2: max-norm of deviation = ", false);
+            utils::print("K2: max-norm of deviation = ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
                 std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
-            print("K2: relative deviation = ", false);
+            utils::print("K2: relative deviation = ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
                 std::cout << vertex_diff.half1().norm_K2(0) / vertex_out.half1().norm_K2(0) << std::scientific << '\n';
-            print("K2: max-norm = ", false);
+            utils::print("K2: max-norm = ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
                 std::cout << vertex_out.half1().norm_K2(0) << std::scientific << '\n';
-            print("K3: max-norm of deviation = ", false);
+            utils::print("K3: max-norm of deviation = ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2)
                 std::cout << vertex_diff.half1().norm_K3(0) << std::scientific << '\n';
-            print("K3: relative deviation = ", false);
+            utils::print("K3: relative deviation = ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2)
                 std::cout << vertex_diff.half1().norm_K3(0) / vertex_out.half1().norm_K3(0) << std::scientific << '\n';
-            print("K3: max-norm ", false);
+            utils::print("K3: max-norm ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 2)
                 std::cout << vertex_out.half1().norm_K3(0) << std::scientific << '\n';
             //

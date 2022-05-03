@@ -163,7 +163,7 @@ template <typename Q>
 auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
 {
     if (REG == 1) {
-        if (HUBBARD_MODEL) {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
         else               {return GR_REG1_SIAM(v, i_in);}        // SIAM
     }
     else if (REG == 2) {
@@ -172,17 +172,17 @@ auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
     }
     else if (REG == 3) {
 
-        if (HUBBARD_MODEL) {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);} // SIAM
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        else               {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);} // SIAM
     }
-    else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
 template <typename Q>
 auto Propagator<Q>::GA(const double v, const int i_in) const -> Q
 {
     if (REG == 1) {
-        if (HUBBARD_MODEL) {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
         else               return GA_REG1_SIAM(v, i_in);
     }
     else if (REG == 2) {
@@ -191,10 +191,10 @@ auto Propagator<Q>::GA(const double v, const int i_in) const -> Q
     }
     else if (REG == 3) {
 
-        if (HUBBARD_MODEL) {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        else               {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
     }
-    else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
 template <typename Q>
@@ -224,8 +224,8 @@ auto Propagator<Q>::SR(const double v, const int i_in) const -> Q
 {
     if      (REG == 1) return SR_REG1(v, i_in);
     else if (REG == 2) return SR_REG2(v, i_in);
-    else if (REG == 3) {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-    else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    else if (REG == 3) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
 template <typename Q>
@@ -262,7 +262,7 @@ template <typename Q>
 auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
 {
     assert(!FPP);
-    if      (REG == 1)      {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    if      (REG == 1)      {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
     else if (REG == 2) {
         if constexpr (HUBBARD_MODEL)    return GM_REG2_Hubbard(v, i_in);
         else                            return GM_REG2_SIAM(v, i_in);
@@ -275,7 +275,7 @@ auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
         if constexpr (HUBBARD_MODEL)    std::runtime_error("Interaction Regulator not yet implemented for Hubbard model");
         else return GM_REG4_SIAM(v, i_in);
     }
-    else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
 template <typename Q>
@@ -294,14 +294,14 @@ template <typename Q>
 auto Propagator<Q>::SM(const double v, const int i_in) const -> Q
 {
     assert(!FPP);
-    if      (REG == 1)      {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    if      (REG == 1)      {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
     else if (REG == 2) {
         if constexpr (HUBBARD_MODEL)    return SM_REG2_Hubbard(v, i_in);
         else                            return SM_REG2_SIAM(v, i_in);
     }
     else if (REG == 3)      return SM_REG3(v, i_in);
     else if (REG == 4)      return SM_REG4(v, i_in);
-    else {print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
 
@@ -330,7 +330,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                         case 1:
                             return GK(v, i_in);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -348,7 +348,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                         case 3:
                             return 0.5*(-GA_ - GR_ + GK_);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -367,7 +367,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                         case 1:
                             return SK(v, i_in);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -386,7 +386,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                         case 3:
                             return 0.5*(-SA_ - SR_ + SK_);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -407,7 +407,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                                    + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
                                    + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -434,7 +434,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                         case 3:
                             return 0.5*(-SA_ - SR_ + SK_);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -455,7 +455,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                                    + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
                                    + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -481,7 +481,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                         case 3:
                             return 0.5*(-SA_ - SR_ + SK_);
                         default:
-                            print("ERROR! Invalid Keldysh index. Abort.");
+                            utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
@@ -491,7 +491,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             }
         break;
         default:
-            print("ERROR! Invalid Keldysh index. Abort.");
+            utils::print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
             return 0.;
     }
@@ -672,7 +672,7 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
             }
         break;
         default:
-            print("ERROR! Invalid Keldysh index. Abort.");
+            utils::print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
             //return return_type::Zero();
     }
@@ -748,7 +748,7 @@ inline auto Propagator<Q>::GR_REG2_Hubbard(const double v, const int i_in) const
 
 template <>
 inline auto Propagator<double>::GR_REG2_Hubbard(const double v, const int i_in) const -> double {
-    print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
+    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
     assert(false);
     return 0.;
 }

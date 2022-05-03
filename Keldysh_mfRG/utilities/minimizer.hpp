@@ -60,34 +60,34 @@ void minimizer (CostFunction& cost, double& a, double& m, double& b, int max_ite
 
         else if (costb > costa) {    // if left interval bound gives smaller cost than m, shift the interval to the left (shrinking parameter range)
             b = m; m = a; a /= 2.;
-            //print("shrink", true);
+            //utils::print("shrink", true);
         }
         else if (costa > costb){    // if right interval bound gives smaller cost than m, shift the interval to the right (growing parameter range)
             a = m; m = b; b *= 1.5;
-            //print("grow", true);
+            //utils::print("grow", true);
         }
         else if (std::abs(costa - costm) < 1e-10) {
-            print("difference in costa and costm: ", std::abs(costb- costm), true);
+            utils::print("difference in costa and costm: ", std::abs(costb- costm), true);
             double temp = (a + m) / 2.;
             double cost_temp = cost(temp);
             if (cost_temp <costa)
             {b = m; m = temp;}
 
             else {
-                print("WARNING!: Minimum not unique!!!\n\n");
+                utils::print("WARNING!: Minimum not unique!!!\n\n");
                 return; // ignore the problem
                 //throw std::runtime_error("Minimum not unique."); // else: there are local minima on the left AND the right of the interval --> non-trivial choice
 
             }
         }
         else if (std::abs(costb- costm) < 1e-10) {
-            print("difference in costb and costm: ", std::abs(costb- costm), true);
+            utils::print("difference in costb and costm: ", std::abs(costb- costm), true);
             double temp = (m + b) / 2.;
             double cost_temp = cost(temp);
             if (cost_temp <costb)
             {a = m; m = temp;}
             else {
-                print("WARNING!: Minimum not unique!!!");
+                utils::print("WARNING!: Minimum not unique!!!");
                 return;
                 //throw std::runtime_error("Minimum not unique.");
             }

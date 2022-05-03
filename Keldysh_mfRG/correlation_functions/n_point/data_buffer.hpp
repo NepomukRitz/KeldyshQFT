@@ -551,7 +551,7 @@ public:
 
     void optimize_grid(bool verbose) {
 
-        if (verbose) print("---> Now Optimize grid for ", k, " in direction w:\n");
+        if (verbose) utils::print("---> Now Optimize grid for ", k, " in direction w:\n");
 
         const bool superverbose = false;
         const double epsrel_elias = 0.01;
@@ -611,7 +611,7 @@ public:
                 CostResolution<'f', this_class, frequencyGrid_type> cost_f(*this, verbose);
                 minimizer(cost_f, a_Wscale_f, m_Wscale_f, b_Wscale_f, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
                 frequencies_new.secondary_grid.update_Wscale(m_Wscale_f);
-                frequencies_new. tertiaary_grid.update_Wscale(m_Wscale_f);
+                frequencies_new. tertiary_grid.update_Wscale(m_Wscale_f);
             }
             else if constexpr(std::is_same_v<typename frequencyGrid_type::grid_type2, FrequencyGrid<hybridGrid>>) {
                 std::array<double,2> section_boundaries_f = base_class::get_VertexFreqGrid().secondary_grid.pos_section_boundaries;

@@ -581,63 +581,63 @@ void test_hdf5(H5std_string FILE_NAME, int i, State<state_datatype>& state) {
 #endif
         }
     }
-    if (cnt == 0) print("HDF5 test successful.", true);
-    else print("HDF5 test failed. Number of differences: ", cnt, true);
+    if (cnt == 0) utils::print("HDF5 test successful.", true);
+    else utils::print("HDF5 test failed. Number of differences: ", cnt, true);
 }
 */
 
 bool test_read_write_data_hdf(bool verbose) {
-    //if (verbose) print("Testing HDF input and output:", true);
+    //if (verbose) utils::print("Testing HDF input and output:", true);
 
     vec<comp> vector_original(10, glb_i);
     std::array<std::size_t,3> dims_mularr = {1,2,3};
     multidimensional::multiarray<comp,3> mularr_original(dims_mularr, glb_i);
 
     std::string testfile_name = "test.h5";
-    //if (verbose) print("File name: " + testfile_name, true);
+    //if (verbose) utils::print("File name: " + testfile_name, true);
 
     // write to hdf file
     H5::H5File file_out(testfile_name.c_str(), H5F_ACC_TRUNC);
-    //if (verbose) print("Created file.", true);
+    //if (verbose) utils::print("Created file.", true);
     //H5::H5std_string FILE_NAME(data_dir + "test.h5");
     H5::Group group_out(file_out.createGroup("/data"));
-    //if (verbose) print("Created group.", true);
+    //if (verbose) utils::print("Created group.", true);
 
     write_to_hdf(group_out, "vector", vector_original, false);
     write_to_hdf(group_out, "mularr", mularr_original, false);
-    //if (verbose) print("Written to hdf.", true);
+    //if (verbose) utils::print("Written to hdf.", true);
 
     // read from hdf file
     hid_t file_id = H5Fopen(testfile_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     H5::Group group = H5Gopen(file_id, "data", H5P_DEFAULT);
-    //if (verbose) print("Loaded group.", true);
+    //if (verbose) utils::print("Loaded group.", true);
     vec<comp> vector_input;
     read_from_hdf<comp>(group, "vector", vector_input);
-    //if (verbose) print("Loaded vector.", true);
+    //if (verbose) utils::print("Loaded vector.", true);
     multidimensional::multiarray<comp,3> mularr_input;
     read_from_hdf<comp,3>(group, "mularr", mularr_input);
-    //if (verbose) print("Loaded multiarray.", true);
+    //if (verbose) utils::print("Loaded multiarray.", true);
 
-    //if (verbose) print("Length of original vec: ", vector_original.size(), true);
-    //if (verbose) print("Length of loaded vec: ", vector_input.size(), true);
+    //if (verbose) utils::print("Length of original vec: ", vector_original.size(), true);
+    //if (verbose) utils::print("Length of loaded vec: ", vector_input.size(), true);
 
     comp deviation_vec = (vector_input - vector_original).max_norm();
-    if (std::abs(deviation_vec) < 1e-10) print("Read / write of vector to HDF file successful.", true);
-    else print("PROBLEM during read / write of vector to HDF file.", true);
+    if (std::abs(deviation_vec) < 1e-10) utils::print("Read / write of vector to HDF file successful.", true);
+    else utils::print("PROBLEM during read / write of vector to HDF file.", true);
 
     comp deviation_mularr=(mularr_input -mularr_original).maxabs();
-    if (std::abs(deviation_mularr) < 1e-10) print("Read / write of multiarray to HDF file successful.", true);
-    else print("PROBLEM during read / write of multiarray to HDF file.", true);
+    if (std::abs(deviation_mularr) < 1e-10) utils::print("Read / write of multiarray to HDF file successful.", true);
+    else utils::print("PROBLEM during read / write of multiarray to HDF file.", true);
 
 
 
     //H5::H5std_string FILE_NAME(data_dir + "test.h5");
     H5::Group group_out_L(file_out.createGroup("/data_with_LambdaLayers"));
-    //if (verbose) pprint("Created group.", true);
+    //if (verbose) putils::print("Created group.", true);
 
     write_to_hdf_LambdaLayer(group_out_L, "vector", vector_original, 1, 10,  false);
     write_to_hdf_LambdaLayer(group_out_L, "mularr", mularr_original, 1, 10,  false);
-    //if (verbose) pprint("Written to hdf LambdaLayer.", true);
+    //if (verbose) putils::print("Written to hdf LambdaLayer.", true);
 
     // read from hdf file
     //hid_t file_id = H5Fopen(testfile_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -655,16 +655,16 @@ bool test_read_write_data_hdf(bool verbose) {
     bool passed = true;
     if (verbose) {
         if (std::abs(deviation_vec_L) < 1e-10)
-            print("Read / write of vector to LambdaLayer of HDF file successful.", true);
+            utils::print("Read / write of vector to LambdaLayer of HDF file successful.", true);
         else {
             passed = false;
-            print("PROBLEM during read / write of vector to LambdaLayer of HDF file.", true);
+            utils::print("PROBLEM during read / write of vector to LambdaLayer of HDF file.", true);
         }
         if (std::abs(deviation_mularr_L) < 1e-10)
-            print("Read / write of multiarray to LambdaLayer ofHDF file successful.", true);
+            utils::print("Read / write of multiarray to LambdaLayer ofHDF file successful.", true);
         else {
             passed = false;
-            print("PROBLEM during read / write to LambdaLayer of multiarray to HDF file.", true);
+            utils::print("PROBLEM during read / write to LambdaLayer of multiarray to HDF file.", true);
         }
     }
 
@@ -673,7 +673,7 @@ bool test_read_write_data_hdf(bool verbose) {
 
 
 bool test_read_write_state_hdf(bool verbose) {
-    //if (verbose) print("Testing HDF input and output of states:", true);
+    //if (verbose) utils::print("Testing HDF input and output of states:", true);
     const double Lambda = 1.;
     const int Lambda_it = 1;
     const int numberLambdaLayers = 10;
@@ -682,11 +682,11 @@ bool test_read_write_state_hdf(bool verbose) {
     state_output = state_output + 1.;
 
     write_state_to_hdf("test_state.h5", 0. , numberLambdaLayers, state_output);
-    //print("Written state", true);
+    //utils::print("Written state", true);
 
 
     State<state_datatype> state_input = read_state_from_hdf("test_state.h5", 0);
-    //print("Read state", true);
+    //utils::print("Read state", true);
 
     State<state_datatype> state_diff = state_output - state_input;
 
@@ -698,18 +698,18 @@ bool test_read_write_state_hdf(bool verbose) {
     bool passed = true;
 
     if (verbose) {
-        if (state_diff.norm() < 1e-10) print("Read / write of state data to LambdaLayer of HDF file successful.", true);
+        if (state_diff.norm() < 1e-10) utils::print("Read / write of state data to LambdaLayer of HDF file successful.", true);
         else {
             passed = false;
-            print("PROBLEM during read / write of state data to LambdaLayer of HDF file. deviation : ",
+            utils::print("PROBLEM during read / write of state data to LambdaLayer of HDF file. deviation : ",
                   state_diff.norm(), true);
         }
         if ((state_output.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies() -
              state_input.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies()).max_norm() < 1e-10)
-            print("Read / write of frequency grid to LambdaLayer of HDF file successful.", true);
+            utils::print("Read / write of frequency grid to LambdaLayer of HDF file successful.", true);
         else {
             passed = false;
-            print("PROBLEM during read / write of frequency grid to LambdaLayer to HDF file.", true);
+            utils::print("PROBLEM during read / write of frequency grid to LambdaLayer to HDF file.", true);
         }
     }
 

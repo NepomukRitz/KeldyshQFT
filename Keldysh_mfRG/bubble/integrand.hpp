@@ -74,7 +74,7 @@ public:
             default:
                 v1 = 0.;
                 v2 = 0.;
-                print("Error in IntegrandBubble! Abort.");
+                utils::print("Error in IntegrandBubble! Abort.");
                 assert(false);
         }
         //Make reference to the Bubble object of the actual code, making this into a useful test of code correctnes and compliance
@@ -962,11 +962,12 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
         Eigen::Matrix<Q,4,4> vertex_val2(4,4);
         load_vertex_keldyshComponents_left_vectorized<0> (vertex_val1, input_l);
         load_vertex_keldyshComponents_right_vectorized<0>(vertex_val2, input_r);
+        Pival = Pi.template value_vectorized<channel>(w, vpp, i_in);
 #else
         Q integrand_value;
+        Pival(0) = Pi.value(i2, w, vpp, i_in);
 #endif
 
-        Pival = Pi.template value_vectorized<channel>(w, vpp, i_in);
         integrand_value = (*this)(vpp);
 
 
@@ -1006,7 +1007,7 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
         double wl, wu;
         switch (diag_class) {
             case k1:
-                wl = vertex1.avertex().K1.frequencies.get_wupper_b();
+                wl = vertex1.avertex().K1.frequencies.get_wlower_b();
                 wu = vertex1.avertex().K1.frequencies.get_wupper_b();
                 wl *= 2.;
                 wu *= 2.;

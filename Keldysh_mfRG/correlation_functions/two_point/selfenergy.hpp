@@ -172,7 +172,7 @@ template <typename Q> auto SelfEnergy<Q>::val(int iK, int iv, int i_in) const ->
  */
 template <typename Q> auto SelfEnergy<Q>::acc(int i) const -> Q{
     if(i>=0 && i < Sigma.size()) return Sigma.acc(i);
-    else {print("Error: Tried to access value outside of self-energy range. Abort."); assert(false);}
+    else {utils::print("Error: Tried to access value outside of self-energy range. Abort."); assert(false);}
 }
 
 /**
@@ -183,7 +183,7 @@ template <typename Q> auto SelfEnergy<Q>::acc(int i) const -> Q{
  */
 template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
     if(i>=0 && i < Sigma.get_vec().size()) Sigma.direct_set(i, val);
-    else {print("Error: Tried to access value outside of self-energy range. Abort."); assert(false);}
+    else {utils::print("Error: Tried to access value outside of self-energy range. Abort."); assert(false);}
 }
 
 /**

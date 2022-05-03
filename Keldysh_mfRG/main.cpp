@@ -11,39 +11,12 @@
 #include "utilities/util.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
+#include "perturbation_theory_and_parquet/perturbation_theory.hpp"
 #include "tests/test_ODE.hpp"
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
 
-std::string generate_filename() {
-    std::string klass = "K" + std::to_string(MAX_DIAG_CLASS) + "_";
-    std::string loops = std::to_string(N_LOOPS) + "LF_";
-    std::string n1 = "n1=" + std::to_string(nBOS) + "_";
-    std::string n2 = "n2=" + std::to_string(nBOS2) + "_";
-    std::string n3 = "n3=" + std::to_string(nBOS3) + "_";
-    std::string gamma = "Gamma=" + std::to_string(glb_Gamma) + "_";
-    std::string voltage = "V=" + std::to_string(glb_V) + "_";
-    std::string temp = "T=" + std::to_string(glb_T) + "_";
-    std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
-    std::string ode = "nODE=" + std::to_string(nODE);
-    std::string extension = ".h5";
-
-    std::string filename = klass + loops + n1;
-    if (MAX_DIAG_CLASS >= 2) filename += n2;
-#if defined(STATIC_FEEDBACK)
-    filename += "static_";
-#endif
-    if (MAX_DIAG_CLASS >= 3) filename += n3;
-    filename += gamma;
-    if(glb_V != 0.)
-        filename += voltage;
-    if(glb_T != 0.01)
-        filename += temp;
-    filename += lambda + ode + extension;
-
-    return filename;
-}
 
 auto main() -> int {
 
@@ -52,77 +25,16 @@ auto main() -> int {
         MPI_Init(nullptr, nullptr);
     }
 #endif
-#ifdef STATIC_FEEDBACK
-    assert(MAX_DIAG_CLASS == 1);
-#endif
-    if (MAX_DIAG_CLASS<2) assert(N_LOOPS < 2);
-
-    if (KELDYSH){
-        if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
-        else               print("SIAM in Keldysh formalism: \n");
-    }
-    else{
-        if (HUBBARD_MODEL) print("Hubbard model in Matsubara formalism: \n");
-        else               print("SIAM in Matsubara formalism: \n");
-    }
-
-    if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
-
-    print("U for this run is: ", glb_U, true);
-    print("temperature T: ", glb_T, true);
-    print("Lambda flows from ", Lambda_ini);
-    print_add(" to ", Lambda_fin, true);
-    print("nODE for this run: ", nODE, true);
-    if constexpr (MPI_FLAG) print("MPI World Size = " + std::to_string(mpi_world_size()), true);
-#pragma omp parallel default(none)
-    {
-    #pragma omp master
-        print("OMP Threads = " + std::to_string(omp_get_num_threads()), true);
-    }
-    print("nBOS1 = ", nBOS, true);
-    print("nFER1 = ", nFER, true);
-    if(MAX_DIAG_CLASS > 1) {
-        print("nBOS2 = ", nBOS2, true);
-        print("nFER2 = ", nFER2, true);
-    }
-    if(MAX_DIAG_CLASS > 2) {
-        print("nBOS3 = ", nBOS3, true);
-        print("nFER3 = ", nFER3, true);
-    }
-    if (HUBBARD_MODEL) print("n_in = ", n_in, true);
-
-    check_input();
 
 
-    /// Data directory
-    std::string job;
-    //job = "U=" + std::to_string(glb_U);
-#ifdef ROTATEK2
-  job = "_rotK2";
-#else
-  job = "_unrotK2";
-#endif
-    //job = "_SOPT";
+    utils::print_job_info();
+    utils::check_input();
 
-#if KELDYSH_FORMALISM
-#if DEBUG_SYMMETRIES
-    data_dir = "../Data_KF_debug/";
-#else
-    data_dir = "../Data_KF" + job + "_GRID" + std::to_string(GRID) + "/";
-#endif
-#else
-    #if DEBUG_SYMMETRIES
-    data_dir = "../Data_MF_debug/";
+    /// Job and Data directory
+    std::string job = "U=" + std::to_string(glb_U);
+    data_dir = utils::generate_data_directory(job);
 
-#else
-    data_dir = "../Data_MF"+ job +"/";
-#endif
-#endif
-
-    makedir(data_dir);
-
-
-    std::string filename = generate_filename();
+    std::string filename = utils::generate_filename();
 
     //
     //test_PT4(0.5, true);
@@ -139,35 +51,28 @@ auto main() -> int {
     config.epsODE_rel_ = 1e-5;
     config.U = 1.;
     n_loop_flow(data_dir+filename, config, true);
-    //test_symmetries(1.8);
+    //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
-    //const int N_ODE = 100;
-    //double Lambda_i = 19.8;
-    //double Lambda_f =  0.8;
-    //test_rhs_bubbles_flow_wstate<state_datatype>(N_ODE, Lambda_i, Lambda_f, true);
-
     /*
-    vec<double> integrator_tols = {1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10};
-    filename = generate_filename();
-    for (double tol: integrator_tols) {
-        integrator_tol = tol;
-        std::stringstream ss;
-        ss << tol;
-        job = "_tol=" + ss.str();
-        std::string name = data_dir+filename+job;
+    // SIAM PT4 specific:
+    data_dir = "../Data_SIAM_PT4/better_resolution_for_K2/";
+    //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/SOPT_integrand/eVg_over_U_" + std::to_string(glb_Vg / glb_U) + "/";
+    //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/smaller_integration_interval/";
+    utils::makedir(data_dir);
 
-        test_PT_state<state_datatype>( name, 1.8, false);
+
+    const rvec lambdas = {999., 199., 99., 19., 9.};
+    for (const double lambda : lambdas) {
+        PT_Machine<state_datatype> PT_Calculator (4, lambda, true);
     }
+
+    //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
+
+
+    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
     */
-
-
-    print("Hello world \n");
-#ifdef __linux__
-    print("on linux.\n");
-#elif __APPLE__
-    print("on apple.\n");
-#endif
+    utils::hello_world();
 
 #ifdef USE_MPI
     if (MPI_FLAG) {

@@ -195,7 +195,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand(const rvec& f
                 + "_v=" + std::to_string(v);
     filename += + ".h5";
 
-    print("saving integrand to file ", filename, "\n");
+    utils::print("saving integrand to file ", filename, "\n");
     H5::H5File file(filename, H5F_ACC_TRUNC);
     write_to_hdf(file, "v", freqs, false);
     write_to_hdf(file, "integrand", integrand_vals, false);

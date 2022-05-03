@@ -59,7 +59,7 @@ auto main(int argc, char * argv[]) -> int {
 
 
     std::string dir_integrand_str = "integrands/";
-    makedir(data_dir + dir_integrand_str);
+    utils::makedir(data_dir + dir_integrand_str);
     const std::string filename_prefix = dir_integrand_str + "dGammaC_left_insertion_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep) + "_iLoop" + std::to_string(i_loop);
     saveIntegrand::dGamma_C_left_insertion<state_datatype>(filename_prefix, file_Psi, file_dPsi_L, file_dPsi_R, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
     std::cout << "Integrand for dGammaC successfully created." << std::endl;

@@ -144,12 +144,12 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             //outfile.close();
 
             double error_max = errors.max_norm();
-            print(error_max);
+            utils::print(error_max);
             REQUIRE(errors.max_norm() < 1e-10);
             REQUIRE(error_max<1e-10);
         }
         else {
-            print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
+            utils::print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
 
         }
 #endif
@@ -200,7 +200,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 REQUIRE(errors.max_norm() < 1e-10);
             }
             else {
-                print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
+                utils::print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
 
             }
 
@@ -253,7 +253,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 REQUIRE(errors.max_norm() < 1e-10);
             }
             else {
-                print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
+                utils::print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
 
             }
 #endif

@@ -53,6 +53,7 @@ class BubbleFunctionCalculator{
 
     double tK1 = 0, tK2 = 0, tK3 = 0;
 
+    void check_presence_of_symmetry_related_contributions();
     void set_channel_specific_freq_ranges_and_prefactor();
     void find_vmin_and_vmax();
 
@@ -90,6 +91,8 @@ class BubbleFunctionCalculator{
 
     Q bubble_value_prefactor();
 
+    const bool store_integrand_for_PT = false; // set to true if the integrand for the fully retarded up-down component at zero frequency shall be saved
+
     public:
     void perform_computation();
 
@@ -99,12 +102,15 @@ class BubbleFunctionCalculator{
                              const Bubble_Object& Pi_in)
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
                              Pi(Pi_in){
+#ifndef DEBUG_SYMMETRIES
+        check_presence_of_symmetry_related_contributions();
+#endif
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
         // For Hubbard model computations, make sure that the internal structures of the vertices are parametrized correctly.
         if (HUBBARD_MODEL && (MAX_DIAG_CLASS > 1) && missing_cross_projection()) { // Cross projected parts are only needed for the Hubbard model in K2 and K3.
-            print("Error! Needed crossprojection still has to be computed. Abort.");
+            utils::print("Error! Needed crossprojection still has to be computed. Abort.");
             assert(false);
         }
 #ifdef SWITCH_SUM_N_INTEGRAL
@@ -228,34 +234,34 @@ void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
                 Bubble_Object>::perform_computation(){
 
-    double t_start = get_time();
+    double t_start = utils::get_time();
     if constexpr(MAX_DIAG_CLASS >= 0) {
         calculate_bubble_function<k1>();
-        tK1 = get_time() - t_start;
-        print("K1", channel, " done, ");
-        get_time(t_start);
+        tK1 = utils::get_time() - t_start;
+        //utils::print("K1", channel, " done, ");
+        //utils::get_time(t_start);
     }
     if constexpr(MAX_DIAG_CLASS >= 2) {
-        t_start = get_time();
+        t_start = utils::get_time();
         calculate_bubble_function<k2>();
-        tK2 = get_time() - t_start;
-        print("K2", channel, " done, ");
-        get_time(t_start);
+        tK2 = utils::get_time() - t_start;
+        //utils::print("K2", channel, " done, ");
+        //utils::get_time(t_start);
 
-        if constexpr(DEBUG_SYMMETRIES) {
-            t_start = get_time();
-            calculate_bubble_function<k2b>();
-            tK2 = get_time() - t_start;
-            print("K2b", channel, " done, ");
-            get_time(t_start);
-        }
+#ifdef DEBUG_SYMMETRIES
+        t_start = utils::get_time();
+        calculate_bubble_function<k2b>();
+        tK2 = utils::get_time() - t_start;
+        //utils::print("K2b", channel, " done, ");
+        //utils::get_time(t_start);
+#endif
     }
     if constexpr(MAX_DIAG_CLASS >= 3) {
-        t_start = get_time();
+        t_start = utils::get_time();
         calculate_bubble_function<k3>();
-        tK3 = get_time() - t_start;
-        print("K3", channel, " done, ");
-        get_time(t_start);
+        tK3 = utils::get_time() - t_start;
+        //utils::print("K3", channel, " done, ");
+        //utils::get_time(t_start);
     }
 
 }
@@ -266,7 +272,7 @@ template<char channel, typename Q, vertexType symmetry_result, vertexType symmet
 void
 BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right,
         Bubble_Object>::calculate_bubble_function(){
-    if (diag_class < k1 || diag_class > k3){print("Incompatible diagrammatic class! Abort."); assert(false); return;}
+    if (diag_class < k1 || diag_class > k3){utils::print("Incompatible diagrammatic class! Abort."); assert(false); return;}
 
     int n_mpi, n_omp, n_vectorization;
     set_external_arguments_for_parallelization(n_mpi, n_omp, n_vectorization, diag_class);
@@ -380,18 +386,29 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     static_assert(n_spin == 1, "SWITCH_SUM_N_INTEGRAL not ready for DEBUG_SYMMETRIES.");
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
-        if (channel == 't') n_spin_sum = 3;  // in the t channel, spin sum includes three terms
+        if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) n_spin_sum = 3;  // in the t channel, spin sum includes three terms
         for (int i_spin=0; i_spin < n_spin_sum; ++i_spin) {
 #else
     int i2 = 0;
     int i_spin = 0;
 #endif
-    // initialize the integrand object and perform frequency integration
-    Integrand_class integrand(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, i_spin, diff);
-    if constexpr(ZERO_T) {
-        switch (k) {
-            case k1:
-                integration_result += bubble_value_prefactor() * integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2), {0.}, Delta, true);
+            // initialize the integrand object and perform frequency integration
+            Integrand_class integrand(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, i_spin, diff);
+
+            if (store_integrand_for_PT){ // for PT-Calculations: Store the integrand for the fully retarded up-down component at zero frequency:
+#ifdef SWITCH_SUM_N_INTEGRAL
+                assert(false); // Cannot do it this way if the integration is vectorized over the internal Keldysh sum
+#endif
+                if (channel == 'a' and i0 == 7 and i_spin == 0 and w == 0 and v == 0 and vp == 0) integrand.save_integrand();
+            }
+
+
+            if constexpr(ZERO_T) {
+                switch (k) {
+                    case k1:
+                        integration_result += bubble_value_prefactor() *
+                                 integrator_Matsubara_T0(integrand, vmin, vmax, std::abs(w / 2),
+                                                               {0.}, Delta, true);
 
                 break;
             case k2:
@@ -853,6 +870,31 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     else                   return prefactor * (1. / (2. * M_PI));
 }
 
+template<char channel, typename Q,
+        vertexType symmetry_result,
+        vertexType symmetry_left,
+        vertexType symmetry_right,
+        class Bubble_Object>
+void
+BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_right, Bubble_Object>::check_presence_of_symmetry_related_contributions() {
+    bool vertex1_is_bare = false;
+    bool vertex2_is_bare = false;
+    if ((vertex1.avertex().max_norm() < 1e-18)
+        && (vertex1.pvertex().max_norm() < 1e-18)
+        && (vertex1.tvertex().max_norm() < 1e-18)) {vertex1_is_bare = true;}
+    if ((vertex2.avertex().max_norm() < 1e-18)
+        && (vertex2.pvertex().max_norm() < 1e-18)
+        && (vertex2.tvertex().max_norm() < 1e-18)) {vertex2_is_bare = true;}
+
+    if (channel == 'a'){ // There must be a non-vanishing contribution in the t-channel for both vertices
+        if (not vertex1_is_bare) assert(vertex1.tvertex().max_norm() > 1e-18);
+        if (not vertex2_is_bare) assert(vertex2.tvertex().max_norm() > 1e-18);
+    }
+    if (channel == 't'){ // There must be a non-vanishing contribution in the a-channel for both vertices
+        if (not vertex1_is_bare) assert(vertex1.avertex().max_norm() > 1e-18);
+        if (not vertex2_is_bare) assert(vertex2.avertex().max_norm() > 1e-18);
+    }
+}
 
 
 // bubble_function using the new class BubbleFunctionCalculator
@@ -882,7 +924,7 @@ void bubble_function(GeneralVertex<Q, symmetry_result>& dgamma,
                 BubbleComputer (dgamma, vertex1, vertex2, Pi);
         BubbleComputer.perform_computation();
     }
-    //else {print("Error! Incompatible channel given to bubble_function. Abort"); }
+    //else {utils::print("Error! Incompatible channel given to bubble_function. Abort"); }
 
 }
 

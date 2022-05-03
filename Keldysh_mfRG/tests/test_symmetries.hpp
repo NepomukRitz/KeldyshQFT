@@ -16,9 +16,9 @@
  * @param Lambda
  * 
  */
-void test_symmetries(double Lambda);
+void test_symmetries(double Lambda, const fRG_config& frgConfig);
 
 
-void test_compare_with_Vienna_code();
+void test_compare_with_Vienna_code(const fRG_config& frgConfig);
 
 #endif //FPP_MFRG_TEST_SYMMETRIES_H

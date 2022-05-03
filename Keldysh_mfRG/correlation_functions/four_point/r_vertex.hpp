@@ -27,6 +27,7 @@ template <typename Q> class fullvert; // forward declaration of fullvert
 //template <typename Q, interpolMethod interp> class vertexInterpolator; // forward declaration of vertexInterpolator
 template<typename Q, std::size_t depth, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
 template<typename Q, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
+template<typename Q, typename H5object, int nrows, int ncols> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,nrows, ncols>& data, const bool data_set_exists);
 
 template <typename Q>
 class rvert{
@@ -177,6 +178,7 @@ public:
     mutable bool calculated_crossprojections = false;
     void cross_project();
 
+    double max_norm() const;
 
 
     /**
@@ -326,21 +328,21 @@ public:
 
     /// Arithmetric operators act on vertexBuffers:
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
-        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data += right.data;}, rhs);
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left += right;}, rhs);
     }
     friend rvert<Q> operator+ (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs += rhs;
         return lhs;
     }
     auto operator*= (const rvert<Q>& rhs) -> rvert<Q> {
-        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data *= right.data;}, rhs);
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left *= right;}, rhs);
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs *= rhs;
         return lhs;
     }
     auto operator-= (const rvert<Q>& rhs) -> rvert<Q> {
-        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data -= right.data;}, rhs);
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left -= right;}, rhs);
     }
     friend rvert<Q> operator- (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs -= rhs;
@@ -348,7 +350,7 @@ public:
     }
     // Elementwise divion:
     auto operator/= (const rvert<Q>& rhs) -> rvert<Q> {
-        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left.data /= right.data;}, rhs);
+        return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left /= right;}, rhs);
     }
     friend rvert<Q> operator/ (rvert<Q> lhs, const rvert<Q>& rhs) {
         lhs /= rhs;
@@ -356,14 +358,14 @@ public:
     }
 
     auto operator*= (double alpha) -> rvert<Q> {
-        return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.data *= alpha; });
+        return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer *= alpha; });
     }
     friend rvert<Q> operator* (rvert<Q> lhs, const double& rhs) {
         lhs *= rhs;
         return lhs;
     }
     auto operator+= (double alpha) -> rvert<Q> {
-        return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.data += alpha; });
+        return apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer += alpha; });
     }
     friend rvert<Q> operator+ (rvert<Q> lhs, const double& rhs) {
         lhs += rhs;
@@ -650,7 +652,7 @@ template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const dou
  */
 template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
 #if DEBUG_SYMMETRIES
-        print("maximal deviation in symmetry in " + identifier + "_channel" + channel +
+        utils::print("maximal deviation in symmetry in " + identifier + "_channel" + channel +
               " (normalized by maximal absolute value of K_i)", "\n");
         initInterpolator();
 
@@ -677,7 +679,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             Q deviation = value_direct - value_symmet;
             //if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
             deviations_K1.at(idx) = deviation;
-            if (std::abs(deviation) > 1000) print("DEVIATION ", deviation, "for iK, ispin, iw = ", iK, ispin, iw, "\n");
+            if (std::abs(deviation) > 1000) utils::print("DEVIATION ", deviation, "for iK, ispin, iw = ", iK, ispin, iw, "\n");
             //}
 
             // test frequency symmetries for symmetry-reduced Keldysh components:
@@ -713,7 +715,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             }
         }
 
-        if (K1.get_vec().max_norm() > 1e-30) print("K1: \t", deviations_K1.max_norm(), "\n");
+        if ( K1.get_vec().max_norm() > 1e-30) utils::print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
 
         //rvec deviations_K2(getFlatSize(K2.get_dims()));
         //rvec deviations_K2b(getFlatSize(K2b.get_dims()));
@@ -789,7 +791,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 }
             }
 
-            if (K2.get_vec().max_norm() > 1e-30) print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
+            if (K2.get_vec().max_norm() > 1e-30) utils::print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
 
 
             // K2b:
@@ -821,7 +823,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             }
 
             if (K2b.get_vec().max_norm() > 1e-30)
-                print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
+                utils::print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
         }
 
         //rvec deviations_K3(getFlatSize(K3.get_dims()));
@@ -882,8 +884,8 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 }
             }
 
-            if (K3.get_vec().max_norm() > 1e-30) print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
-        }
+        if (K3.get_vec().max_norm() > 1e-30) utils::print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
+    }
 
         std::string filename = data_dir + "deviations_from_symmetry" + identifier + "_channel" + channel + ".h5";
         H5::H5File file(filename.c_str(), H5F_ACC_TRUNC);
@@ -1245,12 +1247,12 @@ void rvert<Q>::cross_project() {
                 }
                 break;
             default:
-                print("Error! Invalid channel index!"); assert(false);
+                utils::print("Error! Invalid channel index!"); assert(false);
         }
         calculated_crossprojections = true;
     }
     else{
-        print("Error! Crossprojections have already been calculated!");
+        utils::print("Error! Crossprojections have already been calculated!");
         assert(false);
     }
 }
@@ -1517,7 +1519,7 @@ void rvert<Q>::K1_crossproject(const char channel_out) {
                             K1_t_proj.setvert(projected_value, it_spin, iw, iK, i_in);
                             break;
                         default:
-                            print("Incompatible channel for K1 cross-projection!");
+                            utils::print("Incompatible channel for K1 cross-projection!");
                     }
                 }
             }
@@ -1659,10 +1661,20 @@ void rvert<Q>::K3_crossproject(char channel_out) {
     // TODO: Currently does nothing!
 }
 
+template<typename Q>
+double rvert<Q>::max_norm() const {
+    double norm = 0.;
+    norm += K1.get_vec().max_norm();
+    if constexpr(MAX_DIAG_CLASS >= 2) {
+        norm += K2.get_vec().max_norm();
+#if DEBUG_SYMMETRIES
+            norm += K2b.get_vec().max_norm();
+#endif
+    }
+    if constexpr(MAX_DIAG_CLASS >= 3) norm += K3.get_vec().max_norm();
 
-
-
-
+    return norm;
+}
 
 
 #endif //KELDYSH_MFRG_R_VERTEX_HPP

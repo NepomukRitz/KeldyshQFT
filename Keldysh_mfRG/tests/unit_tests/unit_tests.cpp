@@ -5,7 +5,7 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-//#define INTEGRATION_TESTS
+#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
@@ -15,6 +15,9 @@
 #include "../../utilities/hdf5_routines.hpp"
 #include "../test_PrecalculatedBubble.hpp"
 #include "../test_perturbation_theory.hpp"
+#include "../../perturbation_theory_and_parquet/perturbation_theory.hpp"
+#include "../../perturbation_theory_and_parquet/hartree_term.hpp"
+#include "mpi.h"
 
 
 #ifdef INTEGRATION_TESTS
@@ -31,13 +34,13 @@
 #endif
 
 int main(int argc, char* argv[]) {
-#ifdef INTEGRATION_TESTS
-#if defined(USE_MPI)
-    if constexpr(MPI_FLAG) MPI_Init(nullptr, nullptr);
+#ifdef USE_MPI
+    MPI_Init(nullptr, nullptr);
 #endif
+#ifdef INTEGRATION_TESTS
 
     // run integration tests
-    print("Start integration tests.", true);
+    utils::print("Start integration tests.", true);
 
     /* check that the flow of the K1a-vertex (no selfenergy feedback) from Lambda_i = 20 to Lambda_f = 9.5
      * (initialized via SOPT) is very close to the SOPT solution at Lambda_f = 9.5.
@@ -66,18 +69,14 @@ int main(int argc, char* argv[]) {
         test_PT4(0.);
         test_K2_correctness<state_datatype>(0.);
     }
-#if defined(USE_MPI)
-        MPI_Finalize();
-#endif
+
 #endif
 
     // run unit tests
-#if defined(INTEGRATION_TESTS) and defined(USE_MPI)
-    if (MPI_FLAG) MPI_Init(nullptr, nullptr);
-#endif
-    print("   -----   Performing unit tests   -----", true);
 
-    check_input();
+    //utils::print("   -----   Performing unit tests   -----", true);
+
+    //utils::check_input();
 
     //test_PrecalculateBubble<comp> test_Bubble ;
     //test_Bubble.perform_test();
@@ -87,7 +86,7 @@ int main(int argc, char* argv[]) {
 
     //if (ZERO_T and REG==2) {
         //data_dir = "../Data_MFU=1.000000/";
-        //makedir(data_dir);
+        //utils::makedir(data_dir);
         //std::string filename = "test_PTstate.h5";
         //test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
     //}
@@ -111,9 +110,38 @@ int main(int argc, char* argv[]) {
     write_state_to_hdf<comp>(directory+filename, lambda, 1, state_ini);
     */
 
+    /*
+    // Test Hartree functionality
+    const rvec lambdas = {999., 199., 99., 19., 9.};
+    utils::print("Filling calculations for eVg/U = " + std::to_string(glb_Vg/glb_U) +
+    " and an integrator accuaracy of " + std::to_string(integrator_tol), true);
+    utils::print(" ", true);
+    for (const double Lambda : lambdas) {
+        const double Delta = (glb_Gamma + Lambda) / 2.; // Hybridization
+        Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
+        const double hartree_value_num     = Hartree_Term.compute_Hartree_term_bracketing(1e-15, false, false);
+        const double hartree_value_friedel = Hartree_Term.compute_Hartree_term_Friedel(1e-15);
+
+        utils::print("For U/Delta = " + std::to_string(glb_U/Delta) + " we obtain a filling of:", true);
+        utils::print(std::to_string(hartree_value_num / glb_U) + " (numerically)", true);
+        utils::print(std::to_string(hartree_value_friedel / glb_U) + " (from the Friedel rule)", true);
+        utils::print(" ", true);
+    }
+     */
+    //data_dir = "../../../Hartree_Propagators/";
+    //utils::makedir(data_dir);
+    //Hartree_Term.write_out_propagators();
+
+
+    //const double Lambda = 9.;
+    //PT_Machine<state_datatype> PT_Calculator (2, Lambda, false);
+    //PT_Calculator.debug_TOPT();
+
+
+
     return Catch::Session().run(argc, argv);
-#if defined(INTEGRATION_TESTS) and defined(USE_MPI)
-    if (MPI_FLAG) MPI_Finalize();
+#if defined(USE_MPI)
+    MPI_Finalize();
 #endif
     return 0;
 }
