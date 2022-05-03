@@ -9,7 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
+#define NDEBUG
 
 //#define MULTIDIM_MINIMIZATION
 
@@ -42,7 +42,7 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 2
 
 constexpr int N_LOOPS = 3;  // Number of loops
 #define KATANIN
@@ -54,7 +54,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.01;                    // Temperature
+constexpr double glb_T = 0.1;                    // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -64,9 +64,9 @@ constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.
 #else
     constexpr double glb_Vg = 0.5;                  // Impurity level shift
 #endif
-constexpr double glb_U = 5.0;                      // Impurity on-site interaction strength
+constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 1.;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -144,21 +144,21 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 //#define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 50;
+constexpr int nODE = 100;
 constexpr double epsODE_rel = 1e-6;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
-// 1 -> basic Runge-Kutta 4;
+// 1 -> basic Runge-Kutta 4; // WARNING: non-adaptive!
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 20.;// 1e4;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 1e-12;// 1e-4;
+constexpr double Lambda_ini = 20. ;// 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 0.2 ;// 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
-constexpr double dLambda_initial = 0.1;             //Initial step size for ODE solvers with adaptive step size control
+constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
