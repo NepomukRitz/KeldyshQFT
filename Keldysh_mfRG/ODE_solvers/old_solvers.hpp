@@ -12,8 +12,21 @@
 
 namespace old_ode_solvers {
     /** Perform one Runge-Kutta-4 step */
-    template <typename T>
-    void RK4_step(T& y_run, double& x_run, const double dx, T rhs (const T& y, const double x, const vec<size_t> opt), bool save_intermediate_results, rvec& x_vals, const std::string& filename, const int iteration) {
+    template <typename T, typename System>
+    void RK4_step(T& y_run, double& x_run, const double dx, const System& rhs, bool save_intermediate_results, rvec& x_vals, const std::string& filename, const int iteration) {
+
+        T y1; rhs(y_run         , y1, x_run        ); y1 *= dx;
+        T y2; rhs(y_run + y1*0.5, y2, x_run + dx/2.); y2 *= dx;
+        T y3; rhs(y_run + y2*0.5, y3, x_run + dx/2.); y3 *= dx;
+        T y4; rhs(y_run + y3    , y4, x_run + dx   ); y4 *= dx;
+        y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
+
+        if constexpr(std::is_same_v<T, State<state_datatype>>) {
+            rhs.iteration ++;
+            rhs.rk_step = 0;
+        }
+
+        /*
         if (save_intermediate_results) {
             T y1 = rhs(y_run, x_run, {iteration, 0}) * dx;
             T y2 = rhs(y_run + y1*0.5, x_run + dx/2., {iteration, 1}) * dx;
@@ -28,14 +41,14 @@ namespace old_ode_solvers {
             T y4 = rhs(y_run + y3, x_run + dx, {}) * dx;
             y_run += (y1 + y2*2. + y3*2. + y4) * (1./6.); // update y
         }
-
+*/
 
         x_run += dx; // update x
     }
 
     /** Perform Runge-Kutta-4 step and write result into output file in a specified Lambda layer, and print info to log */
-    template <typename T>
-    void RK4_step(T& y_run, double& x_run, const double dx,  T rhs (const T& y, const double x, const vec<size_t> opt),
+    template <typename T, typename System>
+    void RK4_step(T& y_run, double& x_run, const double dx,  const System& rhs,
                   rvec& x_vals, std::string filename, const int iteration, bool save_intermediate_states) {
         // print iteration number and Lambda to log file
         utils::print("i: ", iteration, true);
@@ -48,7 +61,7 @@ namespace old_ode_solvers {
         utils::get_time(t0); // measure time for one iteration
 
         check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
-        if (KELDYSH) check_FDTs(y_run); // check FDTs for Sigma and K1r at each step of the flow
+        if (KELDYSH) check_FDTs(y_run, true); // check FDTs for Sigma and K1r at each step of the flow
         if (filename != "") {
             add_state_to_hdf(filename, iteration + 1,  y_run); // save result to hdf5 file
         }

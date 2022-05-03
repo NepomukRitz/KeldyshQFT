@@ -141,13 +141,13 @@ template <typename Q> void SelfEnergy<Q>::initialize(Q valR, Q valK) {
     // in particle-hole symmetric_full case (Matsubara formalism) the self-energy vector only stores the imaginary part -> initialize to zero
     // in all other cases: initialize to the Hartree value
     if (KELDYSH || !PARTICLE_HOLE_SYMMETRY){
-#pragma omp parallel for
-        for (int iv=0; iv<nSE; ++iv) {
-            for (int i_in=0; i_in<n_in_K1; ++i_in) {
-                this->setself(0, iv, i_in, valR);
-                if (KELDYSH) this->setself(1, iv, i_in, valK);
-            }
-        }
+//#pragma omp parallel for
+//        for (int iv=0; iv<nSE; ++iv) {
+//            for (int i_in=0; i_in<n_in_K1; ++i_in) {
+//                this->setself(0, iv, i_in, valR);
+//                if (KELDYSH) this->setself(1, iv, i_in, valK);
+//            }
+//        }
         this-> asymp_val_R = valR;
     }
 }
@@ -202,13 +202,13 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
     else {
     Q result;
 #ifdef DENSEGRID
-    result = interpolate_nearest1D<Q>(v, frequencies, [&](int i) -> Q {return val(iK, i, i_in);});
+    result = interpolate_nearest1D<Q>(v, Sigma.frequencies.primary_grid, [&](int i) -> Q {return val(iK, i, i_in);});
 #else
     frequencies_type freqs = {v};
         index_type idx;
         idx[my_defs::SE::keldysh]= iK;
         idx[my_defs::SE::internal]= i_in;
-    result = Sigma.interpolate_impl(freqs, idx);
+    result = Sigma.interpolate_impl(freqs, idx) + (1.-(double)iK)*(this->asymp_val_R);
 #endif
     return result;
     }
@@ -285,12 +285,12 @@ public:
     };
 
     auto operator() (double wscale_test) -> double {
-        selfEnergy.Sigma.frequencies.b.update_Wscale(wscale_test);
+        selfEnergy.Sigma.frequencies.primary_grid.update_Wscale(wscale_test);
         selfEnergy.update_grid(selfEnergy.Sigma.frequencies, selfEnergy_backup);
         double result = selfEnergy.get_curvature_maxSE(verbose);
         /*
         std::string filename = "SE_costCurvature_" + std::to_string(wscale_test) + ".h5";
-        rvec v = selfEnergy.frequencies.get_ws_vec();
+        rvec v = selfEnergy.frequencies.get_all_frequencies();
 
         rvec SE_re = selfEnergy.Sigma.real();
         rvec SE_im = selfEnergy.Sigma.imag();
@@ -308,37 +308,20 @@ public:
 };
 
 template <typename Q> void SelfEnergy<Q>::findBestFreqGrid(const bool verbose) {
-    double rel_tail_threshold = 1e-3;
 
-    freqGrid_type frequencies_new = shrink_freq_box(rel_tail_threshold);
-    update_grid(frequencies_new);
-
-    SelfEnergy<Q> SEtemp = *this;
-    //SEtemp.update_grid(Lambda);
-
-    //double wmax_current = SEtemp.frequencies.w_upper;
-    double a_Wscale = SEtemp.Sigma.frequencies.b.W_scale / 10.;
-    double m_Wscale = SEtemp.Sigma.frequencies.b.W_scale;
-    double b_Wscale = SEtemp.Sigma.frequencies.b.W_scale * 10;
-    CostSE_Wscale<Q> cost(SEtemp, verbose);
-    minimizer(cost, a_Wscale, m_Wscale, b_Wscale, 100, verbose, false, 1., 0.);
-    frequencies_new.b.update_Wscale(m_Wscale);
-
-    update_grid(frequencies_new);
-
-
+    Sigma.optimize_grid(verbose);
 }
 
 template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_threshold) const -> freqGrid_type {
-    freqGrid_type frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold);
+    freqGrid_type frequencies_new = Sigma.shrink_freq_box(rel_tail_threshold, false, 0.);
     return frequencies_new;
 }
 
 
 template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) const {
     buffer_type Sigma_temp = Sigma;
-    if(KELDYSH) for (int i = 0; i < Sigma.get_vec().size()/2; i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
-    else for (int i = 0; i < Sigma.get_vec().size(); i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
+    //if(KELDYSH) for (int i = 0; i < Sigma.get_vec().size()/2; i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
+    //else for (int i = 0; i < Sigma.get_vec().size(); i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
 
     double maxabs_SE_total = Sigma_temp.get_vec().max_norm();
     vec<double> maxabsSE_along_w = maxabs(Sigma_temp.get_vec(), Sigma_temp.get_dims(), 1);

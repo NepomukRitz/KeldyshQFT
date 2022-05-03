@@ -7,7 +7,7 @@ double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) 
     while (std::abs(diff) > convergence_threshold) {
         n_iter++;
         //double filling_new = integrator<double>(*this, v_lower, v_upper, 0., 0., glb_T);
-        double filling_new = integrator_Matsubara_T0<double, 1>(*this, v_lower, v_upper, 10, {0}, 0, true);
+        double filling_new = integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
         diff = filling_new - filling;
         filling = filling_new;
         SelfEnergy<comp> Sigma_new (Lambda);
@@ -34,7 +34,7 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
         SelfEnergy<comp> Sigma_new (Lambda);
         Sigma_new.initialize(glb_U * filling, 0);
         Sigma = Sigma_new;
-        LHS = integrator_Matsubara_T0<double, 1>(*this, v_lower, v_upper, 10, {0}, 0, true) - filling;
+        LHS = integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true) - filling;
         if (LHS > 0.) {
             filling_min = filling;
         }
@@ -101,7 +101,7 @@ void Hartree_Solver::write_out_propagators() const {
     rvec GR_imag = {};
     rvec GK_real = {};
     rvec GK_imag = {};
-    rvec freqs = G.selfenergy.Sigma.frequencies.b.get_ws_vec();
+    rvec freqs = G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies();
     for (double nu : freqs) {
         GR_real.push_back(G.GR(nu, 0).real());
         GR_imag.push_back(G.GR(nu, 0).imag());

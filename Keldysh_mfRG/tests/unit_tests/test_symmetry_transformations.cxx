@@ -2,8 +2,9 @@
 #include "../../symmetries/symmetry_transformations.hpp"
 #include "../../utilities/util.hpp"
 
+#if CONTOUR_BASIS == 0
 SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_transformations]") {
-
+    //static_assert(CONTOUR_BASIS == 0, "Unit test for symmetry transformations is only implemented for Keldysh basis.");
     GIVEN( "a set of frequency indices etc." ) {
         auto w =  GENERATE( -100., 0., 1e-16, 1., 100. );
         auto v1 = GENERATE( -100., 0., 1e-16, 1., 100. );
@@ -621,3 +622,4 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
         }
     }
 };
+#endif

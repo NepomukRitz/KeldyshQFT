@@ -196,7 +196,7 @@ class ClenshawCurtis {
     std::array<double, Dim> node;
     double wtot, w2tot;
 
-    val1 = 0;
+    val1 = myzero<T>();
     for (std::size_t k = 0; k < pow(N_ + 1, Dim); ++k) {
         wtot = 1;
         k_vector = get_each_index<Dim>(N_+1,k);
@@ -210,7 +210,7 @@ class ClenshawCurtis {
         val1 += wtot * cache_[k]; //val1 += w[k] * cache_[k];
     }
 
-    val2 = 0;
+    val2 = myzero<T>();
     for (std::size_t k = 0; k < pow(2 * N_ + 1,Dim); ++k) {
         w2tot = 1;
         k_vector = get_each_index<Dim>(2*N_+1,k);
@@ -238,8 +238,8 @@ class ClenshawCurtis {
         }
     }
 
-    assert(!std::isnan(std::abs(val2)));
-    assert(!std::isnan(std::abs(val1)));
+    assert(!std::isnan(myabs(val2)));
+    assert(!std::isnan(myabs(val1)));
 
     double substitution_factor = 1;
     for (std::size_t n = 0; n < Dim; ++n){
@@ -249,7 +249,7 @@ class ClenshawCurtis {
     // due to affine transformation there is a factor (right-left)/2 for the integral value which corresponds to af[0](1)-af[0](0)
     //T value_integral = val2*substitution_factor;
     //double error_integral = std::abs(val2-val1);
-    return {nEvals, val2*substitution_factor, std::abs(val2-val1)};
+    return {nEvals, val2*substitution_factor, myabs(val2-val1)};
   };
 
   /*

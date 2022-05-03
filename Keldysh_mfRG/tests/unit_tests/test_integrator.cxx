@@ -61,8 +61,8 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
     // */
 
     WHEN( "adaptive Gauss-Lobatto integrator with Kronrod extension" ) {
-        Adapt<comp, TestIntegrand> adaptor(integrator_tol, integrand);
-        double res = adaptor.integrate(-50., 50.).real();
+        Adapt<TestIntegrand> adaptor(integrator_tol, integrand);
+        double res = adaptor.integrate(-50., 50.);
         CHECK( res == Approx(exact[i]).epsilon(0.0001) );
     }
     WHEN( "PAID integrator with Clenshaw-Curtis" ) {

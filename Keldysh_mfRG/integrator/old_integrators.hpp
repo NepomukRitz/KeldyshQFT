@@ -9,8 +9,8 @@
 #include "../grids/frequency_grid.hpp"           // for defining global frequency grids bfreqs and ffreqs
 
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
-extern FrequencyGrid frequencyGrid_bos;
-extern FrequencyGrid frequencyGrid_fer;
+extern FrequencyGrid<eliasGrid> frequencyGrid_bos;
+extern FrequencyGrid<eliasGrid> frequencyGrid_fer;
 extern rvec bfreqs;
 extern rvec ffreqs;
 

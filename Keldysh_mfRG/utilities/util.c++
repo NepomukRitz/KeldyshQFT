@@ -106,7 +106,11 @@ namespace utils {
         assert (nBOS2 == nFER2);
     #endif
 
-    #if not defined(KELDYSH_FORMALISM)
+    #if GRID==2
+        static_assert(INTERPOLATION!=linear, "Linear interpolation not possible for polar coordinates.");
+    #endif
+
+    #if not KELDYSH_FORMALISM
         static_assert(nFER % 2 == 0, "nFER must be an even number.");
     #endif
 
@@ -114,7 +118,7 @@ namespace utils {
             assert(nBOS3 == nFER3); // Frequency grids must be equal in all three dimensions
         }
 
-    #if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+    #if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
         static_assert(nBOS %2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
         static_assert(nBOS2%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
         static_assert(nBOS3%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
@@ -125,14 +129,14 @@ namespace utils {
     }
 
     std::string generate_data_directory(std::string& job) {
-    #ifdef KELDYSH_FORMALISM
-    #ifdef DEBUG_SYMMETRIES
+    #if KELDYSH_FORMALISM
+    #if DEBUG_SYMMETRIES
         std::string data_directory = "../Data_KF_debug/";
     #else
         std::string data_directory = "../Data_KF_" + job + "/";
     #endif
     #else
-        #ifdef DEBUG_SYMMETRIES
+        #if DEBUG_SYMMETRIES
         std::string data_directory = "../Data_MF_debug/";
 
     #else
@@ -214,6 +218,7 @@ namespace utils {
     #ifdef __linux__
         print("on linux.\n");
     #elif __APPLE__
+        print("on apple.\n");
         print("on apple.\n");
     #endif
     }

@@ -6,6 +6,8 @@
 #include "saveIntegrand.hpp"
 
 auto main(int argc, char * argv[]) -> int {
+    std::string job = "U=" + std::to_string(glb_U);
+    data_dir = "../Data_KF" + job + "/";
     std::string dir_str;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, spin, i_in, i_loop;
@@ -46,11 +48,11 @@ auto main(int argc, char * argv[]) -> int {
     << ", w: " << w << ", v: " << v << ", vp: " << vp << ", i_in: " << i_in << ", i_loop: " << i_loop << std::endl;
 
     dir_str = dir_str + "intermediateResults/";
-    std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    std::string file_Psi = dir_str + "Psi_RKstep"+std::to_string(rkStep);
     std::string file_dPsi;
     if (i_loop < 2) assert(false);
     else if (i_loop == 2) {
-        file_dPsi = dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+        file_dPsi = dir_str + "dPsi_RKstep"+std::to_string(rkStep);
     }
     else {
         file_dPsi = dir_str +"dPsi_T"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i_loop);

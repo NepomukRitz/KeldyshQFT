@@ -6,6 +6,8 @@
 #include "saveIntegrand.hpp"
 
 auto main(int argc, char * argv[]) -> int {
+    std::string job = "U=" + std::to_string(glb_U);
+    data_dir = "../Data_KF" + job + "/";
     std::string dir_str;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, i_in;
@@ -30,10 +32,11 @@ auto main(int argc, char * argv[]) -> int {
     channel = *(argv[5]);
     i0 = atoi(argv[6]);
     i2 = atoi(argv[7]);
-    w = atof(argv[8]);
-    v = atof(argv[9]);
-    vp = atof(argv[10]);
-    i_in = atoi(argv[11]);
+    int spin = atoi(argv[8]);
+    w = atof(argv[9]);
+    v = atof(argv[10]);
+    vp = atof(argv[11]);
+    i_in = atoi(argv[12]);
     K_class k_class = static_cast<K_class>(k_class_int);
 
     /// print input arguments:
@@ -43,8 +46,8 @@ auto main(int argc, char * argv[]) -> int {
     << ", w: " << w << ", v: " << v << ", vp: " << vp << ", i_in: " << i_in << std::endl;
 
     dir_str = dir_str + "intermediateResults/";
-    const std::string file_Psi = dir_str + "Psi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
-    const std::string file_dPsi= dir_str + "dPsi_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
+    const std::string file_Psi = dir_str + "Psi_RKstep"+std::to_string(rkStep);
+    const std::string file_dPsi= dir_str + "dPsi_RKstep"+std::to_string(rkStep);
 
 
     std::string dir_integrand_str = "integrands/";
@@ -52,7 +55,7 @@ auto main(int argc, char * argv[]) -> int {
     const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_iLambda"+std::to_string(it_Lambda)+"_RKstep"+std::to_string(rkStep);
 
 
-    saveIntegrand::dGamma_1Loop<state_datatype>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, w, v, vp, i_in);
+    saveIntegrand::dGamma_1Loop<state_datatype>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w, v, vp, i_in);
     std::cout << "Integrand for dGamma1_loop successfully created." << std::endl;
 
     return 0;

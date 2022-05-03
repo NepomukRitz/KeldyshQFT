@@ -56,6 +56,9 @@ add_executable(FPP_mfRG FPP/FPP_main.cpp ${keldysh_H} ${keldysh_SRC})
 
 ## executable for integrand tests
 add_executable(get_integrand_dGammaL tests/integrand_tests/get_integrand_dGammaL.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(get_integrand_dGamma_1loop tests/integrand_tests/get_integrand_dGamma_1loop.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(get_integrand_Gamma1_Pi_Gamma2 tests/integrand_tests/get_integrand_Gamma1_Pi_Gamma2.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(get_integrand_Sigma_SDE tests/integrand_tests/get_integrand_Sigma_SDE.cpp ${keldysh_H} ${keldysh_SRC})
 
 ## rest works so far only on workstation and ASC
 if(WORKSTATION OR ASC)
@@ -80,15 +83,20 @@ if(WORKSTATION OR ASC)
     target_link_libraries(get_integrand_dGammaL -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)
     target_link_libraries(get_integrand_dGammaL fftw3)
+    target_link_libraries(get_integrand_Gamma1_Pi_Gamma2 -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(get_integrand_Gamma1_Pi_Gamma2 -lgsl -lgslcblas)
+    target_link_libraries(get_integrand_Gamma1_Pi_Gamma2 fftw3)
+    target_link_libraries(get_integrand_dGamma_1loop -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(get_integrand_dGamma_1loop -lgsl -lgslcblas)
+    target_link_libraries(get_integrand_dGamma_1loop fftw3)
+    target_link_libraries(get_integrand_Sigma_SDE -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(get_integrand_Sigma_SDE -lgsl -lgslcblas)
+    target_link_libraries(get_integrand_Sigma_SDE fftw3)
 elseif(KCS)
     include_directories($ENV{HDF5_BASE}/include $ENV{GSL_BASE}/include $ENV{BOOST_INCDIR} $ENV{FFTW_BASE}/include)
     include_directories($ENV{EIGEN_BASE}/include/eigen3)
 
-    string(STRIP HDF5_CPP_SHLIB "$ENV{HDF5_CPP_SHLIB}")
-    string(STRIP HDF5_SHLIB "$ENV{HDF5_SHLIB}")
-
-    target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/22.2.1/opt/skylake_avx512/hdf5/1.8.22-gcc-dfod2rj/lib -lhdf5_hl_cpp -lhdf5_cpp) # $HDF5_CPP_SHLIB
-    target_link_libraries(Keldysh_mfRG -L/dss/dsshome1/lrz/sys/spack/release/22.2.1/opt/skylake_avx512/hdf5/1.8.22-gcc-dfod2rj/lib -lhdf5_hl -lhdf5) # HDF5_SHLIB
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} $ENV{HDF5_CPP_SHLIB} $ENV{HDF5_SHLIB}") # sets necessary compiler flags for HDF5 library
 
     target_link_libraries(Keldysh_mfRG $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)

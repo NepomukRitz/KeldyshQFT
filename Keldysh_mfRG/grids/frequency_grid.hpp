@@ -1,19 +1,28 @@
 /**
  * Set up the frequency grid //
  * Functions that initialize the grid and provide conversion between doubles and grid indices.
+ * The grid points are obtained as follows:
+ *      The values of t are evenly distributed between t_lower and t_upper.
+ *      The frequencies w(t) are obtained according to a function.
  * Three different grid types:
- * GRID=1: log grid -- to be implemented
- * GRID=2: linear grid
- * GRID=3: non-linear grid in different versions:
+ * GRID=0: non-linear grid according to a function in every direction:
+ *  W_scale determines 'how non-linear' the grid behaves.
  *     version 1: w(t) = W_scale t  /sqrt(1 - t^2)
  *     version 2: w(t) = W_scale t^2/sqrt(1 - t^2)
  *     version 3: w(t) = W_scale t  /    (1 - t^2)
  *     version 4: w(t) = W_scale t^2/    (1 - t^2)
- * The grid points are obtained as follows:
- *  The values of t are evenly distributed between t_lower and t_upper on a sub-interval of [-1,1].
- *  The frequencies w(t) are obtained according to the function.
- *  W_scale determines 'how non-linear' the grid behaves.
- * GRID=4: tangent grid w = c1 * tan( c2 * i + c3 )
+ * GRID=1: hybrid grid with
+ *     quadratic part -- linear part -- rational part
+ * GRID=2: polar coordinates
+ *     2D: (w/2, v) = rho * (cos phi, sin phi)
+ *     3D: /// TODO
+ */
+
+/**
+ * Things to do when introducing a new grid:
+ *      write new template specialization for FrequencyGrid
+ *      adapt hdf5_utilities
+ *      adapt grid optimization
  */
 
 #ifndef KELDYSH_MFRG_FREQUENCY_GRID_HPP
@@ -24,6 +33,7 @@
 #include "../utilities/util.hpp"
 #include "../parameters/master_parameters.hpp" // for frequency/Lambda limits and number of frequency/Lambda points
 #include "../utilities/math_utils.hpp"
+#include "../symmetries/Keldysh_symmetries.hpp"
 #include <cassert>
 #include "H5Cpp.h"
 
@@ -34,7 +44,7 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 template<typename Q> class State; // forward declaration
 
 #define PARAMETRIZED_GRID
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
 #define DENSEGRID
 #endif
 #ifdef DENSEGRID
@@ -43,340 +53,336 @@ const bool dense = true;
 const bool dense = false;
 #endif
 
-class FrequencyGrid {
-    template<K_class k, typename Q> friend class vertexDataContainer;
-    template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type> friend class DataContainer;
-    //friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
-    friend void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, FrequencyGrid& freqgrid, int Lambda_it);
+#define HYBRID_GRID_OPTION 1
 
-    char type;
-    unsigned int diag_class;
-    rvec ws;                     // frequency grid
-    rvec ts;                    // linear auxiliary grid (related to ws by ws(ts)=grid_transf_inv(ts))
+
+namespace hdf5_impl {
+    template<typename gridType> void init_freqgrid_from_hdf_LambdaLayer(H5::Group &group, gridType &freqgrid, const int Lambda_it, const double Lambda);
+    template<typename gridType> void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose);
+}
+
+enum frequencyGridType {eliasGrid, hybridGrid, angularGrid};
+
+template <frequencyGridType freqGridType>
+class FrequencyGrid {};
+
+template <>
+class FrequencyGrid<eliasGrid> {
+    template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type> friend class DataContainer;
+    template<typename gridType> friend void hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, int Lambda_it, double Lambda);
+    template<typename gridType> friend void hdf5_impl::write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose);
+
+
+
 public:
-    int N_w;
+    /// essential grid parameters:
+    int number_of_gridpoints;
     double w_upper;             // lower bound of frequency grid
     double w_lower;             // lower bound of frequency grid
-    double t_upper;             // upper bound of auxiliary grid
-    double t_lower;             // lower bound of auxiliary grid
-    double W_scale;             // non-linearity of grid_transf()
-    double dt;                  // spacing on linear auxiliary grid
+    double W_scale;             // non-linearity of t_from_frequency()
+
+    /// guess essential parameters from value of Lambda
+    void guess_essential_parameters(double Lambda);
+
+
+//private:
+    /// grid identifier
+    char type;
+    unsigned int diag_class;
+    bool purely_positive;
+
+    /// auxiliary grid parameters:
+    double t_upper;                     // upper bound of auxiliary grid
+    double t_lower;                     // lower bound of auxiliary grid
+    double spacing_auxiliary_gridpoint; // spacing on linear auxiliary grid
     double U_factor = 0./3.;   // determines scale_factor()
     double Delta_factor = 10.;  // determines scale_factor()
+    void derive_auxiliary_parameters();
 
-    /**
-     * This constructor initializes a frequency grid with the global values. This is not needed anymore!
-     * @param type_in
-     * @param diag_class_in
-     * @param Lambda
-     */
-    FrequencyGrid(char type_in, unsigned int diag_class_in, double Lambda) : type(type_in), diag_class(diag_class_in) {
-        switch (type) {
-            case 'b':
-                switch (diag_class) {
-                    case 1:
-                        N_w = nBOS;
-                        if (KELDYSH) {
-                            U_factor = 0. / 3.;
-                            Delta_factor = 5.;
-                        }
-                        else {
-                            U_factor = 40./3.;
-                            Delta_factor = 40.;
-                        }
-                        break;
-                    case 2:
-                        N_w = nBOS2;
-#ifdef ROTATEK2
-                        if (KELDYSH){
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
-                        }
-                        else{
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
-                        }
-#else
-                        if (KELDYSH){
-                            U_factor = 0./3.;
-                            Delta_factor = 15.;
-                        }
-                        else{
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
-                        }
-#endif
-                        break;
-                    case 3:
-                        N_w = nBOS3;
-                        break;
-                    default:;
-                }
-                break;
-            case 'f':
-                switch (diag_class) {
-                    case 1:
-                        N_w = nFER;
-                        if (KELDYSH) {
-                            U_factor = 0. / 3.;
-                            Delta_factor = 10.;
-                        }
-                        else {
-                            U_factor = 2./3.;
-                            Delta_factor = 2.;
-                        }
-                        if (HUBBARD_MODEL){ //TODO(medium): Just a hotfix for the Hubbard model. Avoids that one runs out of the frequency box when integrating for the bubble.
-                            U_factor *= 1.5;
-                            Delta_factor *= 1.5;
-                        }
-                        break;
-                    case 2:
-                        N_w = nFER2;
-#ifdef ROTATEK2
-                        /// Needs to be the same as for 'b'!!!
-                        if (KELDYSH) {
-                            U_factor = 10. / 3.;
-                            Delta_factor = 10.;
-                        }
-                        else {
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
-                        }
-#else
-                        if (KELDYSH) {
-                            U_factor = 0. / 3.;
-                            Delta_factor = 20.;
-                        }
-                        else {
-                            U_factor = 4./3.;
-                            Delta_factor = 4.;
-                        }
-#endif
-                        break;
-                    case 3:
-                        N_w = nFER3;
-                        break;
-                    default:;
-                }
-                break;
-            default:;
-        }
-        ws = rvec (N_w);
-        ts = rvec (N_w);
+    /// list of all frequencies:
+    rvec all_frequencies;                     // frequency grid
+    rvec auxiliary_grid;                    // linear auxiliary grid (related to all_frequencies by all_frequencies(auxiliary_grid)=frequency_from_t(auxiliary_grid))
 
-        rescale_grid(Lambda);
+
+
+public:
+
+    ///This constructor initializes a frequency grid with the global values. This is not needed anymore!
+    FrequencyGrid(char type_in, unsigned int diag_class_in, double Lambda, bool purely_positive=false) : type(type_in), diag_class(diag_class_in), purely_positive(purely_positive) {
+        guess_essential_parameters(Lambda);
     };
 
+    /// getter functions
+    auto get_frequency(int index) const -> double {assert(index>=0); assert(index<number_of_gridpoints); assert(isfinite(all_frequencies[index])); return all_frequencies[index];};
+    auto get_auxiliary_gridpoint(int index) const -> double {assert(index>=0); assert(index<number_of_gridpoints); assert(isfinite(auxiliary_grid[index])); return auxiliary_grid[index];};
+    auto get_all_frequencies() const -> vec<double> {return all_frequencies;}
+    auto get_all_auxiliary_gridpoints() const -> vec<double> {return auxiliary_grid;}
+    double get_spacing_auxiliary_gridpoints() const {return spacing_auxiliary_gridpoint;}
+    char get_type() const {return type;};
+    char get_diag_class() const {return diag_class;};
 
+    /// setter functions
+    // set w_upper and W_scale with some checks for Matsubara T>0:
+    void set_essential_parameters(double wmax_in, double Wscale_in) {
 
-    auto operator= (const FrequencyGrid& freqGrid) -> FrequencyGrid& {
-        assert(this->type == freqGrid.type);
-        assert(this->diag_class == freqGrid.diag_class);
-        this->N_w = freqGrid.N_w;
-        this->w_upper = freqGrid.w_upper;
-        this->w_lower = freqGrid.w_lower;
-        this->t_upper = freqGrid.t_upper;
-        this->t_lower = freqGrid.t_lower;
-        this->W_scale = freqGrid.W_scale;
-        this->dt = freqGrid.dt;
-        this->U_factor = freqGrid.U_factor;
-        this->Delta_factor = freqGrid.Delta_factor;
-        this->ws = freqGrid.ws;
-        this->ts = freqGrid.ts;
-        return *this;
-    }
+        if (!KELDYSH && !ZERO_T){
+#ifndef DENSEGRID
 
-    int get_diag_class() const {return diag_class;}
-    char get_type() const {return type;}
-    auto get_ws(int index) const -> double {assert(index>=0); assert(index<N_w); assert(isfinite(ws[index])); return ws[index];};
-    auto get_ts(int index) const -> double {assert(index>=0); assert(index<N_w); assert(isfinite(ts[index])); return ts[index];};
-    auto get_ws_vec() const -> vec<double> {return ws;}
-    auto get_ts_vec() const -> vec<double> {return ts;}
-    auto scale_factor(double Lambda) -> double;
-    void initialize_grid();
-    void set_W_scale(double scale);
-    void set_w_upper(double wmax);
-    void rescale_grid(double Lambda);
-    void update_Wscale(double Wscale);
-    auto fconv(double w_in, bool safety=dense) const -> int;
-    auto grid_transf(double w) const -> double;
-    auto grid_transf_inv(double t) const -> double;
-    auto wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double;
+            // for Matsubara T>0: pick grid such that no frequencies occur twice
+            if (type == 'b') {
+                wmax_in = std::max(round2bfreq(wmax_in), glb_T * M_PI*(number_of_gridpoints+1));
+            }
+            else {
+                wmax_in = std::max(round2ffreq(wmax_in), glb_T * M_PI*(number_of_gridpoints+1));
+            }
+#else
+            // for Matsubara T>0: pick grid such that no frequencies occur twice
 
-    int fconv(double &t, double w_in) const;
-};
+        wmax_in = glb_T * M_PI*(number_of_gridpoints-1);
 
+#endif
+        }
+        w_upper = wmax_in;
+        if (purely_positive) {
+            w_lower = 0;
+        }
+        else {
+            w_lower = -wmax_in;
+        }
 
-enum freqGrid_identifier {grid4selfenergy, grid4K1, grid4K2, grid4K3};
+        if constexpr(!KELDYSH && !ZERO_T)
+        {
+#ifndef DENSEGRID
+            // for Matsubara T>0: pick grid such that no frequencies occur twice
+            if (type == 'b') {
+                W_scale = wscale_from_wmax(W_scale, 2 * M_PI * glb_T, w_upper, (number_of_gridpoints - 1) / 2);
+            } else {
+                W_scale = wscale_from_wmax(W_scale, M_PI * glb_T, w_upper, number_of_gridpoints - 1);
+            }
+#else
+            // for Matsubara T>0: pick grid such that no frequencies occur twice
 
-/**
- * Initializes frequency grids for a vertex
- */
-template<K_class>
-class VertexFrequencyGrid {};
-template<>
-class VertexFrequencyGrid<k1> {
-public:
-    FrequencyGrid b;
+        W_scale = M_PI*glb_T;
 
-    VertexFrequencyGrid<k1>() :  b('b', 1, 0) {};
-    VertexFrequencyGrid<k1>(double Lambda) : b('b', 1, Lambda) {};
-
-    void rescale_grid(double Lambda) {
-        b.rescale_grid(Lambda);
-    }
-
-    void initialize_grid(double scale) {
-
-        b.set_W_scale(scale);
-        b.set_w_upper(scale*15.);
-        b.initialize_grid();
-    }
-
-    void get_freqs_w(double &w, const int iw) const {
-        w = b.get_ws(iw);
-    }
-
-    void get_freqs_aux(double &w, const int iw) const {
-        w = b.get_ts(iw);
-    }
-
-    auto get_freqGrid_b() const -> FrequencyGrid {return b;};
-//
-    const double& get_wlower_b() const {return b.w_lower;};
-    const double& get_wupper_b() const {return b.w_upper;};
-    const double& get_tlower_aux() const {return b.t_lower;};
-    const double& get_tupper_aux() const {return b.t_upper;};
-
-    // currently only used in test_interpolations:
-    //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
-    //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
-//
-    //void get_freqs_w_b(double& w, int i) const {w = b.ws[i];};
-    //void get_freqs_aux_b(double& w, int iw) const {w = b.ts[iw];};
-};
-template<>
-class VertexFrequencyGrid<k2> {
-public:
-    FrequencyGrid b;
-    FrequencyGrid f;
-
-
-    VertexFrequencyGrid<k2>() :  b('b', 2, 0), f('f', 2, 0) {};
-    VertexFrequencyGrid<k2>(double Lambda) : b('b', 2, Lambda),
-                                             f('f', 2, Lambda) {};
-
-    void rescale_grid(double Lambda) {
-        b.rescale_grid(Lambda);
-        f.rescale_grid(Lambda);
-    }
-
-    void initialize_grid(double scale) {
-
-        b.set_W_scale(scale);
-        b.set_w_upper(scale*15.);
-        b.initialize_grid();
-        f.set_W_scale(scale);
-        f.set_w_upper(scale*15.);
-        f.initialize_grid();
-    }
-
-    auto get_freqGrid_b() const -> const FrequencyGrid& {return b;};
-    auto get_freqGrid_f() const -> const FrequencyGrid& {return f;};
-//
-    const double& get_wlower_b() const {return b.w_lower;};
-    const double& get_wupper_b() const {return b.w_upper;};
-    const double& get_wlower_f() const {return f.w_lower;};
-    const double& get_wupper_f() const {return f.w_upper;};
-    const double& get_tlower_b_aux() const {return b.t_lower;};
-    const double& get_tupper_b_aux() const {return b.t_upper;};
-    const double& get_tlower_f_aux() const {return f.t_lower;};
-    const double& get_tupper_f_aux() const {return f.t_upper;};
-    auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
-    auto gridtransf_f(double w) const -> double {return f.grid_transf(w);};
-    auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
-    auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
-//
-    void get_freqs_w(double &w, double &v, const int iw, const int iv) const {
-        w = b.get_ws(iw);
-        v = f.get_ws(iv);
-        K2_convert2naturalFreqs(w, v);
-
-    }
-
-    void get_freqs_aux(double &w, double &v, const int iw, const int iv) const {
-        w = b.get_ts(iw);
-        v = f.get_ts(iv);
-    }
-};
-template<>
-class VertexFrequencyGrid<k3> {
-public:
-    FrequencyGrid b;
-    FrequencyGrid f;
-
-
-    VertexFrequencyGrid<k3>() : b('b', 3, 0), f('f', 3, 0) {};
-    VertexFrequencyGrid<k3>(double Lambda) : b('b', 3, Lambda),
-                                             f('f', 3, Lambda) {};
-
-    void rescale_grid(double Lambda) {
-        b.rescale_grid(Lambda);
-        f.rescale_grid(Lambda);
-    }
-
-    void initialize_grid(double scale) {
-
-        b.set_W_scale(scale);
-        b.set_w_upper(scale*15.);
-        b.initialize_grid();
-        f.set_W_scale(scale);
-        f.set_w_upper(scale*15.);
-        f.initialize_grid();
-    }
-
-    auto get_freqGrid_b() const -> FrequencyGrid {return b;};
-    auto get_freqGrid_f() const -> FrequencyGrid {return f;};
-
-    const double& get_wlower_b() const {return b.w_lower;};
-    const double& get_wupper_b() const {return b.w_upper;};
-    const double& get_wlower_f() const {return f.w_lower;};
-    const double& get_wupper_f() const {return f.w_upper;};
-    const double& get_tlower_b_aux() const {return b.t_lower;};
-    const double& get_tupper_b_aux() const {return b.t_upper;};
-    const double& get_tlower_f_aux() const {return f.t_lower;};
-    const double& get_tupper_f_aux() const {return f.t_upper;};
-    //auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
-    //auto gridtransf_f(double w) const -> double {return f.grid_transf(w);};
-    //auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
-    //auto gridtransf_inv_f(double t) const -> double {return f.grid_transf_inv(t);};
-//
-    void get_freqs_w(double &w, double &v, double& vp, const int iw, const int iv, const int ivp, const char channel) const {
-        w = b.get_ws(iw);
-        v = f.get_ws(iv);
-        vp= f.get_ws(ivp);
-
-        if (BOSONIC_PARAM_FOR_K3) {
-            if (channel == 'a') { switch2naturalFreqs<'a'>(w, v, vp); }
-            else if (channel == 'p') { switch2naturalFreqs<'p'>(w, v, vp); }
-            else if (channel == 't') { switch2naturalFreqs<'t'>(w, v, vp); }
+#endif
+        }
+        else {
+            W_scale = Wscale_in;
         }
     }
+    void set_w_upper(double wmax) {double scale = W_scale; set_essential_parameters(wmax, scale);};
+    auto wscale_from_wmax(double & Wscale, double w1, double wmax, int N) -> double; // Not necessary if dense grid is chosen for Matsubara T>0
 
-    void get_freqs_aux(double &w, double &v, double& vp, const int iw, const int iv, const int ivp) const {
-        w = b.get_ts(iw);
-        v = f.get_ts(iv);
-        vp= f.get_ts(ivp);
+    void initialize_grid();
+    void update_Wscale(double Wscale);
+
+    /// core grid functionality (has to be super efficient)
+    auto get_grid_index(double w_in) const -> int;
+    int get_grid_index(double &t, double w_in) const;
+
+    /// grid functions:
+    auto t_from_frequency(double w) const -> double;    // t(w)
+    auto frequency_from_t(double t) const -> double;    // w(t)
+};
+
+template<>
+class FrequencyGrid<hybridGrid> {
+    template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type>
+    friend class DataContainer;
+
+public:
+    /// essential grid parameters:
+    int number_of_gridpoints;                       // total number of gridpoints
+    double w_upper;                                 // largest positive frequency
+    double w_lower;                                 // largest positive frequency
+    std::array<double,2> pos_section_boundaries;    // defines the sections [0, pos_section_boundaries[0]], [pos_section_boundaries[0], pos_section_boundaries[1]]... , [pos_section_boundaries[-1], w_upper]
+
+    /// guess essential parameters from value of Lambda
+    void guess_essential_parameters(double Lambda);
+
+//private:
+
+    /// grid identifier:
+    char type;
+    int diag_class;
+    bool purely_positive;
+
+    /// auxiliary grid parameters:
+    double t_upper;                    // largest point on auxiliary grid
+    double t_lower;                    // smallest point on auxiliary grid
+    std::array<double,2> aux_pos_section_boundaries;
+    double spacing_auxiliary_gridpoint=1.;  // linear spacing on auxiliary grid for t
+    double recip_curvature_quad;            // defines quadratic function f(t) = t^2 / recip_curvature_quad
+    double recip_slope_lin;                 // defines linear function f(t) = pos_section_boundaries[0] + (t - aux_pos_section_boundaries[0]) / recip_slope_lin
+    double factor_rat;                      // defines rational function f(t) = factor_rat / (1 - rescale_rat * t)
+    double rescale_rat;                     // defines rational function f(t) = factor_rat / (1 - t / rescale_rat)
+    void derive_auxiliary_parameters();     // derive auxiliary parameters from
+
+    /// list of all frequencies:
+    rvec all_frequencies;           // contains all frequencies w
+    rvec auxiliary_grid;            // contains all t such that w(t) is the frequency
+
+    /// grid functions:
+    double frequency_from_t(double t) const;
+    double t_from_frequency(double w) const;
+
+
+public:
+    /// constructor:
+    FrequencyGrid(const char type_in, const unsigned int diag_class_in, const double Lambda, const bool purely_positive=false) : type(type_in), diag_class(diag_class_in), purely_positive(purely_positive) {
+#ifndef DENSEGRID
+        assert(KELDYSH || ZERO_T);  // for Matsubara T>0 only allow dense grid
+#endif
+        guess_essential_parameters(Lambda);
+        initialize_grid();
     }
+
+    ///getter functions:
+    double get_frequency(const int index) const {assert(index>=0); return all_frequencies[index];};
+    double get_auxiliary_gridpoint(const int index) const {assert(index>=0); assert(index<number_of_gridpoints); return auxiliary_grid[index];};
+    const rvec& get_all_frequencies() const {return all_frequencies;};
+    const rvec& get_all_auxiliary_gridpoints() const {return auxiliary_grid;};
+    double get_spacing_auxiliary_gridpoints() const {return spacing_auxiliary_gridpoint;}
+    char get_type() const {return type;};
+    char get_diag_class() const {return diag_class;};
+
+    /// setter functions:
+    void set_essential_parameters(double wmax_in, std::array<double,2> new_pos_section_boundaries) {
+        w_upper = wmax_in;
+        w_lower =-w_upper;
+        pos_section_boundaries = std::move(new_pos_section_boundaries);
+    }
+    void set_w_upper(double wmax) {
+        set_essential_parameters(wmax, pos_section_boundaries);
+    }
+    void initialize_grid();
+    void update_pos_section_boundaries(std::array<double,2> new_pos_section_boundaries) {
+        pos_section_boundaries = std::move(new_pos_section_boundaries);
+        pos_section_boundaries[1] = std::max(pos_section_boundaries[0] + 1e-5, pos_section_boundaries[1]);
+        initialize_grid();
+    }
+
+    /// core grid functionality (has to be super efficient)
+    int get_grid_index(double frequency)const;
+    int get_grid_index(double& t, double frequency) const;
+
+
 };
 
 
+template<>
+class FrequencyGrid<angularGrid> {
+    template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename frequencyGrid_type>
+    friend class DataContainer;
+
+public:
+    /// essential grid parameters:
+    int number_of_gridpoints;                       // total number of gridpoints
+    double w_upper;                                 // largest  angle
+    double w_lower;                                 // smallest angle
+    int number_of_intervals;    // defines the number of intervals between w_lower and w_upper on which we have quadratic functions
+    double lin_fac = 1.e-4;      // "ratio" between linear and quadratic contribution in the grid function
+    double power;
+    double recip_power;
+
+    /// guess essential parameters from value of Lambda
+    void guess_essential_parameters(double Lambda);
+
+//private:
+
+    /// grid identifier:
+    char type;
+    int diag_class;
+    bool purely_positive;
+
+    /// auxiliary grid parameters:
+    double t_upper;                    // largest point on auxiliary grid
+    double t_lower;                    // smallest point on auxiliary grid
+
+    double spacing_auxiliary_gridpoint;  // linear spacing on auxiliary grid for t
+    double half_of_interval_length_for_t;
+    double half_of_interval_length_for_w;
+    double half_of_interval_length_for_w_recip;
+    double interval_length_for_w_recip;
+    double quad_fac_recip;
+    double lin_fac_to_power;
+    void derive_auxiliary_parameters();     // derive auxiliary parameters from
+
+    /// list of all frequencies:
+    rvec all_frequencies;           // contains all frequencies w
+    rvec auxiliary_grid;            // contains all t such that w(t) is the frequency
+
+    /// grid functions:
+    double frequency_from_t(double t) const;
+    double t_from_frequency(double w) const;
+
+
+public:
+    /// constructor:
+    FrequencyGrid(const char type_in, const unsigned int diag_class_in, const double Lambda, const bool purely_positive) : type(type_in), diag_class(diag_class_in), purely_positive(purely_positive) {
+#ifndef DENSEGRID
+        assert(KELDYSH || ZERO_T);  // for Matsubara T>0 only allow dense grid
+#else
+        assert(false);
+#endif
+        guess_essential_parameters(Lambda);
+        initialize_grid();
+    }
+
+    ///getter functions:
+    double get_frequency(const int index) const {assert(index>=0); return all_frequencies[index];};
+    double get_auxiliary_gridpoint(const int index) const {assert(index>=0); assert(index<number_of_gridpoints); return auxiliary_grid[index];};
+    const rvec& get_all_frequencies() const {return all_frequencies;};
+    const rvec& get_all_auxiliary_gridpoints() const {return auxiliary_grid;};
+    double get_spacing_auxiliary_gridpoints() const {return spacing_auxiliary_gridpoint;}
+    char get_type() const {return type;};
+    char get_diag_class() const {return diag_class;};
+
+    /// setter functions:
+    void set_essential_parameters(double wmax_in, double number_of_intervals_in) {
+        w_upper = wmax_in;
+        w_lower = 0.;
+        number_of_intervals = number_of_intervals_in;
+    }
+    void set_w_upper(double wmax) {
+        set_essential_parameters(wmax, number_of_intervals);
+    }
+    void initialize_grid();
+    void update_number_of_intervals(double number_of_intervals_in) {
+        number_of_intervals = number_of_intervals_in;
+        initialize_grid();
+    }
+
+    /// core grid functionality (has to be super efficient)
+    int get_grid_index(double frequency)const;
+    int get_grid_index(double& t, double frequency) const;
+
+    void update_power(double power_in) {
+        power = std::max(power_in, 1.); // don't go lower than 1
+        initialize_grid();
+    }
+
+};
 
 template<K_class k>
 class bufferFrequencyGrid {
 public:
-    FrequencyGrid b;
-    FrequencyGrid f;
+#if GRID == 0
+    using grid_type1 = FrequencyGrid<eliasGrid>;
+    using grid_type2 = FrequencyGrid<eliasGrid>;
+    using grid_type3 = FrequencyGrid<eliasGrid>;
+#elif GRID == 1
+     using grid_type1 = FrequencyGrid<hybridGrid>;
+     using grid_type2 = FrequencyGrid<hybridGrid>;
+     using grid_type3 = FrequencyGrid<hybridGrid>;
+#else // GRID == 2
+    using grid_type1 = FrequencyGrid<hybridGrid>;
+    using grid_type2 = FrequencyGrid<k==k2||k==k2b||k==k3 ? angularGrid : hybridGrid>;
+    using grid_type3 = FrequencyGrid<k==k2||k==k2b||k==k3 ? angularGrid : hybridGrid>;
+#endif
+    grid_type1   primary_grid;
+    grid_type2 secondary_grid;
+    grid_type3  tertiary_grid;
 
     int get_diagclass() {
         if constexpr(k == selfenergy or k == k1) return 1;
@@ -384,217 +390,217 @@ public:
         else return 3;
     }
 
-    bufferFrequencyGrid() :  b(k == selfenergy ? 'f' : 'b', get_diagclass(), 0), f('f', get_diagclass(), 0) {};
-    bufferFrequencyGrid(double Lambda) : b(k == selfenergy ? 'f' : 'b', get_diagclass(), Lambda), f('f', get_diagclass(), Lambda) {};
+    bufferFrequencyGrid() :    primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), 0, GRID==2), secondary_grid('f', get_diagclass(), 0, false), tertiary_grid('f', get_diagclass(), 0, GRID==2) {};
+    bufferFrequencyGrid(double Lambda) :   primary_grid(k == selfenergy ? 'f' : 'b', get_diagclass(), Lambda, GRID==2 and (k==k2 or k==k2b or k==k3))
+                                         , secondary_grid('f', get_diagclass(), Lambda, false)
+                                         , tertiary_grid('f', get_diagclass(), Lambda, GRID==2)
+    {};
 
-    void rescale_grid(double Lambda) {
-        b.rescale_grid(Lambda);
-        if constexpr(k != k1 and k != selfenergy)f.rescale_grid(Lambda);
-    }
-
-    void initialize_grid(double scale) {
-            b.set_W_scale(scale);
-            b.set_w_upper(scale*15.);
-            b.initialize_grid();
+    void guess_essential_parameters(double Lambda) {
+          primary_grid.guess_essential_parameters(Lambda);
         if constexpr(k != k1 and k != selfenergy) {
-            f.set_W_scale(scale);
-            f.set_w_upper(scale*15.);
-            f.initialize_grid();
+            secondary_grid.guess_essential_parameters(Lambda);
+             tertiary_grid.guess_essential_parameters(Lambda);
         }
     }
 
-    auto get_freqGrid_b() const -> const FrequencyGrid& {return b;};
-    auto get_freqGrid_f() const -> const FrequencyGrid& {if constexpr(k != k1 and k != selfenergy)return f; else assert(false);};//, "Exists no fermionic grid");};
-//
-    const double& get_wlower_b() const {return b.w_lower;};
-    const double& get_wupper_b() const {return b.w_upper;};
-    const double& get_wlower_f() const {if constexpr(k != k1 and k != selfenergy) return f.w_lower; else assert(false);};//, "Exists no second grid");};
-    const double& get_wupper_f() const {if constexpr(k != k1 and k != selfenergy) return f.w_upper; else assert(false);};//, "Exists no second grid");};
-    const double& get_tlower_b_aux() const {return b.t_lower;};
-    const double& get_tupper_b_aux() const {return b.t_upper;};
-    const double& get_tlower_f_aux() const {if constexpr(k != k1 and k != selfenergy) return f.t_lower; else assert(false);};//, "Exists no second grid");};
-    const double& get_tupper_f_aux() const {if constexpr(k != k1 and k != selfenergy) return f.t_upper; else assert(false);};//, "Exists no second grid");};
-    auto gridtransf_b(double w) const -> double {return b.grid_transf(w);};
-    auto gridtransf_f(double w) const -> double {if constexpr(k != k1 and k != selfenergy) return f.grid_transf(w); else assert(false);};//, "Exists no second grid");};
-    auto gridtransf_inv_b(double t) const -> double {return b.grid_transf_inv(t);};
-    auto gridtransf_inv_f(double t) const -> double {if constexpr(k != k1 and k != selfenergy) return f.grid_transf_inv(t); else assert(false);};//, "Exists no second grid");};
-//
+    /// getter functions:
+    auto get_freqGrid_b() const -> const grid_type1& {return   primary_grid;};
+    auto get_freqGrid_f() const -> const grid_type2& {if constexpr(k != k1 and k != selfenergy)return secondary_grid; else assert(false);};//, "Exists no fermionic grid");};
+    auto get_freqGrid_3() const -> const grid_type2& {if constexpr(k == k3 )return tertiary_grid; else assert(false);};//, "Exists no fermionic grid");};
+    const double& get_wlower_b() const {return   primary_grid.w_lower;};
+    const double& get_wupper_b() const {return   primary_grid.w_upper;};
+    const double& get_wlower_f() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.w_lower; else assert(false);};//, "Exists no second grid");};
+    const double& get_wupper_f() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.w_upper; else assert(false);};//, "Exists no second grid");};
+    const double& get_tlower_b_aux() const {return   primary_grid.t_lower;};
+    const double& get_tupper_b_aux() const {return   primary_grid.t_upper;};
+    const double& get_tlower_f_aux() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.t_lower; else assert(false);};//, "Exists no second grid");};
+    const double& get_tupper_f_aux() const {if constexpr(k != k1 and k != selfenergy) return secondary_grid.t_upper; else assert(false);};//, "Exists no second grid");};
+
+    /// Check whether frequencies are in the frequency box:
     bool is_in_box(std::array<double,1> freqs) const {
-        if constexpr(k == k1 or k == selfenergy) return std::abs(freqs[0]) < b.w_upper + inter_tol;
+        if constexpr(k == k1 or k == selfenergy) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     bool is_in_box(std::array<double,2> freqs) const {
-        if constexpr(k == k2) return std::abs(freqs[0]) < b.w_upper + inter_tol and std::abs(freqs[1]) < f.w_upper + inter_tol;
+        K2_convert2internalFreqs(freqs[0], freqs[1]);
+        if constexpr(k == k2) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     bool is_in_box(std::array<double,3> freqs) const {
-        if constexpr(k == k3) return std::abs(freqs[0]) < b.w_upper + inter_tol and std::abs(freqs[1]) < f.w_upper + inter_tol and std::abs(freqs[2]) < f.w_upper + inter_tol;
+        K3_convert2internalFreqs(freqs[0], freqs[1], freqs[2]);
+        if constexpr(k == k3) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol and std::abs(freqs[2]) < tertiary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
 
-    void fconv(std::array<my_index_t,1>& idx, std::array<double,1>& dw_normalized, const std::array<double,1>& freqs) const {
+    /// determine the grid indices for the frequencies + determine normalized distance to next smaller grid point on all_frequencies
+    void get_grid_index(std::array<my_index_t,1>& idx, std::array<double,1>& dw_normalized, const std::array<double,1>& freqs) const {
         if constexpr(k == k1 or k == selfenergy)  {
             double w = freqs[0];
-            int iw = b.fconv(w);
+            int iw =   primary_grid.get_grid_index(w);
             idx[0] = iw;
-            double w_low = b.get_ws(iw);
-            double w_high= b.get_ws(iw+1);
+            double w_low =   primary_grid.get_frequency(iw);
+            double w_high=   primary_grid.get_frequency(iw+1);
             dw_normalized[0] = (w - w_low) / (w_high - w_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    void fconv(std::array<my_index_t,2>& idx, std::array<double,2>& dw_normalized, const std::array<double,2>& freqs) const {
+    void get_grid_index(std::array<my_index_t,2>& idx, std::array<double,2>& dw_normalized, const std::array<double,2>& freqs) const {
         if constexpr(k == k2)  {
             double w  = freqs[0];
             double v  = freqs[1];
-#ifdef ROTATEK2
             K2_convert2internalFreqs(w, v);
-#endif
-            int iw = b.fconv(w);
-            int iv = f.fconv(v);
+
+            int iw =   primary_grid.get_grid_index(w);
+            int iv = secondary_grid.get_grid_index(v);
             idx[0] = iw;
             idx[1] = iv;
-            double w_low = b.get_ws(iw);
-            double w_high= b.get_ws(iw+1);
-            double v_low = f.get_ws(iv);
-            double v_high= f.get_ws(iv+1);
+            double w_low =   primary_grid.get_frequency(iw);
+            double w_high=   primary_grid.get_frequency(iw+1);
+            double v_low = secondary_grid.get_frequency(iv);
+            double v_high= secondary_grid.get_frequency(iv+1);
             dw_normalized[0] = (w - w_low) / (w_high - w_low);
             dw_normalized[1] = (v - v_low) / (v_high - v_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    void fconv(std::array<my_index_t,3>& idx, std::array<double,3>& dw_normalized, const std::array<double,3>& freqs) const {
+    void get_grid_index(std::array<my_index_t,3>& idx, std::array<double,3>& dw_normalized, const std::array<double,3>& freqs) const {
         if constexpr(k == k3)  {
             double w  = freqs[0];
             double v  = freqs[1];
             double vp = freqs[2];
-            int iw = b.fconv(freqs[0]);
-            int iv = f.fconv(freqs[1]);
-            int ivp= f.fconv(freqs[2]);
+            K3_convert2internalFreqs(w, v, vp);
+
+            const int iw =   primary_grid.get_grid_index(freqs[0]);
+            const int iv = secondary_grid.get_grid_index(freqs[1]);
+            const int ivp=  tertiary_grid.get_grid_index(freqs[2]);
             idx[0] = iw;
             idx[1] = iv;
             idx[2] = ivp;
-            double w_low = b.get_ws(iw);
-            double w_high= b.get_ws(iw+1);
-            double v_low = f.get_ws(iv);
-            double v_high= f.get_ws(iv+1);
-            double vp_low =f.get_ws(ivp);
-            double vp_high=f.get_ws(ivp+1);
+            const double w_low =   primary_grid.get_frequency(iw);
+            const double w_high=   primary_grid.get_frequency(iw+1);
+            const double v_low = secondary_grid.get_frequency(iv);
+            const double v_high= secondary_grid.get_frequency(iv+1);
+            const double vp_low =tertiary_grid.get_frequency(ivp);
+            const double vp_high=tertiary_grid.get_frequency(ivp+1);
             dw_normalized[0] = (w - w_low) / (w_high - w_low);
             dw_normalized[1] = (v - v_low) / (v_high - v_low);
             dw_normalized[2] = (vp-vp_low) / (vp_high-vp_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-
-    void fconv_on_aux(std::array<my_index_t,1>& idx, std::array<double,1>& dt_normalized, const std::array<double,1>& freqs) const {
+    /// determine the grid indices for the frequencies + determine normalized distance to next smaller grid point on auxiliary grid
+    void get_auxgrid_index(std::array<my_index_t,1>& idx, std::array<double,1>& dt_normalized, const std::array<double,1>& freqs) const {
         if constexpr(k == k1 or k == selfenergy)  {
             //double w = freqs[0];
             double tw;
-            int iw = b.fconv(tw, freqs[0]);
+            int iw =   primary_grid.get_grid_index(tw, freqs[0]);
             idx[0] = iw;
-            double tw_low = b.get_ts(iw);
-            double tw_high= b.get_ts(iw+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
             dt_normalized[0] = (tw - tw_low) / (tw_high - tw_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    void fconv_on_aux(std::array<my_index_t,2>& idx, std::array<double,2>& dt_normalized, const std::array<double,2>& freqs) const {
+    void get_auxgrid_index(std::array<my_index_t,2>& idx, std::array<double,2>& dt_normalized, const std::array<double,2>& freqs) const {
         if constexpr(k == k2)  {
             double w  = freqs[0];
             double v  = freqs[1];
-#ifdef ROTATEK2
             K2_convert2internalFreqs(w, v);
-#endif
+
             double tw, tv;
-            int iw = b.fconv(tw, w);
-            int iv = f.fconv(tv, v);
+            int iw =   primary_grid.get_grid_index(tw, w);
+            int iv = secondary_grid.get_grid_index(tv, v);
             idx[0] = iw;
             idx[1] = iv;
-            double tw_low = b.get_ts(iw);
-            double tw_high= b.get_ts(iw+1);
-            double tv_low = f.get_ts(iv);
-            double tv_high= f.get_ts(iv+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
             dt_normalized[0] = (tw - tw_low) / (tw_high - tw_low);
             dt_normalized[1] = (tv - tv_low) / (tv_high - tv_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    void fconv_on_aux(std::array<my_index_t,3>& idx, std::array<double,3>& dt_normalized, const std::array<double,3>& freqs) const {
+    void get_auxgrid_index(std::array<my_index_t,3>& idx, std::array<double,3>& dt_normalized, const std::array<double,3>& freqs) const {
         if constexpr(k == k3)  {
-            //double w  = freqs[0];
-            //double v  = freqs[1];
-            //double vp = freqs[2];
+            double w  = freqs[0];
+            double v  = freqs[1];
+            double vp = freqs[2];
+            K3_convert2internalFreqs(w, v, vp);
+
             double tw, tv, tvp;
-            int iw = b.fconv(tw, freqs[0]);
-            int iv = f.fconv(tv, freqs[1]);
-            int ivp= f.fconv(tvp,freqs[2]);
+            int iw =   primary_grid.get_grid_index(tw, w);
+            int iv = secondary_grid.get_grid_index(tv, v);
+            int ivp=  tertiary_grid.get_grid_index(tvp,vp);
             idx[0] = iw;
             idx[1] = iv;
             idx[2] = ivp;
-            double tw_low = b.get_ts(iw);
-            double tw_high= b.get_ts(iw+1);
-            double tv_low = f.get_ts(iv);
-            double tv_high= f.get_ts(iv+1);
-            double tvp_low =f.get_ts(ivp);
-            double tvp_high=f.get_ts(ivp+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
+            double tvp_low =tertiary_grid.get_auxiliary_gridpoint(ivp);
+            double tvp_high=tertiary_grid.get_auxiliary_gridpoint(ivp+1);
             dt_normalized[0] = (tw - tw_low) / (tw_high - tw_low);
             dt_normalized[1] = (tv - tv_low) / (tv_high - tv_low);
             dt_normalized[2] = (tvp-tvp_low) / (tvp_high-tvp_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    void fconv_on_aux_unnormalized(std::array<my_index_t,1>& idx, std::array<double,1>& dt_unnormalized, const std::array<double,1>& freqs) const {
+    /// determine the grid indices for the frequencies + determine UN-normalized distance to next smaller grid point on auxiliary grid
+    void get_auxgrid_index_unnormalized(std::array<my_index_t,1>& idx, std::array<double,1>& dt_unnormalized, const std::array<double,1>& freqs) const {
         if constexpr(k == k1 or k == selfenergy)  {
             //double w = freqs[0];
             double tw;
-            int iw = b.fconv(tw, freqs[0]);
+            int iw =   primary_grid.get_grid_index(tw, freqs[0]);
             idx[0] = iw;
-            double tw_low = b.get_ts(iw);
-            double tw_high= b.get_ts(iw+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    void fconv_on_aux_unnormalized(std::array<my_index_t,2>& idx, std::array<double,2>& dt_unnormalized, const std::array<double,2>& freqs) const {
+    void get_auxgrid_index_unnormalized(std::array<my_index_t,2>& idx, std::array<double,2>& dt_unnormalized, const std::array<double,2>& freqs) const {
         if constexpr(k == k2)  {
             double w  = freqs[0];
             double v  = freqs[1];
-#ifdef ROTATEK2
             K2_convert2internalFreqs(w, v);
-#endif
+
             double tw, tv;
-            int iw = b.fconv(tw, w);
-            int iv = f.fconv(tv, v);
+            int iw =   primary_grid.get_grid_index(tw, w);
+            int iv = secondary_grid.get_grid_index(tv, v);
             idx[0] = iw;
             idx[1] = iv;
-            double tw_low = b.get_ts(iw);
-            double tw_high= b.get_ts(iw+1);
-            double tv_low = f.get_ts(iv);
-            double tv_high= f.get_ts(iv+1);
+            double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
             dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-    void fconv_on_aux_unnormalized(std::array<my_index_t,3>& idx, std::array<double,3>& dt_unnormalized, const std::array<double,3>& freqs) const {
+    void get_auxgrid_index_unnormalized(std::array<my_index_t,3>& idx, std::array<double,3>& dt_unnormalized, const std::array<double,3>& freqs) const {
         if constexpr(k == k3)  {
-            //double w  = freqs[0];
-            //double v  = freqs[1];
-            //double vp = freqs[2];
+            double w  = freqs[0];
+            double v  = freqs[1];
+            double vp = freqs[2];
+            K3_convert2internalFreqs(w, v, vp);
+
             double tw, tv, tvp;
-            int iw = b.fconv(tw, freqs[0]);
-            int iv = f.fconv(tv, freqs[1]);
-            int ivp= f.fconv(tvp,freqs[2]);
+            const int iw =   primary_grid.get_grid_index(tw, w);
+            const int iv = secondary_grid.get_grid_index(tv, v);
+            const int ivp=  tertiary_grid.get_grid_index(tvp,vp);
             idx[0] = iw;
             idx[1] = iv;
             idx[2] = ivp;
-            double tw_low = b.get_ts(iw);
-            double tw_high= b.get_ts(iw+1);
-            double tv_low = f.get_ts(iv);
-            double tv_high= f.get_ts(iv+1);
-            double tvp_low =f.get_ts(ivp);
-            double tvp_high=f.get_ts(ivp+1);
+            const double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
+            const double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            const double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
+            const double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
+            const double tvp_low = tertiary_grid.get_auxiliary_gridpoint(ivp);
+            const double tvp_high= tertiary_grid.get_auxiliary_gridpoint(ivp+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
             dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
             dt_unnormalized[2] = (tvp-tvp_low); // / (tvp_high-tvp_low);
@@ -602,28 +608,30 @@ public:
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
 
+    /// get frequencies corresponding to a set of grid indices
     void get_freqs_w(double &w, const int iw) const {
-        if constexpr(k == k1 or k == selfenergy) w = b.get_ws(iw);
+        if constexpr(k == k1 or k == selfenergy) w =   primary_grid.get_frequency(iw);
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_w(double &w, double &v, const int iw, const int iv) const {
         if constexpr(k == k2)
         {
-            w = b.get_ws(iw);
-            v = f.get_ws(iv);
+            w =   primary_grid.get_frequency(iw);
+            v = secondary_grid.get_frequency(iv);
             K2_convert2naturalFreqs(w, v);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_w(double &w, double &v,  double &vp, const int iw, const int iv, const int ivp) const {
         if constexpr(k == k3) {
-            w = b.get_ws(iw);
-            v = f.get_ws(iv);
-            vp = f.get_ws(ivp);
+            w =   primary_grid.get_frequency(iw);
+            v = secondary_grid.get_frequency(iv);
+            vp = tertiary_grid.get_frequency(ivp);
+            K3_convert2naturalFreqs(w, v, vp);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
-
+    // wraps above functions for arrays as input
     template<size_t num>
     void get_freqs_w(std::array<double, num>& freqs, std::array<my_index_t , num>& i_freqs) const{
         if constexpr(num == 1) {
@@ -638,68 +646,32 @@ public:
         else assert(false);
     }
 
+
+    /// only used in test_functions:
     void get_freqs_aux(double &w, const int iw) const {
-        if constexpr(k == k1 or k == selfenergy) w = b.get_ts(iw);
+        if constexpr(k == k1 or k == selfenergy) w =   primary_grid.get_auxiliary_gridpoint(iw);
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_aux(double &w, double &v, const int iw, const int iv) const {
         if constexpr(k == k2) {
-            w = b.get_ts(iw);
-            v = f.get_ts(iv);
+            w =   primary_grid.get_auxiliary_gridpoint(iw);
+            v = secondary_grid.get_auxiliary_gridpoint(iv);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_aux(double &w, double &v, double &vp, const int iw, const int iv, const int ivp) const {
         if constexpr(k == k3) {
-            w = b.get_ts(iw);
-            v = f.get_ts(iv);
-            vp= f.get_ts(ivp);
+            w =   primary_grid.get_auxiliary_gridpoint(iw);
+            v = secondary_grid.get_auxiliary_gridpoint(iv);
+            vp=  tertiary_grid.get_auxiliary_gridpoint(ivp);
         }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
+    auto gridtransf_f(double w) const -> double {if constexpr(k != k1 and k != selfenergy) return secondary_grid.t_from_frequency(w); else assert(false);};//, "Exists no second grid");};
+
 };
 
 /*******************************************    FREQUENCY GRID    *****************************************************/
-
-
-#if GRID==1
-/***********************************************    LOG GRID    *******************************************************/
-
-double sgn(double x);
-double grid_transf_b(double w);
-double grid_transf_b_inv(double W);
-double grid_transf_f(double w);
-double grid_transf_f_inv(double W);
-void setUpBosGrid(rvec& freqs, int nfreqs);
-void setUpFerGrid(rvec& freqs, int nfreqs);
-auto fconv_bos(double w, int nfreqs) -> int;
-auto fconv_fer(double w, int nfreqs) -> int;
-
-
-#elif GRID==2
-/*********************************************    LINEAR GRID    ******************************************************/
-
-void setUpBosGrid(rvec& freqs, int nfreqs);
-void setUpFerGrid(rvec& freqs, int nfreqs);
-auto fconv_bos(double w, int nfreqs) -> int;
-auto fconv_fer(double v, int nfreqs) -> int;
-
-#include <tuple>   // return several indices
-auto fconv_K1_a(double w) -> int;
-auto fconv_K2_a(double w, double v1) -> tuple<int, int>;
-auto fconv_K3_a(double w, double v1, double v2) -> tuple<int, int, int>;
-auto fconv_K1_p(double w) -> int;
-auto fconv_K2_p(double w, double v1) -> tuple<int, int>;
-auto fconv_K3_p(double w, double v1, double v2) -> tuple<int, int, int>;
-auto fconv_K1_t(double w) -> int;
-auto fconv_K2_t(double w, double v1) -> tuple<int, int>;
-auto fconv_K3_t(double w, double v1, double v2) -> tuple<int, int, int>;
-
-
-#elif GRID==3
-/*******************************************    NON-LINEAR GRID    ****************************************************/
-
-double sgn(double x);
 
 double grid_transf_lin(double w, double W_scale);
 double grid_transf_v1(double w, double W_scale);
@@ -722,19 +694,6 @@ double integration_measure_v2(double t, double W_scale);
 double integration_measure_v3(double t, double W_scale);
 double integration_measure_v4(double t, double W_scale);
 
-namespace freqGrid {
-    auto shrink_freq_box(const FrequencyGrid& freqGrid, const double  rel_tail_threshold, const vec<double>& maxabs_along_x, bool verbose=true) -> FrequencyGrid;
-}
 
-
-#elif GRID==4
-/*********************************************    TAN GRID    ******************************************************/
-
-void setUpBosGrid(rvec& freqs, int nfreqs);
-void setUpFerGrid(rvec& freqs, int nfreqs);
-auto fconv_bos(double w, int nfreqs) -> int;
-auto fconv_fer(const double v, int nfreqs) -> int;
-
-#endif // GRID
 
 #endif //KELDYSH_MFRG_FREQUENCY_GRID_HPP

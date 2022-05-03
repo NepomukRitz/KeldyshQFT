@@ -9,17 +9,21 @@
 #include <limits>
 #include "../data_structures.hpp"
 
-template <typename Q, typename Integrand>
+
+
+
+
+template <typename Integrand, typename Q = std::result_of_t<Integrand(double)>>
 struct Adapt {
 public:
-    double TOL, tolerance; // relative tolerance
-    const double EPS = std::numeric_limits<double>::epsilon();  // machine precision, used as absolute tolerance
+    double TOL, tolerance_rel; // relative tolerance
+    const double tolerance_abs = std::numeric_limits<double>::epsilon();  // machine precision, used as absolute tolerance
     static const double alpha, beta, x1, x2, x3, nodes[12];     // relative positions of Gauss-Kronrod nodes
     const Integrand& integrand;                                 // integrand, needs call operator returning a Q
 
     Adapt(double tol_in, const Integrand& integrand_in) : TOL(tol_in), integrand(integrand_in) {
-        if (TOL < 10.*EPS)  // if absolute tolerance is smaller than 10 * machine precision,
-            TOL = 10.*EPS;  // set it to 10 * machine precision
+        if (TOL < 10.*tolerance_abs)  // if absolute tolerance is smaller than 10 * machine precision,
+            TOL = 10.*tolerance_abs;  // set it to 10 * machine precision
     }
 
     /** Integrate integrand from a to b. */
@@ -55,8 +59,8 @@ inline auto Gauss_Kronrod_13(double h, Q f1, Q f2, Q f3, Q f4, Q f5, Q f6, Q f7,
               + 0.242611071901408  *  f7);
 }
 
-template <typename Q, typename Integrand>
-auto Adapt<Q, Integrand>::integrate(const double a, const double b) -> Q {
+template <typename Integrand, typename Q>
+auto Adapt<Integrand,Q>::integrate(const double a, const double b) -> Q {
     double m, h, err_i1, err_i2, r, x[13];
     Q i1, i2, is, f[13];
 
@@ -82,25 +86,25 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b) -> Q {
     // use 13-point Gauss-Kronrod rule as error estimate
     is = Gauss_Kronrod_13(h, f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], f[9], f[10], f[11], f[12]);
 
-    err_i1 = std::abs(i1 - is);  // error of first estimate compared to 13-point Gauss-Kronrod
-    err_i2 = std::abs(i2 - is);  // error of second estimate compared to 13-point Gauss-Kronrod
+    err_i1 = myabs(i1 - is);  // error of first estimate compared to 13-point Gauss-Kronrod
+    err_i2 = myabs(i2 - is);  // error of second estimate compared to 13-point Gauss-Kronrod
 
     // scale tolerance: if error of i2 is smaller than error of i1 (integral is converging), increase tolerance.
     r = (err_i1 != 0.0) ? err_i2/err_i1 : 1.0;          // scaling factor r
-    tolerance = (r > 0.0 && r < 1.0) ? TOL / r : TOL;   // if 0 < r < 1, increase relative tolerance by factor 1/r
+    tolerance_rel = (r > 0.0 && r < 1.0) ? TOL / r : TOL;   // if 0 < r < 1, increase relative tolerance by factor 1/r
 
     // if error estimate is zero, set to interval width to avoid infinite recursion
-    if (is == (Q)0.)
-        is = (Q)(b-a);
+    if (myabs(is) < 1e-20 || b <= a)
+        return myzero<Q>();
 
     // If difference between first and second estimate and second and 13-point estimate is already smaller than absolute
     // or relative tolerance, return second estimate, else subdivide interval.
     // Subdivide also if the integral value is exactly zero, to avoid accidental zero result due to the choice of
     // evaluation points.
-    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::abs(is))
-        && std::abs(i2 - is) < std::max(EPS, tolerance * std::abs(is))
+    if (myabs(i2 - i1) < std::max(tolerance_abs, tolerance_rel * myabs(is))
+        && myabs(i2 - is) < std::max(tolerance_abs, tolerance_rel * myabs(is))
         //&& i2 != 0. // shouldn't need this safety check any more if interval is split into subintervals
-        || b-a < EPS) // do not split if the interval is very small
+        || b-a < tolerance_abs) // do not split if the interval is very small
         return i2;
     else
         return integrate(x[0],  x[2],  f[0],  f[2],  is)  // subdivide interval
@@ -111,8 +115,8 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b) -> Q {
              + integrate(x[10], x[12], f[10], f[12], is);
 }
 
-template <typename Q, typename Integrand>
-auto Adapt<Q, Integrand>::integrate(const double a, const double b, const Q fa, const Q fb, const Q is) -> Q{
+template <typename Integrand, typename Q>
+auto Adapt<Integrand,Q>::integrate(const double a, const double b, const Q fa, const Q fb, const Q is) -> Q{
 
     double m, h, x[5];
     Q i1, i2, f[5];
@@ -136,9 +140,9 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b, const Q fa, 
     i1 = Gauss_Lobatto_4(h, fa, f[1], f[3], fb);
     i2 = Gauss_Kronrod_7(h, fa, f[0], f[1], f[2], f[3], f[4], fb);
 
-    // if difference between first and second estimate is smaller than absolute or relative tolerance,
+    // if difference between first and second estimate is smaller than absolute or relative tolerance_rel,
     // or nodes lie outside the interval, return second estimate, else subdivide interval
-    if (std::abs(i2 - i1) < std::max(EPS, tolerance * std::abs(is)) || x[0] < a || b < x[4])
+    if (myabs(i2 - i1) < std::max(tolerance_abs, tolerance_rel * myabs(is)) || x[0] < a || b < x[4])
         return i2;
     else
         return integrate(a,    x[0], fa,   f[0], is)  // subdivide interval
@@ -150,18 +154,81 @@ auto Adapt<Q, Integrand>::integrate(const double a, const double b, const Q fa, 
 }
 
 // relative positions of Gauss-Kronrod nodes
-template <typename Q, typename Integrand>
-const double Adapt<Q, Integrand>::alpha = sqrt(2./3.);
-template <typename Q, typename Integrand>
-const double Adapt<Q, Integrand>::beta = 1./sqrt(5.);
-template <typename Q, typename Integrand>
-const double Adapt<Q, Integrand>::x1 = 0.942882415695480;
-template <typename Q, typename Integrand>
-const double Adapt<Q, Integrand>::x2 = 0.641853342345781;
-template <typename Q, typename Integrand>
-const double Adapt<Q, Integrand>::x3 = 0.236383199662150;
-template <typename Q, typename Integrand>
-const double Adapt<Q, Integrand>::nodes[12] = {0, -x1, -alpha, -x2, -beta, -x3, 0.0, x3, beta, x2, alpha, x1};
+template < typename Integrand, typename Q>
+const double Adapt<Integrand,Q>::alpha = sqrt(2./3.);
+template <typename Integrand, typename Q>
+const double Adapt<Integrand,Q>::beta = 1./sqrt(5.);
+template <typename Integrand, typename Q>
+const double Adapt<Integrand,Q>::x1 = 0.942882415695480;
+template <typename Integrand, typename Q>
+const double Adapt<Integrand,Q>::x2 = 0.641853342345781;
+template <typename Integrand, typename Q>
+const double Adapt<Integrand,Q>::x3 = 0.236383199662150;
+template <typename Integrand, typename Q>
+const double Adapt<Integrand,Q>::nodes[12] = {0, -x1, -alpha, -x2, -beta, -x3, 0.0, x3, beta, x2, alpha, x1};
 
+
+
+namespace adaptive_integrator_detail{
+
+    template <typename Integrand>
+    class integrand_reparametrized_Upper {
+        using Q = std::result_of_t<Integrand(double)>;
+        const Integrand& integrand_original;
+        const double b;
+    public:
+        integrand_reparametrized_Upper(const Integrand& integrand_in, const double b) : integrand_original(integrand_in), b(b) {}
+        auto operator() (const double x) const -> Q {
+            return integrand_original(b + (1 - x) / x) / (x*x);
+        }
+    };
+
+    template <typename Integrand>
+    class integrand_reparametrized_Lower {
+        using Q = std::result_of_t<Integrand(double)>;
+        const Integrand& integrand_original;
+        const double b;
+    public:
+        integrand_reparametrized_Lower(const Integrand& integrand_in, const double b) : integrand_original(integrand_in), b(b) {}
+        auto operator() (const double x) const -> Q {
+            return integrand_original(b - (1 - x) / x) / (x*x);
+        }
+    };
+}
+template <typename Integrand>
+class Adapt_semiInfinitUpper {
+    using Q = std::result_of_t<Integrand(double)>;
+
+    const adaptive_integrator_detail::integrand_reparametrized_Upper<Integrand> integrand;
+    Adapt<adaptive_integrator_detail::integrand_reparametrized_Upper<Integrand>> adaptor;
+
+
+public:
+    Adapt_semiInfinitUpper(const double integrator_tol_rel, const Integrand& integrand1, const double b)
+            : integrand(integrand1, b), adaptor(integrator_tol_rel, integrand) {}
+
+    auto integrate() -> Q {
+        return adaptor.integrate(1e-20, 1.);
+    }
+
+};
+
+template <typename Integrand>
+class Adapt_semiInfinitLower {
+    using Q = std::result_of_t<Integrand(double)>;
+
+    const adaptive_integrator_detail::integrand_reparametrized_Lower<Integrand> integrand;
+    Adapt<adaptive_integrator_detail::integrand_reparametrized_Lower<Integrand>,std::result_of_t<Integrand(double)>> adaptor;
+
+
+public:
+    Adapt_semiInfinitLower(const double integrator_tol_rel, const Integrand& integrand1, const double b)
+            : integrand(integrand1, b), adaptor(integrator_tol_rel, integrand) {}
+
+    auto integrate() -> Q {
+        return adaptor.integrate(1e-20, 1.);
+    }
+
+};
 
 #endif //KELDYSH_MFRG_INTEGRATOR_NR_HPP

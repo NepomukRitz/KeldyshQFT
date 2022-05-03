@@ -145,6 +145,7 @@ public:
 
 
     template<char ch_bubble, typename result_type> auto gammaRb_symmetry_expanded(const VertexInput& input) const -> result_type;
+    template<char ch_bubble, typename result_type, bool r_irred> auto value_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred> auto left_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto left_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
@@ -169,10 +170,12 @@ public:
 
     // Interpolate vertex to updated grid
     void update_grid(double Lambda);
+    /*
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid);
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data);
+    */
 
     void findBestFreqGrid(bool verbose=true);
 
@@ -314,6 +317,40 @@ public:
     const rvert<Q>& avertex() const { return vertex.avertex;}
     const rvert<Q>& pvertex() const { return vertex.pvertex;}
     const rvert<Q>& tvertex() const { return vertex.tvertex;}
+    const rvert<Q>& get_rvertex(const char r) const {
+        switch(r) {
+            case 'a':
+                return vertex.avertex;
+                break;
+            case 'p':
+                return vertex.pvertex;
+                break;
+            case 't':
+                return vertex.tvertex;
+                break;
+            default:
+                assert(false);
+                return vertex.tvertex;
+                break;
+        }
+    }
+    rvert<Q>& get_rvertex(const char r) {
+        switch(r) {
+            case 'a':
+                return vertex.avertex;
+                break;
+            case 'p':
+                return vertex.pvertex;
+                break;
+            case 't':
+                return vertex.tvertex;
+                break;
+            default:
+                assert(false);
+                return vertex.tvertex;
+                break;
+        }
+    }
 
     // wrappers for access functions of fullvert
     template<char ch_bubble> auto value(const VertexInput& input) const -> Q           {
@@ -335,6 +372,17 @@ public:
     template <char ch_bubble> auto right_diff_bare(const VertexInput& input) const -> Q {
         if constexpr(symmtype == symmetric_full or symmtype == symmetric_r_irred ) return vertex.template right_diff_bare<ch_bubble,symmtype==symmetric_r_irred,symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright>(input);
         else                              return vertex.template right_diff_bare<ch_bubble,symmtype==symmetric_r_irred,symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright>(input, vertex_half2);
+    }
+    template <int spin, char ch_bubble, typename result_type> auto value_expanded(const VertexInput& input)  const -> result_type {
+        static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+        assert(input.spin == 0);
+        return vertices_bubbleintegrand[spin].template value_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
+    }
+
+template <int spin, char ch_bubble, typename result_type> auto value_symmetry_expanded(const VertexInput& input)  const -> result_type {
+    static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+    assert(input.spin == 0);
+    return vertices_bubbleintegrand[spin].template value_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
     template <int spin, char ch_bubble, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
@@ -410,7 +458,9 @@ public:
     }
 
     void check_symmetries(const std::string identifier) const {
+        vertex.initializeInterpol();
         vertex.check_symmetries(identifier);
+        vertex.set_initializedInterpol(false);
     }
     template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
         vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded, fullvert<Q>(0., false));
@@ -422,7 +472,7 @@ public:
             vertices_bubbleintegrand[ispin].template symmetry_expand<channel_bubble,is_left_vertex>(half1(), half2(), ispin);
             //utils::print("expanded spin component ", ispin, "\n");
         }
-        set_initializedInterpol(false);
+
     }
     void save_expanded(const std::string& filename_prefix) {
         for (int i = 0; i < vertices_bubbleintegrand.size(); i++) {
@@ -513,13 +563,14 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
         }
     }
     else {
-        Eigen::Matrix<Q, 4, 1> result;
+        result_type result;
+        constexpr int rows = result_type::RowsAtCompileTime;
         switch (spin) {
             case 0:
-                result = bare.template at_vectorized<0,0,4>(iK,i_in);
+                result = bare.template at_vectorized<0,0,rows>(iK,i_in);
                 break;
             case 1:
-                result = -bare.template at_vectorized<0,0,4>(iK,i_in);
+                result = -bare.template at_vectorized<0,0,rows>(iK,i_in);
                 break;
             default:
                 utils::print("Problems in irred.val. Abort.");
@@ -547,9 +598,19 @@ template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
 
 template <typename Q> void irreducible<Q>::initialize(Q val) {
     if (KELDYSH){
-        for (auto i:odd_Keldysh) {
+        if (CONTOUR_BASIS != 1) {
+            // Keldysh basis:
+            for (auto i:odd_Keldysh) {
+                for (int i_in=0; i_in<n_in; ++i_in) {
+                    this->setvert(i, i_in, val);
+                }
+            }
+        }
+        else {
+            // Contour basis:
             for (int i_in=0; i_in<n_in; ++i_in) {
-                this->setvert(i, i_in, val);
+                this->setvert( 0, i_in, val); // for forward contour
+                this->setvert(15, i_in,-val); // for backward contour
             }
         }
     }
@@ -885,6 +946,19 @@ template <typename Q> template<char ch_bubble, typename result_type> auto fullve
     //    utils::print("Something's going wrong with gammaRb. Abort."); assert(false);
     //}
 }
+template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::value_symmetry_expanded(const VertexInput& input) const  -> result_type{
+    result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
+    if constexpr(r_irred) {
+        result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
+        return gamma0 + gamma_Rb;
+    }
+    else {
+        return gamma0
+                + avertex.template value_symmetry_expanded<ch_bubble,result_type>(input, tvertex)
+                + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, pvertex)
+                + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, avertex);
+    }
+}
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
     result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
     if constexpr(r_irred)
@@ -1031,7 +1105,7 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& rig
         right_vertex.tvertex.enforce_freqsymmetriesK3(tvertex);
     }
 
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and defined(USE_FDT)
+#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and USE_FDT
     for (char r:"apt") compute_components_through_FDTs(*this, *this, right_vertex, r);
     for (char r:"apt") compute_components_through_FDTs(right_vertex, right_vertex, *this, r);
 #endif
@@ -1063,6 +1137,7 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
     this->pvertex.update_grid(Lambda);
     this->tvertex.update_grid(Lambda);
 }
+/*
 template <typename Q>
 template<K_class k>
 void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid) {
@@ -1079,6 +1154,7 @@ void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<
     this->tvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.tvertex);
     //Fullvert4data.set_initializedInterpol(false);
 }
+ */
 
 template<class Q>
 void fullvert<Q>::calculate_all_cross_projections() {
@@ -1106,6 +1182,7 @@ template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {
 }
 
 template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
+#if MAX_DIAG_CLASS > 1
     if(p==0) {//infinity (max) norm
         double max = this->avertex.K2.get_vec().max_norm();
         double compare = this->pvertex.K2.get_vec().max_norm();
@@ -1120,8 +1197,12 @@ template <typename Q> auto fullvert<Q>::norm_K2(const int p) const -> double {
         double norm = std::abs((this->avertex.K2.get_vec().get_elements().pow(p) + this->pvertex.K2.get_vec().get_elements().pow(p) + this->tvertex.K2.get_vec().get_elements().pow(p)).sum());
         return pow(norm, 1./((double)p));
     }
+#else
+    return 0.;
+#endif
 }
 template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
+#if MAX_DIAG_CLASS > 2
     if(p==0) {//infinity (max) norm
         double max = this->avertex.K3.get_vec().max_norm();
         double compare = this->pvertex.K3.get_vec().max_norm();
@@ -1136,6 +1217,9 @@ template <typename Q> auto fullvert<Q>::norm_K3(const int p) const -> double {
         double norm = std::abs((this->avertex.K3.get_vec().get_elements().pow(p) + this->pvertex.K3.get_vec().get_elements().pow(p) + this->tvertex.K3.get_vec().get_elements().pow(p)).sum());
         return pow(norm, 1./((double)p));
     }
+#else
+    return 0.;
+#endif
 }
 template <typename Q> auto fullvert<Q>::sum_norm(const int p) const -> double {
     double result = 0.;

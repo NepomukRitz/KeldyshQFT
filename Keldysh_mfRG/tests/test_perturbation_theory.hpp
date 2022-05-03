@@ -537,7 +537,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     utils::print("--- CHECK RESULTS: ---", true);
     utils::print("--- print relative error of quantities that should be zero ---", true);
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     int iK = 1;
 #else
     int iK = 0;
@@ -547,7 +547,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     VertexInput input_p (iK, it_spin, 0., 0., 0., 0, 'p');
     VertexInput input_t (iK, it_spin, 0., 0., 0., 0, 't');
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     vec<int> iK2s = {1, 2, 4}; // Keldysh indices of fully retarded components of K2
 #else
     vec<int> iK2s = {0}; // Keldysh indices of Matsubara component of K2
@@ -558,38 +558,38 @@ void test_PT4(double Lambda, bool write_flag = false) {
                            "PT2: K1a - exact: ", "PT2: K1p - exact: ",
                            "PT3: K1a - exact: ", "PT3: K1p - exact: ", "PT3: K1t - exact: ",
                            "PT3: K2a[1] - exact: ", "PT3: K2p[1] - exact: ", "PT3: K2t[1] - exact: ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT3: K2a[2] - exact: ", "PT3: K2p[2] - exact: ", "PT3: K2t[2] - exact: ",
                            "PT3: K2a[4] - exact: ", "PT3: K2p[4] - exact: ", "PT3: K2t[4] - exact: "
                             ,
 #endif
                            "PT4: (K2a[1] <- K1p) + (K2p[1] <- K1a): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1p) + (K2p[2] <- K1a): ",
                            "PT4: (K2a[4] <- K1p) + (K2p[4] <- K1a): ",
 #endif
                            "PT4: (K2a[1] <- K1t) + (K2p[1] <- K1t): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K1t) + (K2p[2] <- K1t): ",
                            "PT4: (K2a[4] <- K1t) + (K2p[4] <- K1t): ",
 #endif
                            "PT4: (K2a[1] <- K2a) + (K2p[1] <- K2p): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2a) + (K2p[2] <- K2p): ",
                            "PT4: (K2a[4] <- K2a) + (K2p[4] <- K2p): ",
 #endif
                            "PT4: (K2a[1] <- K2p) + (K2p[1] <- K2a): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2p) + (K2p[2] <- K2a): ",
                            "PT4: (K2a[4] <- K2p) + (K2p[4] <- K2a): ",
 #endif
                            "PT4: (K2a[1] <- K2t) + (K2p[1] <- K2t): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2a[2] <- K2t) + (K2p[2] <- K2t): ",
                            "PT4: (K2a[4] <- K2t) + (K2p[4] <- K2t): ",
 #endif
                            "PT4: (K2t[1] <- K2a) + (K2t[1] <- K2t): ",
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                            "PT4: (K2t[2] <- K2a) + (K2t[2] <- K2t): ",
                            "PT4: (K2t[4] <- K2a) + (K2t[4] <- K2t): ",
 #endif
@@ -606,7 +606,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT3_K1a_0 = PT3_K1a.vertex.avertex().valsmooth<k1>(input_a, PT3_K1a.vertex.tvertex());
     state_datatype PT3_K1p_0 = PT3_K1p.vertex.pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex.pvertex());
     state_datatype PT3_K1t_0 = PT3_K1t.vertex.tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex.avertex());
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     state_datatype PT2_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
     state_datatype PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
@@ -672,7 +672,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
             PT4_K2t_0_t2[iK2] = PT4_31_t_t2.vertex.tvertex().valsmooth<k2>(input_t, PT4_31_t_t2.vertex.avertex());
         }
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
         state_datatype PT3_K2_exact =
                 -(1. / 2.) * (2. - M_PI * M_PI / 4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
 #else
@@ -714,7 +714,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             , (PT3_K2a_0[0] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2p_0[0] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2t_0[0] - PT3_K2_exact)/PT3_K2_exact
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT3_K2a_0[1] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2p_0[1] - PT3_K2_exact)/PT3_K2_exact
                             , (PT3_K2t_0[1] - PT3_K2_exact)/PT3_K2_exact
@@ -723,32 +723,32 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             , (PT3_K2t_0[2] - PT3_K2_exact)/PT3_K2_exact
 #endif
                             , (PT4_K2a_0_p1[0] + PT4_K2p_0_a1[0])/(std::abs(PT4_K2a_0_p1[0]) + std::abs(PT4_K2p_0_a1[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_p1[1] + PT4_K2p_0_a1[1])/(std::abs(PT4_K2a_0_p1[1]) + std::abs(PT4_K2p_0_a1[1]))
                             , (PT4_K2a_0_p1[2] + PT4_K2p_0_a1[2])/(std::abs(PT4_K2a_0_p1[2]) + std::abs(PT4_K2p_0_a1[2]))
 #endif
                             , (PT4_K2a_0_t1[0] + PT4_K2p_0_t1[0])/(std::abs(PT4_K2a_0_t1[0]) + std::abs(PT4_K2p_0_t1[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_t1[1] + PT4_K2p_0_t1[1])/(std::abs(PT4_K2a_0_t1[1]) + std::abs(PT4_K2p_0_t1[1]))
                             , (PT4_K2a_0_t1[2] + PT4_K2p_0_t1[2])/(std::abs(PT4_K2a_0_t1[2]) + std::abs(PT4_K2p_0_t1[2]))
 #endif
                             , (PT4_K2a_0_a2[0] + PT4_K2p_0_p2[0])/(std::abs(PT4_K2a_0_a2[0]) + std::abs(PT4_K2p_0_p2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_a2[1] + PT4_K2p_0_p2[1])/(std::abs(PT4_K2a_0_a2[1]) + std::abs(PT4_K2p_0_p2[1]))
                             , (PT4_K2a_0_a2[2] + PT4_K2p_0_p2[2])/(std::abs(PT4_K2a_0_a2[2]) + std::abs(PT4_K2p_0_p2[2]))
 #endif
                             , (PT4_K2a_0_p2[0] + PT4_K2p_0_a2[0])/(std::abs(PT4_K2a_0_p2[0]) + std::abs(PT4_K2p_0_a2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_p2[1] + PT4_K2p_0_a2[1])/(std::abs(PT4_K2a_0_p2[1]) + std::abs(PT4_K2p_0_a2[1]))
                             , (PT4_K2a_0_p2[2] + PT4_K2p_0_a2[2])/(std::abs(PT4_K2a_0_p2[2]) + std::abs(PT4_K2p_0_a2[2]))
 #endif
                             , (PT4_K2a_0_t2[0] + PT4_K2p_0_t2[0])/(std::abs(PT4_K2a_0_t2[0]) + std::abs(PT4_K2p_0_t2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2a_0_t2[1] + PT4_K2p_0_t2[1])/(std::abs(PT4_K2a_0_t2[1]) + std::abs(PT4_K2p_0_t2[1]))
                             , (PT4_K2a_0_t2[2] + PT4_K2p_0_t2[2])/(std::abs(PT4_K2a_0_t2[2]) + std::abs(PT4_K2p_0_t2[2]))
 #endif
                             , (PT4_K2t_0_a2[0] + PT4_K2t_0_t2[0])/(std::abs(PT4_K2t_0_a2[0]) + std::abs(PT4_K2t_0_t2[0]))
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
                             , (PT4_K2t_0_a2[1] + PT4_K2t_0_t2[1])/(std::abs(PT4_K2t_0_a2[1]) + std::abs(PT4_K2t_0_t2[1]))
                             , (PT4_K2t_0_a2[2] + PT4_K2t_0_t2[2])/(std::abs(PT4_K2t_0_a2[2]) + std::abs(PT4_K2t_0_t2[2]))
 #endif
@@ -1034,7 +1034,7 @@ void test_K2_correctness(double Lambda){
 
     cvec K1a_diff(nBOS);
     for(int iw=0; iw<nBOS; ++iw){
-        K1a_diff[iw] = PT4_K1a22.vertex.avertex().K1_val(0, iw, 0) - PT2_K1a.vertex.avertex().K1_val(0, iw, 0);
+        K1a_diff[iw] = PT4_K1a22.vertex.avertex().K1.val(0, iw,0, 0) - PT2_K1a.vertex.avertex().K1.val(0, iw,0, 0);
     }
 
     utils::print("Testing correctness of K2a. Using U=" +std::to_string(glb_U)+ " and Lambda="+std::to_string(Lambda)
@@ -1208,11 +1208,11 @@ class TestIntegrandK1a{
         double wu = vmax;
         double spacing = (bfreqs.t_upper - bfreqs.t_lower) / (double)npoints;
         for (int i=0; i<npoints; ++i) {
-            double vpp = bfreqs.grid_transf_inv(bfreqs.t_lower + i * spacing);
+            double vpp = bfreqs.frequency_from_t(bfreqs.t_lower + i * spacing);
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1235,12 +1235,12 @@ class TestIntegrandK1a{
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1248,11 +1248,11 @@ class TestIntegrandK1a{
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i + 1) * (1 - frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i + 1) * (1 - frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1299,19 +1299,19 @@ void test_integrate_over_K1(double Lambda) {
     vec<double> freqs = {};
     int num_freqs = 0;
     double Delta = (glb_Gamma+Lambda)/2.;
-    Q result = integrator_Matsubara_T0<Q,0>(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
+    Q result = integrator_Matsubara_T0(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
     utils::print("Result of the integration over K1a:", result, true);
     utils::print("relative difference: ", (result-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a2(Lambda, 't', (v-vp)*2, v, vp);
-    Q result2 = integrator_Matsubara_T0<Q,0>(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
+    Q result2 = integrator_Matsubara_T0(IntegrandK1a2, -vmax, vmax, (v-vp), freqs, Delta)/ (2*M_PI);
     utils::print("Result of the integration over K1a from the t-channel:", result2, true);
     utils::print("relative difference: ", (result2-exact_result)/exact_result, true);
 
 
     TestIntegrandK1a<Q> IntegrandK1a3(Lambda, 'p', (v+vp)*2, v, vp);
-    Q result3 = integrator_Matsubara_T0<Q,0>(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
+    Q result3 = integrator_Matsubara_T0(IntegrandK1a3, -vmax, vmax, (v+vp), freqs, Delta)/ (2*M_PI);
     utils::print("Result of the integration over K1a from p-channel:", result3, true);
     utils::print("relative difference: ", (result3-exact_result)/exact_result, true);
 
@@ -1321,7 +1321,7 @@ void test_integrate_over_K1(double Lambda) {
     IntegrandK1a.save_state();
 }
 
-#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
 auto SOPT_K1a(double w, double Lambda) -> double {
     double Delta = (glb_Gamma + Lambda) / 2.;
     double result;
@@ -1375,7 +1375,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1398,12 +1398,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1411,11 +1411,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1468,7 +1468,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1491,12 +1491,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1504,11 +1504,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1558,7 +1558,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1581,12 +1581,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=1; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1594,11 +1594,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1630,11 +1630,12 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
 
-    const int N_iterations = 0;
     State<Q> state_cpp (Lambda);   // create final and initial state
     state_cpp.initialize();             // initialize state
-    //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
-    //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+#ifdef ADAPTIVE_GRID
+    const int N_iterations = 1;
+    write_state_to_hdf(data_dir+"PTstate_preOpt.h5", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
+    write_state_to_hdf(data_dir+"PTstate_postOpt.h5", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
 
     for (int it = 0; it < N_iterations; it++) {
         State<Q> state_temp (state_cpp, Lambda);   // copy frequency grids //
@@ -1642,16 +1643,18 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         fopt_state(state_temp, Lambda);
 
 
-        add_state_to_hdf("PTstate_preOpt", it+1, state_temp);  // save the initial state to hdf5 file
-        state_temp.vertex.half1().check_vertex_resolution();
-        state_temp.vertex.half1().findBestFreqGrid(true);
+        add_state_to_hdf(data_dir+"PTstate_preOpt.h5", it+1, state_temp);  // save the initial state to hdf5 file
+        //state_temp.vertex.half1().check_vertex_resolution();
+        state_temp.findBestFreqGrid(true);
         state_temp.vertex.half1().check_vertex_resolution();
         state_temp.analyze_tails();
 
         state_cpp.set_frequency_grid(state_temp);
-        add_state_to_hdf("PTstate_postOpt", it+1, state_temp);  // save the initial state to hdf5 file
-    }
 
+
+        add_state_to_hdf(data_dir + "PTstate_postOpt.h5", it+1, state_temp);  // save the initial state to hdf5 file
+    }
+#endif
 
     fopt_state(state_cpp, Lambda);
     //state_cpp.vertex.half1().check_vertex_resolution();
@@ -1667,9 +1670,9 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     idx_SE[my_defs::SE::internal] = 0;
     for (int i = 0; i<nFER; i++) {
         idx_SE[my_defs::SE::nu] = i;
-        double v = PT_state.selfenergy.Sigma.frequencies.b.get_ws(i);
+        double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
         Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
-        Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
 
@@ -1680,18 +1683,18 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     idx_K1[my_defs::K1::internal] = 0;
     for (int i = 0; i<nBOS; i++) {
         idx_K1[my_defs::K1::omega] = i;
-        double w = PT_state.vertex.avertex().K1.frequencies.b.get_ws(i);
+        double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1, idx_K1);
-        w = PT_state.vertex.pvertex().K1.frequencies.b.get_ws(i);
+        w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1, idx_K1);
-        w = PT_state.vertex.tvertex().K1.frequencies.b.get_ws(i);
+        w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1/glb_U, idx_K1);
@@ -1710,7 +1713,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
             double w, v;
             PT_state.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
             Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
-            Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
+            Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
             PT_state.vertex.avertex().K2.setvert(val_K2, idx_K2);
             PT_state.vertex.pvertex().K2.setvert(val_K2, idx_K2);
             PT_state.vertex.tvertex().K2.setvert(val_K2, idx_K2);
@@ -1725,26 +1728,26 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     idx_K2[my_defs::K3::internal] = 0;
     for (int i = 0; i<nBOS3; i++) {
         for (int j = 0; j<nFER3; j++) {
-            for (int k = 0; k<nFER3; k++) {
+            for (int k = 0; k<(GRID!=2 ? nFER3 : (nFER3-1)/2+1); k++) {
                 idx_K3[my_defs::K3::omega] = i;
                 idx_K3[my_defs::K3::nu] = j;
                 idx_K3[my_defs::K3::nup] = k;
                 double w, v, vp;
                 PT_state.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
                 Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
-                Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.avertex().K3.setvert(val_K3, idx_K3);
 
                 PT_state.vertex.pvertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
                 Integrand_FOPTK3a<Q> IntegrandK3_2(Lambda, w, v, vp, diff, Pi);
-                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_2, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_2, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.pvertex().K3.setvert(-val_K3, idx_K3);
 
                 PT_state.vertex.tvertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
                 Integrand_FOPTK3a<Q> IntegrandK3_3(Lambda, w, v, vp, diff, Pi);
-                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
-                Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0<Q,6>(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
+                Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.tvertex().K3.setvert(-2.*(val_K3-val_K3_ap), idx_K3);
             }
         }
@@ -1761,13 +1764,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     utils::print("K1a-difference: ", state_diff.vertex.avertex().K1.get_vec().max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
     utils::print("K1p-difference: ", state_diff.vertex.pvertex().K1.get_vec().max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
     utils::print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
-#ifdef DEBUG_SYMMETRIES
-    utils::print("K1a_hat-difference: ", (state_cpp.vertex[1].avertex().K1.get_vec() + state_cpp.vertex.tvertex().K1.get_vec()).max_norm() /  state_cpp.vertex.tvertex().K1.get_vec().max_norm(), true);
-    utils::print("K1p_hat-difference: ", (state_cpp.vertex[1].pvertex().K1.get_vec() + state_cpp.vertex.pvertex().K1.get_vec()).max_norm() / PT_state.vertex.pvertex().K1.get_vec().max_norm(), true);
-    utils::print("K1t_hat-difference: ", (state_cpp.vertex[1].tvertex().K1.get_vec() + state_cpp.vertex.avertex().K1.get_vec()).max_norm() / PT_state.vertex.avertex().K1.get_vec().max_norm(), true);
-    write_h5_rvecs("../Data_MF/PT_hat.h5", {"K1a_hat", "K1p_hat", "K1t_hat"}, {state_cpp.vertex[1].avertex().K1.get_vec().real(), state_cpp.vertex[1].pvertex().K1.get_vec().real(), state_cpp.vertex[1].tvertex().K1.get_vec().real()});
 
-#endif
 
     if (MAX_DIAG_CLASS > 1) {
         utils::print("K2a-difference: ", state_diff.vertex.avertex().K2.get_vec().max_norm() / PT_state.vertex.avertex().K2.get_vec().max_norm(), true);
@@ -1816,7 +1813,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1839,12 +1836,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1852,11 +1849,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1913,7 +1910,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1936,12 +1933,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1949,11 +1946,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2006,7 +2003,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2029,12 +2026,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2042,11 +2039,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2104,7 +2101,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2127,12 +2124,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2140,11 +2137,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2164,7 +2161,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
-        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,2>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp, vp}, Delta);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp, vp}, Delta);
         return -glb_U * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
@@ -2202,7 +2199,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2225,12 +2222,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2238,11 +2235,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2262,7 +2259,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
-        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,1>(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp}, Delta);
+        state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp}, Delta);
         return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
@@ -2300,7 +2297,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2323,12 +2320,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=1; i<nBOS-1; ++i) {
-            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2336,11 +2333,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->SOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2360,7 +2357,7 @@ public:
     auto operator() (double vpp) const -> Q {
 
         K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, vpp, vp, false, Pi);
-        state_datatype val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0<state_datatype,3>(IntegrandK3, -vmax, vmax, std::abs(w/2), {vpp, vp, std::abs(vpp)-std::abs(vp)}, Delta);
+        state_datatype val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w/2), {vpp, vp, std::abs(vpp)-std::abs(vp)}, Delta);
         return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K3;
         //return vpp*vpp;
     }
@@ -2420,7 +2417,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
         Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
-#ifndef DEBUG_SYMMETRIES
+#if not DEBUG_SYMMETRIES
         dGammaL_half1.half1().reorder_due2antisymmetry(dGammaR_half1.half1());
 #endif
         K1rdot_PIa_K1p.vertex = dGammaL_half1;
@@ -2495,7 +2492,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1rdot_PIa_K1p_exact.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
             K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
-                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
             K1rdot_PIa_K1p_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
             //    }
         }
@@ -2510,7 +2507,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1rdot_PIa_K1p_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
             K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                    integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
                                                                                 std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta, true);
             K1rdot_PIa_K1p_exact.vertex.avertex().K3.setvert(val_K3, it_spin, i, j, k, 0, 0);
@@ -2546,7 +2543,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1p_PIa_K1rdot_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
             K1p_PIa_K1rdot_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator_Matsubara_T0<state_datatype, 6>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                    integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
                                                                                 std::abs(w) - std::abs(v), std::abs(w) + std::abs(v)}, Delta, true);
             K1p_PIa_K1rdot_exact.vertex.avertex().K3.setvert(val_K3, 0, it_spin, i, j, k, 0);
@@ -2575,7 +2572,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             dGammaC_exact.vertex.avertex().K1.frequencies.get_freqs_w(w, i);
             IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
             state_datatype val_K1 =
-                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 0>(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta, true);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta, true);
             dGammaC_exact.vertex.avertex().K1.setvert(val_K1, it_spin, i, 0, 0);
         }
 
@@ -2589,7 +2586,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             dGammaC_exact.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
             IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
             state_datatype val_K2 =
-                    1. / (2 * M_PI) * integrator_Matsubara_T0<state_datatype, 1>(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
+                    1. / (2 * M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
             dGammaC_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
             //    }
         }
@@ -2604,7 +2601,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             dGammaC_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
             IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
-                                    integrator_Matsubara_T0<state_datatype, 3>(IntegrandK3, -vmax, vmax, std::abs(w / 2),
+                                    integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                   {v, vp, std::abs(v) - std::abs(vp)}, Delta, true);
             dGammaC_exact.vertex.avertex().K3.setvert(val_K3, it_spin, i, j, k, 0, 0);
             //    }
@@ -2632,37 +2629,161 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     }
 }
 #else
+template <int type = 2>
 auto SOPT_K1a(double w, double Lambda) -> comp {
-    double Delta = (glb_Gamma + Lambda) / 2.;
+
+    double Delta = REG == 2 ? (glb_Gamma + Lambda) / 2. : glb_Gamma * 0.5;
     const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
-    comp result;
-    if (w == 0.)
-        result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
-    else
-        result = - glb_U*glb_U * Delta/M_PI / ((glb_i * w)*(2*Delta + (glb_i * w))) * log(1. + ((glb_i * w)*(2*Delta + (glb_i * w)))/(Delta*Delta + HF_corr*HF_corr)) * 0.5;
-    return result;
+
+    auto advanced = [Delta,HF_corr](const double w_) -> comp {
+        if (w_ == 0.)
+            return - glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
+        else
+            return - glb_U*glb_U * Delta/M_PI / ((glb_i * w_)*(2*Delta + (glb_i * w_))) * log(1. + ((glb_i * w_)*(2*Delta + (glb_i * w_)))/(Delta*Delta + HF_corr*HF_corr)) * 0.5;
+    };
+
+    if (type == 2) {
+        /// advanced component of K1a in SOPT:
+        comp result = advanced(w);
+        return result;
+    }
+    else if (type == 1) {
+        /// retarded component of K1a in SOPT:
+        comp result = conj(advanced(w));
+        return result;
+    }
+    else {
+        assert(type == 0);
+        /// Keldysh component of K1a in SOPT:
+        const comp adv = advanced(w);
+        const comp ret = conj(adv);
+        const comp result = sgn(w) * (ret - adv);
+        return result;
+    }
+
 }
+template <int type = 2>
 auto SOPT_K1a_diff(double w, double Lambda) -> comp {
     double Delta = (glb_Gamma + Lambda) / 2.;
     const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
-    if (std::abs(w) < inter_tol) return - glb_U*glb_U      /2./ M_PI / (Delta*Delta + HF_corr*HF_corr)
-                                   + glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta ;
-    const comp term1 =  - glb_U*glb_U      /2./M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + HF_corr*HF_corr));
-    const comp term2 =  + glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w))) * log(1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + HF_corr*HF_corr)) / (2.*Delta + (-glb_i * w));
-    const comp term3 =  - glb_U*glb_U * Delta /M_PI / ((-glb_i * w)*(2.*Delta + (-glb_i * w)))   /  (1. + ((-glb_i * w)*(2*Delta + (-glb_i * w)))/(Delta*Delta + HF_corr*HF_corr))
-                    *(
-                            std::abs(w)                      / (Delta*Delta + HF_corr*HF_corr)
-                            -(-glb_i * w) * (2*Delta + (-glb_i * w)) / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta
-                    );
-    return term1 + term2 + term3;
+
+    auto advanced = [Delta,HF_corr](const double w_) -> comp {
+        if (std::abs(w_)  == 0) return (- glb_U*glb_U / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5
+                                        + glb_U*glb_U / M_PI / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta * Delta )*0.5 ;
+        else {
+            comp term1 = -glb_U * glb_U * 0.5   / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr));
+            comp term2 = +glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr)) /
+                         (2. * Delta + (glb_i * w_));
+            comp term3 = -glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) /    (1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr))
+                         * (
+                                 (glb_i * w_) / (Delta * Delta + HF_corr * HF_corr)
+                                 - (glb_i * w_) * (2 * Delta + (glb_i * w_)) / (Delta * Delta + HF_corr * HF_corr) /
+                                   (Delta * Delta + HF_corr * HF_corr) * Delta
+                         );
+            return (term1 + term2 + term3) * 0.5;
+        }
+    };
+
+
+    if (type == 2) {
+        /// advanced component of K1a in SOPT:
+        comp result = advanced(w);
+        return result;
+    }
+    else if (type == 1) {
+        /// retarded component of K1a in SOPT:
+        comp result = conj(advanced(w));
+        return result;
+    }
+    else {
+        assert(type == 0);
+        /// Keldysh component of K1a in SOPT:
+        const comp adv = advanced(w);
+        const comp ret = conj(adv);
+        const comp result = sgn(w) * (ret - adv);
+        return result;
+    }
 }
 
+template <typename Q, int type>
+class Integrand_SOPT_SE {
+    const double v;
+    const double Lambda;
+    const double Delta;
+    const Propagator<Q>& barePropagator;
+
+public:
+    Integrand_SOPT_SE(const double v, const double Lambda, const Propagator<Q>& propagator) :
+    v(v), Lambda(Lambda), Delta(REG == 2 ? (Lambda + glb_Gamma) * 0.5 : glb_Gamma * 0.5), barePropagator(propagator) {};
+
+    auto value(const double vp) const -> Q {
+        const Q KR = SOPT_K1a<2>(vp - v, Lambda);
+        const Q KA = conj(KR);
+        const Q KK = SOPT_K1a<0>(vp - v, Lambda);
+        const Q K00 = ( KR + KA + KK);// * 0.5;
+        const Q K01 = ( KR - KA - KK);// * 0.5;
+        const Q K10 = (-KR + KA - KK);// * 0.5;
+        const Q K11 = (-KR - KA + KK);// * 0.5;
+
+        using buffertype_propagator = Eigen::Matrix<Q,2,2>;
+        const buffertype_propagator G = barePropagator.template valsmooth_vectorized<buffertype_propagator>(vp, 0);
+#if CONTOUR_BASIS == 1
+        const Q G00 = G(0,0);
+        const Q G01 = G(0,1);
+        const Q G10 = G(1,0);
+        const Q G11 = G(1,1);
+#else
+        const Q GA_ = G(0,1);
+        const Q GR_ = G(1,0);
+        const Q GK_ = G(1,1);
+        const Q G00 = 0.5*( GA_ + GR_ + GK_);
+        const Q G01 = 0.5*( GA_ - GR_ + GK_);
+        const Q G10 = 0.5*(-GA_ + GR_ + GK_);
+        const Q G11 = 0.5*(-GA_ - GR_ + GK_);
+#endif
+
+        const Q Sigma00 = K00 * G00;
+        const Q Sigma01 = K01 * G01;
+        const Q Sigma10 = K10 * G10;
+        const Q Sigma11 = K11 * G11;
+
+        if (type == 1) {
+            /// retarded component of selfenergy:
+            const Q result = (Sigma00 + Sigma01 - Sigma10 - Sigma11) * 0.5;
+            return result * glb_i;
+        }
+        else if (type == 0){
+            /// Keldysh component of selfenergy;
+            const Q result = (Sigma00 - Sigma01 - Sigma10 + Sigma11) * 0.5;
+            return result * glb_i;
+        }
+        else {
+            assert(type == 3);
+            /// vanishing non-causal component
+            const Q result = (Sigma00 + Sigma01 + Sigma10 + Sigma11) * 0.5;
+            return result * glb_i;
+
+        }
+
+    }
+
+
+
+    auto operator() (const double vp) const -> Q {
+        return (value(vp) + value(-vp)) * 0.5;
+    }
+
+
+};
 
 #if REG==2
 template <typename Q>
 void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
+#ifndef ZERO_TEMP
+    assert(false);
+#endif
     const int it_spin = 0;
     double vmax = 100;
     double Delta = (glb_Gamma + Lambda) / 2.;
@@ -2675,7 +2796,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     state_cpp.initialize();             // initialize state
     //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
     //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
-    sopt_state(state_cpp, Lambda);
+    sopt_state(state_cpp, Lambda, diff);
     //state_cpp.vertex.half1().check_vertex_resolution();
     //state_cpp.analyze_tails();
 
@@ -2684,32 +2805,42 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     State<state_datatype> PT_state(state_cpp, Lambda);
 
     // compute SOPT self-energy (numerically exact)
-    //for (int i = 0; i<nFER; i++) {
-    //    double v = PT_state.selfenergy.Sigma.frequencies.b.get_ws(i);
-    //    Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
-    //    Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0<Q,1>(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
-    //    PT_state.selfenergy.setself(0, i, 0, val_SE);
-    //}
+    for (int i = 0; i<nFER; i++) {
+        double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
+        Integrand_SOPT_SE<Q,1> IntegrandSE_R(v, Lambda, barePropagator);
+        Q val_SE_R = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandSE_R, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        PT_state.selfenergy.setself(0, i, 0, val_SE_R);
+
+        Integrand_SOPT_SE<Q,0> IntegrandSE_K(v, Lambda, barePropagator);
+        Q val_SE_K = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandSE_K, -vmax, vmax, std::abs(0.), {v}, Delta, true);
+        PT_state.selfenergy.setself(1, i, 0, val_SE_K);
+    }
 
     // get SOPT K1 (exact)
     utils::print("Compute exact solution for SOPT: \n");
 #pragma omp parallel for
     for (int i = 0; i<nBOS; i++) {
-        double w = PT_state.vertex.avertex().K1.frequencies.b.get_ws(i);
-        Q val_K1;
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
-        Q val_K1_K = state_cpp.vertex.avertex().K1.val(it_spin, i, 1, 0); // - 2. * glb_i * Fermi_fac(w, glb_mu) * val_K1.imag();
+        double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
+
+        const Q KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
+        const Q KA = conj(KR);
+        const Q KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
+        const Q K00 = ( KR + KA + KK);// * 0.5;
+        const Q K01 = ( KR - KA - KK);// * 0.5;
+        const Q K10 = (-KR + KA - KK);// * 0.5;
+        const Q K11 = (-KR - KA + KK);// * 0.5;
+        Q val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        Q val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1  , it_spin,  i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);
-        w = PT_state.vertex.pvertex().K1.frequencies.b.get_ws(i);
+        w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1  , it_spin, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1_K, it_spin, i, 1, 0);
-        w = PT_state.vertex.tvertex().K1.frequencies.b.get_ws(i);
+        w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
         val_K1_K = state_cpp.vertex.tvertex().K1.val(it_spin, i, 1, 0);

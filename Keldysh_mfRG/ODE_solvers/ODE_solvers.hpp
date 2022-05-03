@@ -22,6 +22,13 @@
 /// [IMPLEMENTED in unit_tests/test_ODE_solver] solve medium ODE with known solution and check accuracy of result with different choices of epsODE_rel
 
 
+template <typename Y>
+void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
+    std::cout << "current value: " << y.value << std::endl;
+}
+template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y_run, double x_run, vec<double> x_vals, int iteration, std::string filename, const bool verbose);
+
+
 /**
  * Explicit RK4 using non-constant step-width determined by substitution, allowing to save state at each Lambda step.
  * Allows for checkpointing: If last parameter it_start is given, ODE solver starts at this iteration (to continue
@@ -39,9 +46,9 @@
  * @param filename  : output file name
  * @param it_start  : Lambda iteration at which to start solving the flow
  */
-template <typename T>
+template <typename T, typename System>
 void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
-                    T rhs (const T& y, const double x, const vec<size_t> opt),
+                    const System& rhs,
                     double subst(double x), double resubst(double x),
                     const int N_ODE,
                     const std::vector<double> lambda_checkpoints = {}, std::string filename="", const int it_start=0, bool save_intermediate_states=false) {
@@ -60,8 +67,8 @@ void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x
         old_ode_solvers::RK4_step(y_run, x_run, dx, rhs, x_vals, filename, i, save_intermediate_states);
 
         // update frequency grid, interpolate result to new grid
-        y_run.update_grid(x_run); // specific for state
-        //y_run.findBestFreqGrid(x_run); // specific for state
+        postRKstep_stuff<T>(y_run, x_run, x_vals, i, filename, true);
+
     }
     y_fin = y_run; // final y value
 }
@@ -307,8 +314,9 @@ namespace ode_solver_impl
         {
             err += k[stage] * stepsize * tableau.get_error_b(stage);
         }
-        Y y_scale = (abs(result) + abs(dydx*stepsize)) * config.relative_error + config.absolute_error;
+        Y y_scale = (abs(result) * config.a_State + abs(dydx*stepsize) * config.a_dState_dLambda) * config.relative_error + config.absolute_error;
         maxrel_error = max_rel_err(err, y_scale); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
+        if (VERBOSE) utils::print("ODE solver error estimate: ", maxrel_error, "\n");
         //assert(isfinite(result));
         //assert(isfinite(maxrel_error));
     }
@@ -373,6 +381,10 @@ namespace ode_solver_impl
                 std::cout << "Current t: " << t_value << std::endl;
             };
             ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs, config);
+
+            if constexpr(std::is_same<State<state_datatype>, Y>::value) {
+                rhs.rk_step = 0;
+            }
 
             if (not tableau.adaptive) break;
 
@@ -459,12 +471,6 @@ namespace ode_solver_impl
 } // namespace ode_solver_impl
 
 
-template <typename Y>
-void postRKstep_stuff(Y& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
-    std::cout << "current value: " << y.value << std::endl;
-}
-template<> void postRKstep_stuff<State<state_datatype>>(State<state_datatype>& y_run, double x_run, vec<double> x_vals, int iteration, std::string filename, const bool verbose);
-
 
 /**
  * ODE solver with different options --> master_parameters.h
@@ -537,7 +543,9 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
             utils::print("i: ", i, true);
             utils::print("Lambda: ", Lambda, true);
         };
-
+        if constexpr(std::is_same<State<state_datatype>, Y>::value) {
+            rhs.iteration = i;
+        }
 
         //if next step would get us outside the interval [Lambda_f, Lambda_i]
         if ((Lambda + h - Lambda_f) * (Lambda + h - Lambda_i) > 0.0)
@@ -737,11 +745,11 @@ namespace boost {
 
                         ++integration_step_count;
                         if(integration_step_count >= MAXSTP) {
-                            if (verbose and mpi_world_rank()==0) utils::print("ODE solver reached maximal number of steps.");
+                            if (mpi_world_rank()==0) utils::print("ODE solver reached maximal number of steps.");
                             break;
                         }
                     }
-                    if (verbose and mpi_world_rank()==0) utils::print(" ODE solver finished with ", integration_step_count, " integration steps.\n\n");
+                    if (mpi_world_rank()==0) utils::print(" ODE solver finished with ", integration_step_count, " integration steps.\n\n");
                     return start_state;
                 }
 

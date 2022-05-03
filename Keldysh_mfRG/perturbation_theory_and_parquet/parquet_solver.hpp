@@ -41,6 +41,7 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
 }
 
 
+inline int SDE_counter = 0;
 /**
  * Wrapper for the above function, with only the symmetrized result Gamma_BSE returned.
  * @param Gamma_BSE  : Vertex computed as the lhs of the BSE
@@ -49,15 +50,18 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, Vertex<Q>& Gamma_BSE_L, Vertex<Q>& Gamma_
  */
 template <typename Q>
 void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
+    bool write_state = false;
     Vertex<Q> Gamma_BSE_L (Lambda);
     Vertex<Q> Gamma_BSE_R (Lambda);
     compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda);
 
 #ifndef NDEBUG
-    State<Q> state_L(Gamma_BSE_L, state_in.selfenergy);
-    State<Q> state_R(Gamma_BSE_R, state_in.selfenergy);
-    add_state_to_hdf(data_dir + "Parquet_GammaL", it_Lambda, state_L); // save input into 0-th layer of hdf5 file
-    add_state_to_hdf(data_dir + "Parquet_GammaR", it_Lambda, state_R); // save input into 0-th layer of hdf5 file
+    if (write_state) {
+        State<Q> state_L(Gamma_BSE_L, state_in.selfenergy);
+        State<Q> state_R(Gamma_BSE_R, state_in.selfenergy);
+        add_state_to_hdf(data_dir + "Parquet_GammaL", it_Lambda, state_L); // save input into 0-th layer of hdf5 file
+        add_state_to_hdf(data_dir + "Parquet_GammaR", it_Lambda, state_R); // save input into 0-th layer of hdf5 file
+    }
 #endif
 }
 
@@ -72,11 +76,15 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
                  const State<Q>& state_in, const double Lambda) {
+    bool write_state = false;
+
     Vertex<Q> Gamma_0 (Lambda);                  // bare vertex
     Gamma_0.set_frequency_grid(state_in.vertex);
-    if (KELDYSH) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
+    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
     else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
+
+    //G.save_propagator_values(data_dir + "parquetPropagator.h5", G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies());
 
     // compute the a bubble with full vertex on the right
     GeneralVertex<Q,symmetric_r_irred> bubble_a_r (Lambda);
@@ -94,9 +102,11 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     // compute the self-energy via SDE using the a bubble
     Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    //bubble_a.avertex().K2 *= 0.;
     loop(Sigma_SDE_a, bubble_a, G, false);
     utils::print("Check causality of Sigma_SDE_a: \n");
     check_SE_causality(Sigma_SDE_a);
+    compare_with_FDTs(bubble_a, state_in.Lambda, SDE_counter, "SDE_bubble_a_" + std::to_string(SDE_counter));
 
     // compute the p bubble with full vertex on the right
     GeneralVertex<Q,symmetric_r_irred> bubble_p_r (Lambda);
@@ -114,14 +124,46 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     // compute the self-energy via SDE using the p bubble
     Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    //bubble_p.pvertex().K2 *= 0.;
     loop(Sigma_SDE_p, bubble_p, G, false);
     utils::print("Check causality of Sigma_SDE_p: \n");
     check_SE_causality(Sigma_SDE_p);
+    compare_with_FDTs(bubble_p, state_in.Lambda, SDE_counter, "SDE_bubble_p_" + std::to_string(SDE_counter));
+
 
     // symmetrize the contributions computed via a/p bubble
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
     utils::print("Check causality of Sigma_SDE: \n");
     check_SE_causality(Sigma_SDE);
+
+    utils::print(" ---> difference between K1a-left and -right: ", (bubble_a_l - bubble_a_r).avertex().K1.get_vec().max_norm(), "\n");
+    utils::print(" ---> difference between K1p-left and -right: ", (bubble_p_l - bubble_p_r).pvertex().K1.get_vec().max_norm(), "\n");
+
+    if (write_state) {
+        std::string filename = data_dir + "SDE_iteration" + std::to_string(SDE_counter);
+        H5::H5File file_out = H5::H5File(filename, H5F_ACC_TRUNC);
+        write_to_hdf(file_out, "Sigma_SDE_a", Sigma_SDE_a.Sigma.get_vec(), false);
+        write_to_hdf(file_out, "Sigma_SDE_p", Sigma_SDE_p.Sigma.get_vec(), false);
+        write_to_hdf(file_out, "Sigma_SDE", Sigma_SDE.Sigma.get_vec(), false);
+        file_out.close();
+
+#ifndef NDEBUG
+        State<Q> Psi_a(Vertex<Q>(bubble_a.half1()), Sigma_SDE_a);
+        State<Q> Psi_a_l(Vertex<Q>(bubble_a_l.half1()), Sigma_SDE_a);
+        State<Q> Psi_a_r(Vertex<Q>(bubble_a_r.half1()), Sigma_SDE_a);
+        State<Q> Psi_p(Vertex<Q>(bubble_p.half1()), Sigma_SDE_p);
+        State<Q> Psi_p_l(Vertex<Q>(bubble_p_l.half1()), Sigma_SDE_p);
+        State<Q> Psi_p_r(Vertex<Q>(bubble_p_r.half1()), Sigma_SDE_p);
+        add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
+        add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
+        add_state_to_hdf(data_dir + "Psi_SDE_a_l.h5", SDE_counter + 1, Psi_a_l, true);
+        add_state_to_hdf(data_dir + "Psi_SDE_a_r.h5", SDE_counter + 1, Psi_a_r, true);
+        add_state_to_hdf(data_dir + "Psi_SDE_p_l.h5", SDE_counter + 1, Psi_p_l, true);
+        add_state_to_hdf(data_dir + "Psi_SDE_p_r.h5", SDE_counter + 1, Psi_p_r, true);
+#endif
+    }
+    SDE_counter++;
+
 }
 
 /**
@@ -152,7 +194,7 @@ void susceptibilities_postprocessing(Vertex<Q>& chi, Vertex<Q>& chi_diff,
 
     Vertex<Q> Gamma_0 (Lambda);                     // bare vertex
     Gamma_0.set_frequency_grid(Gamma);
-    Gamma_0.initialize(-glb_U / 2.);             // initialize bare vertex
+    Gamma_0.initialize(not CONTOUR_BASIS ? -glb_U / 2. : -glb_U);             // initialize bare vertex
     Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
 
     // compute susceptibilities in all three channels
@@ -234,7 +276,7 @@ void parquet_checks(const std::string filename);
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
     compute_BSE(state_out.vertex, state_in, Lambda, it_Lambda);                    // compute the gamma_r's via the BSE
-    if (KELDYSH) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
+    if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
     else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
 
     compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
@@ -263,8 +305,20 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
 
 #ifndef NDEBUG
-    write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
-    write_state_to_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    bool write_state = false;
+    if (write_state) {
+        write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1,
+                           state_in); // save input into 0-th layer of hdf5 file
+        write_state_to_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1,
+                           state_in); // save input into 0-th layer of hdf5 file
+
+        write_state_to_hdf(data_dir + "Psi_SDE_a.h5", Lambda, Nmax + 1, state_in, true);
+        write_state_to_hdf(data_dir + "Psi_SDE_p.h5", Lambda, Nmax + 1, state_in, true);
+        write_state_to_hdf(data_dir + "Psi_SDE_a_l.h5", Lambda, Nmax + 1, state_in, true);
+        write_state_to_hdf(data_dir + "Psi_SDE_a_r.h5", Lambda, Nmax + 1, state_in, true);
+        write_state_to_hdf(data_dir + "Psi_SDE_p_l.h5", Lambda, Nmax + 1, state_in, true);
+        write_state_to_hdf(data_dir + "Psi_SDE_p_r.h5", Lambda, Nmax + 1, state_in, true);
+    }
 #endif
 
 

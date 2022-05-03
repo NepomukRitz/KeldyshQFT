@@ -23,14 +23,14 @@
  * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
- * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param frequencies   frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
 template <typename Q, typename Grid>
 static auto interpolate_nearest1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)> val) -> Q {
 
-    int index = frequencies.fconv(x, true);
+    int index = frequencies.get_grid_index(x);
 
     Q result = val(index);
 
@@ -42,8 +42,8 @@ static auto interpolate_nearest1D(const double& x, const Grid& frequencies, cons
  * @tparam Q            double or comp
  * @param x
  * @param y
- * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
- * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
+ * @param xfrequencies  frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
+ * @param yfrequencies  frequencyGrid with the functions get_grid_index and with y-values in vector all_frequencies
  * @param val           any function f(i,j) that takes two integers and returns a value of type Q
  *                      where integer i belongs to x
  *                        and integer j belongs to y
@@ -54,7 +54,7 @@ static auto interpolate_nearest2D(const double& x, const double& y,
                               const Grid& xfrequencies, const Grid& yfrequencies,
                               const std::function<Q(const int&, const int&)> val) -> Q {
 
-    int index = xfrequencies.fconv(x, true);
+    int index = xfrequencies.get_grid_index(x);
 
     Q result = interpolate_nearest1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
 
@@ -68,9 +68,9 @@ static auto interpolate_nearest2D(const double& x, const double& y,
  * @param x
  * @param y
  * @param z
- * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
- * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
- * @param zfrequencies  frequencyGrid with the functions fconv and with z-values in vector ws
+ * @param xfrequencies  frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
+ * @param yfrequencies  frequencyGrid with the functions get_grid_index and with y-values in vector all_frequencies
+ * @param zfrequencies  frequencyGrid with the functions get_grid_index and with z-values in vector all_frequencies
  * @param val           any function f(i,j,k) that takes three integers and returns a value of type Q
  *                      where integer i belongs to x
  *                        and integer j belongs to y
@@ -82,7 +82,7 @@ static auto interpolate_nearest3D(const double& x, const double& y, const double
                               const Grid& xfrequencies, const Grid& yfrequencies, const Grid& zfrequencies,
                               const std::function<Q(const int&, const int&, const int&)> val) -> Q {
 
-    int index = xfrequencies.fconv(x, true);
+    int index = xfrequencies.get_grid_index(x);
 
     Q result = interpolate_nearest2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
 
@@ -97,17 +97,17 @@ static auto interpolate_nearest3D(const double& x, const double& y, const double
  * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
- * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param frequencies   frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
 template <typename Q, typename Grid>
 static auto interpolate_lin1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)> val) -> Q {
 
-    int index = frequencies.fconv(x);
+    int index = frequencies.get_grid_index(x);
 
-    double x1 = frequencies.get_ws(index);
-    double x2 = frequencies.get_ws(index + 1);
+    double x1 = frequencies.get_frequency(index);
+    double x2 = frequencies.get_frequency(index + 1);
     double xd = (x - x1) / (x2 - x1);
 
     Q f1 = val(index);
@@ -123,8 +123,8 @@ static auto interpolate_lin1D(const double& x, const Grid& frequencies, const st
  * @tparam Q            double or comp
  * @param x
  * @param y
- * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
- * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
+ * @param xfrequencies  frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
+ * @param yfrequencies  frequencyGrid with the functions get_grid_index and with y-values in vector all_frequencies
  * @param val           any function f(i,j) that takes two integers and returns a value of type Q
  *                      where integer i belongs to x
  *                        and integer j belongs to y
@@ -135,10 +135,10 @@ static auto interpolate_lin2D(const double& x, const double& y,
                                      const Grid& xfrequencies, const Grid& yfrequencies,
                                      const std::function<Q(const int&, const int&)> val) -> Q {
 
-    int index = xfrequencies.fconv(x);
+    int index = xfrequencies.get_grid_index(x);
 
-    double x1 = xfrequencies.get_ws(index);
-    double x2 = xfrequencies.get_ws(index + 1);
+    double x1 = xfrequencies.get_frequency(index);
+    double x2 = xfrequencies.get_frequency(index + 1);
     double xd = (x - x1) / (x2 - x1);
 
     Q f1 = interpolate_lin1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
@@ -155,9 +155,9 @@ static auto interpolate_lin2D(const double& x, const double& y,
  * @param x
  * @param y
  * @param z
- * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
- * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
- * @param zfrequencies  frequencyGrid with the functions fconv and with z-values in vector ws
+ * @param xfrequencies  frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
+ * @param yfrequencies  frequencyGrid with the functions get_grid_index and with y-values in vector all_frequencies
+ * @param zfrequencies  frequencyGrid with the functions get_grid_index and with z-values in vector all_frequencies
  * @param val           any function f(i,j,k) that takes three integers and returns a value of type Q
  *                      where integer i belongs to x
  *                        and integer j belongs to y
@@ -169,10 +169,10 @@ static auto interpolate_lin3D(const double& x, const double& y, const double& z,
                                      const Grid& xfrequencies, const Grid& yfrequencies, const Grid& zfrequencies,
                                      const std::function<Q(const int&, const int&, const int&)> val) -> Q {
 
-    int index = xfrequencies.fconv(x);
+    int index = xfrequencies.get_grid_index(x);
 
-    double x1 = xfrequencies.get_ws(index);
-    double x2 = xfrequencies.get_ws(index + 1);
+    double x1 = xfrequencies.get_frequency(index);
+    double x2 = xfrequencies.get_frequency(index + 1);
     double xd = (x - x1) / (x2 - x1);
 
     Q f1 = interpolate_lin2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
@@ -190,7 +190,7 @@ static auto interpolate_lin3D(const double& x, const double& y, const double& z,
  * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
- * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param frequencies   frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
@@ -198,10 +198,10 @@ template <typename Q, typename Grid>
 inline auto interpolate_lin_on_aux1D(const double& x, const Grid& frequencies, const std::function<Q(const int&)>& val) -> Q {
 
     double t;
-    const int index = frequencies.fconv(t, x);
+    const int index = frequencies.get_grid_index(t, x);
 
-    const double x1 = frequencies.get_ts(index);
-    const double x2 = frequencies.get_ts(index + 1);
+    const double x1 = frequencies.get_auxiliary_gridpoint(index);
+    const double x2 = frequencies.get_auxiliary_gridpoint(index + 1);
     const double xd = (t - x1) / (x2 - x1);
 
     const Q f1 = val(index);
@@ -217,8 +217,8 @@ inline auto interpolate_lin_on_aux1D(const double& x, const Grid& frequencies, c
  * @tparam Q            double or comp
  * @param x
  * @param y
- * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
- * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
+ * @param xfrequencies  frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
+ * @param yfrequencies  frequencyGrid with the functions get_grid_index and with y-values in vector all_frequencies
  * @param val           any function f(i,j) that takes two integers and returns a value of type Q
  *                      where integer i belongs to x
  *                        and integer j belongs to y
@@ -230,10 +230,10 @@ inline auto interpolate_lin_on_aux2D(const double& x, const double& y,
                           const std::function<Q(const int&, const int&)>& val) -> Q {
 
     double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.get_grid_index(t, x);
 
-    double x1 = xfrequencies.get_ts(index);
-    double x2 = xfrequencies.get_ts(index + 1);
+    double x1 = xfrequencies.get_auxiliary_gridpoint(index);
+    double x2 = xfrequencies.get_auxiliary_gridpoint(index + 1);
     double xd = (t - x1) / (x2 - x1);
 
     Q f1 = interpolate_lin_on_aux1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
@@ -250,9 +250,9 @@ inline auto interpolate_lin_on_aux2D(const double& x, const double& y,
  * @param x
  * @param y
  * @param z
- * @param xfrequencies  frequencyGrid with the functions fconv and with x-values in vector ws
- * @param yfrequencies  frequencyGrid with the functions fconv and with y-values in vector ws
- * @param zfrequencies  frequencyGrid with the functions fconv and with z-values in vector ws
+ * @param xfrequencies  frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
+ * @param yfrequencies  frequencyGrid with the functions get_grid_index and with y-values in vector all_frequencies
+ * @param zfrequencies  frequencyGrid with the functions get_grid_index and with z-values in vector all_frequencies
  * @param val           any function f(i,j,k) that takes three integers and returns a value of type Q
  *                      where integer i belongs to x
  *                        and integer j belongs to y
@@ -265,10 +265,10 @@ inline auto interpolate_lin_on_aux3D(const double& x, const double& y, const dou
                           const std::function<Q(const int&, const int&, const int&)>& val) -> Q {
 
     double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.get_grid_index(t, x);
 
-    double x1 = xfrequencies.get_ts(index);
-    double x2 = xfrequencies.get_ts(index + 1);
+    double x1 = xfrequencies.get_auxiliary_gridpoint(index);
+    double x2 = xfrequencies.get_auxiliary_gridpoint(index + 1);
     double xd = (t - x1) / (x2 - x1);
 
     Q f1 = interpolate_lin_on_aux2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
@@ -285,7 +285,7 @@ inline auto interpolate_lin_on_aux3D(const double& x, const double& y, const dou
  * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
- * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param frequencies   frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
@@ -293,12 +293,12 @@ template <typename Q, typename Grid>
 inline auto interpolate_sloppycubic1D(const double& x, const Grid& xfrequencies, const std::function<Q(const int&)>& val) -> Q {
 
     double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.get_grid_index(t, x);
 
-    double x0 = xfrequencies.get_ts(index - 1);
-    double x1 = xfrequencies.get_ts(index    );
-    double x2 = xfrequencies.get_ts(index + 1);
-    double x3 = xfrequencies.get_ts(index + 2);
+    double x0 = xfrequencies.get_auxiliary_gridpoint(index - 1);
+    double x1 = xfrequencies.get_auxiliary_gridpoint(index    );
+    double x2 = xfrequencies.get_auxiliary_gridpoint(index + 1);
+    double x3 = xfrequencies.get_auxiliary_gridpoint(index + 2);
 
     auto f0 = val(index - 1);
     auto f1 = val(index    );
@@ -322,7 +322,7 @@ inline auto interpolate_sloppycubic1D(const double& x, const Grid& xfrequencies,
  * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
- * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param frequencies   frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
@@ -331,13 +331,13 @@ inline auto interpolate_sloppycubic2D(const double x, const double y, const Grid
                                       const Grid& yfrequencies, const std::function<Q(const int&, const int&)>& val) -> Q {
 
     double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.get_grid_index(t, x);
 
 
-    double x0 = xfrequencies.get_ts(index - 1);
-    double x1 = xfrequencies.get_ts(index    );
-    double x2 = xfrequencies.get_ts(index + 1);
-    double x3 = xfrequencies.get_ts(index + 2);
+    double x0 = xfrequencies.get_auxiliary_gridpoint(index - 1);
+    double x1 = xfrequencies.get_auxiliary_gridpoint(index    );
+    double x2 = xfrequencies.get_auxiliary_gridpoint(index + 1);
+    double x3 = xfrequencies.get_auxiliary_gridpoint(index + 2);
 
     auto f0 = interpolate_sloppycubic1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index - 1, i);});
     auto f1 = interpolate_sloppycubic1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index    , i);});
@@ -358,7 +358,7 @@ inline auto interpolate_sloppycubic2D(const double x, const double y, const Grid
  * ATTENTION!: all
  * @tparam Q            double or comp
  * @param x
- * @param frequencies   frequencyGrid with the functions fconv and with x-values in vector ws
+ * @param frequencies   frequencyGrid with the functions get_grid_index and with x-values in vector all_frequencies
  * @param val           any function that takes one integer and returns a value of type Q
  * @return
  */
@@ -368,13 +368,13 @@ inline auto interpolate_sloppycubic3D(const double& x, const double& y, const do
                                       const std::function<Q(const int&, const int&, const int&)>& val) -> Q {
 
     double t;
-    int index = xfrequencies.fconv(t, x);
+    int index = xfrequencies.get_grid_index(t, x);
 
 
-    double x0 = xfrequencies.get_ts(index - 1);
-    double x1 = xfrequencies.get_ts(index    );
-    double x2 = xfrequencies.get_ts(index + 1);
-    double x3 = xfrequencies.get_ts(index + 2);
+    double x0 = xfrequencies.get_auxiliary_gridpoint(index - 1);
+    double x1 = xfrequencies.get_auxiliary_gridpoint(index    );
+    double x2 = xfrequencies.get_auxiliary_gridpoint(index + 1);
+    double x3 = xfrequencies.get_auxiliary_gridpoint(index + 2);
 
     auto f0 = interpolate_sloppycubic2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index - 1, i, j);});
     auto f1 = interpolate_sloppycubic2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index    , i, j);});

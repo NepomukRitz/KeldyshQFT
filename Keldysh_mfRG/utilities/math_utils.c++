@@ -17,6 +17,11 @@ auto heaviside (const double x) -> double {
     }
 }
 
+
+double sgn(const double x) {
+    return (x >= 0) - (x <= 0); // (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
+}
+
 auto round2Infty(double x) -> double {
     const double tol = 1e-10;
     // trunc() rounds towards zero
@@ -79,7 +84,7 @@ auto round2ffreq(double w) -> double {
 }
 
 auto signFlipCorrection_MF(const double w) -> double {
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
     double correction = signFlipCorrection_MF_int(w) * (2 * M_PI * glb_T);
     return correction;
 #else
@@ -89,7 +94,7 @@ auto signFlipCorrection_MF(const double w) -> double {
 }
 
 int signFlipCorrection_MF_int(const double w) {
-#if not defined(KELDYSH_FORMALISM) and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
     int correction = -((int) (std::abs(w / (2. * M_PI * glb_T)) + 0.1) ) % 2;
     assert(correction==0 or correction == -1);
     return correction;
@@ -114,6 +119,8 @@ auto is_symmetric(const rvec& freqs) -> double {
     }
     return asymmetry;
 }
+
+/// Functions for change of coordinates (for 2D and 3D):
 
 template<> void switch2bosonicFreqs<'p'> (double& w_in, double& v1_in, double& v2_in) {
     double w, v1, v2;
@@ -157,18 +164,75 @@ void K2_convert2internalFreqs(double &w, double &v) { /// Insert this function b
     /// need to convert natural parametrization to internal coordinates when interpolating
 #ifdef ROTATEK2
     // The internal parametrization corresponds to the fermionic frequencies at the two fermionic legs of K2
-    const double w_tmp = w/2. + v;
-    const double v_tmp = w/2. - v;
+    const double w_tmp = w*0.5 + v;
+    const double v_tmp = w*0.5 - v;
     w = w_tmp;
     v = v_tmp;
 #endif
+    if constexpr (GRID == 2) {
+        /// convert frequencies w and v to polar coordinates rho and phi (with phi in [-Pi, Pi])
+        const double rho = sqrt(w*w*0.25 + v*v);
+        const double phi = atan2(v,  w*0.5); //rho < 1e-15 ? 0. : acos(  w*0.5 / rho);
+        assert(isfinite(phi));
+        assert(std::abs(phi) < M_PI + 1e-15);
+        assert(rho > -1e-15);
+        v = phi;// * (v > 0 ? 1. : -1.);
+        w = rho;
+    }
 }
 void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function before returning frequency values
     /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v)
+    if constexpr (GRID == 2) {
+        /// convert polar coordinates to frequencies (w,v) = rho * (cos phi * 2, sin phi)
+        const double w_temp = w * cos(v) * 2;
+        const double v_temp = w * sin(v);
+        w = w_temp;
+        v = v_temp;
+    }
 #ifdef ROTATEK2
     const double w_tmp = w + v;
-    const double v_tmp =(w - v)/2.;
+    const double v_tmp =(w - v)*0.5;
     w = w_tmp;
     v = v_tmp;
 #endif
 }
+
+
+void K3_convert2internalFreqs(double &w, double &v, double &vp) { /// Insert this function before interpolation
+    /// need to convert natural parametrization to internal coordinates when interpolating
+
+    if constexpr (GRID == 2) {
+        // for spherical coordinates:
+        // (vp, v, w/2) = rho * (cos phi * sin theta, cos phi * sin theta, cos theta)
+        // rho = || (vp, v, w/2) ||
+        // phi = atan(v / vp)
+        // theta = acos(w/2 / rho)
+        const double rho = sqrt(w*w*0.25 + v*v + vp*vp);
+        const double phi = atan2(  v, vp);
+        const double theta = rho < 1e-15 ? 0. : acos(w*0.5/rho);
+        //const double r = sqrt(v*v + vp*vp);
+        //const double theta = atan2(r, w*0.5);
+        assert(isfinite(phi));
+        vp = theta;
+        v = phi;
+        assert(std::abs(phi) < M_PI + 1e-15);
+        assert(theta > -1e-15);
+        assert(rho > -1e-15);
+        w = rho;
+    }
+}
+void K3_convert2naturalFreqs(double &w, double &v, double &vp) { /// Insert this function before returning frequency values
+    /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v,vp)
+    if constexpr (GRID == 2) {
+        // for spherical coordinates:
+        // (vp, v, w/2) = rho * (cos phi * sin theta, cos phi * sin theta, cos theta)
+        const double vp_temp = w * cos(v) * sin(vp);
+        const double v_temp  = w * sin(v) * sin(vp);
+        const double w_temp= w          * cos(vp) * 2;
+        w = w_temp;
+        v = v_temp;
+        vp = vp_temp;
+    }
+
+}
+

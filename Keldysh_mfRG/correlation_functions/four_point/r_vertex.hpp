@@ -27,6 +27,7 @@ template <typename Q> class fullvert; // forward declaration of fullvert
 //template <typename Q, interpolMethod interp> class vertexInterpolator; // forward declaration of vertexInterpolator
 template<typename Q, std::size_t depth, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
 template<typename Q, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
+template<typename Q, typename H5object, int nrows, int ncols> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,nrows, ncols>& data, const bool data_set_exists);
 
 template <typename Q>
 class rvert{
@@ -34,9 +35,9 @@ public:
     using freqGrid_type_K1 = bufferFrequencyGrid<k1>;
     using freqGrid_type_K2 = bufferFrequencyGrid<k2>;
     using freqGrid_type_K3 = bufferFrequencyGrid<k3>;
-    using buffer_type_K1 = dataBuffer<Q, k1, K1_config.rank, K1_config.num_freqs, K1_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION>;
-    using buffer_type_K2 = dataBuffer<Q, k2, K2_config.rank, K2_config.num_freqs, K2_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2,Q,INTERPOLATION>; //
-    using buffer_type_K2b= dataBuffer<Q, k2b,K2_config.rank, K2_config.num_freqs, K2_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2b,Q,INTERPOLATION>;//
+    using buffer_type_K1 = dataBuffer<Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION>;
+    using buffer_type_K2 = dataBuffer<Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2,Q,INTERPOLATION>; //
+    using buffer_type_K2b= dataBuffer<Q, k2b,K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>; // vertexBuffer<k2b,Q,INTERPOLATION>;//
     using buffer_type_K3 = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>; // vertexBuffer<k3,Q,INTERPOLATION>; //
 
 
@@ -47,11 +48,10 @@ private:
                                                               // independent ones
     Transformations transformations = Transformations(channel);    // lists providing information on which transformations to apply on Keldysh
                                                                    // components to relate them to the independent ones
+public:
     FrequencyTransformations freq_transformations = FrequencyTransformations(channel);  // lists providing information on which transformations to apply on
                                                                                         // frequencies to relate them to the independent ones
-    FrequencyComponents freq_components = FrequencyComponents(channel);  // lists providing information on which transformations to apply on
-                                                                         // frequencies to relate them to the independent ones
-public:
+
     /// When you add a vertex buffer, also adapt the following:
     /// apply_unary_op_to_all_vertexBuffers()
     /// apply_binary_op_to_all_vertexBuffers()
@@ -69,7 +69,7 @@ public:
     mutable buffer_type_K2 K2_p_proj = K2;
     mutable buffer_type_K2 K2_t_proj = K2;
 
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
     buffer_type_K2b K2b;
 #endif
     mutable buffer_type_K2b K2b_symmetry_expanded;
@@ -91,7 +91,7 @@ public:
     auto apply_unary_op_to_all_vertexBuffers(Func&& f) {
         if (MAX_DIAG_CLASS > 0) f(K1);
         if (MAX_DIAG_CLASS > 1) f(K2);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         if (MAX_DIAG_CLASS > 1) f(K2b);
 #endif
         if (MAX_DIAG_CLASS > 2) f(K3);
@@ -109,7 +109,7 @@ public:
     auto apply_unary_op_to_all_vertexBuffers(Func&& f) const {
         if (MAX_DIAG_CLASS > 0) f(K1);
         if (MAX_DIAG_CLASS > 1) f(K2);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         if (MAX_DIAG_CLASS > 1) f(K2b);
 #endif
         if (MAX_DIAG_CLASS > 2) f(K3);
@@ -129,7 +129,7 @@ public:
 
         if (MAX_DIAG_CLASS > 0) f(K1, other_rvert.K1);
         if (MAX_DIAG_CLASS > 1) f(K2, other_rvert.K2);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         if (MAX_DIAG_CLASS > 1) f(K2b, other_rvert.K2b);
 #endif
         if (MAX_DIAG_CLASS > 2) f(K3, other_rvert.K3);
@@ -147,19 +147,19 @@ public:
     : channel(channel_in)
       {
         if (is_reserve) {
-            if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, K1_config.dims);
-            if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, K2_config.dims);
+            if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
+            if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
             if (MAX_DIAG_CLASS >= 3) K3 = buffer_type_K3(Lambda, K3_config.dims);
             if constexpr(HUBBARD_MODEL) {
                 if (MAX_DIAG_CLASS >= 1) {
-                    K1_a_proj = buffer_type_K1(Lambda, K1_config.dims);
-                    K1_p_proj = buffer_type_K1(Lambda, K1_config.dims);
-                    K1_t_proj = buffer_type_K1(Lambda, K1_config.dims);
+                    K1_a_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
+                    K1_p_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
+                    K1_t_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
                 }
                 if (MAX_DIAG_CLASS >= 2) {
-                    K2_a_proj = buffer_type_K2(Lambda, K2_config.dims);
-                    K2_p_proj = buffer_type_K2(Lambda, K2_config.dims);
-                    K2_t_proj = buffer_type_K2(Lambda, K2_config.dims);
+                    K2_a_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
+                    K2_p_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
+                    K2_t_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
                 }
                 if (MAX_DIAG_CLASS >= 3) {
                     K3_a_proj = buffer_type_K3(Lambda, K3_config.dims);
@@ -168,8 +168,8 @@ public:
                 }
             }
 
-#ifdef DEBUG_SYMMETRIES
-            K2b = buffer_type_K2b(Lambda, K2_config.dims);
+#if DEBUG_SYMMETRIES
+            K2b = buffer_type_K2b(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
 #endif
         }
       };
@@ -199,7 +199,7 @@ public:
     /// This version is used for a symmetric_full vertex
     template <K_class k>
     const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices,
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
                                     const rvert<Q>& rvert_this,
 #endif
                                     const rvert<Q>& rvert_crossing) const;
@@ -385,42 +385,60 @@ public:
 template <typename Q>
 template <K_class k>
 const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices,
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
                                           const rvert<Q>& rvert_this,
 #endif
                                           const rvert<Q>& rvert_crossing) const {
 
     Ti(indices, transformations.K(k, input.spin, input.iK));  // apply necessary symmetry transformations
-#ifndef DEBUG_SYMMETRIES
-    indices.iK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
-#else
-    int itK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
-    //const std::vector<int> all_Keldysh {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    //int res_iK;
-    //locate(all_Keldysh, 16, itK, res_iK, -1, 16);
-    if constexpr (k == k1) {
-        indices.iK = (indices.channel_rvert == 'a' ? non_zero_Keldysh_K1a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K1p[itK] : non_zero_Keldysh_K1t[itK]);
-    }
-    else if constexpr (k == k2 or k == k2b) {
-        indices.iK = (indices.channel_rvert == 'a' ? non_zero_Keldysh_K2a[itK]: indices.channel_rvert == 'p' ? non_zero_Keldysh_K2p[itK] : non_zero_Keldysh_K2t[itK]);
+    if constexpr(not DEBUG_SYMMETRIES) {
+        indices.iK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
     }
     else {
-        indices.iK = non_zero_Keldysh_K3[itK];
+        /// if DEBUG_SYMMETRIES: determine the component from the symmetry reduced sector:
+        int itK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
+        // find the Keldysh index of the symmetry-reduced component:
+        if constexpr (k == k1) {
+            assert((channel == 'p' and itK < 3) or (channel != 'p' and itK < 2));
+            if constexpr (CONTOUR_BASIS) {
+                #ifndef PARTIPARTICLE_HOLE_SYMM
+                    assert((channel == 'p' and itK < 3) or (channel != 'p' and itK < 2));
+                #else
+                    assert(itK < 2 );
+                #endif
+            } else {
+                assert(itK < 2);
+            }
+            indices.iK = itK < 0 ? itK : (indices.channel_rvert == 'a' ? non_zero_Keldysh_K1a[itK] : indices.channel_rvert == 'p' ? non_zero_Keldysh_K1p[itK] : non_zero_Keldysh_K1t[itK]);
+        } else if constexpr (k == k2 or k == k2b) {
+            if constexpr (CONTOUR_BASIS) {
+                #ifndef PARTIPARTICLE_HOLE_SYMM
+                    assert((channel == 'p' and itK < 6) or (channel != 'p' and itK < 4));
+                #else
+                    assert(itK < 3 );
+                #endif
+            } else {
+                assert(itK < 5);
+            }
+            indices.iK = itK < 0 ? itK : (indices.channel_rvert == 'a' ? non_zero_Keldysh_K2a[itK] : indices.channel_rvert == 'p' ? non_zero_Keldysh_K2p[itK] : non_zero_Keldysh_K2t[itK]);
+        } else {
+            indices.iK = non_zero_Keldysh_K3[itK];
+        }
     }
 
-
-#endif
+    // return the rvert from which you have to read (using "indices" as argument)
     if (indices.channel_rvert != channel)
         // if the symmetry transformation switches between channels (a <--> t), return the
         // r vertex in the channel related by crossing symmetry
         return rvert_crossing;
-    else
+    else {
         // otherwise return the calling r vertex
-#ifdef DEBUG_SYMMETRIES
-        return rvert_this;
-#else
-        return (*this);
-#endif
+        #if DEBUG_SYMMETRIES
+            return rvert_this;
+        #else
+            return (*this);
+        #endif
+    }
 }
 
 template <typename Q>
@@ -461,10 +479,7 @@ auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& 
     if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
     assert(indices.channel_rvert == readMe.channel);
-#ifndef DEBUG_SYMMETRIES
-    //if constexpr (k == k2) assert(not indices.asymmetry_transform);
-    //if constexpr (k == k2b) assert(indices.asymmetry_transform);
-#endif
+
 
     Q value = read_value<k>(indices, readMe);
 
@@ -499,7 +514,7 @@ auto rvert<Q>::read_value(const IndicesSymmetryTransformations& indices, const r
     else {
         if      constexpr(k==k1) return readMe.K1.interpolate(indices);
         else if constexpr(k==k3) return readMe.K3.interpolate(indices);
-#ifndef DEBUG_SYMMETRIES
+#if not DEBUG_SYMMETRIES
         else { // for both k2 and k2b we need to interpolate K2
             return readMe.K2.interpolate(indices);
         }
@@ -523,13 +538,13 @@ auto rvert<Q>::read_value(const IndicesSymmetryTransformations& indices, const r
 template <typename Q>
 template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
-#ifdef DEBUG_SYMMETRIES
-    return read_value<k>(indices, *this);
-#else
-    const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing);
-
-    return read_symmetryreduced_rvert<k>(indices, readMe);
-#endif
+    if constexpr(DEBUG_SYMMETRIES) {
+        return read_value<k>(indices, *this);
+    }
+    else {
+        const rvert<Q> &readMe = symmetry_reduce<k>(input, indices, rvert_crossing);
+        return read_symmetryreduced_rvert<k>(indices, readMe);
+    }
 }
 
 /**
@@ -543,13 +558,13 @@ template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rver
 template <typename Q>
 template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
-#ifdef DEBUG_SYMMETRIES
-    return read_symmetryreduced_rvert<k>(indices, *this);
-#else
-    const rvert<Q>& readMe = symmetry_reduce<k>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
-
-    return read_symmetryreduced_rvert<k>(indices, readMe);
-#endif
+    if constexpr(DEBUG_SYMMETRIES) {
+        return read_symmetryreduced_rvert<k>(indices, *this);
+    }
+    else {
+        const rvert<Q> &readMe = symmetry_reduce<k>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        return read_symmetryreduced_rvert<k>(indices, readMe);
+    }
 }
 
 template <typename Q>
@@ -563,208 +578,336 @@ template<K_class k, typename result_type> auto rvert<Q>::valsmooth_symmetry_expa
 }
 
 
+
+template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const double w, const double v, const double vp, const char channel) {
+    assert(k != k2b);
+
+    int iK;
+    if constexpr (k == k1) {
+        switch (channel) {
+            case 'a':
+                iK = non_zero_Keldysh_K1a[iK_symmreduced];
+                break;
+            case 'p':
+                iK = non_zero_Keldysh_K1p[iK_symmreduced];
+                break;
+            case 't':
+                iK = non_zero_Keldysh_K1t[iK_symmreduced];
+                break;
+            default:
+                break;
+        }
+    }
+    else if constexpr(k == k2) {
+        switch (channel) {
+            case 'a':
+                iK = non_zero_Keldysh_K2a[iK_symmreduced];
+                break;
+            case 'p':
+                iK = non_zero_Keldysh_K2p[iK_symmreduced];
+                break;
+            case 't':
+                iK = non_zero_Keldysh_K2t[iK_symmreduced];
+                break;
+            default:
+                break;
+        }
+    }
+    else {
+        iK = non_zero_Keldysh_K3[iK_symmreduced];
+    }
+    std::array<int,4> dimsKeldysh = {2,2,2,2};
+    std::array<int,4> contourIndices;
+    getMultIndex(contourIndices, iK, dimsKeldysh);
+
+    std::array<double,4> frequenciesFermionic;
+    switch (channel) {
+        case 'a':
+            frequenciesFermionic = {v-w*0.5, vp+w*0.5, -(vp-w*0.5), -(v+w*0.5)};
+            break;
+        case 'p':
+            frequenciesFermionic = {v+w*0.5, -v+w*0.5, -(vp+w*0.5), -(-vp+w*0.5)};
+            break;
+        case 't':
+            frequenciesFermionic = {vp+w*0.5, v-w*0.5, -(vp-w*0.5), -(v+w*0.5)};
+            break;
+        default:
+            break;
+    }
+
+    double freq_check = 0;
+    for (int i = 0; i < 4; i++) {
+        freq_check += contourIndices[i] * frequenciesFermionic[i];
+    }
+
+    if (freq_check <1e-15 and not (iK==0 or iK==15) and ZERO_T) return true; // sets values at v=0 to zero; exclude cases where all Contour indices are identical
+    else return false;
+
+}
+
+
 /**
  * Iterates over all vertex components and compares with the value obtained from application of the symmetry relations
  * @tparam Q
  */
 template<typename Q> void rvert<Q>::check_symmetries(const std::string identifier, const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing) const {
-#ifdef  DEBUG_SYMMETRIES
-    utils::print("maximal deviation in symmetry in " + identifier +"_channel" + channel + " (normalized by maximal absolute value of K_i)", "\n");
+#if DEBUG_SYMMETRIES
+        utils::print("maximal deviation in symmetry in " + identifier + "_channel" + channel +
+              " (normalized by maximal absolute value of K_i)", "\n");
+        initInterpolator();
 
-    // K1:
-    multidimensional::multiarray<Q,4> deviations_K1(K1.get_dims());
-    for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
-        my_defs::K1::index_type idx;
-        getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
-        int iK              = (int) idx[my_defs::K1::keldysh];
-        my_index_t ispin    = idx[my_defs::K1::spin];
-        my_index_t iw       = idx[my_defs::K1::omega];
-        my_index_t i_in     = idx[my_defs::K1::internal];
 
-        double w;
-        K1.frequencies.get_freqs_w(w, iw);
-        VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
-        IndicesSymmetryTransformations indices(input, channel);
-        Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
+        // K1:
+        multidimensional::multiarray<Q, 4> deviations_K1(K1.get_dims());
+        for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
+            my_defs::K1::index_type idx;
+            getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
+            int iK = (int) idx[my_defs::K1::keldysh];
+            my_index_t ispin = idx[my_defs::K1::spin];
+            my_index_t iw = idx[my_defs::K1::omega];
+            my_index_t i_in = idx[my_defs::K1::internal];
 
-        const rvert<Q>& readMe = symmetry_reduce<k1>(input, indices, rvert_this, rvert_crossing);
-        Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
+            double w;
+            K1.frequencies.get_freqs_w(w, iw);
+            VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
+            IndicesSymmetryTransformations indices(input, channel);
+            Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
 
-        Q deviation = value_direct - value_symmet;
-        //if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
+            const rvert<Q> &readMe = symmetry_reduce<k1>(input, indices, rvert_this, rvert_crossing);
+            Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
+
+            Q deviation = value_direct - value_symmet;
+            //if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
             deviations_K1.at(idx) = deviation;
-        //}
-
-        // test frequency symmetries for symmetry-reduced Keldysh components:
-        if (transformations.K(k1, input.spin, input.iK) == 0 and components.K(k1, input.spin, input.iK) != -1 and (channel == 'a' ? isInList(iK, non_zero_Keldysh_K1a) : ( channel == 'p' ? isInList(iK, non_zero_Keldysh_K1p) : isInList(iK, non_zero_Keldysh_K1t) ) )) {
-            // Check frequency symmetries
-            IndicesSymmetryTransformations indices_f(iK, ispin, w, 0., 0., i_in, channel, k1, 0, channel);
-            int sign_w = sign_index(indices_f.w);
-            int itK;
-            // find position of iK and store it in itK:
-            locate((channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p' ? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t)), non_zero_Keldysh_K1t.size(), iK, itK, 0, non_zero_Keldysh_K1t.size());
-            int trafo_index = freq_transformations.K1[itK][sign_w];
-            if (trafo_index != 0){
-                Ti(indices_f, trafo_index);
-                indices_f.iK = iK;
-
-                Q result_freqsymm = read_symmetryreduced_rvert<k1>(indices_f, *this);
-                deviation = value_direct - result_freqsymm;
-                deviations_K1.at(idx) = deviation;
-            }
-        }
-    }
-
-    if ( K1.get_vec().max_norm() > 1e-30) utils::print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
-
-    //rvec deviations_K2(getFlatSize(K2.get_dims()));
-    //rvec deviations_K2b(getFlatSize(K2b.get_dims()));
-    multidimensional::multiarray<Q,5> deviations_K2 ( K2.get_dims());
-    multidimensional::multiarray<Q,5> deviations_K2b(K2b.get_dims());
-    if (MAX_DIAG_CLASS > 1) {
-        // K2:
-        for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
-            my_defs::K2::index_type idx;
-            getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
-            int iK              = (int) idx[my_defs::K2::keldysh];
-            my_index_t ispin    = idx[my_defs::K2::spin];
-            my_index_t iw       = idx[my_defs::K2::omega];
-            my_index_t iv       = idx[my_defs::K2::nu];
-            my_index_t i_in     = idx[my_defs::K2::internal];
-
-            double w, v;
-            K2.frequencies.get_freqs_w(w, v, iw, iv);
-            VertexInput input(iK, ispin, w, v, 0., i_in, channel);
-            IndicesSymmetryTransformations indices(input, channel);
-            Q value_direct = read_symmetryreduced_rvert<k2>(indices, *this);
-
-            const rvert<Q>& readMe = symmetry_reduce<k2>(input, indices, rvert_this, rvert_crossing);
-            Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
-
-            Q deviation = value_direct - value_symmet;
-            if (components.K(k2, input.spin, input.iK) != -1) {// zero component is not being computed anyway
-                deviations_K2.at(idx) = deviation;
-            }
+            if (std::abs(deviation) > 1000) utils::print("DEVIATION ", deviation, "for iK, ispin, iw = ", iK, ispin, iw, "\n");
+            //}
 
             // test frequency symmetries for symmetry-reduced Keldysh components:
-            if (transformations.K(k2, input.spin, input.iK) == 0 and components.K[k2, input.spin, input.iK] != -1 and
-                (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : (channel == 'p' ? isInList(iK,
-                                                                                                  non_zero_Keldysh_K2p)
+            if (transformations.K(k1, input.spin, input.iK) == 0 and components.K(k1, input.spin, input.iK) != -1 and
+                (channel == 'a' ? isInList(iK, non_zero_Keldysh_K1a) : (channel == 'p' ? isInList(iK, non_zero_Keldysh_K1p)
                                                                                        : isInList(iK,
-                                                                                                  non_zero_Keldysh_K2t)))) {
-                IndicesSymmetryTransformations indices(iK, ispin, w, v, 0., i_in, channel, k2, 0, channel);
-                int sign_w = sign_index(w);
-                int sign_v1 = sign_index(v);
+                                                                                                  non_zero_Keldysh_K1t)))) {
+                // Check frequency symmetries
+                IndicesSymmetryTransformations indices_f(iK, ispin, w, 0., 0., i_in, channel, k1, 0, channel);
+                int sign_w = sign_index(indices_f.w);
                 int itK;
-                locate((channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p' ? non_zero_Keldysh_K2p
-                                                                                : non_zero_Keldysh_K2t)),
-                       non_zero_Keldysh_K2t.size(), iK, itK, 0, non_zero_Keldysh_K2t.size());
-                int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
-                Ti(indices, trafo_index);
-                //indices.iK = itK;
+                // find position of iK and store it in itK:
+                int non_zero_size = (channel == 'a' ? non_zero_Keldysh_K1a.size() : (channel == 'p'
+                                                                                     ? non_zero_Keldysh_K1p.size()
+                                                                                     : non_zero_Keldysh_K1t.size()));
+                locate((channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p' ? non_zero_Keldysh_K1p
+                                                                                : non_zero_Keldysh_K1t)), non_zero_size, iK,
+                       itK, 0, non_zero_size);
+                int trafo_index = freq_transformations.K1[itK][sign_w];
+                if (trafo_index != 0) {
+                    Ti(indices_f, trafo_index);
+                    indices_f.iK = iK;
 
-                Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
-                deviation = value_direct - result_freqsymm;
-                deviations_K2.at(idx) = deviation;
+                    Q result_freqsymm = read_symmetryreduced_rvert<k1>(indices_f, *this);
+                    deviation = value_direct - result_freqsymm;
+                    deviations_K1.at(idx) = deviation;
+                }
+
+    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
+                if (is_zero_due_to_FDTs<k1>(itK, w, 0, 0, channel)) deviations_K1.at(idx) = value_direct;
+    #endif
+
             }
         }
 
-        if (K2.get_vec().max_norm() > 1e-30) utils::print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
+        if ( K1.get_vec().max_norm() > 1e-30) utils::print("K1: \t", deviations_K1.max_norm() / K1.get_vec().max_norm(), "\n");
 
+        //rvec deviations_K2(getFlatSize(K2.get_dims()));
+        //rvec deviations_K2b(getFlatSize(K2b.get_dims()));
+        multidimensional::multiarray<Q, 5> deviations_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> original_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> symmrel_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> trafo_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> w_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> v_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> conj_K2(K2.get_dims());
+        multidimensional::multiarray<Q, 5> deviations_K2b(K2b.get_dims());
+        multidimensional::multiarray<Q, 5> original_K2b(K2b.get_dims());
+        multidimensional::multiarray<Q, 5> symmrel_K2b(K2b.get_dims());
+        if (MAX_DIAG_CLASS > 1) {
+            // K2:
+            for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
+                my_defs::K2::index_type idx;
+                getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
+                int iK = (int) idx[my_defs::K2::keldysh];
+                my_index_t ispin = idx[my_defs::K2::spin];
+                my_index_t iw = idx[my_defs::K2::omega];
+                my_index_t iv = idx[my_defs::K2::nu];
+                my_index_t i_in = idx[my_defs::K2::internal];
 
-        // K2b:
-        for (int iflat = 0; iflat < getFlatSize(K2b.get_dims()); iflat++) {
+                double w, v;
+                K2.frequencies.get_freqs_w(w, v, iw, iv);
+                VertexInput input(iK, ispin, w, v, 0., i_in, channel);
+                IndicesSymmetryTransformations indices(input, channel);
+                Q value_direct = read_symmetryreduced_rvert<k2>(indices, *this);
+                original_K2.at(idx) = value_direct;
 
-            my_defs::K2::index_type idx;
-            getMultIndex<rank_K2>(idx, iflat, K2b.get_dims());
-            int iK              = (int) idx[my_defs::K2b::keldysh];
-            my_index_t ispin    = idx[my_defs::K2b::spin];
-            my_index_t iw       = idx[my_defs::K2b::omega];
-            my_index_t iv       = idx[my_defs::K2b::nup];
-            my_index_t i_in     = idx[my_defs::K2b::internal];
+                const rvert<Q> &readMe = symmetry_reduce<k2>(input, indices, rvert_this, rvert_crossing);
+                Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+                symmrel_K2.at(idx) = value_symmet;
 
-            double w, vp;
-            K2b.frequencies.get_freqs_w(w, vp, iw, iv);
-            VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
-            IndicesSymmetryTransformations indices(input, channel);
-            Q value_direct = read_symmetryreduced_rvert<k2b>(indices, *this);
+                Q deviation = value_direct - value_symmet;
+                if (components.K(k2, input.spin, input.iK) != -1) {// zero component is not being computed anyway
+                    deviations_K2.at(idx) = deviation;
+                }
 
-            const rvert<Q>& readMe = symmetry_reduce<k2b>(input, indices, rvert_this, rvert_crossing);
-            Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+                // test frequency symmetries for symmetry-reduced Keldysh components:
+                if (transformations.K(k2, input.spin, input.iK) == 0 and components.K[k2, input.spin, input.iK] != -1 and
+                    (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : (channel == 'p' ? isInList(iK,
+                                                                                                      non_zero_Keldysh_K2p)
+                                                                                           : isInList(iK,
+                                                                                                      non_zero_Keldysh_K2t)))) {
+                    IndicesSymmetryTransformations indices(iK, ispin, w, v, 0., i_in, channel, k2, 0, channel);
+                    int sign_w = sign_index(w);
+                    int sign_v1 = sign_index(v);
+                    int itK;
+                    int non_zero_size = (channel == 'a' ? non_zero_Keldysh_K2a.size() : (channel == 'p'
+                                                                                         ? non_zero_Keldysh_K2p.size()
+                                                                                         : non_zero_Keldysh_K2t.size()));
+                    locate((channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p' ? non_zero_Keldysh_K2p
+                                                                                    : non_zero_Keldysh_K2t)),
+                           non_zero_size, iK, itK, 0, non_zero_size);
+                    int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
+                    Ti(indices, trafo_index);
+                    //indices.iK = itK;
 
-            Q deviation = value_direct - value_symmet;
-            if (components.K[k2b, input.spin, input.iK] != -1) {// zero component is not being computed anyway
-                deviations_K2b.at(idx) = deviation;
+                    Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
+                    symmrel_K2.at(idx) = result_freqsymm;
+                    trafo_K2.at(idx) = trafo_index;
+                    conj_K2.at(idx) = indices.conjugate;
+                    w_K2.at(idx) = indices.w;
+                    v_K2.at(idx) = indices.v1;
+                    deviation = value_direct - result_freqsymm;
+                    deviations_K2.at(idx) = deviation;
+
+    #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
+                    if (is_zero_due_to_FDTs<k2>(itK, w, v, 0, channel)) deviations_K2.at(idx) = value_direct;
+    #endif
+                }
             }
+
+            if (K2.get_vec().max_norm() > 1e-30) utils::print("K2: \t", deviations_K2.max_norm() / K2.get_vec().max_norm(), "\n");
+
+
+            // K2b:
+            for (int iflat = 0; iflat < getFlatSize(K2b.get_dims()); iflat++) {
+
+                my_defs::K2::index_type idx;
+                getMultIndex<rank_K2>(idx, iflat, K2b.get_dims());
+                int iK = (int) idx[my_defs::K2b::keldysh];
+                my_index_t ispin = idx[my_defs::K2b::spin];
+                my_index_t iw = idx[my_defs::K2b::omega];
+                my_index_t iv = idx[my_defs::K2b::nup];
+                my_index_t i_in = idx[my_defs::K2b::internal];
+
+                double w, vp;
+                K2b.frequencies.get_freqs_w(w, vp, iw, iv);
+                VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
+                IndicesSymmetryTransformations indices(input, channel);
+                Q value_direct = read_symmetryreduced_rvert<k2b>(indices, *this);
+                original_K2b.at(idx) = value_direct;
+
+                const rvert<Q> &readMe = symmetry_reduce<k2b>(input, indices, rvert_this, rvert_crossing);
+                Q value_symmet = read_symmetryreduced_rvert<k2>(indices, readMe);
+                symmrel_K2b.at(idx) = value_symmet;
+
+                Q deviation = value_direct - value_symmet;
+                if (components.K[k2b, input.spin, input.iK] != -1) {// zero component is not being computed anyway
+                    deviations_K2b.at(idx) = deviation;
+                }
+            }
+
+            if (K2b.get_vec().max_norm() > 1e-30)
+                utils::print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
         }
 
-        if (K2b.get_vec().max_norm() > 1e-30)
-            utils::print("K2b: \t", deviations_K2b.max_norm() / K2b.get_vec().max_norm(), "\n");
-    }
+        //rvec deviations_K3(getFlatSize(K3.get_dims()));
+        multidimensional::multiarray<Q, 6> deviations_K3(K3.get_dims());
+        multidimensional::multiarray<Q, 6> original_K3(K3.get_dims());
+        multidimensional::multiarray<Q, 6> symmrel_K3(K3.get_dims());
+        if (MAX_DIAG_CLASS > 2) {
+            // K3:
+            for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
+                my_defs::K3::index_type idx;
+                getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
+                int iK = (int) idx[my_defs::K3::keldysh];
+                my_index_t ispin = idx[my_defs::K3::spin];
+                my_index_t iw = idx[my_defs::K3::omega];
+                my_index_t iv = idx[my_defs::K3::nu];
+                my_index_t ivp = idx[my_defs::K3::nup];
+                my_index_t i_in = idx[my_defs::K3::internal];
 
-    //rvec deviations_K3(getFlatSize(K3.get_dims()));
-    multidimensional::multiarray<Q,6> deviations_K3 (K3.get_dims());
-    if (MAX_DIAG_CLASS > 2) {
-        // K3:
-        for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
-            my_defs::K3::index_type idx;
-            getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
-            int iK              = (int) idx[my_defs::K3::keldysh];
-            my_index_t ispin    = idx[my_defs::K3::spin];
-            my_index_t iw       = idx[my_defs::K3::omega];
-            my_index_t iv       = idx[my_defs::K3::nu];
-            my_index_t ivp      = idx[my_defs::K3::nup];
-            my_index_t i_in     = idx[my_defs::K3::internal];
+                double w, v, vp;
+                K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
+                VertexInput input(iK, ispin, w, v, vp, i_in, channel);
+                IndicesSymmetryTransformations indices(input, channel);
+                Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
+                original_K3.at(idx) = value_direct;
 
-            double w, v, vp;
-            K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
-            VertexInput input(iK, ispin, w, v, vp, i_in, channel);
-            IndicesSymmetryTransformations indices(input, channel);
-            Q value_direct = read_symmetryreduced_rvert<k3>(indices, *this);
+                const rvert<Q> &readMe = symmetry_reduce<k3>(input, indices, rvert_this, rvert_crossing);
+                Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
+                symmrel_K3.at(idx) = value_symmet;
 
-            const rvert<Q>& readMe = symmetry_reduce<k3>(input, indices, rvert_this, rvert_crossing);
-            Q value_symmet = read_symmetryreduced_rvert<k3>(indices, readMe);
+                Q deviation = value_direct - value_symmet;
+                if (components.K[k1, input.spin, input.iK] != -1) { // zero component is not being computed anyway
+                    deviations_K3.at(idx) = deviation;
+                }
 
-            Q deviation = value_direct - value_symmet;
-            if (components.K[k1, input.spin, input.iK] != -1) { // zero component is not being computed anyway
-                deviations_K3.at(idx) = deviation;
+                // test frequency symmetries for symmetry-reduced Keldysh components:
+                if (transformations.K(k3, input.spin, input.iK) == 0 and components.K[k3, input.spin, input.iK] != -1 and
+                    isInList(iK, non_zero_Keldysh_K3)) {
+                    IndicesSymmetryTransformations indices(iK, ispin, w, v, vp, i_in, channel, k2, 0, channel);
+                    int sign_w = sign_index(w);
+                    int sign_f = sign_index(indices.v1 + indices.v2);
+                    int sign_fp = sign_index(indices.v1 - indices.v2);
+                    int itK;
+                    locate(non_zero_Keldysh_K3, non_zero_Keldysh_K3.size(), iK, itK, 0, non_zero_Keldysh_K3.size());
+
+                    int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
+                    Ti(indices, trafo_index);
+                    //indices.iK = itK;
+
+                    Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
+                    deviation = value_direct - result_freqsymm;
+                    deviations_K3.at(idx) = deviation;
+                    symmrel_K3.at(idx) = result_freqsymm;
+
+
+#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
+                    if (is_zero_due_to_FDTs<k3>(itK, w, v, vp, channel)) deviations_K3.at(idx) = value_direct;
+    #endif
+                }
             }
-
-            // test frequency symmetries for symmetry-reduced Keldysh components:
-            if (transformations.K(k3, input.spin, input.iK) == 0 and components.K[k3, input.spin, input.iK] != -1 and
-                isInList(iK, non_zero_Keldysh_K3)) {
-                IndicesSymmetryTransformations indices(iK, ispin, w, v, vp, i_in, channel, k2, 0, channel);
-                int sign_w = sign_index(w);
-                int sign_f = sign_index(indices.v1 + indices.v2);
-                int sign_fp = sign_index(indices.v1 - indices.v2);
-                int itK;
-                locate(non_zero_Keldysh_K3, non_zero_Keldysh_K3.size(), iK, itK, 0, non_zero_Keldysh_K3.size());
-
-                int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
-                Ti(indices, trafo_index);
-                //indices.iK = itK;
-
-                Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
-                deviation = value_direct - result_freqsymm;
-                deviations_K3.at(idx) = deviation;
-            }
-        }
 
         if (K3.get_vec().max_norm() > 1e-30) utils::print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
     }
 
-    std::string filename = data_dir + "deviations_from_symmetry" + identifier +"_channel" + channel + ".h5";
-    H5::H5File file(filename.c_str(), H5F_ACC_TRUNC);
-    write_to_hdf(file, "K1", deviations_K1 * (1/K1 .get_vec().max_norm()), false);
-#if MAX_DIAG_CLASS > 1
-    write_to_hdf(file, "K2", deviations_K2 * (1/K2 .get_vec().max_norm()), false);
-    write_to_hdf(file, "K2b",deviations_K2b* (1/K2b.get_vec().max_norm()), false);
-#endif
-#if MAX_DIAG_CLASS > 2
-    write_to_hdf(file, "K3", deviations_K3 * (1/K3 .get_vec().max_norm()), false);
-#endif
-    file.close();
-
+        std::string filename = data_dir + "deviations_from_symmetry" + identifier + "_channel" + channel + ".h5";
+        H5::H5File file(filename.c_str(), H5F_ACC_TRUNC);
+        write_to_hdf(file, "K1", deviations_K1, false);
+    if constexpr(MAX_DIAG_CLASS > 1) {
+        write_to_hdf(file, "K2", deviations_K2 * (1 / K2.get_vec().max_norm()), false);
+        write_to_hdf(file, "K2b", deviations_K2b * (1 / K2b.get_vec().max_norm()), false);
+        write_to_hdf(file, "K2_original", original_K2, false);
+        write_to_hdf(file, "K2_symmet", symmrel_K2, false);
+        write_to_hdf(file, "K2_trafo", trafo_K2, false);
+        write_to_hdf(file, "K2_conj", conj_K2, false);
+        write_to_hdf(file, "K2_w", w_K2, false);
+        write_to_hdf(file, "K2_v", v_K2, false);
+        write_to_hdf(file, "K2b_original", original_K2b, false);
+        write_to_hdf(file, "K2b_symmet", symmrel_K2b, false);
+    }
+    if constexpr(MAX_DIAG_CLASS > 2) {
+        write_to_hdf(file, "K3", deviations_K3 * (1 / K3.get_vec().max_norm()), false);
+        write_to_hdf(file, "K3_original", original_K3, false);
+        write_to_hdf(file, "K3_symmet", symmrel_K3, false);
+    }
+        file.close();
 
 #endif
 }
@@ -795,7 +938,8 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         K3_symmetry_expanded.set_VertexFreqGrid(rvert_crossing.K3.get_VertexFreqGrid());
     }
 
-
+    // bare interaction:
+    // in Keldysh basis: no change required
 
     // K1:
     //vec<Q> deviations_K1(getFlatSize(K1.get_dims()));
@@ -814,10 +958,13 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         assert(idx[my_defs::K1::spin] == 0);
         double w;
         K1_symmetry_expanded.frequencies.get_freqs_w(w, iw);
-        VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
-        Q value = rvert_this.template valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        if (std::isfinite(w)) {
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble, is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
+            Q value = rvert_this.template valsmooth<k1>(input, rvert_crossing, vertex_half2_samechannel,
+                                                        vertex_half2_switchedchannel);
 
-        K1_symmetry_expanded.setvert(value, idx);
+            K1_symmetry_expanded.setvert(value, idx);
+        }
 
     }
     K1_symmetry_expanded.initInterpolator();
@@ -842,7 +989,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
             double w, v;
             K2_symmetry_expanded.frequencies.get_freqs_w(w, v, iw, iv);
-            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
             Q value = rvert_this.template valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K2_symmetry_expanded.setvert(value, idx);
@@ -867,7 +1014,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
             double w, vp;
             K2b_symmetry_expanded.frequencies.get_freqs_w(w, vp, iw, iv);
-            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
             Q value = rvert_this.template valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K2b_symmetry_expanded.setvert(value, idx);
@@ -899,7 +1046,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
             double w, v, vp;
             K3_symmetry_expanded.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
-            VertexInput input(rotate_to_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
+            VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
             Q value = rvert_this.template valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
             K3_symmetry_expanded.setvert(value, idx);
@@ -920,11 +1067,12 @@ template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) c
     write_to_hdf(file, "K2b"+ ch, K2b_symmetry_expanded.get_vec(), false);
     write_to_hdf(file, "K3" + ch, K3_symmetry_expanded .get_vec(), false);
 
-    write_to_hdf(file, "bfreqs1", K1_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
-    write_to_hdf(file, "bfreqs2", K2_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
-    write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().f.get_ws_vec(), false);
-    write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().b.get_ws_vec(), false);
-    write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().f.get_ws_vec(), false);
+    write_to_hdf(file, "bfreqs1", K1_symmetry_expanded.get_VertexFreqGrid().  primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "bfreqs2", K2_symmetry_expanded.get_VertexFreqGrid().  primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "ffreqs2", K2_symmetry_expanded.get_VertexFreqGrid().secondary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "bfreqs3", K3_symmetry_expanded.get_VertexFreqGrid().  primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().secondary_grid.get_all_frequencies(), false);
+    write_to_hdf(file, "3freqs3", K3_symmetry_expanded.get_VertexFreqGrid(). tertiary_grid.get_all_frequencies(), false);
 
     file.close();
 
@@ -1274,120 +1422,10 @@ template <typename Q> void rvert<Q>::update_grid(double Lambda) {
     if (MAX_DIAG_CLASS >= 3) {
         K3.update_grid(Lambda);
     }
-    /*
-    if (MAX_DIAG_CLASS >= 1) {
-
-        freqGrid_type_K1 frequenciesK1_new = K1.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK1_new.rescale_grid(Lambda);                     // rescale new frequency grid
-        update_grid<k1>(frequenciesK1_new, *this);
-    }
-    if (MAX_DIAG_CLASS >= 2) {
-
-        freqGrid_type_K2 frequenciesK2_new = K2.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK2_new.rescale_grid(Lambda);                     // rescale new frequency grid
-        update_grid<k2>(frequenciesK2_new, *this);
-    }
-    if (MAX_DIAG_CLASS >= 3) {
-        freqGrid_type_K3 frequenciesK3_new = K3.get_VertexFreqGrid();  // new frequency grid
-        frequenciesK3_new.rescale_grid(Lambda);                     // rescale new frequency grid
-        update_grid<k3>(frequenciesK3_new, *this);
-    }
-     */
 }
 
 
 
-/*
-namespace {
-
-    template <K_class k, typename Q>
-    class UpdateGrid { }; // TODO(high): Make the UpdateGrid functionality also update the cross-projected parts.
-    template<typename Q>
-    class UpdateGrid<k1,Q> {
-        using freqGrid_type_K1 = typename rvert<Q>::freqGrid_type_K1;
-    public:
-        void operator()(rvert<Q>& vertex, const freqGrid_type_K1& frequencies_new, const rvert<Q>& rvert4data) {
-            using buffer_type = multidimensional::multiarray<Q,K1_config.rank>;
-            buffer_type K1_new (K1_config.dims);  // temporary K1 vector
-            for (int iflat=0; iflat < K1_config.dims_flat; ++iflat) {
-                my_defs::K1::index_type idx;
-                getMultIndex<rank_K1>(idx, iflat, vertex.K1.get_dims());
-                int iK              = (int) idx[my_defs::K1::keldysh];
-                my_index_t ispin    = idx[my_defs::K1::spin];
-                my_index_t iw       = idx[my_defs::K1::omega];
-                my_index_t i_in     = idx[my_defs::K1::internal];
-                double w;
-                frequencies_new.get_freqs_w(w, iw);
-                IndicesSymmetryTransformations indices(iK, ispin, w, 0., 0., i_in, vertex.channel, k1, iw,
-                                                       rvert4data.channel);
-                // interpolate old values to new vector
-                K1_new.at(idx) = rvert4data.K1.interpolate(indices);
-            }
-            vertex.K1.set_vec(std::move(K1_new)); // update vertex to new interpolated values
-            vertex.K1.set_VertexFreqGrid(frequencies_new);
-        }
-    };
-    template<typename Q>
-    class UpdateGrid<k2,Q> {
-        using freqGrid_type_K2 = typename rvert<Q>::freqGrid_type_K2;
-    public:
-         void operator()(rvert<Q>& vertex, const freqGrid_type_K2& frequencies_new, const rvert<Q>& rvert4data) {
-             using buffer_type = multidimensional::multiarray<Q,K2_config.rank>;
-             buffer_type K2_new(K2_config.dims); // temporary K2 vector
-            for (std::size_t i_flat = 0; i_flat < K2_config.dims_flat; i_flat++) {
-                my_defs::K2::index_type idx;
-                getMultIndex<rank_K2>(idx, i_flat, vertex.K2.get_dims());
-                int iK              = (int) idx[my_defs::K2::keldysh];
-                my_index_t ispin    = idx[my_defs::K2::spin];
-                my_index_t iw       = idx[my_defs::K2::omega];
-                my_index_t iv       = idx[my_defs::K2::nu];
-                my_index_t i_in     = idx[my_defs::K2::internal];
-
-                double w, v;
-                frequencies_new.get_freqs_w(w, v, iw, iv);
-                IndicesSymmetryTransformations indices(iK, ispin,
-                                                       w, v, 0.,
-                                                       i_in, vertex.channel, k2, iw, rvert4data.channel);
-                // interpolate old values to new vector
-                K2_new.at(idx) = rvert4data.K2.interpolate(indices);
-            }
-            vertex.K2.set_vec(std::move(K2_new)); // update vertex to new interpolated values
-             vertex.K2.set_VertexFreqGrid(frequencies_new);
-        }
-    };
-    template<typename Q>
-    class UpdateGrid<k3,Q> {
-        using freqGrid_type_K3 = typename rvert<Q>::freqGrid_type_K3;
-    public:
-        void operator() (rvert<Q>& vertex, const freqGrid_type_K3& frequencies_new, const rvert<Q>& rvert4data) {
-            assert(vertex.channel == rvert4data.channel);
-            using buffer_type = multidimensional::multiarray<Q,K3_config.rank>;
-            buffer_type K3_new(K3_config.dims);  // temporary K3 vector
-            for (std::size_t i_flat = 0; i_flat < K3_config.dims_flat; i_flat++) {
-                my_defs::K3::index_type idx;
-                getMultIndex<rank_K3>(idx, i_flat, vertex.K3.get_dims());
-                int iK              = (int) idx[my_defs::K3::keldysh];
-                my_index_t ispin    = idx[my_defs::K3::spin];
-                my_index_t iw       = idx[my_defs::K3::omega];
-                my_index_t iv       = idx[my_defs::K3::nu];
-                my_index_t ivp      = idx[my_defs::K3::nup];
-                my_index_t i_in     = idx[my_defs::K3::internal];
-
-                double w, v, vp;
-                frequencies_new.get_freqs_w(w, v, vp, iw, iv, ivp);
-                IndicesSymmetryTransformations indices (iK, ispin,
-                                                        w, v, vp,
-                                                        i_in, vertex.channel, k3, vertex.channel == 'a' ? iw : (vertex.channel == 'p' ? iv : ivp), rvert4data.channel);
-                // interpolate old values to new vector
-                K3_new.at(idx) = rvert4data.K3.interpolate(indices);
-            }
-            vertex.K3.set_vec(std::move(K3_new)); // update vertex to new interpolated values
-            vertex.K3.set_VertexFreqGrid(frequencies_new);
-        }
-
-    };
-}
-*/
 
 template <typename Q>
 template<K_class k, typename FGrid>
@@ -1405,370 +1443,10 @@ void rvert<Q>::update_grid(const FGrid& frequencies_new, rvert<Q>& rvert4data) {
 
 }
 
-namespace {
-
-    template<typename Q>
-    class CostFullvert_Wscale_b_K1 {
-        using freqGrid_type_K1 = bufferFrequencyGrid<k1>;
-
-        rvert<Q> rVert_backup;
-        bool verbose;
-    public:
-        rvert<Q> rVert;
-        freqGrid_type_K1 frequencies = rVert.K1.get_VertexFreqGrid();
-        explicit CostFullvert_Wscale_b_K1(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
-
-        auto operator() (double wscale_test) -> double {
-            frequencies.b.update_Wscale(wscale_test);
-            rVert.template update_grid<k1>(frequencies, rVert_backup);
-            //rVert.K1.analyze_tails_K1();
-            double result = rVert.K1.get_curvature_max();
-
-            if (verbose and mpi_world_rank() == 0) {
-                std::cout << "max. Curvature in K1" << rVert.channel; // << std::endl;
-                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
-
-            }
-            /*
-            std::string filename = "K1_costCurvature_" + std::to_string(wscale_test) + ".h5";
-            rvec v = rVert.K1.frequencies.get_freqGrid_b().get_ws_vec();
-            rvec SE_re = rVert.K1.get_vec().real();
-            rvec SE_im = rVert.K1.get_vec().imag();
-            write_h5_rvecs(filename,
-                           {"v", "SE_re", "SE_im"},
-                           {v, SE_re, SE_im});
-            */
-            return result;
-        }
-    };
-
-    template<typename Q>
-    class CostFullvert_Wscale_b_K2 {
-        rvert<Q> rVert_backup;
-        bool verbose;
-    public:
-        rvert<Q> rVert;
-        typename rvert<Q>::freqGrid_type_K2 frequencies = rVert.K2.get_VertexFreqGrid();
-        explicit CostFullvert_Wscale_b_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
-
-        auto operator() (double wscale_test) -> double {
-            frequencies.b.update_Wscale(wscale_test);
-#ifdef ROTATEK2
-            frequencies.f.update_Wscale(wscale_test);
-#endif
-            rVert.template update_grid<k2>(frequencies, rVert_backup);
-            //rVert.K2.analyze_tails_K2_b();
-            double result = rVert.K2.get_curvature_max();
-
-            if (verbose and mpi_world_rank() == 0) {
-                std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
-                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
-
-            }
-
-            return result;
-        }
-    };
-
-    template<typename Q>
-    class CostFullvert_Wscale_f_K2 {
-        rvert<Q> rVert_backup;
-        bool verbose;
-    public:
-        rvert<Q> rVert;
-        typename rvert<Q>::freqGrid_type_K2 frequencies = rVert.K2.get_VertexFreqGrid();
-        explicit CostFullvert_Wscale_f_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
-
-        auto operator() (double wscale_test) -> double {
-#ifdef ROTATEK2
-            frequencies.b.update_Wscale(wscale_test);
-#endif
-            frequencies.f.update_Wscale(wscale_test);
-            rVert.template update_grid<k2>(frequencies, rVert_backup);
-            //rVert.K2.analyze_tails_K2_f();
-            double result = rVert.K2.get_curvature_max();
-
-            if (verbose and mpi_world_rank() == 0) {
-                std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
-                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
-
-            }
-
-            return result;
-        }
-    };
-
-
-    template<typename Q>
-    class CostFullvert_Wscale_K2 {
-        rvert<Q> rVert_backup;
-        bool verbose;
-    public:
-        rvert<Q> rVert;
-        typename rvert<Q>::freqGrid_type_K2 frequencies = rVert.K2.get_VertexFreqGrid();
-        explicit CostFullvert_Wscale_K2(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
-
-        auto operator() (std::vector<double> Wscales) -> double
-        {
-            const double wscale_test_b = std::abs(Wscales[0]); // make sure Wscale is positive
-            const double wscale_test_f = std::abs(Wscales[1]); // make sure Wscale is positive
-            frequencies.b.update_Wscale(wscale_test_b);
-            frequencies.f.update_Wscale(wscale_test_f);
-            rVert.template update_grid<k2>(frequencies, rVert_backup);
-            //rVert.K2.analyze_tails_K2_f();
-            double result = rVert.K2.get_curvature_max();
-
-            if (verbose and mpi_world_rank() == 0)
-            {
-                std::cout << "max. Curvature in K2" << rVert.channel; // << std::endl;
-                std::cout << "\t \t" << result  << "\t\t with wscale_w = " << wscale_test_b  << "\t\t with wscale_v = " << wscale_test_f << std::endl;
-
-            }
-
-            return result;
-        }
-    };
-
-
-
-    template<typename Q>
-    class CostFullvert_Wscale_b_K3 {
-        rvert<Q> rVert_backup;
-        bool verbose;
-    public:
-        rvert<Q> rVert;
-        typename rvert<Q>::freqGrid_type_K3 frequencies = rVert.K3.get_VertexFreqGrid();
-        explicit CostFullvert_Wscale_b_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
-
-        auto operator() (double wscale_test) -> double {
-            frequencies.b.update_Wscale(wscale_test);
-            rVert.template update_grid<k3>(frequencies, rVert_backup);
-            //rVert.K3.analyze_tails_K3_b();
-            double result = rVert.K3.get_curvature_max();
-
-            if (verbose and mpi_world_rank() == 0) {
-                std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
-                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
-            }
-
-            return result;
-        }
-    };
-
-    template<typename Q>
-    class CostFullvert_Wscale_f_K3 {
-        rvert<Q> rVert_backup;
-        bool verbose;
-    public:
-        rvert<Q> rVert;
-        typename rvert<Q>::freqGrid_type_K3 frequencies = rVert.K3.get_VertexFreqGrid();
-        explicit CostFullvert_Wscale_f_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
-
-        auto operator() (double wscale_test) -> double {
-            if (BOSONIC_PARAM_FOR_K3) {
-                /// grids are identical for bosonic parametrization
-                frequencies.b.update_Wscale(wscale_test);
-            }
-            frequencies.f.update_Wscale(wscale_test);
-            rVert.template update_grid<k3>(frequencies, rVert_backup);
-            //rVert.K3.analyze_tails_K3_b();
-            double result = rVert.K3.get_curvature_max();
-
-            if (verbose and mpi_world_rank() == 0) {
-                std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
-                std::cout << "\t \t" << result  << "\t\t with wscale = " << wscale_test << std::endl;
-
-            }
-
-            return result;
-        }    };
-
-
-    template<typename Q>
-    class CostFullvert_Wscale_K3 {
-        rvert<Q> rVert_backup;
-        bool verbose;
-    public:
-        rvert<Q> rVert;
-        typename rvert<Q>::freqGrid_type_K3 frequencies = rVert.K3.get_VertexFreqGrid();
-        explicit CostFullvert_Wscale_K3(rvert<Q> rvert_in, bool verbose) : rVert(rvert_in), rVert_backup(rvert_in), verbose(verbose) {};
-
-        auto operator() (std::vector<double> Wscales) -> double
-        {
-            const double wscale_test_b = std::abs(Wscales[0]); // make sure Wscale is positive
-            const double wscale_test_f = std::abs(Wscales[1]); // make sure Wscale is positive
-            frequencies.b.update_Wscale(wscale_test_b);
-            frequencies.f.update_Wscale(wscale_test_f);
-            rVert.template update_grid<k3>(frequencies, rVert_backup);
-            //rVert.K3.analyze_tails_K3_f();
-            double result = rVert.K3.get_curvature_max();
-
-            if (verbose and mpi_world_rank() == 0)
-            {
-                std::cout << "max. Curvature in K3" << rVert.channel; // << std::endl;
-                std::cout << "\t \t" << result  << "\t\t with wscale_w = " << wscale_test_b  << "\t\t with wscale_v = " << wscale_test_f << std::endl;
-
-            }
-
-            return result;
-        }
-    };
-
-}
-
 template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
-    //verbose = false;
-    const double rel_tail_threshold = 1e-4;
-
-    /// for K1:
-    if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K1" << channel << " grid in direction w:\n";
-    freqGrid_type_K1 frequenciesK1_new = K1.shrink_freq_box(rel_tail_threshold);
-    update_grid<k1>(frequenciesK1_new, *this);
-    if (verbose and mpi_world_rank() == 0) {
-        std::cout << "K1 rel.tail height in direction w: " << K1.template analyze_tails<0>() << std::endl;
-    }
-
-    double a_Wscale = K1.get_VertexFreqGrid().b.W_scale / 2.;
-    double m_Wscale = K1.get_VertexFreqGrid().b.W_scale;
-    double b_Wscale = K1.get_VertexFreqGrid().b.W_scale * 2;
-    CostFullvert_Wscale_b_K1<Q> cost_b_K1(*this, verbose);
-    minimizer(cost_b_K1, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
-    frequenciesK1_new.b.update_Wscale(m_Wscale);
-    update_grid<k1>(frequenciesK1_new, *this);
-
-#ifndef MULTIDIM_MINIMIZATION
-    /// Using 1-dimensional minimization consecutively:
-    if(MAX_DIAG_CLASS>1) {
-        /// for K2:
-        typename rvert<Q>::freqGrid_type_K2 frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
-        update_grid<k2>(frequenciesK2_new, *this);
-        if (verbose and mpi_world_rank() == 0) {
-            std::cout << "K2 rel.tail height in direction w: " << K2.template analyze_tails<0>() << std::endl;
-            std::cout << "K2 rel.tail height in direction v: " << K2.template analyze_tails<1>() << std::endl;
-        }
-
-
-        // in v-direction:
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction v:\n";
-        a_Wscale = K2.get_VertexFreqGrid().f.W_scale / 2.;
-        m_Wscale = K2.get_VertexFreqGrid().f.W_scale;
-        b_Wscale = K2.get_VertexFreqGrid().f.W_scale * 2;
-        CostFullvert_Wscale_f_K2<Q> cost_f_K2(*this, verbose);
-        minimizer(cost_f_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
-        frequenciesK2_new.f.update_Wscale(m_Wscale);
-        update_grid<k2>(frequenciesK2_new, *this);
-
-#ifndef ROTATEK2
-        // in w-direction:
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
-        a_Wscale = K2.get_VertexFreqGrid().b.W_scale / 2.;
-        m_Wscale = K2.get_VertexFreqGrid().b.W_scale;
-        b_Wscale = K2.get_VertexFreqGrid().b.W_scale * 2;
-        CostFullvert_Wscale_b_K2<Q> cost_b_K2(*this, verbose);
-        minimizer(cost_b_K2, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
-        frequenciesK2_new.b.update_Wscale(m_Wscale);
-        update_grid<k2>(frequenciesK2_new, *this);
-#endif
-    }
-#else
-    /// Using multi-dimensional minimization:
-    if(MAX_DIAG_CLASS>1) {
-        /// for K2:
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w:\n";
-        typename rvert<Q>::freqGrid_type_K2 frequenciesK2_new = K2.shrink_freq_box(rel_tail_threshold);
-        update_grid<k2>(frequenciesK2_new, *this);
-        if (verbose and mpi_world_rank() == 0) {
-            std::cout << "K2 rel.tail height in direction w: " << K2.analyze_tails_K2_x() << std::endl;
-            std::cout << "K2 rel.tail height in direction v: " << K2.analyze_tails_K2_y() << std::endl;
-        }
-
-        // in v-direction:
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K2" << channel << " grid in direction w AND v:\n";
-        double Wscale_f = K2.K2_get_VertexFreqGrid().f.W_scale;
-        double Wscale_b = K2.K2_get_VertexFreqGrid().b.W_scale;
-        vec<double> start_params = {Wscale_b, Wscale_f};
-
-        // minimize the curvature of the K2 vertex
-        CostFullvert_Wscale_K2<Q> cost_K2(*this, verbose);
-        double ini_stepsize = std::min(Wscale_f, Wscale_b)/100.;
-        double epsrel = 0.01;
-        double epsabs = 0.1;
-        vec<double> result_K2 = minimizer_nD(cost_K2, start_params, ini_stepsize, 100, verbose, false, 0.1, 0.01);
-        frequenciesK2_new.b.update_Wscale(result_K2[0]);
-        frequenciesK2_new.f.update_Wscale(result_K2[1]);
-        update_grid<k2>(frequenciesK2_new, *this);
-
-    }
-
-#endif
-#ifndef MULTIDIM_MINIMIZATION // multi-dimensional optimization
-    if(MAX_DIAG_CLASS>2) {
-        /// for K3:
-        typename rvert<Q>::freqGrid_type_K3 frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
-        update_grid<k3>(frequenciesK3_new, *this);
-        if (verbose and mpi_world_rank() == 0) {
-            std::cout << "K3 rel.tail height in direction w: " << K3.template analyze_tails<0>() << std::endl;
-            std::cout << "K3 rel.tail height in direction v: " << K3.template analyze_tails<1>() << std::endl;
-            std::cout << "K3 rel.tail height in direction vp:" << K3.template analyze_tails<2>() << std::endl;
-        }
-
-        // in v-direction:
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction v:\n";
-        a_Wscale = K3.get_VertexFreqGrid().f.W_scale / 2.;
-        m_Wscale = K3.get_VertexFreqGrid().f.W_scale;
-        b_Wscale = K3.get_VertexFreqGrid().f.W_scale * 2;
-        CostFullvert_Wscale_f_K3<Q> cost_f_K3(*this, verbose);
-        minimizer(cost_f_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
-
-        if (BOSONIC_PARAM_FOR_K3) {
-            frequenciesK3_new.b.update_Wscale(m_Wscale);
-        }
-        frequenciesK3_new.f.update_Wscale(m_Wscale);
-        update_grid<k3>(frequenciesK3_new, *this);
-
-        if (not BOSONIC_PARAM_FOR_K3) {
-            // in w-direction:
-            if (verbose and mpi_world_rank() == 0)
-                std::cout << "---> Now Optimize K3" << channel << " grid in direction w:\n";
-            a_Wscale = K3.get_VertexFreqGrid().b.W_scale / 2.;
-            m_Wscale = K3.get_VertexFreqGrid().b.W_scale;
-            b_Wscale = K3.get_VertexFreqGrid().b.W_scale * 2;
-            CostFullvert_Wscale_b_K3<Q> cost_b_K3(*this, verbose);
-            minimizer(cost_b_K3, a_Wscale, m_Wscale, b_Wscale, 20, verbose, false, 0., 0.01);
-            frequenciesK3_new.b.update_Wscale(m_Wscale);
-            update_grid<k3>(frequenciesK3_new, *this);
-        }
-    }
-#else
-
-    if(MAX_DIAG_CLASS>2) {
-        /// for K3:
-        typename rvert<Q>::freqGrid_type_K3 frequenciesK3_new = K3.shrink_freq_box(rel_tail_threshold);
-        update_grid<k3>(frequenciesK3_new, *this);
-        if (verbose and mpi_world_rank() == 0) {
-            std::cout << "K3 rel.tail height in direction w: " << K3.analyze_tails_K3_x() << std::endl;
-            std::cout << "K3 rel.tail height in direction v: " << K3.analyze_tails_K3_y() << std::endl;
-            std::cout << "K3 rel.tail height in direction vp:" << K3.analyze_tails_K3_z() << std::endl;
-        }
-
-
-        if (verbose and mpi_world_rank() == 0) std::cout << "---> Now Optimize K3" << channel << " grid in direction w AND v&vp:\n";
-        double Wscale_f = K3.K3_get_VertexFreqGrid().f.W_scale;
-        double Wscale_b = K3.K3_get_VertexFreqGrid().b.W_scale;
-        vec<double> start_params = {Wscale_b, Wscale_f};
-
-        // minimize the curvature of the K2 vertex
-        CostFullvert_Wscale_K3<Q> cost_K3(*this, verbose);
-        double ini_stepsize = std::min(Wscale_f, Wscale_b)/100.;
-        double epsrel = 0.01;
-        double epsabs = 0.1;
-        vec<double> result_K3 = minimizer_nD(cost_K3, start_params, ini_stepsize, 100, verbose, false, 0.1, 0.01);
-        frequenciesK3_new.b.update_Wscale(result_K3[0]);
-        frequenciesK3_new.f.update_Wscale(result_K3[1]);
-        update_grid<k3>(frequenciesK3_new, *this);
-    }
-#endif
-
+    K1.optimize_grid(true);
+    if constexpr(MAX_DIAG_CLASS > 1) K2.optimize_grid(true);
+    if constexpr(MAX_DIAG_CLASS > 2) K3.optimize_grid(true);
 }
 
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
@@ -1813,12 +1491,17 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
             K1.setvert(result, idx);
         }
 
+        if (CONTOUR_BASIS and ZERO_T and USE_FDT  and is_zero_due_to_FDTs<k1>(itK, w_in, 0., 0., channel)) {
+            K1.setvert(0., idx);
+        }
+
     }
 }
 
 template<typename Q>
 void rvert<Q>::K1_crossproject(const char channel_out) {
     /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
+    const int nK_K1 = channel == 'p' ? K1p_config.dims[my_defs::K1::keldysh] : K1at_config.dims[my_defs::K1::keldysh];
     for (int iK = 0; iK < nK_K1; ++iK) {
         for (int it_spin = 0; it_spin < n_spin; it_spin++) {
 #pragma omp parallel for schedule(dynamic)
@@ -1904,6 +1587,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
         }
         if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.frequencies.get_wlower_f()) {
             K2.setvert(0., idx);                    }
+        if (CONTOUR_BASIS and ZERO_T and USE_FDT and is_zero_due_to_FDTs<k2>(itK, w_in, v_in, 0., channel)) {
+            K2.setvert(0., idx);
+        }
     }
 
 }
@@ -1960,6 +1646,10 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
             K3.setvert(0., idx);
         }
 
+        if (CONTOUR_BASIS and ZERO_T and USE_FDT and is_zero_due_to_FDTs<k3>(itK, w_in, v_in, vp_in, channel)) {
+            K3.setvert(0, idx);
+        }
+
 
     }
 
@@ -1977,10 +1667,8 @@ double rvert<Q>::max_norm() const {
     norm += K1.get_vec().max_norm();
     if constexpr(MAX_DIAG_CLASS >= 2) {
         norm += K2.get_vec().max_norm();
-#ifdef DEBUG_SYMMETRIES
-        norm += K2b.get_vec().max_norm();
-#else
-        norm += K2.get_vec().max_norm();
+#if DEBUG_SYMMETRIES
+            norm += K2b.get_vec().max_norm();
 #endif
     }
     if constexpr(MAX_DIAG_CLASS >= 3) norm += K3.get_vec().max_norm();

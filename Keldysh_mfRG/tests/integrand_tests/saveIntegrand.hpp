@@ -26,44 +26,69 @@ namespace saveIntegrand {
     rvec get_freqs_equidistant(const size_t nfreqs, const double wmin, const double wmax);
 
 
-    rvec get_freqs_equidistant_aux(const size_t nfreqs, const double tmin, const double tmax, FrequencyGrid& frequencyGrid);
+    template <typename freqGrid>
+    rvec get_freqs_equidistant_aux(const size_t nfreqs, const double tmin, const double tmax, const freqGrid& frequencyGrid) {
+        rvec freqs (nfreqs);
+        double inter = (tmax - tmin) / (double) nfreqs;
+        for (int i = 0; i < nfreqs; i++) {
+            freqs[i] = frequencyGrid.frequency_from_t(tmin + inter * i);
+        }
+        return freqs;
+    }
 
     template <typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object>
     void saveIntegrandBubble(const std::string& filename_prefix, GeneralVertex<Q, symmetry_left>& vertex1, GeneralVertex<Q, symmetry_right>& vertex2,
                        const Bubble_Object& Pi, const bool diff, const rvec& freqs, const K_class k_class, const char channel,
                        const int i0, const int i2, const int spin, const double w, const double v, const double vp, const int i_in) {
 
+#if VECTORIZED_INTEGRATION
+        using return_type = Eigen::Matrix<Q,4,4>;
+#else
+        using return_type = Q;
+#endif
         vertex1.initializeInterpol();
         vertex2.initializeInterpol();
         switch (k_class) {
             case k1: {
                 if (channel == 'a') {
-                    Integrand<k1, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'a',true>();
+                    vertex2.template symmetry_expand<'a',false>();
+                    Integrand<k1, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, spin, diff);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 'p') {
-                    Integrand<k1, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'p',true>();
+                    vertex2.template symmetry_expand<'p',false>();
+                    Integrand<k1, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, spin, diff);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 't') {
-                    Integrand<k1, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK1(vertex1, vertex2, Pi, i0, i2, spin, 0, w, 0., 0., i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'t',true>();
+                    vertex2.template symmetry_expand<'t',false>();
+                    Integrand<k1, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, spin, diff);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 break;
             }
             case k2: {
                 if (channel == 'a') {
-                    Integrand<k2, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'a',true>();
+                    vertex2.template symmetry_expand<'a',false>();
+                    Integrand<k2, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK2(vertex1, vertex2, Pi, i0, i2, 0, w, v, 0., i_in, spin, diff);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 'p') {
-                    Integrand<k2, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'p',true>();
+                    vertex2.template symmetry_expand<'p',false>();
+                    Integrand<k2, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK2(vertex1, vertex2, Pi, i0, i2, 0, w, v, 0., i_in, spin, diff);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 't') {
-                    Integrand<k2, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK2(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, 0., i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'t',true>();
+                    vertex2.template symmetry_expand<'t',false>();
+                    Integrand<k2, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK2(vertex1, vertex2, Pi, i0, i2, 0, w, v, 0., i_in, spin, diff);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
@@ -71,16 +96,22 @@ namespace saveIntegrand {
             }
             case k3: {
                 if (channel == 'a') {
-                    Integrand<k3, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'a',true>();
+                    vertex2.template symmetry_expand<'a',false>();
+                    Integrand<k3, 'a', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK3(vertex1, vertex2, Pi, i0, i2, 0, w, v, vp, i_in, spin, diff);
                     integrandK3.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 'p') {
-                    Integrand<k3, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'p',true>();
+                    vertex2.template symmetry_expand<'p',false>();
+                    Integrand<k3, 'p', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK3(vertex1, vertex2, Pi, i0, i2, 0, w, v, vp, i_in, spin, diff);
                     integrandK3.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 't') {
-                    Integrand<k3, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object> integrandK3(vertex1, vertex2, Pi, i0, i2, spin, 0, w,  v, vp, i_in, channel, diff, 0);
+                    vertex1.template symmetry_expand<'t',true>();
+                    vertex2.template symmetry_expand<'t',false>();
+                    Integrand<k3, 't', 0, Q, symmetry_left, symmetry_right, Bubble_Object,return_type> integrandK3(vertex1, vertex2, Pi, i0, i2, 0, w, v, vp, i_in, spin, diff);
                     integrandK3.save_integrand(freqs, filename_prefix);
                 }
                 break;
@@ -115,8 +146,37 @@ namespace saveIntegrand {
         const bool diff = true;
         Bubble<Q> dPi(G, dG, diff);
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(nBOS*1e1, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
+
+    }
+
+
+    template <typename Q>
+    void Gamma1_Pi_Gamma2(const std::string& filename_prefix, const std::string& file_Psi, const int it_Lambda,
+                      const K_class k_class, const char channel, const int i0, const int i2, const int spin, const double w,
+                      const double v, const double vp, const int i_in, const bool Gamma0_is_left) {
+
+
+
+        // read Psi for vertex
+        State<Q> Psi = read_state_from_hdf(file_Psi, it_Lambda); // read Psi
+        //for (char r: {'a', 'p', 't'}) {Psi.vertex.get_rvertex(r).K1 *= 0.;}
+        //Psi.vertex.half1().irred *= 0.;
+        double Lambda = Psi.Lambda;
+        State<Q> Psi0= State<Q>(Psi, Lambda);
+        Psi0.initialize();
+
+
+        Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+
+        Bubble<Q> Pi(G, G, false);
+
+        const auto& grid = Psi.vertex.avertex().K1.frequencies.primary_grid;
+        const double wmax = grid.t_upper;
+        const double wmin = -wmax;
+        const rvec& freqs = get_freqs_equidistant_aux(nBOS*1e1, wmin, wmax, grid);
+        saveIntegrandBubble(filename_prefix, Gamma0_is_left ? Psi0.vertex : Psi.vertex, Gamma0_is_left ? Psi.vertex : Psi0.vertex, Pi, false, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
@@ -146,7 +206,7 @@ namespace saveIntegrand {
         const bool diff = true;
         Bubble<Q> dPi(G, dG, diff);
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, Psi.vertex, dPi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -170,7 +230,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, dPsi.vertex, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -196,7 +256,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dPsi.vertex.set_Ir(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, dPsi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -229,7 +289,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dGammaR.set_only_same_channel(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, dGammaR, Psi.vertex, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -261,7 +321,7 @@ namespace saveIntegrand {
         Bubble<Q> Pi(G, dG, diff);
 
         dGammaL.set_only_same_channel(true);
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
         saveIntegrandBubble(filename_prefix, Psi.vertex, dGammaL, Pi, diff, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
@@ -286,11 +346,50 @@ namespace saveIntegrand {
         const bool all_spins = true;
 
 
-        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.b.w_lower, Psi.selfenergy.Sigma.frequencies.b.w_upper);
-        IntegrandSE<Q,symmetric_full> integrandR = IntegrandSE<Q,symmetric_full> ('r', Psi.vertex, S, v, i_in, all_spins);
+        const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
+        IntegrandSE<Q,symmetric_full,true> integrandR = IntegrandSE<Q,symmetric_full,true> ('r', Psi.vertex, S, v, i_in, all_spins);
         integrandR.save_integrand(freqs);
         if (KELDYSH) {
-            IntegrandSE<Q,symmetric_full> integrandK = IntegrandSE<Q,symmetric_full>('k', Psi.vertex, S, v, i_in, all_spins);
+            IntegrandSE<Q,symmetric_full,true> integrandK = IntegrandSE<Q,symmetric_full,true>('k', Psi.vertex, S, v, i_in, all_spins);
+            integrandK.save_integrand(freqs);
+        }
+    }
+
+    template <typename Q>
+    void Sigma_SDE(const std::string& filename_prefix, const std::string& file_Psi, const int it_Lambda,
+                const int i2, const double v, const int i_in) {
+#if VECTORIZED_INTEGRATION
+        using return_type = Eigen::Matrix<Q,1,4>;
+#else
+        using return_type = Q;
+#endif
+        // read Psi for vertex
+        State<Q> Psi = read_state_from_hdf(file_Psi, it_Lambda); // read Psi
+        for (char r: {'a', 'p', 't'}) {
+            Psi.vertex.get_rvertex(r).K1 *= 0.;
+        }
+        Psi.vertex.get_rvertex('p').K2 *= 0.;
+        Psi.vertex.get_rvertex('t').K2 *= 0.;
+
+        double Lambda = Psi.Lambda;
+
+        Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+
+        const bool diff = false;
+        const bool all_spins = false;
+
+
+        const auto& grid = Psi.vertex.avertex().K1.frequencies.primary_grid;
+        const double wmax = grid.t_upper;
+        const double wmin = -wmax;
+        const rvec& freqs = get_freqs_equidistant_aux(nBOS*1e1, wmin, wmax, grid);
+
+        Psi.vertex.initializeInterpol();
+        Psi.vertex.template symmetry_expand<'t',false>();
+        IntegrandSE<Q,symmetric_full,false,return_type> integrandR(0, Psi.vertex, G, i2, 0, v, i_in);
+        integrandR.save_integrand(freqs, filename_prefix);
+        if constexpr(KELDYSH and not VECTORIZED_INTEGRATION) {
+            IntegrandSE<Q,symmetric_full,false,return_type> integrandK(1, Psi.vertex, G, i2, 0, v, i_in);
             integrandK.save_integrand(freqs);
         }
     }
@@ -322,7 +421,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
     double vp= 0.;      // frequencies in the natural parametrization of channel
     int i_in = 0;
 
-    vec<double> ws = {0., 5., 100.};
+    vec<double> all_frequencies = {0., 5., 100.};
     vec<double> vs = {0., 5., 100.};
     vec<int> i2s = {0,1,2,3,4,5,6,7,8,9};
 
@@ -332,7 +431,7 @@ void get_integrand_dGamma_1Loop(std::string dir_str, const int it_Lambda, const 
     utils::makedir(dir_integrand_str);
     const std::string filename_prefix = dir_integrand_str + "dGamma1Loop_RKstep"+std::to_string(rkStep);
 
-    for (double w_temp: ws) {
+    for (double w_temp: all_frequencies) {
         for (double v_temp: vs) {
             saveIntegrand::dGamma_1Loop<Q>(filename_prefix, file_Psi, file_dPsi, it_Lambda, k_class, channel, i0, i2, spin, w_temp, v_temp, vp, i_in);
 
@@ -497,6 +596,26 @@ void get_integrand_Sigma(std::string dir_str, const int it_Lambda, const int rkS
 
 }
 
+
+template <typename Q>
+void get_integrand_Sigma_SDE(std::string dir_str, const int it_Lambda, const int rkStep) {
+
+    dir_str = dir_str + "intermediateResults/";
+    const std::string file_Psi = dir_str + "Psi"+"_RKstep"+std::to_string(rkStep);
+
+
+    int i2 = 0;         /// currently not supported --> wait until order of sum and integration are interchanged by Elias
+    double v = 1.;
+    int i_in = 0;
+
+    /// In the following you can also iterate over different v/etc:
+
+    std::string dir_integrand_str = dir_str + "integrands/";
+    utils::makedir(dir_integrand_str);
+    const std::string filename_prefix = "dSigma_RKstep"+std::to_string(rkStep);
+    saveIntegrand::Sigma_SDE<Q>(filename_prefix, file_Psi, it_Lambda, i2, v, i_in);
+
+}
 
 
 #endif //FPP_MFRG_PLOTINTEGRAND_H

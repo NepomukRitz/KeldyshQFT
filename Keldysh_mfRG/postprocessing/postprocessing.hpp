@@ -31,27 +31,28 @@ public:
 
 };
 
+template<typename gridType>
 class Integrand_Ward_id_integrated {
 public:
-    const FrequencyGrid v;
+    const gridType v;
     const rvec& Phi;
     const SelfEnergy<state_datatype>& selfEnergy;
     const int iLambda;
     const int i_in;
 
-    Integrand_Ward_id_integrated(const FrequencyGrid& v_in, const rvec& Phi_in, const SelfEnergy<state_datatype>& selfEnergy_in,
+    Integrand_Ward_id_integrated(const gridType& v_in, const rvec& Phi_in, const SelfEnergy<state_datatype>& selfEnergy_in,
                                  const int iLambda_in, const int i_in_in)
             : v(v_in), Phi(Phi_in), selfEnergy(selfEnergy_in), iLambda(iLambda_in), i_in(i_in_in) {}
 
     auto operator() (double vp) const -> double {
         if (std::abs(vp) < v.w_upper) {
-            int index = v.fconv(vp);
-            double x1 = v.get_ws(index);
-            double x2 = v.get_ws(index + 1);
+            int index = v.get_grid_index(vp);
+            double x1 = v.get_frequency(index);
+            double x2 = v.get_frequency(index + 1);
             if (!(x1 < x2)) {
                 index -= 1;
-                x1 = v.get_ws(index);
-                x2 = v.get_ws(index + 1);
+                x1 = v.get_frequency(index);
+                x2 = v.get_frequency(index + 1);
             }
             double xd = (vp - x1) / (x2 - x1);
 
@@ -80,7 +81,7 @@ public:
     auto operator() (double w) const -> state_datatype {
         state_datatype result;
         // Keldysh component (Keldysh index 3) in the t channel
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
         VertexInput input(3, it_spin,  w, 0., 0., 0, 't');
 #else
         VertexInput input(0, w, 0., 0., 0, 0, 't');

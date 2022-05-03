@@ -56,6 +56,8 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
     ODE_solver_config config;
     config.maximal_number_of_ODE_steps = 300;
+    config.relative_error = 1e-5;
+    config.absolute_error = 1e-8;
     rhs_quartic_t rhs;
     boost::numeric::odeint::ode_solver_boost<double, flowgrid::linear_parametrization, rhs_quartic_t>(result, Lambda_f, y_ini, Lambda_i, rhs,  config, false);
 
@@ -69,7 +71,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
 TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
 
-        double Lambda_i = 100.;
+        double Lambda_i = 10.;
     double Lambda_f = 1e-2;
 
     double y_ini = exp(Lambda_i);
@@ -77,10 +79,13 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
     //ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, rhs_exp, lambda_checkpoints, "", 0, 2000, true);
     ODE_solver_config config;
     config.maximal_number_of_ODE_steps = 500;
+    config.relative_error = 1e-9;
+    config.absolute_error = 1e-8;
     boost::numeric::odeint::ode_solver_boost<double, flowgrid::exp_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(),  config, false);
 
 
     double result_exact = exp(Lambda_f);
+    double difference = std::abs(result - result_exact);
     SECTION( "Is the correct value retrieved from ODE solver?" ) {
         REQUIRE( std::abs(result - result_exact) < 1e-4 );
     }

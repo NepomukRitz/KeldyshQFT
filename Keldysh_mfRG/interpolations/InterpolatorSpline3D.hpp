@@ -12,7 +12,7 @@ class Spline;
 
 /**
  * SplineK3 interpolation
- * @tparam DataContainer  contains vertex data and frequency grids frequencies.b and frequencies.f
+ * @tparam DataContainer  contains vertex data and frequency grids frequencies.  primary_grid and frequencies.secondary_grid
  *                          computes partial derivative of data in x, y, z direction (and combinations of x/y/z)
  * @tparam Q              double or comp
  */
@@ -148,25 +148,26 @@ void Spline<Q,rank,3,pos_first_freq_index,DataContainer>::get_coeffs_from_derivs
             -12,12,12,-12, 12,-12,-12,12, -8,-4, 8, 4,   8, 4,-8,-4,   -6, 6,-6, 6,   6,-6, 6,-6,  -6, 6, 6,-6,  -6, 6, 6,-6,  -4,-2,-4,-2,   4, 2, 4, 2,  -4,-2, 4, 2,  -4,-2, 4, 2,  -3, 3,-3, 3,  -3, 3,-3, 3,  -2,-1,-2,-1,  -2,-1,-2,-1,
              8,-8,-8, 8,   -8, 8, 8,-8,    4, 4,-4,-4,  -4,-4, 4, 4,    4,-4, 4,-4,  -4, 4,-4, 4,   4,-4,-4, 4,   4,-4,-4, 4,   2, 2, 2, 2,  -2,-2,-2,-2,   2, 2,-2,-2,   2, 2,-2,-2,   2,-2, 2,-2,   2,-2, 2,-2,   1, 1, 1, 1,   1, 1, 1, 1;
 
-    const size_t n_x = DataContainer::frequencies.b.get_ws_vec().size();
-    const size_t n_y = DataContainer::frequencies.f.get_ws_vec().size();
-    const size_t n_nonx = n/n_x/n_y/n_y;
+    const size_t n_x = DataContainer::frequencies.  primary_grid.get_all_frequencies().size();
+    const size_t n_y = DataContainer::frequencies.secondary_grid.get_all_frequencies().size();
+    const size_t n_z = DataContainer::frequencies. tertiary_grid.get_all_frequencies().size();
+    const size_t n_nonx = n/n_x/n_y/n_z;
 
     for (size_t i = 0; i < n_nonx; i++) {
         for (size_t j = 0; j < n_x-1; j++) {
             for (size_t k = 0; k < n_y-1; k++) {
-                for (size_t l = 0; l < n_y - 1; l++) {
-                    const double dw = DataContainer::frequencies.b.get_ts(j+1) - DataContainer::frequencies.b.get_ts(j);
-                    const double dv = DataContainer::frequencies.f.get_ts(k+1) - DataContainer::frequencies.f.get_ts(k);
-                    const double dvp= DataContainer::frequencies.f.get_ts(l+1) - DataContainer::frequencies.f.get_ts(l);
-                    int idx_base_base_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k  )*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_base_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k  )*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_base_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k+1)*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k+1)*n_y + l  , DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_base_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k  )*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k  )*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_base_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j  )*n_y*n_y + (k+1)*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
-                    int idx_plus_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_y + (j+1)*n_y*n_y + (k+1)*n_y + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                for (size_t l = 0; l < n_z - 1; l++) {
+                    const double dw = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j+1) - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j);
+                    const double dv = DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(k+1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(k);
+                    const double dvp= DataContainer::frequencies. tertiary_grid.get_auxiliary_gridpoint(l+1) - DataContainer::frequencies. tertiary_grid.get_auxiliary_gridpoint(l);
+                    int idx_base_base_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k  )*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_base_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k  )*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_base_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k+1)*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_plus_base = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k+1)*n_z + l  , DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_base_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k  )*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_base_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k  )*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_base_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j  )*n_y*n_z + (k+1)*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
+                    int idx_plus_plus_plus = ::rotateFlatIndex(i*n_x*n_y*n_z + (j+1)*n_y*n_z + (k+1)*n_z + l+1, DataContainer::get_dims(), pos_first_freq_index+2);
 
                     Eigen::Matrix<Q,64,1> _fs;
                     _fs << DataContainer::data[idx_base_base_base],   DataContainer::data[idx_plus_base_base],   DataContainer::data[idx_base_plus_base],   DataContainer::data[idx_plus_plus_base],   DataContainer::data[idx_base_base_plus],   DataContainer::data[idx_plus_base_plus],   DataContainer::data[idx_base_plus_plus],   DataContainer::data[idx_plus_plus_plus],
@@ -370,8 +371,8 @@ void Spline<Q,rank,3,pos_first_freq_index,DataContainer>::initInterpolator() con
 
 template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
 Eigen::Matrix<Q,64,1> Spline<Q,rank,3,pos_first_freq_index,DataContainer>::get_weights (const std::array<my_index_t,3>& freq_idx, const std::array<double,3>& dt_unnormalized) const {
-    //const double dw = DataContainer::frequencies.b.get_ts(iw+1) - DataContainer::frequencies.b.get_ts(iw);
-    //const double dv = DataContainer::frequencies.f.get_ts(iv+1) - DataContainer::frequencies.f.get_ts(iv);
+    //const double dw = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(iw+1) - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(iw);
+    //const double dv = DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv+1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv);
     const double hw = dt_unnormalized[0];
     const double hv = dt_unnormalized[1];
     const double hvp= dt_unnormalized[2];
@@ -400,13 +401,13 @@ result_type Spline<Q,rank,3,pos_first_freq_index,DataContainer>::interpolate_spl
     assert(initialized);
     std::array<my_index_t,3> freq_idx;
     std::array<double,3> dt_unnormalized;
-    DataContainer::frequencies.fconv_on_aux_unnormalized(freq_idx, dt_unnormalized, frequencies);
+    DataContainer::frequencies.get_auxgrid_index_unnormalized(freq_idx, dt_unnormalized, frequencies);
     //double tw;
-    //const size_t iw=DataContainer::frequencies.b.fconv(tw, frequencies[0]);
+    //const size_t iw=DataContainer::frequencies.  primary_grid.get_grid_index(tw, frequencies[0]);
     //double tv;
-    //const size_t iv=DataContainer::frequencies.f.fconv(tv, frequencies[1]);
+    //const size_t iv=DataContainer::frequencies.secondary_grid.get_grid_index(tv, frequencies[1]);
     //double tvp;
-    //const size_t ivp=DataContainer::frequencies.f.fconv(tvp, frequencies[2]);
+    //const size_t ivp=DataContainer::frequencies.secondary_grid.get_grid_index(tvp, frequencies[2]);
     index_type index_temp = indices;
     index_temp[pos_first_freq_index  ] = freq_idx[0];
     index_temp[pos_first_freq_index+1] = freq_idx[1];
@@ -438,12 +439,12 @@ result_type Spline<Q,rank,3,pos_first_freq_index,DataContainer>::interpolate_spl
         return result;
     }
 
-    //const double dw = DataContainer::frequencies.b.get_ts(iw +1) - DataContainer::frequencies.b.get_ts(iw );
-    //const double dv = DataContainer::frequencies.f.get_ts(iv +1) - DataContainer::frequencies.f.get_ts(iv );
-    //const double dvp= DataContainer::frequencies.f.get_ts(ivp+1) - DataContainer::frequencies.f.get_ts(ivp);
-    //const double hw = (tw - DataContainer::frequencies.b.get_ts(iw )) / dw;
-    //const double hv = (tv - DataContainer::frequencies.f.get_ts(iv )) / dv;
-    //const double hvp= (tvp- DataContainer::frequencies.f.get_ts(ivp)) / dvp;
+    //const double dw = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(iw +1) - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(iw );
+    //const double dv = DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv +1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv );
+    //const double dvp= DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(ivp+1) - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(ivp);
+    //const double hw = (tw - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(iw )) / dw;
+    //const double hv = (tv - DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv )) / dv;
+    //const double hvp= (tvp- DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(ivp)) / dvp;
 
 
     //const vec<Q> coeffs = get_coeffs_from_derivs(index_temp, dw, dv, dvp);

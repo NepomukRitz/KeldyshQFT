@@ -11,9 +11,8 @@
 // For production: uncomment the following line to switch off assert()-functions
 #define NDEBUG
 
-//#define MULTIDIM_MINIMIZATION
 
-//#define DEBUG_SYMMETRIES // for test_symmetries() -> computes the mfRG equations once without use of any symmetries
+#define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -24,15 +23,13 @@ constexpr bool VERBOSE = false;
 //#define FERMI_POLARON_PROBLEM
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM
-#define SWITCH_SUM_N_INTEGRAL
+#define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
+#define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
+#define SWITCH_SUM_N_INTEGRAL    // if defined: sum over internal indices within integrand
+#define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
-//#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
-constexpr bool BOSONIC_PARAM_FOR_K3 = false; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
-
-constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 
 // Determines whether particle-hole symmetry is assumed
@@ -54,7 +51,7 @@ constexpr int N_LOOPS = 3;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.1;                    // Temperature
+constexpr double glb_T = 0.1; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -70,12 +67,12 @@ constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson mo
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
-
+#define USE_FDT 0
 
 /// Spin parameters ///
 
 // Number of independent spin components. n_spin = 1 with SU(2) symmetry.
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
 constexpr int n_spin = 2;
 #else
 constexpr int n_spin = 1;
@@ -142,10 +139,10 @@ constexpr int n_in = 1;
 
 // if the following is not defined, we flow with the parameter Lambda. The flowgrid just provides suggestions for stepsizes
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
-//#define REPARAMETRIZE_FLOWGRID
+#define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 100;
-constexpr double epsODE_rel = 1e-6;
+constexpr int nODE = 50;
+constexpr double epsODE_rel = 1e-4;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4; // WARNING: non-adaptive!
@@ -195,7 +192,7 @@ constexpr bool FPP = true;
 constexpr bool FPP = false;
 #endif
 
-#ifdef KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
 constexpr bool KELDYSH = true;
 #else
 constexpr bool KELDYSH = false;

@@ -12,6 +12,7 @@
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
 #include "perturbation_theory_and_parquet/perturbation_theory.hpp"
+#include "tests/test_ODE.hpp"
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
@@ -37,15 +38,20 @@ auto main() -> int {
 
     //
     //test_PT4(0.5, true);
-    //test_PT_state<state_datatype>(data_dir+filename, 1.8, false);
+    //test_PT_state<state_datatype>( data_dir+filename, 1.8, false);
+    //test_interpolate_K12<state_datatype>(1.8);
     //test_compare_with_Vienna_code();
     //findBestWscale4K1<state_datatype>(1.8);
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
-    std::string name = data_dir+filename+job;
-    n_loop_flow(name,  true);
-    //test_symmetries(19.8);
+    fRG_config config;
+    config.nODE_ = 50;
+    config.epsODE_abs_ = 1e-8;
+    config.epsODE_rel_ = 1e-5;
+    config.U = 1.;
+    n_loop_flow(data_dir+filename, config, true);
+    //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
     /*

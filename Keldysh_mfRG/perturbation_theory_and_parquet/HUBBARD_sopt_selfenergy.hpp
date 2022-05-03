@@ -11,11 +11,12 @@
 #include "../correlation_functions/state.hpp"
 #include "../integrator/integrator.hpp"
 
+template <typename gridType>
 class Integrand_SE_SOPT_Hubbard{
 public:
     Integrand_SE_SOPT_Hubbard(const vec<comp>& integrand_in,
                               const double v_in, const int i_in_in,
-                              const FrequencyGrid& prop_grid_in, const FrequencyGrid& vertex_grid_in)
+                              const gridType& prop_grid_in, const gridType& vertex_grid_in)
             : integrand(integrand_in), v(v_in), i_in(i_in_in),
               prop_grid(prop_grid_in), vertex_grid(vertex_grid_in){};
 
@@ -26,8 +27,8 @@ private:
     const double v;
     const int i_in;
 
-    const FrequencyGrid& prop_grid;
-    const FrequencyGrid& vertex_grid;
+    const gridType& prop_grid;
+    const gridType& vertex_grid;
 
     int composite_index(int iv1, int iw_1) const;
 };

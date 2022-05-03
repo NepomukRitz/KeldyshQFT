@@ -3,6 +3,7 @@
 #include "../../multidimensional/multiarray.hpp"
 #include "../../utilities/math_utils.hpp"
 #include "../../utilities/hdf5_routines.hpp"
+#include "../../symmetries/Keldysh_symmetries.hpp"
 
 // TODO(high): Write unit tests for cross projection functionality!
 
@@ -18,7 +19,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex data exactly 0?" ) {
         REQUIRE( testvertex1.K1.get_vec().max_norm() < 1e-10 );
         if (MAX_DIAG_CLASS > 1) REQUIRE( testvertex1.K2.get_vec().max_norm() < 1e-10 );
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( testvertex1.K2b.get_vec().max_norm() < 1e-10 );
 #endif
         if (MAX_DIAG_CLASS > 2) REQUIRE( testvertex1.K3.get_vec().max_norm() < 1e-10 );
@@ -29,7 +30,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex data exactly 1?" ) {
         REQUIRE( std::abs(testvertex1.K1.get_vec()[0] - 1.)  < 1e-10 );
         if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex1.K2.get_vec()[0] - 1.)  < 1e-10);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex1.K2b.get_vec()[0] - 1.)  < 1e-10 );
 #endif
         if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex1.K3.get_vec()[0] - 1.) < 1e-10);
@@ -41,7 +42,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex2 data exactly 1?" ) {
         REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 1.)  < 1e-10 );
         if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 1.)  < 1e-10);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 1.)  < 1e-10 );
 #endif
         if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 1.) < 1e-10);
@@ -54,7 +55,7 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     SECTION( "Is vertex2 data exactly 3?" ) {
         REQUIRE( std::abs(testvertex2.K1.get_vec()[0] - 3.)  < 1e-10 );
         if ( MAX_DIAG_CLASS >= 2) REQUIRE( std::abs(testvertex2.K2.get_vec()[0] - 3.)  < 1e-10);
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         REQUIRE( std::abs(testvertex2.K2b.get_vec()[0] - 3.)  < 1e-10 );
 #endif
         if ( MAX_DIAG_CLASS >= 3) REQUIRE( std::abs(testvertex2.K3.get_vec()[0] - 3.) < 1e-10);
@@ -76,7 +77,7 @@ namespace {
 TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "[update grid]") {
     rvert<state_datatype> testvertex1('a', Lambda_ini, true);
 
-    multidimensional::multiarray<state_datatype,4> v1(K1_config.dims);
+    multidimensional::multiarray<state_datatype,4> v1(K1at_config.dims);
     for (int iw = 0; iw < nBOS; iw++) {
         double w;
         testvertex1.K1.frequencies.get_freqs_w(w, iw);
@@ -98,7 +99,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
     if (MAX_DIAG_CLASS>2) {
         for (int iw = 0; iw < nBOS3; iw++) {
             for (int iv = 0; iv < nFER3; iv++) {
-                for (int ivp = 0; ivp < nFER3; ivp++) {
+                for (int ivp = 0; ivp < (GRID != 2 ? nFER3 : (nFER3-1)/2+1); ivp++) {
                     double w, v, vp;
                     testvertex1.K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
                     auto val = vertex_function(w) + vertex_function2(v) + vertex_function(vp);
@@ -114,19 +115,20 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
 
     SECTION( "Is K1 correctly updated??" ) {
+#if GRID == 0
         if (INTERPOLATION==linear) {
             auto bfreqK1 = testvertex1.K1.get_VertexFreqGrid();
-            double Wscale_old = bfreqK1.b.W_scale;
-            double wmax_old = bfreqK1.b.w_upper;
+            double Wscale_old = bfreqK1.primary_grid.W_scale;
+            double wmax_old = bfreqK1.primary_grid.w_upper;
             double factor = 0.5;
-            bfreqK1.b.set_w_upper(factor * wmax_old);
-            bfreqK1.b.set_W_scale(factor * Wscale_old);
-            bfreqK1.b.initialize_grid();
+            bfreqK1.  primary_grid.set_w_upper(factor * wmax_old);
+            bfreqK1.  primary_grid.W_scale = (factor * Wscale_old);
+            bfreqK1.  primary_grid.initialize_grid();
 
             testvertex1.update_grid<k1>(bfreqK1, testvertex1);
 
 
-            multidimensional::multiarray<state_datatype,4> errors(K1_config.dims);
+            multidimensional::multiarray<state_datatype,4> errors(K1at_config.dims);
             for (int iw = 0; iw < nBOS; iw++) {
                 double w;
                 testvertex1.K1.frequencies.get_freqs_w(w, iw);
@@ -136,39 +138,44 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
             //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_TRUNC);
             //write_to_hdf(outfile, "vertex_dataK1_old", testvertex_old.K1.get_vec(), false);
             //write_to_hdf(outfile, "vertex_dataK1_new", testvertex1.K1.get_vec(), false);
-            //write_to_hdf(outfile, "gridK1b_old", testvertex_old.K1.frequencies.get_freqGrid_b().get_ws_vec(), false);
-            //write_to_hdf(outfile, "gridK1b_new", testvertex1.K1.frequencies.get_freqGrid_b().get_ws_vec(), false);
+            //write_to_hdf(outfile, "gridK1b_old", testvertex_old.K1.frequencies.get_freqGrid_b().get_all_frequencies(), false);
+            //write_to_hdf(outfile, "gridK1b_new", testvertex1.K1.frequencies.get_freqGrid_b().get_all_frequencies(), false);
             //write_to_hdf(outfile, "errorsK1", errors, false);
             //outfile.close();
 
+            double error_max = errors.max_norm();
+            utils::print(error_max);
             REQUIRE(errors.max_norm() < 1e-10);
+            REQUIRE(error_max<1e-10);
         }
         else {
             utils::print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
 
         }
+#endif
 
     }
     if (MAX_DIAG_CLASS>1) {
         SECTION( "Is K2 correctly updated??" ) {
+#if GRID == 0
             if (INTERPOLATION==linear) {
                 rvert<state_datatype>::freqGrid_type_K2 bfreqK2 = testvertex1.K2.get_VertexFreqGrid();
-                double Wscale_old_b = bfreqK2.b.W_scale;
-                double wmax_old_b = bfreqK2.b.w_upper;
-                double Wscale_old_f = bfreqK2.f.W_scale;
-                double wmax_old_f = bfreqK2.f.w_upper;
+                double Wscale_old_b = bfreqK2.  primary_grid.W_scale;
+                double wmax_old_b = bfreqK2.  primary_grid.w_upper;
+                double Wscale_old_f = bfreqK2.secondary_grid.W_scale;
+                double wmax_old_f = bfreqK2.secondary_grid.w_upper;
                 double factor = 0.5;
-                bfreqK2.b.set_w_upper(factor * wmax_old_b);
-                bfreqK2.b.set_W_scale(factor * Wscale_old_b);
-                bfreqK2.f.set_w_upper(factor * wmax_old_f);
-                bfreqK2.f.set_W_scale(factor * Wscale_old_f);
-                bfreqK2.b.initialize_grid();
-                bfreqK2.f.initialize_grid();
+                bfreqK2.  primary_grid.set_w_upper(factor * wmax_old_b);
+                bfreqK2.  primary_grid.W_scale = (factor * Wscale_old_b);
+                bfreqK2.secondary_grid.set_w_upper(factor * wmax_old_f);
+                bfreqK2.secondary_grid.W_scale = (factor * Wscale_old_f);
+                bfreqK2.  primary_grid.initialize_grid();
+                bfreqK2.secondary_grid.initialize_grid();
 
                 testvertex1.update_grid<k2>(bfreqK2, testvertex1);
 
 
-                multidimensional::multiarray<state_datatype,5> errors(K2_config.dims);
+                multidimensional::multiarray<state_datatype,5> errors(K2at_config.dims);
                 for (int iw = 0; iw < nBOS2; iw++) {
                     for (int iv = 0; iv < nFER2; iv++) {
                         double w, v;
@@ -182,10 +189,10 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_RDWR);
                 //write_to_hdf(outfile, "vertex_dataK2_old", testvertex_old.K2.get_vec(), false);
                 //write_to_hdf(outfile, "vertex_dataK2_new", testvertex1.K2.get_vec(), false);
-                //write_to_hdf(outfile, "gridK2b_old", testvertex_old.K2.K2_get_freqGrid_b().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK2b_new", testvertex1.K2.K2_get_freqGrid_b().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK2f_old", testvertex_old.K2.K2_get_freqGrid_f().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK2f_new", testvertex1.K2.K2_get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK2b_old", testvertex_old.K2.K2_get_freqGrid_b().get_all_frequencies(), false);
+                //write_to_hdf(outfile, "gridK2b_new", testvertex1.K2.K2_get_freqGrid_b().get_all_frequencies(), false);
+                //write_to_hdf(outfile, "gridK2f_old", testvertex_old.K2.K2_get_freqGrid_f().get_all_frequencies(), false);
+                //write_to_hdf(outfile, "gridK2f_new", testvertex1.K2.K2_get_freqGrid_f().get_all_frequencies(), false);
                 //write_to_hdf(outfile, "errorsK2", errors, false);
                 //outfile.close();
 
@@ -197,25 +204,26 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
             }
 
+#endif
         }
-
     }
 
     if (MAX_DIAG_CLASS>2) {
         SECTION( "Is K3 correctly updated??" ) {
+#if GRID == 0
             if (INTERPOLATION==linear) {
                 rvert<state_datatype>::freqGrid_type_K3 bfreqK3 = testvertex1.K3.get_VertexFreqGrid();
-                double Wscale_old_b = bfreqK3.b.W_scale;
-                double wmax_old_b = bfreqK3.b.w_upper;
-                double Wscale_old_f = bfreqK3.f.W_scale;
-                double wmax_old_f = bfreqK3.f.w_upper;
+                double Wscale_old_b = bfreqK3.  primary_grid.W_scale;
+                double wmax_old_b = bfreqK3.  primary_grid.w_upper;
+                double Wscale_old_f = bfreqK3.secondary_grid.W_scale;
+                double wmax_old_f = bfreqK3.secondary_grid.w_upper;
                 double factor = 0.5;
-                bfreqK3.b.set_w_upper(factor * wmax_old_b);
-                bfreqK3.b.set_W_scale(factor * Wscale_old_b);
-                bfreqK3.f.set_w_upper(factor * wmax_old_f);
-                bfreqK3.f.set_W_scale(factor * Wscale_old_f);
-                bfreqK3.b.initialize_grid();
-                bfreqK3.f.initialize_grid();
+                bfreqK3.  primary_grid.set_w_upper(factor * wmax_old_b);
+                bfreqK3.  primary_grid.W_scale = (factor * Wscale_old_b);
+                bfreqK3.secondary_grid.set_w_upper(factor * wmax_old_f);
+                bfreqK3.secondary_grid.W_scale = (factor * Wscale_old_f);
+                bfreqK3.  primary_grid.initialize_grid();
+                bfreqK3.secondary_grid.initialize_grid();
 
                 testvertex1.update_grid<k3>(bfreqK3, testvertex1);
 
@@ -235,10 +243,10 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_RDWR);
                 //write_to_hdf(outfile, "vertex_dataK3_old", testvertex_old.K3.get_vec(), false);
                 //write_to_hdf(outfile, "vertex_dataK3_new", testvertex1.K3.get_vec(), false);
-                //write_to_hdf(outfile, "gridK3b_old", testvertex_old.K3.frequencies.get_freqGrid_b().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK3b_new", testvertex1.K3.frequencies.get_freqGrid_b().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK3f_old", testvertex_old.K3.frequencies.get_freqGrid_f().get_ws_vec(), false);
-                //write_to_hdf(outfile, "gridK3f_new", testvertex1.K3.frequencies.get_freqGrid_f().get_ws_vec(), false);
+                //write_to_hdf(outfile, "gridK3b_old", testvertex_old.K3.frequencies.get_freqGrid_b().get_all_frequencies(), false);
+                //write_to_hdf(outfile, "gridK3b_new", testvertex1.K3.frequencies.get_freqGrid_b().get_all_frequencies(), false);
+                //write_to_hdf(outfile, "gridK3f_old", testvertex_old.K3.frequencies.get_freqGrid_f().get_all_frequencies(), false);
+                //write_to_hdf(outfile, "gridK3f_new", testvertex1.K3.frequencies.get_freqGrid_f().get_all_frequencies(), false);
                 //write_to_hdf(outfile, "errorsK3", errors, false);
                 //outfile.close();
 
@@ -248,6 +256,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 utils::print("\n\nFrequencyUpdate of vertex data requires INTERPOLATION=linear!\n\n");
 
             }
+#endif
 
         }
 
@@ -259,7 +268,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
 }
 
-#ifndef KELDYSH_FORMALISM
+#if not KELDYSH_FORMALISM
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for K1a?", "[frequency_symmetries]" ) {
     rvert<state_datatype> avertex('a', Lambda_ini, true);
     int iK = 0;

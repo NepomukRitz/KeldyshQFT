@@ -17,10 +17,15 @@ constexpr Q my_integer_pow(const Q i) {
 }
 
 // signfunction for Matsubara propagators (GM and SM) and for analytical Fourier transform
+// gives -1 for x < 0
+//        0 for x = 0
+//        1 for x > 0
 template <typename T>
-auto sign(T x) -> double {
+auto sign(T x) -> double {              /// TODO: Which implementation is more efficient? This one or the one below? (with ternary operators)
     return (T(0) < x) - (x < T(0));
 }
+
+double sgn(double x);
 
 // Heaviside-Theta function for sharp regulator
 auto heaviside (const double x) -> double;
@@ -901,7 +906,7 @@ template<typename T> vec<T> power2(const vec<T>& vec_in) {
     vec <T> result (flatdim);
     T temp;
     for (int it = 0; it < flatdim; it++) {
-        temp = vec_in[it];
+        temp = std::abs(vec_in[it]);
         result[it] = temp * temp;
     }
     return result;
@@ -970,6 +975,8 @@ template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t)
 /// converts the frequencies to the parametrization that is used internally, e.g. rotate frequency plane
 void K2_convert2internalFreqs(double &w, double &v);
 void K2_convert2naturalFreqs(double &w, double &v);
+void K3_convert2internalFreqs(double &w, double &v, double &vp);
+void K3_convert2naturalFreqs(double &w, double &v, double &vp);
 
 
 /// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].

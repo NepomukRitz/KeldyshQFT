@@ -40,7 +40,7 @@ class Spline {};
 
 /**
  * Spline1D interpolation
- * @tparam DataContainer  contains vertex data and frequency grid frequencies.b
+ * @tparam DataContainer  contains vertex data and frequency grid frequencies.  primary_grid
  *                          computes derivative of data
  * @tparam Q              double or comp
  */
@@ -57,7 +57,7 @@ public:
     mutable bool initialized = false;
 
 protected:
-    //std::vector<double> m_x = DataContainer::frequencies.b.ts;
+    //std::vector<double> m_x = DataContainer::frequencies.  primary_grid.auxiliary_grid;
     size_t n=0;   // flat size of data vector (and interpolation coefficients)
     size_t i_x = pos_first_freq_index; // index of w dimension in DataContainer::dims
     mutable vec<Q> m_b = vec<Q>(n);//, m_c, m_d;        // Spline coefficients
@@ -105,7 +105,7 @@ public:
 template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
 void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::set_coeffs_from_b() const
 {
-    size_t n_x = DataContainer::frequencies.b.get_ws_vec().size();
+    size_t n_x = DataContainer::frequencies.  primary_grid.get_all_frequencies().size();
     size_t n_nonx = n/n_x;
     Eigen::Matrix<double,4,4> A;
     A << 1, 0, 0, 0,
@@ -115,7 +115,7 @@ void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::set_coeffs_from_b() co
 
     for(size_t i=0; i<n_nonx; i++) {
         for (size_t j=0; j<n_x-1; j++) { /// i=n_x-1 not treated (only used for extrapolation to the right)
-            const double h  = DataContainer::frequencies.b.get_ts(j+1)-DataContainer::frequencies.b.get_ts(j);      /// spacing
+            const double h  = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j+1)-DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(j);      /// spacing
             int idx_base = ::rotateFlatIndex(i*n_x+j  , DataContainer::get_dims(), i_x);
             int idx_plus = ::rotateFlatIndex(i*n_x+j+1, DataContainer::get_dims(), i_x);
             Eigen::Matrix<Q,4,1> fs;
@@ -261,8 +261,8 @@ void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::initInterpolator() con
     template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
     auto Spline<Q,rank,1,pos_first_freq_index,DataContainer>::get_weights (int idx, double t) const -> weights_type{
 
-        double t_low = DataContainer::frequencies.b.get_ts(idx);
-        double t_high= DataContainer::frequencies.b.get_ts(idx+1);
+        double t_low = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx);
+        double t_high= DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx+1);
         double h = (t - t_low);
         //assert(h>-1e-10);
         //assert(t<t_high+1e-6);
@@ -277,12 +277,12 @@ result_type Spline<Q,rank,1,pos_first_freq_index,DataContainer>::interpolate_spl
 {
     assert(initialized);
     double t;
-    int idx=DataContainer::frequencies.b.fconv(t, frequencies[0]);
+    int idx=DataContainer::frequencies.  primary_grid.get_grid_index(t, frequencies[0]);
     index_type index_tmp = indices;
     index_tmp[pos_first_freq_index] = idx;
     int i_row = getFlatIndex<rank>(index_tmp, DataContainer::get_dims());
 
-    double h = t - DataContainer::frequencies.b.get_ts(idx);
+    double h = t - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx);
     weights_type weights = get_weights(idx, t);
 
     if constexpr(std::is_same_v<result_type,Q>) {
@@ -320,7 +320,7 @@ result_type Spline<Q,rank,1,pos_first_freq_index,DataContainer>::interpolate_spl
     Q Spline<DataContainer,Q>::deriv(int order, double x) const
     {
     assert(order>0);
-    size_t idx = DataContainer::frequencies.b.fconv(x);
+    size_t idx = DataContainer::frequencies.  primary_grid.get_grid_index(x);
 
     double h=x-m_x[idx];
     Q interpol;

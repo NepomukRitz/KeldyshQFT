@@ -4,7 +4,7 @@
 #include "../correlation_functions/state.hpp"
 #include "test_perturbation_theory.hpp"
 
-#if not defined(KELDYSH_FORMALISM) and defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
 /**
  * test-integrand for below function test_integrate_over_K1()
  */
@@ -20,28 +20,37 @@ public:
         //FOPTstate = State<Q>(Lambda);
         FOPTstate.initialize();             // initialize state
 
-        fopt_state(FOPTstate, Lambda);
+#ifdef ADAPTIVE_GRID
+        State<Q> state_temp = FOPTstate;
+        state_temp.initialize();
+        topt_state(state_temp, Lambda);
+        state_temp.findBestFreqGrid(true);
+
+        FOPTstate.set_frequency_grid(state_temp);
+#endif
+
+        topt_state(FOPTstate, Lambda);
         FOPTstate.vertex.half1().initializeInterpol();
     }
 
     void save_integrand(double vmax) {
         int npoints = 1e5;
         /// K1:
-        FrequencyGrid bfreqs('b', 1, Lambda);
+        typename rvert<Q>::freqGrid_type_K1::grid_type1 bfreqs = FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().get_freqGrid_b();
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         rvec integrand_diff_re (npoints);
         rvec integrand_diff_im (npoints);
-        double spacing = 2. / (double)npoints;
-        for (int i=1; i<npoints-1; ++i) {
-            double vpp = bfreqs.grid_transf_inv(-1 + i * spacing);
+        double spacing = 2. / (double)(npoints-1);
+        for (int i=0; i<npoints; ++i) {
+            double vpp = bfreqs.frequency_from_t(-1. + i * spacing);
             IndicesSymmetryTransformations indices (0, 0, vpp, 0, 0., 0, 'a', k1, 0,'a');
             Q integrand_value = FOPTstate.vertex.half1().avertex.K1.interpolate(indices);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
             integrand_diff_re[i] = integrand_value - SOPT_K1a(vpp, Lambda);
@@ -58,52 +67,54 @@ public:
         filename += channel;
         filename += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename,
-                       {"v", "integrand_re", "integrand_im"},
-                       {freqs, integrand_re, integrand_im});
+                       {"v", "integrand_re", "integrand_im", "bfreqs_a"},
+                       {freqs, integrand_re, integrand_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().  primary_grid.get_all_frequencies()});
 
         std::string filename_diff = data_dir + "integrand_diff_K1";
         filename_diff += channel;
         filename_diff += "_w=" + std::to_string(w) +"_v" + std::to_string(v) +  "_vp" + std::to_string(vp) + ".h5";
         write_h5_rvecs(filename_diff,
-                       {"v", "integrand_diff_re", "integrand_diff_im"},
-                       {freqs, integrand_diff_re, integrand_diff_im});
+                       {"v", "integrand_diff_re", "integrand_diff_im", "bfreqs_a"},
+                       {freqs, integrand_diff_re, integrand_diff_im, FOPTstate.vertex.avertex().K1.get_VertexFreqGrid().  primary_grid.get_all_frequencies()});
 
-        /// K2:
-        npoints = 1e3;
-        FrequencyGrid bfreqs2('b', 2, Lambda);
-        FrequencyGrid ffreqs2('f', 2, Lambda);
-        rvec bfreqsK2 (npoints);
-        rvec ffreqsK2 (npoints);
+        if constexpr(MAX_DIAG_CLASS > 1) {
+            /// K2:
+            npoints = 1e3;
+            FrequencyGrid bfreqs2('b', 2, Lambda);
+            FrequencyGrid ffreqs2('f', 2, Lambda);
+            rvec bfreqsK2 (npoints);
+            rvec ffreqsK2 (npoints);
 
-        rvec K2_re (npoints*npoints);
-        rvec K2_im (npoints*npoints);
-        spacing = 2. / (double)npoints;
-        for (int i=1; i<npoints-1; ++i) {
-            for (int j=1; j<npoints-1; ++j) {
+            rvec K2_re (npoints*npoints);
+            rvec K2_im (npoints*npoints);
+            spacing = 2. / (double)npoints;
+            for (int i=1; i<npoints-1; ++i) {
+                for (int j=1; j<npoints-1; ++j) {
 
-                double w = bfreqs2.grid_transf_inv(-1 + i * spacing);
-                double v = ffreqs2.grid_transf_inv(-1 + j * spacing);
-                IndicesSymmetryTransformations indices (0, 0, w, v, 0., 0, 'a', k1, 0,'a');
-                Q integrand_value = FOPTstate.vertex.half1().avertex.K2.interpolate(indices);
-                bfreqsK2[i] = w;
-                ffreqsK2[i] = v;
+                    double w = bfreqs2.frequency_from_t(-1 + i * spacing);
+                    double v = ffreqs2.frequency_from_t(-1 + j * spacing);
+                    IndicesSymmetryTransformations indices (0, 0, w, v, 0., 0, 'a', k1, 0,'a');
+                    Q integrand_value = FOPTstate.vertex.half1().avertex.K2.interpolate(indices);
+                    bfreqsK2[i] = w;
+                    ffreqsK2[i] = v;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
-                K2_re[i*npoints + j] = integrand_value;
-                K2_im[i*npoints + j] = 0.;
-#else
-                K2_re[i*npoints + j] = integrand_value.real();
-                K2_im[i*npoints + j] = integrand_value.imag();
-#endif
+    #if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+                    K2_re[i*npoints + j] = integrand_value;
+                    K2_im[i*npoints + j] = 0.;
+    #else
+                    K2_re[i*npoints + j] = integrand_value.real();
+                    K2_im[i*npoints + j] = integrand_value.imag();
+    #endif
+                }
             }
-        }
 
-        std::string filenameK2 = data_dir + "/integrand_K2";
-        filename += channel;
-        filename += ".h5";
-        write_h5_rvecs(filenameK2,
-                       {"w", "v", "K2_re", "K2_im"},
-                       {bfreqsK2, ffreqsK2, K2_re, K2_im});
+            std::string filenameK2 = data_dir + "/integrand_K2";
+            filename += channel;
+            filename += ".h5";
+            write_h5_rvecs(filenameK2,
+                           {"w", "v", "K2_re", "K2_im"},
+                           {bfreqsK2, ffreqsK2, K2_re, K2_im});
+        }
 
     }
     void save_integrand() {
@@ -113,12 +124,12 @@ public:
         rvec integrand_re (npoints);
         rvec integrand_im (npoints);
         for (int i=0; i<nBOS; ++i) {
-            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i);
+            double vpp = this->FOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i);
             Q integrand_value = (*this)(vpp);
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -126,11 +137,11 @@ public:
             integrand_im[i] = integrand_value.imag();
 #endif
 
-            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.b.get_ws(i+1) * (1-frac);
+            vpp = this->FOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i) * (frac) + this->FOPTstate.vertex.half1().avertex.frequencies.  primary_grid.get_frequency(i+1) * (1-frac);
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM)
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -178,6 +189,7 @@ namespace {
 
     template<typename Q>
     class Cost_pick_Wscale_4_K1 {
+        using gridType = typename rvert<Q>::freqGrid_type_K1;
         State<Q> bareState;
         State<Q> K2aexact;
         Bubble<Q> Pi;
@@ -195,7 +207,7 @@ namespace {
                     Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
                     double vmax = 100.;
                     double Delta = (glb_Gamma+Lambda)/2.;
-                    Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0<Q,3>(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
+                    Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
                     K2aexact.vertex.avertex().K2_setvert(0, i, j, 0, val_K2);
                     K2aexact.vertex.pvertex().K2_setvert(0, i, j, 0, val_K2);
                     K2aexact.vertex.tvertex().K2_setvert(0, i, j, 0, val_K2);
@@ -210,8 +222,8 @@ namespace {
             // set freqgrid parameter and update SOPTvertex on the new grid
 
             State<Q> SOPTstate(Lambda);
-            VertexFrequencyGrid<k1> bfreq = SOPTstate.vertex.half1().avertex.get_VertexFreqGrid();
-            bfreq.b.update_Wscale(wscale_test);
+            gridType bfreq = SOPTstate.vertex.half1().avertex.get_VertexFreqGrid();
+            bfreq.  primary_grid.update_Wscale(wscale_test);
             SOPTstate.vertex.half1().template update_grid<k1>(bfreq, SOPTstate.vertex.half1());
             vertexInSOPT(SOPTstate.vertex, bareState, Pi, Lambda);
 

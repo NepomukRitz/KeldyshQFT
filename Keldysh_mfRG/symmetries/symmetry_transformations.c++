@@ -113,17 +113,20 @@ void TC (IndicesSymmetryTransformations& indices){
         }
     }
 
-    if (INTERPOL2D_FOR_K3) {
+    if constexpr(INTERPOL2D_FOR_K3) {
         if (indices.channel_bubble == 't') {
             indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
         }
     }
 
-    if (KELDYSH){
+    if constexpr(KELDYSH and CONTOUR_BASIS != 1){
         if(isInList(indices.iK, odd_Keldysh))
             indices.prefactor *= 1.;
         else
             indices.prefactor *= -1.;
+    }
+    else if constexpr(KELDYSH and CONTOUR_BASIS == 1){
+        indices.prefactor *= -1;
     }
     else{
         indices.w *= -1;
@@ -141,10 +144,15 @@ void TC (IndicesSymmetryTransformations& indices){
 void Tph (IndicesSymmetryTransformations& indices){
     if (KELDYSH && PARTICLE_HOLE_SYMMETRY){ // Used only for Keldysh calculations with particle-hole symmetry
         indices.conjugate ^= true;
-        if (isInList(indices.iK, odd_Keldysh))
-            indices.prefactor *= 1.;
-        else
+        if constexpr (CONTOUR_BASIS != 1) {
+            if (isInList(indices.iK, odd_Keldysh))
+                indices.prefactor *= 1.;
+            else
+                indices.prefactor *= -1.;
+        }
+        else {
             indices.prefactor *= -1.;
+        }
 
         indices.w *= -1;
         if (MAX_DIAG_CLASS > 1) {
@@ -202,6 +210,10 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
             T1(indices);
             TC(indices);
             break;
+        case 24:
+            T2(indices);
+            TC(indices);
+            break;
         case 41:
             TC(indices);
             T1(indices);
@@ -218,13 +230,31 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
                 case 6:
                     Tph(indices);
                 break;
+                case 16:
+                    T1(indices);
+                    Tph(indices);
+                    break;
+                case 26:
+                    T2(indices);
+                    Tph(indices);
+                    break;
                 case 36:
+                    T3(indices);
                     Tph(indices);
-                T3(indices);
-                break;
+                    break;
                 case 46:
+                    TC(indices);
                     Tph(indices);
-                TC(indices);
+                break;
+                case 146:
+                    T1(indices);
+                    TC(indices);
+                    Tph(indices);
+                break;
+                case 246:
+                    T2(indices);
+                    TC(indices);
+                    Tph(indices);
                 break;
                 case 346:
                     Tph(indices);
@@ -251,7 +281,7 @@ void Ti (IndicesSymmetryTransformations& indices, const int i) {
                 break;
             }
         default:
-            utils::print("A Transformation in the symmetry table is not covered in Ti! Abort."); assert(false);
+            utils::print("The Transformation ", i, " in the symmetry table is not covered in Ti! Abort."); assert(false);
     }
 }
 

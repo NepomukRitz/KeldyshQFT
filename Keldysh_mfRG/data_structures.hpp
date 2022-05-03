@@ -17,13 +17,55 @@
 #include <cassert>
 #include <numeric>
 #include "parameters/master_parameters.hpp"
+#include "Eigen/Dense"
 //#include "utilities/math_utils.h"
+
+template<typename Q> class State;
 
 typedef std::complex<double> comp; // Complex number
 
 constexpr comp glb_i (0., 1.);    // Imaginary unit
 
-#if defined(PARTICLE_HOLE_SYMM) and not defined(KELDYSH_FORMALISM) and not defined(HUBBARD)
+template <typename T> double myabs(const T& x) {
+    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double>) {
+        return std::abs(x);
+    }
+    else if constexpr(std::is_same_v<T, State<comp>> or std::is_same_v<T, State<double>>) {
+        return x.abs();
+    }
+    else {
+        return x.template lpNorm<Eigen::Infinity>();
+    }
+}
+
+template <typename T> T myzero() {
+    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double> or std::is_same_v<T, int>) {
+        return (T)0.;
+    }
+    else {
+        return T::Zero();
+    }
+}
+
+template <typename T> constexpr int myRowsAtCompileTime() {
+    if constexpr(std::is_same_v<T,double> || std::is_same_v<T,comp>) {
+        return 1;
+    }
+    else {
+        return T::RowsAtCompileTime;
+    }
+}
+
+template <typename T> constexpr int myColsAtCompileTime() {
+    if constexpr(std::is_same_v<T,double> || std::is_same_v<T,comp>) {
+        return 1;
+    }
+    else {
+        return T::ColsAtCompileTime;
+    }
+}
+
+#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM and not defined(HUBBARD)
 using state_datatype = double;
 #else
 using state_datatype = comp;
@@ -333,7 +375,7 @@ vec<T> vec<T>::diff() const {
 // sum of all elements
 template <typename T>
 T vec<T>::sum() const {
-    return std::accumulate(this->begin(), this->end(), (T)0);
+    return std::accumulate(this->begin(), this->end(), myzero<T>());
 }
 
 /// NON-MEMBER FUNCTIONS ///
@@ -410,29 +452,7 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 /// Keldysh index parameters ///
-#ifdef KELDYSH_FORMALISM
-#ifndef DEBUG_SYMMETRIES
-// Number of independent Keldysh components for the respective diagrammatic class
-const int nK_SE = 2;
-const int nK_K1 = 2;        // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-// for channel p components 1 and 5
-const int nK_K2 = 5;        // For channels a, p and t -channel separately
-const int nK_K3 = 6;        // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-// (independent components in order of appearance)
-#else // DEBUG_SYMMETRIES
-const int nK_SE = 2;
-const int nK_K1 = 16;       // For channels a and t, these two are components 1 and 3 (applies for K1 and K2),
-                            // for channel p components 1 and 5
-const int nK_K2 = 16;       // For channels a, p and t -channel separately
-const int nK_K3 = 16;       // For all channels, these 6 components are 0, 1, 3, 5, 6, 7
-                            // (independent components in order of appearance)
-#endif // DEBUG_SYMMETRIES
-#else // KELDYSH_FORMALISM
-const int nK_SE = 1;
-const int nK_K1 = 1;
-const int nK_K2 = 1;
-const int nK_K3 = 1;
-#endif // KELDYSH_FORMALISM
+
 
 
 using my_index_t = std::size_t;
@@ -503,7 +523,7 @@ struct VertexInput{
 
     VertexInput(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)
             :
-//#ifdef KELDYSH_FORMALISM
+//#if KELDYSH_FORMALISM
             iK(iK_in),
 //#else
 //            iK(0),
@@ -602,6 +622,14 @@ struct IndicesSymmetryTransformations: VertexInput{
     {assert(iK < 16);}
 };
 
+
+
+struct fRG_config {
+    int nODE_;
+    double epsODE_abs_;
+    double epsODE_rel_;
+    double U;
+};
 
 
 
