@@ -584,6 +584,7 @@ void FrequencyGrid<hybridGrid>::initialize_grid() {
         const double t = t_lower + spacing_auxiliary_gridpoint * (double)i;
         auxiliary_grid[i] = t;
         all_frequencies[i] = frequency_from_t(t);
+        assert(std::isfinite(all_frequencies[i]));
         if constexpr(!KELDYSH && !ZERO_T){
             if (type == 'b') all_frequencies[i] = round2bfreq(all_frequencies[i]);
             else             all_frequencies[i] = round2ffreq(all_frequencies[i]);
@@ -639,12 +640,14 @@ int FrequencyGrid<hybridGrid>::get_grid_index(double& t, const double frequency)
 
 
 void FrequencyGrid<angularGrid>::derive_auxiliary_parameters() {
+    recip_power = 1./power;
+    lin_fac_to_power = pow(lin_fac, power);
     spacing_auxiliary_gridpoint = (t_upper - t_lower) / (number_of_gridpoints - 1);
     half_of_interval_length_for_t = (t_upper - t_lower) * 0.5 / number_of_intervals;
     half_of_interval_length_for_w = (w_upper - w_lower) * 0.5 / number_of_intervals;
     half_of_interval_length_for_w_recip = number_of_intervals / ((w_upper - w_lower) * 0.5);
     interval_length_for_w_recip = (double)number_of_intervals / (w_upper - w_lower);
-    quad_fac_recip = (1 + 2*lin_fac);
+    quad_fac_recip = (pow(1 + lin_fac, power) - lin_fac_to_power);
 }
 
 void FrequencyGrid<angularGrid>::guess_essential_parameters(const double Lambda) {
@@ -700,13 +703,15 @@ void FrequencyGrid<angularGrid>::guess_essential_parameters(const double Lambda)
     }
     all_frequencies = rvec(number_of_gridpoints);
     auxiliary_grid = rvec(number_of_gridpoints);
+    power = 2;
     initialize_grid();
 }
 
 double FrequencyGrid<angularGrid>::frequency_from_t(const double t) const {
     const double i_interval = floor( (t + half_of_interval_length_for_t) * number_of_intervals / (t_upper - t_lower) );
     const double remainder  = t / half_of_interval_length_for_t - i_interval * 2; // remainder in [-1, 1]
-    const double result = ( i_interval + 0.5 / quad_fac_recip * remainder * (std::abs(remainder) + 2.*lin_fac)) * half_of_interval_length_for_w * 2.;
+    //const double result = ( i_interval + 0.5 / quad_fac_recip * remainder * (std::abs(remainder) + 2.*lin_fac)) * half_of_interval_length_for_w * 2.;
+    const double result = ( i_interval + 0.5 / quad_fac_recip * sgn(remainder) * (pow(std::abs(remainder) + lin_fac, power) - lin_fac_to_power)) * half_of_interval_length_for_w * 2.;
     assert(isfinite(result));
     return result;
 
@@ -715,7 +720,8 @@ double FrequencyGrid<angularGrid>::frequency_from_t(const double t) const {
 double FrequencyGrid<angularGrid>::t_from_frequency(const double w) const {
     const double i_interval = floor( (w + half_of_interval_length_for_w) * interval_length_for_w_recip);
     const double remainder  = w / half_of_interval_length_for_w - i_interval * 2; // remainder in [-1, 1]
-    const double result = ( i_interval + 0.5 * (sqrt(std::abs(remainder)*quad_fac_recip + lin_fac*lin_fac) - lin_fac) * sgn(remainder)) * half_of_interval_length_for_t * 2.;
+    //const double result = ( i_interval + 0.5 * (sqrt(std::abs(remainder)*quad_fac_recip + lin_fac*lin_fac) - lin_fac) * sgn(remainder)) * half_of_interval_length_for_t * 2.;
+    const double result = ( i_interval + 0.5 * (pow(std::abs(remainder) * quad_fac_recip + lin_fac_to_power, recip_power) - lin_fac) * sgn(remainder)) * half_of_interval_length_for_t * 2.;
     assert(isfinite(result));
     return result;
 }

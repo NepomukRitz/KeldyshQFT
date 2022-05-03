@@ -258,6 +258,7 @@ public:
     void initialize_grid();
     void update_pos_section_boundaries(std::array<double,2> new_pos_section_boundaries) {
         pos_section_boundaries = std::move(new_pos_section_boundaries);
+        pos_section_boundaries[1] = std::max(pos_section_boundaries[0] + 1e-5, pos_section_boundaries[1]);
         initialize_grid();
     }
 
@@ -280,7 +281,9 @@ public:
     double w_upper;                                 // largest  angle
     double w_lower;                                 // smallest angle
     int number_of_intervals;    // defines the number of intervals between w_lower and w_upper on which we have quadratic functions
-    double lin_fac = 1e-4;      // "ratio" between linear and quadratic contribution in the grid function
+    double lin_fac = 1.e-4;      // "ratio" between linear and quadratic contribution in the grid function
+    double power;
+    double recip_power;
 
     /// guess essential parameters from value of Lambda
     void guess_essential_parameters(double Lambda);
@@ -302,6 +305,7 @@ public:
     double half_of_interval_length_for_w_recip;
     double interval_length_for_w_recip;
     double quad_fac_recip;
+    double lin_fac_to_power;
     void derive_auxiliary_parameters();     // derive auxiliary parameters from
 
     /// list of all frequencies:
@@ -353,6 +357,10 @@ public:
     int get_grid_index(double frequency)const;
     int get_grid_index(double& t, double frequency) const;
 
+    void update_power(double power_in) {
+        power = std::max(power_in, 1.); // don't go lower than 1
+        initialize_grid();
+    }
 
 };
 
