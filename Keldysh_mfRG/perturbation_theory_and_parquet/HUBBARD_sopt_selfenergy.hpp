@@ -37,8 +37,8 @@ class Hubbard_SE_SOPT_Computer{
 public:
     Hubbard_SE_SOPT_Computer(const double Lambda_in, SelfEnergy<comp>& SOPT_SE_Hubbard_in,
                              const State<comp>& bareState_in, const Vertex<comp>& vertex_in_SOPT_in)
-            : Lambda(Lambda_in), SOPT_SE_Hubbard(SOPT_SE_Hubbard_in),
-              bareState(bareState_in), vertex_in_SOPT(vertex_in_SOPT_in){
+            : Lambda(Lambda_in), bareState(bareState_in), vertex_in_SOPT(vertex_in_SOPT_in), SOPT_SE_Hubbard(SOPT_SE_Hubbard_in)
+              {
         assert(HUBBARD_MODEL);
         assert(KELDYSH);         // TODO(low): Extend to Matsubara formalism
         vertex_in_SOPT.half1().initializeInterpol();

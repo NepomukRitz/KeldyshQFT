@@ -13,21 +13,6 @@ template<> void postRKstep_stuff<double>(double& y, double x, vec<double> x_vals
 }
 
 namespace {
-    double rhs_lin(const double& y, const double x, const vec<size_t> opt) {
-        return x*2.;
-    }
-    double rhs_quadr(const double& y, const double x, const vec<size_t> opt) {
-        return x*x*3.;
-    }
-    double rhs_cubic(const double& y, const double x, const vec<size_t> opt) {
-        return x*x*x*4.;
-    }
-    double rhs_quartic(const double& y, const double x, const vec<size_t> opt) {
-        return x*x*x*x*5.;
-    }
-    double rhs_exp(const double& y, const double x, const vec<size_t> opt) {
-        return y;
-    }
     class rhs_exp_t {
     public:
         void operator() (const double& y, double& dy_dx, const double x) {//, const vec<size_t> opt) {
@@ -87,7 +72,7 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
     double result_exact = exp(Lambda_f);
     double difference = std::abs(result - result_exact);
     SECTION( "Is the correct value retrieved from ODE solver?" ) {
-        REQUIRE( std::abs(result - result_exact) < 1e-4 );
+        REQUIRE( difference < 1e-4 );
     }
 
 }

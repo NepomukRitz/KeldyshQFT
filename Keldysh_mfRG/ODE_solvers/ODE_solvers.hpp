@@ -256,13 +256,10 @@ namespace ode_solver_impl
     void rk_step(const butcher_tableau<stages> &tableau, const Y &y_init, const Y &dydx,
                    Y &result, const double t_value, const double t_step, double &maxrel_error, const System& rhs, const ODE_solver_config& config)
     {
-        const int world_rank = mpi_world_rank();
-
         Y state_stage=y_init; // temporary state
         //
         vec<Y> k; // stores the pure right-hand-sides ( without multiplication with an step size )
-        double Lambda = FlowGrid::lambda_from_t(t_value);
-        double dLambda = FlowGrid::lambda_from_t(t_value + t_step) - Lambda;
+
         k.reserve(stages);
         k.push_back( dydx
 #ifdef REPARAMETRIZE_FLOWGRID
@@ -272,7 +269,7 @@ namespace ode_solver_impl
 
 
         double Lambda_stage;
-        double t_stage, stepsize, dLambda_dt;
+        double t_stage, stepsize;
         // Start at 1 because 0th stage is already contained in dydx parameter
         for (size_t stage = 1; stage < stages; stage++)
         {
@@ -280,8 +277,10 @@ namespace ode_solver_impl
             t_stage = t_value + t_step* tableau.get_node(stage);
             Lambda_stage = FlowGrid::lambda_from_t(t_stage);
             stepsize = t_step;
-            std::cout << "\t current t_stage: " << t_stage << std::endl;
+            utils::print("\t current t_stage: ", t_stage, "\n" );
 #else
+            const double Lambda = FlowGrid::lambda_from_t(t_value);
+            double dLambda = FlowGrid::lambda_from_t(t_value + t_step) - Lambda;
             Lambda_stage = Lambda + dLambda * tableau.get_node(stage);
             stepsize = dLambda;
 #endif
@@ -354,7 +353,7 @@ namespace ode_solver_impl
         rhs(state_i, dydx, Lambda_i); // const State_t& state_in, State_t& dState_dt, double Lambda_in
         bool rejected = false;
         double errmax;
-        int attempts = 0;
+        unsigned int attempts = 0;
 
         //const auto &lattice = state_i.vertex.lattice;
         Y temporary = state_i;
@@ -510,7 +509,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
     }
 
 
-    const int MAXSTP = config.maximal_number_of_ODE_steps + config.lambda_checkpoints.size(); //maximal number of steps that is computed
+    const unsigned int MAXSTP = config.maximal_number_of_ODE_steps + config.lambda_checkpoints.size(); //maximal number of steps that is computed
     vec<double> lambdas (MAXSTP+1); // contains all lambdas (including starting point)
     lambdas[0] = Lambda_i;
 
@@ -525,7 +524,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
     bool just_hit_a_lambda_checkpoint = false;
     result = state_ini;
 
-    for (size_t i = config.iter_start; i < MAXSTP; i++)
+    for (unsigned int i = config.iter_start; i < MAXSTP; i++)
     {
         if (verbose and world_rank == 0)
         {
@@ -664,7 +663,7 @@ namespace boost {
                 template<class Stepper, typename State_t, typename FlowGrid, class System>
                 State_t integrate_adaptive_check(
                         Stepper stepper, System system, State_t &start_state,
-                        double &t_now, double t_final, double &dt, const int MAXSTP,
+                        double &t_now, double t_final, double &dt, const size_t MAXSTP,
                          vec<double> &lambdas_did,
                          const ODE_solver_config& config, const bool verbose
                 )
@@ -673,7 +672,6 @@ namespace boost {
                         utils::print("Initial t_now: ", t_now, " -- t_final: ", t_final, " -- dt: ", dt, "\n");
                     }
 
-                    const size_t max_attempts = config.max_stepResizing_attempts;
                     const char *error_string = "Integrate adaptive : Maximal number of iterations reached. A step size could not be found.";
                     size_t integration_step_count = config.iter_start;
                     bool previously_hit_lambda_checkpoint = false;
@@ -687,7 +685,9 @@ namespace boost {
                         }
                         double Lambda_now = FlowGrid::lambda_from_t(t_now);
                         double Lambda_next= FlowGrid::lambda_from_t(t_now+dt);
+#ifndef REPARAMETRIZE_FLOWGRID
                         double dLambda = Lambda_next - Lambda_now;
+#endif
                         /// step to lambda checkpoint if within reach
                         for (const double checkpoint : config.lambda_checkpoints)
                         {
@@ -705,7 +705,7 @@ namespace boost {
                             utils::print("ODE iteration number: \t", integration_step_count, "\n");
                         }
 
-                        size_t trials = 0;
+                        unsigned int trials = 0;
                         controlled_step_result res = success;
                         do
                         {
@@ -776,7 +776,7 @@ namespace boost {
 #elif ODEsolver==4
 #define ERR_STEPPER runge_kutta_dopri5
 #endif
-                double Lambda_now = Lambda_i;
+                //double Lambda_now = Lambda_i;
                 double t_now = FlowGrid::t_from_lambda(Lambda_i);
                 double t_final = FlowGrid::t_from_lambda(Lambda_f);
                 State_t state_now = state_ini;

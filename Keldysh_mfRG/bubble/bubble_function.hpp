@@ -113,7 +113,7 @@ class BubbleFunctionCalculator{
             utils::print("Error! Needed crossprojection still has to be computed. Abort.");
             assert(false);
         }
-#ifdef SWITCH_SUM_N_INTEGRAL
+#if SWITCH_SUM_N_INTEGRAL
         vertex1.template symmetry_expand<channel,true>();
         vertex2.template symmetry_expand<channel,false>();
 #endif
@@ -380,9 +380,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
     using integrand_valtype = std::result_of_t<Integrand_class(double)>;
     integrand_valtype integration_result = myzero<integrand_valtype>();
 
-    double vmin_temp = vmin;
-    double vmax_temp = vmax;
-#ifndef SWITCH_SUM_N_INTEGRAL
+#if not SWITCH_SUM_N_INTEGRAL
     static_assert(n_spin == 1, "SWITCH_SUM_N_INTEGRAL not ready for DEBUG_SYMMETRIES.");
     for (int i2 : glb_non_zero_Keldysh_bubble) {
         int n_spin_sum = 1;                  // number of summands in spin sum (=1 in the a channel)
@@ -396,7 +394,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             Integrand_class integrand(vertex1, vertex2, Pi, i0, i2, iw, w, v, vp, i_in, i_spin, diff);
 
             if (store_integrand_for_PT){ // for PT-Calculations: Store the integrand for the fully retarded up-down component at zero frequency:
-#ifdef SWITCH_SUM_N_INTEGRAL
+#if SWITCH_SUM_N_INTEGRAL
                 assert(false); // Cannot do it this way if the integration is vectorized over the internal Keldysh sum
 #endif
                 if (channel == 'a' and i0 == 7 and i_spin == 0 and w == 0 and v == 0 and vp == 0) integrand.save_integrand();
@@ -429,25 +427,31 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         } else {
             int interval_correction = signFlipCorrection_MF_int(w);
             int W = (int) (w / (2 * M_PI * glb_T) + 0.1 * sgn(w));
-            vmin_temp = (-POSINTRANGE - std::abs(W / 2) + interval_correction) * 2 * M_PI * glb_T;
-            vmax_temp = (POSINTRANGE - 1 + std::abs(W / 2)) * 2 * M_PI * glb_T;
+            double vmin_temp = (-POSINTRANGE - std::abs(W / 2) + interval_correction) * 2 * M_PI * glb_T;
+            double vmax_temp = (POSINTRANGE - 1 + std::abs(W / 2)) * 2 * M_PI * glb_T;
             // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*glb_T
 
             integration_result = bubble_value_prefactor() * (2 * M_PI) * glb_T *
                     matsubarasum<Q>(integrand, -POSINTRANGE - std::abs(W / 2) + interval_correction, POSINTRANGE - 1 + std::abs(W / 2));
-        }
-    }
 
-#ifndef SWITCH_SUM_N_INTEGRAL
-    }
-#else
-    for (int i2: glb_non_zero_Keldysh_bubble) {
-#endif
-        // asymptotic corrections include spin sum
-        if constexpr (!HUBBARD_MODEL and !ZERO_T and !KELDYSH) {
             integration_result +=
                     bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
                                                                                  vmin_temp, vmax_temp, w, v, vp, i0, i2,
+                                                                                 i_in, diff, spin);
+        }
+    }
+
+#if not SWITCH_SUM_N_INTEGRAL
+    }
+#else
+    //for (int i2: glb_non_zero_Keldysh_bubble)
+    {
+#endif
+        // asymptotic corrections include spin sum
+        if constexpr (!HUBBARD_MODEL and (ZERO_T or KELDYSH) and false) {
+            integration_result +=
+                    bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
+                                                                                 vmin, vmax, w, v, vp, i0, i2,
                                                                                  i_in, diff, spin);
         }
 

@@ -12,7 +12,6 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
     rvert<state_datatype> testvertex1('a', Lambda_ini, true);
     rvert<state_datatype> testvertex2('a', Lambda_ini, true);
 
-    state_datatype error = 0.;
 
 
 

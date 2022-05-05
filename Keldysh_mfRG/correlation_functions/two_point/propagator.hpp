@@ -40,7 +40,7 @@ public:
      * @param type_in   : Type of propagator being handled
      */
     Propagator(double Lambda_in, char type_in)
-            : Lambda(Lambda_in), type(type_in), selfenergy(SelfEnergy<Q> (Lambda_in)), diff_selfenergy(SelfEnergy<Q> (Lambda_in)) { }
+            : Lambda(Lambda_in), selfenergy(SelfEnergy<Q> (Lambda_in)), diff_selfenergy(SelfEnergy<Q> (Lambda_in)), type(type_in) { }
 
 
     /**

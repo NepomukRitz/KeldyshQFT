@@ -622,12 +622,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     std::cout << "Computed value: " << PT2_K1a_0 << "\n";
 
     // K1 in PT4
-    state_datatype PT4_K1a_0_ladder =      PT4_31_a_a1.vertex.avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex.tvertex());
-    state_datatype PT4_K1p_0_ladder =      PT4_31_p_p1.vertex.pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex.pvertex());
-    state_datatype PT4_K1a_0_nonladder =   PT4_13_a_a2.vertex.avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex.tvertex());
-    state_datatype PT4_K1p_0_nonladder =   PT4_13_p_p2.vertex.pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex.pvertex());
-    state_datatype PT4_K1t_0_nonladder_a = PT4_13_t_a2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex.avertex());
-    state_datatype PT4_K1t_0_nonladder_t = PT4_13_t_t2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex.avertex());
+    PT4_31_a_a1.vertex.avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex.tvertex()); // state_datatype PT4_K1a_0_ladder
+    PT4_31_p_p1.vertex.pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex.pvertex()); // state_datatype PT4_K1p_0_ladder
+    PT4_13_a_a2.vertex.avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex.tvertex()); // state_datatype PT4_K1a_0_nonladder
+    PT4_13_p_p2.vertex.pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex.pvertex()); // state_datatype PT4_K1p_0_nonladder
+    PT4_13_t_a2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex.avertex()); // state_datatype PT4_K1t_0_nonladder_a
+    PT4_13_t_t2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex.avertex()); // state_datatype PT4_K1t_0_nonladder_t
 
     // K2 in PT3
     vec<state_datatype> PT3_K2a_0 (3);
@@ -758,7 +758,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             };
 
     // print to log
-    for (int i=0; i<check_values.size(); ++i) {
+    for (unsigned int i=0; i<check_values.size(); ++i) {
         utils::print(check_labels[i], check_values[i], true);
     }
 

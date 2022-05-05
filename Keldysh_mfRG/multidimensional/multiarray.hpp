@@ -58,7 +58,7 @@ namespace multidimensional
         dimensions_type get_cumul_length(const dimensions_type& length) const {
             dimensions_type result;
             result[depth-1] = 1;
-            for (int i = depth-2; i >= 0; i--) {
+            for (int i = (int)depth-2; i >= 0; i--) {
                 result[i] = result[i+1] * length[i+1];
             }
             return result;
@@ -113,7 +113,7 @@ namespace multidimensional
                 : m_length(std::move(length)),
                   elements(Eigen::Map<const buffer_type>(elements.data(), elements.size()))
         {
-            if (elements.size() != this->size())
+            if ((size_t)elements.size() != this->size())
             {
                 throw std::invalid_argument(
                         "Incosistent size of length description and data in "
@@ -228,11 +228,11 @@ namespace multidimensional
         }
 
         template <std::size_t pos_first_freq_index, std::size_t freqrank, std::size_t vecsize, typename... Types,
-                typename std::enable_if_t<(sizeof...(Types) == depth) and (are_all_integral<size_t, Types...>::value) and (pos_first_freq_index + freqrank < depth), bool> = true>
+                typename std::enable_if_t<(sizeof...(Types) == depth) and (are_all_integral<size_t, Types...>::value) and (are_all_unsigned<size_t, Types...>::value) and (pos_first_freq_index + freqrank < depth), bool> = true>
         constexpr auto at_vectorized(Types & ...i  ) const -> Eigen::Matrix<T,vecsize,1>{
 #ifndef NDEBUG
-            int it = 0;
-            ((assert(i < m_length[it]), it ++),...);
+            my_index_t it = 0;
+            ((assert((my_index_t)i < m_length[it]), it ++),...);
 #endif
             const auto flat_start = flat_index(index_type({static_cast<size_t>(i)...}));;
             return elements.template segment<vecsize>(flat_start);
@@ -240,7 +240,7 @@ namespace multidimensional
         template <std::size_t pos_first_freq_index, std::size_t freqrank, std::size_t vecsize>
         constexpr auto at_vectorized(const index_type & idx  ) const -> Eigen::Matrix<T,vecsize,1>{
 #ifndef NDEBUG
-            for (int it = 0; it < depth; it++) {
+            for (size_t it = 0; it < depth; it++) {
                 assert(idx[it] < m_length[it]);
             }
 #endif
@@ -249,7 +249,7 @@ namespace multidimensional
         }
         template <std::size_t vecsize>
         constexpr auto at_vectorized(const std::size_t flat_idx  ) const -> Eigen::Matrix<T,vecsize,1>{
-            assert(flat_idx+vecsize <= elements.size());
+            assert(flat_idx+vecsize <= (size_t)elements.size());
 
             return elements.template segment<vecsize>(flat_idx);
         }
@@ -257,7 +257,7 @@ namespace multidimensional
         template <my_index_t num_first_dims>
         size_t get_flatindex_ini(const index_type & index) const {
             size_t result = 0;
-            for (int i = 0; i <= num_first_dims; i++) {
+            for (my_index_t i = 0; i <= num_first_dims; i++) {
                 result += index[i] * m_length_cumulative[i];
             }
             return result;
@@ -273,23 +273,23 @@ namespace multidimensional
             const size_t flat_ini = get_flatindex_ini<pos_first_freqpoint+numberFrequencyDims>(index);
 
             if constexpr (numberFrequencyDims == 1) {
-                for (int i = 0; i < sample_size; i++) {
+                for (my_index_t i = 0; i < sample_size; i++) {
                     const auto res = at_vectorized<vecsize>(flat_ini + m_length_cumulative[pos_first_freqpoint]*i);
                     result.col(i) = res;
                 }
             }
             else if constexpr(numberFrequencyDims == 2) {
-                for (int i = 0; i < sample_size; i++) {
-                    for (int j = 0; j < sample_size; j++) {
+                for (my_index_t i = 0; i < sample_size; i++) {
+                    for (my_index_t j = 0; j < sample_size; j++) {
                         result.col(i * sample_size + j) = at_vectorized<vecsize>(flat_ini + m_length_cumulative[pos_first_freqpoint]*i + m_length_cumulative[pos_first_freqpoint+1]*j);
 
                     }
                 }
             }
             else if constexpr (numberFrequencyDims == 3) {
-                for (int i = 0; i < sample_size; i++) {
-                    for (int j = 0; j < sample_size; j++) {
-                        for (int l = 0; l < sample_size; l++) {
+                for (my_index_t i = 0; i < sample_size; i++) {
+                    for (my_index_t j = 0; j < sample_size; j++) {
+                        for (my_index_t l = 0; l < sample_size; l++) {
                             result.col(i * sample_size*sample_size + j * sample_size + l) = at_vectorized<vecsize>( flat_ini + m_length_cumulative[pos_first_freqpoint] * i + m_length_cumulative[pos_first_freqpoint + 1] * j + m_length_cumulative[pos_first_freqpoint + 2] * l);
                         }
                     }

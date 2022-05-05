@@ -15,7 +15,7 @@ rvec flowgrid::get_Lambda_checkpoints(const std::vector<double>& Us) {
     size_t n = Us.size();
     rvec Lambda_CPs;
 #if REG == 2
-    for (int i = 0; i < n; i++){
+    for (unsigned int i = 0; i < n; i++){
         double y = glb_U / Us[i] - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
 
         if(y<0){
@@ -49,14 +49,14 @@ double flowgrid::sq_resubstitution(double x) {
 // construct non-linear flow grid via substitution, including additional points at interesting values
 rvec flowgrid::construct_flow_grid(const double x_fin, const double x_ini,
                          double subst(double x), double resubst(double x),
-                         const int N_ODE, const std::vector<double>& lambda_checkpoints) {
+                         const unsigned int N_ODE, const std::vector<double>& lambda_checkpoints) {
     const double X_ini = subst(x_ini), X_fin = subst(x_fin); // substitute limits
     const double dX = (X_fin-X_ini)/((double)N_ODE);         // equidistant grid in substituted variable X
 
     // create non-linear integration grid using substitution
     rvec x_vals (N_ODE+1);                      // integration values
     x_vals[0] = x_ini;                          // start with initial value
-    for (int i=1; i<=N_ODE; ++i) {
+    for (unsigned int i=1; i<=N_ODE; ++i) {
         x_vals[i] = resubst(X_ini + i*dX);      // value i
     }
     add_points_to_Lambda_grid(x_vals, lambda_checkpoints);      // add points at interesting values
@@ -66,7 +66,7 @@ rvec flowgrid::construct_flow_grid(const double x_fin, const double x_ini,
 // compute step sizes for given flow grid
 rvec flowgrid::flow_grid_step_sizes(const rvec& x_vals) {
     rvec x_diffs (x_vals.size()-1);
-    for (int i=1; i<=x_diffs.size(); i++){
+    for (unsigned int i=1; i<=x_diffs.size(); i++){
         x_diffs[i-1] = x_vals[i] - x_vals[i-1]; // step size i
     }
     return x_diffs;

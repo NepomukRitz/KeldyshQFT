@@ -15,7 +15,7 @@
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
-    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
+    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
     using buffer_type = multidimensional::multiarray<Q,2>;
     buffer_type empty_bare() {
         if (KELDYSH) return buffer_type ({16,n_in});
@@ -28,7 +28,7 @@ public:
     // All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
     // the third function stays the same. However, should count on having to adapt it if an internal structure should
     // come forth where the bare interaction does not remain invariant throughout the system.
-    template<typename result_type=Q> auto val(int iK, int i_in, int spin) const -> result_type;
+    template<typename result_type=Q> auto val(my_index_t iK, my_index_t i_in, my_index_t spin) const -> result_type;
 
     auto acc(int i) const -> Q;
     void direct_set(int i,Q value);
@@ -547,7 +547,7 @@ using Vertex = GeneralVertex<Q, symmetric_full>;
 
 
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/
-template <typename Q> template<typename result_type> auto irreducible<Q>::val(const int iK, const int i_in, const int spin) const -> result_type {
+template <typename Q> template<typename result_type> auto irreducible<Q>::val(const my_index_t iK, const my_index_t i_in, const my_index_t spin) const -> result_type {
     if constexpr(std::is_same_v<result_type,Q>) {
         switch (spin) {
             case 0:
@@ -1345,12 +1345,12 @@ template<typename Q> auto fullvert<Q>::get_curvature_max_K3(const bool verbose) 
 
 template <typename Q> void fullvert<Q>:: check_vertex_resolution() const {
     if (mpi_world_rank() == 0) {std::cout << "--> Check vertex resolution: " << std::endl;}
-    double derivmax_K1 = get_deriv_max_K1(true);
-    if (MAX_DIAG_CLASS>1) double derivmax_K2 = get_deriv_max_K2(true);
-    if (MAX_DIAG_CLASS>2) double derivmax_K3 = get_deriv_max_K3(true);
-    double curvmax_K1 = get_curvature_max_K1(true);
-    if (MAX_DIAG_CLASS>1) double curvmax_K2 = get_curvature_max_K2(true);
-    if (MAX_DIAG_CLASS>2) double curvmax_K3 = get_curvature_max_K3(true);
+    get_deriv_max_K1(true);
+    if (MAX_DIAG_CLASS>1) get_deriv_max_K2(true);
+    if (MAX_DIAG_CLASS>2) get_deriv_max_K3(true);
+    get_curvature_max_K1(true);
+    if (MAX_DIAG_CLASS>1) get_curvature_max_K2(true);
+    if (MAX_DIAG_CLASS>2) get_curvature_max_K3(true);
 
     /// TODO: dump state in file if certain thresholds are exceeded
 }

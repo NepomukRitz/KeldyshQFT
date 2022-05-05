@@ -10,7 +10,12 @@ template<class... Ts>
 using are_all_integral = all_true<std::is_integral<Ts>::value...>;
 
 
+template<class... Ts>
+using are_all_signed = all_true<std::is_signed<Ts>::value...>;
 
+
+template<class... Ts>
+using are_all_unsigned = all_true<(!std::is_signed<Ts>::value)...>;
 
 
 

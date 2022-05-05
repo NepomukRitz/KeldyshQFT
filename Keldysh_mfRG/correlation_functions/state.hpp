@@ -20,8 +20,8 @@ class State{
 
 public:
     double Lambda;
-    SelfEnergy<Q> selfenergy;
     Vertex<Q> vertex;
+    SelfEnergy<Q> selfenergy;
 
     State(): Lambda(0.) , vertex(fullvert<Q>(0., true)), selfenergy(SelfEnergy<Q>(0.)) {
 #ifndef NDEBUG
@@ -29,17 +29,17 @@ public:
 #endif
     }
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda, bool initialize=false) : selfenergy(SelfEnergy<Q> (Lambda)), vertex(Vertex<Q> (Lambda)), Lambda(Lambda) {
+    explicit State(double Lambda, bool initialize=false) : Lambda(Lambda), vertex(Vertex<Q> (Lambda)), selfenergy(SelfEnergy<Q> (Lambda)) {
         if (initialize) this->initialize();
     };
 
     /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
     State(const State<Q>& state_in, const double Lambda_in)
-    : selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)), vertex(Vertex<Q> (0)), Lambda(Lambda_in) {vertex.set_frequency_grid(state_in.vertex);};
+    : Lambda(Lambda_in),  vertex(Vertex<Q> (0)), selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)){vertex.set_frequency_grid(state_in.vertex);};
 
     /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
-    State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in)
-    : vertex(vertex_in), selfenergy(selfenergy_in) {};
+    State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in, const double Lambda_in)
+    : Lambda(Lambda_in), vertex(vertex_in), selfenergy(selfenergy_in) {};
 
     void initialize();
     void update_grid(double Lambda);

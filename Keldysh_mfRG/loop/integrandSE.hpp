@@ -54,7 +54,7 @@ class IntegrandSE {
 public:
     IntegrandSE(const int type_in, const GeneralVertex<Q,vertType>& vertex_in, const Propagator<Q>& prop_in,
                 const int iK_in, const int i_spin_in, const double v_in, const int i_in_in)
-                :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), i_spin(i_spin_in), v(v_in), i_in(i_in_in),
+                :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in),
                  i0_vertex_left(type_in*4), i0_vertex_right(type_in*4){
         if constexpr(KELDYSH){
             set_Keldysh_components_to_be_calculated();
@@ -77,7 +77,7 @@ public:
 
 template<typename Q, vertexType vertType, bool all_spins, typename return_type>
 void IntegrandSE<Q,vertType,all_spins,return_type>::set_Keldysh_components_to_be_calculated() {
-#ifndef SWITCH_SUM_N_INTEGRAL
+#if not SWITCH_SUM_N_INTEGRAL
 #if CONTOUR_BASIS != 1
     if(type==2){  //Check which kind of contribution is calculated
         // retarded selfenergy
@@ -204,7 +204,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand(const rvec& f
 
 template<typename Q, vertexType vertType, bool all_spins, typename return_type>
 return_type IntegrandSE<Q,vertType,all_spins,return_type>::Keldysh_value(const double vp) const {
-#ifdef SWITCH_SUM_N_INTEGRAL
+#if SWITCH_SUM_N_INTEGRAL
 
     buffertype_propagator G1 = evaluate_propagator_vectorized( vp);
     buffertype_propagator G2 = evaluate_propagator_vectorized(-vp);
@@ -213,17 +213,17 @@ return_type IntegrandSE<Q,vertType,all_spins,return_type>::Keldysh_value(const d
     buffertype_vertex V2 = evaluate_vertex_vectorized(-vp);
 
 if constexpr(std::is_same_v<return_type,double> or std::is_same_v<return_type,comp>) {
-    const return_type result = (G1*V1).eval()[0];
+    const return_type result = (G1*V1 + G2*V2).eval()[0] * 0.5;
     return result;
 }
 else {
     if constexpr(CONTOUR_BASIS) {
-        const return_type result = (G1*V1*transform_to_KeldyshBasis).eval();
+        const return_type result = (G1*V1*transform_to_KeldyshBasis + G2*V2*transform_to_KeldyshBasis).eval() * 0.5;
         return result;
 
     }
     else {
-        const return_type result = (G1*V1).eval();
+        const return_type result = (G1*V1 + G2*V2).eval() * 0.5;
         return result;
     }
 }

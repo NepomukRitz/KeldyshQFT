@@ -57,8 +57,8 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
 
 #ifndef NDEBUG
     if (write_state) {
-        State<Q> state_L(Gamma_BSE_L, state_in.selfenergy);
-        State<Q> state_R(Gamma_BSE_R, state_in.selfenergy);
+        State<Q> state_L(Gamma_BSE_L, state_in.selfenergy, Lambda);
+        State<Q> state_R(Gamma_BSE_R, state_in.selfenergy, Lambda);
         add_state_to_hdf(data_dir + "Parquet_GammaL", it_Lambda, state_L); // save input into 0-th layer of hdf5 file
         add_state_to_hdf(data_dir + "Parquet_GammaR", it_Lambda, state_R); // save input into 0-th layer of hdf5 file
     }
@@ -148,12 +148,12 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
         file_out.close();
 
 #ifndef NDEBUG
-        State<Q> Psi_a(Vertex<Q>(bubble_a.half1()), Sigma_SDE_a);
-        State<Q> Psi_a_l(Vertex<Q>(bubble_a_l.half1()), Sigma_SDE_a);
-        State<Q> Psi_a_r(Vertex<Q>(bubble_a_r.half1()), Sigma_SDE_a);
-        State<Q> Psi_p(Vertex<Q>(bubble_p.half1()), Sigma_SDE_p);
-        State<Q> Psi_p_l(Vertex<Q>(bubble_p_l.half1()), Sigma_SDE_p);
-        State<Q> Psi_p_r(Vertex<Q>(bubble_p_r.half1()), Sigma_SDE_p);
+        State<Q> Psi_a(Vertex<Q>(bubble_a.half1()), Sigma_SDE_a, Lambda);
+        State<Q> Psi_a_l(Vertex<Q>(bubble_a_l.half1()), Sigma_SDE_a, Lambda);
+        State<Q> Psi_a_r(Vertex<Q>(bubble_a_r.half1()), Sigma_SDE_a, Lambda);
+        State<Q> Psi_p(Vertex<Q>(bubble_p.half1()), Sigma_SDE_p, Lambda);
+        State<Q> Psi_p_l(Vertex<Q>(bubble_p_l.half1()), Sigma_SDE_p, Lambda);
+        State<Q> Psi_p_r(Vertex<Q>(bubble_p_r.half1()), Sigma_SDE_p, Lambda);
         add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
         add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
         add_state_to_hdf(data_dir + "Psi_SDE_a_l.h5", SDE_counter + 1, Psi_a_l, true);

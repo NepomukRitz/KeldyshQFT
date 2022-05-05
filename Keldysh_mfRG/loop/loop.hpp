@@ -117,7 +117,7 @@ void LoopCalculator<Q,vertType,all_spins>::perform_computation() {
 template <typename Q, vertexType vertType, bool all_spins>
 void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
     if (isfinite(v)) {
-#ifdef SWITCH_SUM_N_INTEGRAL
+#if SWITCH_SUM_N_INTEGRAL
 
         if constexpr(VECTORIZED_INTEGRATION == 1) {
             using integrand_vectype = Eigen::Matrix<Q, 1, 4>;
@@ -269,7 +269,7 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
         }
 #endif
         if constexpr(CONTOUR_BASIS != 1) {
-        #ifdef SWITCH_SUM_N_INTEGRAL
+        #if SWITCH_SUM_N_INTEGRAL
                 //#endif
 
         #else
@@ -305,7 +305,7 @@ void LoopCalculator<Q,vertType,all_spins>::compute_Keldysh() {
         #endif // SWITCH_SUM_N_INTEGRAL
         }
         else {
-        #ifdef SWITCH_SUM_N_INTEGRAL
+        #if SWITCH_SUM_N_INTEGRAL
             Q integrated00, integrated01, integrated10, integrated11;
             if constexpr(VECTORIZED_INTEGRATION == 1) {
                 using integrand_vectype = Eigen::Matrix<Q, 1, 4>;
@@ -494,7 +494,7 @@ template <typename Q, vertexType vertType>
 void loop(SelfEnergy<state_datatype>& self, const GeneralVertex<Q,vertType>& fullvertex, const Propagator<Q>& prop,
           const bool all_spins){
     fullvertex.initializeInterpol();
-#ifdef SWITCH_SUM_N_INTEGRAL
+#if SWITCH_SUM_N_INTEGRAL
     fullvertex.template symmetry_expand<'t',false>();
 #endif
     prop.selfenergy.Sigma.initInterpolator();
@@ -517,8 +517,6 @@ void loop(SelfEnergy<state_datatype>& self, const GeneralVertex<Q,vertType>& ful
     fullvertex.set_initializedInterpol(false);
 }
 
-static std::vector<double> generate_tail_weights( int iMin, int tail_length, int fit_order );
-static std::vector<double> generate_weights( int iMin, int tail_length, int fit_order );
 
 
 #endif //KELDYSH_MFRG_LOOP_HPP

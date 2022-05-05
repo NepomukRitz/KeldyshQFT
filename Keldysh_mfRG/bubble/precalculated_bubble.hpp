@@ -52,8 +52,8 @@ public:
 
     PrecalculatedBubble(const Propagator<Q>& G_in, const Propagator<Q>& S_in,
                         const bool diff_in)
-                       :g(G_in), s(S_in), diff(diff_in),
-                       Helper_Bubble(G_in, S_in, diff),
+                       :Helper_Bubble(G_in, S_in, diff_in),
+                        g(G_in), s(S_in), diff(diff_in),
                        fermionic_grid(G_in.selfenergy.Sigma.frequencies.primary_grid){
         if (diff) {utils::print("Precalculating a differentiated bubble...", true);}
         else {utils::print("Precalculating a regular bubble...", true);}
@@ -108,10 +108,10 @@ template <typename Q> void PrecalculatedBubble<Q>::compute_FermionicBubble(){
 }
 
 template <typename Q> void PrecalculatedBubble<Q>::compute_FermionicBubble_HUBBARD(){
-    double starting_time = utils::get_time();
+    //double starting_time = utils::get_time();
     std::vector<Minimal_2D_FFT_Machine> FFT_Machinery(omp_get_max_threads());
-    double end_time = utils::get_time();
-    double time_diff = (end_time - starting_time); // time given in seconds
+    //double end_time = utils::get_time();
+    //double time_diff = (end_time - starting_time); // time given in seconds
     //std::cout << "Time for FFT initialization = " << time_diff << " s." << "\n";
 
     for (int iK_bubble = 0; iK_bubble < glb_number_of_Keldysh_components_bubble; ++iK_bubble) {

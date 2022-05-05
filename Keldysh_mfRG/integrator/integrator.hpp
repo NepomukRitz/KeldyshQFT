@@ -497,32 +497,32 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
  * @param intervals         :   list of intervals (lower and upper limit for integrations)
  * @param num_intervals     :   number of intervals
  */
-template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const size_t num_intervals, const bool isinf=false) -> std::result_of_t<Integrand(double)> {
+template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const my_index_t num_intervals, const bool isinf=false) -> std::result_of_t<Integrand(double)> {
     using return_type = std::result_of_t<Integrand(double)>;
     if constexpr (INTEGRATOR_TYPE == 0) { // Riemann sum
         return_type result;
-        for (int i = 0; i < num_intervals; i++) {
+        for (my_index_t i = 0; i < num_intervals; i++) {
             result += integrator_riemann<return_type>(integrand, nINT);
         }
         return result;
     }
     else if constexpr (INTEGRATOR_TYPE == 1) { // Simpson
         return_type result;
-        for (int i = 0; i < num_intervals; i++){
+        for (my_index_t i = 0; i < num_intervals; i++){
             result += integrator_simpson<return_type>(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
         }
         return result;
     }
     else if constexpr (INTEGRATOR_TYPE == 2) { // Simpson + additional points
         return_type result;
-        for (int i = 0; i < num_intervals; i++){
+        for (my_index_t i = 0; i < num_intervals; i++){
             result += integrator_simpson<return_type>(integrand, intervals[i][0], intervals[i][1], nINT);        // use standard Simpson plus additional points around +- w/2
         }
         return result;
     }
     else if constexpr (INTEGRATOR_TYPE == 3) { // adaptive Simpson
         return_type result;
-        for (int i = 0; i < num_intervals; i++){
+        for (my_index_t i = 0; i < num_intervals; i++){
             result += adaptive_simpson_integrator<return_type>(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
         }
         return result;
@@ -534,7 +534,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
         Adapt<Integrand> adaptor(integrator_tol, integrand);
         vec<return_type> result = vec<return_type>(num_intervals);
         assert(result.size() == num_intervals);
-        for (int i = 0; i < num_intervals; i++){
+        for (my_index_t i = 0; i < num_intervals; i++){
             if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
         }
         if (isinf) {
@@ -553,7 +553,7 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
         vec<paid::PAIDInput<1, Integrand, int>> integrands;
         integrands.reserve(num_intervals);
 
-        for (int i = 0; i < num_intervals; i++){
+        for (my_index_t i = 0; i < num_intervals; i++){
             if (intervals[i][0] < intervals[i][1]) {
                 paid::Domain<1> d({intervals[i][0]},{intervals[i][1]});
                 domains.push_back(d);
@@ -576,7 +576,6 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
  */
 template <typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const bool isinf=false) -> std::result_of_t<Integrand(double)> {
     double tol = 1e-10;
-    using return_type = std::result_of_t<Integrand(double)>;
     const int num_freqs = freqs.size();
 
     // The idea is to split up the interval and thereby make sure that the integrator recognizes all the relevant features of the integrand.
@@ -604,7 +603,7 @@ template <typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand,
     std::sort(intersections.begin(), intersections.end());
     int num_intervals = 0;
     vec<vec<double>> intervals(num_freqs*2 + 3, {1.,-1.});
-    for (int i = 0; i < num_intervals_max; i++) {
+    for (size_t i = 0; i < num_intervals_max; i++) {
         if (intersections[i] != intersections[i+1]) {
             intervals[num_intervals] = {intersections[i], intersections[i + 1]};
             if (std::abs(std::abs(intersections[i]) - w_half) < tol) {

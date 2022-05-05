@@ -26,7 +26,7 @@ namespace flowgrid {
     // construct non-linear flow grid via substitution, including additional points at interesting values
     rvec construct_flow_grid(double x_fin, double x_ini,
                              double subst(double x), double resubst(double x),
-                             int N_ODE, const std::vector<double>& lambda_checkpoints);
+                             unsigned int N_ODE, const std::vector<double>& lambda_checkpoints);
 
     // compute step sizes for given flow grid
     rvec flow_grid_step_sizes(const rvec& x_vals);

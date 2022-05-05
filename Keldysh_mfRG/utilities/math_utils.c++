@@ -105,7 +105,7 @@ int signFlipCorrection_MF_int(const double w) {
 }
 
 auto is_doubleOccurencies(const rvec& freqs) -> int {
-    for (int i = 0; i < freqs.size() - 1; i++){
+    for (unsigned int i = 0; i < freqs.size() - 1; i++){
         if (freqs[i] == freqs[i+1]) return 1;
     }
     return 0;
@@ -113,7 +113,7 @@ auto is_doubleOccurencies(const rvec& freqs) -> int {
 
 auto is_symmetric(const rvec& freqs) -> double {
     double asymmetry = 0;
-    for (int i = 0; i< freqs.size() - 1; i++){
+    for (unsigned int i = 0; i< freqs.size() - 1; i++){
 
         asymmetry += std::abs(freqs[i] + freqs[freqs.size()-i-1]);
     }
