@@ -688,18 +688,18 @@ void test_PT4(double Lambda, bool write_flag = false) {
         input_p.iK = 5;
         input_t.iK = 5;
     }
-    state_datatype PT4_K3a_0;
-    state_datatype PT4_K3p_0;
-    state_datatype PT4_K3t_0_aa;
-    state_datatype PT4_K3t_0_ap;
-    state_datatype PT4_K3t_0_pa;
+    //state_datatype PT4_K3a_0;
+    //state_datatype PT4_K3p_0;
+    //state_datatype PT4_K3t_0_aa;
+    //state_datatype PT4_K3t_0_ap;
+    //state_datatype PT4_K3t_0_pa;
 
     if (MAX_DIAG_CLASS == 3) {
-        PT4_K3a_0 =    PT4_22_a_pp.vertex.avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex.tvertex());
-        PT4_K3p_0 =    PT4_22_p_aa.vertex.pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex.pvertex());
-        PT4_K3t_0_aa = PT4_22_t_aa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex.avertex());
-        PT4_K3t_0_ap = PT4_22_t_ap.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex.avertex());
-        PT4_K3t_0_pa = PT4_22_t_pa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex.avertex());
+        PT4_22_a_pp.vertex.avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex.tvertex()); // PT4_K3a_0 =
+        PT4_22_p_aa.vertex.pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex.pvertex()); // PT4_K3p_0 =
+        PT4_22_t_aa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex.avertex()); // PT4_K3t_0_aa =
+        PT4_22_t_ap.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex.avertex()); // PT4_K3t_0_ap =
+        PT4_22_t_pa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex.avertex()); // PT4_K3t_0_pa =
     }
 
     // values to be printed to log
@@ -2470,7 +2470,6 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             double w;
             K1pdot_exact.vertex.avertex().K1.frequencies.get_freqs_w(w, it);
             state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
-            size_t iK{}, i_in{};
             K1pdot_exact.vertex.pvertex().K1.setvert(val_K1, it_spin, it, 0, 0);
             //    }
         }

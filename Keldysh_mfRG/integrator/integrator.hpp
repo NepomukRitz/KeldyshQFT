@@ -641,7 +641,7 @@ template <typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand,
 
 template <typename Q, typename Integrand> auto matsubarasum(const Integrand& integrand, const int Nmin, const int Nmax, const int N_tresh = 60,
         int balance_fac = 2, double reltol = 1e-5, double abstol = 1e-7) -> Q {
-    double freq_step = (2 * M_PI * glb_T);
+
     int N = Nmax - Nmin  + 1;
 
     //// Straightforward summation:

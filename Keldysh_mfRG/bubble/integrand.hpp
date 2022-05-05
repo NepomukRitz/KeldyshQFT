@@ -658,7 +658,6 @@ Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_O
     buffer_type_vertex_r values_vertex_r;
     auto Pi_matrix = Pi.template value_vectorized<channel>(input_external.w, vpp, input_external.i_in);
     // load vertex values:
-    int spin_idx = 0;
     load_vertex_keldyshComponents_left_scalar<spin> (values_vertex_l, input_l);
     load_vertex_keldyshComponents_right_scalar<spin>(values_vertex_r, input_r);
 
@@ -888,14 +887,14 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
 
         double vpp = freqs[i];
 
+
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> Pival;
+#if VECTORIZED_INTEGRATION
         VertexInput input_l = input_external, input_r = input_external;
         input_l.v2 = vpp; input_r.v1 = vpp;
         input_l.iK = i0_left; input_r.iK = i0_right;
         input_l.spin = 0;
         input_r.spin = 0;
-
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> Pival;
-#if VECTORIZED_INTEGRATION
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_value;
         Eigen::Matrix<Q,4,4> vertex_val1(4,4);
         Eigen::Matrix<Q,4,4> vertex_val2(4,4);

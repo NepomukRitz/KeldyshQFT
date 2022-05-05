@@ -299,7 +299,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::internal] = itin;
 
                             double w, v, N1, N2, N3;
-                            Q G1, G2, G3, G12, G13, G23, G123;
+                            Q G1, G2, G3, G12, G23, G123;
 
                             vertex_in.avertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                             if (std::abs(w) > glb_T) {
@@ -324,7 +324,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                 + N1 * G2 * N3
                                                 + N1 * N2 * G3) * 2.;
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
-                                G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                                //G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
                                 G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
 
                                 idx[my_defs::K2::keldysh] = 0;
@@ -354,7 +354,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::internal] = itin;
 
                             double w, v, N1, N2, N3;
-                            Q G1, G2, G3, G12, G13, G23, G123;
+                            Q G1, G2, G3, G12, G13, G123;
 
                             vertex_in.pvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                             if (std::abs(w) > glb_T * 1.) {//
@@ -380,7 +380,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                 + N1 * N2 * G3) * 2.;
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
                                 G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
-                                G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
+                                //G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
                                 idx[my_defs::K2::keldysh] = 0;
                                 vertex_out.pvertex.K2.setvert(G12, idx);
                                 idx[my_defs::K2::keldysh] = 1;
@@ -409,7 +409,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::internal] = itin;
 
                             double w, v, N1, N2, N3;
-                            Q G1, G2, G3, G12, G13, G23, G123;
+                            Q G1, G2, G3, G12, G23, G123;
 
                             vertex_in.tvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                             if (std::abs(w) > glb_T * 1.) {
@@ -434,7 +434,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                 + N1 * G2 * N3
                                                 + N1 * N2 * G3) * 2.;
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
-                                G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                                //G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
                                 G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
                                 idx[my_defs::K2::keldysh] = 0;
                                 vertex_out.tvertex.K2.setvert(G12, idx);

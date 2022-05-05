@@ -460,7 +460,6 @@ template <typename Q, vertexType vertType, bool all_spins>
 void LoopCalculator<Q,vertType,all_spins>::compute_Matsubara_finiteT() {
     if (isfinite(v)) {
         IntegrandSE<Q,vertType,all_spins> integrand = IntegrandSE<Q,vertType,all_spins> ('r', fullvertex, prop, 0, 0, v, i_in);
-        int vint = (int) ((std::abs(v)/(M_PI*glb_T)-1)/2 + 1e-1);
 
         integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin, Nmax);
 
