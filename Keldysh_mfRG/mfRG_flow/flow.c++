@@ -114,6 +114,13 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         config.filename = inputFileName;
         using namespace boost::numeric::odeint;
         ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+        //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
+        // compute the flow using an ODE solver
+        ode_solver<State<state_datatype>, flowgrid::exp_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+
+        //using namespace boost::numeric::odeint;
+        //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+
 
         return state_fin;
     }

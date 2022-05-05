@@ -277,7 +277,7 @@ namespace ode_solver_impl
             t_stage = t_value + t_step* tableau.get_node(stage);
             Lambda_stage = FlowGrid::lambda_from_t(t_stage);
             stepsize = t_step;
-            utils::print("\t current t_stage: ", t_stage, "\n" );
+            //utils::print("\t current t_stage: ", t_stage, "\n" );
 #else
             const double Lambda = FlowGrid::lambda_from_t(t_value);
             double dLambda = FlowGrid::lambda_from_t(t_value + t_step) - Lambda;
@@ -485,7 +485,7 @@ namespace ode_solver_impl
  */
 template <typename Y, typename FlowGrid = flowgrid::sqrt_parametrization, typename System
         >
-void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const double Lambda_i, const System& rhs,
+void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, double Lambda_i, const System& rhs,
                 const ODE_solver_config& config=ODE_solver_config(), const bool verbose=true) {
     int world_rank = mpi_world_rank();
 
@@ -514,13 +514,13 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
     lambdas[0] = Lambda_i;
 
     // get lambdas according to FlowGrid (for hybridization flow: + checkpoints acc. to U_NRG  ) -> for non-adaptive method
-    const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, config.maximal_number_of_ODE_steps, config.lambda_checkpoints);
+    const vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, config.maximal_number_of_ODE_steps, tableau.adaptive ? std::vector<double>() : config.lambda_checkpoints);
 
     const double max_t_step = 1e1;  // maximal step size in terms of t
     const double min_t_step = 1e-5; // minimal step size in terms of t
 
-    double h = lambdas_try[1]-lambdas_try[0], Lambda = Lambda_i;    // step size to try (in terms of Lambda)
-    double hnext, hdid, h_prev{}; // step size to try next; actually performed step size
+    double h_try = lambdas_try[1]-lambdas_try[0], Lambda = Lambda_i;    // step size to try (in terms of Lambda)
+    double hnext, hdid, h_try_prev{}; // step size to try next; actually performed step size
     bool just_hit_a_lambda_checkpoint = false;
     result = state_ini;
 
@@ -536,7 +536,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
         }
 
         //if next step would get us outside the interval [Lambda_f, Lambda_i]
-        if ((Lambda + h - Lambda_f) * (Lambda + h - Lambda_i) > 0.0)
+        if ((Lambda + h_try - Lambda_f) * (Lambda + h_try - Lambda_i) > 0.0)
         {
             // if remaining Lambda step is negligibly small
             if (std::abs(Lambda_f - Lambda) / Lambda_f < 1e-8)
@@ -549,32 +549,35 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, const doub
             }
             else
             {
-                h = Lambda_f - Lambda;
+                h_try = Lambda_f - Lambda;
             };
         };
 
-        if (just_hit_a_lambda_checkpoint) {h = h_prev - h;}
-        else {h_prev = h;}
+        if (just_hit_a_lambda_checkpoint) {h_try = h_try_prev - h_try;} // jump to previously suggested Lambda_next if we just hit a Lambda checkpoint
+        h_try_prev = h_try; // remember h_try from this iteration in case we hit a Lambda checkpoint
         just_hit_a_lambda_checkpoint = false;
 
         // === Checkpoints ===
-        const double Lambda_next = Lambda_i + h;
+        const double Lambda_next = Lambda_i + h_try;
         for (const double checkpoint : config.lambda_checkpoints)
         {
             // Guard against float arithmetic fails
-            if ((Lambda_i - checkpoint) * (Lambda_next - checkpoint) < -1e-14 and tableau.adaptive)
+            if ((Lambda_i - checkpoint) * (Lambda_next - checkpoint) < -1e-10 and tableau.adaptive)
             {
-                h = checkpoint - Lambda_i;
+                h_try = checkpoint - Lambda_i;
                 just_hit_a_lambda_checkpoint = true;
                 break;
             }
         }
 
         // fix step size for non-adaptive methods
-        if (not tableau.adaptive) h = lambdas_try[i+1] - lambdas_try[i];
-        ode_solver_impl::rkqs<Y, FlowGrid>(tableau, result, Lambda, h, hdid, hnext, min_t_step, max_t_step, rhs, i, config, verbose);
-        // Pick h for next iteration
-        if (tableau.adaptive) h = hnext;
+        if (not tableau.adaptive) h_try = lambdas_try[i+1] - lambdas_try[i];
+        ode_solver_impl::rkqs<Y, FlowGrid>(tableau, result, Lambda, h_try, hdid, hnext, min_t_step, max_t_step, rhs, i, config, verbose);
+        // Pick h_suggested and set Lambda_i for next iteration
+        if (tableau.adaptive) {
+            Lambda_i += hdid;
+            if (just_hit_a_lambda_checkpoint){h_try = hdid;} else {h_try = hnext;}
+        }
 
 
 
