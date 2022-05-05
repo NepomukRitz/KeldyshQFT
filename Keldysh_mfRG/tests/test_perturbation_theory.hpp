@@ -688,18 +688,18 @@ void test_PT4(double Lambda, bool write_flag = false) {
         input_p.iK = 5;
         input_t.iK = 5;
     }
-    //state_datatype PT4_K3a_0;
-    //state_datatype PT4_K3p_0;
-    //state_datatype PT4_K3t_0_aa;
-    //state_datatype PT4_K3t_0_ap;
-    //state_datatype PT4_K3t_0_pa;
+    state_datatype PT4_K3a_0;
+    state_datatype PT4_K3p_0;
+    state_datatype PT4_K3t_0_aa;
+    state_datatype PT4_K3t_0_ap;
+    state_datatype PT4_K3t_0_pa;
 
-    if (MAX_DIAG_CLASS == 3) {
-        PT4_22_a_pp.vertex.avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex.tvertex()); // PT4_K3a_0 =
-        PT4_22_p_aa.vertex.pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex.pvertex()); // PT4_K3p_0 =
-        PT4_22_t_aa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex.avertex()); // PT4_K3t_0_aa =
-        PT4_22_t_ap.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex.avertex()); // PT4_K3t_0_ap =
-        PT4_22_t_pa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex.avertex()); // PT4_K3t_0_pa =
+    if constexpr(MAX_DIAG_CLASS == 3) {
+        PT4_K3a_0 = PT4_22_a_pp.vertex.avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex.tvertex());
+        PT4_K3p_0 = PT4_22_p_aa.vertex.pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex.pvertex());
+        PT4_K3t_0_aa = PT4_22_t_aa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex.avertex());
+        PT4_K3t_0_ap = PT4_22_t_ap.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex.avertex());
+        PT4_K3t_0_pa = PT4_22_t_pa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex.avertex());
     }
 
     // values to be printed to log
