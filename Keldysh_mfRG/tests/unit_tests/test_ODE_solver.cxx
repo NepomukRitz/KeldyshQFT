@@ -15,7 +15,7 @@ template<> void postRKstep_stuff<double>(double& y, double x, vec<double> x_vals
 namespace {
     class rhs_exp_t {
     public:
-        void operator() (const double& y, double& dy_dx, const double x) {//, const vec<size_t> opt) {
+        void operator() (const double& y, double& dy_dx, const double x) const  {//, const vec<size_t> opt) {
             dy_dx = y;
             //utils::print("x:", x, "y: ", y, "\n");
         }
@@ -23,7 +23,7 @@ namespace {
 
     class rhs_quartic_t {
     public:
-        void operator() (const double& y, double& dy_dx, const double x) {//, const vec<size_t> opt) {
+        void operator() (const double& y, double& dy_dx, const double& x) const {//, const vec<size_t> opt) {
             dy_dx = x*x*x*4.;
             //utils::print("x:", x, "y: ", y, "\n");
         }
