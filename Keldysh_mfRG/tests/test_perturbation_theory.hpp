@@ -622,12 +622,12 @@ void test_PT4(double Lambda, bool write_flag = false) {
     std::cout << "Computed value: " << PT2_K1a_0 << "\n";
 
     // K1 in PT4
-    state_datatype PT4_K1a_0_ladder =      PT4_31_a_a1.vertex.avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex.tvertex());
-    state_datatype PT4_K1p_0_ladder =      PT4_31_p_p1.vertex.pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex.pvertex());
-    state_datatype PT4_K1a_0_nonladder =   PT4_13_a_a2.vertex.avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex.tvertex());
-    state_datatype PT4_K1p_0_nonladder =   PT4_13_p_p2.vertex.pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex.pvertex());
-    state_datatype PT4_K1t_0_nonladder_a = PT4_13_t_a2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex.avertex());
-    state_datatype PT4_K1t_0_nonladder_t = PT4_13_t_t2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex.avertex());
+    PT4_31_a_a1.vertex.avertex().valsmooth<k1>(input_a, PT4_31_a_a1.vertex.tvertex()); // state_datatype PT4_K1a_0_ladder
+    PT4_31_p_p1.vertex.pvertex().valsmooth<k1>(input_p, PT4_31_p_p1.vertex.pvertex()); // state_datatype PT4_K1p_0_ladder
+    PT4_13_a_a2.vertex.avertex().valsmooth<k1>(input_a, PT4_13_a_a2.vertex.tvertex()); // state_datatype PT4_K1a_0_nonladder
+    PT4_13_p_p2.vertex.pvertex().valsmooth<k1>(input_p, PT4_13_p_p2.vertex.pvertex()); // state_datatype PT4_K1p_0_nonladder
+    PT4_13_t_a2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_a2.vertex.avertex()); // state_datatype PT4_K1t_0_nonladder_a
+    PT4_13_t_t2.vertex.tvertex().valsmooth<k1>(input_t, PT4_13_t_t2.vertex.avertex()); // state_datatype PT4_K1t_0_nonladder_t
 
     // K2 in PT3
     vec<state_datatype> PT3_K2a_0 (3);
@@ -694,9 +694,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT4_K3t_0_ap;
     state_datatype PT4_K3t_0_pa;
 
-    if (MAX_DIAG_CLASS == 3) {
-        PT4_K3a_0 =    PT4_22_a_pp.vertex.avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex.tvertex());
-        PT4_K3p_0 =    PT4_22_p_aa.vertex.pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex.pvertex());
+    if constexpr(MAX_DIAG_CLASS == 3) {
+        PT4_K3a_0 = PT4_22_a_pp.vertex.avertex().valsmooth<k3>(input_a, PT4_22_a_pp.vertex.tvertex());
+        PT4_K3p_0 = PT4_22_p_aa.vertex.pvertex().valsmooth<k3>(input_p, PT4_22_p_aa.vertex.pvertex());
         PT4_K3t_0_aa = PT4_22_t_aa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_aa.vertex.avertex());
         PT4_K3t_0_ap = PT4_22_t_ap.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_ap.vertex.avertex());
         PT4_K3t_0_pa = PT4_22_t_pa.vertex.tvertex().valsmooth<k3>(input_t, PT4_22_t_pa.vertex.avertex());
@@ -758,7 +758,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
                             };
 
     // print to log
-    for (int i=0; i<check_values.size(); ++i) {
+    for (unsigned int i=0; i<check_values.size(); ++i) {
         utils::print(check_labels[i], check_values[i], true);
     }
 
@@ -2470,7 +2470,6 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             double w;
             K1pdot_exact.vertex.avertex().K1.frequencies.get_freqs_w(w, it);
             state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
-            size_t iK{}, i_in{};
             K1pdot_exact.vertex.pvertex().K1.setvert(val_K1, it_spin, it, 0, 0);
             //    }
         }

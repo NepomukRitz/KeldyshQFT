@@ -25,7 +25,7 @@ TEST_CASE( "vector operations", "[data_structures]" ) {
     SECTION( "inverse" ) {
         vec<comp> v0 = v * v.inv();
 
-        for (int i=1; i<v0.size(); ++i) {
+        for (size_t i=1; i<v0.size(); ++i) {
             REQUIRE( v0[i] == 1. );
         }
     }
@@ -48,7 +48,7 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
     const size_t rank = 4;
     std::array<size_t,rank> dims = {3, 5, 7, 1}; // last dimension is trivial "internal" index
     size_t dimflat = 1;
-    for (int i=0; i<rank; i++) {
+    for (size_t i=0; i<rank; i++) {
         dimflat *= dims[i];
     }
 
@@ -57,7 +57,7 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
         int errorcount_flat = 0,  errorcount_multi = 0;
         std::array<size_t,rank> dimstmp = {3, 5, 7, 1};
 
-        int flatidx_unrot = 0;
+        size_t flatidx_unrot = 0;
         for (size_t i=0; i<dimstmp[0]; i++) {
             for (size_t j=0; j<dimstmp[1]; j++) {
                 for (size_t k = 0; k < dimstmp[2]; k++) {
@@ -65,8 +65,8 @@ TEST_CASE( "multi-dimensional vector functions", "[multi-dimensional]" ) {
                         std::array<size_t,rank> multiindex = {i,j,k,l};
                         size_t test = ::getFlatIndex<rank>(multiindex, dimstmp);
                         if (test != flatidx_unrot) errorcount_flat++;
-                        int a,b,c,d;
-                        getMultIndex<4,int,int,int,int>(a,b,c,d, test, dimstmp);
+                        size_t a,b,c,d;
+                        getMultIndex<4,size_t,size_t,size_t,size_t>(a,b,c,d, test, dimstmp);
                         if (a != i or b != j or c != k or d != l) errorcount_multi++;
                         flatidx_unrot++;
                     }
@@ -156,7 +156,7 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
     const size_t rank = 4;
     std::array<size_t,rank> dims = {3, 5, 7, 1}; // last dimension is trivial "internal" index
     size_t dimflat = 1;
-    for (int i=0; i<rank; i++) {
+    for (size_t i=0; i<rank; i++) {
         dimflat *= dims[i];
     }
 

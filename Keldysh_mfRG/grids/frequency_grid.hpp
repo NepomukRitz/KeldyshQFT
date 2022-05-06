@@ -257,8 +257,9 @@ public:
     }
     void initialize_grid();
     void update_pos_section_boundaries(std::array<double,2> new_pos_section_boundaries) {
-        pos_section_boundaries = std::move(new_pos_section_boundaries);
-        pos_section_boundaries[1] = std::max(pos_section_boundaries[0] + 1e-5, pos_section_boundaries[1]);
+        //pos_section_boundaries = std::move(new_pos_section_boundaries);
+        pos_section_boundaries[0] = std::min(w_upper - 1e-4, new_pos_section_boundaries[0]);
+        pos_section_boundaries[1] = std::max(pos_section_boundaries[0] + 1e-5, new_pos_section_boundaries[1]);
         initialize_grid();
     }
 

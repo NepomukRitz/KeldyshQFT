@@ -12,7 +12,7 @@ void compute_Phi_tilde(const std::string filename) {
         rvec Phi (Lambdas.size() * nFER * n_in);
         rvec Phi_integrated (Lambdas.size() * n_in);
 
-        for (int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
+        for (unsigned int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
             State<state_datatype> state = read_state_from_hdf(filename, iLambda);
             state.selfenergy.asymp_val_R = glb_U / 2.;
 
@@ -85,14 +85,11 @@ void sum_rule_K1tK(const std::string filename) {
 }
 
 void check_Kramers_Kronig(const std::string filename) {
-    int nLambda = nODE + U_NRG.size() + 1;  // number of Lambda points in <filename>
     vec<int> iLambdas {}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
     if (nODE == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
     else if (nODE == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
-    using buffer_type_SE = multidimensional::multiarray<comp,3>;
-    using buffer_type = multidimensional::multiarray<comp,4>;
 
-    for (int i=0; i<iLambdas.size(); ++i) {
+    for (unsigned int i=0; i<iLambdas.size(); ++i) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
         // check Kramers-Kronig for retarded self-energy
         rvec vSigma = state.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies();  // frequency grid points

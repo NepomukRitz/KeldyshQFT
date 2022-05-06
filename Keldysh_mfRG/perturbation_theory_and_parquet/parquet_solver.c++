@@ -9,7 +9,7 @@ void parquet_checks(const std::string filename) {
     rvec norm_K3_fRG (nL), norm_K3_BSE (nL), norm_K3_diff (nL);
     rvec norm_SE_fRG (nL), norm_SE_SDE (nL), norm_SE_diff (nL);
 
-    for (int i=0; i<Lambdas.size(); ++i) {
+    for (unsigned int i=0; i<Lambdas.size(); ++i) {
         utils::print("Iteration ", i, false);
         utils::print_add(", Lambda = ", Lambdas[i], true);
         State<state_datatype> state = read_state_from_hdf(filename, i);
@@ -64,7 +64,7 @@ void parquet_checks(const std::string filename) {
                         norm_SE_fRG, norm_SE_SDE, norm_SE_diff});
 
         // save results from BSE/SDE as state into HDF5 file
-        State<state_datatype> parquet(Gamma_BSE, Sigma_SDE);
+        State<state_datatype> parquet(Gamma_BSE, Sigma_SDE, state.Lambda);
 
         if (i == 0)
             write_state_to_hdf(filename + "_parquet_checks", i, nL, parquet);
@@ -81,9 +81,9 @@ void parquet_checks(const std::string filename) {
 
         SelfEnergy<state_datatype> trivial_SE(Lambda_ini); // Trivial self energy to construct new state
 
-        State<state_datatype> state_chi(chi, trivial_SE);
+        State<state_datatype> state_chi(chi, trivial_SE, state.Lambda);
 
-        State<state_datatype> state_chi_diff(chi_diff, trivial_SE);
+        State<state_datatype> state_chi_diff(chi_diff, trivial_SE, state.Lambda);
 
         if (i == 0) {
             write_state_to_hdf(filename + "_susceptibilities", i, nL, state_chi);

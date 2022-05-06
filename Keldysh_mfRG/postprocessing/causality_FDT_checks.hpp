@@ -24,7 +24,7 @@ void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
         int cnt = 0;
         double sum = 0.;
         double max = 0.;
-        for (int i = 0; i < Sigma_R.size(); ++i) {
+        for (unsigned int i = 0; i < Sigma_R.size(); ++i) {
             double val = myimag(Sigma_R[i]);
             if (val > 0.) {
                 cnt += 1;
@@ -90,7 +90,7 @@ void check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const bool verbose) 
     buffer_t SE_K_from_FDTs(dims_K);
 
     const size_t size_flat = getFlatSize<SE_config.rank>(dims_K);
-    for (int i = 0; i < size_flat; i++) {
+    for (unsigned int i = 0; i < size_flat; i++) {
         std::array<my_index_t,SE_config.rank> idx_R;
         getMultIndex<SE_config.rank>(idx_R,i,dims_K);
 
@@ -132,7 +132,7 @@ void check_FDTs_K1(const rvert<Q>& rvert4K1, const bool verbose) {
         buffer_t Im_K1_R_from_FDTs(dims_K);
 
         const size_t size_flat = getFlatSize<K1at_config.rank>(dims_K);
-        for (int i = 0; i < size_flat; i++) {
+        for (unsigned int i = 0; i < size_flat; i++) {
             std::array<my_index_t, K1at_config.rank> idx_R;
             getMultIndex<K1at_config.rank>(idx_R, i, dims_K);
 
@@ -204,8 +204,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
 
-                        double w, v, vp, N1, N2, N3, N4;
-                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                        double w, N1;
+                        Q G1, G2;
 
                         vertex_in.avertex.K1.frequencies.get_freqs_w(w, itw);
                         if (std::abs(w) > glb_T * 25.) {
@@ -232,8 +232,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
 
-                        double w, v, vp, N1, N2, N3, N4;
-                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                        double w, N1;
+                        Q G1, G2;
 
                         vertex_in.pvertex.K1.frequencies.get_freqs_w(w, itw);
                         if (std::abs(w) > glb_T * 25.) {
@@ -262,8 +262,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
 
-                        double w, v, vp, N1, N2, N3, N4;
-                        Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                        double w, N1;
+                        Q G1, G2;
 
                         vertex_in.tvertex.K1.frequencies.get_freqs_w(w, itw);
                         if (std::abs(w) > glb_T * 25.) {
@@ -298,8 +298,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::nu] = itv;
                             idx[my_defs::K2::internal] = itin;
 
-                            double w, v, vp, N1, N2, N3, N4;
-                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                            double w, v, N1, N2, N3;
+                            Q G1, G2, G3, G12, G23, G123;
 
                             vertex_in.avertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                             if (std::abs(w) > glb_T) {
@@ -324,7 +324,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                 + N1 * G2 * N3
                                                 + N1 * N2 * G3) * 2.;
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
-                                G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                                //G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
                                 G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
 
                                 idx[my_defs::K2::keldysh] = 0;
@@ -353,8 +353,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::nu] = itv;
                             idx[my_defs::K2::internal] = itin;
 
-                            double w, v, vp, N1, N2, N3, N4;
-                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                            double w, v, N1, N2, N3;
+                            Q G1, G2, G3, G12, G13, G123;
 
                             vertex_in.pvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                             if (std::abs(w) > glb_T * 1.) {//
@@ -380,7 +380,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                 + N1 * N2 * G3) * 2.;
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
                                 G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
-                                G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
+                                //G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
                                 idx[my_defs::K2::keldysh] = 0;
                                 vertex_out.pvertex.K2.setvert(G12, idx);
                                 idx[my_defs::K2::keldysh] = 1;
@@ -408,8 +408,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::nu] = itv;
                             idx[my_defs::K2::internal] = itin;
 
-                            double w, v, vp, N1, N2, N3, N4;
-                            Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
+                            double w, v, N1, N2, N3;
+                            Q G1, G2, G3, G12, G23, G123;
 
                             vertex_in.tvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
                             if (std::abs(w) > glb_T * 1.) {
@@ -434,7 +434,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                                 + N1 * G2 * N3
                                                 + N1 * N2 * G3) * 2.;
                                 G12 = N2 * (myconj(G3) - G1) + N1 * (myconj(G3) - G2);
-                                G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
+                                //G13 = N3 * (myconj(G2) - G1) + N1 * (myconj(G2) - G3);
                                 G23 = N3 * (myconj(G1) - G2) + N2 * (myconj(G1) - G3);
                                 idx[my_defs::K2::keldysh] = 0;
                                 vertex_out.tvertex.K2.setvert(G12, idx);
@@ -774,9 +774,7 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
                     my_defs::K1::index_type idx;
                     getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
                     int itK = (int) idx[my_defs::K1::keldysh];
-                    my_index_t it_spin = idx[my_defs::K1::spin];
                     my_index_t itw = idx[my_defs::K1::omega];
-                    my_index_t i_in = idx[my_defs::K1::internal];
                     double w;
                     K1.frequencies.get_freqs_w(w, itw);
 
@@ -796,10 +794,8 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
                         my_defs::K2::index_type idx;
                         getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
                         int itK = (int) idx[my_defs::K2::keldysh];
-                        my_index_t it_spin = idx[my_defs::K2::spin];
                         my_index_t itw = idx[my_defs::K2::omega];
                         my_index_t itv = idx[my_defs::K2::nu];
-                        my_index_t i_in = idx[my_defs::K2::internal];
                         double w, v;
                         K2.frequencies.get_freqs_w(w, v, itw, itv);
 
@@ -819,11 +815,9 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
                         my_defs::K3::index_type idx;
                         getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
                         int itK = (int) idx[my_defs::K3::keldysh];
-                        my_index_t it_spin = idx[my_defs::K3::spin];
                         my_index_t itw = idx[my_defs::K3::omega];
                         my_index_t itv = idx[my_defs::K3::nu];
                         my_index_t itvp= idx[my_defs::K3::nup];
-                        my_index_t i_in = idx[my_defs::K3::internal];
                         double w, v, vp;
                         K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
 
@@ -894,8 +888,8 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
                 temp_diff.half1() = vertex_diff.half1();
                 Vertex<Q> temp_out(Lambda);
                 temp_out.half1() = vertex_out.half1();
-                State<Q> state_out(temp_out, SE_empty);
-                State<Q> state_diff(temp_diff, SE_empty);
+                State<Q> state_out(temp_out, SE_empty, Lambda);
+                State<Q> state_diff(temp_diff, SE_empty, Lambda);
                 if (Lambda_it == 0) {
                     write_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
                     write_state_to_hdf(data_dir + filename_prefix + "_FDTdiff", Lambda, nLambda, state_diff);

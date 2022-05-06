@@ -19,7 +19,7 @@ template <typename Q>
 auto dotproduct(const vec<Q>& x, const rvec& y) -> Q {
     Q res;
 //#pragma acc parallel loop private(i) reduction(+:resp)
-    for(int i=0; i<x.size(); ++i)
+    for(unsigned int i=0; i<x.size(); ++i)
         res += x[i] * y[i];
     return res;
 }
@@ -193,7 +193,7 @@ auto simpson_rule_3(vec<Q>& values, double& dx) -> Q {
  *  - max. number of allowed points (integrand accesses) is reached.
  * During this iterative process, results from the previous step are stored to minimize the number of integrand accesses.
  */
-template <typename Q, typename Integrand> auto adaptive_simpson_integrator(const Integrand& integrand, double a, double b, int Nmax) -> Q {
+template <typename Q, typename Integrand> auto adaptive_simpson_integrator(const Integrand& integrand, double a, double b, size_t Nmax) -> Q {
     // accuracy: relative error between successive results for the same interval
     // at which to stop splitting the interval into sub-intervals
     double accuracy = 1e-3; //1e-3;
@@ -231,7 +231,7 @@ template <typename Q, typename Integrand> auto adaptive_simpson_integrator(const
         points_next.push_back(points[0]);
         values_next.push_back(values[0]);
 
-        for (int interval=0; interval<result.size(); ++interval) { // Go through all existing sub-intervals:
+        for (unsigned int interval=0; interval<result.size(); ++interval) { // Go through all existing sub-intervals:
             if (converged[interval] && it>3) {                     // If the interval is converged, don't do anything
                 // (only after having performed the first few splits)
                 // add existing points, values, ... for this interval
@@ -309,7 +309,7 @@ template <typename Q, typename Integrand> auto adaptive_simpson_integrator(const
         converged = converged_next;
 
         // Second stop condition: check if all sub-intervals are converged
-        if (count(converged.begin(), converged.end(), true) == converged.size()) break;
+        if ((unsigned)count(converged.begin(), converged.end(), true) == converged.size()) break;
 
         // Third stop condition: check if the total number of evaluation points exceeds the predefined maximum
         if (points.size() > Nmax) break;

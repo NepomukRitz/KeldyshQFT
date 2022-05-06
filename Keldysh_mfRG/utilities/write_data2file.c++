@@ -4,7 +4,7 @@ void write_dat_rvecs(std::string path, std::initializer_list<rvec> rvec_list) {
     if (mpi_world_rank() == 0) {
         std::ofstream file; file.open(path); // create file at path
         for (auto myvec : rvec_list) { // iterate through vectors
-            for (int i = 0; i<myvec.size(); ++i) file << myvec[i] << " "; // write data into file
+            for (unsigned int i = 0; i<myvec.size(); ++i) file << myvec[i] << " "; // write data into file
             file << std::endl; // newline
         }
         file.close(); // close file

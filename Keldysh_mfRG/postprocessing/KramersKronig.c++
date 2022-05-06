@@ -2,7 +2,7 @@
 
 rvec log(const rvec& x) {
     rvec result (x.size());
-    for (int i=0; i<x.size(); ++i) {
+    for (unsigned int i=0; i<x.size(); ++i) {
         result[i] = log(x[i]);
     }
     return result;

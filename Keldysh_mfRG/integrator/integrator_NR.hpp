@@ -101,8 +101,8 @@ auto Adapt<Integrand,Q>::integrate(const double a, const double b) -> Q {
     // or relative tolerance, return second estimate, else subdivide interval.
     // Subdivide also if the integral value is exactly zero, to avoid accidental zero result due to the choice of
     // evaluation points.
-    if (myabs(i2 - i1) < std::max(tolerance_abs, tolerance_rel * myabs(is))
-        && myabs(i2 - is) < std::max(tolerance_abs, tolerance_rel * myabs(is))
+    if ((myabs(i2 - i1) < std::max(tolerance_abs, tolerance_rel * myabs(is))
+      && myabs(i2 - is) < std::max(tolerance_abs, tolerance_rel * myabs(is)))
         //&& i2 != 0. // shouldn't need this safety check any more if interval is split into subintervals
         || b-a < tolerance_abs) // do not split if the interval is very small
         return i2;

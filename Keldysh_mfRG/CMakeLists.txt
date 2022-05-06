@@ -14,11 +14,11 @@ set(CMAKE_CXX_COMPILER mpicxx)
 
 if(WORKSTATION)
     # for DEBUG build:
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3 -march=native -flto -fopenmp ")
-    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -O3 -march=native -flto ")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3 -march=native -flto -Wall -fopenmp ")
+    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -O3 -march=native -flto -Wall ")
     # for RELEASE build:
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto -fopenmp")
-    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto -Wall -fopenmp")
+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto -Wall")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -march=native -flto")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")

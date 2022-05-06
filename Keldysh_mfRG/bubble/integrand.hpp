@@ -99,10 +99,10 @@ private:
     int i0_left;
     int i0_right;
     const int i2;
-    const int i_in;
-    const int i_spin;
     const int iw=0;
     const double w, v = 0., vp = 0.;
+    const int i_in;
+    const int i_spin;
     const bool diff;
 
 #if KELDYSH_FORMALISM
@@ -287,7 +287,7 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
 template<K_class diag_class, char channel, int spin, typename Q, vertexType symmetry_left, vertexType symmetry_right, class Bubble_Object,typename return_type>
 auto Integrand<diag_class, channel, spin, Q, symmetry_left, symmetry_right, Bubble_Object,return_type>::operator()(double vpp) const -> return_type {
     return_type result;
-#ifndef SWITCH_SUM_N_INTEGRAL
+#if not SWITCH_SUM_N_INTEGRAL
 
     if (case_always_has_to_be_zero()) {return 0.;}
     Q res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;
@@ -658,7 +658,6 @@ Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_O
     buffer_type_vertex_r values_vertex_r;
     auto Pi_matrix = Pi.template value_vectorized<channel>(input_external.w, vpp, input_external.i_in);
     // load vertex values:
-    int spin_idx = 0;
     load_vertex_keldyshComponents_left_scalar<spin> (values_vertex_l, input_l);
     load_vertex_keldyshComponents_right_scalar<spin>(values_vertex_r, input_r);
 
@@ -802,7 +801,6 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
 
     auto Pi_matrix = Pi.template value_vectorized<channel>(input_external.w, vpp, input_external.i_in);
     // load vertex values:
-    int spin_idx = 0;
     load_vertex_keldyshComponents_left_vectorized <spin>(values_vertex_l, input_l);
     load_vertex_keldyshComponents_right_vectorized<spin>(values_vertex_r, input_r);
 
@@ -850,18 +848,6 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
         }
     }
 #if DEBUG_SYMMETRIES
-    //else if (channel == 'p' and input_external.spin == 0) {
-    //    buffer_type_vertex_l values_vertex_l_other;
-    //    buffer_type_vertex_r values_vertex_r_other;
-    //    input_l.spin = 1 - input_external.spin;
-    //    input_r.spin = 1 - input_external.spin;
-    //    spin_idx = 1;
-//
-    //    load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
-    //    load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
-//
-    //    result = (values_vertex_l * Pi_matrix * values_vertex_r +  values_vertex_l_other * Pi_matrix * values_vertex_r_other).eval()[0] * 0.5;
-    //}
     else if constexpr(channel == 'p' and spin == 1) {
         buffer_type_vertex_l values_vertex_l_other;
         buffer_type_vertex_r values_vertex_r_other;
@@ -887,54 +873,6 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
 
 
 
-    /*
-    if constexpr(false) { // set to true for debugging the loading of vertex values
-
-        multidimensional::multiarray<Q,2> values_vertex_l_alt(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2})), values_vertex_r_alt(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2}));
-
-        // load values (basic inefficient version):
-        for (int i = 0; i < glb_number_of_Keldysh_components_bubble; i++) {
-
-            VertexInput input_l_alt = input_external, input_r_alt = input_external;
-            input_l_alt.v2 = vpp; input_r_alt.v1 = vpp;
-
-            int i2 = glb_non_zero_Keldysh_bubble[i];
-            std::vector<int> indices_vertices = indices_sum(input_external.iK, i2, channel);
-            input_l_alt.iK = indices_vertices[0];
-            input_r_alt.iK = indices_vertices[1];
-
-            values_vertex_l_alt.at(i,0) = value_vertex_l(input_l_alt);
-            values_vertex_r_alt.at(i,0) = value_vertex_r(input_r_alt);
-
-            // load other spin component
-            if ((channel == 't' and input_external.spin == 0)
-#if DEBUG_SYMMETRIES
-                or (channel == 'a' and input_external.spin == 1) or (channel == 'p')
-#endif
-                    ){
-                if(channel == 't') assert(0 == input_external.spin);
-                if(channel == 'a') assert(1 == input_external.spin);
-                input_l_alt.spin = 1 - input_external.spin;
-                input_r_alt.spin = 1 - input_external.spin;
-
-                values_vertex_l_alt.at(i,1) = value_vertex_l(input_l_alt);
-                values_vertex_r_alt.at(i,1) = value_vertex_r(input_r_alt);
-
-            }
-        }
-
-
-
-        multidimensional::multiarray<Q,2> values_vertex_l_diff = values_vertex_l - values_vertex_l_alt;
-        multidimensional::multiarray<Q,2> values_vertex_r_diff = values_vertex_r - values_vertex_r_alt;
-        auto diff_l = values_vertex_l_diff.maxabs();
-        auto diff_r = values_vertex_r_diff.maxabs();
-        assert(std::abs(diff_l) < 1e-10);
-        assert(std::abs(diff_r) < 1e-10);
-
-
-    }
-    */
     return result;
 }
 
@@ -949,14 +887,14 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
 
         double vpp = freqs[i];
 
+
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> Pival;
+#if VECTORIZED_INTEGRATION
         VertexInput input_l = input_external, input_r = input_external;
         input_l.v2 = vpp; input_r.v1 = vpp;
         input_l.iK = i0_left; input_r.iK = i0_right;
         input_l.spin = 0;
         input_r.spin = 0;
-
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> Pival;
-#if VECTORIZED_INTEGRATION
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_value;
         Eigen::Matrix<Q,4,4> vertex_val1(4,4);
         Eigen::Matrix<Q,4,4> vertex_val2(4,4);

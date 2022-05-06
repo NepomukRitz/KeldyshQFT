@@ -659,7 +659,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
         // K1:
         multidimensional::multiarray<Q, 4> deviations_K1(K1.get_dims());
-        for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
+        for (size_t iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
             my_defs::K1::index_type idx;
             getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
             int iK = (int) idx[my_defs::K1::keldysh];
@@ -731,7 +731,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         multidimensional::multiarray<Q, 5> symmrel_K2b(K2b.get_dims());
         if (MAX_DIAG_CLASS > 1) {
             // K2:
-            for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
+            for (my_index_t iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
                 my_defs::K2::index_type idx;
                 getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
                 int iK = (int) idx[my_defs::K2::keldysh];
@@ -795,7 +795,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
 
             // K2b:
-            for (int iflat = 0; iflat < getFlatSize(K2b.get_dims()); iflat++) {
+            for (my_index_t iflat = 0; iflat < getFlatSize(K2b.get_dims()); iflat++) {
 
                 my_defs::K2::index_type idx;
                 getMultIndex<rank_K2>(idx, iflat, K2b.get_dims());
@@ -832,7 +832,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         multidimensional::multiarray<Q, 6> symmrel_K3(K3.get_dims());
         if (MAX_DIAG_CLASS > 2) {
             // K3:
-            for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
+            for (my_index_t iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
                 my_defs::K3::index_type idx;
                 getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
                 int iK = (int) idx[my_defs::K3::keldysh];
@@ -1451,7 +1451,7 @@ template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
 
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
 #pragma omp parallel for
-    for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
+    for (size_t iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
         my_defs::K1::index_type idx;
         getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
         int itK             = (int) idx[my_defs::K1::keldysh];
@@ -1548,7 +1548,7 @@ Q rvert<Q>::K1_BZ_average(const int iK, const int ispin, const int iw) {
 
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
 #pragma omp parallel for
-    for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
+    for (size_t iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
         my_defs::K2::index_type idx;
         getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
         int itK             = (int) idx[my_defs::K2::keldysh];
@@ -1602,7 +1602,7 @@ void rvert<Q>::K2_crossproject(char channel_out) {
 
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
 #pragma omp parallel for
-    for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
+    for (size_t iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
         my_defs::K3::index_type idx;
         getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
         int itK             = (int) idx[my_defs::K3::keldysh];

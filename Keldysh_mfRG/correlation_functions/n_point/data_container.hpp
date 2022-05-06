@@ -34,17 +34,7 @@ class Buffer;
     template<typename Q, std::size_t rank>
     class dataContainerBase {
         friend class State<Q>;
-        //template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const rvert<T>& rhs);
-        //template<typename T> friend rvert<T> rvert<T>::operator+= (const rvert<T>& rhs);
-        //template<typename T> friend rvert<T> operator- (rvert<T> lhs, const rvert<T>& rhs);
-        //template<typename T> friend rvert<T> rvert<T>::operator-= (const rvert<T>& rhs);
-        //template<typename T> friend rvert<T> operator/ (rvert<T> lhs, const rvert<T>& rhs);
-        //template<typename T> friend rvert<T> rvert<T>::operator/= (const rvert<T>& rhs);
-        //template<typename T> friend rvert<T> operator* (rvert<T> lhs, const double& alpha);
-        //template<typename T> friend rvert<T> rvert<T>::operator*= (double alpha);
-        //template<typename T> friend rvert<T> operator+ (rvert<T> lhs, const double& alpha);
-        //template<typename T> friend rvert<T> rvert<T>::operator+= (double alpha);
-        friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
+        friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
 
 
     protected:
@@ -195,7 +185,7 @@ class Buffer;
         frequencyGrid_type frequencies;    // frequency grid
         DataContainer() = default;
 
-        explicit DataContainer(double Lambda, dimensions_type dims) : frequencies(Lambda), base_class(dims) {};
+        explicit DataContainer(double Lambda, dimensions_type dims) : base_class(dims), frequencies(Lambda) {};
 
         /// Functions for getting and setting the frequency grid and its members
         auto get_VertexFreqGrid() const -> const frequencyGrid_type &;

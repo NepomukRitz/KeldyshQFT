@@ -168,14 +168,16 @@ TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[i
 namespace {
     // functions to test linear interpolation (below)
     auto linearFunction1D(double x) -> state_datatype {return 1. + x;}
-    auto linearFunction2D(double x, double y) -> state_datatype {return 1. + 2*x + 3*y;}
-    auto linearFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 2*y + 3*z;}
-
-    auto quadFunction2D(double x, double y) -> state_datatype {return 1. + x + y  + x*y + x*x + y*y;}
-
     auto cubicFunction1D(double x) -> state_datatype {return 1. + x - 2.*x*x + M_PI*x*x*x;}
+
+#if MAX_DIAG_CLASS > 1
+    auto linearFunction2D(double x, double y) -> state_datatype {return 1. + 2*x + 3*y;}
     auto cubicFunction2D(double x, double y) -> state_datatype {return 1. + y + y*y*x + x*y*y + x*x*x;}
+#endif
+#if MAX_DIAG_CLASS > 2
     auto cubicFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 0.5*z + x*y + x*x*x + 3.*z*z*z + x*x*x + y*y*y + y*y*x + x*y*y + 2.*y*y*z;} //
+    auto linearFunction3D(double x, double y, double z) -> state_datatype {return 1. + x + 2*y + 3*z;}
+#endif
 }
 
 #ifndef DENSEGRID
@@ -360,8 +362,8 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     output_t values_interpolated (dims);
     double interb = (avertex.K2.frequencies.get_tupper_b_aux() - avertex.K2.frequencies.get_tlower_b_aux()) / double(N-1);
     double interf = (avertex.K2.frequencies.get_tupper_f_aux() - avertex.K2.frequencies.get_tlower_f_aux()) / double(M-1);
-    for (int iw = 1; iw<N; iw++){
-        for (int iv = 1; iv<M-1; iv++) {
+    for (size_t iw = 1; iw<N; iw++){
+        for (size_t iv = 1; iv<M-1; iv++) {
             indices.w  = avertex.K2.frequencies.  primary_grid.frequency_from_t(avertex.K2.frequencies.get_tlower_b_aux() + iw*interb);
             indices.v1 = avertex.K2.frequencies.secondary_grid.frequency_from_t(avertex.K2.frequencies.get_tlower_f_aux() + iv*interf);
 
@@ -690,7 +692,6 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
     if constexpr(KELDYSH) {
 
         using result_type = Eigen::Matrix<state_datatype, 4, 1>;
-        using result_type_full = Eigen::Matrix<state_datatype, 4, K1_expanded_config.dims_flat/4>;
 
         const char channel = 'a';
         double Lambda = 1.8;
@@ -711,10 +712,10 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
                 my_defs::K1::index_type idx;
                 getMultIndex<rank_K1>(idx, iflat, rvertex.K1.get_dims());
-                int iK              = (int) idx[my_defs::K1::keldysh];
-                my_index_t ispin    = idx[my_defs::K1::spin];
-                my_index_t iw       = idx[my_defs::K1::omega];
-                my_index_t i_in     = idx[my_defs::K1::internal];
+                //int iK              = (int) idx[my_defs::K1::keldysh];
+                //my_index_t ispin    = idx[my_defs::K1::spin];
+                //my_index_t iw       = idx[my_defs::K1::omega];
+                //my_index_t i_in     = idx[my_defs::K1::internal];
                 //my_index_t iK;
                 //my_index_t ispin, iw, i_in;
                 //getMultIndex<4, my_index_t, my_index_t, my_index_t, my_index_t>(ispin, iw, iK, i_in, iflat,

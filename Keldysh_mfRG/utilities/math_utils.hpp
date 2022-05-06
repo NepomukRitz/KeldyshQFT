@@ -97,7 +97,7 @@ inline auto lagrangePoly(const Q x, const double (&xs)[degreeplus], const Q (&ys
 template<size_t rank>
 constexpr size_t getFlatSize(const std::array<size_t,rank>& dims) {
     size_t result = dims[0];
-    for (int it = 1; it < rank; it++) result *= dims[it];
+    for (size_t it = 1; it < rank; it++) result *= dims[it];
     return result;
 }
 
@@ -111,7 +111,7 @@ constexpr size_t getFlatSize(const std::array<size_t,rank>& dims) {
     template<size_t rank>
     inline size_t getFlatIndex(const std::array<size_t, rank> &indx, const std::array<size_t, rank> &dims) {
         size_t result = indx[0];
-        for (int it = 1; it < rank; it++) {
+        for (size_t it = 1; it < rank; it++) {
             result *= dims[it];
             result += indx[it];
         }
@@ -141,7 +141,7 @@ namespace math_impl {
     inline size_t getFlatIndex(const std::array<size_t, rank> &indx, const std::array<size_t, rank> &dims,
                                const std::array<size_t, rank> &permutation) {
         size_t result = indx[permutation[0]];
-        for (int it = 1; it < rank; it++) {
+        for (size_t it = 1; it < rank; it++) {
             result *= dims[permutation[it]];
             result += indx[permutation[it]];
         }
@@ -206,12 +206,12 @@ template<size_t rank, typename I = size_t,
 inline void getMultIndex(std::array<I,rank>&  indx, const size_t iflat, const std::array<I,rank>&  dims) {
     size_t temp = iflat;
     size_t dimtemp = 1;
-    for (int it = 1; it < rank; it++) {
+    for (my_index_t it = 1; it < rank; it++) {
         dimtemp *= dims[it];
     }
     indx[0] = temp / dimtemp;
     temp -= indx[0] * dimtemp;
-    for (int it = 1; it < rank; it++) {
+    for (my_index_t it = 1; it < rank; it++) {
         dimtemp = dimtemp / dims[it];
         indx[it] = temp / dimtemp;
         temp -= indx[it] * dimtemp;
@@ -386,11 +386,11 @@ namespace { // hide the following to the outside world
 
         vec<T> result(flatdim);
 #pragma omp parallel for collapse(2)
-        for (int it = 0; it < codimsum; it++) {
+        for (size_t it = 0; it < codimsum; it++) {
 
             /// Compute derivative with Central finite difference
-            for (int jt = 0; jt < dimsum; jt++) {
-                double h, hl;
+            for (size_t jt = 0; jt < dimsum; jt++) {
+                double h;
                 /// Compute boundary values: with non-central finite difference
                 if (jt == 0) {
                     //jt = 0;
@@ -405,7 +405,6 @@ namespace { // hide the following to the outside world
                 }
                 else if (jt == 1) {
                     //size_t jt = 1;
-                    hl = xs[jt  ]-xs[jt-1];
                     h  = xs[jt+1]-xs[jt  ];
                     result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = (
                             data[rotateFlatIndex(it*dimsum + jt - 1, dims, permutation)] * (-3.)
@@ -580,9 +579,9 @@ namespace { // hide the following to the outside world
         vec<int> right2 = {-4, -3, -2, -1};
 
 #pragma omp parallel for collapse(2)
-        for (int it = 0; it < codimsum; it++) {
+        for (size_t it = 0; it < codimsum; it++) {
             /// Compute derivative with Central finite difference
-            for (int jt = 0; jt < dimsum; jt++) {
+            for (size_t jt = 0; jt < dimsum; jt++) {
                 /// Compute boundary values: with non-central finite difference
                 if (jt == 0){
                     result[rotateFlatIndex(it * dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it * dimsum, jt, left2, 0, 4);
@@ -812,7 +811,7 @@ vec<T> collapse(const vec<T>& data, const binaryOp& op, const std::array<size_t,
     vec<size_t> perm_inv_vec = get_inverse_permutation(perm_rot);
     std::array<size_t,rank> perm_inv;
     //std::copy(perm_inv_vec.begin(), perm_inv_vec.end(), perm_inv);
-    for (int j = 0; j < rank; j++) perm_inv[j] = perm_inv_vec[j];
+    for (unsigned int j = 0; j < rank; j++) perm_inv[j] = perm_inv_vec[j];
 
 
     vec<T> result(dimsflat_new);
@@ -905,7 +904,7 @@ template<typename T> vec<T> power2(const vec<T>& vec_in) {
     size_t flatdim = vec_in.size();
     vec <T> result (flatdim);
     T temp;
-    for (int it = 0; it < flatdim; it++) {
+    for (size_t it = 0; it < flatdim; it++) {
         temp = std::abs(vec_in[it]);
         result[it] = temp * temp;
     }

@@ -57,25 +57,25 @@ public:
             assert(freq_idx[i] < 2000);
         }
 
-        for (int j = 0; j < numSamples_half(); j++) {
+        for (my_index_t j = 0; j < numSamples_half(); j++) {
             weights[j  ] = 1-dw_normalized[0];
             weights[numSamples_half()+j] = dw_normalized[0];
         }
 
         if constexpr (numberFrequencyDims == 2) {
-            for (int j = 0; j < numSamples_half(); j++) {
+            for (my_index_t j = 0; j < numSamples_half(); j++) {
                 weights[2*j  ] *= 1-dw_normalized[1];
                 weights[2*j+1] *= dw_normalized[1];
             }
         }
         if constexpr(numberFrequencyDims == 3) {
-            for (int j = 0; j < 2; j++) {
-                for (int i = 0; i < 2; i++) {
+            for (my_index_t j = 0; j < 2; j++) {
+                for (my_index_t i = 0; i < 2; i++) {
                     weights[4*j+i]   *= 1-dw_normalized[1];
                     weights[4*j+i+2] *= dw_normalized[1];
                 }
             }
-            for (int j = 0; j < numSamples_half(); j++) {
+            for (my_index_t j = 0; j < numSamples_half(); j++) {
                 weights[j*2]   *= 1-dw_normalized[2];
                 weights[1+j*2] *= dw_normalized[2];
             }
@@ -223,8 +223,6 @@ public:
             return result;
 #else
             // get weights from frequency Grid
-            index_type idx_tmp = indices;
-            //index_type vertex_index;
             const weights_type weights = get_weights(frequencies, indices);
             // fetch vertex values
             const values_type values = base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 2>(indices);
@@ -364,8 +362,6 @@ public:
         assert(false); // Use "linear" interpolation for dense grid
 #endif
         constexpr my_index_t vecsize = get_vecsize<result_type>();
-        using weights_type = Eigen::Matrix<double, numSamples(), 1>;
-        using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (base_class::frequencies.is_in_box(frequencies))
@@ -406,8 +402,8 @@ namespace {
         dataBuffer_type buffer;
         freqGrid_type frequencies = buffer.get_VertexFreqGrid();
 
-        explicit CostResolution(const dataBuffer_type& buffer_in, bool verbose) : buffer(buffer_in), buffer_backup(buffer_in),
-                                                                             verbose(verbose) {};
+        explicit CostResolution(const dataBuffer_type& buffer_in, bool verbose) : buffer_backup(buffer_in), verbose(verbose), buffer(buffer_in)
+                                                                              {};
 
         auto operator()(double wscale_test) -> double {
             // cost function for resolution  =  curvature + magnitude in the tails
@@ -531,12 +527,12 @@ public:
         const dimensions_type dims = base_class::get_dims();
         const size_t flatsize = getFlatSize<rank>(dims);
         buffer_type data_new (dims);  // temporary data vector
-        for (int iflat=0; iflat < flatsize; ++iflat) {
+        for (my_index_t iflat=0; iflat < flatsize; ++iflat) {
             index_type idx;
             std::array<my_index_t, numberFrequencyDims> i_freqs;
             frequencies_type freqs;
             getMultIndex<rank>(idx, iflat, dims);
-            for (int i = 0; i < numberFrequencyDims; i++) {
+            for (my_index_t i = 0; i < numberFrequencyDims; i++) {
                 i_freqs[i] = idx[i+pos_first_freqpoint];
             }
             frequencies_new.get_freqs_w(freqs, i_freqs);
@@ -554,10 +550,8 @@ public:
         if (verbose) utils::print("---> Now Optimize grid for ", k, " in direction w:\n");
 
         const bool superverbose = false;
-        const double epsrel_elias = 0.01;
-        const double epsabs_elias = 0.0;
-        const double epsrel_hybrid = 0.01;
-        const double epsabs_hybrid = 0.0;
+        const double epsrel = 0.01;
+        const double epsabs = 0.0;
 
         frequencyGrid_type frequencies_new = base_class::get_VertexFreqGrid();
 
@@ -577,7 +571,7 @@ public:
             double m_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale;
             double b_Wscale_b = base_class::get_VertexFreqGrid().  primary_grid.W_scale * 2;
             CostResolution<'b', this_class, frequencyGrid_type> cost_b(*this, verbose);
-            minimizer(cost_b, a_Wscale_b, m_Wscale_b, b_Wscale_b, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
+            minimizer(cost_b, a_Wscale_b, m_Wscale_b, b_Wscale_b, 20, verbose, superverbose, epsabs, epsrel);
             frequencies_new.  primary_grid.update_Wscale(m_Wscale_b);
 
         }
@@ -588,7 +582,7 @@ public:
 
             CostResolution<'b',this_class,frequencyGrid_type> cost_b(*this, verbose);
             double ini_stepsize_b = (section_boundaries_b[0] + section_boundaries_b[1])/10.;
-            vec<double> result_b = minimizer_nD(cost_b, start_params_b, ini_stepsize_b, 100, verbose, superverbose, epsabs_hybrid, epsrel_hybrid);
+            vec<double> result_b = minimizer_nD(cost_b, start_params_b, ini_stepsize_b, 100, verbose, superverbose, epsabs, epsrel);
             frequencies_new.  primary_grid.update_pos_section_boundaries(std::array<double,2>({result_b[0], result_b[1]}));
         }
         else if constexpr (std::is_same_v<typename frequencyGrid_type::grid_type1, FrequencyGrid<angularGrid>>) {
@@ -596,7 +590,7 @@ public:
             double m_power_b = base_class::get_VertexFreqGrid().  primary_grid.power;
             double b_power_b = base_class::get_VertexFreqGrid().  primary_grid.power * 2;
             CostResolution<'b', this_class, frequencyGrid_type> cost_b(*this, verbose);
-            minimizer(cost_b, a_power_b, m_power_b, b_power_b, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
+            minimizer(cost_b, a_power_b, m_power_b, b_power_b, 20, verbose, superverbose, epsabs, epsrel);
             frequencies_new.  primary_grid.update_power(m_power_b);
 
         }
@@ -609,7 +603,7 @@ public:
                 double m_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale;
                 double b_Wscale_f = base_class::get_VertexFreqGrid().secondary_grid.W_scale * 2;
                 CostResolution<'f', this_class, frequencyGrid_type> cost_f(*this, verbose);
-                minimizer(cost_f, a_Wscale_f, m_Wscale_f, b_Wscale_f, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
+                minimizer(cost_f, a_Wscale_f, m_Wscale_f, b_Wscale_f, 20, verbose, superverbose, epsabs, epsrel);
                 frequencies_new.secondary_grid.update_Wscale(m_Wscale_f);
                 frequencies_new. tertiary_grid.update_Wscale(m_Wscale_f);
             }
@@ -619,7 +613,7 @@ public:
 
                 CostResolution<'f',this_class,frequencyGrid_type> cost_f(*this, verbose);
                 double ini_stepsize_f = (section_boundaries_f[0] + section_boundaries_f[1])/10.;
-                vec<double> result_f = minimizer_nD(cost_f, start_params_f, ini_stepsize_f, 100, verbose, superverbose, epsabs_hybrid, epsrel_hybrid);
+                vec<double> result_f = minimizer_nD(cost_f, start_params_f, ini_stepsize_f, 100, verbose, superverbose, epsabs, epsrel);
                 frequencies_new.secondary_grid.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
                 frequencies_new. tertiary_grid.update_pos_section_boundaries(std::array<double,2>({result_f[0], result_f[1]}));
             }
@@ -628,7 +622,7 @@ public:
                 double m_power_f = base_class::get_VertexFreqGrid().secondary_grid.power;
                 double b_power_f = base_class::get_VertexFreqGrid().secondary_grid.power * 2;
                 CostResolution<'f', this_class, frequencyGrid_type> cost_f(*this, verbose);
-                minimizer(cost_f, a_power_f, m_power_f, b_power_f, 20, verbose, superverbose, epsabs_elias, epsrel_elias);
+                minimizer(cost_f, a_power_f, m_power_f, b_power_f, 20, verbose, superverbose, epsabs, epsrel);
                 frequencies_new.secondary_grid.update_power(m_power_f);
                 frequencies_new. tertiary_grid.update_power(m_power_f);
             }

@@ -44,8 +44,8 @@ struct PAIDConfig {
               keep_small(true) {} // true
 
   // maxima or goals
-  std::ptrdiff_t max_f_evals;
-  std::ptrdiff_t max_iterations;
+  std::size_t max_f_evals;
+  std::size_t max_iterations;
   double max_error;
   //std::function<bool(double)> check_error = [](double error) -> bool { return error < max_error; };
   bool relative_error;
@@ -56,8 +56,8 @@ struct PAIDConfig {
 
   // algorithmic details
   std::size_t ntasks_per_iteration;
-  std::ptrdiff_t check_every_iteration;
-  std::ptrdiff_t check_below_iteration;
+  std::size_t check_every_iteration;
+  std::size_t check_below_iteration;
   double min_size;
   double min_error;
   bool correct_error;

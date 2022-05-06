@@ -341,7 +341,7 @@ template<typename T2>
 vec<T2> vec<T>::abs() const {
     vec<T2> temp (this->size());
 #pragma omp parallel for
-    for (int i=0; i<this->size(); ++i) {
+    for (unsigned int i=0; i<this->size(); ++i) {
         temp[i] = std::abs((*this)[i]);
     }
     return temp;
@@ -358,7 +358,7 @@ vec<T> vec<T>::conj() const {                         // if T != comp, return in
 template <typename T>
 double vec<T>::max_norm() const {
     double out = 0.;
-    for (int i=0; i<this->size(); ++i) {
+    for (size_t i=0; i<this->size(); ++i) {
         out = std::max(out, std::abs((*this)[i]));
     }
     return out;
@@ -386,7 +386,7 @@ T vec<T>::sum() const {
 template <typename T>
 vec<T> operator+= (vec<T>& lhs, const double& rhs) {
 #pragma omp parallel for
-    for (int i=0; i<lhs.size(); ++i) {
+    for (unsigned int i=0; i<lhs.size(); ++i) {
         lhs[i] += rhs;
     }
     return lhs;
@@ -403,8 +403,8 @@ vec<T> operator+ (const double& rhs, vec<T> lhs) {
 // subtraction of a double constant to comp vector
 template <typename T>
 vec<T> operator-= (vec<T>& lhs, const double& rhs) {
-#pragma omp parallel for
-    for (int i=0; i<lhs.size(); ++i) {
+//#pragma omp parallel for
+    for (size_t i=0; i<lhs.size(); ++i) {
         lhs[i] -= rhs;
     }
     return lhs;
@@ -418,7 +418,7 @@ vec<T> operator- (vec<T> lhs, const double& rhs) {
 template <typename T>
 vec<T> operator*= (vec<T>& lhs, const double& rhs) {
 #pragma omp parallel for
-    for (int i=0; i<lhs.size(); ++i) {
+    for (unsigned int i=0; i<lhs.size(); ++i) {
         lhs[i] *= rhs;
     }
     return lhs;
@@ -528,7 +528,7 @@ struct VertexInput{
 //#else
 //            iK(0),
 //#endif
-            spin(spin_in), w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), channel_bubble(channel_in), kClass_aim(k_in), iw_r(iw_in)
+            w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel_bubble(channel_in), kClass_aim(k_in), iw_r(iw_in)
     {assert(iK < 16);}
 
     template<K_class k>

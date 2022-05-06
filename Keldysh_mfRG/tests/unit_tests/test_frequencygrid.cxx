@@ -95,8 +95,8 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
 
     vec<double>  deviations(w_values.size() * funcs.size());
     vec<double> tdeviations(w_values.size() * funcs.size());
-    for (int i = 0; i < funcs.size(); i++) {
-        for (int j = 0; j < w_values.size(); j++) {
+    for (size_t i = 0; i < funcs.size(); i++) {
+        for (size_t j = 0; j < w_values.size(); j++) {
 
             double t = funcs[i](w_values[j], W_scale);
             double  deviation = w_values[j] - inver[i](t, W_scale);
@@ -119,7 +119,7 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
 
     deviations = vec<double>  (2*phi_values.size());
     tdeviations = vec<double> (2*phi_values.size());
-    for (int j = 0; j < phi_values.size(); j++) {
+    for (size_t j = 0; j < phi_values.size(); j++) {
 
         double t = angular_phi.t_from_frequency(phi_values[j]);
         double  deviation = phi_values[j] - angular_phi.frequency_from_t(t);
@@ -127,7 +127,7 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
         deviations[ j] = deviation;
         tdeviations[ j]=tdeviation;
     }
-    for (int j = 0; j < theta_values.size(); j++) {
+    for (size_t j = 0; j < theta_values.size(); j++) {
 
         double t = angular_theta.t_from_frequency(theta_values[j]);
         double  deviation = theta_values[j] - angular_theta.frequency_from_t(t);
@@ -172,7 +172,7 @@ TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") 
     SECTION("K3: ") {
         /// for K3:
         bufferFrequencyGrid<k3> gridK3(Lambda_ini);
-        size_t nFER3_p = (GRID == 2 ? (nFER3 - 1) / 2 + 1 : nFER3);
+        int nFER3_p = (GRID == 2 ? (nFER3 - 1) / 2 + 1 : nFER3);
         vec<double> errors_K3(nBOS3 * nFER3 * nFER3_p);
         vec<double> remainders_in_dw_normalized_K3(nBOS3 * nFER3 * nFER3_p);
         for (int iw = 1; iw < nBOS3; iw++) {
@@ -207,7 +207,7 @@ TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") 
         double total_dev_K3 = std::abs(errors_K3.sum());
         double total_remainders_K3 = std::abs(remainders_in_dw_normalized_K3.sum());
         REQUIRE(total_dev_K3 < 1.e-15);
-        //REQUIRE(total_remainders_K3 < 1.e-15);
+        REQUIRE(total_remainders_K3 < 1.e-15);
     }
 
 #if GRID == 2

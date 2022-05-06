@@ -651,7 +651,6 @@ void FrequencyGrid<angularGrid>::derive_auxiliary_parameters() {
 }
 
 void FrequencyGrid<angularGrid>::guess_essential_parameters(const double Lambda) {
-    const double Delta = (glb_Gamma + Lambda) * 0.5;
 
     switch (diag_class) {
         case 1:

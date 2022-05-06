@@ -40,7 +40,7 @@ public:
      * @param type_in   : Type of propagator being handled
      */
     Propagator(double Lambda_in, char type_in)
-            : Lambda(Lambda_in), type(type_in), selfenergy(SelfEnergy<Q> (Lambda_in)), diff_selfenergy(SelfEnergy<Q> (Lambda_in)) { }
+            : Lambda(Lambda_in), selfenergy(SelfEnergy<Q> (Lambda_in)), diff_selfenergy(SelfEnergy<Q> (Lambda_in)), type(type_in) { }
 
 
     /**
@@ -631,8 +631,7 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
                     const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
                     const Q SR_ = GR_ * diff_selfenergy.valsmooth(0, v, i_in) * GR_;
                     const Q SA_ = conj(SR_);
-                    const Q SK_ = SK(v, i_in)
-                                  + GR_ * dSigmaR_ * GK_
+                    const Q SK_ =   GR_ * dSigmaR_ * GK_
                                   + GR_ * dSigmaK_ * GA_
                                   + GK_ * dSigmaA_ * GA_;
                     const Q S00 = 0.5*( SA_ + SR_ + SK_);
@@ -653,7 +652,7 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
                     const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
                     const Q SR_ = GR_ * dSigmaR_ * GR_;
                     const Q SA_ = conj(SR_);
-                    const Q SK_ =  GR_ * dSigmaR_ * GK_
+                    const Q SK_ =    GR_ * dSigmaR_ * GK_
                                    + GR_ * dSigmaK_ * GA_
                                    + GK_ * dSigmaA_ * GA_;
                     const Q S00 = 0.5*( SA_ + SR_ + SK_);
