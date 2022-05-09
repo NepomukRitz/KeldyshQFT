@@ -33,7 +33,7 @@ constexpr bool VERBOSE = false;
 
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM
+//#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 
@@ -41,7 +41,7 @@ constexpr bool VERBOSE = false;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 2
 
-constexpr int N_LOOPS = 3;  // Number of loops
+constexpr int N_LOOPS = 1;  // Number of loops
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 

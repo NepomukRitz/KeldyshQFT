@@ -32,6 +32,9 @@ auto main() -> int {
 
     /// Job and Data directory
     std::string job = "U=" + std::to_string(glb_U);
+#ifndef PARTICLE_HOLE_SYMM
+    job += "_eVg=" + std::to_string(glb_Vg);
+#endif
     data_dir = utils::generate_data_directory(job);
 
     std::string filename = utils::generate_filename();
@@ -50,7 +53,7 @@ auto main() -> int {
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
     config.U = 1.;
-    n_loop_flow(data_dir+filename, config, true);
+    n_loop_flow(data_dir+filename, config, false);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
