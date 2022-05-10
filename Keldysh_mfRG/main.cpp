@@ -53,7 +53,7 @@ auto main() -> int {
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
     config.U = 1.;
-    n_loop_flow(data_dir+filename, config, false);
+    n_loop_flow(data_dir+filename, config, true);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
