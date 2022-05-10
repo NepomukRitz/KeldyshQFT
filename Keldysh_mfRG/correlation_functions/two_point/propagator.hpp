@@ -505,10 +505,11 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
     switch (type){
         case 'g' :                              //Good ol' regular propagator
             if constexpr (KELDYSH){
+                const Q GR_ = GR(v, i_in);
+                const Q GA_ = conj(GR_);
+                const Q GK_ = GK(v, i_in);
+
                 if constexpr(CONTOUR_BASIS != 1) {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
                     if constexpr(!EQUILIBRIUM) assert(false); // not implemented for non-equilibrium yet
 
                     return_type result;
@@ -518,9 +519,6 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
 
                 }
                 else {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
                     const Q G00 = 0.5*( GA_ + GR_ + GK_);
                     const Q G01 = 0.5*( GA_ - GR_ + GK_);
                     const Q G10 = 0.5*(-GA_ + GR_ + GK_);
@@ -538,12 +536,12 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 's':
             if constexpr (KELDYSH){
-                if constexpr(CONTOUR_BASIS != 1) {
-                    const Q SR_ = SR(v, i_in);
-                    const Q SA_ = conj(SR_);
-                    const Q SK_ = SK(v, i_in);
-                    if constexpr(!EQUILIBRIUM) assert(false); // not implemented for non-equilibrium yet
+                const Q SR_ = SR(v, i_in);
+                const Q SA_ = conj(SR_);
+                const Q SK_ = SK(v, i_in);
 
+                if constexpr(CONTOUR_BASIS != 1) {
+                    if constexpr(!EQUILIBRIUM) assert(false); // not implemented for non-equilibrium yet
                     return_type result;
                     result << 0., SA_,
                              SR_, SK_;
@@ -551,9 +549,6 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
 
                 }
                 else {
-                    const Q SR_ = SR(v, i_in);
-                    const Q SA_ = conj(SR_);
-                    const Q SK_ = SK(v, i_in);
                     const Q S00 = 0.5*( SA_ + SR_ + SK_);
                     const Q S01 = 0.5*( SA_ - SR_ + SK_);
                     const Q S10 = 0.5*(-SA_ + SR_ + SK_);
@@ -570,41 +565,26 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'k': // including the Katanin extension
             if constexpr (KELDYSH){
+                const Q GR_ = GR(v, i_in);
+                const Q GA_ = conj(GR_);
+                const Q GK_ = GK(v, i_in);
+                const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                const Q dSigmaA_ = conj(dSigmaR_);
+                const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
+                const Q SA_ = conj(SR_);
+                const Q SK_ = SK(v, i_in)
+                              + GR_ * dSigmaR_ * GK_
+                              + GR_ * dSigmaK_ * GA_
+                              + GK_ * dSigmaA_ * GA_;
+
                 if constexpr(CONTOUR_BASIS != 1) {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
-                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                    const Q dSigmaA_ = conj(dSigmaR_);
-                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                    const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
-                    const Q SA_ = conj(SR_);
-                    const Q SK_ = SK(v, i_in)
-                                  + GR_ * dSigmaR_ * GK_
-                                  + GR_ * dSigmaK_ * GA_
-                                  + GK_ * dSigmaA_ * GA_;
-                    const Q S00 = 0.5*( SA_ + SR_ + SK_);
-                    const Q S01 = 0.5*( SA_ - SR_ + SK_);
-                    const Q S10 = 0.5*(-SA_ + SR_ + SK_);
-                    const Q S11 = 0.5*(-SA_ - SR_ + SK_);
                     return_type result;
-                    result << S00, S01,
-                              S10, S11;
+                    result << 0., SA_,
+                             SR_, SK_;
                     return result;
                 }
                 else {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
-                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                    const Q dSigmaA_ = conj(dSigmaR_);
-                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                    const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
-                    const Q SA_ = conj(SR_);
-                    const Q SK_ = SK(v, i_in)
-                                  + GR_ * dSigmaR_ * GK_
-                                  + GR_ * dSigmaK_ * GA_
-                                  + GK_ * dSigmaA_ * GA_;
                     const Q S00 = 0.5*( SA_ + SR_ + SK_);
                     const Q S01 = 0.5*( SA_ - SR_ + SK_);
                     const Q S10 = 0.5*(-SA_ + SR_ + SK_);
@@ -622,39 +602,25 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'e': // purely the Katanin extension
             if constexpr (KELDYSH){
+                const Q GR_ = GR(v, i_in);
+                const Q GA_ = conj(GR_);
+                const Q GK_ = GK(v, i_in);
+                const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
+                const Q dSigmaA_ = conj(dSigmaR_);
+                const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                const Q SR_ = GR_ * dSigmaR_ * GR_;
+                const Q SA_ = conj(SR_);
+                const Q SK_ = GR_ * dSigmaR_ * GK_
+                            + GR_ * dSigmaK_ * GA_
+                            + GK_ * dSigmaA_ * GA_;
+
                 if constexpr(CONTOUR_BASIS != 1) {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
-                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                    const Q dSigmaA_ = conj(dSigmaR_);
-                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                    const Q SR_ = GR_ * diff_selfenergy.valsmooth(0, v, i_in) * GR_;
-                    const Q SA_ = conj(SR_);
-                    const Q SK_ =   GR_ * dSigmaR_ * GK_
-                                  + GR_ * dSigmaK_ * GA_
-                                  + GK_ * dSigmaA_ * GA_;
-                    const Q S00 = 0.5*( SA_ + SR_ + SK_);
-                    const Q S01 = 0.5*( SA_ - SR_ + SK_);
-                    const Q S10 = 0.5*(-SA_ + SR_ + SK_);
-                    const Q S11 = 0.5*(-SA_ - SR_ + SK_);
                     return_type result;
-                    result << S00, S01,
-                              S10, S11;
+                    result << 0., SA_,
+                             SR_, SK_;
                     return result;
                 }
                 else {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
-                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                    const Q dSigmaA_ = conj(dSigmaR_);
-                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                    const Q SR_ = GR_ * dSigmaR_ * GR_;
-                    const Q SA_ = conj(SR_);
-                    const Q SK_ =    GR_ * dSigmaR_ * GK_
-                                   + GR_ * dSigmaK_ * GA_
-                                   + GK_ * dSigmaA_ * GA_;
                     const Q S00 = 0.5*( SA_ + SR_ + SK_);
                     const Q S01 = 0.5*( SA_ - SR_ + SK_);
                     const Q S10 = 0.5*(-SA_ + SR_ + SK_);
