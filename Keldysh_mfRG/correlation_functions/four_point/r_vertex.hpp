@@ -35,7 +35,7 @@ public:
     using freqGrid_type_K1 = bufferFrequencyGrid<k1>;
     using freqGrid_type_K2 = bufferFrequencyGrid<k2>;
     using freqGrid_type_K3 = bufferFrequencyGrid<k3>;
-    using buffer_type_K1 = dataBuffer<Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, cubic>;
+    using buffer_type_K1 = dataBuffer<Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION>;
     using buffer_type_K2 = dataBuffer<Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
     using buffer_type_K2b= dataBuffer<Q, k2b,K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
     using buffer_type_K3 = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>;

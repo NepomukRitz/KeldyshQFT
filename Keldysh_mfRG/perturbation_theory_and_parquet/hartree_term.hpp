@@ -16,7 +16,7 @@ class Hartree_Solver {
     double Lambda; // flow parameter, needed for correct frequency grid.
     double Delta = (glb_Gamma + Lambda) / 2.; // Hybridization
 
-    SelfEnergy<comp> Sigma = SelfEnergy<comp> (Lambda);
+    SelfEnergy<comp> selfEnergy = SelfEnergy<comp> (Lambda);
     double filling = 1./2.; // filling at the particle-hole symmetric point
 
     const double v_lower =  10 * Delta; // arbitrary choice. Needs to be checked.
@@ -29,7 +29,8 @@ public:
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
-        Sigma.initialize(glb_U * filling, 0);
+        selfEnergy.initialize(glb_U * filling, 0);
+        selfEnergy.Sigma.initInterpolator();
     };
     double compute_Hartree_term(double convergence_threshold = 1e-12);
     double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12, bool Friedel_check = true,

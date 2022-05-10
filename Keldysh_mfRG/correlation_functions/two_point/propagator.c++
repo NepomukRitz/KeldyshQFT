@@ -35,19 +35,6 @@ auto Propagator<double>::SK(const double v, const int i_in) const -> double {
     return 0.;
 }
 
-template <>
-auto Propagator<double>::GA_REG2_Hubbard(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
-template <>
-auto Propagator<double>::GA_REG2_SIAM(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
 
 template <>
 auto Propagator<double>::SR_REG2(const double v, const int i_in) const -> double {
@@ -56,12 +43,6 @@ auto Propagator<double>::SR_REG2(const double v, const int i_in) const -> double
     return 0.;
 }
 
-template <>
-auto Propagator<double>::GR_REG2_SIAM(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
 
 template <>
 auto Propagator<double>::GM_REG2_Hubbard(const double v, const int i_in) const -> double {
@@ -91,12 +72,6 @@ auto Propagator<double>::GR_REG3_SIAM(const double v, const int i_in) const -> d
     return 0.;
 }
 
-template <>
-auto Propagator<double>::GA_REG3_SIAM(const double v, const int i_in) const -> double {
-    utils::print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
 
 template <>
 auto Propagator<double>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> double {

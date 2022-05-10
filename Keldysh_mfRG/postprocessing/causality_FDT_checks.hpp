@@ -770,7 +770,7 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             double max_deviation_K1 = 0, max_deviation_K2 = 0, max_deviation_K3 = 0;
             for (char r: {'a', 'p', 't'}) {
                 auto K1 = vertex_in.get_rvertex(r).K1;
-                for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
+                for (unsigned int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
                     my_defs::K1::index_type idx;
                     getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
                     int itK = (int) idx[my_defs::K1::keldysh];
@@ -790,7 +790,7 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             if (MAX_DIAG_CLASS > 1) {
                 for (char r: {'a', 'p', 't'}) {
                     auto K2 = vertex_in.get_rvertex(r).K2;
-                    for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
+                    for (unsigned int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
                         my_defs::K2::index_type idx;
                         getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
                         int itK = (int) idx[my_defs::K2::keldysh];
@@ -811,7 +811,7 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             if (MAX_DIAG_CLASS > 2) {
                 for (char r: {'a', 'p', 't'}) {
                     auto K3 = vertex_in.get_rvertex(r).K3;
-                    for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
+                    for (unsigned int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
                         my_defs::K3::index_type idx;
                         getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
                         int itK = (int) idx[my_defs::K3::keldysh];

@@ -2632,14 +2632,15 @@ template <int type = 2>
 auto SOPT_K1a(double w, double Lambda) -> comp {
 
     double Delta = REG == 2 ? (glb_Gamma + Lambda) / 2. : glb_Gamma * 0.5;
-    const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
+    const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5*glb_U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
 
-    auto advanced = [Delta,HF_corr](const double w_) -> comp {
+    auto advanced = [Delta,HF_corr,Lambda](const double w_) -> comp {
+        const comp factor = REG == 4 ? Lambda*Lambda : 1.;
         if (w_ == 0.)
-            return - glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
+            return - factor * glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
         else
-            return - glb_U*glb_U * Delta/M_PI / ((glb_i * w_)*(2*Delta + (glb_i * w_))) * log(1. + ((glb_i * w_)*(2*Delta + (glb_i * w_)))/(Delta*Delta + HF_corr*HF_corr)) * 0.5;
+            return - factor * glb_U*glb_U * Delta/M_PI / ((glb_i * w_)*(2*Delta + (glb_i * w_))) * log(1. + ((glb_i * w_)*(2*Delta + (glb_i * w_)))/(Delta*Delta + HF_corr*HF_corr)) * 0.5;
     };
 
     if (type == 2) {
@@ -2777,7 +2778,6 @@ public:
 
 };
 
-#if REG==2
 template <typename Q>
 void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 #ifndef ZERO_TEMP
@@ -2785,7 +2785,11 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 #endif
     const int it_spin = 0;
     double vmax = 100;
+#if REG==2
     double Delta = (glb_Gamma + Lambda) / 2.;
+#else
+    double Delta = (glb_Gamma) / 2.;
+#endif
     State<Q> bareState (Lambda);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
@@ -2858,7 +2862,6 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     utils::print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
 
 }
-#endif
 
 #endif // SIAM Matsubara T=0
 

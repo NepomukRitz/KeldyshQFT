@@ -140,16 +140,17 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
 
 
     double scale;
-    if (REG==2) {
+    if constexpr(REG == 2) {
         // scale the grid with Delta until Delta = T_K (Kondo temperature), then scale with T_K
         double Delta = (Lambda + glb_Gamma) / 2.;
         scale = Delta_factor * Delta;
     }
-    else if (REG==3) {
+    else if constexpr(REG == 3) {
         scale = std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2. + Lambda * (Lambda + 1));
     }
     else {
-        scale = std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2.);
+        //scale = std::max(U_factor * glb_U, Delta_factor * (glb_Gamma) / 2.);
+        scale = Delta_factor * (glb_Gamma) / 2.;
     }
 
     all_frequencies = rvec(number_of_gridpoints);

@@ -211,57 +211,7 @@ public:
 
     template<char ch_bubble>
     auto value_vectorized(const double w, const double vpp, const int i_in) const {
-        if constexpr(KELDYSH and CONTOUR_BASIS != 1)
-        {
-            //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
-            using result_type = Eigen::Matrix<Q, 4, 4>;
-            Q GR_1 = g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            Q GA_1 = conj(GR_1);
-            Q GK_1 = g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            Q GR_2 = g.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-            Q GA_2 = conj(GR_2);
-            Q GK_2 = g.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-
-            result_type result;
-
-        if (diff) {
-            Q SR_1 = s.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w),i_in);
-            Q SA_1 = conj(SR_1);
-            Q SK_1 = s.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w),i_in);
-            Q SR_2 = s.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w),i_in);
-            Q SA_2 = conj(SR_2);
-            Q SK_2 = s.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w),i_in);
-            if constexpr(ch_bubble == 'p') {
-                result << 0.,                 0.,                        0.,           SA_1*GA_2+GA_1*SA_2,
-                        0.,                   0.,                 SA_1*GR_2+GA_1*SR_2, SA_1*GK_2+GA_1*SK_2,
-                        0.,                  SR_1*GA_2+GR_1*SA_2,        0.,           SK_1*GA_2+GK_1*SA_2,
-                        SR_1*GR_2+GR_1*SR_2, SR_1*GK_2+GR_1*SK_2, SK_1*GR_2+GK_1*SR_2, SK_1*GK_2+GK_1*SK_2;
-            }
-            else { // a or t -channel
-                result << 0.,                 0.,                        0.,           SA_1*GR_2+GA_1*SR_2,
-                        0.,                  0.,                  SA_1*GA_2+GA_1*SA_2, SA_1*GK_2+GA_1*SK_2,
-                        0.,                  SR_1*GR_2+GR_1*SR_2,        0.,           SK_1*GR_2+GK_1*SR_2,
-                        SR_1*GA_2+GR_1*SA_2, SR_1*GK_2+GR_1*SK_2, SK_1*GA_2+GK_1*SA_2, SK_1*GK_2+GK_1*SK_2;
-            }
-        }
-        else {
-            if constexpr(ch_bubble=='p') {
-                result <<    0.,         0.,         0., GA_1*GA_2,
-                        0.,         0.,       GA_1*GR_2, GA_1*GK_2,
-                        0.,        GR_1*GA_2,        0., GK_1*GA_2,
-                        GR_1*GR_2, GR_1*GK_2, GK_1*GR_2, GK_1*GK_2;
-            }
-            else { // a or t -channel
-                result <<    0.,         0.,       0.,   GA_1*GR_2,
-                        0.,         0.,       GA_1*GA_2, GA_1*GK_2,
-                        0.,        GR_1*GR_2,        0., GK_1*GR_2,
-                        GR_1*GA_2, GR_1*GK_2, GK_1*GA_2, GK_1*GK_2;
-
-                }
-            }
-            return result;
-        }
-        else if constexpr(KELDYSH and CONTOUR_BASIS == 1) {
+        if constexpr(KELDYSH) {
             //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
             using result_type = Eigen::Matrix<Q, 4, 4>;
             using buffertype_propagator = Eigen::Matrix<Q, 2, 2>;

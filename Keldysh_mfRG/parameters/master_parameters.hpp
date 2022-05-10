@@ -9,7 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 
 #define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
@@ -39,7 +39,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 1
 
 inline int N_LOOPS;  // Number of loops
 #define KATANIN
@@ -63,7 +63,7 @@ constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.
 #endif
 constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 1.0;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -152,8 +152,13 @@ constexpr double epsODE_abs = 1e-8;
 #define ODEsolver 3
 
 // Limits of the fRG flow
+#if REG == 4
+constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1;// 1e-4;
+#else
 constexpr double Lambda_ini = 20.;// 1e4;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 1e-12;// 1e-4;
+#endif
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.1;             //Initial step size for ODE solvers with adaptive step size control
 

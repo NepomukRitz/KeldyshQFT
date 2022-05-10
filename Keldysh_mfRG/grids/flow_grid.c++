@@ -12,9 +12,9 @@ void flowgrid::add_points_to_Lambda_grid(std::vector<double>& grid, const std::v
 }
 
 rvec flowgrid::get_Lambda_checkpoints(const std::vector<double>& Us) {
-    size_t n = Us.size();
     rvec Lambda_CPs;
 #if REG == 2
+    size_t n = Us.size();
     for (unsigned int i = 0; i < n; i++){
         double y = glb_U / Us[i] - glb_Gamma;   //Value of Lambda for given glb_Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
 

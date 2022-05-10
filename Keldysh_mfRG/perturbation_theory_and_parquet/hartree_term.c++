@@ -12,7 +12,7 @@ double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) 
         filling = filling_new;
         SelfEnergy<comp> Sigma_new (Lambda);
         Sigma_new.initialize(glb_U * filling, 0);
-        Sigma = Sigma_new;
+        selfEnergy = Sigma_new;
     }
     utils::print_add("  ", true);
     utils::print("Determined filling of: " + std::to_string(filling), true);
@@ -33,7 +33,8 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
         filling = (filling_min + filling_max) / 2.;
         SelfEnergy<comp> Sigma_new (Lambda);
         Sigma_new.initialize(glb_U * filling, 0);
-        Sigma = Sigma_new;
+        Sigma_new.Sigma.initInterpolator();
+        selfEnergy = Sigma_new;
         LHS = integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true) - filling;
         if (LHS > 0.) {
             filling_min = filling;
@@ -75,7 +76,7 @@ double Hartree_Solver::compute_Hartree_term_Friedel(const double convergence_thr
 auto Hartree_Solver::operator()(const double nu) const -> double {
     // integrand for the filling (not the Hartree value!) given according to the formula
     // 1/pi * n_F(nu) Im G^R(nu)
-    Propagator<comp> G (Lambda, Sigma, 'g');
+    Propagator<comp> G (Lambda, selfEnergy, 'g');
     double val = - 1. / M_PI * fermi_distribution(nu);
 
     return val * G.GR(nu, 0).imag();
@@ -96,7 +97,7 @@ void Hartree_Solver::friedel_sum_rule_check() const {
 }
 
 void Hartree_Solver::write_out_propagators() const {
-    Propagator<comp> G (Lambda, Sigma, 'g');
+    Propagator<comp> G (Lambda, selfEnergy, 'g');
     rvec GR_real = {};
     rvec GR_imag = {};
     rvec GK_real = {};

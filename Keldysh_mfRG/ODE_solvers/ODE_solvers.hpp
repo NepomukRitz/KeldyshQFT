@@ -553,7 +553,7 @@ void ode_solver(Y& result, const double Lambda_f, const Y& state_ini, double Lam
             };
         };
 
-        if (just_hit_a_lambda_checkpoint) {h_try = h_try_prev - h_try;} // jump to previously suggested Lambda_next if we just hit a Lambda checkpoint
+        if (just_hit_a_lambda_checkpoint) {h_try = std::max(h_try_prev, h_try_prev - h_try);} // jump to previously suggested Lambda_next if we just hit a Lambda checkpoint
         h_try_prev = h_try; // remember h_try from this iteration in case we hit a Lambda checkpoint
         just_hit_a_lambda_checkpoint = false;
 

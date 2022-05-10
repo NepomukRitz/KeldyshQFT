@@ -496,7 +496,7 @@ void loop(SelfEnergy<state_datatype>& self, const GeneralVertex<Q,vertType>& ful
 #if SWITCH_SUM_N_INTEGRAL
     fullvertex.template symmetry_expand<'t',false>();
 #endif
-    prop.selfenergy.Sigma.initInterpolator();
+    prop.initInterpolator();
     if (all_spins) {
 #pragma omp parallel for schedule(dynamic) //default(none) shared(self, fullvertex, prop, all_spins)
         for (int iSE = 0; iSE < nSE * n_in; ++iSE) {

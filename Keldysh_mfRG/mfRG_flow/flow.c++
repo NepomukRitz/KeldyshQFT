@@ -67,12 +67,23 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     /// old Runge-Kutta solver:
     //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
     // compute the flow using an ODE solver
-    ode_solver<State<state_datatype>, flowgrid::exp_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
-                                                                config, true);
+#if REG == 4
+    using param = flowgrid::linear_parametrization;
+#else
+    using param = flowgrid::exp_parametrization;
+#endif
+    ode_solver<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
 
     //using namespace boost::numeric::odeint;
-    //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
-    //                                                           config, true);
+    //ode_solver_boost<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+
+    /// use parquet solver to compute result at Lambda_fin (for comparison with frg result)
+    State<state_datatype> state_parquet_compare (Lambda_fin);
+    state_parquet_compare.initialize();
+    //sopt_state(state_parquet_compare, Lambda_fin);
+    //const std::string parquet_filename_forcomparison = data_dir + "parquet_for_comparison_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+    //parquet_solver(parquet_filename_forcomparison, state_parquet_compare, Lambda_fin, 1e-6, 10);
+
 
     return state_fin;
 }
@@ -113,10 +124,16 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         config.lambda_checkpoints = Lambda_checkpoints;
         config.filename = inputFileName;
         using namespace boost::numeric::odeint;
-        ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+
+#if REG == 4
+        using param = flowgrid::linear_parametrization;
+#else
+        using param = flowgrid::exp_parametrization;
+#endif
+        //ode_solver_boost<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
         //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
         // compute the flow using an ODE solver
-        ode_solver<State<state_datatype>, flowgrid::exp_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+        ode_solver<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
 
         //using namespace boost::numeric::odeint;
         //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);

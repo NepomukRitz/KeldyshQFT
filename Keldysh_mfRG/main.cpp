@@ -57,8 +57,9 @@ auto main(int argc, char * argv[]) -> int {
     std::string filename = utils::generate_filename(config);
 
     n_loop_flow(data_dir+filename, config, true);
-    //test_symmetries(1.8, config);
+    //test_symmetries(0.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
+    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 0.5, false);
 
     /*
     // SIAM PT4 specific:
@@ -76,7 +77,7 @@ auto main(int argc, char * argv[]) -> int {
     //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
 
 
-    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
+    test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
     */
     utils::hello_world();
 

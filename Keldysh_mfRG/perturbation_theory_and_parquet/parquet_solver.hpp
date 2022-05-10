@@ -136,8 +136,8 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     utils::print("Check causality of Sigma_SDE: \n");
     check_SE_causality(Sigma_SDE);
 
-    utils::print(" ---> difference between K1a-left and -right: ", (bubble_a_l - bubble_a_r).avertex().K1.get_vec().max_norm(), "\n");
-    utils::print(" ---> difference between K1p-left and -right: ", (bubble_p_l - bubble_p_r).pvertex().K1.get_vec().max_norm(), "\n");
+    //utils::print(" ---> difference between K1a-left and -right: ", (bubble_a_l - bubble_a_r).avertex().K1.get_vec().max_norm(), "\n");
+    //utils::print(" ---> difference between K1p-left and -right: ", (bubble_p_l - bubble_p_r).pvertex().K1.get_vec().max_norm(), "\n");
 
     if (write_state) {
         std::string filename = data_dir + "SDE_iteration" + std::to_string(SDE_counter);
