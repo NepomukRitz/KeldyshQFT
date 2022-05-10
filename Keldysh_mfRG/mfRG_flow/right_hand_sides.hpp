@@ -45,7 +45,7 @@ template <typename Q>
 auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t> opt, const fRG_config& config) -> State<Q>{  //, const bool save_intermediate=false
 
     Psi.vertex.check_symmetries("Psi");
-    static_assert(N_LOOPS>=1, "");
+    assert(N_LOOPS>=1);
     std::string dir_str = data_dir + "intermediateResults/";
     int iteration=-1;
     int rkStep=-1;
@@ -167,23 +167,23 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
             int i = 2;
             State<Q> dPsi_L(dGammaL_half1, dPsi.selfenergy, Lambda);
             State<Q> dPsi_R(dGammaR_half1, dPsi.selfenergy, Lambda);
-            State<Q> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
+            //State<Q> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
             if (iteration == 0) {
                 write_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
                              Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_L);
                 write_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
                              Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_R);
-                write_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
-                             Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_T);
+                //write_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
+                //             Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_T);
                 if constexpr(DEBUG_SYMMETRIES) {
                     // dPsi_L.vertex.check_symmetries("dPsi_L"); // we don't expect these to have the full symmetry of the vertex
                     // dPsi_R.vertex.check_symmetries("dPsi_R"); // we don't expect these to have the full symmetry of the vertex
-                    dPsi_T.vertex.check_symmetries("dPsi_T");
+                    //dPsi_T.vertex.check_symmetries("dPsi_T");
                 }
             } else {
                 add_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_L, false);
                 add_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_R, false);
-                add_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_T, false);
+                //  add_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_T, false);
 
             }
         }
@@ -238,12 +238,12 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                 /// save intermediate states:
                 if (save_intermediate) {
                     State<Q> dPsi_C (dGammaC, dPsi.selfenergy, Lambda);
-                    State<Q> dPsi_C_left (dGammaC_l, dPsi.selfenergy, Lambda);
-                    State<Q> dPsi_C_right(dGammaC_r, dPsi.selfenergy, Lambda);
+                    //State<Q> dPsi_C_left (dGammaC_l, dPsi.selfenergy, Lambda);
+                    //State<Q> dPsi_C_right(dGammaC_r, dPsi.selfenergy, Lambda);
                     if (iteration == 0) {
                         write_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C);
-                        write_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_left);
-                        write_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_right);
+                        //write_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_left);
+                        //write_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_right);
                         if constexpr(DEBUG_SYMMETRIES) {
                             //dPsi_C_left.vertex.check_symmetries("dPsi_C_left");   // we don't expect these to have the full symmetry of the vertex
                             //dPsi_C_right.vertex.check_symmetries("dPsi_C_right"); // we don't expect these to have the full symmetry of the vertex
@@ -252,8 +252,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
                     }
                     else {
                         add_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       iteration, dPsi_C,       false);
-                        add_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  iteration, dPsi_C_left,  false);
-                        add_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_C_right, false);
+                        //add_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  iteration, dPsi_C_left,  false);
+                        //add_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_C_right, false);
 
                     }
                     if (VERBOSE) {
@@ -294,7 +294,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
 
 
                 /// save intermediate states:
-                if (save_intermediate) {
+                if (save_intermediate and false) {
                     State<Q> dPsi_L(dGammaL_half1, dPsi.selfenergy, Lambda);
                     State<Q> dPsi_R(dGammaR_half1, dPsi.selfenergy, Lambda);
                     State<Q> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
@@ -336,14 +336,12 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
             if (save_intermediate) {
                 State<Q> dPsi_C_tbar(Vertex<Q>(dGammaC_tbar.half1()), dPsi.selfenergy, Lambda);
                 if (iteration == 0) {
-                    write_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_tbar);
-
-
+                    //write_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_tbar);
                     write_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi_SEcorrection);
 
                 }
                 else {
-                    add_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), iteration, dPsi_C_tbar, false);
+                    //add_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), iteration, dPsi_C_tbar, false);
                     add_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), iteration, Psi_SEcorrection, false);
 #if DEBUG_SYMMETRIES
                     add_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), iteration, Psi_SEcorrection);

@@ -26,12 +26,13 @@ auto main() -> int {
     }
 #endif
 
+    N_LOOPS = 3;
 
     utils::print_job_info();
     utils::check_input();
 
     /// Job and Data directory
-    std::string job = "U=" + std::to_string(glb_U);
+    std::string job = "Loop=" + std::to_string(N_LOOPS);
     data_dir = utils::generate_data_directory(job);
 
     std::string filename = utils::generate_filename();
@@ -46,7 +47,7 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     fRG_config config;
-    config.nODE_ = 50;
+    config.nODE_ = 20;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
     config.U = 1.;

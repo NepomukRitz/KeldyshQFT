@@ -41,7 +41,7 @@ constexpr bool VERBOSE = false;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 2
 
-constexpr int N_LOOPS = 1;  // Number of loops
+inline int N_LOOPS;  // Number of loops
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
@@ -165,15 +165,7 @@ const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25,
 const std::vector<double> U_NRG {};
 #endif
 
-#if REG==2
-constexpr int param_size = 9;
-constexpr double parameter_list[param_size] = {REG, glb_Gamma, MAX_DIAG_CLASS, N_LOOPS,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V};
-#else
-constexpr int param_size = 8;
-constexpr double parameter_list[param_size] = {REG, MAX_DIAG_CLASS, N_LOOPS,
-                                           glb_T, glb_mu, glb_U, glb_epsilon, glb_V};
-#endif
+
 
 
 

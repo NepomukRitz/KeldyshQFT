@@ -361,7 +361,7 @@ public:
 #ifdef DENSEGRID
         assert(false); // Use "linear" interpolation for dense grid
 #endif
-        constexpr my_index_t vecsize = get_vecsize<result_type>();
+        //constexpr my_index_t vecsize = get_vecsize<result_type>();
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (base_class::frequencies.is_in_box(frequencies))
