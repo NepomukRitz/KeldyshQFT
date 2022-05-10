@@ -262,7 +262,7 @@ void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::initInterpolator() con
     auto Spline<Q,rank,1,pos_first_freq_index,DataContainer>::get_weights (int idx, double t) const -> weights_type{
 
         double t_low = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx);
-        double t_high= DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx+1);
+        //double t_high= DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx+1);
         double h = (t - t_low);
         //assert(h>-1e-10);
         //assert(t<t_high+1e-6);
@@ -282,7 +282,6 @@ result_type Spline<Q,rank,1,pos_first_freq_index,DataContainer>::interpolate_spl
     index_tmp[pos_first_freq_index] = idx;
     int i_row = getFlatIndex<rank>(index_tmp, DataContainer::get_dims());
 
-    double h = t - DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx);
     weights_type weights = get_weights(idx, t);
 
     if constexpr(std::is_same_v<result_type,Q>) {

@@ -53,7 +53,7 @@ const bool dense = true;
 const bool dense = false;
 #endif
 
-#define HYBRID_GRID_OPTION 1
+#define HYBRID_GRID_OPTION 0
 
 
 namespace hdf5_impl {
@@ -574,9 +574,9 @@ public:
             idx[0] = iw;
             idx[1] = iv;
             double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
-            double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            //double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
             double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
-            double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
+            //double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
             dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
         }
@@ -597,11 +597,11 @@ public:
             idx[1] = iv;
             idx[2] = ivp;
             const double tw_low =   primary_grid.get_auxiliary_gridpoint(iw);
-            const double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
+            //const double tw_high=   primary_grid.get_auxiliary_gridpoint(iw+1);
             const double tv_low = secondary_grid.get_auxiliary_gridpoint(iv);
-            const double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
+            //const double tv_high= secondary_grid.get_auxiliary_gridpoint(iv+1);
             const double tvp_low = tertiary_grid.get_auxiliary_gridpoint(ivp);
-            const double tvp_high= tertiary_grid.get_auxiliary_gridpoint(ivp+1);
+            //const double tvp_high= tertiary_grid.get_auxiliary_gridpoint(ivp+1);
             dt_unnormalized[0] = (tw - tw_low); // / (tw_high - tw_low);
             dt_unnormalized[1] = (tv - tv_low); // / (tv_high - tv_low);
             dt_unnormalized[2] = (tvp-tvp_low); // / (tvp_high-tvp_low);

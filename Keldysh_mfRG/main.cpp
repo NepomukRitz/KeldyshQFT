@@ -26,12 +26,14 @@ auto main() -> int {
     }
 #endif
 
+    N_LOOPS = 3;
 
     utils::print_job_info();
     utils::check_input();
 
     /// Job and Data directory
-    std::string job = "U=" + std::to_string(glb_U);
+    std::string job = "Loop=" + std::to_string(N_LOOPS);
+    job += "U=" + std::to_string(glb_U);
 #ifndef PARTICLE_HOLE_SYMM
     job += "_eVg=" + std::to_string(glb_Vg);
 #endif

@@ -821,9 +821,9 @@ const std::vector<std::vector<int>> ComponentsK2t {{0, 1, 0, 1}, {0, 1, 2, 3}, {
 const std::vector<std::vector<int>> ComponentsK3a {{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 1, 2, 3, 4, 5, 6, 7}};
 const std::vector<std::vector<int>> ComponentsK3p {{0, 0, 0, 0, 4, 4, 4, 4}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 1, 0, 4, 5, 5, 4}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 0, 1, 4, 5, 4, 5}, {0, 1, 2, 3, 4, 5, 6, 7}};
 const std::vector<std::vector<int>> ComponentsK3t {{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 4, 5, 6, 7}};
-const std::vector<std::vector<int>> TransformaK1a {{0, 34}, {0, 3}};
-const std::vector<std::vector<int>> TransformaK1p {{0, 0}, {0, 0}};
-const std::vector<std::vector<int>> TransformaK1t {{0, 4}, {0, 3}};
+const std::vector<std::vector<int>> TransformaK1a {{0, 34}, {0, 3}, {0, 0}};
+const std::vector<std::vector<int>> TransformaK1p {{0, 0}, {0, 0}, {0, 0}};
+const std::vector<std::vector<int>> TransformaK1t {{0, 4}, {0, 3}, {0, 0}};
 const std::vector<std::vector<int>> TransformaK2a {{0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}};
 const std::vector<std::vector<int>> TransformaK2p {{0, 3, 0, 3}, {0, 3, 0, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 3, 0, 3}};
 const std::vector<std::vector<int>> TransformaK2t {{0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}};
