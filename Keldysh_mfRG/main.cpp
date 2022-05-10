@@ -18,7 +18,10 @@
 #endif
 
 
-auto main() -> int {
+auto main(int argc, char * argv[]) -> int {
+
+    std::cout << "number of args: " << argc-1 << ", expected: 1" << std::endl;
+    const int n_loops = atoi(argv[1]);
 
 #ifdef USE_MPI
     if (MPI_FLAG) {
@@ -26,16 +29,11 @@ auto main() -> int {
     }
 #endif
 
-    N_LOOPS = 3;
 
     utils::print_job_info();
     utils::check_input();
 
-    /// Job and Data directory
-    std::string job = "Loop=" + std::to_string(N_LOOPS);
-    data_dir = utils::generate_data_directory(job);
 
-    std::string filename = utils::generate_filename();
 
     //
     //test_PT4(0.5, true);
@@ -47,10 +45,17 @@ auto main() -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     fRG_config config;
-    config.nODE_ = 20;
+    config.nODE_ = 30;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
+    config.nloops = n_loops;
     config.U = 1.;
+
+    /// Job and Data directory
+    std::string job = "_K" + std::to_string(MAX_DIAG_CLASS) + "_T=" + std::to_string(glb_T);
+    data_dir = utils::generate_data_directory(job);
+    std::string filename = utils::generate_filename(config);
+
     n_loop_flow(data_dir+filename, config, true);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);

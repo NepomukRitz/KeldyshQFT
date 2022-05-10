@@ -18,7 +18,7 @@ template <typename Q>
 class SelfEnergy{
 public:
     using freqGrid_type = bufferFrequencyGrid<selfenergy>;
-    using buffer_type = dataBuffer<Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION>;
+    using buffer_type = dataBuffer<Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, cubic>;
     using frequencies_type = std::array<double,1>;
     using index_type = std::array<my_index_t, SE_config.rank>;
  // multidimensional::multiarray<Q,3>;

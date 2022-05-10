@@ -495,6 +495,8 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             assert(false);
             return 0.;
     }
+    assert(false);
+    return 0.;
 }
 
 
@@ -641,6 +643,8 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
             assert(false);
             //return return_type::Zero();
     }
+    assert(false);
+    return myzero<return_type>();
 }
 
 

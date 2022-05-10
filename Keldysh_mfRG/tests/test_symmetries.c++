@@ -124,7 +124,9 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
 
     state_ini.analyze_tails();
     check_SE_causality(state_ini); // check if the self-energy is causal at each step of the flow
-    rhs_n_loop_flow(state_ini, Lambda, {0,0}, frgConfig);
+    State<state_datatype> dPsi_dLambda(Lambda);
+    rhs_n_loop_flow_t<state_datatype> rhs(frgConfig);
+    rhs(state_ini, dPsi_dLambda, Lambda);
 
 }
 

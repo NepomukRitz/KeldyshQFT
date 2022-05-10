@@ -50,12 +50,12 @@ inline int SDE_counter = 0;
  */
 template <typename Q>
 void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
-    bool write_state = false;
     Vertex<Q> Gamma_BSE_L (Lambda);
     Vertex<Q> Gamma_BSE_R (Lambda);
     compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda);
 
 #ifndef NDEBUG
+    bool write_state = false;
     if (write_state) {
         State<Q> state_L(Gamma_BSE_L, state_in.selfenergy, Lambda);
         State<Q> state_R(Gamma_BSE_R, state_in.selfenergy, Lambda);

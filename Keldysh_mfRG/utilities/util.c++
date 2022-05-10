@@ -149,9 +149,9 @@ namespace utils {
         return data_directory;
     }
 
-    std::string generate_filename() {
+    std::string generate_filename(const fRG_config& config) {
         std::string klass = "K" + std::to_string(MAX_DIAG_CLASS) + "_";
-        std::string loops = std::to_string(N_LOOPS) + "LF_";
+        std::string loops = std::to_string(config.nloops) + "LF_";
         std::string n1 = "n1=" + std::to_string(nBOS) + "_";
         std::string n2 = "n2=" + std::to_string(nBOS2) + "_";
         std::string n3 = "n3=" + std::to_string(nBOS3) + "_";
@@ -159,7 +159,7 @@ namespace utils {
         std::string voltage = "V=" + std::to_string(glb_V) + "_";
         std::string temp = "T=" + std::to_string(glb_T) + "_";
         std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
-        std::string ode = "nODE=" + std::to_string(nODE);
+        std::string ode = "nODE=" + std::to_string(config.nODE_);
         std::string extension = ".h5";
 
         std::string filename = klass + loops + n1;
@@ -191,6 +191,7 @@ namespace utils {
         if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
         print("U for this run is: ", glb_U, true);
+        print("T for this run is: ", glb_T, true);
         print("Lambda flows from ", Lambda_ini);
         print_add(" to ", Lambda_fin, true);
         print("nODE for this run: ", nODE, true);

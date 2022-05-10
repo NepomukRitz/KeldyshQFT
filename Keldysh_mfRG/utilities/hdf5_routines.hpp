@@ -236,8 +236,11 @@ namespace hdf5_impl {
 
         // get the size of the dataset
         hsize_t dims_file[depth];
-        hsize_t rank = file_space.getSimpleExtentDims(dims_file, NULL);
-        //std::cout<<"rank: "<<rank<<std::endl; // this is the correct number of values
+
+#ifndef NDEBUG
+        hsize_t rank =
+#endif
+        file_space.getSimpleExtentDims(dims_file, NULL);
         assert(rank == depth);  // Important assertion! Makes sure that the desired multiarray depth matches the data in the file
 
 
@@ -280,7 +283,11 @@ namespace hdf5_impl {
 
         // get the size of the file_space (including all Lambda layers)
         hsize_t dims_file[depth+1];       // size of the full dataspace (including all lambda layers)
-        hsize_t rank = file_space.getSimpleExtentDims(dims_file, NULL);
+#ifndef NDEBUG
+        hsize_t rank =
+#endif
+        file_space.getSimpleExtentDims(dims_file, NULL);
+        assert(rank == depth+1);  // Important assertion! Makes sure that the desired multiarray depth matches the data in the file
         assert(Lambda_it < dims_file[0]); // if this fails, Lambda_it exceeded the available Lambda layers
 
         // create arrays with information on dimensions
@@ -307,7 +314,6 @@ namespace hdf5_impl {
             dims_mem_flat *= dims_file[i+1];
         }
 
-        assert(rank == depth+1);  // Important assertion! Makes sure that the desired multiarray depth matches the data in the file
 
         // select hyperslab to read from
         file_space.selectHyperslab(H5S_SELECT_SET, count, start, stride, block);
