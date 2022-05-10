@@ -493,7 +493,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
         default:
             utils::print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
-            return 0.;
+            exit(1); // Failure
     }
 }
 
@@ -639,6 +639,7 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         default:
             utils::print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
+            exit(1); // Failure
             //return return_type::Zero();
     }
 }
