@@ -66,7 +66,7 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
 }
 
 template<typename Q>
-SelfEnergy<Q> compute_SDE_impl(const char channel, const double Lambda, const Vertex<Q>& Gamma, const Propagator<Q> & G_bubble, const Propagator<Q> & dG_bubble, const bool diff_bubble, const Propagator<Q> & G_loop, const bool diff_loop) {
+SelfEnergy<Q> compute_SDE_impl(const char channel, const double Lambda, const Vertex<Q>& Gamma, const Propagator<Q> & G_bubble, const Propagator<Q> & dG_bubble, const bool diff_bubble, const Propagator<Q> & G_loop, const bool is_differentiated_SE) {
     assert(channel == 'a' or channel == 'p');
 
     Vertex<Q> Gamma_0 (Lambda);                  // bare vertex
@@ -91,12 +91,12 @@ SelfEnergy<Q> compute_SDE_impl(const char channel, const double Lambda, const Ve
 
     // compute the self-energy via SDE using the bubble
     SelfEnergy<Q> Sigma_SDE(G_bubble.selfenergy.Sigma.frequencies);
-    Sigma_SDE.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
-    loop(Sigma_SDE, bubble, G_loop, diff_loop);
+    Sigma_SDE.initialize(is_differentiated_SE ? 0. : glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    loop(Sigma_SDE, bubble, G_loop, false);
 
-    utils::print("Check causality of Sigma_SDE_", channel, ": \n");
-    check_SE_causality(Sigma_SDE);
-    compare_with_FDTs(bubble, Lambda, 0, "SDE_bubble_" + std::to_string(channel));
+    //utils::print("Check causality of Sigma_SDE_", channel, ": \n");
+    //check_SE_causality(Sigma_SDE);
+    //compare_with_FDTs(bubble, Lambda, 0, "SDE_bubble_" + std::to_string(channel));
 
     return Sigma_SDE;
 }
@@ -202,6 +202,35 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
 
 }
 
+template<typename Q>
+SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const Vertex<Q>& Gamma, const Propagator<Q> & G_loop, const bool is_differentiated_SE) {
+    assert(channel == 'a' or channel == 'p');
+
+    GeneralVertex<Q,symmetric_r_irred> Gamma_temp_onlyK2(Gamma.half1());
+    for (char r: {'a', 'p', 't'}) {
+        if (r != channel) Gamma_temp_onlyK2.get_rvertex(r).K1 *= 0.;
+        if (MAX_DIAG_CLASS > 1) {
+            if (r != channel) {
+                Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0;
+            }
+            else {
+                Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5; // ensures that both K2 and K2' are considered with a weight of 0.5
+                // (in the SDE there is either K2 or K2', we average over these two possibilities)
+            }
+        }
+        if (MAX_DIAG_CLASS > 2) Gamma_temp_onlyK2.get_rvertex(r).K3 *= 0.;
+    }
+    Gamma_temp_onlyK2.irred().initialize(0.);
+
+    // compute the self-energy via SDE using the Gamma_temp_onlyK2
+    SelfEnergy<Q> Sigma_SDE(G_loop.selfenergy.Sigma.frequencies);
+    Sigma_SDE.initialize( is_differentiated_SE ? 0. : glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    loop(Sigma_SDE, Gamma_temp_onlyK2, G_loop, false);
+
+
+    return Sigma_SDE;
+}
+
 /**
  * Wrapper for the above function, with only the total (symmetrized) result Sigma_SDE returned.
  * @param Sigma_SDE : Self-energy computed as the lhs of the BSE
@@ -219,11 +248,36 @@ void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
     Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
-    SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl('a', Lambda, state_in.vertex, G, G, false, G, false);
-    SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl('p', Lambda, state_in.vertex, G, G, false, G, false);
+    SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl_v3('a', Lambda, state_in.vertex, G, false);
+    SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl_v3('p', Lambda, state_in.vertex, G, false);
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
 
+    //compute_SDE_v2(Sigma_SDE, state_in, Lambda);
+
 }
+
+
+template <typename Q>
+SelfEnergy<Q> compute_diff_SDE(const State<Q>& state_in, const Vertex<Q>& dGamma, const SelfEnergy<Q>& dSigma) {
+    const double Lambda = state_in.Lambda;
+    Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
+    Propagator<Q>dG(Lambda, state_in.selfenergy, dSigma, 'k');
+
+    SelfEnergy<Q> Sigma_SDE_a_1 = compute_SDE_impl_v3('a', Lambda, state_in.vertex,dG, true);
+    SelfEnergy<Q> Sigma_SDE_p_1 = compute_SDE_impl_v3('p', Lambda, state_in.vertex,dG, true);
+
+    SelfEnergy<Q> Sigma_SDE_a_2 = compute_SDE_impl_v3('a', Lambda,          dGamma, G, true);
+    SelfEnergy<Q> Sigma_SDE_p_2 = compute_SDE_impl_v3('p', Lambda,          dGamma, G, true);
+
+    SelfEnergy<Q> dSigma_SDE = (Sigma_SDE_a_1 + Sigma_SDE_p_1
+                              + Sigma_SDE_a_2 + Sigma_SDE_p_2
+                              ) * 0.5;
+
+    dSigma_SDE.check_symmetries();
+    return dSigma_SDE;
+
+}
+
 
 
 

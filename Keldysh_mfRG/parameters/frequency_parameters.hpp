@@ -25,8 +25,8 @@ constexpr int nFER = 401;
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 201;//nBOS;
 constexpr int nFER2 = 201;//nFER;
-constexpr int nBOS3 = 51; //nBOS;
-constexpr int nFER3 = 51; //nFER;
+constexpr int nBOS3 = 41; //nBOS;
+constexpr int nFER3 = 41; //nFER;
 //#else
 const int COUNT = 4;
 //constexpr int nBOS = COUNT * 64 * 2 + 1;

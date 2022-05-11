@@ -43,14 +43,18 @@ void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_
 }
 
 template <typename Q, class Bubble_Object>
-void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& SOPTState, const Bubble_Object& Pi, double Lambda){
+    Propagator<Q> barePropagator(Lambda, SOPTState.selfenergy, 'g');    //Bare propagator
 
     //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, Pi, 'a');
+    Vertex<Q> bubble_a(Lambda);
+    bubble_a.set_frequency_grid(SOPTState.vertex);
+    bubble_a.avertex() = SOPTState.vertex.avertex();
+
 
     //Calculate the Self-Energy
-    loop(PsiSelfEnergy, bareState.vertex, barePropagator, false);
+    loop(PsiSelfEnergy, bubble_a, barePropagator, false);
+
 }
 
 void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
@@ -255,7 +259,7 @@ public:
         if (order_in > 2) assert(MAX_DIAG_CLASS >= 2);
         if (order_in > 3) assert(MAX_DIAG_CLASS == 3);
         assert(KELDYSH);
-#ifndef DEBUG_SYMMETRIES
+#if not DEBUG_SYMMETRIES
         utils::print("Cannot use spin symmetries for these calculations.");
         assert(false);
 #endif

@@ -126,6 +126,7 @@ public:
 
 
     void check_resolution() const;
+    void check_symmetries() const;
 };
 
 
@@ -392,6 +393,26 @@ template <typename Q> void SelfEnergy<Q>:: check_resolution() const
     double curvmax_SE = get_curvature_maxSE(true);
 
     /// TODO: dump state in file if certain thresholds are exceeded
+}
+
+
+
+template <typename Q> void SelfEnergy<Q>:: check_symmetries() const
+{
+    if (PARTICLE_HOLE_SYMMETRY) {
+        vec<Q> dev(nFER);
+        for (int i = 0; i < nFER; i++) {
+            for (int j = 0; j < n_in; j++) {
+                double v;
+                Sigma.frequencies.get_freqs_w(v, i);
+                dev[i] = valsmooth(0, v, j) + myconj(valsmooth(0,-v, j));
+            }
+        }
+
+        utils::print("Maximal deviation from PHS: ", dev.max_norm(), "\n");
+
+    }
+
 }
 
 #endif //KELDYSH_MFRG_SELFENERGY_HPP

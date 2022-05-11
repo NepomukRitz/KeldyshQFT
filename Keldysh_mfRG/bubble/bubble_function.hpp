@@ -102,8 +102,8 @@ class BubbleFunctionCalculator{
                              const Bubble_Object& Pi_in)
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
                              Pi(Pi_in){
-#ifndef DEBUG_SYMMETRIES
-        check_presence_of_symmetry_related_contributions();
+#if not  DEBUG_SYMMETRIES
+        //check_presence_of_symmetry_related_contributions();
 #endif
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
@@ -248,7 +248,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         //utils::print("K2", channel, " done, ");
         //utils::get_time(t_start);
 
-#ifdef DEBUG_SYMMETRIES
+#if DEBUG_SYMMETRIES
         t_start = utils::get_time();
         calculate_bubble_function<k2b>();
         tK2 = utils::get_time() - t_start;

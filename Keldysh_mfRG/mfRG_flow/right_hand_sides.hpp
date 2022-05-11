@@ -15,6 +15,7 @@
 #include "../utilities/hdf5_routines.hpp"
 #include "../utilities/util.hpp"
 #include "../bubble/precalculated_bubble.hpp"
+#include "../perturbation_theory_and_parquet/parquet_solver.hpp"
 
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda) -> State<Q>;
@@ -192,7 +193,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
         if (nloops_max >= 3) {
 
-#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+#if SELF_ENERGY_FLOW_CORRECTIONS != 0
             // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
             GeneralVertex<Q, symmetric_r_irred> dGammaC_tbar(Lambda);
             dGammaC_tbar.set_frequency_grid(Psi.vertex);
@@ -283,7 +284,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                     // acc. to symmetry relations (enforce_symmetry() assumes full symmetry)
                     dGammaL_half1.half1().reorder_due2antisymmetry(dGammaR_half1.half1());
                 }
-#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+#if SELF_ENERGY_FLOW_CORRECTIONS != 0
                 // extract central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
                 //Vertex<Q> dGammaC_ap(Lambda);                   // initialize new vertex
                 //dGammaC_ap.set_frequency_grid(Psi.vertex);
@@ -328,13 +329,14 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
             }
 
-#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+#if SELF_ENERGY_FLOW_CORRECTIONS == 1
             // compute multiloop corrections to self-energy flow
             State<Q> Psi_SEcorrection(dPsi, Lambda);
             selfEnergyFlowCorrections(Psi_SEcorrection.selfenergy, dGammaC_tbar, Psi, G); // isolated SE correction
+
             dPsi.selfenergy += Psi_SEcorrection.selfenergy;
 
-/// save intermediate states:
+            /// save intermediate states:
             if (save_intermediate) {
                 State<Q> dPsi_C_tbar(Vertex<Q>(dGammaC_tbar.half1()), dPsi.selfenergy, Lambda);
                 if (iteration == 0) {
@@ -345,9 +347,46 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 else {
                     //add_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), iteration, dPsi_C_tbar, false);
                     add_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), iteration, Psi_SEcorrection, false);
-#if DEBUG_SYMMETRIES
-                    add_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), iteration, Psi_SEcorrection);
-#endif
+
+                }
+            }
+            //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
+            //if(selfEnergyConverged(Psi.selfenergy, Lambda))
+            //    break;
+#elif SELF_ENERGY_FLOW_CORRECTIONS == 2
+            /// compute new estimate for dSigma via Schwinger-Dyson equation
+            utils::print("  ---  Computing dSigma from the SDE  --- \n");
+            State<Q> Psi_SDE_diff_documentation = dPsi;
+            double tol = 1.e-3;
+            double diff = 1;
+            int iteration_SDE = 0;
+            do {
+                SelfEnergy<Q> dSigma_SDE = compute_diff_SDE<Q>(Psi, dPsi.vertex, dPsi.selfenergy)   ;
+
+                SelfEnergy<Q> selfenergy_diff = dPsi.selfenergy - dSigma_SDE;
+
+                dPsi.selfenergy = dSigma_SDE;
+                const double norm_compare =  dPsi.selfenergy.norm(0);
+                diff = selfenergy_diff.norm(0) / (norm_compare < 1e-10 ? 1 : norm_compare);
+
+                utils::print("SDE iteration ", iteration_SDE ," \t relative change : ", diff, "\n");
+                iteration_SDE++;
+            }
+            while (diff > tol and iteration_SDE < 4);
+            Psi_SDE_diff_documentation.selfenergy -= dPsi.selfenergy;
+
+            /// save intermediate states:
+            if (save_intermediate) {
+                State<Q> dPsi_C_tbar(Vertex<Q>(dGammaC_tbar.half1()), dPsi.selfenergy, Lambda);
+                if (iteration == 0) {
+                    //write_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_tbar);
+                    write_state_to_hdf<Q>(dir_str+"SE_SDE_diff_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi_SDE_diff_documentation);
+
+                }
+                else {
+                    //add_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), iteration, dPsi_C_tbar, false);
+                    add_state_to_hdf<Q>(dir_str+"SE_SDE_diff_RKstep"+std::to_string(rkStep), iteration, Psi_SDE_diff_documentation, false);
+
 
                 }
             }

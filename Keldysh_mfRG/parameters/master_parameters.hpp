@@ -9,7 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
+#define NDEBUG
 
 
 #define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
@@ -39,11 +39,11 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 1
+#define MAX_DIAG_CLASS 2
 
 inline int N_LOOPS;  // Number of loops
 #define KATANIN
-#define SELF_ENERGY_FLOW_CORRECTIONS
+#define SELF_ENERGY_FLOW_CORRECTIONS 2
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
@@ -133,7 +133,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 // 4: interaction cutoff
-#define REG 2
+#define REG 4
 
 
 
@@ -141,7 +141,7 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 30;
+constexpr int nODE = 20;
 constexpr double epsODE_rel = 1e-4;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:

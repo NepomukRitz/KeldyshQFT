@@ -25,38 +25,28 @@
  * @param state : State initialized with initial conditions
  */
 template <typename Q>
-void testSelfEnergy_and_K1(State<Q>& state, double Lambda){
-
-    Propagator<Q> g(Lambda, state.selfenergy, 'g');
+void testSelfEnergy_and_K1(double Lambda){
+    SelfEnergy<Q> SE_via_a(Lambda);
+    SelfEnergy<Q> SE_via_p(Lambda);
+    Propagator<Q> g(Lambda, SE_via_a, 'g');
 
     //Calculate the vertex
-    sopt_state(state, Lambda);
+    State<Q> SOPT_state(Lambda);
+    SOPT_state(SOPT_state, Lambda);
 
-    Vertex<Q> temp_vertex_a (1, Lambda), temp_vertex_p (1, Lambda); //All zeros
-    temp_vertex_a.avertex() = state.vertex.avertex();
-    temp_vertex_p.pvertex() = state.vertex.pvertex();
+    Vertex<Q> temp_vertex_a (Lambda), temp_vertex_p (Lambda); //All zeros
+    temp_vertex_a.avertex() = SOPT_state.vertex.avertex();
+    temp_vertex_p.pvertex() = SOPT_state.vertex.pvertex();
 
-    loop(state.selfenergy, temp_vertex_a, g, false);//Calculate the SelfEnergy in SOPT
+    loop(SE_via_a, temp_vertex_a, g, false);//Calculate the SelfEnergy in SOPT
+    loop(SE_via_p, temp_vertex_p, g, false);//Calculate the SelfEnergy in SOPT
 
-    //Print results in .h5 format
-    cvec SER(nFER);
-    cvec SEK(nFER);
+    SelfEnergy<Q> SE_diff = SE_via_a - SE_via_p;
 
-    for(int iv = 0; iv<nFER; iv++){
-        SER[iv] = state.selfenergy.val(iv, 0, 0);
-        SEK[iv] = state.selfenergy.val(iv, 1, 0);
-    }
+    double diff_max = SE_diff.Sigma.get_vec().max_norm();
+    utils::print("Maximal difference between SOPT selfenergy via a-bubble and p-bubble: \t", diff_max, " \n");
 
-    //Print results
-    write_h5_rvecs("SOPT_test.h5", {"v", "ReSER", "ImSER", "ReSEK", "ImSEK",
-                                  "K1a_R", "K1a_I", "K1p_R", "K1p_I", "K1t_R", "K1t_I"},
-                                 {ffreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(),
-                                  state.vertex.avertex().K1.real(),
-                                  state.vertex.avertex().K1.imag(),
-                                  state.vertex.pvertex().K1.real(),
-                                  state.vertex.pvertex().K1.imag(),
-                                  state.vertex.tvertex().K1.real(),
-                                  state.vertex.tvertex().K1.imag()});
+
 
 }
 

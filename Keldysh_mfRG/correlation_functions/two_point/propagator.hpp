@@ -563,12 +563,13 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'k': // including the Katanin extension
             if constexpr (KELDYSH){
+                const Q N = Eff_fac(v);
                 const Q GR_ = GR(v, i_in);
                 const Q GA_ = conj(GR_);
                 const Q GK_ = GK(v, i_in);
                 const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
                 const Q dSigmaA_ = conj(dSigmaR_);
-                const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                const Q dSigmaK_ = 2. * glb_i * N * myimag(dSigmaR_);
                 const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
                 const Q SA_ = conj(SR_);
                 const Q SK_ = SK(v, i_in)
@@ -600,12 +601,13 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'e': // purely the Katanin extension
             if constexpr (KELDYSH){
+                const Q N = Eff_fac(v);
                 const Q GR_ = GR(v, i_in);
                 const Q GA_ = conj(GR_);
                 const Q GK_ = GK(v, i_in);
                 const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
                 const Q dSigmaA_ = conj(dSigmaR_);
-                const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
+                const Q dSigmaK_ = 2. * glb_i * N * myimag(dSigmaR_);
                 const Q SR_ = GR_ * dSigmaR_ * GR_;
                 const Q SA_ = conj(SR_);
                 const Q SK_ = GR_ * dSigmaR_ * GK_
