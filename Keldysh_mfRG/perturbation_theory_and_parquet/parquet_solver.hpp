@@ -65,6 +65,42 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
 #endif
 }
 
+template<typename Q>
+SelfEnergy<Q> compute_SDE_impl(const char channel, const double Lambda, const Vertex<Q>& Gamma, const Propagator<Q> & G_bubble, const Propagator<Q> & dG_bubble, const bool diff_bubble, const Propagator<Q> & G_loop, const bool diff_loop) {
+    assert(channel == 'a' or channel == 'p');
+
+    Vertex<Q> Gamma_0 (Lambda);                  // bare vertex
+    Gamma_0.set_frequency_grid(Gamma);
+    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
+    else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
+
+    // compute the r-bubble with full vertex on the right
+    GeneralVertex<Q,symmetric_r_irred> bubble_r (Lambda);
+    bubble_r.set_Ir(true);
+    bubble_r.set_frequency_grid(Gamma);
+    bubble_function(bubble_r, Gamma_0, Gamma, G_bubble, diff_bubble ? dG_bubble : G_bubble, channel, diff_bubble);  // full vertex on the right
+
+    // compute the a bubble with full vertex on the left
+    GeneralVertex<Q,symmetric_r_irred> bubble_l (Lambda);
+    bubble_l.set_Ir(true);
+    bubble_l.set_frequency_grid(Gamma);
+    bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, diff_bubble ? dG_bubble : G_bubble, channel, diff_bubble);  // full vertex on the left
+
+    GeneralVertex<Q,symmetric_r_irred> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the a bubble
+
+
+    // compute the self-energy via SDE using the bubble
+    SelfEnergy<Q> Sigma_SDE(G_bubble.selfenergy.Sigma.frequencies);
+    Sigma_SDE.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    loop(Sigma_SDE, bubble, G_loop, diff_loop);
+
+    utils::print("Check causality of Sigma_SDE_", channel, ": \n");
+    check_SE_causality(Sigma_SDE);
+    compare_with_FDTs(bubble, Lambda, 0, "SDE_bubble_" + std::to_string(channel));
+
+    return Sigma_SDE;
+}
+
 /**
  * Insert the self-energy of input "state" into the rhs of the (symmetrized) Schwinger-Dyson equation and compute the lhs.
  * @param Sigma_SDE   : Self-energy computed as the lhs of the BSE
@@ -74,7 +110,7 @@ void compute_BSE(Vertex<Q>& Gamma_BSE, const State<Q>& state_in, const double La
  * @param Lambda      : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
+void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
                  const State<Q>& state_in, const double Lambda) {
     bool write_state = false;
 
@@ -173,13 +209,25 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
  * @param Lambda    : Flow parameter Lambda at which input state was computed
  */
 template <typename Q>
-void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
+void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
     SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy.Sigma.frequencies);
     SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy.Sigma.frequencies);
-    compute_SDE(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
+    compute_SDE_impl_v2(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
 }
 
- /**
+
+template <typename Q>
+void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
+    Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
+    SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl('a', Lambda, state_in.vertex, G, G, false, G, false);
+    SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl('p', Lambda, state_in.vertex, G, G, false, G, false);
+    Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
+
+}
+
+
+
+/**
   * Compute the susceptibilities chi_r in channel r from the full vertex, and the differences to the flowing
   * susceptibilities (K1r of the input vertex).
   * @param chi_a    : Post-processed susceptibility in all three channels
