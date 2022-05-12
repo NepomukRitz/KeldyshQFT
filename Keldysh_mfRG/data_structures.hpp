@@ -629,6 +629,7 @@ struct fRG_config {
     double epsODE_abs_;
     double epsODE_rel_;
     double U;
+    bool save_intermediateResults;
 };
 
 
