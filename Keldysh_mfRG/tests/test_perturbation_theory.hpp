@@ -21,20 +21,28 @@
 
 
 /**
- * Function to test the loop function and the calculation of the SelfEnergy
+ * Function to test the loop function and the calculation of the SelfEnergy in SOPT
+ * compute the selfenergy with an a-bubble and with a p-bubble and compare --> Are they identical?
  * @param state : State initialized with initial conditions
  */
 template <typename Q>
 void testSelfEnergy_and_K1(double Lambda){
     SelfEnergy<Q> SE_via_a(Lambda);
     SelfEnergy<Q> SE_via_p(Lambda);
-    Propagator<Q> g(Lambda, SE_via_a, 'g');
+    SelfEnergy<Q> SE_bare(Lambda);
+    SE_via_a.initialize(glb_U*0.5, 0.);
+    SE_via_p.initialize(glb_U*0.5, 0.);
+    SE_bare.initialize(glb_U*0.5, 0.);
+    Propagator<Q> g(Lambda, SE_bare, 'g');
 
     //Calculate the vertex
     State<Q> SOPT_state(Lambda);
-    SOPT_state(SOPT_state, Lambda);
+    SOPT_state.initialize();
+    sopt_state(SOPT_state, Lambda);
 
     Vertex<Q> temp_vertex_a (Lambda), temp_vertex_p (Lambda); //All zeros
+    temp_vertex_a.initialize((KELDYSH_FORMALISM and !CONTOUR_BASIS) ? -glb_U*0.5 : -glb_U);
+    temp_vertex_p.initialize((KELDYSH_FORMALISM and !CONTOUR_BASIS) ? -glb_U*0.5 : -glb_U);
     temp_vertex_a.avertex() = SOPT_state.vertex.avertex();
     temp_vertex_p.pvertex() = SOPT_state.vertex.pvertex();
 
@@ -44,8 +52,18 @@ void testSelfEnergy_and_K1(double Lambda){
     SelfEnergy<Q> SE_diff = SE_via_a - SE_via_p;
 
     double diff_max = SE_diff.Sigma.get_vec().max_norm();
+    double diff_max_vertex = (temp_vertex_a.avertex().K1.get_vec() + temp_vertex_p.pvertex().K1.get_vec()).max_norm();
+    utils::print("Maximal difference between SOPT K1 via a-bubble and p-bubble: \t", diff_max_vertex, " \n");
     utils::print("Maximal difference between SOPT selfenergy via a-bubble and p-bubble: \t", diff_max, " \n");
 
+    if (false) {
+        /// output both results in HDF5 file
+        H5::H5File file_out(data_dir + "comparison_SOPT_via_a_p_channel.h5", H5F_ACC_TRUNC);
+        write_to_hdf(file_out, "SOPT_via_a", SE_via_a.Sigma.get_vec(), false);
+        write_to_hdf(file_out, "SOPT_via_p", SE_via_p.Sigma.get_vec(), false);
+        file_out.close();
+
+    }
 
 
 }
@@ -2769,7 +2787,7 @@ public:
 };
 
 template <typename Q>
-void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
+void test_PT_state(std::string outputFileName, const double Lambda, const bool diff) {
 #ifndef ZERO_TEMP
     assert(false);
 #endif
@@ -2815,27 +2833,44 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
 
-        const Q KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
-        const Q KA = conj(KR);
-        const Q KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
-        const Q K00 = ( KR + KA + KK);// * 0.5;
-        const Q K01 = ( KR - KA - KK);// * 0.5;
-        const Q K10 = (-KR + KA - KK);// * 0.5;
-        const Q K11 = (-KR - KA + KK);// * 0.5;
+        Q KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
+        Q KA = conj(KR);
+        Q KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
+        Q K00 = ( KR + KA + KK);// * 0.5;
+        Q K01 = ( KR - KA - KK);// * 0.5;
+        Q K10 = (-KR + KA - KK);// * 0.5;
+        Q K11 = (-KR - KA + KK);// * 0.5;
         Q val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
         Q val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1  , it_spin,  i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);
+
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
+        KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
+        KA = conj(KR);
+        KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
+        K00 = ( KR + KA + KK);// * 0.5;
+        K01 = ( KR - KA - KK);// * 0.5;
+        K10 = (-KR + KA - KK);// * 0.5;
+        K11 = (-KR - KA + KK);// * 0.5;
+        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        val_K1_K = CONTOUR_BASIS != 1 ? KK : K01;
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1  , it_spin, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1_K, it_spin, i, 1, 0);
+
         w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
+        KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
+        KA = conj(KR);
+        KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
+        K00 = ( KR + KA + KK);// * 0.5;
+        K01 = ( KR - KA - KK);// * 0.5;
+        K10 = (-KR + KA - KK);// * 0.5;
+        K11 = (-KR - KA + KK);// * 0.5;
+        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
+        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
         val_K1_K = state_cpp.vertex.tvertex().K1.val(it_spin, i, 1, 0);
         PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./glb_U    , it_spin, i, 0, 0);
         PT_state.vertex.tvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);

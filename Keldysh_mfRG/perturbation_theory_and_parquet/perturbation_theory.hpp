@@ -145,8 +145,8 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda
     utils::print("Computing the self energy in SOPT...", true);
 #endif
     //Calculate the self-energy in SOPT, saved in Psi
-    if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, bareState, Psi.vertex, Lambda);
-    else                        selfEnergyInSOPT(Psi.selfenergy, bareState, Pi, Lambda);
+    if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, Psi, Psi.vertex, Lambda);
+    else                        selfEnergyInSOPT(Psi.selfenergy, Psi, Pi, Lambda);
 
 }
 
