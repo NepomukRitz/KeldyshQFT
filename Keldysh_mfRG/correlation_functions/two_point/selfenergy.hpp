@@ -405,7 +405,7 @@ template <typename Q> void SelfEnergy<Q>:: check_symmetries() const
             for (int j = 0; j < n_in; j++) {
                 double v;
                 Sigma.frequencies.get_freqs_w(v, i);
-                dev[i] = valsmooth(0, v, j) + myconj(valsmooth(0,-v, j));
+                dev[i] = valsmooth(0, v, j) + myconj(valsmooth(0,-v, j)) - 2.*asymp_val_R;
             }
         }
 

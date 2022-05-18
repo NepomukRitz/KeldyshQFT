@@ -40,6 +40,7 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
 
     check_SE_causality(state_ini); // check if the self-energy is causal at each step of the flow
 
+    state_ini.selfenergy.check_symmetries();
 
 
 

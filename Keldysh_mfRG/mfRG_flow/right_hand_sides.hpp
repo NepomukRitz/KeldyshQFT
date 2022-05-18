@@ -426,7 +426,7 @@ public:
 template <typename Q>
 void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q>& PsiVertex, const Propagator<Q>& S){
     // Self-energy flow
-    loop(dPsiSelfEnergy, PsiVertex, S, true); // Loop for the Self-Energy calculation
+    loop<true,0>(dPsiSelfEnergy, PsiVertex, S); // Loop for the Self-Energy calculation
 }
 
 template <typename Q, class Bubble_Object>
@@ -520,11 +520,11 @@ void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const GeneralVerte
     SelfEnergy<Q> dSigma_t(Psi.selfenergy.Sigma.frequencies);
 
     // compute first multiloop correction to self-energy flow, irreducible in the t channel
-    loop(dSigma_tbar, dGammaC_tbar, G, true);
+    loop<true,0>(dSigma_tbar, dGammaC_tbar, G);
 
     // compute second multiloop correction to self-energy flow, reducible in the t channel
     Propagator<Q> extension (G.Lambda, Psi.selfenergy, dSigma_tbar, 'e');
-    loop(dSigma_t, Psi.vertex, extension, true);
+    loop<true,0>(dSigma_t, Psi.vertex, extension);
 
     dPsiSelfEnergy = dSigma_tbar + dSigma_t;
 

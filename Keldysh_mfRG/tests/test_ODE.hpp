@@ -273,7 +273,7 @@ auto rhs_state_flow_SOPT(const State<Q>& Psi, const double Lambda, const int fee
     }
 
     //Self energy loop
-    loop(dPsi.selfenergy, Psi.vertex, S, true);  //Loop for the Self-Energy calculation
+    loop<true,0>(dPsi.selfenergy, Psi.vertex, S);  //Loop for the Self-Energy calculation
 
 
     if(feedback>=3){    //If feedback>=3, there is vertex feedback

@@ -347,10 +347,10 @@ namespace saveIntegrand {
 
 
         const rvec& freqs = get_freqs_equidistant(1e4, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_lower, Psi.selfenergy.Sigma.frequencies.  primary_grid.w_upper);
-        IntegrandSE<Q,symmetric_full,true> integrandR = IntegrandSE<Q,symmetric_full,true> ('r', Psi.vertex, S, v, i_in, all_spins);
+        IntegrandSE<Q,symmetric_full,true,Q,0> integrandR ('r', Psi.vertex, S, v, i_in);
         integrandR.save_integrand(freqs);
         if (KELDYSH) {
-            IntegrandSE<Q,symmetric_full,true> integrandK = IntegrandSE<Q,symmetric_full,true>('k', Psi.vertex, S, v, i_in, all_spins);
+            IntegrandSE<Q,symmetric_full,true,Q,0> integrandK ('k', Psi.vertex, S, v, i_in);
             integrandK.save_integrand(freqs);
         }
     }
@@ -386,10 +386,10 @@ namespace saveIntegrand {
 
         Psi.vertex.initializeInterpol();
         Psi.vertex.template symmetry_expand<'t',false>();
-        IntegrandSE<Q,symmetric_full,false,return_type> integrandR(0, Psi.vertex, G, i2, 0, v, i_in);
+        IntegrandSE<Q,symmetric_full,false,return_type,0> integrandR(0, Psi.vertex, G, i2, 0, v, i_in);
         integrandR.save_integrand(freqs, filename_prefix);
         if constexpr(KELDYSH and not VECTORIZED_INTEGRATION) {
-            IntegrandSE<Q,symmetric_full,false,return_type> integrandK(1, Psi.vertex, G, i2, 0, v, i_in);
+            IntegrandSE<Q,symmetric_full,false,return_type,0> integrandK(1, Psi.vertex, G, i2, 0, v, i_in);
             integrandK.save_integrand(freqs);
         }
     }

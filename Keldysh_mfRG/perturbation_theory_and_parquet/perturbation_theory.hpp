@@ -53,7 +53,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& SOPTState, c
 
 
     //Calculate the Self-Energy
-    loop(PsiSelfEnergy, bubble_a, barePropagator, false);
+    loop<false,0>(PsiSelfEnergy, bubble_a, barePropagator);
 
 }
 

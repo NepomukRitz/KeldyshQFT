@@ -39,10 +39,6 @@ public:
     using buffer_type_K2 = dataBuffer<Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
     using buffer_type_K2b= dataBuffer<Q, k2b,K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
     using buffer_type_K3 = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>;
-    using buffer_type_K1_expanded = dataBuffer<Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION>;
-    using buffer_type_K2_expanded = dataBuffer<Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
-    using buffer_type_K2b_expanded= dataBuffer<Q, k2b,K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
-    using buffer_type_K3_expanded = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>;
 
 
 
@@ -60,7 +56,7 @@ public:
     /// apply_unary_op_to_all_vertexBuffers()
     /// apply_binary_op_to_all_vertexBuffers()
     buffer_type_K1 K1;
-    mutable buffer_type_K1_expanded K1_symmetry_expanded;
+    mutable buffer_type_K1 K1_symmetry_expanded;
     /// cross-projected contributions, needed for the Hubbard model;
     /// have to be mutable to allow us to compute them at a stage where the vertex should be const.
     mutable buffer_type_K1 K1_a_proj = K1;
@@ -68,7 +64,7 @@ public:
     mutable buffer_type_K1 K1_t_proj = K1;
 
     buffer_type_K2 K2;
-    mutable buffer_type_K2_expanded K2_symmetry_expanded;
+    mutable buffer_type_K2 K2_symmetry_expanded;
     mutable buffer_type_K2 K2_a_proj = K2;
     mutable buffer_type_K2 K2_p_proj = K2;
     mutable buffer_type_K2 K2_t_proj = K2;
@@ -76,10 +72,10 @@ public:
 #if DEBUG_SYMMETRIES
     buffer_type_K2b K2b;
 #endif
-    mutable buffer_type_K2b_expanded K2b_symmetry_expanded;
+    mutable buffer_type_K2b K2b_symmetry_expanded;
 
     buffer_type_K3 K3;
-    mutable buffer_type_K3_expanded K3_symmetry_expanded;
+    mutable buffer_type_K3 K3_symmetry_expanded;
     mutable buffer_type_K3 K3_a_proj = K3;
     mutable buffer_type_K3 K3_p_proj = K3;
     mutable buffer_type_K3 K3_t_proj = K3;
@@ -925,10 +921,10 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 template<typename Q> template<char channel_bubble, bool is_left_vertex> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel, const int spin) const {
     /// TODO: Currently copies frequency_grid of same rvertex; but might actually need the frequency grid of conjugate channel
     assert(0 <= spin and spin < 2);
-    K1_symmetry_expanded = buffer_type_K1_expanded(0., K1_expanded_config.dims);
-    K2_symmetry_expanded = buffer_type_K2_expanded(0., K2_expanded_config.dims);
-    K2b_symmetry_expanded = buffer_type_K2b_expanded (0., K2_expanded_config.dims);
-    K3_symmetry_expanded = buffer_type_K3_expanded(0., K3_expanded_config.dims);
+    K1_symmetry_expanded = buffer_type_K1(0., K1_expanded_config.dims);
+    K2_symmetry_expanded = buffer_type_K2(0., K2_expanded_config.dims);
+    K2b_symmetry_expanded = buffer_type_K2b (0., K2_expanded_config.dims);
+    K3_symmetry_expanded = buffer_type_K3(0., K3_expanded_config.dims);
     if (spin == 0) {
         K1_symmetry_expanded.set_VertexFreqGrid(rvert_this.K1.get_VertexFreqGrid());
         K2_symmetry_expanded.set_VertexFreqGrid(rvert_this.K2.get_VertexFreqGrid());

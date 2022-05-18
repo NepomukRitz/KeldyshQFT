@@ -46,8 +46,8 @@ void testSelfEnergy_and_K1(double Lambda){
     temp_vertex_a.avertex() = SOPT_state.vertex.avertex();
     temp_vertex_p.pvertex() = SOPT_state.vertex.pvertex();
 
-    loop(SE_via_a, temp_vertex_a, g, false);//Calculate the SelfEnergy in SOPT
-    loop(SE_via_p, temp_vertex_p, g, false);//Calculate the SelfEnergy in SOPT
+    loop<false,0>(SE_via_a, temp_vertex_a, g);//Calculate the SelfEnergy in SOPT
+    loop<false,0>(SE_via_p, temp_vertex_p, g);//Calculate the SelfEnergy in SOPT
 
     SelfEnergy<Q> SE_diff = SE_via_a - SE_via_p;
 
@@ -843,20 +843,20 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
     // a-channel:
     // close K3a (single diagram: PT2_K1p - a-bubble - PT2_K1p)
     State<Q> SE_K3a (Lambda);
-    loop(SE_K3a.selfenergy, PT4_22_a_pp.vertex, G, false);
+    loop<false,0>(SE_K3a.selfenergy, PT4_22_a_pp.vertex, G);
 
     // close K1p ladder (use 1-3 vertex in p-channel, since it contains only p-ladder)
     State<Q> SE_K1p_ladder (Lambda);
-    loop(SE_K1p_ladder.selfenergy, PT4_13_p_p1.vertex, G, false);
+    loop<false,0>(SE_K1p_ladder.selfenergy, PT4_13_p_p1.vertex, G);
 
     // p-channel:
     // close K3p (single diagram: PT2_K1a - p-bubble - PT2_K1a)
     State<Q> SE_K3p (Lambda);
-    loop(SE_K3p.selfenergy, PT4_22_p_aa.vertex, G, false);
+    loop<false,0>(SE_K3p.selfenergy, PT4_22_p_aa.vertex, G);
 
     // close K1a ladder (use 1-3 vertex in a-channel, since it contains only a-ladder)
     State<Q> SE_K1a_ladder (Lambda);
-    loop(SE_K1a_ladder.selfenergy, PT4_13_a_a1.vertex, G, false);
+    loop<false,0>(SE_K1a_ladder.selfenergy, PT4_13_a_a1.vertex, G);
 
     write_state_to_hdf("SE_K3a_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3a);
     write_state_to_hdf("SE_K1p_ladder_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1p_ladder);
@@ -900,14 +900,9 @@ void test_K2_correctness(double Lambda){
     State<Q> PT2_SE_p_4 (Lambda);
     State<Q> PT2_SE_p_5 (Lambda);
 
-    loop(PT2_SE_a.selfenergy, PT2_K1a.vertex, S, true);
-    loop(PT2_SE_p.selfenergy, PT2_K1p.vertex, S, true);
-    loop(PT2_SE_t.selfenergy, PT2_K1t.vertex, S, true);
-#ifdef DEBUG_MODE
-    loop(PT2_SE_p_1.selfenergy, PT2_K1p.vertex, S, true, 1);
-    loop(PT2_SE_p_4.selfenergy, PT2_K1p.vertex, S, true, 4);
-    loop(PT2_SE_p_5.selfenergy, PT2_K1p.vertex, S, true, 5);
-#endif
+    loop<true,0>(PT2_SE_a.selfenergy, PT2_K1a.vertex, S);
+    loop<true,0>(PT2_SE_p.selfenergy, PT2_K1p.vertex, S);
+    loop<true,0>(PT2_SE_t.selfenergy, PT2_K1t.vertex, S);
 
     State<Q> PT3_K2a (Lambda);    //Create state for K2a calculation
     State<Q> PT3_K2a_ia (Lambda);
@@ -972,24 +967,14 @@ void test_K2_correctness(double Lambda){
     State<Q> PT3_SE_t_p_4 (Lambda);
     State<Q> PT3_SE_t_p_5 (Lambda);
 
-    loop(PT3_SE.selfenergy, PT3_K2.vertex, S, true);
-    loop(PT3_SE_a.selfenergy, PT3_K2a.vertex, S, true);
-    loop(PT3_SE_p.selfenergy, PT3_K2p.vertex, S, true);
-    loop(PT3_SE_t.selfenergy, PT3_K2t.vertex, S, true);
+    loop<true,0>(PT3_SE.selfenergy, PT3_K2.vertex, S);
+    loop<true,0>(PT3_SE_a.selfenergy, PT3_K2a.vertex, S);
+    loop<true,0>(PT3_SE_p.selfenergy, PT3_K2p.vertex, S);
+    loop<true,0>(PT3_SE_t.selfenergy, PT3_K2t.vertex, S);
 
-    loop(PT3_SE_t_a.selfenergy, PT3_K2t_a.vertex, S, true);
-    loop(PT3_SE_t_p.selfenergy, PT3_K2t_p.vertex, S, true);
-#ifdef DEBUG_MODE
-    loop(PT3_SE_t_1.selfenergy, PT3_K2t.vertex, S, true, 1);
-    loop(PT3_SE_t_4.selfenergy, PT3_K2t.vertex, S, true, 4);
-    loop(PT3_SE_t_5.selfenergy, PT3_K2t.vertex, S, true, 5);
-    loop(PT3_SE_t_a_1.selfenergy, PT3_K2t_a.vertex, S, true, 1);
-    loop(PT3_SE_t_a_4.selfenergy, PT3_K2t_a.vertex, S, true, 4);
-    loop(PT3_SE_t_a_5.selfenergy, PT3_K2t_a.vertex, S, true, 5);
-    loop(PT3_SE_t_p_1.selfenergy, PT3_K2t_p.vertex, S, true, 1);
-    loop(PT3_SE_t_p_4.selfenergy, PT3_K2t_p.vertex, S, true, 4);
-    loop(PT3_SE_t_p_5.selfenergy, PT3_K2t_p.vertex, S, true, 5);
-#endif
+    loop<true,0>(PT3_SE_t_a.selfenergy, PT3_K2t_a.vertex, S);
+    loop<true,0>(PT3_SE_t_p.selfenergy, PT3_K2t_p.vertex, S);
+
 
     State<Q> PT3_K1a (Lambda);    //Create state to compare with K1a
     t0 = utils::get_time();
@@ -2912,7 +2897,7 @@ auto rhs_channel_decomposition(const State<Q>& Psi, const double Lambda) -> Stat
     Propagator<Q> S(Lambda, selfEnergy, 's');    //Initialization of Propagator objects
 
     // Self-energy flow
-    loop(dPsi.selfenergy, Psi.vertex, S, true);  // self-energy loop
+    loop<true,0>(dPsi.selfenergy, Psi.vertex, S);  // self-energy loop
 
     // Vertex flow
     bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true); // diff. bubble in the a-channel
