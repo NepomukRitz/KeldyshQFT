@@ -303,7 +303,7 @@ SelfEnergy<Q> compute_diff_SDE(const State<Q>& state_in, const Vertex<Q>& dGamma
         file_out.close();
     }
 
-    dSigma_SDE.check_symmetries();
+    //dSigma_SDE.check_symmetries();
     return dSigma_SDE;
 
 }

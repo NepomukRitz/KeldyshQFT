@@ -79,7 +79,7 @@ auto round2ffreq(double w) -> double {
     double result = (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
     assert(std::abs(result - w) < a*2); // make sure that result and w are less than (2*pi*T) apart
     assert((int)((result / a - 1.) + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T) apart
-    assert(std::abs(result) >= std::abs(w));
+    assert(std::abs(result) >= std::abs(w) *(1- 1e-10));
     return result;
 }
 

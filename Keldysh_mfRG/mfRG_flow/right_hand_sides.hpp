@@ -57,7 +57,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
-         save_intermediate = true;
+        if (rkStep==0) save_intermediate = true;
          if (rkStep==0 and iteration==0 and save_intermediate) utils::makedir(dir_str);
     }
 #endif
@@ -120,7 +120,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             /// save intermediate states:
     if (save_intermediate) {
         if (iteration == 0) {
-            write_state_to_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi);
+            //write_state_to_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi);
             write_state_to_hdf<Q>(dir_str+"dPsi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi);
 
             if constexpr (DEBUG_SYMMETRIES) {
@@ -129,7 +129,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             }
         }
         else {
-            add_state_to_hdf<Q>(dir_str+ "Psi_RKstep"+std::to_string(rkStep), iteration, Psi, false);
+            //add_state_to_hdf<Q>(dir_str+ "Psi_RKstep"+std::to_string(rkStep), iteration, Psi, false);
             add_state_to_hdf<Q>(dir_str+"dPsi_RKstep"+std::to_string(rkStep), iteration, dPsi, false);
         }
     }

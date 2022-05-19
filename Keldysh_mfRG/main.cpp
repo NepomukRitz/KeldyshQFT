@@ -37,7 +37,6 @@ auto main(int argc, char * argv[]) -> int {
 
     //
     //test_PT4(0.5, true);
-    //test_PT_state<state_datatype>( data_dir+filename, 1.8, false);
     //test_interpolate_K12<state_datatype>(1.8);
     //test_compare_with_Vienna_code();
     //findBestWscale4K1<state_datatype>(1.8);
@@ -63,10 +62,29 @@ auto main(int argc, char * argv[]) -> int {
     filename = filename + "_SDEcorr";
 #endif
 
+    //testSelfEnergy_and_K1<state_datatype>(9.8);
     n_loop_flow(data_dir+filename, config, true);
-    //test_symmetries(0.8, config);
+    //test_symmetries(9.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
-    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 0.5, false);
+    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.0, false);
+
+    /*
+    //const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};
+    const std::vector<double> myU_NRG {0.2, 0.25, 0.5, 0.75, 1., 1.25};                                                    // NOLINT(cert-err58-cpp)
+    const std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(myU_NRG);
+
+    for (unsigned int i = 0; i < Lambda_checkpoints.size(); i++) {
+        const double Lambda = Lambda_checkpoints[i];
+        State<state_datatype> state (Lambda);
+        state.initialize();
+        sopt_state(state, Lambda);
+        const double Delta = (glb_Gamma + Lambda) * 0.5;
+        double U_over_Delta = glb_U / Delta;
+        const std::string parquet_filename = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+        //state = read_state_from_hdf(parquet_filename, 30);
+        parquet_solver(parquet_filename, state, Lambda, 1e-4, 30);
+    }
+    */
 
     /*
     const std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);

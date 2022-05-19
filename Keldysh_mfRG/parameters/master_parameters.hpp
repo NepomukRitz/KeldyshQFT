@@ -9,7 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 
 #define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
@@ -51,7 +51,7 @@ inline int N_LOOPS;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.01; //0.01;                     // Temperature
+constexpr double glb_T = 0.1; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -63,7 +63,7 @@ constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.
 #endif
 constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 1.0;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -133,7 +133,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 // 4: interaction cutoff
-#define REG 4
+#define REG 2
 
 
 
