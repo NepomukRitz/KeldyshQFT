@@ -47,6 +47,15 @@ template <typename T> T myzero() {
     }
 }
 
+template <typename T> T myIdentity() {
+    if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double> or std::is_same_v<T, int>) {
+        return (T)1;
+    }
+    else {
+        return T::Identity();
+    }
+}
+
 template <typename T> constexpr int myRowsAtCompileTime() {
     if constexpr(std::is_same_v<T,double> || std::is_same_v<T,comp>) {
         return 1;
@@ -456,7 +465,7 @@ vec<comp> operator* (vec<T> lhs, const comp& rhs) {
 
 
 using my_index_t = std::size_t;
-enum K_class {selfenergy = -1, k1=0, k2=1, k2b=2, k3=3};
+enum K_class {selfenergy = -1, k1=0, k2=1, k2b=2, k3=3, k3_sbe=4};
 std::ostream& operator << (std::ostream& out, K_class k);
 enum vertexType {symmetric_full, symmetric_r_irred, non_symmetric_diffleft, non_symmetric_diffright};
 std::ostream& operator << (std::ostream& out, vertexType symmtype);

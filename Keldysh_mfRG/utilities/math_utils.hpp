@@ -240,26 +240,27 @@ inline void getMultIndexSkippingOneDimension(std::array<size_t,rank>&  indx, con
     static_assert(idim < rank, "idim must be smaller than rank.");
     size_t temp = iflat;
     size_t dimtemp = 1;
-    for (int it = 1; it < idim; it++) {
+    for (unsigned int it = 1; it < idim; it++) {
         dimtemp *= dims[it];
     }
-    for (int it = idim+1; it < rank; it++) {
+    for (unsigned int it = idim+1; it < rank; it++) {
         dimtemp *= dims[it];
     }
     if constexpr (idim != 0) {
         indx[0] = temp / dimtemp;
         temp -= indx[0] * dimtemp;
     }
-    for (int it = 1; it < idim; it++) {
+    for (unsigned int it = 1; it < idim; it++) {
         dimtemp = dimtemp / dims[it];
         indx[it] = temp / dimtemp;
         temp -= indx[it] * dimtemp;
     }
-    for (int it = idim+1; it < rank; it++) {
+    for (unsigned int it = idim+1; it < rank; it++) {
         dimtemp = dimtemp / dims[it];
         indx[it] = temp / dimtemp;
         temp -= indx[it] * dimtemp;
     }
+    indx[idim] = 0;
 }
 
 /**

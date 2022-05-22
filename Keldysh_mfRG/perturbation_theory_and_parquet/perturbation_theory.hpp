@@ -62,7 +62,7 @@ void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
                               double Lambda);
 
 template <typename Q, class Bubble_Object>
-void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
+void vertexInTOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
     Vertex<Q> bubblevertex_a(Lambda);
     bubblevertex_a.set_frequency_grid(PsiVertex);
     bubblevertex_a.initialize(0.);

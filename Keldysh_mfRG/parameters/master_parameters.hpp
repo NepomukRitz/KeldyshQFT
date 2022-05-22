@@ -27,7 +27,7 @@ constexpr bool VERBOSE = false;
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 
@@ -39,7 +39,8 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 1
+#define SBE_DECOMPOSITION 1
 
 inline int N_LOOPS;  // Number of loops
 #define KATANIN

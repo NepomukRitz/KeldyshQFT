@@ -151,6 +151,34 @@ public:
     template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto left_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto right_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
 
+    template <char r> rvert<Q>& get_rvertex() {
+        if constexpr(r == 'a') {
+            return avertex;
+        }
+        else if constexpr(r == 'p') {
+            return pvertex;
+        }
+        else if constexpr(r == 't') {
+            return tvertex;
+        }
+        else {
+            assert(false);
+        }
+    }
+    rvert<Q>& get_rvertex(const char r) {
+        if (r == 'a') {
+            return avertex;
+        }
+        else if (r == 'p') {
+            return pvertex;
+        }
+        else if (r == 't') {
+            return tvertex;
+        }
+        else {
+            assert(false);
+        }
+    }
 
     // initialize Interpolator with coefficients (only necessary for spline interpolation)
     void initializeInterpol() const;
@@ -379,32 +407,42 @@ public:
         return vertices_bubbleintegrand[spin].template value_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
 
-template <int spin, char ch_bubble, typename result_type> auto value_symmetry_expanded(const VertexInput& input)  const -> result_type {
+    template <int spin, char ch_bubble, typename result_type> auto value_symmetry_expanded(const VertexInput& input)  const -> result_type {
     static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
     assert(input.spin == 0);
     return vertices_bubbleintegrand[spin].template value_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
     template <int spin, char ch_bubble, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
-        static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+        static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
         return vertices_bubbleintegrand[spin].template left_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
     template <int spin, char ch_bubble, typename result_type> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type {
-        static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+        static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
         return vertices_bubbleintegrand[spin].template right_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
     template <int spin, char ch_bubble, typename result_type> auto left_diff_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
-        static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+        static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
         return vertices_bubbleintegrand[spin].template left_diff_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred,symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright>(input);
     }
     template <int spin, char ch_bubble, typename result_type> auto right_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type {
-        static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+        static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
         return vertices_bubbleintegrand[spin].template right_diff_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred,symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright>(input);
     }
 
+    template <int spin, char ch_bubble, char channel_vertex, K_class k, typename result_type> auto get_Kir_value_symmetry_expanded(const VertexInput& input)  const -> result_type {
+        static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
+        assert(input.spin == 0);
+        if constexpr((symmtype == symmetric_r_irred and ch_bubble == channel_vertex) or ((symmtype == non_symmetric_diffleft or symmtype == non_symmetric_diffright) and ch_bubble != channel_vertex))  {
+            return myzero<result_type>();
+        }
+        else {
+            return vertices_bubbleintegrand[spin].template get_rvertex<channel_vertex>(). template valsmooth_symmetry_expanded<k,result_type>(input);
+        }
+    }
 
     double norm(){
         if constexpr(symmtype == symmetric_full or symmtype == symmetric_r_irred ) return vertex.sum_norm(2);
@@ -463,7 +501,7 @@ template <int spin, char ch_bubble, typename result_type> auto value_symmetry_ex
         vertex.set_initializedInterpol(false);
     }
     template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
-        vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded, fullvert<Q>(0., false));
+        vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded + 1, fullvert<Q>(0., false));
         //utils::print("Start symmetry expansion\n");
         initializeInterpol();
         //utils::print("Initialized Interpolator \n");
@@ -472,6 +510,23 @@ template <int spin, char ch_bubble, typename result_type> auto value_symmetry_ex
             vertices_bubbleintegrand[ispin].template symmetry_expand<channel_bubble,is_left_vertex>(half1(), half2(), ispin);
             //utils::print("expanded spin component ", ispin, "\n");
         }
+
+        vertices_bubbleintegrand[2] = vertices_bubbleintegrand[0];
+        vertices_bubbleintegrand[2].irred *= 0. ;
+        for (char r : {'a', 'p', 't'}) {
+            vertices_bubbleintegrand[2].get_rvertex(r).K1_symmetry_expanded += vertices_bubbleintegrand[1].get_rvertex(r).K1_symmetry_expanded;
+
+            if (MAX_DIAG_CLASS > 1) {
+                vertices_bubbleintegrand[2].get_rvertex(r).K2_symmetry_expanded += vertices_bubbleintegrand[1].get_rvertex(r).K2_symmetry_expanded;
+
+                if (DEBUG_SYMMETRIES)
+                    vertices_bubbleintegrand[2].get_rvertex(r).K2b_symmetry_expanded += vertices_bubbleintegrand[1].get_rvertex(r).K2b_symmetry_expanded;
+            }
+            if (MAX_DIAG_CLASS > 2) {
+                vertices_bubbleintegrand[2].get_rvertex(r).K3_symmetry_expanded += vertices_bubbleintegrand[1].get_rvertex(r).K3_symmetry_expanded;
+            }
+        }
+
 
     }
     void save_expanded(const std::string& filename_prefix) {
@@ -556,6 +611,9 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
             case 1:
                 return -bare.at(iK, i_in);
                 break;
+            case 2:
+                return 0.;
+                break;
             default:
                 utils::print("Problems in irred.val. Abort.");
                 assert(false);
@@ -571,6 +629,9 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
                 break;
             case 1:
                 result = -bare.template at_vectorized<0,0,rows>(iK,i_in);
+                break;
+            case 2:
+                result = myzero<result_type>();
                 break;
             default:
                 utils::print("Problems in irred.val. Abort.");
@@ -930,16 +991,16 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
 
 template <typename Q> template<char ch_bubble, typename result_type> auto fullvert<Q>::gammaRb_symmetry_expanded (const VertexInput& input) const -> result_type{
     if constexpr(ch_bubble == 'a') {
-        result_type res = pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, pvertex) + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, avertex);
+        result_type res = pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input) + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input);
         return res;
     }
     else if constexpr(ch_bubble == 'p') {
-        result_type res = avertex.template value_symmetry_expanded<ch_bubble,result_type>(input, tvertex) + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, avertex);
+        result_type res = avertex.template value_symmetry_expanded<ch_bubble,result_type>(input) + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input);
         return res;
     }
     else {
         static_assert(ch_bubble == 't', "Something's going wrong with gammaRb. Abort.");
-        result_type res = avertex.template value_symmetry_expanded<ch_bubble,result_type>(input, tvertex) + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, pvertex);
+        result_type res = avertex.template value_symmetry_expanded<ch_bubble,result_type>(input) + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input);
         return res;
     }
     //else {
@@ -954,21 +1015,28 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
     }
     else {
         return gamma0
-                + avertex.template value_symmetry_expanded<ch_bubble,result_type>(input, tvertex)
-                + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, pvertex)
-                + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input, avertex);
+                + avertex.template value_symmetry_expanded<ch_bubble,result_type>(input)
+                + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input)
+                + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input);
     }
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
-    result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
-    if constexpr(r_irred)
-        return gamma0;
+    if (SBE_DECOMPOSITION) {
+        if constexpr     (ch_bubble == 'a') { const result_type K1_K2b = avertex.template left_same_bare_symmetry_expanded<result_type>(input); return K1_K2b;}
+        else if constexpr(ch_bubble == 'p') { const result_type K1_K2b = pvertex.template left_same_bare_symmetry_expanded<result_type>(input); return K1_K2b;}
+        else if constexpr(ch_bubble == 't') { const result_type K1_K2b = tvertex.template left_same_bare_symmetry_expanded<result_type>(input); return K1_K2b;}
+    }
+    else {
+        const result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
+        if constexpr(r_irred)
+            return gamma0;
 
-    if constexpr     (ch_bubble == 'a'){ result_type K1_K2b = avertex.template left_same_bare_symmetry_expanded<result_type>(input, tvertex); return gamma0 + K1_K2b;}
-    else if constexpr(ch_bubble == 'p'){ result_type K1_K2b = pvertex.template left_same_bare_symmetry_expanded<result_type>(input, pvertex); return gamma0 + K1_K2b;}
-    else if constexpr(ch_bubble == 't'){ result_type K1_K2b = tvertex.template left_same_bare_symmetry_expanded<result_type>(input, avertex); return gamma0 + K1_K2b;}
-    else assert(false);
-
+        if constexpr     (ch_bubble == 'a') { const result_type K1_K2b = avertex.template left_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2b;}
+        else if constexpr(ch_bubble == 'p') { const result_type K1_K2b = pvertex.template left_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2b;}
+        else if constexpr(ch_bubble == 't') { const result_type K1_K2b = tvertex.template left_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2b;}
+        else
+            assert(false);
+    }
 #ifdef STATIC_FEEDBACK
     assert(false): /// Needs to be checked
     if (MAX_DIAG_CLASS <= 1) {
@@ -996,13 +1064,21 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
 #endif
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
-    result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
-    if constexpr(r_irred)
-        return gamma0;
+    if (SBE_DECOMPOSITION) {
+        if constexpr     (ch_bubble == 'a') { const result_type K1_K2 = avertex.template right_same_bare_symmetry_expanded<result_type>(input); return K1_K2;}
+        else if constexpr(ch_bubble == 'p') { const result_type K1_K2 = pvertex.template right_same_bare_symmetry_expanded<result_type>(input); return K1_K2;}
+        else {static_assert(ch_bubble == 't', "Has to be t channel."); const result_type K1_K2 = tvertex.template right_same_bare_symmetry_expanded<result_type>(input); return K1_K2;}
 
-    if constexpr     (ch_bubble == 'a'){ result_type K1_K2 = avertex.template right_same_bare_symmetry_expanded<result_type>(input, tvertex); return gamma0 + K1_K2;}
-    else if constexpr(ch_bubble == 'p'){ result_type K1_K2 = pvertex.template right_same_bare_symmetry_expanded<result_type>(input, pvertex); return gamma0 + K1_K2;}
-    else { static_assert(ch_bubble == 't', "Has to be t channel."); result_type K1_K2 = tvertex.template right_same_bare_symmetry_expanded<result_type>(input, avertex); return gamma0 + K1_K2;}
+    }
+    else {
+        result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
+        if constexpr(r_irred)
+            return gamma0;
+
+        if constexpr     (ch_bubble == 'a') { result_type K1_K2 = avertex.template right_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2;}
+        else if constexpr(ch_bubble == 'p') { result_type K1_K2 = pvertex.template right_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2;}
+        else {static_assert(ch_bubble == 't', "Has to be t channel."); result_type K1_K2 = tvertex.template right_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2;}
+    }
 #ifdef STATIC_FEEDBACK
     assert(false); // Check this!
     if (MAX_DIAG_CLASS <= 1) {
@@ -1033,21 +1109,21 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto fullvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
-            result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
+            const result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
             if constexpr(std::is_same_v<Q,result_type>) {assert(isfinite(gamma_Rb));} else {assert((gamma_Rb.allFinite()));}
             return gamma_Rb;
         }
     }
     else if constexpr(only_channel_r) {
-        if constexpr     (ch_bubble == 'a'){ result_type K2_K3 = avertex.template left_diff_bare_symmetry_expanded<result_type>(input, tvertex); return K2_K3;}
-        else if constexpr(ch_bubble == 'p'){ result_type K2_K3 = pvertex.template left_diff_bare_symmetry_expanded<result_type>(input, pvertex); return K2_K3;}
-        else if constexpr(ch_bubble == 't'){ result_type K2_K3 = tvertex.template left_diff_bare_symmetry_expanded<result_type>(input, avertex); return K2_K3;}
+        if constexpr     (ch_bubble == 'a'){ result_type K2_K3 = avertex.template left_diff_bare_symmetry_expanded<result_type>(input); return K2_K3;}
+        else if constexpr(ch_bubble == 'p'){ result_type K2_K3 = pvertex.template left_diff_bare_symmetry_expanded<result_type>(input); return K2_K3;}
+        else if constexpr(ch_bubble == 't'){ result_type K2_K3 = tvertex.template left_diff_bare_symmetry_expanded<result_type>(input); return K2_K3;}
     }
     else {
-        result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
-        if constexpr     (ch_bubble == 'a'){ result_type K2_K3 = avertex.template left_diff_bare_symmetry_expanded<result_type>(input, tvertex); return K2_K3 + gamma_Rb;}
-        else if constexpr(ch_bubble == 'p'){ result_type K2_K3 = pvertex.template left_diff_bare_symmetry_expanded<result_type>(input, pvertex); return K2_K3 + gamma_Rb;}
-        else                               { result_type K2_K3 = tvertex.template left_diff_bare_symmetry_expanded<result_type>(input, avertex); return K2_K3 + gamma_Rb;}
+        const result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
+        if constexpr     (ch_bubble == 'a'){ result_type K2_K3 = avertex.template left_diff_bare_symmetry_expanded<result_type>(input); return K2_K3 + gamma_Rb;}
+        else if constexpr(ch_bubble == 'p'){ result_type K2_K3 = pvertex.template left_diff_bare_symmetry_expanded<result_type>(input); return K2_K3 + gamma_Rb;}
+        else                               { result_type K2_K3 = tvertex.template left_diff_bare_symmetry_expanded<result_type>(input); return K2_K3 + gamma_Rb;}
     }
 
 }
