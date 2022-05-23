@@ -23,7 +23,7 @@ namespace selfenergy_loop {
  * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
  * @tparam Q Type in which the integrand takes values, usually comp
  */
-template <typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 class IntegrandSE {
     using buffertype_propagator = Eigen::Matrix<Q,1,4>;
     using buffertype_vertex = Eigen::Matrix<Q,4,myColsAtCompileTime<return_type>()>;
@@ -32,7 +32,7 @@ class IntegrandSE {
     const int type;
     std::vector<int> components = std::vector<int>((CONTOUR_BASIS != 1 ? 6 : 16));
 
-    const GeneralVertex<Q,vertType>& vertex;
+    const vertType& vertex;
     const Propagator<Q>& propagator;
 
     const int iK;
@@ -57,7 +57,7 @@ class IntegrandSE {
     auto evaluate_vertex_vectorized(const double vp) const -> buffertype_vertex;
 
 public:
-    IntegrandSE(const int type_in, const GeneralVertex<Q,vertType>& vertex_in, const Propagator<Q>& prop_in,
+    IntegrandSE(const int type_in, const vertType& vertex_in, const Propagator<Q>& prop_in,
                 const int iK_in, const int i_spin_in, const double v_in, const int i_in_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in),
                  i0_vertex_left(type_in*4), i0_vertex_right(type_in*4){
@@ -80,7 +80,7 @@ public:
 
 };
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::set_Keldysh_components_to_be_calculated() {
 #if not SWITCH_SUM_N_INTEGRAL
     if constexpr(version == 0) {
@@ -184,13 +184,13 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::set_Keldysh_componen
 #endif
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 auto IntegrandSE<Q,vertType,all_spins,return_type,version>::operator()(const double vp) const -> return_type {
     if constexpr(KELDYSH){return Keldysh_value(vp);}
     else{return Matsubara_value(vp);}
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals) const {
     int npoints = freqs.size();
 
@@ -215,7 +215,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::get_integrand_vals(c
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
     int npoints = 1e5;
@@ -236,7 +236,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand() con
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
     int npoints = freqs.size();
 
@@ -258,7 +258,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand(const
     write_to_hdf(file, "vertex", vertex_vals, false);
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 auto IntegrandSE<Q,vertType,all_spins,return_type,version>::Keldysh_value(const double vp) const -> return_type {
 #if SWITCH_SUM_N_INTEGRAL
 
@@ -303,7 +303,7 @@ else {
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 auto IntegrandSE<Q,vertType,all_spins,return_type,version>::Matsubara_value(const double vp) const -> Q {
     Q GM;
     evaluate_propagator(GM, vp);
@@ -322,7 +322,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type,version>::Matsubara_value(cons
     }
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator(Q &Gi, const int iK, const double vp) const {
 #if CONTOUR_BASIS != 1
     switch (iK) {
@@ -343,12 +343,12 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator(
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator(Q &GM, const double vp) const {
     GM = propagator.valsmooth(0, vp, i_in);           // Matsubara propagator (full or single scale)
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator_vectorized(const double vp) const -> buffertype_propagator {
     buffertype_propagator G = propagator.template valsmooth_vectorized<buffertype_propagator>(vp, i_in);
     std::swap(G(1), G(2));
@@ -356,7 +356,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator_
 }
 
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
                                      const int iK, const double vp) const {
     using namespace selfenergy_loop;
@@ -367,7 +367,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex(Q &f
     factorClosedBelow = vertex.template value<pick_channel<version>()>(inputClosedBelow);
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex(Q &factorClosedAbove, const int iK, const double vp) const {
     using namespace selfenergy_loop;
     // "components" are all zero in Matsubara case -> this function also works for Matsubara
@@ -375,7 +375,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex(Q &f
     factorClosedAbove = vertex.template value<pick_channel<version>()>(inputClosedAbove);
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type, bool version>
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex_vectorized(const double vp) const -> buffertype_vertex {
     using namespace selfenergy_loop;
 

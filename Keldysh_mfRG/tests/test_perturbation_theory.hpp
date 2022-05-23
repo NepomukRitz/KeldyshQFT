@@ -40,7 +40,7 @@ void testSelfEnergy_and_K1(double Lambda){
     SOPT_state.initialize();
     sopt_state(SOPT_state, Lambda);
 
-    Vertex<Q> temp_vertex_a (Lambda), temp_vertex_p (Lambda); //All zeros
+    Vertex<Q,false> temp_vertex_a (Lambda), temp_vertex_p (Lambda); //All zeros
     temp_vertex_a.initialize((KELDYSH_FORMALISM and !CONTOUR_BASIS) ? -glb_U*0.5 : -glb_U);
     temp_vertex_p.initialize((KELDYSH_FORMALISM and !CONTOUR_BASIS) ? -glb_U*0.5 : -glb_U);
     temp_vertex_a.avertex() = SOPT_state.vertex.avertex();

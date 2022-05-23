@@ -26,10 +26,10 @@
  */
 
 /// Class to actually calculate the loop integral for a given external fermionic frequency and internal index.
-template <typename Q, vertexType vertType, bool all_spins, bool version>
+template <typename Q, typename vertType, bool all_spins, bool version>
 class LoopCalculator{
     SelfEnergy<Q>& self;
-    const GeneralVertex<Q,vertType>& fullvertex;
+    const vertType& fullvertex;
     const Propagator<Q>& prop;
     //const bool all_spins;
 
@@ -62,7 +62,7 @@ class LoopCalculator{
     void compute_Matsubara_finiteT();
 
 public:
-    LoopCalculator(SelfEnergy<Q>& self_in, const GeneralVertex<Q,vertType>& fullvertex_in, const Propagator<Q>& prop_in,
+    LoopCalculator(SelfEnergy<Q>& self_in, const vertType& fullvertex_in, const Propagator<Q>& prop_in,
                    const int iSE)
                    : self(self_in), fullvertex(fullvertex_in), prop(prop_in),
                    iv(iSE/n_in), i_in(iSE - iv*n_in){
@@ -72,7 +72,7 @@ public:
     void perform_computation();
 };
 
-template<typename Q, vertexType vertType, bool all_spins, bool version>
+template<typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType, all_spins, version>::set_v_limits() {
     /// One integrates the integrands from v_lower-|v| to v_upper+|v|
     /// The limits of the integral must depend on v
@@ -92,14 +92,14 @@ void LoopCalculator<Q,vertType, all_spins, version>::set_v_limits() {
     }
 }
 
-template<typename Q, vertexType vertType, bool all_spins, bool version>
+template<typename Q, typename vertType, bool all_spins, bool version>
 Q LoopCalculator<Q,vertType,all_spins, version>::set_prefactor() {
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
     if (KELDYSH) return Keldysh_prefactor();
     else         return Matsubara_prefactor();
 }
 
-template<typename Q, vertexType vertType, bool all_spins, bool version>
+template<typename Q, typename vertType, bool all_spins, bool version>
 Q LoopCalculator<Q,vertType,all_spins, version>::Keldysh_prefactor() {
     if constexpr(!std::is_same_v<Q,double>) {
         // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
@@ -108,13 +108,13 @@ Q LoopCalculator<Q,vertType,all_spins, version>::Keldysh_prefactor() {
     else return 0.;
 }
 
-template<typename Q, vertexType vertType, bool all_spins, bool version>
+template<typename Q, typename vertType, bool all_spins, bool version>
 Q LoopCalculator<Q,vertType,all_spins, version>::Matsubara_prefactor() {
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi))
    return -1./(2*M_PI);
 }
 
-template<typename Q, vertexType vertType, bool all_spins, bool version>
+template<typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType,all_spins, version>::perform_computation() {
     if constexpr(KELDYSH)    compute_Keldysh();
     else{
@@ -123,7 +123,7 @@ void LoopCalculator<Q,vertType,all_spins, version>::perform_computation() {
     }
 }
 
-template <typename Q, vertexType vertType, bool all_spins, bool version>
+template <typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType,all_spins, version>::compute_Keldysh() {
     using namespace selfenergy_loop;
 
@@ -438,7 +438,7 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Keldysh() {
 
 }
 
-template <typename Q, vertexType vertType, bool all_spins, bool version>
+template <typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_zeroT() {
     using namespace selfenergy_loop;
 
@@ -469,7 +469,7 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_zeroT() {
     //}
 }
 
-template <typename Q, vertexType vertType, bool all_spins, bool version>
+template <typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() {
     using namespace selfenergy_loop;
 
@@ -504,8 +504,8 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() 
  * @param prop      : Propagator object for the calculation of the loop
  * @param all_spins : Whether the calculation of the loop should include all spin components of the vertex
  */
-template <bool all_spins, bool version=0, typename Q, vertexType vertType>
-void loop(SelfEnergy<state_datatype>& self, const GeneralVertex<Q,vertType>& fullvertex, const Propagator<Q>& prop){
+template <bool all_spins, bool version=0, typename Q, typename vertType>
+void loop(SelfEnergy<state_datatype>& self, const vertType& fullvertex, const Propagator<Q>& prop){
     SelfEnergy<state_datatype> self_temp = self; /// problem with aliasing if self is identical to a member of prop
     fullvertex.initializeInterpol();
 #if SWITCH_SUM_N_INTEGRAL

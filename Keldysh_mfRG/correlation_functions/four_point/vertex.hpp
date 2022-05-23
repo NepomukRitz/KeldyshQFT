@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_VERTEX_HPP
 
 #include <cmath>
+#include <type_traits>
 #include "../../data_structures.hpp"    // real/complex vector classes
 #include "../../parameters/master_parameters.hpp"         // system parameters (vector lengths etc.)
 #include "r_vertex.hpp"           // reducible vertex in channel r
@@ -15,7 +16,7 @@
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
-    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
+    friend State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
     using buffer_type = multidimensional::multiarray<Q,2>;
     buffer_type empty_bare() {
         if (KELDYSH) return buffer_type ({16,n_in});
@@ -114,9 +115,9 @@ public:
     bool completely_crossprojected = false; // Have all reducible parts fully been cross-projected? Needed for the Hubbard model.
 
     fullvert() = default;
-    explicit fullvert(const double Lambda, const bool is_reserve) : avertex('a', Lambda, is_reserve),
-                              pvertex('p', Lambda, is_reserve),
-                              tvertex('t', Lambda, is_reserve) {}
+    explicit fullvert(const double Lambda) : avertex('a', Lambda, true),
+                              pvertex('p', Lambda, true),
+                              tvertex('t', Lambda, true) {}
 
 private:
     /// Returns \gamma_{\bar{r}} := the sum of the contributions of the diagrammatic classes r' =/= r
@@ -314,22 +315,33 @@ public:
 /** symmetric_full and symmetric_r_irred vertex container class (contains only half 1, since half 1 and 2 are related by symmetry)
  *  non_symmetric contains the actual vertex in "vertex" and the left-right-symmetry-related one in "vertex_half2" (the latter is needed for reading from the symmetry-reduced sector)
  * */
-template <typename Q, vertexType symmtype>
+template <typename Q, vertexType symmtype, bool differentiated>
 class GeneralVertex {
     fullvert<Q> vertex;
-    fullvert<Q> vertex_half2;
+    using vertex_half2_t = std::conditional_t<symmtype == non_symmetric_diffleft or symmtype == non_symmetric_diffright, fullvert<Q>, double>;
+    vertex_half2_t vertex_half2;
 
+    using vertex_nondiff_t = std::conditional_t<differentiated, GeneralVertex<Q,symmetric_full,false>, double>;
+    vertex_nondiff_t vertex_nondifferentiated;
 
 public:
+    using base_type = Q;
     /// Buffer for vectorized computation of an r-bubble
     /// Each entry contains exactly one spin component;
     /// all Keldysh components are present, they are ordered by GeneralVertex::symmetry_expand() such that they allow
     ///     vectorized operations for the computation in channel r
     mutable std::vector<fullvert<Q>> vertices_bubbleintegrand;
 
-    explicit GeneralVertex(const fullvert<Q>& vertex_in) : vertex(vertex_in), vertex_half2(fullvert<Q>(0,false)) {static_assert(symmtype == symmetric_full or symmtype == symmetric_r_irred , "Only use single-argument constructor for symmetric_full vertex!");}
-    GeneralVertex(const fullvert<Q>& half1, const fullvert<Q>& half2) : vertex(half1), vertex_half2(half2) {static_assert(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright, "Only use two-argument constructor for non_symmetric vertex!");}
-    explicit GeneralVertex(const double Lambda_in) : vertex(fullvert<Q>(Lambda_in, true)), vertex_half2(fullvert<Q>(Lambda_in, symmtype == symmetric_full or symmtype == symmetric_r_irred )) {}
+    explicit GeneralVertex(const double Lambda_in) : vertex(Lambda_in), vertex_half2(Lambda_in), vertex_nondifferentiated(Lambda_in) {assert(!differentiated);}
+    GeneralVertex(const double Lambda_in, const vertex_nondiff_t& vertex_nondiff) : vertex(Lambda_in), vertex_half2(Lambda_in), vertex_nondifferentiated(vertex_nondiff) {static_assert(differentiated);}
+    template <typename ... Types >
+    explicit GeneralVertex(const double Lambda_in, const Types& ... t) : vertex(Lambda_in), vertex_half2(Lambda_in), vertex_nondifferentiated(Lambda_in) {assert(false);}
+    explicit GeneralVertex(const fullvert<Q>& vertex_in)
+    : vertex(vertex_in), vertex_half2(0), vertex_nondifferentiated(0) {
+        static_assert(symmtype == symmetric_full or symmtype == symmetric_r_irred , "Only use single-argument constructor for symmetric_full vertex!");}
+    GeneralVertex(const fullvert<Q>& half1, const fullvert<Q>& half2, const GeneralVertex<Q,symmetric_full,false>& vertex_nondiff)
+    : vertex(half1), vertex_half2(half2), vertex_nondifferentiated(vertex_nondiff) {
+        static_assert(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright, "Only use two-argument constructor for non_symmetric vertex!");}
 
     // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
     fullvert<Q>& half1() { return vertex;}
@@ -433,14 +445,19 @@ public:
         return vertices_bubbleintegrand[spin].template right_diff_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred,symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright>(input);
     }
 
-    template <int spin, char ch_bubble, char channel_vertex, K_class k, typename result_type> auto get_Kir_value_symmetry_expanded(const VertexInput& input)  const -> result_type {
+    template <int spin, char ch_bubble, char channel_vertex, K_class k, typename result_type> auto get_Kir_value_symmetry_expanded_nondiff(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
         if constexpr((symmtype == symmetric_r_irred and ch_bubble == channel_vertex) or ((symmtype == non_symmetric_diffleft or symmtype == non_symmetric_diffright) and ch_bubble != channel_vertex))  {
             return myzero<result_type>();
         }
         else {
-            return vertices_bubbleintegrand[spin].template get_rvertex<channel_vertex>(). template valsmooth_symmetry_expanded<k,result_type>(input);
+            if constexpr(differentiated) {
+                return vertex_nondifferentiated.template get_Kir_value_symmetry_expanded_nondiff<spin,ch_bubble,channel_vertex,k,result_type>(input);
+            }
+            else {
+                return vertices_bubbleintegrand[spin].template get_rvertex<channel_vertex>(). template valsmooth_symmetry_expanded<k,result_type>(input);
+            }
         }
     }
 
@@ -454,7 +471,7 @@ public:
     double norm_K3(int i)  { return vertex.norm_K3(i); }
 
 
-    void set_frequency_grid(const GeneralVertex<Q, symmetric_full>& vertex_in) {
+    void set_frequency_grid(const GeneralVertex<Q, symmetric_full,false>& vertex_in) {
         vertex.set_frequency_grid(vertex_in.half1());
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.set_frequency_grid(vertex_in.vertex_half2);
     }
@@ -501,7 +518,7 @@ public:
         vertex.set_initializedInterpol(false);
     }
     template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
-        vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded + 1, fullvert<Q>(0., false));
+        vertices_bubbleintegrand = std::vector<fullvert<Q>>(n_spin_expanded + 1, fullvert<Q>(0.));
         //utils::print("Start symmetry expansion\n");
         initializeInterpol();
         //utils::print("Initialized Interpolator \n");
@@ -536,58 +553,58 @@ public:
     }
 
 public:
-    auto operator+= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
+    auto operator+= (const GeneralVertex<Q,symmtype,differentiated>& vertex1) -> GeneralVertex<Q,symmtype,differentiated> {
         this->vertex += vertex1.vertex;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) this->vertex_half2 += vertex1.vertex_half2;
         return *this;
     }
-    friend GeneralVertex<Q,symmtype> operator+ (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
+    friend GeneralVertex<Q,symmtype,differentiated> operator+ (GeneralVertex<Q,symmtype,differentiated> lhs, const GeneralVertex<Q,symmtype,differentiated>& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator+= (const double alpha) -> GeneralVertex<Q,symmtype> {
+    auto operator+= (const double alpha) -> GeneralVertex<Q,symmtype,differentiated> {
         this->vertex += alpha;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) this->vertex_half2 += alpha;
         return *this;
     }
-    friend GeneralVertex<Q,symmtype> operator+ (GeneralVertex<Q,symmtype> lhs, const double& rhs) {
+    friend GeneralVertex<Q,symmtype,differentiated> operator+ (GeneralVertex<Q,symmtype,differentiated> lhs, const double& rhs) {
         lhs += rhs;
         return lhs;
     }
-    auto operator*= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
+    auto operator*= (const GeneralVertex<Q,symmtype,differentiated>& vertex1) -> GeneralVertex<Q,symmtype,differentiated> {
         this->vertex *= vertex1.vertex;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) this->vertex_half2 *= vertex1.vertex_half2;
         return *this;
     }
-    friend GeneralVertex<Q,symmtype> operator* (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
+    friend GeneralVertex<Q,symmtype,differentiated> operator* (GeneralVertex<Q,symmtype,differentiated> lhs, const GeneralVertex<Q,symmtype,differentiated>& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator*= (const double& alpha) -> GeneralVertex<Q,symmtype> {
+    auto operator*= (const double& alpha) -> GeneralVertex<Q,symmtype,differentiated> {
         this->vertex *= alpha;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) this->vertex_half2 += alpha;
         return *this;
     }
-    friend GeneralVertex<Q,symmtype> operator* (GeneralVertex<Q,symmtype> lhs, const double& rhs) {
+    friend GeneralVertex<Q,symmtype,differentiated> operator* (GeneralVertex<Q,symmtype,differentiated> lhs, const double& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    auto operator-= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
+    auto operator-= (const GeneralVertex<Q,symmtype,differentiated>& vertex1) -> GeneralVertex<Q,symmtype,differentiated> {
         this->vertex -= vertex1.vertex;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) this->vertex_half2 -= vertex1.vertex_half2;
         return *this;
     }
-    friend GeneralVertex<Q,symmtype> operator- (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
+    friend GeneralVertex<Q,symmtype,differentiated> operator- (GeneralVertex<Q,symmtype,differentiated> lhs, const GeneralVertex<Q,symmtype,differentiated>& rhs) {
         lhs -= rhs;
         return lhs;
     }
 
-    auto operator/= (const GeneralVertex<Q,symmtype>& vertex1) -> GeneralVertex<Q,symmtype> {
+    auto operator/= (const GeneralVertex<Q,symmtype,differentiated>& vertex1) -> GeneralVertex<Q,symmtype,differentiated> {
         this->vertex /= vertex1.vertex;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) this->vertex_half2 /= vertex1.vertex_half2;
         return *this;
     }
-    friend GeneralVertex<Q,symmtype> operator/ (GeneralVertex<Q,symmtype> lhs, const GeneralVertex<Q,symmtype>& rhs) {
+    friend GeneralVertex<Q,symmtype,differentiated> operator/ (GeneralVertex<Q,symmtype,differentiated> lhs, const GeneralVertex<Q,symmtype,differentiated>& rhs) {
         lhs /= rhs;
         return lhs;
     }
@@ -597,8 +614,8 @@ public:
 
 
 /** Define Vertex as symmetric_full GeneralVertex */
-template <typename Q>
-using Vertex = GeneralVertex<Q, symmetric_full>;
+template <typename Q, bool differentiated>
+using Vertex = GeneralVertex<Q, symmetric_full, differentiated>;
 
 
 /************************************* MEMBER FUNCTIONS OF THE IRREDUCIBLE VERTEX *************************************/

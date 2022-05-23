@@ -36,7 +36,7 @@ private:
 class Hubbard_SE_SOPT_Computer{
 public:
     Hubbard_SE_SOPT_Computer(const double Lambda_in, SelfEnergy<comp>& SOPT_SE_Hubbard_in,
-                             const State<comp>& bareState_in, const Vertex<comp>& vertex_in_SOPT_in)
+                             const State<comp>& bareState_in, const Vertex<comp,false>& vertex_in_SOPT_in)
             : Lambda(Lambda_in), bareState(bareState_in), vertex_in_SOPT(vertex_in_SOPT_in), SOPT_SE_Hubbard(SOPT_SE_Hubbard_in)
               {
         assert(HUBBARD_MODEL);
@@ -50,7 +50,7 @@ private:
     const double Lambda;
 
     const State<comp>& bareState;
-    const Vertex<comp>& vertex_in_SOPT;
+    const Vertex<comp,false>& vertex_in_SOPT;
     const Propagator<comp> barePropagator = Propagator<comp>(Lambda, bareState.selfenergy, 'g');
 
     SelfEnergy<comp>& SOPT_SE_Hubbard; // result

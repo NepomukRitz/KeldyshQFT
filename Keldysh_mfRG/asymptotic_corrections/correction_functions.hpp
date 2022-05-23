@@ -44,11 +44,11 @@
  * @return                : Value of the asymptotic correction
  */
 template <char channel, typename Q,
-          vertexType symmetry_left,
-          vertexType symmetry_right>
+          typename vertexType_1,
+          typename vertexType_2>
 auto asymp_corrections_bubble(K_class k,
-                              const GeneralVertex<Q, symmetry_left>& vertex1,
-                              const GeneralVertex<Q, symmetry_right>& vertex2,
+                              const vertexType_1& vertex1,
+                              const vertexType_2& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
                               double w, double v, double vp, int i0_in, int i2, int i_in, bool diff, int spin) -> Q {
@@ -241,8 +241,8 @@ auto asymp_corrections_bubble(K_class k,
  * @param all_spins  : Determines if spin sum in loop is performed.
  * @return
  */
-template <typename Q, vertexType vertType> // TODO(medium): split up into two functions
-auto asymp_corrections_loop(const GeneralVertex<Q,vertType>& vertex,
+template <typename Q, typename vertexType> // TODO(medium): split up into two functions
+auto asymp_corrections_loop(const vertexType& vertex,
                             const Propagator<Q>& G,
                             double vmin, double vmax,
                             double v, int iK, int ispin, int i_in, const bool all_spins) -> Q {

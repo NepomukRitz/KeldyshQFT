@@ -20,7 +20,7 @@
 #include "Eigen/Dense"
 //#include "utilities/math_utils.h"
 
-template<typename Q> class State;
+template<typename Q, bool differentiated> class State;
 
 typedef std::complex<double> comp; // Complex number
 
@@ -30,7 +30,7 @@ template <typename T> double myabs(const T& x) {
     if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double>) {
         return std::abs(x);
     }
-    else if constexpr(std::is_same_v<T, State<comp>> or std::is_same_v<T, State<double>>) {
+    else if constexpr(std::is_same_v<T, State<comp,false>> or std::is_same_v<T, State<double,false>>) {
         return x.abs();
     }
     else {

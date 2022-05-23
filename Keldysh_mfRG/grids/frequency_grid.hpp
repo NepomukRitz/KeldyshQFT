@@ -41,7 +41,7 @@
 /// TODO: implement hybrid frequency grid, improve/unify treatment of different frequency meshes and their frequency parameters
 
 template<K_class k, typename Q> class vertexDataContainer; // forward declaration
-template<typename Q> class State; // forward declaration
+template<typename Q, bool differentiated> class State; // forward declaration
 
 #define PARAMETRIZED_GRID
 #if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)

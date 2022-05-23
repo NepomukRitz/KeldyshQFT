@@ -18,7 +18,7 @@
 
 template <typename Q> class rvert; // forward declaration of rvert
 //template <typename Q> class fullvert; // forward declaration of fullvert
-template <typename Q> class State; // forward declaration of State
+template <typename Q, bool differentiated> class State; // forward declaration of State
 template<typename Q, std::size_t depth, typename H5object>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
 //template <typename Q, vertexType symm_type> class GeneralVertex;
@@ -33,8 +33,9 @@ class Buffer;
  */
     template<typename Q, std::size_t rank>
     class dataContainerBase {
-        friend class State<Q>;
-        friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
+        friend class State<Q,false>;
+        friend class State<Q,true>;
+        friend State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
 
 
     protected:
@@ -168,12 +169,12 @@ class Buffer;
         friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
 
         template<typename T>
-        friend void result_set_frequency_grids(State<T> &result, Buffer &buffer);
+        friend void result_set_frequency_grids(State<T,false> &result, Buffer &buffer);
 
         template<typename T>
-        friend void check_FDTs(const State<T> &state, bool verbose);
+        friend void check_FDTs(const State<T,false> &state, bool verbose);
 
-        friend State<state_datatype> read_state_from_hdf(const H5std_string &filename, const int Lambda_it);
+        friend State<state_datatype,false> read_state_from_hdf(const H5std_string &filename, const int Lambda_it);
 
     protected:
         using base_class = dataContainerBase<Q, rank>;

@@ -473,8 +473,8 @@ namespace hdf5_impl {
     template<typename gridType>
     void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, unsigned int Lambda_it, double Lambda);
 
-    template<typename Q>
-    void write_state_to_hdf_LambdaLayer(const H5std_string& filename, const State<Q>& state, const unsigned int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose=true) {
+    template<typename Q, bool diff>
+    void write_state_to_hdf_LambdaLayer(const H5std_string& filename, const State<Q, diff>& state, const unsigned int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose=true) {
         H5::H5File file_out;
         if (!file_exists) {
             // If file doesn't exist, create a new file using the default property lists.
@@ -671,8 +671,8 @@ namespace hdf5_impl {
 }
 
 /// Create file with fixed number of Lambda layers and save state to first Lambda layer
-template <typename Q>
-void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State<Q>& state_in, const bool verbose=true) {
+template <typename Q, bool diff>
+void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State<Q,diff>& state_in, const bool verbose=true) {
 #ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
@@ -687,8 +687,8 @@ void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int
 }
 
 /// Open file and save state to a specified Lambda layer
-template <typename Q>
-void add_state_to_hdf(const H5std_string FILE_NAME, unsigned int Lambda_it, const State<Q>& state_in, const bool verbose=true) {
+template <typename Q, bool diff>
+void add_state_to_hdf(const H5std_string FILE_NAME, unsigned int Lambda_it, const State<Q,diff>& state_in, const bool verbose=true) {
 #ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif

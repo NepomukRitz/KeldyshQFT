@@ -149,6 +149,10 @@ constexpr buffer_config<5> K2_expanded_config{
     std::array<size_t,5>({1, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2})
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
+constexpr buffer_config<6> K3_SBE_expanded_config{
+        std::array<size_t,6>({1, nBOS2, nFER2, GRID!=2 ? nFER2 : (nFER2-1)/2+1, KELDYSH ?  16 : 1, n_in_K3})
+        , 3  // number of frequency dimensions
+        , 1};// position of first frequency index
 constexpr buffer_config<6> K3_expanded_config{
     std::array<size_t,6>({1, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH ?  16 : 1, n_in_K3})
     , 3  // number of frequency dimensions

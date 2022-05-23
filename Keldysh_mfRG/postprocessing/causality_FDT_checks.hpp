@@ -746,8 +746,8 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 /*
  * Wrapper for above function (here defined for GeneralVertex)
  */
-template <typename Q, vertexType symmetry_type>
-void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out, const GeneralVertex<Q,symmetry_type>& vertex_in) {
+template <typename Q, typename vertexType>
+void compute_components_through_FDTs(vertexType& vertex_out, const vertexType& vertex_in) {
     vertex_in.initializeInterpol();
     compute_components_through_FDTs<Q,'a'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1());
     compute_components_through_FDTs<Q,'p'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1());
@@ -758,8 +758,9 @@ void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out,
 /*
  *
  */
-template <typename Q, vertexType symmetry_type>
-void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
+template <typename vertexType>
+void compare_with_FDTs(const vertexType& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
+    using Q = typename vertexType::base_type;
     if(KELDYSH) {
         if (CONTOUR_BASIS and not ZERO_T) {} //assert(false);
         if (CONTOUR_BASIS and ZERO_T) {
@@ -857,11 +858,11 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
 
         }
         else {
-            GeneralVertex<Q, symmetry_type> vertex_out = vertex_in;
-            compute_components_through_FDTs(vertex_out, vertex_in);
+            vertexType vertex_out = vertex_in;
+            compute_components_through_FDTs<Q>(vertex_out, vertex_in);
 
             utils::print("Checking the FDTs for Lambda_it", Lambda_it, true);
-            GeneralVertex<Q, symmetry_type> vertex_diff = vertex_in - vertex_out;
+            vertexType vertex_diff = vertex_in - vertex_out;
             utils::print("K2: max-norm of deviation = ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
                 std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
@@ -884,9 +885,9 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
 
             if (write_flag) {
                 SelfEnergy<Q> SE_empty(Lambda);
-                Vertex<Q> temp_diff(Lambda);
+                Vertex<Q,false> temp_diff(Lambda);
                 temp_diff.half1() = vertex_diff.half1();
-                Vertex<Q> temp_out(Lambda);
+                Vertex<Q,false> temp_out(Lambda);
                 temp_out.half1() = vertex_out.half1();
                 State<Q> state_out(temp_out, SE_empty, Lambda);
                 State<Q> state_diff(temp_diff, SE_empty, Lambda);

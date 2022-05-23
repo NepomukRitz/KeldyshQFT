@@ -76,7 +76,7 @@ public:
     mutable buffer_type_K2b K2b_symmetry_expanded;
 
     buffer_type_K3_SBE K3_SBE;
-    buffer_type_K3_SBE K3_SBE_symmetry_expanded;
+    mutable buffer_type_K3_SBE K3_SBE_symmetry_expanded;
 
     buffer_type_K3 K3;
     mutable buffer_type_K3 K3_symmetry_expanded;
@@ -934,6 +934,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
     K1_symmetry_expanded = buffer_type_K1(0., K1_expanded_config.dims);
     K2_symmetry_expanded = buffer_type_K2(0., K2_expanded_config.dims);
     K2b_symmetry_expanded = buffer_type_K2b (0., K2_expanded_config.dims);
+    K3_SBE_symmetry_expanded = buffer_type_K3_SBE(0., K3_SBE_expanded_config.dims);
     K3_symmetry_expanded = buffer_type_K3(0., K3_expanded_config.dims);
     if (spin == 0) {
         K1_symmetry_expanded.set_VertexFreqGrid(rvert_this.K1.get_VertexFreqGrid());

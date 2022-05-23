@@ -17,9 +17,9 @@ void parquet_checks(const std::string filename) {
         utils::print("State read from file.", true);
 
         // compute vertex from BSE
-        Vertex<state_datatype> Gamma_BSE (Lambdas[i]);
+        Vertex<state_datatype,false> Gamma_BSE (Lambdas[i]);
         compute_BSE(Gamma_BSE, state, Lambdas[i], i);       // compute the lhs of the BSE
-        Vertex<state_datatype> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
+        Vertex<state_datatype,false> Gamma_diff = state.vertex - Gamma_BSE;  // compute the difference between input and lhs of BSE
         utils::print("Computed BSE.", true);
 
         // compute self-energy from SDE
@@ -73,7 +73,7 @@ void parquet_checks(const std::string filename) {
 
 
         // post-processing susceptibilities:
-        Vertex<state_datatype> chi (Lambdas[i]), chi_diff (Lambdas[i]);
+        Vertex<state_datatype,false> chi (Lambdas[i]), chi_diff (Lambdas[i]);
         chi.set_frequency_grid(state.vertex);
         chi_diff.set_frequency_grid(state.vertex);
 

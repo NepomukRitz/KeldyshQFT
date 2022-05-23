@@ -13,12 +13,12 @@ template <typename Q>
 class Integrand_Phi_tilde {
 public:
     const Propagator<Q>& G;
-    const Vertex<Q>& vertex;
+    const Vertex<Q,false>& vertex;
     const double vp;
     const int it_spin = 0;
     const int i_in;
 
-    Integrand_Phi_tilde(const Propagator<Q>& G_in, const Vertex<Q>& vertex_in, const double vp_in, const int i_in_in)
+    Integrand_Phi_tilde(const Propagator<Q>& G_in, const Vertex<Q,false>& vertex_in, const double vp_in, const int i_in_in)
             : G(G_in), vertex(vertex_in), vp(vp_in), i_in(i_in_in) {}
 
     auto operator() (double v) const -> Q {
@@ -74,9 +74,9 @@ void compute_Phi_tilde(std::string filename);
 
 class Integrand_sum_rule_K1tK {
     int it_spin = 0;
-    Vertex<state_datatype> vertex;
+    Vertex<state_datatype,false> vertex;
 public:
-    Integrand_sum_rule_K1tK(Vertex<state_datatype>& vertex_in) : vertex(vertex_in) {}
+    Integrand_sum_rule_K1tK(Vertex<state_datatype,false>& vertex_in) : vertex(vertex_in) {}
 
     auto operator() (double w) const -> state_datatype {
         state_datatype result;

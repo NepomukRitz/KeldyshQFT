@@ -31,7 +31,7 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 }
 
 template <typename Q, class Bubble_Object>
-void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
+void vertexInSOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
     std::string channels = "apt";
     for (char r: channels) {
 //#if not defined(NDEBUG)
@@ -47,7 +47,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& SOPTState, c
     Propagator<Q> barePropagator(Lambda, SOPTState.selfenergy, 'g');    //Bare propagator
 
     //Do an a-Bubble for the calculation of the self-energy
-    Vertex<Q> bubble_a(Lambda);
+    Vertex<Q,false> bubble_a(Lambda);
     bubble_a.set_frequency_grid(SOPTState.vertex);
     bubble_a.avertex() = SOPTState.vertex.avertex();
 
@@ -58,22 +58,22 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& SOPTState, c
 }
 
 void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
-                              const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
+                              const State<comp>& bareState, const Vertex<comp,false>& vertex_in_SOPT,
                               double Lambda);
 
 template <typename Q, class Bubble_Object>
-void vertexInTOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
-    Vertex<Q> bubblevertex_a(Lambda);
+void vertexInTOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
+    Vertex<Q,false> bubblevertex_a(Lambda);
     bubblevertex_a.set_frequency_grid(PsiVertex);
     bubblevertex_a.initialize(0.);
     bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q> bubblevertex_p(Lambda);
+    Vertex<Q,false> bubblevertex_p(Lambda);
     bubblevertex_p.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
 
 #if DEBUG_SYMMETRIES
-    Vertex<Q> bubblevertex_t(Lambda);
+    Vertex<Q,false> bubblevertex_t(Lambda);
     bubblevertex_t.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
@@ -98,16 +98,16 @@ void vertexInTOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const State<Q
 
 
 template <typename Q, class Bubble_Object>
-void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    Vertex<Q> bubblevertex_a(Lambda);
+void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
+    Vertex<Q,false> bubblevertex_a(Lambda);
     bubblevertex_a.set_frequency_grid(PsiVertex);
     bubblevertex_a.initialize(0.);
     bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q> bubblevertex_p(Lambda);
+    Vertex<Q,false> bubblevertex_p(Lambda);
     bubblevertex_p.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
-    Vertex<Q> bubblevertex_t(Lambda);
+    Vertex<Q,false> bubblevertex_t(Lambda);
     bubblevertex_t.set_frequency_grid(PsiVertex);
     bubblevertex_t.initialize(0.);
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
@@ -233,14 +233,14 @@ private:
     const Bubble<Q> Pi = Bubble<Q> (barePropagator, barePropagator, false); // Works only for the SIAM
 
     /// Vertices to be computed
-    Vertex<Q> SOPT_Vertex = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_Vertex = Vertex<Q>(Lambda);
-    Vertex<Q> FOPT_Vertex = Vertex<Q>(Lambda);
+    Vertex<Q,false> SOPT_Vertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_Vertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> FOPT_Vertex = Vertex<Q,false>(Lambda);
 
     // SOPT vertices containing only specific channels. Useful when computing higher order contributions
-    Vertex<Q> SOPT_avertex = Vertex<Q>(Lambda);
-    Vertex<Q> SOPT_pvertex = Vertex<Q>(Lambda);
-    Vertex<Q> SOPT_tvertex = Vertex<Q>(Lambda);
+    Vertex<Q,false> SOPT_avertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> SOPT_pvertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> SOPT_tvertex = Vertex<Q,false>(Lambda);
 
     /// Function which actually perform the computations
     void compute_SOPT();
@@ -321,7 +321,7 @@ void PT_Machine<Q>::compute_TOPT() {
 
     // Compensate for overcounting the ladder
     utils::print("Compensate for overcounting the ladder...", true);
-    Vertex<Q> TOPT_Ladder = Vertex<Q>(Lambda);
+    Vertex<Q,false> TOPT_Ladder = Vertex<Q,false>(Lambda);
     utils::print("...in the a channel...", true);
     bubble_function(TOPT_Ladder, SOPT_avertex, bareState.vertex, Pi, 'a');
     utils::print("...in the p channel...", true);
@@ -354,8 +354,8 @@ void PT_Machine<Q>::compute_FOPT() {
 
         // Compensate for counting K1 twice in the first two steps
         utils::print("...and compensate for counting K1 twice...", true);
-        Vertex<Q> K1_comp_step1 = Vertex<Q>(Lambda);
-        Vertex<Q> K1_comp = Vertex<Q>(Lambda);
+        Vertex<Q,false> K1_comp_step1 = Vertex<Q,false>(Lambda);
+        Vertex<Q,false> K1_comp = Vertex<Q,false>(Lambda);
         bubble_function(K1_comp_step1, bareState.vertex, SOPT_Vertex, Pi, r);
         bubble_function(K1_comp, K1_comp_step1, bareState.vertex, Pi, r);
 
@@ -365,12 +365,12 @@ void PT_Machine<Q>::compute_FOPT() {
 
     // Compensate overcounting K1, K2 and K2p terms in the third step
     utils::print("Compensate for overcounting K1, K2 and K2p terms before...", true);
-    Vertex<Q> K2_comp = Vertex<Q>(Lambda);
+    Vertex<Q,false> K2_comp = Vertex<Q,false>(Lambda);
     bubble_function(K2_comp, SOPT_Vertex, SOPT_avertex, Pi, 'a');
     bubble_function(K2_comp, SOPT_Vertex, SOPT_pvertex, Pi, 'p');
     bubble_function(K2_comp, SOPT_Vertex, SOPT_tvertex, Pi, 't');
 
-    Vertex<Q> K2p_comp = Vertex<Q>(Lambda);
+    Vertex<Q,false> K2p_comp = Vertex<Q,false>(Lambda);
     bubble_function(K2p_comp, SOPT_avertex, SOPT_Vertex, Pi, 'a');
     bubble_function(K2p_comp, SOPT_pvertex, SOPT_Vertex, Pi, 'p');
     bubble_function(K2p_comp, SOPT_tvertex, SOPT_Vertex, Pi, 't');
@@ -380,7 +380,7 @@ void PT_Machine<Q>::compute_FOPT() {
 
     // Compensate for compensating for the ladder twice in the previous step
     utils::print("... and compensate for overcompensating the ladder in the previous step...", true);
-    Vertex<Q> Ladder_comp = Vertex<Q>(Lambda);
+    Vertex<Q,false> Ladder_comp = Vertex<Q,false>(Lambda);
     bubble_function(Ladder_comp, SOPT_avertex, SOPT_avertex, Pi, 'a');
     bubble_function(Ladder_comp, SOPT_pvertex, SOPT_pvertex, Pi, 'p');
     bubble_function(Ladder_comp, SOPT_tvertex, SOPT_tvertex, Pi, 't');
@@ -515,10 +515,10 @@ void PT_Machine<Q>::write_out_results() const {
 
 template<typename Q>
 void PT_Machine<Q>::debug_TOPT() {
-    Vertex<Q> TOPT_K1_a = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_K1_p = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_K1_t_left = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_K1_t_right = Vertex<Q>(Lambda);
+    Vertex<Q,false> TOPT_K1_a = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_K1_p = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_K1_t_left = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_K1_t_right = Vertex<Q,false>(Lambda);
 
     utils::print("Now calculating K1 contribution for third order...", true);
     utils::print("...in the a channel...", true);
@@ -552,54 +552,54 @@ void PT_Machine<Q>::debug_TOPT() {
 template<typename Q>
 void PT_Machine<Q>::debug_FOPT_K1() {
     utils::print("---------- Build K1-diagrams at fourth order ----------", true);
-    Vertex<Q> a_ladder = Vertex<Q>(Lambda);
-    Vertex<Q> a_nonladder_p = Vertex<Q>(Lambda);
-    Vertex<Q> a_nonladder_t = Vertex<Q>(Lambda);
-    Vertex<Q> p_ladder = Vertex<Q>(Lambda);
-    Vertex<Q> p_nonladder_a = Vertex<Q>(Lambda);
-    Vertex<Q> p_nonladder_t = Vertex<Q>(Lambda);
-    Vertex<Q> t_ladder = Vertex<Q>(Lambda);
-    Vertex<Q> t_nonladder_a = Vertex<Q>(Lambda);
-    Vertex<Q> t_nonladder_p = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_ladder = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> a_nonladder_p = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> a_nonladder_t = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> p_ladder = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> p_nonladder_a = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> p_nonladder_t = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> t_ladder = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> t_nonladder_a = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> t_nonladder_p = Vertex<Q,false>(Lambda);
 
     utils::print("Now calculating the a-channel contributions...", true);
-    Vertex<Q> a_ladder_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_ladder_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(a_ladder_intermediate, SOPT_avertex, bareState.vertex, Pi, 'a');
     bubble_function(a_ladder, bareState.vertex, a_ladder_intermediate, Pi, 'a');
     utils::print("a-ladder done.", true);
-    Vertex<Q> a_nonladder_p_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_nonladder_p_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(a_nonladder_p_intermediate, SOPT_pvertex, bareState.vertex, Pi, 'a');
     bubble_function(a_nonladder_p, bareState.vertex, a_nonladder_p_intermediate, Pi, 'a');
     utils::print("a-non-ladder contribution from the p channel done.", true);
-    Vertex<Q> a_nonladder_t_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_nonladder_t_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(a_nonladder_t_intermediate, SOPT_tvertex, bareState.vertex, Pi, 'a');
     bubble_function(a_nonladder_t, bareState.vertex, a_nonladder_t_intermediate, Pi, 'a');
     utils::print("a-non-ladder contribution from the p channel done.", true);
 
     utils::print("Now calculating the p-channel contributions...", true);
-    Vertex<Q> p_ladder_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> p_ladder_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(p_ladder_intermediate, SOPT_pvertex, bareState.vertex, Pi, 'p');
     bubble_function(p_ladder, bareState.vertex, p_ladder_intermediate, Pi, 'p');
     utils::print("p-ladder done.", true);
-    Vertex<Q> p_nonladder_a_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> p_nonladder_a_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(p_nonladder_a_intermediate, SOPT_avertex, bareState.vertex, Pi, 'p');
     bubble_function(p_nonladder_a, bareState.vertex, p_nonladder_a_intermediate, Pi, 'p');
     utils::print("p-non-ladder contribution from the a channel done.", true);
-    Vertex<Q> p_nonladder_t_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> p_nonladder_t_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(p_nonladder_t_intermediate, SOPT_tvertex, bareState.vertex, Pi, 'p');
     bubble_function(p_nonladder_t, bareState.vertex, p_nonladder_t_intermediate, Pi, 'p');
     utils::print("p-non-ladder contribution from the p channel done.", true);
 
     utils::print("Now calculating the t-channel contributions...", true);
-    Vertex<Q> t_ladder_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> t_ladder_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(t_ladder_intermediate, SOPT_tvertex, bareState.vertex, Pi, 't');
     bubble_function(t_ladder, bareState.vertex, t_ladder_intermediate, Pi, 't');
     utils::print("t-ladder done.", true);
-    Vertex<Q> t_nonladder_a_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> t_nonladder_a_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(t_nonladder_a_intermediate, SOPT_avertex, bareState.vertex, Pi, 't');
     bubble_function(t_nonladder_a, bareState.vertex, t_nonladder_a_intermediate, Pi, 't');
     utils::print("t-non-ladder contribution from the a channel done.", true);
-    Vertex<Q> t_nonladder_p_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> t_nonladder_p_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(t_nonladder_p_intermediate, SOPT_pvertex, bareState.vertex, Pi, 't');
     bubble_function(t_nonladder_p, bareState.vertex, t_nonladder_p_intermediate, Pi, 't');
     utils::print("t-non-ladder contribution from the p channel done.", true);
