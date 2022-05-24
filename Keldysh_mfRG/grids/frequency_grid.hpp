@@ -430,7 +430,7 @@ public:
     }
     bool is_in_box(std::array<double,3> freqs) const {
         K3_convert2internalFreqs(freqs[0], freqs[1], freqs[2]);
-        if constexpr(k == k3) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol and std::abs(freqs[2]) < tertiary_grid.w_upper + inter_tol;
+        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION)) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol and std::abs(freqs[2]) < tertiary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
 
@@ -466,7 +466,7 @@ public:
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_grid_index(std::array<my_index_t,3>& idx, std::array<double,3>& dw_normalized, const std::array<double,3>& freqs) const {
-        if constexpr(k == k3)  {
+        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION))  {
             double w  = freqs[0];
             double v  = freqs[1];
             double vp = freqs[2];
@@ -524,7 +524,7 @@ public:
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_auxgrid_index(std::array<my_index_t,3>& idx, std::array<double,3>& dt_normalized, const std::array<double,3>& freqs) const {
-        if constexpr(k == k3)  {
+        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION))  {
             double w  = freqs[0];
             double v  = freqs[1];
             double vp = freqs[2];
@@ -583,7 +583,7 @@ public:
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_auxgrid_index_unnormalized(std::array<my_index_t,3>& idx, std::array<double,3>& dt_unnormalized, const std::array<double,3>& freqs) const {
-        if constexpr(k == k3)  {
+        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION))  {
             double w  = freqs[0];
             double v  = freqs[1];
             double vp = freqs[2];
@@ -624,7 +624,7 @@ public:
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_w(double &w, double &v,  double &vp, const int iw, const int iv, const int ivp) const {
-        if constexpr(k == k3) {
+        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION)) {
             w =   primary_grid.get_frequency(iw);
             v = secondary_grid.get_frequency(iv);
             vp = tertiary_grid.get_frequency(ivp);
@@ -661,7 +661,7 @@ public:
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     void get_freqs_aux(double &w, double &v, double &vp, const int iw, const int iv, const int ivp) const {
-        if constexpr(k == k3) {
+        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION)) {
             w =   primary_grid.get_auxiliary_gridpoint(iw);
             v = secondary_grid.get_auxiliary_gridpoint(iv);
             vp=  tertiary_grid.get_auxiliary_gridpoint(ivp);

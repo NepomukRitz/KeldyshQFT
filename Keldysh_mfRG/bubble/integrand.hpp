@@ -661,127 +661,172 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
     load_vertex_keldyshComponents_left_scalar<spin> (values_vertex_l, input_l);
     load_vertex_keldyshComponents_right_scalar<spin>(values_vertex_r, input_r);
 
-    /// Comment in to compare with vectorized access to vertices:
-    //buffer_type_vertex_l values_vertex_l_test;
-    //buffer_type_vertex_r values_vertex_r_test;
-    //load_vertex_keldyshComponents_left_vectorized (values_vertex_l_test, input_l);
-    //load_vertex_keldyshComponents_right_vectorized(values_vertex_r_test, input_r);
-    //if (std::abs((values_vertex_r - values_vertex_r_test).sum()) > 1e-10) {
-    //    H5::H5File file(data_dir + "values_vertex_r", H5F_ACC_TRUNC);
-    //    write_to_hdf(file, "scalar", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_r), false);
-    //    write_to_hdf(file, "vector", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_r_test), false);
-    //    file.close();
-    //    assert(false);
-    //}
-    //if (std::abs((values_vertex_l - values_vertex_l_test).sum()) > 1e-10) {
-    //    H5::H5File file(data_dir + "values_vertex_l", H5F_ACC_TRUNC);
-    //    write_to_hdf(file, "scalar", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_l), false);
-    //    write_to_hdf(file, "vector", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_l_test), false);
-    //    file.close();
-    //    assert(false);
-    //}
-
 
     Q result;
     // load other spin component
-    if constexpr ((channel == 't' and spin == 0)
-#if DEBUG_SYMMETRIES
-        or (channel == 'a' and spin == 1)
-#endif
-            ){
+    if constexpr(SBE_DECOMPOSITION) {
+        using result_type_fetch = Q;
 
-        buffer_type_vertex_l values_vertex_l_other;
-        buffer_type_vertex_r values_vertex_r_other;
 
-        load_vertex_keldyshComponents_left_scalar <1-spin>(values_vertex_l_other, input_l);
-        load_vertex_keldyshComponents_right_scalar<1-spin>(values_vertex_r_other, input_r);
-        if constexpr(KELDYSH)
+        if constexpr((channel == 't' and spin == 0)
+                     #if DEBUG_SYMMETRIES
+                     or (channel == 'a' and spin == 1)
+                    #endif
+            )
         {
-            result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
-                      values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
+
+            buffer_type_vertex_l values_vertex_l_upup;
+            buffer_type_vertex_r values_vertex_r_upup;
+
+            load_vertex_keldyshComponents_left_scalar<2>(values_vertex_l_upup, input_l);
+            load_vertex_keldyshComponents_right_scalar<2>(values_vertex_r_upup, input_r);
+
+            if constexpr(diag_class == k1) {
+                const Q gamma0L     = vertex1.irred().template val<result_type_fetch>(input_l.iK, i_in, spin);
+                const Q gamma0R     = vertex2.irred().template val<result_type_fetch>(input_r.iK, i_in, spin);
+                const Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+
+                const Q K1L = gamma0L + K1L_temp;
+                const Q K1R = gamma0R + K1R_temp;
+
+
+                const Q gamma0L_upup     = vertex1.irred().template val<result_type_fetch>(0, i_in, 2);
+                const Q gamma0R_upup     = vertex2.irred().template val<result_type_fetch>(0, i_in, 2);
+                const Q K1L_temp_upup    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R_temp_upup    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
+
+                const Q K1L_upup = gamma0L_upup + K1L_temp_upup;
+                const Q K1R_upup = gamma0R_upup + K1R_temp_upup;
+
+
+                result = K1L_upup * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R
+                                            + K1L_upup * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (                            values_vertex_r     ) * K1R_upup
+                                            + K1L_upup * (                            values_vertex_l     ) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R_upup
+                                            + K1L_upup * (                            values_vertex_l     ) * Pi_matrix * (                            values_vertex_r     ) * K1R
+                                            + K1L      * (                            values_vertex_l     ) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R
+                                            + K1L      * (                            values_vertex_l     ) * Pi_matrix * (                            values_vertex_r     ) * K1R_upup
+                                            + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R_upup
+                                            + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (                            values_vertex_r     ) * K1R
+                ;
+            }
+            else if constexpr(diag_class == k2) {
+                result = (values_vertex_l_upup * Pi_matrix * (                            values_vertex_r)
+                        + values_vertex_l      * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup));
+            }
+            else if constexpr(diag_class == k2b) {
+                result = ((myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * values_vertex_r
+                        + (                            values_vertex_l)      * Pi_matrix * values_vertex_r_upup);
+            }
+            else if constexpr(diag_class == k3) {
+                result = (values_vertex_l_upup * Pi_matrix * values_vertex_r
+                        + values_vertex_l      * Pi_matrix * values_vertex_r_upup);
+            }
+            else {assert(false);}
+
+
         }
-        else {
-            result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
-                      values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other));
-        }
-    }
 #if DEBUG_SYMMETRIES
-        /*else if (channel == 'p' and input_external.spin == 0) {
-        buffer_type_vertex_l values_vertex_l_other;
-        buffer_type_vertex_r values_vertex_r_other;
-        input_l.spin = 1 - input_external.spin;
-        input_r.spin = 1 - input_external.spin;
-        spin_idx = 1;
+        else  if constexpr(channel == 'p' and spin == 1)
+        {
+            buffer_type_vertex_l values_vertex_l_other;
+            buffer_type_vertex_r values_vertex_r_other;
 
-        load_vertex_keldyshComponents_left_scalar (values_vertex_l_other, input_l);
-        load_vertex_keldyshComponents_right_scalar(values_vertex_r_other, input_r);
+            load_vertex_keldyshComponents_left_scalar<1 - spin>(values_vertex_l_other, input_l);
+            load_vertex_keldyshComponents_right_scalar<1 - spin>(values_vertex_r_other, input_r);
 
-            result = (values_vertex_l * Pi_matrix * values_vertex_r +  values_vertex_l_other * Pi_matrix * values_vertex_r_other) * 0.5;
-        }*/
-    else  if constexpr(channel == 'p' and spin == 1) {
-        buffer_type_vertex_l values_vertex_l_other;
-        buffer_type_vertex_r values_vertex_r_other;
 
-        load_vertex_keldyshComponents_left_scalar <1-spin>(values_vertex_l_other, input_l);
-        load_vertex_keldyshComponents_right_scalar<1-spin>(values_vertex_r_other, input_r);
+            if constexpr(diag_class == k1) {
+                const Q gamma0L     = vertex1.irred().template val<result_type_fetch>(input_l.iK, i_in,   spin);
+                const Q gamma0R     = vertex2.irred().template val<result_type_fetch>(input_r.iK, i_in, 1-spin);
+                const Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<  spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<1-spin, channel, channel, diag_class, result_type_fetch>(input_external);
+
+                const Q K1L = gamma0L + K1L_temp;
+                const Q K1R_other = gamma0R + K1R_temp;
+
+                result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R_other);
+            }
+            else if constexpr(diag_class == k2) {
+                result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_other));
+            }
+            else if constexpr(diag_class == k2b) {
+                result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r_other);
+            }
+            else if constexpr(diag_class == k3) {
+                result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
+            }
+            else {assert(false);}
+
+
+        }
+#endif
+        else {
+            if constexpr(diag_class == k1) {
+                const Q gamma0L     = vertex1.irred().template val<result_type_fetch>(input_l.iK, i_in, spin);
+                const Q gamma0R     = vertex2.irred().template val<result_type_fetch>(input_r.iK, i_in, spin);
+                const Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+
+                const Q K1L = gamma0L + K1L_temp;
+                const Q K1R = gamma0R + K1R_temp;
+
+                result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R);
+            }
+            else if constexpr(diag_class == k2) {
+                result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
+            }
+            else if constexpr(diag_class == k2b) {
+                result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r);
+            }
+            else if constexpr(diag_class == k3) {
+                result = (values_vertex_l * Pi_matrix * values_vertex_r);
+            }
+            else {assert(false);}
+        }
+    } // SBE_DECOMPOSITION
+    else{
+        // load other spin component
+        if constexpr((channel == 't' and spin == 0)
+                     #if DEBUG_SYMMETRIES
+                     or (channel == 'a' and spin == 1)
+                    #endif
+            )
+        {
+
+            buffer_type_vertex_l values_vertex_l_other;
+            buffer_type_vertex_r values_vertex_r_other;
+
+            load_vertex_keldyshComponents_left_scalar<1 - spin>(values_vertex_l_other, input_l);
+            load_vertex_keldyshComponents_right_scalar<1 - spin>(values_vertex_r_other, input_r);
+            if constexpr(KELDYSH)
+            {
+                result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
+                          values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
+            }
+            else {
+                result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
+                          values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other));
+            }
+        }
+        #if DEBUG_SYMMETRIES
+        else  if constexpr(channel == 'p' and spin == 1)
+        {
+            buffer_type_vertex_l values_vertex_l_other;
+            buffer_type_vertex_r values_vertex_r_other;
+
+            load_vertex_keldyshComponents_left_scalar<1 - spin>(values_vertex_l_other, input_l);
+            load_vertex_keldyshComponents_right_scalar<1 - spin>(values_vertex_r_other, input_r);
 
             result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
         }
-#endif
-    else {
-        result = values_vertex_l * Pi_matrix * values_vertex_r;
-    }
-
-
-
-    /*
-    if constexpr(false) { // set to true for debugging the loading of vertex values
-
-        multidimensional::multiarray<Q,2> values_vertex_l_alt(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2})), values_vertex_r_alt(std::array<size_t,2>({glb_number_of_Keldysh_components_bubble, 2}));
-
-        // load values (basic inefficient version):
-        for (int i = 0; i < glb_number_of_Keldysh_components_bubble; i++) {
-
-            VertexInput input_l_alt = input_external, input_r_alt = input_external;
-            input_l_alt.v2 = vpp; input_r_alt.v1 = vpp;
-
-            int i2 = glb_non_zero_Keldysh_bubble[i];
-            std::vector<int> indices_vertices = indices_sum(input_external.iK, i2, channel);
-            input_l_alt.iK = indices_vertices[0];
-            input_r_alt.iK = indices_vertices[1];
-
-            values_vertex_l_alt.at(i,0) = value_vertex_l(input_l_alt);
-            values_vertex_r_alt.at(i,0) = value_vertex_r(input_r_alt);
-
-            // load other spin component
-            if ((channel == 't' and input_external.spin == 0)
-#if DEBUG_SYMMETRIES
-                or (channel == 'a' and input_external.spin == 1) or (channel == 'p')
-#endif
-                    ){
-                if(channel == 't') assert(0 == input_external.spin);
-                if(channel == 'a') assert(1 == input_external.spin);
-                input_l_alt.spin = 1 - input_external.spin;
-                input_r_alt.spin = 1 - input_external.spin;
-
-                values_vertex_l_alt.at(i,1) = value_vertex_l(input_l_alt);
-                values_vertex_r_alt.at(i,1) = value_vertex_r(input_r_alt);
-
-            }
+        #endif
+        else {
+            result = values_vertex_l * Pi_matrix * values_vertex_r;
         }
-
-
-
-        multidimensional::multiarray<Q,2> values_vertex_l_diff = values_vertex_l - values_vertex_l_alt;
-        multidimensional::multiarray<Q,2> values_vertex_r_diff = values_vertex_r - values_vertex_r_alt;
-        auto diff_l = values_vertex_l_diff.maxabs();
-        auto diff_r = values_vertex_r_diff.maxabs();
-        assert(std::abs(diff_l) < 1e-10);
-        assert(std::abs(diff_r) < 1e-10);
-
-
     }
-    */
+
+
     return result;
 }
 
@@ -809,16 +854,7 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
     if constexpr(SBE_DECOMPOSITION) {
 
         using result_type_fetch = Eigen::Matrix<Q, 4 * myRowsAtCompileTime<return_type>(),1>;
-        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, spin);
-        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, spin);
-        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-        K1L_temp.resize(4, 4);
-        K1R_temp.resize(4, 4);
-        gamma0L.resize(4, 4);
-        gamma0R.resize(4, 4);
-        const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
-        const Eigen::Matrix<Q,4,4> K1R = gamma0R + K1R_temp;
+
 
         if constexpr ((channel == 't' and spin == 0)
 #if DEBUG_SYMMETRIES
@@ -831,9 +867,20 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
 
             load_vertex_keldyshComponents_left_vectorized<2>(values_vertex_l_upup, input_l);
             load_vertex_keldyshComponents_right_vectorized<2>(values_vertex_r_upup, input_r);
+
             if constexpr(VECTORIZED_INTEGRATION) {
                 assert(input_external.iK == 0);
                 if constexpr(diag_class == k1) {
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, spin);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, spin);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    K1L_temp.resize(4, 4);
+                    K1R_temp.resize(4, 4);
+                    gamma0L.resize(4, 4);
+                    gamma0R.resize(4, 4);
+                    const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
+                    const Eigen::Matrix<Q,4,4> K1R = gamma0R + K1R_temp;
 
                     Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L_upup     = vertex1.irred().template val<result_type_fetch>(0, i_in, 2);
                     Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R_upup     = vertex2.irred().template val<result_type_fetch>(0, i_in, 2);
@@ -844,8 +891,8 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                     K1R_temp_upup.resize(4, 4);
                     gamma0L_upup.resize(4, 4);
                     gamma0R_upup.resize(4, 4);
-                    Eigen::Matrix<Q,4,4> K1L_upup = gamma0L_upup + K1L_temp_upup.transpose();
-                    Eigen::Matrix<Q,4,4> K1R_upup = gamma0R_upup + K1R_temp_upup;
+                    const Eigen::Matrix<Q,4,4> K1L_upup = gamma0L_upup + K1L_temp_upup.transpose();
+                    const Eigen::Matrix<Q,4,4> K1R_upup = gamma0R_upup + K1R_temp_upup;
 
 
                     const return_type result = (K1L_upup * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R
@@ -856,28 +903,29 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                                               + K1L      * (                            values_vertex_l     ) * Pi_matrix * (                            values_vertex_r     ) * K1R_upup
                                               + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R_upup
                                               + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (                            values_vertex_r     ) * K1R
-                                                ).eval();
+                                                );
                     return result;
                 }
                 else if constexpr(diag_class == k2) {
-                    const return_type result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r)).eval();
+                    const return_type result = (values_vertex_l_upup * Pi_matrix * (                            values_vertex_r)
+                                              + values_vertex_l      * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup));
                     return result;
                 }
                 else if constexpr(diag_class == k2b) {
-                    const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r).eval();
+                    const return_type result = ((myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * values_vertex_r
+                                              + (                            values_vertex_l)      * Pi_matrix * values_vertex_r_upup
+                            );
                     return result;
                 }
                 else if constexpr(diag_class == k3) {
-                    const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r).eval();
+                    const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r
+                                              + values_vertex_l      * Pi_matrix * values_vertex_r_upup);
                     return result;
                 }
                 else {assert(false);}
 
             } else {
                 assert(false);
-                const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r +
-                                            values_vertex_l * Pi_matrix * values_vertex_r_upup).eval()[0];
-                return result;
             }
         }
 #if DEBUG_SYMMETRIES
@@ -889,16 +937,15 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                 load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_other, input_r);
                 if constexpr (VECTORIZED_INTEGRATION) {
                     if constexpr(diag_class == k1) {
-                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, i_spin);
-                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, 1-i_spin);
-                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<1-spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, spin);
+                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, 1-spin);
+                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<  spin, channel, channel, diag_class, result_type_fetch>(input_external);
                         Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<1-spin, channel, channel, diag_class, result_type_fetch>(input_external);
-
                         K1L_temp.resize(4, 4);
                         K1R_temp.resize(4, 4);
                         gamma0L.resize(4, 4);
                         gamma0R.resize(4, 4);
-                        const Eigen::Matrix<Q,4,4> K1L       = gamma0L + K1L_temp.transpose();
+                        const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
                         const Eigen::Matrix<Q,4,4> K1R_other = gamma0R + K1R_temp;
 
                         const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R_other).eval();
@@ -929,6 +976,17 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
         else {
             if constexpr(VECTORIZED_INTEGRATION) {
                 if constexpr(diag_class == k1) {
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, spin);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, spin);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    K1L_temp.resize(4, 4);
+                    K1R_temp.resize(4, 4);
+                    gamma0L.resize(4, 4);
+                    gamma0R.resize(4, 4);
+                    const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
+                    const Eigen::Matrix<Q,4,4> K1R = gamma0R + K1R_temp;
+
                     const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R).eval();
                     return result;
                 }

@@ -51,8 +51,8 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                         Delta_factor = 10.;
                     }
                     else {
-                        U_factor = 40./3.;
-                        Delta_factor = 40.;
+                        U_factor = 10./3.;
+                        Delta_factor = 10.;
                     }
                     break;
                 case 'f':

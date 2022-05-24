@@ -188,38 +188,77 @@ public:
 
 #ifdef DENSEGRID
             result_type result;
-            if constexpr(numberFrequencyDims == 1)
+            if constexpr (std::is_same_v<result_type,Q>)
             {
-                result = interpolate_nearest1D<result_type>(frequencies[0], base_class::get_VertexFreqGrid().primary_grid,
-                                                  [&](int i) -> result_type {
-                                                      indices[pos_first_freqpoint] = i;
-                                                      return base_class::val(indices);
-                                                  });
+                if constexpr(numberFrequencyDims == 1)
+                {
+                    result = interpolate_nearest1D<result_type>(frequencies[0],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                [&](int i) -> result_type {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 2)
+                {
+                    result = interpolate_nearest2D<result_type>(frequencies[0], frequencies[1],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                [&](int i, int j) -> result_type {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 3)
+                {
+                    result = interpolate_nearest3D<result_type>(frequencies[0], frequencies[1], frequencies[2],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                base_class::get_VertexFreqGrid().tertiary_grid,
+                                                                [&](int i, int j, int l) -> result_type {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    indices[pos_first_freqpoint + 2] = l;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
             }
-            else if constexpr(numberFrequencyDims == 2){
-                result =  interpolate_nearest2D<result_type>(frequencies[0], frequencies[1],
-                                                   base_class::get_VertexFreqGrid().  primary_grid,
-                                                   base_class::get_VertexFreqGrid().secondary_grid,
-                                                   [&](int i, int j) -> result_type {
-                                                       indices[pos_first_freqpoint  ] = i;
-                                                       indices[pos_first_freqpoint+1] = j;
-                                                       return base_class::val(indices);
-                                                   });
+            else {
+                if constexpr(numberFrequencyDims == 1)
+                {
+                    result << interpolate_nearest1D<Q>(frequencies[0],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                [&](int i) -> Q {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 2)
+                {
+                    result << interpolate_nearest2D<Q>(frequencies[0], frequencies[1],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                [&](int i, int j) -> Q {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 3)
+                {
+                    result << interpolate_nearest3D<Q>(frequencies[0], frequencies[1], frequencies[2],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                base_class::get_VertexFreqGrid().tertiary_grid,
+                                                                [&](int i, int j, int l) -> Q {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    indices[pos_first_freqpoint + 2] = l;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
             }
-            else if constexpr(numberFrequencyDims == 3)
-            {
-                result =  interpolate_nearest3D<result_type>(frequencies[0], frequencies[1], frequencies[2],
-                                                   base_class::get_VertexFreqGrid().  primary_grid,
-                                                   base_class::get_VertexFreqGrid().secondary_grid,
-                                                   base_class::get_VertexFreqGrid(). tertiary_grid,
-                                                   [&](int i, int j, int l) -> result_type {
-                                                       indices[pos_first_freqpoint  ] = i;
-                                                       indices[pos_first_freqpoint+1] = j;
-                                                       indices[pos_first_freqpoint+2] = l;
-                                                       return base_class::val(indices);
-                                                   });
-            }
-
             return result;
 #else
             // get weights from frequency Grid

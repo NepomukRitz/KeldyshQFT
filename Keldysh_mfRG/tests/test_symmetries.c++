@@ -46,25 +46,25 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
 
 
 
-    //std::string parquet_filename_withK3 = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 or true? "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 or true? "_n3=" + std::to_string(nBOS3) : "") : "") + ".h5";
-    //parquet_solver(parquet_filename_withK3, state_ini, Lambda_ini, 1e-4, 1  );
+    std::string parquet_filename_withK3 = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 or true? "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 or true? "_n3=" + std::to_string(nBOS3) : "") : "") + ".h5";
+    parquet_solver(parquet_filename_withK3, state_ini, Lambda, 1e-4, 1  );
     //state_ini = read_state_from_hdf(parquet_filename_withK3, 1);
 
-    //state_ini.vertex.template symmetry_expand<'a',true>();
-    //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_a_left_");
-    //state_ini.vertex.template symmetry_expand<'a',false>();
-    //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_a_right_");
-    //state_ini.vertex.template symmetry_expand<'p',true>();
-    //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_p_left_");
-    //state_ini.vertex.template symmetry_expand<'p',false>();
-    //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_p_right_");
-    //state_ini.vertex.template symmetry_expand<'t',true>();
-    //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_t_left_");
-    //state_ini.vertex.template symmetry_expand<'t',false>();
-    //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_t_right_");
+    state_ini.vertex.template symmetry_expand<'a',true>();
+    state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_a_left_");
+    state_ini.vertex.template symmetry_expand<'a',false>();
+    state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_a_right_");
+    state_ini.vertex.template symmetry_expand<'p',true>();
+    state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_p_left_");
+    state_ini.vertex.template symmetry_expand<'p',false>();
+    state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_p_right_");
+    state_ini.vertex.template symmetry_expand<'t',true>();
+    state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_t_left_");
+    state_ini.vertex.template symmetry_expand<'t',false>();
+    state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_t_right_");
 
-    std::string parquet_filename = data_dir + "parquet_polar.h5";//"parquetInit4_final_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") : "") + ".h5";
-    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-4, 1  );
+    //std::string parquet_filename = data_dir + "parquet_polar.h5";//"parquetInit4_final_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") : "") + ".h5";
+    //parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-4, 1  );
 
     //State<state_datatype> state_interpolate = read_state_from_hdf(parquet_filename, 3);
     /*
@@ -122,12 +122,13 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
     //state_ini = read_state_from_hdf(data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") : "") + ".h5", 0);
 
 
-
+    /*
     state_ini.analyze_tails();
     check_SE_causality(state_ini); // check if the self-energy is causal at each step of the flow
     State<state_datatype> dPsi_dLambda(Lambda);
     rhs_n_loop_flow_t<state_datatype> rhs(frgConfig);
     rhs(state_ini, dPsi_dLambda, Lambda);
+     */
 
 }
 

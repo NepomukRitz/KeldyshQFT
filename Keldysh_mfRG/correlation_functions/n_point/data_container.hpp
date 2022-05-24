@@ -88,11 +88,11 @@ class Buffer;
                 typename std::enable_if_t<(sizeof...(Types) == freqrank + pos_first_freq + 1) and
                                           (are_all_integral<size_t, Types...>::value), bool> = true>
         auto val_vectorized(const Types &... i) const -> Eigen::Matrix<Q, vecsize, 1> {
-            return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(i...);
+            return data.template at_vectorized<vecsize>(i...);
         }
         template<std::size_t freqrank, std::size_t vecsize>
         auto val_vectorized(const index_type &idx) const -> Eigen::Matrix<Q, vecsize, 1> {
-            return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(idx);
+            return data.template at_vectorized<vecsize>(idx);
         }
 
         /// Sets a value at a multiIndex
@@ -102,6 +102,11 @@ class Buffer;
         void setvert(const Q value, const Types &... i) { data.at(i...) = value; }
 
         void setvert(const Q value, const index_type &idx) { data.at(idx) = value; }
+
+        template<std::size_t vecsize>
+        void setvert_vectorized(const Eigen::Matrix<Q, vecsize, 1>& value, const index_type &idx) {
+            data.template set_vectorized<vecsize>(value, idx);
+        }
 
         auto get_dims() const { return data.length(); }
 

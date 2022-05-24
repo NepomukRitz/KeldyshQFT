@@ -126,6 +126,10 @@ namespace utils {
         static_assert(nFER2%2 == 0, "Number of frequency points inconsistent for Matsubara T>0");
         static_assert(nFER3%2 == 0, "Number of frequency points inconsistent for Matsubara T>0");
     #endif
+
+    #if SBE_DECOMPOSITION
+    static_assert(SWITCH_SUM_N_INTEGRAL, "SBE requires preprocessing of vertex data.");
+    #endif
     }
 
     std::string generate_data_directory(std::string& job) {
@@ -142,6 +146,10 @@ namespace utils {
     #else
         std::string data_directory = "../Data_MF"+ job +"/";
     #endif
+    #endif
+
+    #if SBE_DECOMPOSITION
+        data_directory = "../Data_KF_debug_SBE/";
     #endif
 
         makedir(data_directory);

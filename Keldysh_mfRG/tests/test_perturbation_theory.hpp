@@ -2395,7 +2395,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> centralstate_dot = central_bubblestates[i];
 
         // intermediate results
-        State<state_datatype> K1rdot_PIa_K1p (Lambda);
+        State<state_datatype,false> K1rdot_PIa_K1p (Lambda);
         bubble_function(K1rdot_PIa_K1p.vertex, centralstate_dot.vertex, Psi.vertex, G, G, 'a', false);
 
 
@@ -2408,8 +2408,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
         }
 
-        Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
-        Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
+        Vertex<state_datatype,false> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
+        Vertex<state_datatype,false> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
 #if not DEBUG_SYMMETRIES
         dGammaL_half1.half1().reorder_due2antisymmetry(dGammaR_half1.half1());
 #endif
@@ -2417,7 +2417,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
         // create non-symmetric_full vertex with differentiated vertex on the left
-        GeneralVertex<state_datatype , non_symmetric_diffleft> dGammaL(Lambda);
+        GeneralVertex<state_datatype , non_symmetric_diffleft, false> dGammaL(Lambda);
         dGammaL.half1()  = dGammaL_half1.half1();  // assign half 1 to dGammaL
         dGammaL.half2() = dGammaR_half1.half1();  // assign half 2 as half 1 to dGammaR [symmetric_full -> left()=right()]
 
@@ -2430,7 +2430,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
 
         // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<state_datatype , non_symmetric_diffright> dGammaR (Lambda);
+        GeneralVertex<state_datatype , non_symmetric_diffright,false> dGammaR (Lambda);
         dGammaR.half1() = dGammaR_half1.half1();  // assign half 1
         dGammaR.half2() = dGammaL_half1.half1();  // assign half 2 as half 1 of dGammaL
 
@@ -2621,15 +2621,15 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     }
 }
 #else
-template <int type = 2>
-auto SOPT_K1a(double w, double Lambda) -> comp {
+template <typename Q, int type = 2>
+auto SOPT_K1a(double w, double Lambda) -> Q {
 
     double Delta = REG == 2 ? (glb_Gamma + Lambda) / 2. : glb_Gamma * 0.5;
     const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5*glb_U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
 
-    auto advanced = [Delta,HF_corr,Lambda](const double w_) -> comp {
-        const comp factor = REG == 4 ? Lambda*Lambda : 1.;
+    auto advanced = [Delta,HF_corr,Lambda](const double w_) -> Q {
+        const Q factor = REG == 4 ? Lambda*Lambda : 1.;
         if (w_ == 0.)
             return - factor * glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
         else
@@ -2638,38 +2638,38 @@ auto SOPT_K1a(double w, double Lambda) -> comp {
 
     if (type == 2) {
         /// advanced component of K1a in SOPT:
-        comp result = advanced(w);
+        Q result = advanced(w);
         return result;
     }
     else if (type == 1) {
         /// retarded component of K1a in SOPT:
-        comp result = conj(advanced(w));
+        Q result = conj(advanced(w));
         return result;
     }
     else {
         assert(type == 0);
         /// Keldysh component of K1a in SOPT:
-        const comp adv = advanced(w);
-        const comp ret = conj(adv);
-        const comp result = sgn(w) * (ret - adv);
+        const Q adv = advanced(w);
+        const Q ret = conj(adv);
+        const Q result = sgn(w) * (ret - adv);
         return result;
     }
 
 }
-template <int type = 2>
-auto SOPT_K1a_diff(double w, double Lambda) -> comp {
+template <typename Q, int type = 2>
+auto SOPT_K1a_diff(double w, double Lambda) -> Q {
     double Delta = (glb_Gamma + Lambda) / 2.;
     const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
 
-    auto advanced = [Delta,HF_corr](const double w_) -> comp {
+    auto advanced = [Delta,HF_corr](const double w_) -> Q {
         if (std::abs(w_)  == 0) return (- glb_U*glb_U / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5
                                         + glb_U*glb_U / M_PI / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta * Delta )*0.5 ;
         else {
-            comp term1 = -glb_U * glb_U * 0.5   / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr));
-            comp term2 = +glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr)) /
+            Q term1 = -glb_U * glb_U * 0.5   / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr));
+            Q term2 = +glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr)) /
                          (2. * Delta + (glb_i * w_));
-            comp term3 = -glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) /    (1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr))
+            Q term3 = -glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) /    (1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr))
                          * (
                                  (glb_i * w_) / (Delta * Delta + HF_corr * HF_corr)
                                  - (glb_i * w_) * (2 * Delta + (glb_i * w_)) / (Delta * Delta + HF_corr * HF_corr) /
@@ -2682,20 +2682,20 @@ auto SOPT_K1a_diff(double w, double Lambda) -> comp {
 
     if (type == 2) {
         /// advanced component of K1a in SOPT:
-        comp result = advanced(w);
+        Q result = advanced(w);
         return result;
     }
     else if (type == 1) {
         /// retarded component of K1a in SOPT:
-        comp result = conj(advanced(w));
+        Q result = conj(advanced(w));
         return result;
     }
     else {
         assert(type == 0);
         /// Keldysh component of K1a in SOPT:
-        const comp adv = advanced(w);
-        const comp ret = conj(adv);
-        const comp result = sgn(w) * (ret - adv);
+        const Q adv = advanced(w);
+        const Q ret = conj(adv);
+        const Q result = sgn(w) * (ret - adv);
         return result;
     }
 }
@@ -2712,9 +2712,9 @@ public:
     v(v), Lambda(Lambda), Delta(REG == 2 ? (Lambda + glb_Gamma) * 0.5 : glb_Gamma * 0.5), barePropagator(propagator) {};
 
     auto value(const double vp) const -> Q {
-        const Q KR = SOPT_K1a<2>(vp - v, Lambda);
+        const Q KR = SOPT_K1a<Q,2>(vp - v, Lambda);
         const Q KA = conj(KR);
-        const Q KK = SOPT_K1a<0>(vp - v, Lambda);
+        const Q KK = SOPT_K1a<Q,0>(vp - v, Lambda);
         const Q K00 = ( KR + KA + KK);// * 0.5;
         const Q K01 = ( KR - KA - KK);// * 0.5;
         const Q K10 = (-KR + KA - KK);// * 0.5;
@@ -2818,9 +2818,9 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
 
-        Q KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
-        Q KA = conj(KR);
-        Q KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
+        Q KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        Q KA = myconj(KR);
+        Q KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
         Q K00 = ( KR + KA + KK);// * 0.5;
         Q K01 = ( KR - KA - KK);// * 0.5;
         Q K10 = (-KR + KA - KK);// * 0.5;
@@ -2832,9 +2832,9 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
         PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);
 
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
-        KA = conj(KR);
-        KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
+        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        KA = myconj(KR);
+        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
         K00 = ( KR + KA + KK);// * 0.5;
         K01 = ( KR - KA - KK);// * 0.5;
         K10 = (-KR + KA - KK);// * 0.5;
@@ -2846,9 +2846,9 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
         PT_state.vertex.pvertex().K1.setvert( -val_K1_K, it_spin, i, 1, 0);
 
         w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
-        KA = conj(KR);
-        KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
+        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        KA = myconj(KR);
+        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
         K00 = ( KR + KA + KK);// * 0.5;
         K01 = ( KR - KA - KK);// * 0.5;
         K10 = (-KR + KA - KK);// * 0.5;
