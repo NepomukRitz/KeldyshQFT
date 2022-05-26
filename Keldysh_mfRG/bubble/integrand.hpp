@@ -748,7 +748,7 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
                 result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R_other);
             }
             else if constexpr(diag_class == k2) {
-                result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_other));
+                result = (values_vertex_l_other * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
             }
             else if constexpr(diag_class == k2b) {
                 result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r_other);
