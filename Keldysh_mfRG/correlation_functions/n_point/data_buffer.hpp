@@ -676,21 +676,25 @@ public:
     auto operator-= (const this_class& rhs) -> this_class {base_class::data -= rhs.data; return *this;}
     auto operator*= (const this_class& rhs) -> this_class {base_class::data *= rhs.data; return *this;}
     auto operator/= (const this_class& rhs) -> this_class {base_class::data /= rhs.data; return *this;}
-    friend this_class& operator+ (this_class& lhs, const this_class& rhs) {
-        lhs += rhs;
-        return lhs;
+    friend this_class operator+ (const this_class& lhs, const this_class& rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp += rhs;
+        return lhs_temp;
     }
-    friend this_class& operator- (this_class& lhs, const this_class& rhs) {
-        lhs -= rhs;
-        return lhs;
+    friend this_class operator- (const this_class& lhs, const this_class& rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp -= rhs;
+        return lhs_temp;
     }
-    friend this_class& operator* (this_class& lhs, const this_class& rhs) {
-        lhs *= rhs;
-        return lhs;
+    friend this_class operator* (const this_class& lhs, const this_class& rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp *= rhs;
+        return lhs_temp;
     }
-    friend this_class& operator/ (this_class& lhs, const this_class& rhs) {
-        lhs /= rhs;
-        return lhs;
+    friend this_class operator/ (const this_class& lhs, const this_class& rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp /= rhs;
+        return lhs_temp;
     }
 
 
@@ -698,29 +702,35 @@ public:
     auto operator-= (const double rhs) -> this_class {base_class::data -= rhs; return *this;}
     auto operator*= (const double rhs) -> this_class {base_class::data *= rhs; return *this;}
     auto operator/= (const double rhs) -> this_class {base_class::data /= rhs; return *this;}
-    friend this_class& operator+ (this_class& lhs, const double rhs) {
-        lhs += rhs;
-        return lhs;
+    friend this_class operator+ (const this_class& lhs, const double rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp += rhs;
+        return lhs_temp;
     }
-    friend this_class& operator- (this_class& lhs, const double rhs) {
-        lhs -= rhs;
-        return lhs;
+    friend this_class operator- (const this_class& lhs, const double rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp -= rhs;
+        return lhs_temp;
     }
-    friend this_class& operator* (this_class& lhs, const double rhs) {
-        lhs *= rhs;
-        return lhs;
+    friend this_class operator* (const this_class& lhs, const double rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp *= rhs;
+        return lhs_temp;
     }
-    friend this_class& operator+ (const double rhs, this_class& lhs) {
-        lhs += rhs;
-        return lhs;
+    friend this_class operator+ (const double rhs, const this_class& lhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp += rhs;
+        return lhs_temp;
     }
-    friend this_class& operator* (const double rhs, this_class& lhs) {
-        lhs *= rhs;
-        return lhs;
+    friend this_class operator* (const double rhs, const this_class& lhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp *= rhs;
+        return lhs_temp;
     }
-    friend this_class& operator/ (this_class& lhs, const double rhs) {
-        lhs /= rhs;
-        return lhs;
+    friend this_class operator/ (const this_class& lhs, const double rhs) {
+        this_class lhs_temp = lhs;
+        lhs_temp /= rhs;
+        return lhs_temp;
     }
 };
 
