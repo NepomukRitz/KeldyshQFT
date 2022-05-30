@@ -26,7 +26,7 @@ auto main() -> int {
     }
 #endif
 
-    N_LOOPS = 3;
+    N_LOOPS = 1;
 
     utils::print_job_info();
     utils::check_input();
