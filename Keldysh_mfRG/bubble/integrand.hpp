@@ -948,19 +948,19 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                         const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
                         const Eigen::Matrix<Q,4,4> K1R_other = gamma0R + K1R_temp;
 
-                        const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R_other).eval();
+                        const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R_other);
                         return result;
                     }
                     else if constexpr(diag_class == k2) {
-                        const return_type result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_other)).eval();
+                        const return_type result = (values_vertex_l_other * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
                         return result;
                     }
                     else if constexpr(diag_class == k2b) {
-                        const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r_other).eval();
+                        const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r_other);
                         return result;
                     }
                     else if constexpr(diag_class == k3) {
-                        const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval();
+                        const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
                         return result;
                     }
                     else {assert(false);}
@@ -987,19 +987,19 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                     const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
                     const Eigen::Matrix<Q,4,4> K1R = gamma0R + K1R_temp;
 
-                    const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R).eval();
+                    const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R);
                     return result;
                 }
                 else if constexpr(diag_class == k2) {
-                    const return_type result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r)).eval();
+                    const return_type result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
                     return result;
                 }
                 else if constexpr(diag_class == k2b) {
-                    const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r).eval();
+                    const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r);
                     return result;
                 }
                 else if constexpr(diag_class == k3) {
-                    const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r).eval();
+                    const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r);
                     return result;
                 }
                 else {assert(false);}
@@ -1023,7 +1023,7 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
             if constexpr(VECTORIZED_INTEGRATION) {
                 assert(input_external.iK == 0);
                 const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r +
-                                            values_vertex_l * Pi_matrix * values_vertex_r_upup).eval();
+                                            values_vertex_l * Pi_matrix * values_vertex_r_upup);
                 return result;
             } else {
                 const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r +
@@ -1039,7 +1039,7 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                 load_vertex_keldyshComponents_left_vectorized <1-spin>(values_vertex_l_other, input_l);
                 load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_other, input_r);
                 if constexpr (VECTORIZED_INTEGRATION) {
-                    const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r_other).eval();
+                    const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
                     return result;
                 }
                 else {
@@ -1050,7 +1050,7 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
 #endif
         else {
             if constexpr(VECTORIZED_INTEGRATION) {
-                const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r).eval();
+                const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r);
                 return result;
             } else {
                 const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r).eval()[0];

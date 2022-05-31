@@ -36,6 +36,43 @@ class BubbleFunctionCalculator{
 
     const double Delta = (Pi.g.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
+    auto get_projection_lambdaBar() const -> Eigen::Matrix<Q,4,4> {
+        Eigen::Matrix<Q,4,4> result;
+        if constexpr(CONTOUR_BASIS) {
+            result << 1, 0, 0, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 1;
+        }
+        else {
+            result << 1, 0, 0, 1,
+                      0, 1, 1, 0,
+                      0, 1, 1, 0,
+                      1, 0, 0, 1;
+            result *= 0.5;
+        }
+        return result;
+    }
+    auto get_projection_lambda() const -> Eigen::Matrix<Q,4,4> {
+        Eigen::Matrix<Q,4,4> result;
+        if constexpr(CONTOUR_BASIS) {
+            result << 1, 0, 0, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 1;
+        }
+        else {
+            result << 1, 0, 0, 1,
+                      0, 1, 1, 0,
+                      0, 1, 1, 0,
+                      1, 0, 0, 1;
+            result *= 0.5;
+        }
+        return result;
+    }
+    const Eigen::Matrix<Q,4,4> projection_lambdaBar = get_projection_lambdaBar();
+    const Eigen::Matrix<Q,4,4> projection_lambda = get_projection_lambda();
+
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
 
@@ -459,6 +496,15 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
     /// write integration_result into value
     if constexpr(VECTORIZED_INTEGRATION == 1) {
+
+#if NEWFEATURE
+        if constexpr(k == k2) {
+        integration_result = integration_result * projection_lambdaBar;
+        }
+        if constexpr(k == k2b) {
+            integration_result =  projection_lambda * integration_result;
+        }
+#endif
         // for vector-/matrix-valued result:
         if constexpr(DEBUG_SYMMETRIES) {
             // if DEBUG_SYMMETRIES is true, we compute and store ALL components

@@ -398,7 +398,7 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
 #endif
                                           const rvert<Q>& rvert_crossing) const {
 
-    Ti(indices, transformations.K(k, input.spin, input.iK));  // apply necessary symmetry transformations
+    Ti<(k==k2 or k==k2b) and SBE_DECOMPOSITION>(indices, transformations.K(k, input.spin, input.iK));  // apply necessary symmetry transformations
     if constexpr(not DEBUG_SYMMETRIES) {
         indices.iK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
         assert(k != k3_sbe);
@@ -454,7 +454,7 @@ template <typename Q>
 template <K_class k>
 const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
 
-    Ti(indices, transformations.K(k, input.spin, input.iK));  // apply necessary symmetry transformations
+    Ti<(k==k2 or k==k2b) and SBE_DECOMPOSITION>(indices, transformations.K(k, input.spin, input.iK));  // apply necessary symmetry transformations
     indices.iK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
 
     // first check if the applied transformations switch between half 1 and half 2 of the vertex
@@ -673,6 +673,9 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
         // K1:
         multidimensional::multiarray<Q, 4> deviations_K1(K1.get_dims());
+        multidimensional::multiarray<Q, 4> original_K1(K1.get_dims());
+        multidimensional::multiarray<Q, 4> symmrel_K1(K1.get_dims());
+        multidimensional::multiarray<Q, 4> components_K1(K1.get_dims());
         for (size_t iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
             my_defs::K1::index_type idx;
             getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
@@ -686,13 +689,19 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
             Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
+            components_K1.at(idx) = components.K(k1, input.spin, input.iK);
 
             const rvert<Q> &readMe = symmetry_reduce<k1>(input, indices, rvert_this, rvert_crossing);
             Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
 
             Q deviation = value_direct - value_symmet;
+            if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway
+                deviations_K1.at(idx) = deviation;
+            }
             //if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
             deviations_K1.at(idx) = deviation;
+            original_K1.at(idx) = value_direct;
+            symmrel_K1.at(idx) = value_symmet;
             if (std::abs(deviation) > 1000) utils::print("DEVIATION ", deviation, "for iK, ispin, iw = ", iK, ispin, iw, "\n");
             //}
 
@@ -714,7 +723,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                        itK, 0, non_zero_size);
                 int trafo_index = freq_transformations.K1[itK][sign_w];
                 if (trafo_index != 0) {
-                    Ti(indices_f, trafo_index);
+                    Ti<false>(indices_f, trafo_index);
                     indices_f.iK = iK;
 
                     Q result_freqsymm = read_symmetryreduced_rvert<k1>(indices_f, *this);
@@ -787,7 +796,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                                                                                     : non_zero_Keldysh_K2t)),
                            non_zero_size, iK, itK, 0, non_zero_size);
                     int trafo_index = freq_transformations.K2[itK][sign_w * 2 + sign_v1];
-                    Ti(indices, trafo_index);
+                    Ti<SBE_DECOMPOSITION>(indices, trafo_index);
                     //indices.iK = itK;
 
                     Q result_freqsymm = read_symmetryreduced_rvert<k2>(indices, *this);
@@ -883,7 +892,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     locate(non_zero_Keldysh_K3, non_zero_Keldysh_K3.size(), iK, itK, 0, non_zero_Keldysh_K3.size());
 
                     int trafo_index = freq_transformations.K3[itK][sign_w * 4 + sign_f * 2 + sign_fp];
-                    Ti(indices, trafo_index);
+                    Ti<false>(indices, trafo_index);
                     //indices.iK = itK;
 
                     Q result_freqsymm = read_symmetryreduced_rvert<k3>(indices, *this);
@@ -904,6 +913,9 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         std::string filename = data_dir + "deviations_from_symmetry" + identifier + "_channel" + channel + ".h5";
         H5::H5File file(filename.c_str(), H5F_ACC_TRUNC);
         write_to_hdf(file, "K1", deviations_K1, false);
+        write_to_hdf(file, "K1_original", original_K1, false);
+    write_to_hdf(file, "K1_symmrel", symmrel_K1, false);
+    write_to_hdf(file, "K1_components", components_K1, false);
     if constexpr(MAX_DIAG_CLASS > 1) {
         write_to_hdf(file, "K2", deviations_K2 * (1 / K2.get_vec().max_norm()), false);
         write_to_hdf(file, "K2b", deviations_K2b * (1 / K2b.get_vec().max_norm()), false);
@@ -1969,7 +1981,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
         int sign_w = sign_index(indices.w);
         int trafo_index = freq_transformations.K1[itK][ sign_w];
         if (trafo_index != 0) {
-            Ti(indices, trafo_index);
+            Ti<false>(indices, trafo_index);
             indices.iK = itK;
 
             Q result;
@@ -2061,7 +2073,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
         int sign_w = sign_index(w_in);
         int sign_v1 = sign_index(v_in);
         int trafo_index = freq_transformations.K2[itK][ sign_w * 2 + sign_v1];
-        Ti(indices, trafo_index);
+        Ti<SBE_DECOMPOSITION>(indices, trafo_index);
         indices.iK = itK;
 
 
@@ -2117,7 +2129,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         else sign_f = sign_index(indices.v1 + indices.v2);
         int sign_fp = sign_index(indices.v1 - indices.v2);
         int trafo_index = freq_transformations.K3[itK][ sign_w * 4 + sign_f * 2 + sign_fp];
-        Ti(indices, trafo_index);
+        Ti<false>(indices, trafo_index);
         indices.iK = itK;
 
 
