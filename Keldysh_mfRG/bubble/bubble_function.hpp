@@ -497,14 +497,14 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     /// write integration_result into value
     if constexpr(VECTORIZED_INTEGRATION == 1) {
 
-#if NEWFEATURE
+
         if constexpr(k == k2) {
         integration_result = integration_result * projection_lambdaBar;
         }
         if constexpr(k == k2b) {
             integration_result =  projection_lambda * integration_result;
         }
-#endif
+
         // for vector-/matrix-valued result:
         if constexpr(DEBUG_SYMMETRIES) {
             // if DEBUG_SYMMETRIES is true, we compute and store ALL components

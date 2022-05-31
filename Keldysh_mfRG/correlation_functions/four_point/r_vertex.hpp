@@ -699,7 +699,6 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 deviations_K1.at(idx) = deviation;
             }
             //if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway /// TODO: Why don't I get a numerically exact zero?
-            deviations_K1.at(idx) = deviation;
             original_K1.at(idx) = value_direct;
             symmrel_K1.at(idx) = value_symmet;
             if (std::abs(deviation) > 1000) utils::print("DEVIATION ", deviation, "for iK, ispin, iw = ", iK, ispin, iw, "\n");
@@ -780,7 +779,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 }
 
                 // test frequency symmetries for symmetry-reduced Keldysh components:
-                if (transformations.K(k2, input.spin, input.iK) == 0 and components.K[k2, input.spin, input.iK] != -1 and
+                if (transformations.K(k2, input.spin, input.iK) == 0 and components.K(k2, input.spin, input.iK) != -1 and
                     (channel == 'a' ? isInList(iK, non_zero_Keldysh_K2a) : (channel == 'p' ? isInList(iK,
                                                                                                       non_zero_Keldysh_K2p)
                                                                                            : isInList(iK,
@@ -840,7 +839,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 symmrel_K2b.at(idx) = value_symmet;
 
                 Q deviation = value_direct - value_symmet;
-                if (components.K[k2b, input.spin, input.iK] != -1) {// zero component is not being computed anyway
+                if (components.K(k2b, input.spin, input.iK) != -1) {// zero component is not being computed anyway
                     deviations_K2b.at(idx) = deviation;
                 }
             }
@@ -877,12 +876,12 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 symmrel_K3.at(idx) = value_symmet;
 
                 Q deviation = value_direct - value_symmet;
-                if (components.K[k1, input.spin, input.iK] != -1) { // zero component is not being computed anyway
+                if (components.K(k1, input.spin, input.iK) != -1) { // zero component is not being computed anyway
                     deviations_K3.at(idx) = deviation;
                 }
 
                 // test frequency symmetries for symmetry-reduced Keldysh components:
-                if (transformations.K(k3, input.spin, input.iK) == 0 and components.K[k3, input.spin, input.iK] != -1 and
+                if (transformations.K(k3, input.spin, input.iK) == 0 and components.K(k3, input.spin, input.iK) != -1 and
                     isInList(iK, non_zero_Keldysh_K3)) {
                     IndicesSymmetryTransformations indices(iK, ispin, w, v, vp, i_in, channel, k2, 0, channel);
                     int sign_w = sign_index(w);

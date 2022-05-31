@@ -123,12 +123,11 @@ template <bool is_SBE_lambda> void TC (IndicesSymmetryTransformations& indices) 
     if constexpr(KELDYSH and CONTOUR_BASIS != 1)
     {
 
-        if constexpr(!is_SBE_lambda)
-        {
-            if (isInList(indices.iK, odd_Keldysh))
-                indices.prefactor *= 1.;
-            else
-                indices.prefactor *= -1.;
+        if constexpr(is_SBE_lambda) {
+            if ( isInList(indices.iK, odd_Keldysh)) indices.prefactor *= -1.;
+        }
+        else  {
+            if (!isInList(indices.iK, odd_Keldysh)) indices.prefactor *= -1.;
         }
     }
     else if constexpr(KELDYSH and CONTOUR_BASIS == 1)
@@ -151,19 +150,20 @@ template <bool is_SBE_lambda> void TC (IndicesSymmetryTransformations& indices) 
 template <bool is_SBE_lambda> void Tph (IndicesSymmetryTransformations& indices) {
     if (KELDYSH && PARTICLE_HOLE_SYMMETRY){ // Used only for Keldysh calculations with particle-hole symmetry
         indices.conjugate ^= true;
-        if constexpr(!is_SBE_lambda)
-        {
+
             if constexpr(CONTOUR_BASIS != 1)
             {
-                if (isInList(indices.iK, odd_Keldysh))
-                    indices.prefactor *= 1.;
-                else
-                    indices.prefactor *= -1.;
+                if constexpr(is_SBE_lambda) {
+                    if ( isInList(indices.iK, odd_Keldysh)) indices.prefactor *= -1.;
+                }
+                else  {
+                    if (!isInList(indices.iK, odd_Keldysh)) indices.prefactor *= -1.;
+                }
             }
             else {
-                indices.prefactor *= -1.;
+                if constexpr(!is_SBE_lambda) {indices.prefactor *= -1.;}
             }
-        }
+
 
         indices.w *= -1;
         if (MAX_DIAG_CLASS > 1) {

@@ -168,11 +168,17 @@ constexpr int glb_number_of_Keldysh_components_bubble = 9; // length of the prev
 // Vector of indices of independent components of the diagrammatic classes, density channel
 #if CONTOUR_BASIS != 1
 const std::vector<int> non_zero_Keldysh_K1a({1,3,15});
-const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
 const std::vector<int> non_zero_Keldysh_K1p({1,5,15});
-const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
 const std::vector<int> non_zero_Keldysh_K1t({1,3,15});
+#if SBE_DECOMPOSITION
+const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,9});
+const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,12});
+const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,5});
+#else
+const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
+const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
 const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
+#endif
 const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
 #else
 #ifndef PARTICLE_HOLE_SYMM
