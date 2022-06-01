@@ -12,6 +12,7 @@
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
 #include "perturbation_theory_and_parquet/perturbation_theory.hpp"
+#include "perturbation_theory_and_parquet/parquet_solver.hpp"
 #include "tests/test_ODE.hpp"
 #ifdef USE_MPI
 #include <mpi.h>
@@ -50,13 +51,20 @@ auto main() -> int {
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
+
+    //parquet runs:
+    const std::vector<double> myU_NRG {0.25, 0.5, 0.75, 1., 1.25};
+    run_parquet(myU_NRG);
+
+
+    //fRG runs:
     fRG_config config;
     config.nODE_ = 50;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
     config.U = 1.;
     config.save_intermediateResults = false;
-    n_loop_flow(data_dir+filename, config);
+    //n_loop_flow(data_dir+filename, config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
