@@ -19,7 +19,10 @@
 #endif
 
 
-auto main() -> int {
+auto main(int argc, char * argv[]) -> int {
+
+    std::cout << "number of args: " << argc-1 << ", expected: 1" << std::endl;
+    const int n_loops = atoi(argv[1]);
 
 #ifdef USE_MPI
     if (MPI_FLAG) {
@@ -27,13 +30,12 @@ auto main() -> int {
     }
 #endif
 
-    N_LOOPS = 1;
 
     utils::print_job_info();
     utils::check_input();
 
     /// Job and Data directory
-    std::string job = "Loop=" + std::to_string(N_LOOPS);
+    std::string job = "Loop=" + std::to_string(n_loops);
     job += "U=" + std::to_string(glb_U);
 #ifndef PARTICLE_HOLE_SYMM
     job += "_eVg=" + std::to_string(glb_Vg);
@@ -62,6 +64,7 @@ auto main() -> int {
     config.nODE_ = 50;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
+    config.nloops = n_loops;
     config.U = 1.;
     config.save_intermediateResults = false;
     //n_loop_flow(data_dir+filename, config);

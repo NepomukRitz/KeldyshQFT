@@ -42,10 +42,10 @@ template <typename Q> bool selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, Se
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
 template <typename Q>
-auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t> opt, const fRG_config& config) -> State<Q>{  //, const bool save_intermediate=false
+auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_max, const vec<size_t> opt, const fRG_config& config) -> State<Q>{  //, const bool save_intermediate=false
 
     Psi.vertex.check_symmetries("Psi");
-    assert(N_LOOPS>=1);
+    assert(nloops_max>=1);
     std::string dir_str = data_dir + "intermediateResults/";
     int iteration=-1;
     int rkStep=-1;
@@ -129,7 +129,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
         }
     }
 
-    if (N_LOOPS>=2) {
+    if (nloops_max>=2) {
         // Calculate left and right part of 2-loop contribution.
         // The result contains only part of the information (half 1), thus needs to be completed to a non-symmetric_full vertex
         // when inserted in the 3-loop contribution below.
@@ -186,7 +186,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
             }
         }
 
-        if (N_LOOPS >= 3) {
+        if (nloops_max >= 3) {
 
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
             // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
@@ -195,7 +195,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const vec<size_t>
             //dGammaC_tbar.set_Ir(true);
 #endif
 
-            for (int i = 3; i <= N_LOOPS; i++) {
+            for (int i = 3; i <= nloops_max; i++) {
 
 
                 // create non-symmetric_full vertex with differentiated vertex on the left (full dGammaL, containing half 1 and 2)
@@ -370,11 +370,12 @@ public:
     mutable std::size_t rk_step = 0;
     mutable std::size_t iteration = 0;
     const fRG_config& frgConfig;
+    const int nloops = frgConfig.nloops;
 
     rhs_n_loop_flow_t(const fRG_config& config) : frgConfig(config) {};
 
     void operator() (const State<Q>& Psi, State<Q>& dState_dLambda,  const double Lambda) const {
-        dState_dLambda = rhs_n_loop_flow(Psi, Lambda, vec<size_t>({iteration, rk_step}), frgConfig);
+        dState_dLambda = rhs_n_loop_flow(Psi, Lambda, nloops, vec<size_t>({iteration, rk_step}), frgConfig);
         rk_step++;
     }
 };
