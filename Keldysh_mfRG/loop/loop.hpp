@@ -509,7 +509,7 @@ void loop(SelfEnergy<state_datatype>& self, const vertType& fullvertex, const Pr
     SelfEnergy<state_datatype> self_temp = self; /// problem with aliasing if self is identical to a member of prop
     fullvertex.initializeInterpol();
 #if SWITCH_SUM_N_INTEGRAL
-    fullvertex.template symmetry_expand<version == 0 ? 't' : 'a',false>();
+    fullvertex.template symmetry_expand<version == 0 ? 't' : 'a',false,true>();
 #endif
     prop.initInterpolator();
 #pragma omp parallel for schedule(dynamic) //default(none) shared(self, fullvertex, prop, all_spins)

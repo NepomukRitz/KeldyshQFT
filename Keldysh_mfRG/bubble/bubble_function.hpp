@@ -151,8 +151,8 @@ class BubbleFunctionCalculator{
             assert(false);
         }
 #if SWITCH_SUM_N_INTEGRAL
-        vertex1.template symmetry_expand<channel,true>();
-        vertex2.template symmetry_expand<channel,false>();
+        vertex1.template symmetry_expand<channel,true ,false>();
+        vertex2.template symmetry_expand<channel,false,false>();
 #endif
         /// TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble,
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).

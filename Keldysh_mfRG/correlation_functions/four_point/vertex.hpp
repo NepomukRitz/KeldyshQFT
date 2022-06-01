@@ -374,13 +374,13 @@ class GeneralVertex {
     vertex_nondiff_t vertex_nondifferentiated;
 
 private:
-    template<char channel_bubble, bool is_left_vertex> void construct_SBE_nondiff_K2(std::vector<fullvert<Q>>& vertices_expanded_target) const {
+    template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void construct_SBE_nondiff_K2(std::vector<fullvert<Q>>& vertices_expanded_target) const {
 
         assert(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1);
         using buffer_type_K2 = typename rvert<Q>::buffer_type_K2;
 
         // construct K2 from SBE
-        if constexpr(channel_bubble != 'a') {
+        if constexpr(channel_bubble != 'a' or need_full_vertex) {
             buffer_type_K2 K2_new_spin0;
             buffer_type_K2 K2_new_spin1;
             // if ispin == 0
@@ -392,7 +392,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'a'>().K2_symmetry_expanded = K2_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'a'>().K2_symmetry_expanded = K2_new_spin1;
         }
-        if constexpr(channel_bubble != 'p') {
+        if constexpr(channel_bubble != 'p' or need_full_vertex) {
             buffer_type_K2 K2_new_spin0;
             buffer_type_K2 K2_new_spin1;
             // ispin == 0
@@ -403,7 +403,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'p'>().K2_symmetry_expanded = K2_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'p'>().K2_symmetry_expanded = K2_new_spin1;
         }
-        if constexpr(channel_bubble != 't') {
+        if constexpr(channel_bubble != 't' or need_full_vertex) {
             buffer_type_K2 K2_new_spin0;
             buffer_type_K2 K2_new_spin1;
             // ispin == 1
@@ -423,14 +423,14 @@ private:
         }
 
     }
-    template<char channel_bubble, bool is_left_vertex> void construct_SBE_nondiff_K3_SBE(std::vector<fullvert<Q>>& vertices_expanded_target) const {
+    template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void construct_SBE_nondiff_K3_SBE(std::vector<fullvert<Q>>& vertices_expanded_target) const {
 
         assert(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1);
         using buffer_type_K3_SBE = typename rvert<Q>::buffer_type_K3_SBE;
 
 
         // construct K3_SBE from SBE
-        if constexpr(channel_bubble != 'a') {
+        if constexpr(channel_bubble != 'a' or need_full_vertex) {
             buffer_type_K3_SBE K3_SBE_new_spin0;
             buffer_type_K3_SBE K3_SBE_new_spin1;
             // ispin==0
@@ -442,7 +442,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'a'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'a'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin1;
         }
-        if constexpr(channel_bubble != 'p') {
+        if constexpr(channel_bubble != 'p' or need_full_vertex) {
             buffer_type_K3_SBE K3_SBE_new_spin0;
             buffer_type_K3_SBE K3_SBE_new_spin1;
             // ispin==0
@@ -453,7 +453,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'p'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'p'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin1;
         }
-        if constexpr(channel_bubble != 't') {
+        if constexpr(channel_bubble != 't' or need_full_vertex) {
             buffer_type_K3_SBE K3_SBE_new_spin0;
             buffer_type_K3_SBE K3_SBE_new_spin1;
             // ispin==1
@@ -474,7 +474,7 @@ private:
 
 
     }
-    template<char channel_bubble, bool is_left_vertex> void construct_SBE_nondiff_K2b(std::vector<fullvert<Q>>& vertices_expanded_target) const {
+    template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void construct_SBE_nondiff_K2b(std::vector<fullvert<Q>>& vertices_expanded_target) const {
 
         assert(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1);
         using buffer_type_K2b= typename rvert<Q>::buffer_type_K2b;
@@ -482,7 +482,7 @@ private:
 
         // construct K2' from SBE
 
-        if constexpr(channel_bubble != 'a') {
+        if constexpr(channel_bubble != 'a' or need_full_vertex) {
             buffer_type_K2b K2b_new_spin0;
             buffer_type_K2b K2b_new_spin1;
             // ispin==0
@@ -494,7 +494,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'a'>().K2b_symmetry_expanded = K2b_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'a'>().K2b_symmetry_expanded = K2b_new_spin1;
         }
-        if constexpr(channel_bubble != 'p') {
+        if constexpr(channel_bubble != 'p' or need_full_vertex) {
             buffer_type_K2b K2b_new_spin0;
             buffer_type_K2b K2b_new_spin1;
             // ispin==0
@@ -505,7 +505,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'p'>().K2b_symmetry_expanded = K2b_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'p'>().K2b_symmetry_expanded = K2b_new_spin1;
         }
-        if constexpr(channel_bubble != 't') {
+        if constexpr(channel_bubble != 't' or need_full_vertex) {
             buffer_type_K2b K2b_new_spin0;
             buffer_type_K2b K2b_new_spin1;
             // ispin==1
@@ -527,13 +527,13 @@ private:
 
     }
 
-    template<char channel_bubble, bool is_left_vertex> void construct_SBE_diff_K2(std::vector<fullvert<Q>>& vertices_expanded_target, const std::vector<fullvert<Q>>& vertices_expanded_nondiff) const {
+    template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void construct_SBE_diff_K2(std::vector<fullvert<Q>>& vertices_expanded_target, const std::vector<fullvert<Q>>& vertices_expanded_nondiff) const {
 
         assert(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1);
         using buffer_type_K2 = typename rvert<Q>::buffer_type_K2;
 
         // construct K2 from SBE
-        if constexpr(channel_bubble != 'a') {
+        if constexpr(channel_bubble != 'a' or need_full_vertex) {
             buffer_type_K2 K2_new_spin0;
             buffer_type_K2 K2_new_spin1;
             // if ispin == 0
@@ -548,7 +548,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'a'>().K2_symmetry_expanded = K2_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'a'>().K2_symmetry_expanded = K2_new_spin1;
         }
-        if constexpr(channel_bubble != 'p') {
+        if constexpr(channel_bubble != 'p' or need_full_vertex) {
             buffer_type_K2 K2_new_spin0;
             buffer_type_K2 K2_new_spin1;
             // ispin == 0
@@ -561,7 +561,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'p'>().K2_symmetry_expanded = K2_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'p'>().K2_symmetry_expanded = K2_new_spin1;
         }
-        if constexpr(channel_bubble != 't') {
+        if constexpr(channel_bubble != 't' or need_full_vertex) {
             buffer_type_K2 K2_new_spin0;
             buffer_type_K2 K2_new_spin1;
             // ispin == 1
@@ -584,14 +584,14 @@ private:
         }
 
     }
-    template<char channel_bubble, bool is_left_vertex> void construct_SBE_diff_K3_SBE(std::vector<fullvert<Q>>& vertices_expanded_target, const std::vector<fullvert<Q>>& vertices_expanded_nondiff) const {
+    template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void construct_SBE_diff_K3_SBE(std::vector<fullvert<Q>>& vertices_expanded_target, const std::vector<fullvert<Q>>& vertices_expanded_nondiff) const {
 
         assert(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1);
         using buffer_type_K3_SBE = typename rvert<Q>::buffer_type_K3_SBE;
 
 
         // construct K3_SBE from SBE
-        if constexpr(channel_bubble != 'a') {
+        if constexpr(channel_bubble != 'a' or need_full_vertex) {
             buffer_type_K3_SBE K3_SBE_new_spin0;
             buffer_type_K3_SBE K3_SBE_new_spin1;
             // ispin==0
@@ -606,7 +606,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'a'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'a'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin1;
         }
-        if constexpr(channel_bubble != 'p') {
+        if constexpr(channel_bubble != 'p' or need_full_vertex) {
             buffer_type_K3_SBE K3_SBE_new_spin0;
             buffer_type_K3_SBE K3_SBE_new_spin1;
             // ispin==0
@@ -619,7 +619,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'p'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'p'>().K3_SBE_symmetry_expanded = K3_SBE_new_spin1;
         }
-        if constexpr(channel_bubble != 't') {
+        if constexpr(channel_bubble != 't' or need_full_vertex) {
             buffer_type_K3_SBE K3_SBE_new_spin0;
             buffer_type_K3_SBE K3_SBE_new_spin1;
             // ispin==1
@@ -643,7 +643,7 @@ private:
 
 
     }
-    template<char channel_bubble, bool is_left_vertex> void construct_SBE_diff_K2b(std::vector<fullvert<Q>>& vertices_expanded_target, const std::vector<fullvert<Q>>& vertices_expanded_nondiff) const {
+    template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void construct_SBE_diff_K2b(std::vector<fullvert<Q>>& vertices_expanded_target, const std::vector<fullvert<Q>>& vertices_expanded_nondiff) const {
 
         assert(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1);
         using buffer_type_K2b= typename rvert<Q>::buffer_type_K2b;
@@ -651,7 +651,7 @@ private:
 
         // construct K2' from SBE
 
-        if constexpr(channel_bubble != 'a') {
+        if constexpr(channel_bubble != 'a' or need_full_vertex) {
             buffer_type_K2b K2b_new_spin0;
             buffer_type_K2b K2b_new_spin1;
             // ispin==0
@@ -666,7 +666,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'a'>().K2b_symmetry_expanded = K2b_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'a'>().K2b_symmetry_expanded = K2b_new_spin1;
         }
-        if constexpr(channel_bubble != 'p') {
+        if constexpr(channel_bubble != 'p' or need_full_vertex) {
             buffer_type_K2b K2b_new_spin0;
             buffer_type_K2b K2b_new_spin1;
             // ispin==0
@@ -679,7 +679,7 @@ private:
             vertices_expanded_target[0].template get_rvertex<'p'>().K2b_symmetry_expanded = K2b_new_spin0;
             vertices_expanded_target[1].template get_rvertex<'p'>().K2b_symmetry_expanded = K2b_new_spin1;
         }
-        if constexpr(channel_bubble != 't') {
+        if constexpr(channel_bubble != 't' or need_full_vertex) {
             buffer_type_K2b K2b_new_spin0;
             buffer_type_K2b K2b_new_spin1;
             // ispin==1
@@ -942,24 +942,24 @@ public:
         vertex.set_initializedInterpol(false);
     }
 
-    template<char channel_bubble, bool is_left_vertex> void symmetry_expand() const {
+    template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void symmetry_expand() const {
         symmetry_expand_impl<channel_bubble,is_left_vertex>(vertices_bubbleintegrand, half1(), half2());
 
         if constexpr(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1) {
             if constexpr(!differentiated) {
-                construct_SBE_nondiff_K2<channel_bubble,is_left_vertex>(vertices_bubbleintegrand);
-                construct_SBE_nondiff_K3_SBE<channel_bubble,is_left_vertex>(vertices_bubbleintegrand);
-                construct_SBE_nondiff_K2b<channel_bubble,is_left_vertex>(vertices_bubbleintegrand);
+                construct_SBE_nondiff_K2<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand);
+                construct_SBE_nondiff_K3_SBE<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand);
+                construct_SBE_nondiff_K2b<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand);
             }
             else {
                 symmetry_expand_impl<channel_bubble,is_left_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand, vertex_nondifferentiated.half1(), vertex_nondifferentiated.half2());
 
-                construct_SBE_diff_K2<channel_bubble,is_left_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
-                construct_SBE_nondiff_K2<channel_bubble,is_left_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
-                construct_SBE_diff_K3_SBE<channel_bubble,is_left_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
-                construct_SBE_nondiff_K3_SBE<channel_bubble,is_left_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
-                construct_SBE_diff_K2b<channel_bubble,is_left_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
-                construct_SBE_nondiff_K2b<channel_bubble,is_left_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
+                construct_SBE_diff_K2<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
+                construct_SBE_nondiff_K2<channel_bubble,is_left_vertex,need_full_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
+                construct_SBE_diff_K3_SBE<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
+                construct_SBE_nondiff_K3_SBE<channel_bubble,is_left_vertex,need_full_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
+                construct_SBE_diff_K2b<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
+                construct_SBE_nondiff_K2b<channel_bubble,is_left_vertex,need_full_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
 
                 vertex_nondifferentiated.vertices_bubbleintegrand.clear();
             }
@@ -968,7 +968,7 @@ public:
 
     }
     void save_expanded(const std::string& filename_prefix) {
-        for (int i = 0; i < vertices_bubbleintegrand.size(); i++) {
+        for (unsigned int i = 0; i < vertices_bubbleintegrand.size(); i++) {
             vertices_bubbleintegrand[i].save_expanded(filename_prefix + "spin" + std::to_string(i));
         }
     }
