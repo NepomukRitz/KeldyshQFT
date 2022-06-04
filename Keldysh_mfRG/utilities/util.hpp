@@ -164,7 +164,7 @@ namespace utils {
 
     std::string generate_data_directory(std::string& job);
 
-    std::string generate_filename();
+    std::string generate_filename(const fRG_config&);
 
     void print_job_info();
 

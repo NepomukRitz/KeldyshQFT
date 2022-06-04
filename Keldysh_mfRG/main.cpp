@@ -34,16 +34,6 @@ auto main(int argc, char * argv[]) -> int {
     utils::print_job_info();
     utils::check_input();
 
-    /// Job and Data directory
-    std::string job = "Loop=" + std::to_string(n_loops);
-    job += "U=" + std::to_string(glb_U);
-#ifndef PARTICLE_HOLE_SYMM
-    job += "_eVg=" + std::to_string(glb_Vg);
-#endif
-    data_dir = utils::generate_data_directory(job);
-
-    std::string filename = utils::generate_filename();
-
     //
     //test_PT4(0.5, true);
     //test_PT_state<state_datatype>( data_dir+filename, 1.8, false);
@@ -59,7 +49,7 @@ auto main(int argc, char * argv[]) -> int {
     //run_parquet(myU_NRG);
 
 
-    //fRG runs:
+    /// config for fRG runs:
     fRG_config config;
     config.nODE_ = 40;
     config.epsODE_abs_ = 1e-8;
@@ -67,6 +57,17 @@ auto main(int argc, char * argv[]) -> int {
     config.nloops = n_loops;
     config.U = 1.;
     config.save_intermediateResults = false;
+
+    /// Job and Data directory
+    std::string job = "Loop=" + std::to_string(n_loops);
+#ifndef PARTICLE_HOLE_SYMM
+    job += "_eVg=" + std::to_string(glb_Vg);
+#endif
+    data_dir = utils::generate_data_directory(job);
+    std::string filename = utils::generate_filename(config);
+
+
+    /// fRG runs
     n_loop_flow(data_dir+filename, config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
