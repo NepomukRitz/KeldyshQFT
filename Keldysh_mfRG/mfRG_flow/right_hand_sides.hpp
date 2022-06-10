@@ -238,10 +238,16 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                     State<Q> dPsi_C (dGammaC, dPsi.selfenergy, Lambda);
                     //State<Q> dPsi_C_left (dGammaC_l, dPsi.selfenergy, Lambda);
                     //State<Q> dPsi_C_right(dGammaC_r, dPsi.selfenergy, Lambda);
+                    State<Q> dPsi_L (dGammaL_half1, dPsi.selfenergy, Lambda);
+                    State<Q> dPsi_R (dGammaR_half1, dPsi.selfenergy, Lambda);
                     if (iteration == 0) {
                         write_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C);
                         //write_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_left);
                         //write_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_right);
+                        write_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
+                                              Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_L);
+                        write_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
+                                              Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_R);
                         if constexpr(DEBUG_SYMMETRIES) {
                             //dPsi_C_left.vertex.check_symmetries("dPsi_C_left");   // we don't expect these to have the full symmetry of the vertex
                             //dPsi_C_right.vertex.check_symmetries("dPsi_C_right"); // we don't expect these to have the full symmetry of the vertex
@@ -252,6 +258,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                         add_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       iteration, dPsi_C,       false);
                         //add_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  iteration, dPsi_C_left,  false);
                         //add_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_C_right, false);
+                        add_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_L, false);
+                        add_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_R, false);
 
                     }
                     if (VERBOSE) {
