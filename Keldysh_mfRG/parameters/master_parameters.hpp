@@ -23,10 +23,10 @@ constexpr bool VERBOSE = false;
 //#define FERMI_POLARON_PROBLEM
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
+#define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
-#define VECTORIZED_INTEGRATION 0 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
+#define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
