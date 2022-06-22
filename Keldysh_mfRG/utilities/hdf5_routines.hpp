@@ -343,71 +343,79 @@ template<typename Q, typename H5object,
                                 std::is_same_v<Q, char>,
                 bool> = true>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Q& data, const bool data_set_exists) {
-    H5::DataSpace file_space(H5S_SCALAR);
+    if (mpi_world_rank() == 0) {
+        H5::DataSpace file_space(H5S_SCALAR);
 
-    if constexpr(std::is_same_v<Q, double>) {
-        H5::Attribute attr = group.createAttribute( dataset_name, H5::PredType::NATIVE_DOUBLE, file_space );
-        attr.write( H5::PredType::NATIVE_DOUBLE, &data );
-    }
-    else if constexpr(std::is_same_v<Q, comp>) {
-        H5::CompType mtype_comp = def_mtype_comp();
-        H5::Attribute attr = group.createAttribute( dataset_name, mtype_comp, file_space );
-        attr.write( mtype_comp, &data );
-    }
-    else if constexpr(std::is_same_v<Q, int>) {
-        H5::Attribute attr = group.createAttribute( dataset_name, H5::PredType::NATIVE_INT, file_space );
-        attr.write( H5::PredType::NATIVE_INT, &data );
-    }
-    else if constexpr(std::is_same_v<Q, char>) {
-        H5::Attribute attr = group.createAttribute( dataset_name, H5::PredType::NATIVE_CHAR, file_space );
-        attr.write( H5::PredType::NATIVE_CHAR, &data );
-    }
+        if constexpr(std::is_same_v<Q, double>) {
+            H5::Attribute attr = group.createAttribute(dataset_name, H5::PredType::NATIVE_DOUBLE, file_space);
+            attr.write(H5::PredType::NATIVE_DOUBLE, &data);
+        } else if constexpr(std::is_same_v<Q, comp>) {
+            H5::CompType mtype_comp = def_mtype_comp();
+            H5::Attribute attr = group.createAttribute(dataset_name, mtype_comp, file_space);
+            attr.write(mtype_comp, &data);
+        } else if constexpr(std::is_same_v<Q, int>) {
+            H5::Attribute attr = group.createAttribute(dataset_name, H5::PredType::NATIVE_INT, file_space);
+            attr.write(H5::PredType::NATIVE_INT, &data);
+        } else if constexpr(std::is_same_v<Q, char>) {
+            H5::Attribute attr = group.createAttribute(dataset_name, H5::PredType::NATIVE_CHAR, file_space);
+            attr.write(H5::PredType::NATIVE_CHAR, &data);
+        }
 
-    file_space.close();
+        file_space.close();
+    }
 };
 /// Write vector to HDF group/file
 template <typename Q, typename H5object>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists) {
-    hsize_t dims[1] = {data.size()};
-    H5::DataSpace file_space(1, dims);
-    H5::DataSet mydataset;
-    if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
-    else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+    if (mpi_world_rank() == 0) {
 
-    hdf5_impl::write_data_to_Dataset(data, mydataset);
+        hsize_t dims[1] = {data.size()};
+        H5::DataSpace file_space(1, dims);
+        H5::DataSet mydataset;
+        if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
+        else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
 
-    mydataset.close();
-    file_space.close();
+        hdf5_impl::write_data_to_Dataset(data, mydataset);
+
+        mydataset.close();
+        file_space.close();
+    }
 }
 /// Write multiarray to HDF group/file
 template<typename Q, std::size_t depth, typename H5object>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists) {
-    hsize_t dims[depth];
-    std::copy(std::begin(data.length()), std::end(data.length()), std::begin(dims));
-    H5::DataSpace file_space(depth, dims);
+    if (mpi_world_rank() == 0) {
+        hsize_t dims[depth];
+        std::copy(std::begin(data.length()), std::end(data.length()), std::begin(dims));
+        H5::DataSpace file_space(depth, dims);
 
-    H5::DataSet mydataset;
-    if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
-    else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
-    hdf5_impl::write_data_to_Dataset(data, mydataset);
+        H5::DataSet mydataset;
+        if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
+        else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+        hdf5_impl::write_data_to_Dataset(data, mydataset);
 
-    mydataset.close();
-    file_space.close();
+        mydataset.close();
+        file_space.close();
+
+    }
 };
 
 /// Write Eigen::Matrix to HDF group/file
 template<typename Q, typename H5object, int nrows, int ncols>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,nrows, ncols>& data, const bool data_set_exists) {
-    hsize_t dims[2] = {(hsize_t)data.cols(), (hsize_t)data.rows()}; // standard Eigen::Matrix is stored in column-major format
-    H5::DataSpace file_space(2, dims);
+    if (mpi_world_rank() == 0) {
+        hsize_t dims[2] = {(hsize_t)data.cols(), (hsize_t)data.rows()}; // standard Eigen::Matrix is stored in column-major format
+        H5::DataSpace file_space(2, dims);
 
-    H5::DataSet mydataset;
-    if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
-    else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
-    hdf5_impl::write_data_to_Dataset(data, mydataset);
+        H5::DataSet mydataset;
+        if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
+        else mydataset = group.openDataSet(dataset_name); // hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+        hdf5_impl::write_data_to_Dataset(data, mydataset);
 
-    mydataset.close();
-    file_space.close();
+        mydataset.close();
+        file_space.close();
+
+    }
 };
 
 /// Write vector to Lambda layer of HDF group/file

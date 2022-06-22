@@ -891,28 +891,29 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
         if (K3.get_vec().max_norm() > 1e-30) utils::print("K3: \t", deviations_K3.max_norm() / K3.get_vec().max_norm(), "\n");
     }
 
+    if (mpi_world_rank() == 0) {
         std::string filename = data_dir + "deviations_from_symmetry" + identifier + "_channel" + channel + ".h5";
         H5::H5File file(filename.c_str(), H5F_ACC_TRUNC);
         write_to_hdf(file, "K1", deviations_K1, false);
-    if constexpr(MAX_DIAG_CLASS > 1) {
-        write_to_hdf(file, "K2", deviations_K2 * (1 / K2.get_vec().max_norm()), false);
-        write_to_hdf(file, "K2b", deviations_K2b * (1 / K2b.get_vec().max_norm()), false);
-        write_to_hdf(file, "K2_original", original_K2, false);
-        write_to_hdf(file, "K2_symmet", symmrel_K2, false);
-        write_to_hdf(file, "K2_trafo", trafo_K2, false);
-        write_to_hdf(file, "K2_conj", conj_K2, false);
-        write_to_hdf(file, "K2_w", w_K2, false);
-        write_to_hdf(file, "K2_v", v_K2, false);
-        write_to_hdf(file, "K2b_original", original_K2b, false);
-        write_to_hdf(file, "K2b_symmet", symmrel_K2b, false);
-    }
-    if constexpr(MAX_DIAG_CLASS > 2) {
-        write_to_hdf(file, "K3", deviations_K3 * (1 / K3.get_vec().max_norm()), false);
-        write_to_hdf(file, "K3_original", original_K3, false);
-        write_to_hdf(file, "K3_symmet", symmrel_K3, false);
-    }
+        if constexpr(MAX_DIAG_CLASS > 1) {
+            write_to_hdf(file, "K2", deviations_K2 * (1 / K2.get_vec().max_norm()), false);
+            write_to_hdf(file, "K2b", deviations_K2b * (1 / K2b.get_vec().max_norm()), false);
+            write_to_hdf(file, "K2_original", original_K2, false);
+            write_to_hdf(file, "K2_symmet", symmrel_K2, false);
+            write_to_hdf(file, "K2_trafo", trafo_K2, false);
+            write_to_hdf(file, "K2_conj", conj_K2, false);
+            write_to_hdf(file, "K2_w", w_K2, false);
+            write_to_hdf(file, "K2_v", v_K2, false);
+            write_to_hdf(file, "K2b_original", original_K2b, false);
+            write_to_hdf(file, "K2b_symmet", symmrel_K2b, false);
+        }
+        if constexpr(MAX_DIAG_CLASS > 2) {
+            write_to_hdf(file, "K3", deviations_K3 * (1 / K3.get_vec().max_norm()), false);
+            write_to_hdf(file, "K3_original", original_K3, false);
+            write_to_hdf(file, "K3_symmet", symmrel_K3, false);
+        }
         file.close();
-
+    }
 #endif
 }
 

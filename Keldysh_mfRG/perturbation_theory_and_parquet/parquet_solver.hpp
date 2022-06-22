@@ -139,7 +139,7 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     utils::print(" ---> difference between K1a-left and -right: ", (bubble_a_l - bubble_a_r).avertex().K1.get_vec().max_norm(), "\n");
     utils::print(" ---> difference between K1p-left and -right: ", (bubble_p_l - bubble_p_r).pvertex().K1.get_vec().max_norm(), "\n");
 
-    if (write_state) {
+    if (write_state and mpi_world_rank() == 0) {
         std::string filename = data_dir + "SDE_iteration" + std::to_string(SDE_counter);
         H5::H5File file_out = H5::H5File(filename, H5F_ACC_TRUNC);
         write_to_hdf(file_out, "Sigma_SDE_a", Sigma_SDE_a.Sigma.get_vec(), false);
