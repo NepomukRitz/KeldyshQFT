@@ -167,6 +167,44 @@ private:
     void save_integrand() const;
     void save_integrand(const rvec& freqs, const std::string& filename_prefix) const;
     void get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& Pivals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals1, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals2)  const;
+
+    auto get_projection_lambdaBar() const -> Eigen::Matrix<Q,4,4> {
+        Eigen::Matrix<Q,4,4> result;
+        if constexpr(CONTOUR_BASIS) {
+            result << 1, 0, 0, 0,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0,
+                    0, 0, 0, 1;
+        }
+        else {
+            result << 1, 0, 0, 1,
+                    0, 1, 1, 0,
+                    0, 1, 1, 0,
+                    1, 0, 0, 1;
+            result *= 0.5;
+        }
+        return result;
+    }
+    auto get_projection_lambda() const -> Eigen::Matrix<Q,4,4> {
+        Eigen::Matrix<Q,4,4> result;
+        if constexpr(CONTOUR_BASIS) {
+            result << 1, 0, 0, 0,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0,
+                    0, 0, 0, 1;
+        }
+        else {
+            result << 1, 0, 0, 1,
+                    0, 1, 1, 0,
+                    0, 1, 1, 0,
+                    1, 0, 0, 1;
+            result *= 0.5;
+        }
+        return result;
+    }
+    const Eigen::Matrix<Q,4,4> projection_lambdaBar = get_projection_lambdaBar();
+    const Eigen::Matrix<Q,4,4> projection_lambda = get_projection_lambda();
+
 };
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
@@ -909,13 +947,13 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                 else if constexpr(diag_class == k2) {
                     const return_type result = (values_vertex_l_upup * Pi_matrix * (                            values_vertex_r)
                                               + values_vertex_l      * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup));
-                    return result;
+                    return result * projection_lambdaBar;
                 }
                 else if constexpr(diag_class == k2b) {
                     const return_type result = ((myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * values_vertex_r
                                               + (                            values_vertex_l)      * Pi_matrix * values_vertex_r_upup
                             );
-                    return result;
+                    return projection_lambda * result;
                 }
                 else if constexpr(diag_class == k3) {
                     const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r
@@ -953,11 +991,11 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                     }
                     else if constexpr(diag_class == k2) {
                         const return_type result = (values_vertex_l_other * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
-                        return result;
+                        return result * projection_lambdaBar;
                     }
                     else if constexpr(diag_class == k2b) {
                         const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r_other);
-                        return result;
+                        return projection_lambda * result;
                     }
                     else if constexpr(diag_class == k3) {
                         const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
@@ -992,11 +1030,11 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                 }
                 else if constexpr(diag_class == k2) {
                     const return_type result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
-                    return result;
+                    return result * projection_lambdaBar;
                 }
                 else if constexpr(diag_class == k2b) {
                     const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r);
-                    return result;
+                    return projection_lambda * result;
                 }
                 else if constexpr(diag_class == k3) {
                     const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r);
