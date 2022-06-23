@@ -64,14 +64,14 @@ auto main(int argc, char * argv[]) -> int {
 
 
     /// fRG runs
-    n_loop_flow(data_dir+filename, config);
+    //n_loop_flow(data_dir+filename, config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
 
-    //parquet runs:
-    //const std::vector<double> myU_NRG {0.25, 0.5, 0.75, 1., 1.25};
-    //run_parquet(myU_NRG);
+    /// Parquet runs:
+    const std::vector<double> myU_NRG {0.25, 0.5, 0.75, 1., 1.25};
+    run_parquet(myU_NRG);
 
     /*
     // SIAM PT4 specific:
