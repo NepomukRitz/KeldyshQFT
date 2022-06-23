@@ -1418,15 +1418,9 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
 
 
 template <typename Q> void rvert<Q>::update_grid(double Lambda) {
-    if (MAX_DIAG_CLASS >= 1) {
-        K1.update_grid(Lambda);
-    }
-    if (MAX_DIAG_CLASS >= 2) {
-        K2.update_grid(Lambda);
-    }
-    if (MAX_DIAG_CLASS >= 3) {
-        K3.update_grid(Lambda);
-    }
+
+    apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.update_grid(Lambda); });
+
 }
 
 
@@ -1449,9 +1443,7 @@ void rvert<Q>::update_grid(const FGrid& frequencies_new, rvert<Q>& rvert4data) {
 }
 
 template <typename Q> void rvert<Q>::findBestFreqGrid(bool verbose) {
-    K1.optimize_grid(true);
-    if constexpr(MAX_DIAG_CLASS > 1) K2.optimize_grid(true);
-    if constexpr(MAX_DIAG_CLASS > 2) K3.optimize_grid(true);
+    apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.optimize_grid(true); });
 }
 
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
