@@ -72,10 +72,14 @@ double Hartree_Solver::compute_Hartree_term_Friedel(const double convergence_thr
     return glb_U * n;
 }
 
+double Hartree_Solver::compute_Hartree_term_oneshot() {
+    return glb_U * integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
+}
+
 auto Hartree_Solver::operator()(const double nu) const -> double {
     // integrand for the filling (not the Hartree value!) given according to the formula
     // 1/pi * n_F(nu) Im G^R(nu)
-    Propagator<comp> G (Lambda, Sigma, 'g');
+    Propagator<comp> G (Lambda, Sigma, prop_type);
     double val = - 1. / M_PI * fermi_distribution(nu);
 
     return val * G.GR(nu, 0).imag();
@@ -128,7 +132,6 @@ double Hartree_Solver::fermi_distribution(const double nu) {
         else if (nu < 0.) return 1.;
         else assert(false);
     }
-
 }
 
 
