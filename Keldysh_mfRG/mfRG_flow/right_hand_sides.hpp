@@ -35,6 +35,34 @@ template <typename Q, class Bubble_Object> auto calculate_dGammaC_left_insertion
 template <typename Q> bool vertexConvergedInLoops(Vertex<Q,true>& dGamma_T, Vertex<Q,true>&dGamma);
 template <typename Q> bool selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, SelfEnergy<Q>& PsiSelfEnergy, Propagator<Q>& dG);
 
+/// compute dSigma in SOPT
+    template <typename Q> void calculate_dSigma_SOPT(SelfEnergy<Q>& Sigma_out, const State<Q>& Psi, const double Lambda) {
+    SelfEnergy<Q> Sigma_H (Lambda);
+    Sigma_H.initialize(Psi.selfenergy.asymp_val_R, 0);
+    Propagator<Q> G0(Lambda, Sigma_H, 'g');
+    Propagator<Q>dG0(Lambda, Sigma_H, 's');
+    Bubble<Q> Pi (G0, G0, false);
+    Bubble<Q>dPi (G0,dG0, true);
+
+    Vertex<Q,false> Gamma0(Lambda);
+    Gamma0.initialize(Psi.vertex.irred().acc(0));
+
+    Vertex<Q,false> bubble_a(Lambda);
+    Vertex<Q,false>dbubble_a(Lambda);
+    bubble_a.set_frequency_grid(Psi.vertex);
+    dbubble_a.set_frequency_grid(Psi.vertex);
+
+    bubble_function( bubble_a, Gamma0, Gamma0, Pi, 'a');
+    bubble_function(dbubble_a, Gamma0, Gamma0,dPi, 'a');
+
+    SelfEnergy<Q> result1(Lambda);
+    SelfEnergy<Q> result2(Lambda);
+
+    loop<false,0>(result1, bubble_a, dG0);
+    loop<false,0>(result2, dbubble_a, G0);
+
+    Sigma_out = result1 + result2;
+}
 
 /**
  * Function to implement an n-loop flow (without Katanin substitution).
@@ -57,7 +85,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
-        if (rkStep==0) save_intermediate = true;
+        //if (rkStep==0)
+            save_intermediate = true;
          if (rkStep==0 and iteration==0 and save_intermediate) utils::makedir(dir_str);
     }
 #endif
@@ -79,6 +108,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
     //For flow without self-energy, comment out this line
     selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
+    //calculate_dSigma_SOPT<Q>(dPsi.selfenergy, Psi, Lambda);
     //dPsi.selfenergy.check_resolution();
 
 #ifndef STATIC_FEEDBACK
