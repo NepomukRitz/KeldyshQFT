@@ -51,7 +51,7 @@ inline int N_LOOPS;  // Number of loops; defined in main.cpp
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.5; //0.1; //0.01;                     // Temperature
+constexpr double glb_T = 0.01; // 0.5; // 0.1; // 0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
