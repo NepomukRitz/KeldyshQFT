@@ -436,9 +436,9 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                     matsubarasum<Q>(integrand, -POSINTRANGE - std::abs(W / 2) + interval_correction, POSINTRANGE - 1 + std::abs(W / 2));
 
             integration_result +=
-                    bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
+                    bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
                                                                                  vmin_temp, vmax_temp, w, v, vp, i0, i2,
-                                                                                 i_in, diff, spin);
+                                                                                 i_in, diff);
         }
     }
 

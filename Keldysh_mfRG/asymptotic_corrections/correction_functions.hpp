@@ -43,7 +43,7 @@
  * @param channel         : Diagrammatic channel
  * @return                : Value of the asymptotic correction
  */
-template <char channel, typename Q,
+template <char channel, int spin, typename Q,
           typename vertexType_1,
           typename vertexType_2>
 auto asymp_corrections_bubble(K_class k,
@@ -51,7 +51,7 @@ auto asymp_corrections_bubble(K_class k,
                               const vertexType_2& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, bool diff, int spin) -> Q {
+                              double w, double v, double vp, int i0_in, int i2, int i_in, bool diff) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
@@ -141,82 +141,215 @@ auto asymp_corrections_bubble(K_class k,
     VertexInput input_r (indices[1], spin, w, 10.*vmin, vp, i_in, channel);
 
     // compute values of left/right vertex
-    switch (k) {
-        case k1:
-            res_l_V = vertex1.template left_same_bare<channel>(input_l);
-            res_r_V = vertex2.template right_same_bare<channel>(input_r);
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+    Q K1L, K1R;
+    Q K1L_hat, K1R_hat;
+    if constexpr (not SBE_DECOMPOSITION) {
+        switch (k) {
+            case k1:
+                res_l_V = vertex1.template left_same_bare<channel>(input_l);
+                res_r_V = vertex2.template right_same_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
-            break;
-        case k2:
-            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_V = vertex2.template right_same_bare<channel>(input_r);
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+                break;
+            case k2:
+                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_V = vertex2.template right_same_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
-            break;
-        case k2b:
-            res_l_V = vertex1.template left_same_bare<channel>(input_l);
-            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+                break;
+            case k2b:
+                res_l_V = vertex1.template left_same_bare<channel>(input_l);
+                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
 
-            break;
-        case k3:
-            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
+                break;
+            case k3:
+                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
 
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
-            break;
-        default:;
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+                break;
+            default:;
+        }
+    }
+    else { // SBE_DECOMPOSITION
+        assert(not KELDYSH and SWITCH_SUM_N_INTEGRAL);
+        switch (k) {
+            case k1: {
+                VertexInput input_for_expanded_vertex = input_l;
+                input_for_expanded_vertex.spin = 0;
+                Q gamma0L = vertex1.irred().template val<Q>(input_l.iK, i_in, spin);
+                Q gamma0R = vertex2.irred().template val<Q>(input_r.iK, i_in, spin);
+                Q K1L_temp = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(
+                        input_for_expanded_vertex);
+                Q K1R_temp = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(
+                        input_for_expanded_vertex);
+
+                K1L = gamma0L + K1L_temp;
+                K1R = gamma0R + K1R_temp;
+
+                res_l_V = vertex1.template left_same_bare<channel>(input_l);
+                res_r_V = vertex2.template right_same_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+
+                gamma0L = vertex1.irred().template val<Q>(input_l.iK, i_in, 1 - spin);
+                gamma0R = vertex2.irred().template val<Q>(input_r.iK, i_in, 1 - spin);
+                K1L_temp = vertex1.template get_Kir_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(
+                        input_for_expanded_vertex);
+                K1R_temp = vertex2.template get_Kir_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(
+                        input_for_expanded_vertex);
+
+                K1L_hat = gamma0L + K1L_temp;
+                K1R_hat = gamma0R + K1R_temp;
+                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+            }
+                break;
+            case k2:
+                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_V = vertex2.template right_same_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+
+                break;
+            case k2b:
+                res_l_V = vertex1.template left_same_bare<channel>(input_l);
+                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+
+                break;
+            case k3:
+                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
+
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+                break;
+            default:;
+        }
+
     }
 
     // compute the value of the (analytically integrated) bubble
     Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
 
-    // compute result, with spin sum depending on the channel
-    switch (channel) {
-        case 'a':
-            if (spin == 0) {
-                res = res_l_V * Pival * res_r_V;
+
+    if constexpr (SBE_DECOMPOSITION) {
+        if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) {
+
+            switch (k) {
+                case k1:
+                    res = (K1L + K1L_hat) * (1 + res_l_V + res_l_Vhat) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R)
+                          + (K1L + K1L_hat) * (1 + res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R + K1R_hat)
+                          + (K1L + K1L_hat) * (res_l_V) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R + K1R_hat)
+                          + (K1L + K1L_hat) * (res_l_V) * Pival * (res_r_V) * (K1R)
+                          + (K1L) * (res_l_V) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R)
+                          + (K1L) * (res_l_V) * Pival * (res_r_V) * (K1R + K1R_hat)
+                          + (K1L) * (1 + res_l_V + res_l_Vhat) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R + K1R_hat)
+                          + (K1L) * (1 + res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R);
+                    break;
+                case k2:
+                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (1 + res_r_V + res_r_Vhat);
+                    break;
+                case k2b:
+                    res = (1 + res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
+                    break;
+                case k3:
+                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
+                    break;
+                default:;
             }
+        } else if (channel == 'p' and spin == 1) {
+
+            switch (k) {
+                case k1:
+                    res = K1L * (1 + res_l_V) * Pival * (1 + res_r_V) * K1R;
+                    break;
+                case k2:
+                    res = res_l_V * Pival * (1 + res_r_Vhat);
+                    break;
+                case k2b:
+                    res = (1 + res_l_Vhat) * Pival * res_r_V;
+                    break;
+                case k3:
+                    res = res_l_V * Pival * res_r_Vhat;
+                    break;
+                default:;
+            }
+        } else {
+
+            switch (k) {
+                case k1:
+                    res = K1L * (1 + res_l_V) * Pival * (1 + res_r_V) * K1R;
+                    break;
+                case k2:
+                    res = res_l_V * Pival * (1 + res_r_V);
+                    break;
+                case k2b:
+                    res = (1 + res_l_V) * Pival * res_r_V;
+                    break;
+                case k3:
+                    res = res_l_V * Pival * res_r_V;
+                    break;
+                default:;
+            }
+        }
+    }
+    else {
+        // compute result, with spin sum depending on the channel
+        switch (channel) {
+            case 'a':
+                if (spin == 0) {
+                    res = res_l_V * Pival * res_r_V;
+                }
 #if DEBUG_SYMMETRIES
-            else if (spin == 1) {
-                res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-            }
+                else if (spin == 1) {
+                    res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+                }
 #endif
-            break;
-        case 'p':
-            if (spin == 0) {
-                res = res_l_V * Pival * res_r_V;
-            }
+                break;
+            case 'p':
+                if (spin == 0) {
+                    res = res_l_V * Pival * res_r_V;
+                }
 #if DEBUG_SYMMETRIES
-            else if (spin == 1) {
-                res = res_l_V * Pival * res_r_Vhat;
-            }
+                else if (spin == 1) {
+                    res = res_l_V * Pival * res_r_Vhat;
+                }
 #endif
-            break;
-        case 't':
-            if (spin == 0) {
-                res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-            }
+                break;
+            case 't':
+                if (spin == 0) {
+                    res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+                }
 #if DEBUG_SYMMETRIES
-            else if (spin == 1) {
-                 res = res_l_V * Pival * res_r_V;
-            }
+                else if (spin == 1) {
+                    res = res_l_V * Pival * res_r_V;
+                }
 #endif
-            break;
-        default:;
+                break;
+            default:;
+        }
     }
     assert(isfinite(res));
     return res;
