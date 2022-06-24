@@ -999,12 +999,14 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
     filename += "_i_in=" + std::to_string(i_in);
     filename += + ".h5";
 
-    H5::H5File file(filename, H5F_ACC_TRUNC);
-    write_to_hdf(file, "v", freqs, false);
-    write_to_hdf(file, "integrand", integrand_vals, false);
-    write_to_hdf(file, "Pival", Pivals, false);
-    write_to_hdf(file, "vertex1", vertex_vals1, false);
-    write_to_hdf(file, "vertex2", vertex_vals2, false);
+    if (mpi_world_rank() == 0) {
+        H5::H5File file(filename, H5F_ACC_TRUNC);
+        write_to_hdf(file, "v", freqs, false);
+        write_to_hdf(file, "integrand", integrand_vals, false);
+        write_to_hdf(file, "Pival", Pivals, false);
+        write_to_hdf(file, "vertex1", vertex_vals1, false);
+        write_to_hdf(file, "vertex2", vertex_vals2, false);
+    }
 }
 
 

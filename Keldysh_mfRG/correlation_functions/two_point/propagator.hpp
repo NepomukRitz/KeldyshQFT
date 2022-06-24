@@ -85,9 +85,11 @@ public:
         }
 
         //std::string filename = data_dir + "";
-        H5::H5File file(filename, H5F_ACC_TRUNC);
-        write_to_hdf(file, "propagator", values, false);
-        file.close();
+        if (mpi_world_rank() == 0) {
+            H5::H5File file(filename, H5F_ACC_TRUNC);
+            write_to_hdf(file, "propagator", values, false);
+            file.close();
+        }
 
     }
 
