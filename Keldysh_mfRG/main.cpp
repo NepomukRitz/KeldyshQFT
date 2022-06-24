@@ -52,7 +52,7 @@ auto main(int argc, char * argv[]) -> int {
     config.epsODE_rel_ = 1e-5;
     config.nloops = n_loops;
     config.U = 1.;
-    config.save_intermediateResults = true;
+    config.save_intermediateResults = false;
 
     /// Job and Data directory
     std::string job = "Loop=" + std::to_string(n_loops);
@@ -64,14 +64,14 @@ auto main(int argc, char * argv[]) -> int {
 
 
     /// fRG runs
-    //n_loop_flow(data_dir+filename, config);
+    n_loop_flow(data_dir+filename, config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
 
     /// Parquet runs:
-    const std::vector<double> myU_NRG {0.25, 0.5, 0.75, 1., 1.25};
-    run_parquet(myU_NRG);
+    //const std::vector<double> myU_NRG {0.25, 0.5, 0.75, 1., 1.25};
+    //run_parquet(myU_NRG);
 
     /*
     // SIAM PT4 specific:
