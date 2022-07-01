@@ -806,7 +806,7 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
         if constexpr(VECTORIZED_INTEGRATION) {
             // Make sure that the frequency point does not belong to the symmetry-reduced sector for all relevant Keldysh components
             // otherwise we have to compute that point
-            const double safety = 1e-10;
+            const double safety = 1e-5;
             int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
             int sign_f = sign_index(v + vp - safety);
             int sign_fp = sign_index(v - vp - safety);

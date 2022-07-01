@@ -1617,12 +1617,14 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         double w_in, v_in, vp_in;
         K3.frequencies.get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp);
         IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, vp_in, i_in, channel, k2, 0, channel);
-        int sign_w = sign_index(w_in);
+
+        const double safety = 0.5e-5;
+        int sign_w = sign_index(w_in - safety);
 
         int sign_f;
         if (!KELDYSH and !ZERO_T) sign_f = sign_index(indices.v1 + indices.v2 - signFlipCorrection_MF(w_in)*0.5);
-        else sign_f = sign_index(indices.v1 + indices.v2);
-        int sign_fp = sign_index(indices.v1 - indices.v2);
+        else sign_f = sign_index(indices.v1 + indices.v2 - safety);
+        int sign_fp = sign_index(indices.v1 - indices.v2 - safety);
         int trafo_index = freq_transformations.K3[itK][ sign_w * 4 + sign_f * 2 + sign_fp];
         Ti(indices, trafo_index);
         indices.iK = itK;
