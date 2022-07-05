@@ -667,17 +667,17 @@ Q Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubble_O
     //load_vertex_keldyshComponents_left_vectorized (values_vertex_l_test, input_l);
     //load_vertex_keldyshComponents_right_vectorized(values_vertex_r_test, input_r);
     //if (std::abs((values_vertex_r - values_vertex_r_test).sum()) > 1e-10) {
-    //    H5::H5File file(data_dir + "values_vertex_r", H5F_ACC_TRUNC);
+    //    H5::H5File file = create_hdf_file(data_dir + "values_vertex_r");
     //    write_to_hdf(file, "scalar", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_r), false);
     //    write_to_hdf(file, "vector", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_r_test), false);
-    //    file.close();
+    //    close_hdf_file(file);
     //    assert(false);
     //}
     //if (std::abs((values_vertex_l - values_vertex_l_test).sum()) > 1e-10) {
-    //    H5::H5File file(data_dir + "values_vertex_l", H5F_ACC_TRUNC);
+    //    H5::H5File file = create_hdf_file(data_dir + "values_vertex_l");
     //    write_to_hdf(file, "scalar", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_l), false);
     //    write_to_hdf(file, "vector", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_l_test), false);
-    //    file.close();
+    //    close_hdf_file(file);
     //    assert(false);
     //}
 
@@ -810,17 +810,17 @@ return_type Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right
     //load_vertex_keldyshComponents_left_scalar (values_vertex_l_test, input_l);
     //load_vertex_keldyshComponents_right_scalar(values_vertex_r_test, input_r);
     //if (std::abs((values_vertex_r - values_vertex_r_test).sum()) > 1e-10) {
-    //    H5::H5File file(data_dir + "values_vertex_r", H5F_ACC_TRUNC);
+    //    H5::H5File file = create_hdf_file(data_dir + "values_vertex_r");
     //    write_to_hdf(file, "scalar", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_r_test), false);
     //    write_to_hdf(file, "vector", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_r), false);
-    //    file.close();
+    //    close_hdf_file(file);
     //    assert(false);
     //}
     //if (std::abs((values_vertex_l - values_vertex_l_test).sum()) > 1e-10) {
-    //    H5::H5File file(data_dir + "values_vertex_l", H5F_ACC_TRUNC);
+    //    H5::H5File file = create_hdf_file(data_dir + "values_vertex_l");
     //    write_to_hdf(file, "scalar", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_l), false);
     //    write_to_hdf(file, "vector", multidimensional::multiarray<Q,1>(std::array<size_t,1>({4}), values_vertex_l_test), false);
-    //    file.close();
+    //    close_hdf_file(file);
     //    assert(false);
     //}
 
@@ -1000,7 +1000,7 @@ void Integrand<diag_class,channel, spin, Q, symmetry_left, symmetry_right, Bubbl
     filename += + ".h5";
 
     if (mpi_world_rank() == 0) {
-        H5::H5File file(filename, H5F_ACC_TRUNC);
+        H5::H5File file = create_hdf_file(filename);
         write_to_hdf(file, "v", freqs, false);
         write_to_hdf(file, "integrand", integrand_vals, false);
         write_to_hdf(file, "Pival", Pivals, false);

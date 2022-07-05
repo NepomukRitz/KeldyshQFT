@@ -155,7 +155,7 @@ void test_rhs_bubbles_flow_wstate(int N_ODE, double Lambda_i, double Lambda_f, b
     utils::print("Testing ODE for bare K1a_0 with State class. Using " +std::to_string(N_ODE)+ " ODE steps, the maximal difference between direct and ODE-final result is " +std::to_string(K1a_dif.max_norm())+ ".", true);
     if(write_flag) {
 
-        H5::H5File file_out(data_dir + "rhs_bubbles_flow_wstate.h5", H5F_ACC_TRUNC);
+        H5::H5File file_out = create_hdf_file(data_dir + "rhs_bubbles_flow_wstate.h5");
         write_to_hdf(file_out, "v", bfreqs, false);
         write_to_hdf(file_out, "state_dir", state_dir.vertex.avertex().K1.get_vec(), false);
         write_to_hdf(file_out, "state_fin", state_fin.vertex.avertex().K1.get_vec(), false);

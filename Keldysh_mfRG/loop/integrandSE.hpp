@@ -9,6 +9,7 @@
 #include "../integrator/integrator.hpp"             // integration routines
 #include "../utilities/write_data2file.hpp"        // save integrand for debugging purposes
 #include "../asymptotic_corrections/correction_functions.hpp"    // analytical results for the tails of the loop integral
+#include "../utilities/hdf5_routines.hpp"
 
 /// possible tests: ---> See bubble integrand
 
@@ -197,7 +198,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand(const rvec& f
 
     utils::print("saving integrand to file ", filename, "\n");
     if (mpi_world_rank() == 0) {
-        H5::H5File file(filename, H5F_ACC_TRUNC);
+        H5::H5File file = create_hdf_file(filename);
         write_to_hdf(file, "v", freqs, false);
         write_to_hdf(file, "integrand", integrand_vals, false);
         write_to_hdf(file, "vertex", vertex_vals, false);

@@ -111,10 +111,10 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
 
 
 
-    H5::H5File file(parquet_filename, H5F_ACC_RDWR);
+    H5::H5File file = open_hdf_file_readWrite(parquet_filename);
     write_to_hdf(file, "K2_interpolated", K2_interpolated, false);
     write_to_hdf(file, "K2_interpolateDiagonals", K2_interpolateDiagonals, false);
-    file.close();
+    close_hdf_file(file);
 
     */
     //

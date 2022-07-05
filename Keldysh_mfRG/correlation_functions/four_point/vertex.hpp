@@ -15,7 +15,7 @@
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
-    friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
+    template<typename T> friend State<T> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
     using buffer_type = multidimensional::multiarray<Q,2>;
     buffer_type empty_bare() {
         if (KELDYSH) return buffer_type ({16,n_in});
@@ -475,7 +475,7 @@ template <int spin, char ch_bubble, typename result_type> auto value_symmetry_ex
 
     }
     void save_expanded(const std::string& filename_prefix) {
-        for (int i = 0; i < vertices_bubbleintegrand.size(); i++) {
+        for (unsigned int i = 0; i < vertices_bubbleintegrand.size(); i++) {
             vertices_bubbleintegrand[i].save_expanded(filename_prefix + "spin" + std::to_string(i));
         }
     }

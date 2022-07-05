@@ -24,10 +24,10 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
         issymmetric_aux += std::abs(Bosfreqs.get_auxiliary_gridpoint(i) + Bosfreqs.get_auxiliary_gridpoint(nBOS - i - 1));
     }
 
-    H5::H5File outfile(data_dir + "frequency_grid.h5", H5F_ACC_TRUNC);
+    H5::H5File outfile = create_hdf_file(data_dir + "frequency_grid.h5");
     write_to_hdf(outfile, "bfreqs", Bosfreqs.get_all_frequencies(), false);
     write_to_hdf(outfile, "bfreqs_aux", Bosfreqs.get_all_auxiliary_gridpoints(), false);
-    outfile.close();
+    close_hdf_file(outfile);
 
 
     SECTION( "Is the correct index retrieved by get_grid_index()?" ) {
@@ -199,9 +199,9 @@ TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") 
         }
 
         std::string filename = data_dir + "remainders_dwnormalized.h5";
-        H5::H5File file(filename, H5F_ACC_TRUNC);
+        H5::H5File file = create_hdf_file(filename);
         write_to_hdf(file, "remainder_K3", remainders_in_dw_normalized_K3, false);
-        file.close();
+        close_hdf_file(file);
 
 
         double total_dev_K3 = std::abs(errors_K3.sum());

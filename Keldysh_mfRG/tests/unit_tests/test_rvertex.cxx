@@ -134,13 +134,13 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 errors.at(0,iw,0,0) = vertex_function(w) - testvertex1.K1.at(0, iw, 0, 0);
             }
 
-            //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_TRUNC);
+            //H5::H5File outfile = create_hdf_file("vertex_updategrid.h5");
             //write_to_hdf(outfile, "vertex_dataK1_old", testvertex_old.K1.get_vec(), false);
             //write_to_hdf(outfile, "vertex_dataK1_new", testvertex1.K1.get_vec(), false);
             //write_to_hdf(outfile, "gridK1b_old", testvertex_old.K1.frequencies.get_freqGrid_b().get_all_frequencies(), false);
             //write_to_hdf(outfile, "gridK1b_new", testvertex1.K1.frequencies.get_freqGrid_b().get_all_frequencies(), false);
             //write_to_hdf(outfile, "errorsK1", errors, false);
-            //outfile.close();
+            //close_hdf_file(outfile);
 
             double error_max = errors.max_norm();
             utils::print(error_max);
@@ -185,7 +185,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 }
 
 
-                //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_RDWR);
+                //H5::H5File outfile = open_hdf_file_readWrite("vertex_updategrid.h5);
                 //write_to_hdf(outfile, "vertex_dataK2_old", testvertex_old.K2.get_vec(), false);
                 //write_to_hdf(outfile, "vertex_dataK2_new", testvertex1.K2.get_vec(), false);
                 //write_to_hdf(outfile, "gridK2b_old", testvertex_old.K2.K2_get_freqGrid_b().get_all_frequencies(), false);
@@ -193,7 +193,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 //write_to_hdf(outfile, "gridK2f_old", testvertex_old.K2.K2_get_freqGrid_f().get_all_frequencies(), false);
                 //write_to_hdf(outfile, "gridK2f_new", testvertex1.K2.K2_get_freqGrid_f().get_all_frequencies(), false);
                 //write_to_hdf(outfile, "errorsK2", errors, false);
-                //outfile.close();
+                //close_hdf_file(outfile);
 
 
                 REQUIRE(errors.max_norm() < 1e-10);
@@ -239,7 +239,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                     }
                 }
 
-                //H5::H5File outfile("vertex_updategrid.h5", H5F_ACC_RDWR);
+                //H5::H5File outfile = open_hdf_file_readWrite("vertex_updategrid.h5");
                 //write_to_hdf(outfile, "vertex_dataK3_old", testvertex_old.K3.get_vec(), false);
                 //write_to_hdf(outfile, "vertex_dataK3_new", testvertex1.K3.get_vec(), false);
                 //write_to_hdf(outfile, "gridK3b_old", testvertex_old.K3.frequencies.get_freqGrid_b().get_all_frequencies(), false);
@@ -247,7 +247,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
                 //write_to_hdf(outfile, "gridK3f_old", testvertex_old.K3.frequencies.get_freqGrid_f().get_all_frequencies(), false);
                 //write_to_hdf(outfile, "gridK3f_new", testvertex1.K3.frequencies.get_freqGrid_f().get_all_frequencies(), false);
                 //write_to_hdf(outfile, "errorsK3", errors, false);
-                //outfile.close();
+                //close_hdf_file(outfile);
 
                 REQUIRE(errors.max_norm() < 1e-10);
             }

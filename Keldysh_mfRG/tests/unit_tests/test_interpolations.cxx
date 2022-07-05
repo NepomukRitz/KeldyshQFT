@@ -391,13 +391,13 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
 
     std::string filename = data_dir + "linear_interpolated_K2.h5";
     utils::print("save file to ", filename, "\n");
-    H5::H5File file(filename, H5F_ACC_TRUNC);
+    H5::H5File file = create_hdf_file(filename);
     write_to_hdf(file, "errors", errors, false);
     write_to_hdf(file, "values", values, false);
     write_to_hdf(file, "values_interpolated", values_interpolated, false);
     write_to_hdf(file, "bfreqs", avertex.K2.frequencies.primary_grid.all_frequencies, false);
     write_to_hdf(file, "ffreqs", avertex.K2.frequencies.secondary_grid.all_frequencies, false);
-    file.close();
+    close_hdf_file(file);
 
 
 
@@ -580,14 +580,14 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
 
     std::string filename = data_dir + "linear_interpolated_K3.h5";
     utils::print("save file to ", filename, "\n");
-    H5::H5File file(filename, H5F_ACC_TRUNC);
+    H5::H5File file = create_hdf_file(filename);
     write_to_hdf(file, "errors", errors, false);
     write_to_hdf(file, "values", values, false);
     write_to_hdf(file, "values_interpolated", values_interpolated, false);
     write_to_hdf(file, "bfreqs", avertex.K3.frequencies.primary_grid.all_frequencies, false);
     write_to_hdf(file, "ffreqs", avertex.K3.frequencies.secondary_grid.all_frequencies, false);
     write_to_hdf(file, "ffreqs3", avertex.K3.frequencies.tertiary_grid.all_frequencies, false);
-    file.close();
+    close_hdf_file(file);
 
 
 
@@ -754,14 +754,14 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
                 deviation_full = result_vector_full - result_scalar_full;
 
 
-                H5::H5File file("test_vectorized_interpolation", H5F_ACC_TRUNC);
+                H5::H5File file = create_hdf_file("test_vectorized_interpolation");
                 write_to_hdf(file, "scalar", multidimensional::multiarray<state_datatype, 2>(
                         std::array<size_t, 2>({4, K1_expanded_config.dims_flat / 4}), result_scalar_full), false);
                 write_to_hdf(file, "vector", multidimensional::multiarray<state_datatype, 2>(
                         std::array<size_t, 2>({4, K1_expanded_config.dims_flat / 4}), result_vector_full), false);
                 write_to_hdf(file, "deviation", multidimensional::multiarray<state_datatype, 2>(
                         std::array<size_t, 2>({4, K1_expanded_config.dims_flat / 4}), deviation_full), false);
-                file.close();
+                close_hdf_file(file);
 
 
                 REQUIRE(deviation_full.lpNorm<Eigen::Infinity>() < 1e-10);
@@ -819,14 +819,14 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
                     deviation_full = result_vector_full - result_scalar_full;
 
 
-                    H5::H5File file("test_vectorized_interpolation_K2", H5F_ACC_TRUNC);
+                    H5::H5File file = create_hdf_file("test_vectorized_interpolation_K2");
                     write_to_hdf(file, "scalar", multidimensional::multiarray<state_datatype, 2>(
                             std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_scalar_full), false);
                     write_to_hdf(file, "vector", multidimensional::multiarray<state_datatype, 2>(
                             std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), result_vector_full), false);
                     write_to_hdf(file, "deviation", multidimensional::multiarray<state_datatype, 2>(
                             std::array<size_t, 2>({4, K2_expanded_config.dims_flat / 4}), deviation_full), false);
-                    file.close();
+                    close_hdf_file(file);
 
 
                     REQUIRE(deviation_full.lpNorm<Eigen::Infinity>() < 1e-10);
