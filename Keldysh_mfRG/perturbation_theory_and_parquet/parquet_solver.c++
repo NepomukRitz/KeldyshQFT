@@ -12,7 +12,7 @@ void parquet_checks(const std::string filename) {
     for (unsigned int i=0; i<Lambdas.size(); ++i) {
         utils::print("Iteration ", i, false);
         utils::print_add(", Lambda = ", Lambdas[i], true);
-        State<state_datatype> state = read_state_from_hdf(filename, i);
+        State<state_datatype> state = read_state_from_hdf<state_datatype>(filename, i);
         state.selfenergy.asymp_val_R = glb_U / 2.;
         utils::print("State read from file.", true);
 

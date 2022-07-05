@@ -34,7 +34,7 @@ class Buffer;
     template<typename Q, std::size_t rank>
     class dataContainerBase {
         friend class State<Q>;
-        friend State<state_datatype> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
+        template<typename T> friend State<T> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
 
 
     protected:
@@ -173,7 +173,7 @@ class Buffer;
         template<typename T>
         friend void check_FDTs(const State<T> &state, bool verbose);
 
-        friend State<state_datatype> read_state_from_hdf(const H5std_string &filename, const int Lambda_it);
+        template <typename T> friend State<T> read_state_from_hdf(const H5std_string &filename, const int Lambda_it);
 
     protected:
         using base_class = dataContainerBase<Q, rank>;

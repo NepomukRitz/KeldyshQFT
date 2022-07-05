@@ -17,6 +17,7 @@
 #include "../../utilities/math_utils.hpp"
 #include "../../utilities/minimizer.hpp"
 #include "../n_point/data_buffer.hpp"
+#include "../../utilities/hdf5_routines.hpp"
 
 /// Possible (unit-)tests:
 /// [IMPLEMENTED in test_symmetries.c++] check read-out from symmetry-reduced sector and correctness of symmetry tables
@@ -893,7 +894,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 
     if (mpi_world_rank() == 0) {
         std::string filename = data_dir + "deviations_from_symmetry" + identifier + "_channel" + channel + ".h5";
-        H5::H5File file(filename.c_str(), H5F_ACC_TRUNC);
+        H5::H5File file = create_hdf_file(filename.c_str());
         write_to_hdf(file, "K1", deviations_K1, false);
         if constexpr(MAX_DIAG_CLASS > 1) {
             write_to_hdf(file, "K2", deviations_K2 * (1 / K2.get_vec().max_norm()), false);
@@ -912,7 +913,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             write_to_hdf(file, "K3_original", original_K3, false);
             write_to_hdf(file, "K3_symmet", symmrel_K3, false);
         }
-        file.close();
+        close_hdf_file(file);
     }
 #endif
 }
@@ -1065,7 +1066,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
 
 template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) const {
-    H5::H5File file(filename, H5F_ACC_TRUNC);
+    H5::H5File file = create_hdf_file(filename);
     const std::string ch(1, channel);
     write_to_hdf(file, "K1" + ch, K1_symmetry_expanded .get_vec(), false);
     write_to_hdf(file, "K2" + ch, K2_symmetry_expanded .get_vec(), false);
@@ -1079,7 +1080,7 @@ template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) c
     write_to_hdf(file, "ffreqs3", K3_symmetry_expanded.get_VertexFreqGrid().secondary_grid.get_all_frequencies(), false);
     write_to_hdf(file, "3freqs3", K3_symmetry_expanded.get_VertexFreqGrid(). tertiary_grid.get_all_frequencies(), false);
 
-    file.close();
+    close_hdf_file(file);
 
 }
 

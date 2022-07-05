@@ -89,7 +89,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
 State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_config& frgConfig, const unsigned int it_start, bool save_intermediate_results=false) {
     if (it_start < frgConfig.nODE_ + U_NRG.size() + 1) { // start iteration needs to be within the range of values
 
-        State<state_datatype> state_ini = read_state_from_hdf(inputFileName, it_start); // read initial state
+        State<state_datatype> state_ini = read_state_from_hdf<state_datatype>(inputFileName, it_start); // read initial state
         double Lambda_now = state_ini.Lambda;
         State<state_datatype> state_fin (Lambda_fin);
 

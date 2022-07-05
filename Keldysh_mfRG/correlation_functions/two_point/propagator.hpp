@@ -9,6 +9,7 @@
 #include "../../parameters/master_parameters.hpp"      // system parameters (lengths of vectors etc.)
 #include "../../grids/momentum_grid.hpp"   // momentum grid and FFT machinery for the 2D Hubbard model
 #include "../../utilities/util.hpp"            // sign - function
+#include "../../utilities/hdf5_routines.hpp"
 
 
 // Fermi--Dirac distribution function
@@ -86,9 +87,9 @@ public:
 
         //std::string filename = data_dir + "";
         if (mpi_world_rank() == 0) {
-            H5::H5File file(filename, H5F_ACC_TRUNC);
+            H5::H5File file = create_hdf_file(filename);
             write_to_hdf(file, "propagator", values, false);
-            file.close();
+            close_hdf_file(file);
         }
 
     }

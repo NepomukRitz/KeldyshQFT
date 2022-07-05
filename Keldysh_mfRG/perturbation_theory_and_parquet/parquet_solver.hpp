@@ -141,11 +141,11 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     if (write_state and mpi_world_rank() == 0) {
         std::string filename = data_dir + "SDE_iteration" + std::to_string(SDE_counter);
-        H5::H5File file_out = H5::H5File(filename, H5F_ACC_TRUNC);
+        H5::H5File file_out = create_hdf_file(filename);
         write_to_hdf(file_out, "Sigma_SDE_a", Sigma_SDE_a.Sigma.get_vec(), false);
         write_to_hdf(file_out, "Sigma_SDE_p", Sigma_SDE_p.Sigma.get_vec(), false);
         write_to_hdf(file_out, "Sigma_SDE", Sigma_SDE.Sigma.get_vec(), false);
-        file_out.close();
+        close_hdf_file(file_out);
 
 #ifndef NDEBUG
         State<Q> Psi_a(Vertex<Q>(bubble_a.half1()), Sigma_SDE_a, Lambda);

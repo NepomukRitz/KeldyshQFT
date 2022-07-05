@@ -30,13 +30,13 @@ def plot_integrand_alli2(ax, filename_pt1, filename_pt2, kwargs={}):
         freqs = np.array(f['v'])
         integrand_re = np.array(f['integrand_re'])
         integrand_im = np.array(f['integrand_im'])
-    f.close()
+    close_hdf_file(f)
     for i in range(1,10):
         with h5py.File(filename_pt1 + "i2=" + str(i) + filename_pt2, 'r') as f:
             freqs += np.array(f['v'])
             integrand_re += np.array(f['integrand_re'])
             integrand_im += np.array(f['integrand_im'])
-        f.close()
+        close_hdf_file(f)
     ax.plot(freqs, integrand_re, **kwargs)
     ax.plot(freqs, integrand_im, **kwargs)
 
@@ -78,7 +78,7 @@ echo -e "\n Moved executable ${GREEN}$TARGET ${NC}to Keldysh_mfRG source directo
     """
     f = open("./compile_asc_saveIntegrand.sh", "w")
     f.write(text)
-    f.close()
+    close_hdf_file(f)
     print("Compiling " + cpp_target)
     os.system("bash ./compile_asc_saveIntegrand.sh")
     os.system("rm ./compile_asc_saveIntegrand.sh")
@@ -110,7 +110,7 @@ mpiCC --std=c++17  ../tests/get_integrand_dGamma_1loop_fromFlow.cpp -o ../tests/
     """
     f = open("./compile_asc_saveIntegrand.sh", "w")
     f.write(text)
-    f.close()
+    close_hdf_file(f)
     print("Compiling get_integrand_dGamma_1loop_fromFlow")
     os.system("bash ./compile_asc_saveIntegrand.sh")
     os.system("rm ./compile_asc_saveIntegrand.sh")
@@ -134,7 +134,7 @@ mpiCC --std=c++17  ../tests/get_integrand_dGammaL.cpp -o ../tests/get_integrand_
     """
     f = open("./compile_asc_saveIntegrand.sh", "w")
     f.write(text)
-    f.close()
+    close_hdf_file(f)
     print("Compiling get_integrand_dGammaL")
     os.system("bash ./compile_asc_saveIntegrand.sh")
     os.system("rm ./compile_asc_saveIntegrand.sh")
@@ -158,7 +158,7 @@ mpiCC --std=c++17  ../tests/get_integrand_dGammaC.cpp -o ../tests/get_integrand_
     """
     f = open("./compile_asc_saveIntegrand.sh", "w")
     f.write(text)
-    f.close()
+    close_hdf_file(f)
     print("Compiling get_integrand_dGammaC")
     os.system("bash ./compile_asc_saveIntegrand.sh")
     os.system("rm ./compile_asc_saveIntegrand.sh")
