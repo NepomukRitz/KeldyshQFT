@@ -9,6 +9,7 @@
 #include "tests/test_perturbation_theory.hpp"
 #include "tests/test_interpolation.hpp"
 #include "utilities/util.hpp"
+#include "utilities/hdf5_routines.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
 #include "perturbation_theory_and_parquet/perturbation_theory.hpp"
