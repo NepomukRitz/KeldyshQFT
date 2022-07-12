@@ -154,6 +154,13 @@ public:
     Q SM_REG3(double v, int i_in) const;
     Q SM_REG3_FPP(double v, double ksquared, int i_in) const;
 
+    /// propagators for REG == 4
+    Q GR_REG4_SIAM(double v, int i_in) const;
+
+    Q GA_REG4_SIAM(double v, int i_in) const;
+
+    Q SR_REG4_SIAM(double v, int i_in) const;
+
     Q GM_REG4_SIAM(double v, int i_in) const;
     Q GM_REG4_SIAM_PHS(double v, int i_in) const;
     Q SM_REG4(double v, int i_in) const;
@@ -176,7 +183,11 @@ auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
     else if (REG == 3) {
 
         if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);} // SIAM
+        else               {return GR_REG3_SIAM(v, i_in);} // SIAM
+    }
+    else if (REG == 4) {
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        else               {return GR_REG4_SIAM(v, i_in);} // SIAM
     }
     else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
@@ -193,9 +204,12 @@ auto Propagator<Q>::GA(const double v, const int i_in) const -> Q
         else                            return GA_REG2_SIAM(v, i_in);
     }
     else if (REG == 3) {
-
         if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        else               {return GA_REG3_SIAM(v, i_in);}
+    }
+    else if (REG == 4) {
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        else               {return GA_REG4_SIAM(v, i_in);} // SIAM
     }
     else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
@@ -227,7 +241,14 @@ auto Propagator<Q>::SR(const double v, const int i_in) const -> Q
 {
     if      (REG == 1) return SR_REG1(v, i_in);
     else if (REG == 2) return SR_REG2(v, i_in);
-    else if (REG == 3) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    else if (REG == 3) {
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        else               {return SR_REG3_SIAM(v, i_in);}
+    }
+    else if (REG == 4) {
+        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        else               {return SR_REG4_SIAM(v, i_in);}
+    }
     else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
@@ -803,7 +824,6 @@ auto Propagator<Q>::SM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> 
 }
 
 
-// TODO(high): Does the w-regulator even make sense for Keldysh?
 /////// PROPAGATOR FUNCTIONS for frequency-regulator ///////
 
 template <typename Q>
@@ -814,7 +834,7 @@ auto Propagator<Q>::GR_REG3_Hubbard(const double v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::GR_REG3_SIAM(const double v, const int i_in) const -> Q {
-    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
+    return v / (v + glb_i*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
 }
 
 template <typename Q>
@@ -825,7 +845,7 @@ auto Propagator<Q>::GA_REG3_Hubbard(const double v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::GA_REG3_SIAM(const double v, const int i_in) const -> Q {
-    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
+    return v / (v - glb_i*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
 }
 
 template <typename Q>
@@ -838,10 +858,7 @@ auto Propagator<Q>::SR_REG3_Hubbard(const double v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::SR_REG3_SIAM(const double v, const int i_in) const -> Q {
-    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
-    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
-    Q G = GR(v, i_in);
-    return 0; // TODO: write SR, does it make sense for Keldysh?
+    return -glb_i * v / (v*v - 2.*glb_i*v*Lambda - Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in));
 }
 
 // full propagator (Matsubara)
@@ -925,6 +942,24 @@ auto Propagator<Q>::SM_REG3(const double v, const int i_in) const -> Q {
     Q G0inv = v + (glb_Gamma)*0.5*sign(v);
     return -2 * Lambda / (v * v) * G * G0inv * G;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+}
+
+
+/////// PROPAGATOR FUNCTIONS for interaction-regulator ///////
+
+template <typename Q>
+auto Propagator<Q>::GR_REG4_SIAM(const double v, const int i_in) const -> Q {
+    return Lambda / ( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
+}
+
+template <typename Q>
+auto Propagator<Q>::GA_REG4_SIAM(const double v, const int i_in) const -> Q {
+    return Lambda/( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
+}
+
+template <typename Q>
+auto Propagator<Q>::SR_REG4_SIAM(const double v, const int i_in) const -> Q {
+    return 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in));
 }
 
 template <typename Q>

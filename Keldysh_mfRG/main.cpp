@@ -49,12 +49,12 @@ auto main(int argc, char * argv[]) -> int {
     //test_integrate_over_K1<state_datatype>(1.8);
 
     fRG_config config;
-    config.nODE_ = 20;
+    config.nODE_ = 50;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
     config.nloops = n_loops;
     config.U = 1.;
-    n_loop_flow(data_dir+filename, config, true);
+    n_loop_flow(data_dir+filename, config, false);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
