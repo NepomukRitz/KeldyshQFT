@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 #define KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 
+#include <string>
 #include "../parameters/master_parameters.hpp"     // system parameters
 #include "../grids/flow_grid.hpp"// flow grid
 #include "../correlation_functions/state.hpp"          // use State class
