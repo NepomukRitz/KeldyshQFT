@@ -112,8 +112,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
 
     if (VERBOSE) utils::print("Compute 1-loop contribution: ", true);
-    save_symmetry_expanded_vertex<true> (Psi_comp.vertex, "PsiIn1LoopLeft");
-    save_symmetry_expanded_vertex<false>(Psi_comp.vertex, "PsiIn1LoopRight");
+    // save_symmetry_expanded_vertex<true> (Psi_comp.vertex, "PsiIn1LoopLeft");
+    // save_symmetry_expanded_vertex<false>(Psi_comp.vertex, "PsiIn1LoopRight");
     vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi);
     if(VERBOSE) {
         dPsi.vertex.half1().check_vertex_resolution();
@@ -149,7 +149,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         GeneralVertex<Q, symmetric_r_irred> dGamma_1loop(dPsi.vertex.half1());
         if (VERBOSE) utils::print("Compute dGammaL (2-loop): ", true);
 
-        save_symmetry_expanded_vertex<true> (dGamma_1loop, "dPsiIn2LoopLLeft");
+        // save_symmetry_expanded_vertex<true> (dGamma_1loop, "dPsiIn2LoopLLeft");
         Vertex<Q> dGammaL_half1 = calculate_dGammaL(dGamma_1loop, Psi.vertex, Pi);
         if(VERBOSE) {
             dGammaL_half1.half1().check_vertex_resolution();
@@ -157,7 +157,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         }
 
         if (VERBOSE) utils::print("Compute dGammaR (2-loop):", true);
-        save_symmetry_expanded_vertex<false>(dGamma_1loop, "dPsiIn2LoopRRight");
+        // save_symmetry_expanded_vertex<false>(dGamma_1loop, "dPsiIn2LoopRRight");
         Vertex<Q> dGammaR_half1 = calculate_dGammaR(dGamma_1loop, Psi.vertex, Pi);
         if(VERBOSE) {
             dGammaR_half1.half1().check_vertex_resolution();
@@ -224,7 +224,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
                 // insert this non-symmetric_full vertex on the right of the bubble
                 if (VERBOSE) utils::print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
-                save_symmetry_expanded_vertex<false> (dGammaL, "dPsiLIn3LoopCRight");
+                // save_symmetry_expanded_vertex<false> (dGammaL, "dPsiLIn3LoopCRight");
                 Vertex<Q> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
                 if(VERBOSE) dGammaC_r.half1().check_vertex_resolution();
                 if (VERBOSE) {
@@ -241,7 +241,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 
                 // insert this non-symmetric_full vertex on the left of the bubble
-                save_symmetry_expanded_vertex<true> (dGammaR, "dPsiRIn3LoopCLeft");
+                // save_symmetry_expanded_vertex<true> (dGammaR, "dPsiRIn3LoopCLeft");
                 Vertex<Q> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaC_l, Lambda, iteration, "dGammaC_l_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, config.nODE_ + U_NRG.size() + 1);
@@ -279,11 +279,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 
                 if (VERBOSE) utils::print("Compute dGammaL ( ", i,"-loop): \n");
-                save_symmetry_expanded_vertex<true> (dGamma_1loop, "dPsiIn3LoopLLeft");
+                // save_symmetry_expanded_vertex<true> (dGamma_1loop, "dPsiIn3LoopLLeft");
                 dGammaL_half1 = calculate_dGammaL(GeneralVertex<Q, symmetric_r_irred>(dGammaT.half1()), Psi.vertex, Pi);
                 if(VERBOSE) dGammaL_half1.half1().check_vertex_resolution();
                 if (VERBOSE) utils::print("Compute dGammaR ( ", i,"-loop): \n");
-                save_symmetry_expanded_vertex<true> (dGamma_1loop, "dPsiIn3LoopRRight");
+                // save_symmetry_expanded_vertex<true> (dGamma_1loop, "dPsiIn3LoopRRight");
                 dGammaR_half1 = calculate_dGammaR(GeneralVertex<Q, symmetric_r_irred>(dGammaT.half1()), Psi.vertex, Pi);
                 if(VERBOSE) dGammaR_half1.half1().check_vertex_resolution();
 
