@@ -133,7 +133,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen), including Fabian's idea for Keldysh
 // 4: interaction cutoff
-#define REG 2
+#define REG 4
 
 
 
@@ -152,8 +152,8 @@ constexpr double epsODE_abs = 1e-8;
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 19.5; //0.15811; // 1e4;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 0.;// 1e-12;
+constexpr double Lambda_ini = 0.15811; //19.5; // 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_fin = 1.; //0.;// 1e-12;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.1;             //Initial step size for ODE solvers with adaptive step size control
 
