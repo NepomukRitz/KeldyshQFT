@@ -9,10 +9,10 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 
-#define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES 1 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -43,7 +43,7 @@ constexpr bool VERBOSE = false;
 
 inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
-#define SELF_ENERGY_FLOW_CORRECTIONS
+//#define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
@@ -63,7 +63,7 @@ constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.
 #endif
 constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 2.0;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -141,7 +141,7 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 50;
+constexpr int nODE = 1;
 constexpr double epsODE_rel = 1e-4;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
@@ -149,18 +149,18 @@ constexpr double epsODE_abs = 1e-8;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 3
+#define ODEsolver 1
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 20. ;// 1e4;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 0.2 ;// 1e-4;
+const double Lambda_ini = 2*pow(10, 1) ;// 1e4;                // NOLINT(cert-err58-cpp)
+const double Lambda_fin = 2*pow(10, -1) ;// 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
+const std::vector<double> U_NRG {};//0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};                                                    // NOLINT(cert-err58-cpp)
 #else
 const std::vector<double> U_NRG {};
 #endif

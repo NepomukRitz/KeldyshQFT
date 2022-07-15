@@ -18,6 +18,7 @@
 #include "HUBBARD_sopt_selfenergy.hpp"
 #include "../bubble/precalculated_bubble.hpp"
 #include "../utilities/write_data2file.hpp"
+#include "../utilities/hdf5_routines.hpp"
 
 template <typename Q>
 auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
@@ -45,6 +46,8 @@ void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_
 template <typename Q, class Bubble_Object>
 void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    //H5::H5File Gfile("Gvec.h5", H5F_ACC_TRUNC);
+    //barePropagator.save_propagator_values(data_dir + "Gvec.h5", bareState.selfenergy.Sigma.get_VertexFreqGrid().primary_grid.get_all_frequencies());
 
     //Do an a-Bubble for the calculation of the self-energy
     bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, Pi, 'a');

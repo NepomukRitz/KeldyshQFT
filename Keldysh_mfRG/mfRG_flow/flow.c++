@@ -36,8 +36,8 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     // initialize the flow with SOPT at Lambda_ini (important!)
     sopt_state(state_ini, Lambda_ini);
 
-    const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-6, 5);
+    //const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+    //parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-6, 5);
 
 
     //// better: read state from converged parquet solution
@@ -113,7 +113,7 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         config.lambda_checkpoints = Lambda_checkpoints;
         config.filename = inputFileName;
         using namespace boost::numeric::odeint;
-        ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+        //ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
         //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
         // compute the flow using an ODE solver
         ode_solver<State<state_datatype>, flowgrid::exp_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);

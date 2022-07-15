@@ -1033,7 +1033,7 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto fullvert<Q>::left_diff_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
-            result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
+            const result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
             if constexpr(std::is_same_v<Q,result_type>) {assert(isfinite(gamma_Rb));} else {assert((gamma_Rb.allFinite()));}
             return gamma_Rb;
         }
@@ -1044,7 +1044,7 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
         else if constexpr(ch_bubble == 't'){ result_type K2_K3 = tvertex.template left_diff_bare_symmetry_expanded<result_type>(input, avertex); return K2_K3;}
     }
     else {
-        result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
+        const result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
         if constexpr     (ch_bubble == 'a'){ result_type K2_K3 = avertex.template left_diff_bare_symmetry_expanded<result_type>(input, tvertex); return K2_K3 + gamma_Rb;}
         else if constexpr(ch_bubble == 'p'){ result_type K2_K3 = pvertex.template left_diff_bare_symmetry_expanded<result_type>(input, pvertex); return K2_K3 + gamma_Rb;}
         else                               { result_type K2_K3 = tvertex.template left_diff_bare_symmetry_expanded<result_type>(input, avertex); return K2_K3 + gamma_Rb;}

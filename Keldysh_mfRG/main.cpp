@@ -23,6 +23,7 @@ auto main(int argc, char * argv[]) -> int {
 
     std::cout << "number of args: " << argc-1 << ", expected: 1" << std::endl;
     const int n_loops = atoi(argv[1]);
+    N_LOOPS = n_loops;
 
 #ifdef USE_MPI
     if (MPI_FLAG) {
@@ -61,12 +62,12 @@ auto main(int argc, char * argv[]) -> int {
 
     //fRG runs:
     fRG_config config;
-    config.nODE_ = 40;
+    config.nODE_ = 1;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-5;
     config.nloops = n_loops;
     config.U = 1.;
-    config.save_intermediateResults = false;
+    config.save_intermediateResults = true;
     n_loop_flow(data_dir+filename, config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);

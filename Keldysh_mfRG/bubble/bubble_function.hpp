@@ -434,10 +434,10 @@ BubbleFunctionCalculator<channel, Q, symmetry_result, symmetry_left, symmetry_ri
             integration_result = bubble_value_prefactor() * (2 * M_PI) * glb_T *
                     matsubarasum<Q>(integrand, -POSINTRANGE - std::abs(W / 2) + interval_correction, POSINTRANGE - 1 + std::abs(W / 2));
 
-            integration_result +=
-                    bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
-                                                                                 vmin_temp, vmax_temp, w, v, vp, i0, i2,
-                                                                                 i_in, diff, spin);
+            //integration_result +=
+            //        bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
+            //                                                                     vmin_temp, vmax_temp, w, v, vp, i0, i2,
+            //                                                                     i_in, diff, spin);
         }
     }
 

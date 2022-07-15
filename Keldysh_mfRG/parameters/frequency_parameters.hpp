@@ -20,23 +20,23 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 // Number of bosonic and fermionic frequency points
 //#if KELDYSH_FORMALISM
-constexpr int nBOS = 801;
-constexpr int nFER = 800;
-// Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 401;//nBOS;
-constexpr int nFER2 = 400;//nFER;
-constexpr int nBOS3 = 201; //nBOS;
-constexpr int nFER3 = 200; //nFER;
+//constexpr int nBOS = 801;
+//constexpr int nFER = 800;
+//// Number of frequency points for K2 and K3 classes
+//constexpr int nBOS2 = 401;//nBOS;
+//constexpr int nFER2 = 400;//nFER;
+//constexpr int nBOS3 = 201; //nBOS;
+//constexpr int nFER3 = 200; //nFER;
 //#else
 const int COUNT = 8;
-//constexpr int nBOS = COUNT * 64 * 2 + 1;
-//constexpr int nFER = COUNT * 4 * 2;
-//// Number of frequency points for K2 and K3 classes
-//constexpr int nBOS2 = COUNT * 6 * 2 + 1;//nBOS;
-//constexpr int nFER2 = COUNT * 4 * 2;//nFER;
-//constexpr int nBOS3 = COUNT * 2 * 2 + 1; //nBOS;
-//constexpr int nFER3 = COUNT * 2; //nFER;
-const int POSINTRANGE = 64 * COUNT;
+constexpr int nBOS = COUNT * 64 * 2 + 1;
+constexpr int nFER = COUNT * 4 * 2;
+// Number of frequency points for K2 and K3 classes
+constexpr int nBOS2 = COUNT * 6 * 2 + 1;//nBOS;
+constexpr int nFER2 = COUNT * 4 * 2;//nFER;
+constexpr int nBOS3 = COUNT * 2 * 2 + 1; //nBOS;
+constexpr int nFER3 = COUNT * 2; //nFER;
+const int POSINTRANGE = 32  * COUNT;
 //#endif
 
 
