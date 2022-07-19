@@ -96,10 +96,13 @@ public:
 
     // Keldysh propagators
     auto GR(double v, int i_in) const -> Q;
-    auto GA(double v, int i_in) const -> Q;
     auto GK(double v, int i_in) const -> Q;
     auto SR(double v, int i_in) const -> Q;
     auto SK(double v, int i_in) const -> Q;
+
+    /// Katanin extension
+    Q Katanin_R(double v, int i_in) const;
+    Q Katanin_K(double v, int i_in) const;
 
     // Matsubara propagators
     auto GM(double v, int i_in) const -> Q;
@@ -111,7 +114,6 @@ public:
 
     /// propagators for REG == 1
     Q GR_REG1_SIAM(double v, int i_in) const;
-    Q GA_REG1_SIAM(double v, int i_in) const;
     Q SR_REG1(double v, int i_in) const;
 
     Q GM_REG1_FPP(double v, double ksquared, int i_in) const;
@@ -120,9 +122,6 @@ public:
     /// propagators for REG == 2
     Q GR_REG2_Hubbard(double v, int i_in) const;
     Q GR_REG2_SIAM(double v, int i_in) const;
-
-    Q GA_REG2_Hubbard(double v, int i_in) const;
-    Q GA_REG2_SIAM(double v, int i_in) const;
 
     Q SR_REG2(double v, int i_in) const;
 
@@ -140,9 +139,6 @@ public:
     Q GR_REG3_Hubbard(double v, int i_in) const;
     Q GR_REG3_SIAM(double v, int i_in) const;
 
-    Q GA_REG3_Hubbard(double v, int i_in) const;
-    Q GA_REG3_SIAM(double v, int i_in) const;
-
     Q SR_REG3_Hubbard(double v, int i_in) const;
     Q SR_REG3_SIAM(double v, int i_in) const;
 
@@ -156,8 +152,6 @@ public:
 
     /// propagators for REG == 4
     Q GR_REG4_SIAM(double v, int i_in) const;
-
-    Q GA_REG4_SIAM(double v, int i_in) const;
 
     Q SR_REG4_SIAM(double v, int i_in) const;
 
@@ -193,33 +187,10 @@ auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
 }
 
 template <typename Q>
-auto Propagator<Q>::GA(const double v, const int i_in) const -> Q
-{
-    if (REG == 1) {
-        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               return GA_REG1_SIAM(v, i_in);
-    }
-    else if (REG == 2) {
-        if constexpr (HUBBARD_MODEL)    return GA_REG2_Hubbard(v, i_in);
-        else                            return GA_REG2_SIAM(v, i_in);
-    }
-    else if (REG == 3) {
-        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {return GA_REG3_SIAM(v, i_in);}
-    }
-    else if (REG == 4) {
-        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {return GA_REG4_SIAM(v, i_in);} // SIAM
-    }
-    else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-}
-
-template <typename Q>
 auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
 {
     if (EQUILIBRIUM) {
-        // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
-        //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
+        // FDT in equilibrium:
         return glb_i * (Eff_fac(v) * 2. * myimag(GR(v, i_in))); // more efficient: only one interpolation instead of two
     }
     else {
@@ -281,6 +252,29 @@ auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
     }
 }
 
+template<typename Q>
+Q Propagator<Q>::Katanin_R(double v, int i_in) const {
+    Q Katanin_R;
+    Katanin_R = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
+    if constexpr (REG == 4) {
+        assert(Lambda > 0);
+        Katanin_R /= Lambda*Lambda;
+    }
+    return Katanin_R;
+}
+
+template<typename Q>
+Q Propagator<Q>::Katanin_K(double v, int i_in) const {
+    Q Katanin_K;
+    Katanin_K = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+                + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * conj(GR(v, i_in))
+                + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * conj(GR(v, i_in));
+    if constexpr (REG == 4) {
+        assert(Lambda > 0);
+        Katanin_K /= Lambda*Lambda;
+    }
+    return Katanin_K;
+}
 
 template <typename Q>
 auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
@@ -424,39 +418,23 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
                 if constexpr(CONTOUR_BASIS != 1) {
                     switch (iK) {
                         case 0:
-                            return SR(v, i_in) + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
+                            return SR(v, i_in) + Katanin_R(v, i_in);
                         case 1:
-                            return SK(v, i_in)
-                                   + GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                                   + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                                   + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
+                            return SK(v, i_in) + Katanin_K(v, i_in);
                         default:
                             utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
                 else {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
-                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                    const Q dSigmaA_ = conj(dSigmaR_);
-                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                    const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
+                    const Q SR_ = SR(v, i_in) + Katanin_R(v, i_in);
                     const Q SA_ = conj(SR_);
-                    const Q SK_ = SK(v, i_in)
-                                 + GR_ * dSigmaR_ * GK_
-                                 + GR_ * dSigmaK_ * GA_
-                                 + GK_ * dSigmaA_ * GA_;
+                    const Q SK_ = SK(v, i_in) + Katanin_K(v, i_in);
                     switch (iK){
-                        case 0:
-                            return 0.5*(SA_ + SR_ + SK_);
-                        case 1:
-                            return 0.5*(SA_ - SR_ + SK_);
-                        case 2:
-                            return 0.5*(-SA_ + SR_ + SK_);
-                        case 3:
-                            return 0.5*(-SA_ - SR_ + SK_);
+                        case 0: return 0.5*(SA_ + SR_ + SK_);
+                        case 1: return 0.5*(SA_ - SR_ + SK_);
+                        case 2: return 0.5*(-SA_ + SR_ + SK_);
+                        case 3: return 0.5*(-SA_ - SR_ + SK_);
                         default:
                             utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
@@ -472,38 +450,22 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
             if constexpr (KELDYSH){
                 if constexpr(CONTOUR_BASIS != 1) {
                     switch (iK) {
-                        case 0:
-                            return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-                        case 1:
-                            return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                                   + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * GA(v, i_in)
-                                   + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * GA(v, i_in);
+                        case 0: return Katanin_R(v, i_in);
+                        case 1: return Katanin_K(v, i_in);
                         default:
                             utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
                     }
                 }
                 else {
-                    const Q GR_ = GR(v, i_in);
-                    const Q GA_ = conj(GR_);
-                    const Q GK_ = GK(v, i_in);
-                    const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                    const Q dSigmaA_ = conj(dSigmaR_);
-                    const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                    const Q SR_ = GR_ * dSigmaR_ * GR_;
+                    const Q SR_ = Katanin_R(v, i_in);
                     const Q SA_ = conj(SR_);
-                    const Q SK_ =  GR_ * dSigmaR_ * GK_
-                                 + GR_ * dSigmaK_ * GA_
-                                 + GK_ * dSigmaA_ * GA_;
+                    const Q SK_ = Katanin_K(v, i_in);
                     switch (iK){
-                        case 0:
-                            return 0.5*(SA_ + SR_ + SK_);
-                        case 1:
-                            return 0.5*(SA_ - SR_ + SK_);
-                        case 2:
-                            return 0.5*(-SA_ + SR_ + SK_);
-                        case 3:
-                            return 0.5*(-SA_ - SR_ + SK_);
+                        case 0: return 0.5*(SA_ + SR_ + SK_);
+                        case 1: return 0.5*(SA_ - SR_ + SK_);
+                        case 2: return 0.5*(-SA_ + SR_ + SK_);
+                        case 3: return 0.5*(-SA_ - SR_ + SK_);
                         default:
                             utils::print("ERROR! Invalid Keldysh index. Abort.");
                             assert(false);
@@ -589,18 +551,9 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'k': // including the Katanin extension
             if constexpr (KELDYSH){
-                const Q GR_ = GR(v, i_in);
-                const Q GA_ = conj(GR_);
-                const Q GK_ = GK(v, i_in);
-                const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                const Q dSigmaA_ = conj(dSigmaR_);
-                const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                const Q SR_ = SR(v, i_in) + GR_ * dSigmaR_ * GR_;
+                const Q SR_ = SR(v, i_in) + Katanin_R(v, i_in);
                 const Q SA_ = conj(SR_);
-                const Q SK_ = SK(v, i_in)
-                              + GR_ * dSigmaR_ * GK_
-                              + GR_ * dSigmaK_ * GA_
-                              + GK_ * dSigmaA_ * GA_;
+                const Q SK_ = SK(v, i_in) + Katanin_K(v, i_in);
 
                 if constexpr(CONTOUR_BASIS != 1) {
                     return_type result;
@@ -626,17 +579,9 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'e': // purely the Katanin extension
             if constexpr (KELDYSH){
-                const Q GR_ = GR(v, i_in);
-                const Q GA_ = conj(GR_);
-                const Q GK_ = GK(v, i_in);
-                const Q dSigmaR_ = diff_selfenergy.valsmooth(0, v, i_in);
-                const Q dSigmaA_ = conj(dSigmaR_);
-                const Q dSigmaK_ = diff_selfenergy.valsmooth(1, v, i_in);
-                const Q SR_ = GR_ * dSigmaR_ * GR_;
+                const Q SR_ = Katanin_R(v, i_in);
                 const Q SA_ = conj(SR_);
-                const Q SK_ = GR_ * dSigmaR_ * GK_
-                            + GR_ * dSigmaK_ * GA_
-                            + GK_ * dSigmaA_ * GA_;
+                const Q SK_ = Katanin_K(v, i_in);
 
                 if constexpr(CONTOUR_BASIS != 1) {
                     return_type result;
@@ -688,10 +633,6 @@ auto Propagator<Q>::GR_REG1_SIAM(const double v, const int i_in) const -> Q {
     else                            return 0.;
 }
 
-template <typename Q>
-auto Propagator<Q>::GA_REG1_SIAM(const double v, const int i_in) const -> Q {
-    return 1./(v - glb_epsilon - myconj(selfenergy.valsmooth(0,v, i_in)));
-}
 
 template <typename Q>
 auto Propagator<Q>::SR_REG1(const double v, const int i_in) const -> Q {
@@ -746,19 +687,6 @@ template <typename Q>
 auto Propagator<Q>::GR_REG2_SIAM(const double v, const int i_in) const -> Q {
     Q res = 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
     return res;
-}
-
-template <typename Q>
-auto Propagator<Q>::GA_REG2_Hubbard(const double v, const int i_in) const -> Q {
-    double k_x, k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (v + 2 * (cos(k_x) + cos(k_y)) - glb_i * Lambda / 2. - myconj(selfenergy.valsmooth(0, v, i_in)));
-    // TODO: Currently only at half filling!
-}
-
-template <typename Q>
-auto Propagator<Q>::GA_REG2_SIAM(const double v, const int i_in) const -> Q {
-    return 1./( (v - glb_epsilon) - glb_i*((glb_Gamma+Lambda)/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
 }
 
 template <typename Q>
@@ -835,17 +763,6 @@ auto Propagator<Q>::GR_REG3_Hubbard(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::GR_REG3_SIAM(const double v, const int i_in) const -> Q {
     return v / (v + glb_i*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
-}
-
-template <typename Q>
-auto Propagator<Q>::GA_REG3_Hubbard(const double v, const int i_in) const -> Q {
-    return 0.;
-    // TODO: write GR for Hubbard model
-}
-
-template <typename Q>
-auto Propagator<Q>::GA_REG3_SIAM(const double v, const int i_in) const -> Q {
-    return v / (v - glb_i*Lambda) * 1./( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
 }
 
 template <typename Q>
@@ -950,11 +867,6 @@ auto Propagator<Q>::SM_REG3(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::GR_REG4_SIAM(const double v, const int i_in) const -> Q {
     return Lambda / ( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
-}
-
-template <typename Q>
-auto Propagator<Q>::GA_REG4_SIAM(const double v, const int i_in) const -> Q {
-    return Lambda/( (v - glb_epsilon) - glb_i*(glb_Gamma/2.) - myconj(selfenergy.valsmooth(0, v, i_in)) );
 }
 
 template <typename Q>

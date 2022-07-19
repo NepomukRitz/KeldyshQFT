@@ -75,7 +75,7 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
                 g_values[i_in] = barePropagator.GR(v1, i_in);
                 break;
             case 1:
-                g_values[i_in] = barePropagator.GA(v1, i_in);
+                g_values[i_in] = conj(barePropagator.GR(v1, i_in));
                 break;
             case 2:
                 g_values[i_in] = barePropagator.GK(v1, i_in);

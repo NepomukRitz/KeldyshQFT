@@ -152,7 +152,7 @@ constexpr double epsODE_abs = 1e-8;
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 0.15811; //19.5; // 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_ini = 0.158113883; //19.5; // 1e4;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 1.; //0.;// 1e-12;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.1;             //Initial step size for ODE solvers with adaptive step size control
