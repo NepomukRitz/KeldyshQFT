@@ -615,7 +615,7 @@ auto Propagator<Q>::norm() const -> double {
 /******* PROPAGATOR FUNCTIONS for sharp frequency-cutoff regulator ***********/
 template <typename Q>
 auto Propagator<Q>::GR_REG1_SIAM(const double v, const int i_in) const -> Q {
-    Q GR = 1. / (v - glb_epsilon - selfenergy.valsmooth(0, v, i_in));
+    const Q GR = 1. / (v - glb_epsilon - selfenergy.valsmooth(0, v, i_in));
     if (std::abs(v) < Lambda)       return GR;
     else if (std::abs(v) == Lambda) return GR/2.;
     else                            return 0.;
@@ -673,7 +673,7 @@ inline auto Propagator<double>::GR_REG2_Hubbard(const double v, const int i_in) 
 
 template <typename Q>
 auto Propagator<Q>::GR_REG2_SIAM(const double v, const int i_in) const -> Q {
-    Q res = 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
+    const Q res = 1./( (v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.) - selfenergy.valsmooth(0, v, i_in) );
     return res;
 }
 
@@ -681,7 +681,7 @@ template <typename Q>
 auto Propagator<Q>::SR_REG2(const double v, const int i_in) const -> Q {
     //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
     //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
-    Q G = GR(v, i_in);
+    const Q G = GR(v, i_in);
     return -0.5*glb_i*G*G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
 }
 
@@ -728,14 +728,14 @@ auto Propagator<Q>::SM_REG2_SIAM(const double v, const int i_in) const -> Q{
 template <typename Q>
 auto Propagator<Q>::SM_REG2_SIAM_PHS(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q G = GM(v, i_in);
+    const Q G = GM(v, i_in);
     return -0.5*G*G*sign(v);
 }
 
 template <typename Q>
 auto Propagator<Q>::SM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q G = GM(v, i_in);
+    const Q G = GM(v, i_in);
     return -0.5*glb_i*G*G*sign(v);
 }
 
@@ -827,15 +827,15 @@ auto Propagator<Q>::GM_REG3_SIAM(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::GM_REG3_SIAM_PHS(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    double reg = v*v / (v*v + Lambda*Lambda);
-    Q G0inv = v + (glb_Gamma)*0.5*sign(v);
+    const double reg = v*v / (v*v + Lambda*Lambda);
+    const Q G0inv = v + (glb_Gamma)*0.5*sign(v);
     return 1./( G0inv / reg - selfenergy.valsmooth(0, v, i_in) );
 }
 
 template <typename Q>
 auto Propagator<Q>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> Q {
     double reg = v*v / (v*v + Lambda*Lambda);
-    Q G0inv =  (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v));
+    const Q G0inv =  (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v));
     return 1./( G0inv / reg - selfenergy.valsmooth(0, v, i_in) );
 }
 
@@ -843,8 +843,8 @@ auto Propagator<Q>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> 
 template <typename Q>
 auto Propagator<Q>::SM_REG3(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q G = GM(v, i_in);
-    Q G0inv = v + (glb_Gamma)*0.5*sign(v);
+    const Q G = GM(v, i_in);
+    const Q G0inv = v + (glb_Gamma)*0.5*sign(v);
     return -2 * Lambda / (v * v) * G * G0inv * G;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
@@ -861,7 +861,7 @@ auto Propagator<Q>::GR_REG4_SIAM(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::SR_REG4_SIAM(const double v, const int i_in) const -> Q {
     assert(PARTICLE_HOLE_SYMMETRY);
-    Q denom = v + glb_i*(glb_Gamma/2.) - Lambda * (selfenergy.valsmooth(0, v, i_in) - glb_U / 2.);
+    const Q denom = v + glb_i*(glb_Gamma/2.) - Lambda * (selfenergy.valsmooth(0, v, i_in) - glb_U / 2.);
     return ( v + glb_i*(glb_Gamma/2.) ) / (denom * denom);
 }
 
@@ -874,7 +874,7 @@ auto Propagator<Q>::GM_REG4_SIAM(const double v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::GM_REG4_SIAM_PHS(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q val =  Lambda /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
+    const Q val =  Lambda /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
     assert(isfinite(val));
     return val;
 }
@@ -883,8 +883,8 @@ auto Propagator<Q>::GM_REG4_SIAM_PHS(const double v, const int i_in) const -> Q 
 template <typename Q>
 auto Propagator<Q>::SM_REG4(const double v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q G = 1. /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
-    Q val = (v + (glb_Gamma)/2.*sign(v)) * G * G;
+    const Q G = 1. /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
+    const Q val = (v + (glb_Gamma)/2.*sign(v)) * G * G;
     assert(isfinite(val));
     return val;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
