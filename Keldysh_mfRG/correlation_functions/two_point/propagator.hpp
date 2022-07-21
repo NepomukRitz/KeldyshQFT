@@ -254,26 +254,14 @@ auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
 
 template<typename Q>
 Q Propagator<Q>::Katanin_R(double v, int i_in) const {
-    Q Katanin_R;
-    Katanin_R = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
-    if constexpr (REG == 4) {
-        assert(Lambda > 0);
-        Katanin_R /= Lambda*Lambda;
-    }
-    return Katanin_R;
+    return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GR(v, i_in);
 }
 
 template<typename Q>
 Q Propagator<Q>::Katanin_K(double v, int i_in) const {
-    Q Katanin_K;
-    Katanin_K = GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-                + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * conj(GR(v, i_in))
-                + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * conj(GR(v, i_in));
-    if constexpr (REG == 4) {
-        assert(Lambda > 0);
-        Katanin_K /= Lambda*Lambda;
-    }
-    return Katanin_K;
+    return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
+            + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * conj(GR(v, i_in))
+            + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * conj(GR(v, i_in));
 }
 
 template <typename Q>
@@ -866,12 +854,15 @@ auto Propagator<Q>::SM_REG3(const double v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::GR_REG4_SIAM(const double v, const int i_in) const -> Q {
-    return Lambda / ( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
+    assert(PARTICLE_HOLE_SYMMETRY); // TODO: Generalize to the case without phs.
+    return Lambda / ( v + glb_i*(glb_Gamma/2.) - Lambda * (selfenergy.valsmooth(0, v, i_in) - glb_U / 2.) );
 }
 
 template <typename Q>
 auto Propagator<Q>::SR_REG4_SIAM(const double v, const int i_in) const -> Q {
-    return 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in));
+    assert(PARTICLE_HOLE_SYMMETRY);
+    Q denom = v + glb_i*(glb_Gamma/2.) - Lambda * (selfenergy.valsmooth(0, v, i_in) - glb_U / 2.);
+    return ( v + glb_i*(glb_Gamma/2.) ) / (denom * denom);
 }
 
 template <typename Q>
