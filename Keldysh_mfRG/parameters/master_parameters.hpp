@@ -44,6 +44,9 @@ constexpr bool VERBOSE = false;
 inline int N_LOOPS;  // Number of loops
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
+const int nmax_Selfenergy_iterations = 2;
+const double tol_selfenergy_correction_abs = 1e-8;
+const double tol_selfenergy_correction_rel = 1e-4;
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
