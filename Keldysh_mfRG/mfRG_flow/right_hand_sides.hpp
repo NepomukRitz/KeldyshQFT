@@ -51,11 +51,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     int rkStep=-1;
     double t0 = utils::get_time();
 
-    bool save = true;
+    bool save = false;
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
-         if (rkStep==0 and iteration==0 and config.save_intermediateResults) {
+         if (rkStep==0 and iteration==0 and config.save_intermediateResults and false) {
              utils::makedir(dir_str);
              save = true;
          }
@@ -235,15 +235,15 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 }
 
                 // symmetrize by averaging left and right insertion
-                //for (char r : {'a', 'p', 't'}) {
-                //    dGammaC_l.get_rvertex(r).K2 = dGammaC_r.get_rvertex(r).K2;
-                //}
-                //if constexpr(DEBUG_SYMMETRIES) {
-                //    for (char r: {'a', 'p', 't'}) {
-                //        dGammaC_r.get_rvertex(r).K2b = dGammaC_l.get_rvertex(r).K2b;
-                //    }
-                //}
-                Vertex<Q> dGammaC = dGammaC_r;// (dGammaC_r + dGammaC_l) * 0.5; //dGammaC_r; //                  /// TODO: Find better solution --> K2 in dGammaC_l is bad, K3 in dGammaC_l can be obtained from dGammaC_r
+                for (char r : {'a', 'p', 't'}) {
+                    dGammaC_l.get_rvertex(r).K2 = dGammaC_r.get_rvertex(r).K2;
+                }
+                if constexpr(DEBUG_SYMMETRIES) {
+                    for (char r: {'a', 'p', 't'}) {
+                        dGammaC_r.get_rvertex(r).K2b = dGammaC_l.get_rvertex(r).K2b;
+                    }
+                }
+                Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5; //dGammaC_r; //                  /// TODO: Find better solution --> K2 in dGammaC_l is bad, K3 in dGammaC_l can be obtained from dGammaC_r
 
                 /// save intermediate states:
                 if (save) {

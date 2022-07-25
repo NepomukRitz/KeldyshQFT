@@ -56,18 +56,18 @@ auto main(int argc, char * argv[]) -> int {
 
 
     //parquet runs:
-    //const std::vector<double> myU_NRG {0.25, 0.5, 0.75, 1., 1.25};
+    //const std::vector<double> myU_NRG {1.25};
     //run_parquet(myU_NRG);
 
 
     //fRG runs:
     fRG_config config;
-    config.nODE_ = 1;
+    config.nODE_ = 40;
     config.epsODE_abs_ = 1e-8;
-    config.epsODE_rel_ = 1e-5;
+    config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
-    config.U = 1.;
-    config.save_intermediateResults = true;
+    config.U = 2.5;
+    config.save_intermediateResults = false;
     n_loop_flow(data_dir+filename, config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);

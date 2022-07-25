@@ -9,10 +9,10 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
+#define NDEBUG
 
 
-#define DEBUG_SYMMETRIES 1 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -43,7 +43,7 @@ constexpr bool VERBOSE = false;
 
 inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
-//#define SELF_ENERGY_FLOW_CORRECTIONS
+#define SELF_ENERGY_FLOW_CORRECTIONS
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
@@ -61,7 +61,7 @@ constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.
 #else
     constexpr double glb_Vg = 0.5;                  // Impurity level shift
 #endif
-constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
+constexpr double glb_U = 2.5;                      // Impurity on-site interaction strength
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
 constexpr double glb_Gamma = 2.0;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
@@ -141,19 +141,19 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 1;
-constexpr double epsODE_rel = 1e-4;
+constexpr int nODE = 40;
+constexpr double epsODE_rel = 1e-6;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4; // WARNING: non-adaptive!
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 1
+#define ODEsolver 3
 
 // Limits of the fRG flow
-const double Lambda_ini = 2*pow(10, 1) ;// 1e4;                // NOLINT(cert-err58-cpp)
-const double Lambda_fin = 2*pow(10, -1) ;// 1e-4;
+const double Lambda_ini = 2*pow(10, 10) ;// 1e4;                // NOLINT(cert-err58-cpp)
+const double Lambda_fin = 2*pow(10, -10) ;// 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
 
