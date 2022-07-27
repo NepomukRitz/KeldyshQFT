@@ -22,61 +22,62 @@ double sgn(const double x) {
     return (x >= 0) - (x <= 0); // (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
 }
 
-auto round2Infty(double x) -> double {
+auto round2Infty(const double x) -> double {
     const double tol = 1e-10;
     // trunc() rounds towards zero
     if (x <= 0.) return floor(x+tol);
     else return ceil(x-tol);
 }
 
-auto myround(double x) -> double {
+auto myround(const double x) -> double {
     const double tol = 1e-10;
     if (x <= -0.5) return floor(x+tol);
     else return ceil(x-tol);
 }
 
-auto floor2bfreq(double w) -> double {
-    const double tol = 0.1;
-    double a = (2. * M_PI * glb_T);
-    double result = floor(w / a+tol) * a;
-    assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
+auto floor2bfreq(const double w) -> double {
+    const double tol = 1e-8;
+    const double a = (2. * M_PI * glb_T);
+    const double result = floor(w / a+tol) * a;
+    assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result <= w + 1e-10);
-    assert(result >  w - 2*M_PI*glb_T - 1e-10);
+    const double tol2 = 1e-10 * (std::abs(w )+1);
+    assert(result <= w + tol2);
+    assert(result >  w - 2*M_PI*glb_T - tol2);
     return result;
 }
-auto ceil2bfreq(double w) -> double {
+auto ceil2bfreq(const double w) -> double {
     double a = (2. * M_PI * glb_T);
     const double tol = 0.1;
-    double result = ceil(w / a-tol) * a;
+    const double result = ceil(w / a-tol) * a;
     assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result >= w - 1e-10);
-    assert(result <  w + 2*M_PI*glb_T + 1e-10);
+    assert(result >= w - 1e-10 * (std::abs(w ) + 1));
+    assert(result <  w + 2*M_PI*glb_T + 1e-10 * std::abs(w + 1));
     return result;
 }
-auto round2bfreq(double w) -> double {
-    double a = (2. * M_PI * glb_T);
-    double result = round2Infty(w / a) * a;
+auto round2bfreq(const double w) -> double {
+    const double a = (2. * M_PI * glb_T);
+    const double result = round2Infty(w / a) * a;
     assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(std::abs(result) >= std::abs(w) - 1e-15);
-    assert(std::abs(result) <  std::abs(w) + 2*M_PI*glb_T + 1e-15);
+    assert(std::abs(result) >= std::abs(w) - 1e-15 * (std::abs(w ) + 1));
+    assert(std::abs(result) <  std::abs(w) + 2*M_PI*glb_T + 1e-15 * (std::abs(w) + 1));
     return result;
 }
-auto floor2ffreq(double w) -> double {
+auto floor2ffreq(const double w) -> double {
     const double tol = 0.1;
-    double a = (M_PI * glb_T);
+    const double a = (M_PI * glb_T);
     return (floor((w / a - 1.) / 2.+tol) * 2. + 1 ) * a;
 }
-auto ceil2ffreq(double w) -> double {
+auto ceil2ffreq(const double w) -> double {
     const double tol = 0.1;
-    double a = (M_PI * glb_T);
+    const double a = (M_PI * glb_T);
     return (ceil((w / a - 1.-tol) / 2.) * 2. + 1 ) * a;
 }
-auto round2ffreq(double w) -> double {
+auto round2ffreq(const double w) -> double {
     const double a = (M_PI * glb_T);
-    double result = (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
+    const double result = (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
     assert(std::abs(result - w) < a*2); // make sure that result and w are less than (2*pi*T) apart
     assert((int)((result / a - 1.) + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T) apart
     assert(std::abs(result) >= std::abs(w) *(1- 1e-10));
@@ -85,7 +86,7 @@ auto round2ffreq(double w) -> double {
 
 auto signFlipCorrection_MF(const double w) -> double {
 #if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
-    double correction = signFlipCorrection_MF_int(w) * (2 * M_PI * glb_T);
+    const double correction = signFlipCorrection_MF_int(w) * (2 * M_PI * glb_T);
     return correction;
 #else
     assert(false);
@@ -95,7 +96,7 @@ auto signFlipCorrection_MF(const double w) -> double {
 
 int signFlipCorrection_MF_int(const double w) {
 #if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
-    int correction = -((int) (std::abs(w / (2. * M_PI * glb_T)) + 0.1) ) % 2;
+    const int correction = -((int) (std::abs(w / (2. * M_PI * glb_T)) + 0.1) ) % 2;
     assert(correction==0 or correction == -1);
     return correction;
 #else

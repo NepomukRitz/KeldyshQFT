@@ -567,6 +567,51 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
     }
 }
 
+/**
+ * wrapper function, used for bubbles.
+ * @param integrand
+ * @param intervals         :   list of intervals (lower and upper limit for integrations)
+ * @param num_intervals     :   number of intervals
+ */
+template <typename Integrand> auto integrator_onlyTails(Integrand& integrand, const double vmin, const double vmax) -> std::result_of_t<Integrand(double)> {
+    using return_type = std::result_of_t<Integrand(double)>;
+    if constexpr (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 1) { // Simpson
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl_qag_tails<return_type>(integrand, vmin, vmax, nINT);
+    }
+    else if constexpr (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+
+        Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, vmin);
+        Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, vmax);
+        const return_type val = adapt_il.integrate() + adapt_iu.integrate();
+
+        return val;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
+        return integrator_gsl_qag_tails<return_type>(integrand, vmin, vmax, nINT);
+    }
+}
+
+
 //#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
 /**
  * wrapper function, used for bubbles. Splits up integration interval in suitable pieces for Matsubara T=0

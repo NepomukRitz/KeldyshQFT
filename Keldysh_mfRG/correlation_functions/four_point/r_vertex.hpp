@@ -1509,7 +1509,7 @@ template <typename Q> template<char ch_bubble> auto rvert<Q>::value(VertexInput 
         val += valsmooth<k2> (input, rvert_crossing);
         val += valsmooth<k2b>(input, rvert_crossing);
         if constexpr(SBE_DECOMPOSITION) { /// TODO: write implementation for loop integrand
-            // assert(false);
+            assert(false);
         }
     }
     if constexpr(MAX_DIAG_CLASS >= 3) val += valsmooth<k3>(input, rvert_crossing);
@@ -1540,8 +1540,9 @@ template <typename Q> template<char ch_bubble> auto rvert<Q>::value(const Vertex
 template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
         assert(!KELDYSH);
-        if      constexpr(MAX_DIAG_CLASS == 1) return 1;
-        else if constexpr(MAX_DIAG_CLASS  > 1) return 1 + valsmooth<k2b>(input, rvert_crossing);
+        assert(false);
+        if      constexpr(MAX_DIAG_CLASS == 1) return 0;
+        else if constexpr(MAX_DIAG_CLASS  > 1) return valsmooth<k2b>(input, rvert_crossing);
     }
     else {
         if      constexpr(MAX_DIAG_CLASS == 1) return valsmooth<k1>(input, rvert_crossing);
@@ -1552,8 +1553,9 @@ template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, co
 template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
         assert(!KELDYSH);
-        if constexpr(MAX_DIAG_CLASS == 1)     return 1;
-        else if constexpr(MAX_DIAG_CLASS > 1) return 1 + valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
+        assert(false);
+        if constexpr(MAX_DIAG_CLASS == 1)     return 0;
+        else if constexpr(MAX_DIAG_CLASS > 1) return 0 + valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
 
     }
     else {
@@ -1565,8 +1567,9 @@ template <typename Q> auto rvert<Q>::left_same_bare(const VertexInput& input, co
 template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
         assert(!KELDYSH);
-        if constexpr(MAX_DIAG_CLASS == 1)       return 1;
-        else if constexpr(MAX_DIAG_CLASS > 1)   return 1 + valsmooth<k2>(input, rvert_crossing);
+        assert(false);
+        if constexpr(MAX_DIAG_CLASS == 1)       return 0;
+        else if constexpr(MAX_DIAG_CLASS > 1)   return 0 + valsmooth<k2>(input, rvert_crossing);
     }
     else {
         if constexpr(MAX_DIAG_CLASS == 1)       return valsmooth<k1>(input, rvert_crossing);
@@ -1577,6 +1580,7 @@ template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, c
 template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
         assert(!KELDYSH);
+        assert(false);
         if constexpr(MAX_DIAG_CLASS == 1)     return 1;
         else if constexpr(MAX_DIAG_CLASS > 1) return 1 + valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
@@ -1588,6 +1592,7 @@ template <typename Q> auto rvert<Q>::right_same_bare(const VertexInput& input, c
 
 template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
+        assert(false);
         if constexpr(MAX_DIAG_CLASS <= 2) return 0;
         else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k3>(input, rvert_crossing);
     }
@@ -1600,6 +1605,7 @@ template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, co
 
 template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
+        assert(false);
         if constexpr(MAX_DIAG_CLASS <= 2) return 0;
         else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
@@ -1612,6 +1618,7 @@ template <typename Q> auto rvert<Q>::left_diff_bare(const VertexInput& input, co
 
 template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
+        assert(false);
         if constexpr(MAX_DIAG_CLASS <= 2) return 0;
         else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k3>(input, rvert_crossing);
     }
@@ -1624,6 +1631,7 @@ template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, c
 
 template <typename Q> auto rvert<Q>::right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     if constexpr(SBE_DECOMPOSITION) {
+        assert(false);
         if constexpr(MAX_DIAG_CLASS <= 2) return 0;
         else if constexpr(MAX_DIAG_CLASS == 3) return valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
     }
@@ -1643,7 +1651,7 @@ template <typename Q> template<char ch_bubble, typename result_type> auto rvert<
     if constexpr(MAX_DIAG_CLASS >= 2) {
         val += valsmooth_symmetry_expanded<k2, result_type> (input);
         val += valsmooth_symmetry_expanded<k2b, result_type>(input);
-        //if constexpr(SBE_DECOMPOSITION) val += valsmooth_symmetry_expanded<k3_sbe, result_type>(input);
+        if constexpr(SBE_DECOMPOSITION) val += valsmooth_symmetry_expanded<k3_sbe, result_type>(input);
     }
     if constexpr(MAX_DIAG_CLASS >= 3) val += valsmooth_symmetry_expanded<k3, result_type>(input);
 

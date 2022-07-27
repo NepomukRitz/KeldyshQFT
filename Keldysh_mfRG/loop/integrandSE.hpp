@@ -25,9 +25,13 @@ namespace selfenergy_loop {
  */
 template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 class IntegrandSE {
+#if VECTORIZED_INTEGRATION
     using buffertype_propagator = Eigen::Matrix<Q,1,4>;
     using buffertype_vertex = Eigen::Matrix<Q,4,myColsAtCompileTime<return_type>()>;
-
+#else
+    using buffertype_propagator = Q;
+    using buffertype_vertex = Q;
+#endif
 
     const int type;
     std::vector<int> components = std::vector<int>((CONTOUR_BASIS != 1 ? 6 : 16));
@@ -57,6 +61,11 @@ class IntegrandSE {
     auto evaluate_vertex_vectorized(const double vp) const -> buffertype_vertex;
 
 public:
+    /// type:   determines Keldysh components (always type = 0 for MF)
+    // is the element in Sigma matrix   0  1    ___     K  A
+    //                                  2  3            R  0
+    // type = 0   -> Keldysh component
+    // type = 2   -> Retarded component
     IntegrandSE(const int type_in, const vertType& vertex_in, const Propagator<Q>& prop_in,
                 const int iK_in, const int i_spin_in, const double v_in, const int i_in_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in),
@@ -308,8 +317,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type,version>::Matsubara_value(cons
     Q GM;
     evaluate_propagator(GM, vp);
 
-    Q factorClosedAbove;
-    evaluate_vertex(factorClosedAbove, 0, vp);
+    Q factorClosedAbove = evaluate_vertex_vectorized(vp);
 
     if (!PARTICLE_HOLE_SYMMETRY) {
         return (GM * factorClosedAbove);

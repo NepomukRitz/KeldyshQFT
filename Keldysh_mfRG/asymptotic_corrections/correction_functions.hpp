@@ -8,6 +8,7 @@
 #include "bubble_corrections.hpp"
 #include "loop_corrections.hpp"
 #include <cmath>                        // for log function
+#include "../integrator/integrator.hpp"
 
 /// Possible unit-tests:
 /// compare with quadrature routines for (semi-)infinite intervals
@@ -15,7 +16,11 @@
 
 // TODO(medium) Write a class containing functions for all correction functions to minimize the number of times that many arguments have to be given to functions.
 
-
+/// Computes tails via quadrature routine
+template <typename Q, typename Integrand>
+auto asymp_corrections_bubble_via_quadrature(const Integrand& integrand, const double vmin, const double vmax) -> Q {
+    return integrator_onlyTails(integrand, vmin, vmax);
+}
 
 /**
  * Compute the analytical result for the asymptotic tails of the bubble integral, assuming the self-energy to be decayed
@@ -137,8 +142,8 @@ auto asymp_corrections_bubble(K_class k,
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
-    VertexInput input_l (indices[0], spin, w, v, 10.*vmin, i_in, channel);
-    VertexInput input_r (indices[1], spin, w, 10.*vmin, vp, i_in, channel);
+    VertexInput input_l (indices[0], SBE_DECOMPOSITION ? 0 : spin, w, v, 10.*vmin, i_in, channel);
+    VertexInput input_r (indices[1], SBE_DECOMPOSITION ? 0 : spin, w, 10.*vmin, vp, i_in, channel);
 
     // compute values of left/right vertex
     Q K1L, K1R;
@@ -185,6 +190,7 @@ auto asymp_corrections_bubble(K_class k,
         }
     }
     else { // SBE_DECOMPOSITION
+        assert(false); // TODO: Fix problems with analytic tails for SBE ? (alternatively just use quadrature)
         assert(not KELDYSH and SWITCH_SUM_N_INTEGRAL);
         switch (k) {
             case k1: {
@@ -192,18 +198,16 @@ auto asymp_corrections_bubble(K_class k,
                 input_for_expanded_vertex.spin = 0;
                 Q gamma0L = vertex1.irred().template val<Q>(input_l.iK, i_in, spin);
                 Q gamma0R = vertex2.irred().template val<Q>(input_r.iK, i_in, spin);
-                Q K1L_temp = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(
-                        input_for_expanded_vertex);
-                Q K1R_temp = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(
-                        input_for_expanded_vertex);
+
+                Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+                Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
 
                 K1L = gamma0L + K1L_temp;
                 K1R = gamma0R + K1R_temp;
 
-                res_l_V = vertex1.template left_same_bare<channel>(input_l);
-                res_r_V = vertex2.template right_same_bare<channel>(input_r);
-                input_l.spin = 1 - spin;
-                input_r.spin = 1 - spin;
+                res_l_V = vertex1.template left_same_bare_symmetry_expanded<spin,channel,Q>(input_l);
+                res_r_V = vertex2.template right_same_bare_symmetry_expanded<spin,channel,Q>(input_r);
+
 
                 gamma0L = vertex1.irred().template val<Q>(input_l.iK, i_in, 1 - spin);
                 gamma0R = vertex2.irred().template val<Q>(input_r.iK, i_in, 1 - spin);
@@ -214,36 +218,32 @@ auto asymp_corrections_bubble(K_class k,
 
                 K1L_hat = gamma0L + K1L_temp;
                 K1R_hat = gamma0R + K1R_temp;
-                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
-                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+                res_l_Vhat = vertex1.template left_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
             }
                 break;
             case k2:
-                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
-                res_r_V = vertex2.template right_same_bare<channel>(input_r);
-                input_l.spin = 1 - spin;
-                input_r.spin = 1 - spin;
-                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
-                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+                res_l_V = vertex1.template left_diff_bare_symmetry_expanded<spin, channel, Q>(input_l);
+                res_r_V = vertex2.template right_same_bare_symmetry_expanded<spin, channel, Q>(input_r);
+
+                res_l_Vhat = vertex1.template left_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
 
                 break;
             case k2b:
-                res_l_V = vertex1.template left_same_bare<channel>(input_l);
-                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
-                input_l.spin = 1 - spin;
-                input_r.spin = 1 - spin;
-                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
-                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+                res_l_V = vertex1.template left_same_bare_symmetry_expanded<spin, channel, Q>(input_l);
+                res_r_V = vertex2.template right_diff_bare_symmetry_expanded<spin, channel, Q>(input_r);
+
+                res_l_Vhat = vertex1.template left_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
 
                 break;
             case k3:
-                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
-                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
+                res_l_V = vertex1.template left_diff_bare_symmetry_expanded<spin, channel, Q>(input_l);
+                res_r_V = vertex2.template right_diff_bare_symmetry_expanded<spin, channel, Q>(input_r);
 
-                input_l.spin = 1 - spin;
-                input_r.spin = 1 - spin;
-                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
-                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+                res_l_Vhat = vertex1.template left_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
                 break;
             default:;
         }

@@ -428,17 +428,20 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         } else {
             int interval_correction = signFlipCorrection_MF_int(w);
             int W = (int) (w / (2 * M_PI * glb_T) + 0.1 * sgn(w));
-            double vmin_temp = (-POSINTRANGE - std::abs(W / 2) + interval_correction) * 2 * M_PI * glb_T;
-            double vmax_temp = (POSINTRANGE - 1 + std::abs(W / 2)) * 2 * M_PI * glb_T;
+            double vmin_temp = (-POSINTRANGE - std::abs(W / 2) + interval_correction - 0.5) * 2 * M_PI * glb_T;
+            double vmax_temp = (POSINTRANGE - 1 + std::abs(W / 2) + 0.5) * 2 * M_PI * glb_T;
             // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*glb_T
 
             integration_result = bubble_value_prefactor() * (2 * M_PI) * glb_T *
                     matsubarasum<Q>(integrand, -POSINTRANGE - std::abs(W / 2) + interval_correction, POSINTRANGE - 1 + std::abs(W / 2));
 
-            integration_result +=
-                    bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
-                                                                                 vmin_temp, vmax_temp, w, v, vp, i0, i2,
-                                                                                 i_in, diff);
+            //integration_result +=
+            //        bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
+            //                                                                     vmin_temp, vmax_temp, w, v, vp, i0, i2,
+            //                                                                     i_in, diff);
+            /// Compute high-frequency contributions via quadrature:
+            integration_result += bubble_value_prefactor() *
+                    asymp_corrections_bubble_via_quadrature<Q>(integrand, vmin_temp, vmax_temp);
         }
     }
 
