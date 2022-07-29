@@ -464,8 +464,27 @@ void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q,false>&
 template <typename Q, class Bubble_Object>
 void vertexOneLoopFlow(Vertex<Q,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& dPi){
     // Vertex flow
-    for (char r: "apt") {
-        bubble_function(dPsiVertex, PsiVertex, PsiVertex, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+        Vertex<Q,false> One = PsiVertex;
+        for (char r: {'a', 'p','t'}) {
+            One.get_rvertex(r).K2 *= 0;
+        }
+        dPsiVertex *= 0;
+        for (char r: "apt") {
+            bubble_function(dPsiVertex, PsiVertex, One, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
+            bubble_function(dPsiVertex, One, PsiVertex, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
+            Vertex<Q,true> dPsiVertex_temp = dPsiVertex;
+            dPsiVertex_temp *= 0.;
+            bubble_function(dPsiVertex_temp, One, One, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
+            dPsiVertex -= dPsiVertex_temp;
+
+        }
+    }
+    else {
+        for (char r: "apt") {
+            bubble_function(dPsiVertex, PsiVertex, PsiVertex, dPi,
+                            r);  // Differentiated bubble in channel r \in {a, p, t}
+        }
     }
 }
 
@@ -475,14 +494,25 @@ void vertexOneLoopFlow(Vertex<Q,true>& dPsiVertex, const Vertex<Q,false>& PsiVer
 /// Hence dgamma_rbar only returns values of the r-IRreducible sector
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q,true>{
-    Vertex<Q,true> dGammaL(Lambda_ini);
+    Vertex<Q,true> dGammaL(Lambda_ini, PsiVertex);
     dGammaL.set_frequency_grid(PsiVertex);
 
     //Vertex<Q,false> dPsiVertex_calc = dPsiVertex;
     //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
-    for (char r: "apt") {
-        bubble_function(dGammaL, dPsiVertex, PsiVertex, Pi, r);
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+        Vertex<Q,false> One = PsiVertex;
+        for (char r: {'a', 'p','t'}) {
+            One.get_rvertex(r).K2 *= 0;
+        }
+        for (char r: "apt") {
+            bubble_function(dGammaL, dPsiVertex, One, Pi, r);
+        }
+    }
+    else {
+        for (char r: "apt") {
+            bubble_function(dGammaL, dPsiVertex, PsiVertex, Pi, r);
+        }
     }
 
     return dGammaL;
@@ -491,14 +521,25 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
 /// Hence dgamma_rbar only returns values of the r-IRreducible sector
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& Pi) -> Vertex<Q,true>{
-    Vertex<Q,true> dGammaR(Lambda_ini);
+    Vertex<Q,true> dGammaR(Lambda_ini, PsiVertex);
     dGammaR.set_frequency_grid(PsiVertex);
 
     //Vertex<Q,true> dPsiVertex_calc = dPsiVertex;
     //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
-    for (char r: "apt") {
-        bubble_function(dGammaR, PsiVertex, dPsiVertex, Pi, r);
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+        Vertex<Q,false> One = PsiVertex;
+        for (char r: {'a', 'p','t'}) {
+            One.get_rvertex(r).K2 *= 0;
+        }
+        for (char r: "apt") {
+            bubble_function(dGammaR, One, dPsiVertex, Pi, r);
+        }
+    }
+    else {
+        for (char r: "apt") {
+            bubble_function(dGammaR, PsiVertex, dPsiVertex, Pi, r);
+        }
     }
 
     return dGammaR;
@@ -509,14 +550,25 @@ auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const GeneralVertex<Q, non_symmetric_diffleft,true>& nonsymVertex,
                                        const Bubble_Object& Pi) -> Vertex<Q,true> {
-    Vertex<Q,true> dGammaC (Lambda_ini);
+    Vertex<Q,true> dGammaC (Lambda_ini, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
 
     //GeneralVertex<Q, non_symmetric_diffleft> nonsymVertex_calc = nonsymVertex;
     //nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
-    for (char r: "apt") {
-        bubble_function(dGammaC, PsiVertex, nonsymVertex, Pi, r);
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+        Vertex<Q,false> One = PsiVertex;
+        for (char r: {'a', 'p','t'}) {
+            One.get_rvertex(r).K2 *= 0;
+        }
+        for (char r: "apt") {
+            bubble_function(dGammaC, One, nonsymVertex, Pi, r);
+        }
+    }
+    else {
+        for (char r: "apt") {
+            bubble_function(dGammaC, PsiVertex, nonsymVertex, Pi, r);
+        }
     }
 
     return dGammaC;
@@ -525,14 +577,25 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const G
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffright,true>& nonsymVertex, const Vertex<Q,false>& PsiVertex,
                                       const Bubble_Object& Pi) -> Vertex<Q,true> {
-    Vertex<Q,true> dGammaC (Lambda_ini);
+    Vertex<Q,true> dGammaC (Lambda_ini, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
 
     //GeneralVertex<Q, non_symmetric_diffright> nonsymVertex_calc = nonsymVertex;
     //nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
-    for (char r: "apt") {
-        bubble_function(dGammaC, nonsymVertex, PsiVertex, Pi, r);
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+        Vertex<Q,false> One = PsiVertex;
+        for (char r: {'a', 'p','t'}) {
+            One.get_rvertex(r).K2 *= 0;
+        }
+        for (char r: "apt") {
+            bubble_function(dGammaC, nonsymVertex, One, Pi, r);
+        }
+    }
+    else {
+        for (char r: "apt") {
+            bubble_function(dGammaC, nonsymVertex, PsiVertex, Pi, r);
+        }
     }
 
     return dGammaC;
