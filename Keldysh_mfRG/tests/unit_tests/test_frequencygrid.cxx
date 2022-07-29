@@ -80,6 +80,7 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
 }
 
 
+#ifndef DENSEGRID
 TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[grid functions]") {
 
     FrequencyGrid<hybridGrid> hybrid('b', 1, Lambda_ini);
@@ -140,7 +141,7 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
 
 
 }
-
+#endif
 
 TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") {
 
@@ -148,8 +149,8 @@ TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") 
         bufferFrequencyGrid<k2> gridK2(Lambda_ini);
         vec<double> errors_K2(nBOS2 * nFER2);
         /// for K2:
-        for (int iw = 1; iw < nBOS2; iw++) {
-            for (int iv = 0; iv < nFER2; iv++) {
+        for (int iw = 1; iw < nBOS2-1; iw++) {
+            for (int iv = 0; iv < nFER2-1; iv++) {
                 double w, v;
                 gridK2.get_freqs_w(w, v, iw, iv);
 

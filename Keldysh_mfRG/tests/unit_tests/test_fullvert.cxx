@@ -20,9 +20,9 @@ TEST_CASE("Does the vectorized interpolation work for the GeneralVertex?", "vect
         multidimensional::multiarray<double,K3_expanded_config.rank> K3_raw(K3_expanded_config.dims, K3_raw_flat);
 
         double Lambda = 100.;
-        fullvert<double> fullvertex(Lambda, true);
-        GeneralVertex<double,symmetric_full> vertex_symmetricfull(fullvertex);
-        vertex_symmetricfull.symmetry_expand<'a',true>(); // here only to reserve space
+        fullvert<double> fullvertex(Lambda);
+        GeneralVertex<double,symmetric_full,false> vertex_symmetricfull(fullvertex);
+        vertex_symmetricfull.template symmetry_expand<'a',true,false>(); // here only to reserve space
 
         for (int i = 0; i < n_in*16; i++) vertex_symmetricfull.vertices_bubbleintegrand[0].irred.direct_set(i, 1.);
         vertex_symmetricfull.vertices_bubbleintegrand[0].avertex.K1_symmetry_expanded .set_vec(K1_raw*pow(2.,1));
@@ -38,8 +38,8 @@ TEST_CASE("Does the vectorized interpolation work for the GeneralVertex?", "vect
         vertex_symmetricfull.vertices_bubbleintegrand[0].tvertex.K2b_symmetry_expanded.set_vec(K2_raw*pow(2.,11));
         vertex_symmetricfull.vertices_bubbleintegrand[0].tvertex.K3_symmetry_expanded .set_vec(K3_raw*pow(2.,12));
 
-        GeneralVertex<double,symmetric_r_irred> vertex_irredfull(fullvertex);
-        vertex_irredfull.symmetry_expand<'a',true>(); // here only to reserve space
+        GeneralVertex<double,symmetric_r_irred,false> vertex_irredfull(fullvertex);
+        vertex_irredfull.symmetry_expand<'a',true,false>(); // here only to reserve space
 
         for (int i = 0; i < n_in*16; i++) vertex_irredfull.vertices_bubbleintegrand[0].irred.direct_set(i, 1.);
         vertex_irredfull.vertices_bubbleintegrand[0].avertex.K1_symmetry_expanded .set_vec(K1_raw*pow(2.,1));
@@ -55,8 +55,8 @@ TEST_CASE("Does the vectorized interpolation work for the GeneralVertex?", "vect
         vertex_irredfull.vertices_bubbleintegrand[0].tvertex.K2b_symmetry_expanded.set_vec(K2_raw*pow(2.,11));
         vertex_irredfull.vertices_bubbleintegrand[0].tvertex.K3_symmetry_expanded .set_vec(K3_raw*pow(2.,12));
 
-        GeneralVertex<double,non_symmetric_diffleft> vertex_asymmfull(fullvertex,fullvertex);
-        vertex_asymmfull.symmetry_expand<'a',true>(); // here only to reserve space
+        GeneralVertex<double,non_symmetric_diffleft,true> vertex_asymmfull(fullvertex,fullvertex,vertex_symmetricfull);
+        vertex_asymmfull.symmetry_expand<'a',true,true>(); // here only to reserve space
 
         for (int i = 0; i < n_in*16; i++) vertex_asymmfull.vertices_bubbleintegrand[0].irred.direct_set(i, 1.);
         vertex_asymmfull.vertices_bubbleintegrand[0].avertex.K1_symmetry_expanded .set_vec(K1_raw*pow(2.,1));

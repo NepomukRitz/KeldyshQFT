@@ -19,7 +19,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 
         WHEN( "T1 is applied" ) {
             IndicesSymmetryTransformations indices1 = indices;
-            T1(indices1);
+            T1<false>(indices1);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices1.iK == indices.iK );
@@ -47,7 +47,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 
         WHEN( "T2 is applied" ) {
             IndicesSymmetryTransformations indices2 = indices;
-            T2(indices2);
+            T2<false>(indices2);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices2.iK == indices.iK );
@@ -75,7 +75,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 
         WHEN( "T3 is applied" ) {
             IndicesSymmetryTransformations indices3 = indices;
-            T3(indices3);
+            T3<false>(indices3);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices3.iK == indices.iK );
@@ -102,8 +102,8 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
             AND_THEN( "T3 is equivalent to T1T2 and T2T1" ) {
                 IndicesSymmetryTransformations indices12 = indices;
                 IndicesSymmetryTransformations indices21 = indices;
-                T1(indices12); T2(indices12);
-                T2(indices21); T1(indices21);
+                T1<false>(indices12); T2<false>(indices12);
+                T2<false>(indices21); T1<false>(indices21);
 
                 REQUIRE( indices3.iK == indices21.iK );
                 REQUIRE( indices3.iK == indices12.iK );
@@ -128,7 +128,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 
         WHEN( "TC is applied" ) {
             IndicesSymmetryTransformations indices_c = indices;
-            TC(indices_c);
+            TC<false>(indices_c);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
@@ -171,13 +171,13 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
 
                     if (KELDYSH){
                         THEN( "prefactor is -1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == -1. );
                         }
                     }
                     else{
                         THEN( "prefactor is 1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == 1. );
                         }
                     }
@@ -187,7 +187,7 @@ SCENARIO("symmetry transformations of frequencies in the a channel", "[symmetry_
                     AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                         indices.iK = 1;
                         THEN( "prefactor is 1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == 1. );
                         }
                     }
@@ -221,7 +221,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 
         WHEN( "T1 is applied" ) {
             IndicesSymmetryTransformations indices1 = indices;
-            T1(indices1);
+            T1<false>(indices1);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices1.iK == indices.iK );
@@ -252,7 +252,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 
         WHEN( "T2 is applied" ) {
             IndicesSymmetryTransformations indices2 = indices;
-            T2(indices2);
+            T2<false>(indices2);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices2.iK == indices.iK );
@@ -284,7 +284,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 
         WHEN( "T3 is applied" ) {
             IndicesSymmetryTransformations indices3 = indices;
-            T3(indices3);
+            T3<false>(indices3);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices3.iK == indices.iK );
@@ -320,8 +320,8 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
             AND_THEN( "T3 is equivalent to T1T2 and T2T1" ) {
                 IndicesSymmetryTransformations indices12 = indices;
                 IndicesSymmetryTransformations indices21 = indices;
-                T1(indices12); T2(indices12);
-                T2(indices21); T1(indices21);
+                T1<false>(indices12); T2<false>(indices12);
+                T2<false>(indices21); T1<false>(indices21);
 
                 REQUIRE( indices3.iK == indices21.iK );
                 REQUIRE( indices3.iK == indices12.iK );
@@ -346,7 +346,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
 
         WHEN( "TC is applied" ) {
             IndicesSymmetryTransformations indices_c = indices;
-            TC(indices_c);
+            TC<false>(indices_c);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
@@ -390,13 +390,13 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                     indices.iK = 0;
                     if (KELDYSH){
                         THEN( "prefactor is -1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == -1. );
                         }
                     }
                     else{
                         THEN( "prefactor is 1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == 1. );
                         }
                     }
@@ -405,7 +405,7 @@ SCENARIO("symmetry transformations of frequencies in the p channel", "[symmetry_
                     AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                         indices.iK = 1;
                         THEN( "prefactor is 1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == 1. );
                         }
                     }
@@ -439,7 +439,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
 
         WHEN( "T1 is applied" ) {
             IndicesSymmetryTransformations indices1 = indices;
-            T1(indices1);
+            T1<false>(indices1);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices1.iK == indices.iK );
@@ -467,7 +467,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
 
         WHEN( "T2 is applied" ) {
             IndicesSymmetryTransformations indices2 = indices;
-            T2(indices2);
+            T2<false>(indices2);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices2.iK == indices.iK );
@@ -495,7 +495,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
 
         WHEN( "T3 is applied" ) {
             IndicesSymmetryTransformations indices3 = indices;
-            T3(indices3);
+            T3<false>(indices3);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices3.iK == indices.iK );
@@ -522,8 +522,8 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
             AND_THEN( "T3 is equivalent to T1T2 and T2T1" ) {
                 IndicesSymmetryTransformations indices12 = indices;
                 IndicesSymmetryTransformations indices21 = indices;
-                T1(indices12); T2(indices12);
-                T2(indices21); T1(indices21);
+                T1<false>(indices12); T2<false>(indices12);
+                T2<false>(indices21); T1<false>(indices21);
 
                 REQUIRE( indices3.iK == indices21.iK );
                 REQUIRE( indices3.iK == indices12.iK );
@@ -548,7 +548,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
 
         WHEN( "TC is applied" ) {
             IndicesSymmetryTransformations indices_c = indices;
-            TC(indices_c);
+            TC<false>(indices_c);
 
             THEN( "Keldysh index remains unchanged" ) {
                 REQUIRE( indices_c.iK == indices.iK );
@@ -591,13 +591,13 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                     indices.iK = 0;
                     if (KELDYSH){
                         THEN( "prefactor is -1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == -1. );
                         }
                     }
                     else{
                         THEN( "prefactor is 1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == 1. );
                         }
                     }
@@ -606,7 +606,7 @@ SCENARIO("symmetry transformations of frequencies in the t channel", "[symmetry_
                     AND_GIVEN( "Keldysh index is 1 = 11|12" ) {
                         indices.iK = 1;
                         THEN( "prefactor is 1" ) {
-                            TC(indices);
+                            TC<false>(indices);
                             REQUIRE( indices.prefactor == 1. );
                         }
                     }
