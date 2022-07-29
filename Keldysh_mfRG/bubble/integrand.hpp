@@ -527,7 +527,7 @@ template<K_class diag_class, char channel, int spin, typename Q, typename vertex
 template<int ispin>
 void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_vertex_keldyshComponents_left_scalar(buffer_type_vertex_l& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
-    const auto vertexvalue_scalar = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<ispin,channel,Q>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<ispin,channel,Q>(input_l);};
+    const auto vertexvalue_scalar = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<ispin,channel,spin,Q>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<ispin,channel,Q>(input_l);};
     //const auto vertexvalue_scalar = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare<channel>(input_l) ; else return vertex1.template left_diff_bare<channel>(input_l);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
@@ -587,7 +587,7 @@ template<K_class diag_class, char channel, int spin, typename Q, typename vertex
 template<int ispin>
 void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_vertex_keldyshComponents_right_scalar(buffer_type_vertex_r& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
-    const auto vertexvalue_scalar = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<ispin,channel,Q>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<ispin,channel,Q>(input_r);};
+    const auto vertexvalue_scalar = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<ispin,channel,Q>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<ispin,channel,spin,Q>(input_r);};
     //const auto vertexvalue_scalar = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare<channel>(input_r); else return vertex2.template right_same_bare<channel>(input_r);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
@@ -645,7 +645,7 @@ template<int ispin>
 void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_vertex_keldyshComponents_left_vectorized(buffer_type_vertex_l& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
     using result_type_fetch = Eigen::Matrix<Q, 4 * myRowsAtCompileTime<return_type>(),1>;
-    const auto vertexvalue_vector = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<ispin,channel,result_type_fetch>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<ispin,channel,result_type_fetch>(input_l);};
+    const auto vertexvalue_vector = [&] (const VertexInput& input_l) {if constexpr(diag_class == k1 or diag_class == k2b) return vertex1.template left_same_bare_symmetry_expanded<ispin,channel,spin,result_type_fetch>(input_l) ; else return vertex1.template left_diff_bare_symmetry_expanded<ispin,channel,result_type_fetch>(input_l);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
     if constexpr(not KELDYSH) {
@@ -666,7 +666,7 @@ template<int ispin>
 void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_vertex_keldyshComponents_right_vectorized(buffer_type_vertex_r& values_vertex, const VertexInput& input) const {
     //size_t len_1 = values_vertex.length()[0];
     using result_type_fetch = Eigen::Matrix<Q, 4 * myColsAtCompileTime<return_type>(), 1>;
-    const auto vertexvalue_vector = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<ispin,channel,result_type_fetch>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<ispin,channel,result_type_fetch>(input_r);};
+    const auto vertexvalue_vector = [&](const VertexInput& input_r) {if constexpr(diag_class == k3 or diag_class == k2b) return vertex2.template right_diff_bare_symmetry_expanded<ispin,channel,result_type_fetch>(input_r); else return vertex2.template right_same_bare_symmetry_expanded<ispin,channel,spin,result_type_fetch>(input_r);};
     //assert(len_1 == glb_number_of_Keldysh_components_bubble);
 
     if constexpr(not KELDYSH) {
@@ -738,29 +738,20 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
                 const Q K1R_upup = gamma0R_upup + K1R_temp_upup;
 
 
-                result = K1L_upup * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R
-                                            + K1L_upup * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (                            values_vertex_r     ) * K1R_upup
-                                            + K1L_upup * (                            values_vertex_l     ) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R_upup
-                                            + K1L_upup * (                            values_vertex_l     ) * Pi_matrix * (                            values_vertex_r     ) * K1R
-                                            + K1L      * (                            values_vertex_l     ) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R
-                                            + K1L      * (                            values_vertex_l     ) * Pi_matrix * (                            values_vertex_r     ) * K1R_upup
-                                            + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R_upup
-                                            + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (                            values_vertex_r     ) * K1R
+                result = K1L_upup * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r_upup) * K1R
+                       + K1L_upup * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r     ) * K1R_upup
+                       + K1L_upup * (values_vertex_l     ) * Pi_matrix * (values_vertex_r_upup) * K1R_upup
+                       + K1L_upup * (values_vertex_l     ) * Pi_matrix * (values_vertex_r     ) * K1R
+                       + K1L      * (values_vertex_l     ) * Pi_matrix * (values_vertex_r_upup) * K1R
+                       + K1L      * (values_vertex_l     ) * Pi_matrix * (values_vertex_r     ) * K1R_upup
+                       + K1L      * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r_upup) * K1R_upup
+                       + K1L      * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r     ) * K1R
                 ;
             }
-            else if constexpr(diag_class == k2) {
-                result = (values_vertex_l_upup * Pi_matrix * (                            values_vertex_r)
-                        + values_vertex_l      * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup));
-            }
-            else if constexpr(diag_class == k2b) {
-                result = ((myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * values_vertex_r
-                        + (                            values_vertex_l)      * Pi_matrix * values_vertex_r_upup);
-            }
-            else if constexpr(diag_class == k3) {
+            else {
                 result = (values_vertex_l_upup * Pi_matrix * values_vertex_r
                         + values_vertex_l      * Pi_matrix * values_vertex_r_upup);
             }
-            else {assert(false);}
 
 
         }
@@ -783,18 +774,11 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
                 const Q K1L = gamma0L + K1L_temp;
                 const Q K1R_other = gamma0R + K1R_temp;
 
-                result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R_other);
+                result = (K1L * values_vertex_l * Pi_matrix * values_vertex_r * K1R_other);
             }
-            else if constexpr(diag_class == k2) {
-                result = (values_vertex_l_other * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
-            }
-            else if constexpr(diag_class == k2b) {
-                result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r_other);
-            }
-            else if constexpr(diag_class == k3) {
+            else {
                 result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
             }
-            else {assert(false);}
 
 
         }
@@ -809,18 +793,11 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
                 const Q K1L = gamma0L + K1L_temp;
                 const Q K1R = gamma0R + K1R_temp;
 
-                result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R);
+                result = (K1L * values_vertex_l * Pi_matrix * values_vertex_r * K1R);
             }
-            else if constexpr(diag_class == k2) {
-                result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
-            }
-            else if constexpr(diag_class == k2b) {
-                result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r);
-            }
-            else if constexpr(diag_class == k3) {
+            else {
                 result = (values_vertex_l * Pi_matrix * values_vertex_r);
             }
-            else {assert(false);}
         }
     } // SBE_DECOMPOSITION
     else{
@@ -933,34 +910,22 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                     const Eigen::Matrix<Q,4,4> K1R_upup = gamma0R_upup + K1R_temp_upup;
 
 
-                    const return_type result = (K1L_upup * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R
-                                              + K1L_upup * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (                            values_vertex_r     ) * K1R_upup
-                                              + K1L_upup * (                            values_vertex_l     ) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R_upup
-                                              + K1L_upup * (                            values_vertex_l     ) * Pi_matrix * (                            values_vertex_r     ) * K1R
-                                              + K1L      * (                            values_vertex_l     ) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R
-                                              + K1L      * (                            values_vertex_l     ) * Pi_matrix * (                            values_vertex_r     ) * K1R_upup
-                                              + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup) * K1R_upup
-                                              + K1L      * (myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * (                            values_vertex_r     ) * K1R
+                    const return_type result = (K1L_upup * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r_upup) * K1R
+                                              + K1L_upup * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r     ) * K1R_upup
+                                              + K1L_upup * (values_vertex_l     ) * Pi_matrix * (values_vertex_r_upup) * K1R_upup
+                                              + K1L_upup * (values_vertex_l     ) * Pi_matrix * (values_vertex_r     ) * K1R
+                                              + K1L      * (values_vertex_l     ) * Pi_matrix * (values_vertex_r_upup) * K1R
+                                              + K1L      * (values_vertex_l     ) * Pi_matrix * (values_vertex_r     ) * K1R_upup
+                                              + K1L      * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r_upup) * K1R_upup
+                                              + K1L      * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r     ) * K1R
                                                 );
                     return result;
                 }
-                else if constexpr(diag_class == k2) {
-                    const return_type result = (values_vertex_l_upup * Pi_matrix * (                            values_vertex_r)
-                                              + values_vertex_l      * Pi_matrix * (myIdentity<return_type>() + values_vertex_r_upup));
-                    return result * projection_lambdaBar;
-                }
-                else if constexpr(diag_class == k2b) {
-                    const return_type result = ((myIdentity<return_type>() + values_vertex_l_upup) * Pi_matrix * values_vertex_r
-                                              + (                            values_vertex_l)      * Pi_matrix * values_vertex_r_upup
-                            );
-                    return projection_lambda * result;
-                }
-                else if constexpr(diag_class == k3) {
+                else {
                     const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r
                                               + values_vertex_l      * Pi_matrix * values_vertex_r_upup);
                     return result;
                 }
-                else {assert(false);}
 
             } else {
                 assert(false);
@@ -986,22 +951,13 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                         const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
                         const Eigen::Matrix<Q,4,4> K1R_other = gamma0R + K1R_temp;
 
-                        const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R_other);
+                        const return_type result = (K1L * values_vertex_l * Pi_matrix * values_vertex_r * K1R_other);
                         return result;
                     }
-                    else if constexpr(diag_class == k2) {
-                        const return_type result = (values_vertex_l_other * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
-                        return result * projection_lambdaBar;
-                    }
-                    else if constexpr(diag_class == k2b) {
-                        const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r_other);
-                        return projection_lambda * result;
-                    }
-                    else if constexpr(diag_class == k3) {
+                    else {
                         const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
                         return result;
                     }
-                    else {assert(false);}
 
                 }
                 else {
@@ -1025,22 +981,13 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                     const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
                     const Eigen::Matrix<Q,4,4> K1R = gamma0R + K1R_temp;
 
-                    const return_type result = (K1L * (myIdentity<return_type>() + values_vertex_l) * Pi_matrix * (myIdentity<return_type>() + values_vertex_r) * K1R);
+                    const return_type result = (K1L * values_vertex_l * Pi_matrix * values_vertex_r * K1R);
                     return result;
                 }
-                else if constexpr(diag_class == k2) {
-                    const return_type result = (values_vertex_l * Pi_matrix * (myIdentity<return_type>() + values_vertex_r));
-                    return result * projection_lambdaBar;
-                }
-                else if constexpr(diag_class == k2b) {
-                    const return_type result = ((myIdentity<return_type>() + values_vertex_l) * Pi_matrix * values_vertex_r);
-                    return projection_lambda * result;
-                }
-                else if constexpr(diag_class == k3) {
+                else {
                     const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r);
                     return result;
                 }
-                else {assert(false);}
             } else {
                 assert(false);
             }

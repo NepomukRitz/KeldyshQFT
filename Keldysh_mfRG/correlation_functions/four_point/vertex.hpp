@@ -832,15 +832,25 @@ public:
     assert(input.spin == 0);
     return vertices_bubbleintegrand[spin].template value_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
-    template <int spin, char ch_bubble, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
+    template <int spin, char ch_bubble, int spin_target, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
-        return vertices_bubbleintegrand[spin].template left_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
+        if constexpr (SBE_DECOMPOSITION and (spin == spin_target or spin == 2) and !differentiated) {
+            return vertices_bubbleintegrand[spin].template left_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input) + myIdentity<result_type>();
+        }
+        else {
+            return vertices_bubbleintegrand[spin].template left_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
+        }
     }
-    template <int spin, char ch_bubble, typename result_type> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type {
+    template <int spin, char ch_bubble, int spin_target, typename result_type> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
-        return vertices_bubbleintegrand[spin].template right_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
+        if constexpr (SBE_DECOMPOSITION and (spin == spin_target or spin == 2) and !differentiated) {
+            return vertices_bubbleintegrand[spin].template right_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input) + myIdentity<result_type>();
+        }
+        else {
+            return vertices_bubbleintegrand[spin].template right_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
+        }
     }
     template <int spin, char ch_bubble, typename result_type> auto left_diff_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
