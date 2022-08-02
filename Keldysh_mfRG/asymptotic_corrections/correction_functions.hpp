@@ -15,7 +15,11 @@
 
 // TODO(medium) Write a class containing functions for all correction functions to minimize the number of times that many arguments have to be given to functions.
 
-
+/// Computes tails via quadrature routine
+template <typename Q, typename Integrand>
+auto asymp_corrections_bubble_via_quadrature(const Integrand& integrand, const double vmin, const double vmax) -> Q {
+    return integrator_onlyTails(integrand, vmin, vmax);
+}
 
 /**
  * Compute the analytical result for the asymptotic tails of the bubble integral, assuming the self-energy to be decayed
