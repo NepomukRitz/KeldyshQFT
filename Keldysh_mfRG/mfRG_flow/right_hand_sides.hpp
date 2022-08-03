@@ -78,7 +78,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
     //For flow without self-energy, comment out this line
     selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
-    SelfEnergy<Q> selfenergy_1loop = dPsi.selfenergy;
+    const SelfEnergy<Q> selfenergy_1loop = dPsi.selfenergy;
     //dPsi.selfenergy.check_resolution();
 
     int counter_Selfenergy_iterations = 0;
@@ -261,7 +261,12 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                         dGammaC_r.get_rvertex(r).K2b = dGammaC_l.get_rvertex(r).K2b;
                     }
                 }
+                //for (char r : {'a', 'p', 't'}) {
+                //    dGammaC_l.get_rvertex(r).K3 *= 0.;
+                //    dGammaC_r.get_rvertex(r).K3 *= 0.;
+                //}
                 Vertex<Q> dGammaC = (dGammaC_r + dGammaC_l) * 0.5; //dGammaC_r; //                  /// TODO: Find better solution --> K2 in dGammaC_l is bad, K3 in dGammaC_l can be obtained from dGammaC_r
+
 
                 /// save intermediate states:
                 if (save) {
@@ -365,26 +370,36 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             // compute multiloop corrections to self-energy flow
             State<Q> Psi_SEcorrection(dPsi, Lambda);
             selfEnergyFlowCorrections(Psi_SEcorrection.selfenergy, dGammaC_tbar, Psi, G); // isolated SE correction
+            SelfEnergy<Q> selfEnergy_old = dPsi.selfenergy;
             dPsi.selfenergy = selfenergy_1loop + Psi_SEcorrection.selfenergy;
+            SelfEnergy<Q> selfEnergy_err = dPsi.selfenergy - selfEnergy_old;
 
-            selfenergy_correction_abs = Psi_SEcorrection.selfenergy.norm();
-            selfenergy_correction_rel = (Psi_SEcorrection.selfenergy / dPsi.selfenergy).norm();
+            selfenergy_correction_abs = selfEnergy_err.norm();
+            selfenergy_correction_rel = selfEnergy_err.norm() / dPsi.selfenergy.norm();
             utils::print("Self-energy iteration ", counter_Selfenergy_iterations, "\n");
             utils::print("Self-energy correction (abs.):", selfenergy_correction_abs, "\n");
             utils::print("Self-energy correction (rel.):", selfenergy_correction_rel, "\n");
+            State<Q> state_self_diffrel(Lambda);
+            state_self_diffrel.selfenergy = selfEnergy_err * (1./ dPsi.selfenergy.norm());
+
 
 /// save intermediate states:
-            if (config.save_intermediateResults) {
+            if (save) {
                 State<Q> dPsi_C_tbar(Vertex<Q>(dGammaC_tbar.half1()), dPsi.selfenergy, Lambda);
                 if (iteration == 0) {
                     //write_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_tbar);
                     write_state_to_hdf<Q>(dir_str + "SE_correction_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), Psi.Lambda,
                                           config.nODE_ + U_NRG.size() + 1, Psi_SEcorrection);
+                    write_state_to_hdf<Q>(dir_str + "SE_correction_rel_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), Psi.Lambda,
+                                          config.nODE_ + U_NRG.size() + 1, state_self_diffrel);
 
                 } else {
                     //add_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), iteration, dPsi_C_tbar, false);
                     add_state_to_hdf<Q>(dir_str + "SE_correction_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration,
                                         Psi_SEcorrection, false);
+                    add_state_to_hdf<Q>(dir_str + "SE_correction_rel_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration,
+                                        state_self_diffrel, false);
+
 #if DEBUG_SYMMETRIES
                     add_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration, Psi_SEcorrection);
 #endif
