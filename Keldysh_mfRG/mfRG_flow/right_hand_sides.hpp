@@ -207,6 +207,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             //dGammaC_tbar.set_Ir(true);
 #endif
 
+            double abs_loop = 1;
+            double rel_loop = 1;
             for (int i = 3; i <= nloops_max; i++) {
 
 
@@ -363,6 +365,14 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                         dPsi_T.analyze_tails();
                     }
                 }
+
+
+                abs_loop = dGammaT.norm();
+                rel_loop = dGammaT.norm() / dPsi.vertex.norm();
+
+                utils::print("Rel. contribution from loop ", i, ":", rel_loop, "\n");
+                utils::print("Abs. contribution from loop ", i, ":", abs_loop, "\n");
+                if (abs_loop < loop_tol_abs or rel_loop < loop_tol_rel) break;
 
             }
 
