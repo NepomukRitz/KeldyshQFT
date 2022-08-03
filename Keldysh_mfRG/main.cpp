@@ -32,7 +32,6 @@ auto main(int argc, char * argv[]) -> int {
 #endif
 
 
-    utils::print_job_info();
     utils::check_input();
 
     /// Job and Data directory
@@ -43,7 +42,6 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     data_dir = utils::generate_data_directory(job);
 
-    std::string filename = utils::generate_filename();
 
     //
     //test_PT4(0.5, true);
@@ -68,6 +66,9 @@ auto main(int argc, char * argv[]) -> int {
     config.nloops = n_loops;
     config.U = 2.5;
     config.save_intermediateResults = false;
+
+    utils::print_job_info(config);
+    std::string filename = utils::generate_filename(config);
     n_loop_flow(data_dir+filename, config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);

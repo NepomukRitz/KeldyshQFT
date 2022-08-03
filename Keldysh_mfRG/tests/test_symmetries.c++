@@ -137,7 +137,7 @@ void test_compare_with_Vienna_code(const fRG_config & frgConfig) {
     assert(glb_U == 4.);
     assert(glb_Gamma == 2.);
     assert(glb_T == 1.0);
-    assert(nODE == 20);
+    //assert(nODE == 20);
     assert(Lambda_ini == 0.);
     assert(Lambda_fin == 1.);
     assert(COUNT == 4);
@@ -157,13 +157,14 @@ void test_compare_with_Vienna_code(const fRG_config & frgConfig) {
 
     // initialize the flow with SOPT at Lambda_ini (important!)
     //sopt_state(state_ini, Lambda_ini);
-
-    write_state_to_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+     const int nLambdas = 21;
+    write_state_to_hdf(outputFileName, Lambda_ini,  nLambdas, state_ini);  // save the initial state to hdf5 file
 
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg(frgConfig);
     ODE_solver_config config;// = ODE_solver_config_standard;
     config.filename = outputFileName;
+    config.maximal_number_of_ODE_steps = 20;
     using namespace boost::numeric::odeint;
     ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
                                                                               config, true);

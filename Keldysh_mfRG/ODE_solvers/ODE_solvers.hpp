@@ -370,7 +370,7 @@ namespace ode_solver_impl
             ode_solver_impl::rk_step<Y, FlowGrid>(tableau, state_i, dydx, temporary, t_value, t_step, errmax, rhs, config);
 
             if constexpr(std::is_same<State<state_datatype>, Y>::value) {
-                rhs.rk_step = 0;
+                rhs.rk_step = 1;
             }
 
             if (not tableau.adaptive) break;

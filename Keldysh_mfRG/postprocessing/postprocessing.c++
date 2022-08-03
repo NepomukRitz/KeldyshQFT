@@ -61,9 +61,9 @@ void compute_Phi_tilde(const std::string filename) {
 
 void sum_rule_K1tK(const std::string filename) {
     utils::print("Checking fullfilment of the sum rule for K1t", true);
-    int nLambda = nODE + U_NRG.size() + 1;
 
     rvec Lambdas = read_Lambdas_from_hdf(filename);
+    const int nLambda = Lambdas.size();
 
     rvec sum_rule (nLambda);
 
@@ -86,8 +86,10 @@ void sum_rule_K1tK(const std::string filename) {
 
 void check_Kramers_Kronig(const std::string filename) {
     vec<int> iLambdas {}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
-    if (nODE == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
-    else if (nODE == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
+    rvec Lambdas = read_Lambdas_from_hdf(filename);
+    const int nLambda = Lambdas.size();
+    if (nLambda == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
+    else if (nLambda == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
 
     for (unsigned int i=0; i<iLambdas.size(); ++i) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file

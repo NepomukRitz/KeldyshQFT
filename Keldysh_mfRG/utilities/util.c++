@@ -149,7 +149,7 @@ namespace utils {
         return data_directory;
     }
 
-    std::string generate_filename() {
+    std::string generate_filename(const fRG_config& config) {
         std::string klass = "K" + std::to_string(MAX_DIAG_CLASS) + "_";
         std::string loops = std::to_string(N_LOOPS) + "LF_";
         std::string n1 = "n1=" + std::to_string(nBOS) + "_";
@@ -159,7 +159,7 @@ namespace utils {
         std::string voltage = "V=" + std::to_string(glb_V) + "_";
         std::string temp = "T=" + std::to_string(glb_T) + "_";
         std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
-        std::string ode = "nODE=" + std::to_string(nODE);
+        std::string ode = "nODE=" + std::to_string(config.nODE_);
         std::string extension = ".h5";
 
         std::string filename = klass + loops + n1;
@@ -178,7 +178,7 @@ namespace utils {
         return filename;
     }
 
-    void print_job_info() {
+    void print_job_info(const fRG_config& config) {
         if (KELDYSH){
             if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
             else               print("SIAM in Keldysh formalism: \n");
@@ -193,7 +193,7 @@ namespace utils {
         print("U for this run is: ", glb_U, true);
         print("Lambda flows from ", Lambda_ini);
         print_add(" to ", Lambda_fin, true);
-        print("nODE for this run: ", nODE, true);
+        print("nODE for this run: ", config.nODE_, true);
         if constexpr (MPI_FLAG) print("MPI World Size = " + std::to_string(mpi_world_size()), true);
     #pragma omp parallel default(none)
         {

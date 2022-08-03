@@ -44,7 +44,7 @@ constexpr bool VERBOSE = false;
 inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
-const int nmax_Selfenergy_iterations = 2;
+const int nmax_Selfenergy_iterations = 5;
 const double tol_selfenergy_correction_abs = 1e-8;
 const double tol_selfenergy_correction_rel = 1e-4;
 
@@ -54,7 +54,7 @@ const double tol_selfenergy_correction_rel = 1e-4;
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.5; //0.1; //0.01;                     // Temperature
+constexpr double glb_T = 10.; //0.1; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -144,9 +144,7 @@ constexpr int n_in = 1;
 // if the following is     defined, we flow with t via Lambda(t) <-- flowgrid;
 #define REPARAMETRIZE_FLOWGRID
 
-constexpr int nODE = 40;
-constexpr double epsODE_rel = 1e-6;
-constexpr double epsODE_abs = 1e-8;
+
 // ODE solvers:
 // 1 -> basic Runge-Kutta 4; // WARNING: non-adaptive!
 // 2 -> Bogacki–Shampine
@@ -155,7 +153,8 @@ constexpr double epsODE_abs = 1e-8;
 #define ODEsolver 3
 
 // Limits of the fRG flow
-const double Lambda_ini = 2*pow(10, 10) ;// 1e4;                // NOLINT(cert-err58-cpp)
+const double LN_10 = 2.30258509299;				///< Natural log of 10
+const double Lambda_ini = 2*exp(  1 * LN_10 );//pow(10,  1) ;// 1e4;                // NOLINT(cert-err58-cpp)
 const double Lambda_fin = 2*pow(10, -10) ;// 1e-4;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
@@ -206,7 +205,6 @@ constexpr bool PARTICLE_HOLE_SYMMETRY = false;
 
 
 inline std::string data_dir;
-const int nLambda_layers = nODE + U_NRG.size() + 1;   // Lambda layers in files
 
 
 #endif //KELDYSH_MFRG_PARAMETERS_H
