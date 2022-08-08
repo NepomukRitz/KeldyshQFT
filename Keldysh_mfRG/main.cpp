@@ -12,6 +12,7 @@
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
 #include "perturbation_theory_and_parquet/perturbation_theory.hpp"
+#include "perturbation_theory_and_parquet/parquet_solver.hpp"
 #include "tests/test_ODE.hpp"
 #ifdef USE_MPI
 #include <mpi.h>
@@ -22,6 +23,7 @@ auto main(int argc, char * argv[]) -> int {
 
     std::cout << "number of args: " << argc-1 << ", expected: 1" << std::endl;
     const int n_loops = atoi(argv[1]);
+    N_LOOPS = n_loops;
 
 #ifdef USE_MPI
     if (MPI_FLAG) {
@@ -30,9 +32,15 @@ auto main(int argc, char * argv[]) -> int {
 #endif
 
 
-    utils::print_job_info();
     utils::check_input();
 
+    /// Job and Data directory
+    std::string job = "Loop=" + std::to_string(n_loops);
+    job += "U=" + std::to_string(glb_U);
+#ifndef PARTICLE_HOLE_SYMM
+    job += "_eVg=" + std::to_string(glb_Vg);
+#endif
+    data_dir = utils::generate_data_directory(job);
 
 
     //
@@ -43,64 +51,33 @@ auto main(int argc, char * argv[]) -> int {
     //compute_non_symmetric_diags(0.8, true, 1, true);
     //test_integrate_over_K1<state_datatype>(1.8);
 
+
+
+
+
+    ///fRG runs:
     fRG_config config;
-    config.nODE_ = 20;
+    config.nODE_ = 10;
     config.epsODE_abs_ = 1e-8;
-    config.epsODE_rel_ = 1e-5;
+    config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
-    config.U = 1.;
+    config.U = 2.5;
+    config.save_intermediateResults = false;
 
-    /// Job and Data directory
-    std::string job = "_K" + std::to_string(MAX_DIAG_CLASS) + "_T=" + std::to_string(glb_T);
-    data_dir = utils::generate_data_directory(job);
+    utils::print_job_info(config);
     std::string filename = utils::generate_filename(config);
-#if SELF_ENERGY_FLOW_CORRECTIONS == 0
-    filename = filename + "_noSEcorr";
-#elif SELF_ENERGY_FLOW_CORRECTIONS == 1
-    filename = filename + "_multiloopSEcorr";
-#elif SELF_ENERGY_FLOW_CORRECTIONS == 2
-    filename = filename + "_SDEcorr";
-#endif
-
-    //testSelfEnergy_and_K1<state_datatype>(9.8);
-    n_loop_flow(data_dir+filename, config, true);
-    //test_symmetries(9.8, config);
+    n_loop_flow(data_dir+filename, config);
+    //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
     //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
 
-    /*
-    //const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};
-    const std::vector<double> myU_NRG {0.2, 0.25, 0.5, 0.75, 1., 1.25};                                                    // NOLINT(cert-err58-cpp)
-    const std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(myU_NRG);
 
-    for (unsigned int i = 0; i < Lambda_checkpoints.size(); i++) {
-        const double Lambda = Lambda_checkpoints[i];
-        State<state_datatype> state (Lambda);
-        state.initialize();
-        sopt_state(state, Lambda);
-        const double Delta = (glb_Gamma + Lambda) * 0.5;
-        double U_over_Delta = glb_U / Delta;
-        const std::string parquet_filename = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-        //state = read_state_from_hdf(parquet_filename, 30);
-        parquet_solver(parquet_filename, state, Lambda, 1e-4, 30);
-    }
-    */
+    ///parquet runs:
+    const std::vector<double> myU_NRG {1.25};
+    //run_parquet(myU_NRG);
 
-    /*
-    const std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
 
-    for (unsigned int i = 0; i < Lambda_checkpoints.size(); i++) {
-        const double Lambda = Lambda_checkpoints[i];
-        State<state_datatype> state (Lambda);
-        state.initialize();
-        sopt_state(state, Lambda);
-        const double Delta = (glb_Gamma + Lambda) * 0.5;
-        double U_over_Delta = glb_U / Delta;
-        const std::string parquet_filename = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-        //state = read_state_from_hdf(parquet_filename, 30);
-        parquet_solver(parquet_filename, state, Lambda, 1e-4, 30);
-    }
-    */
+
 
     /*
     // SIAM PT4 specific:

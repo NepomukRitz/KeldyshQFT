@@ -166,7 +166,7 @@ namespace utils {
 
     std::string generate_filename(const fRG_config& config);
 
-    void print_job_info();
+    void print_job_info(const fRG_config& config);
 
     void hello_world();
 
@@ -179,6 +179,15 @@ namespace utils {
     constexpr std::array<T, sizeof...(Args)> to_array (const Args & ... args)
     { return {{ static_cast<T>(args)... } }; }
 
+    template<typename Head, typename ...Args>
+    bool is_all_finite(Head head, Args ... args) {
+        if constexpr (sizeof... (Args) == 0) {
+            return std::isfinite(head);
+        }
+        else {
+            return std::isfinite(head) and is_all_finite(args...);
+        }
+    }
 }
 
 #endif // UTIL_H

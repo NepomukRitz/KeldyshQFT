@@ -522,7 +522,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
                 Bubble_Object>::write_out_results_K1(const vec<Q>& K1_ordered_result){
-    dgamma.get_rvertex(channel).K1.add_vec(K1_ordered_result);
+    dgamma.get_rvertex(channel).K1.set_vec(K1_ordered_result);
     if constexpr(not DEBUG_SYMMETRIES) {
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
         if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK1(dgamma.get_rvertex(channel));
@@ -536,7 +536,7 @@ void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::write_out_results_K2(const vec<Q>& K2_ordered_result){
     //assert( K2_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
-    dgamma.get_rvertex(channel).K2.add_vec(K2_ordered_result);
+    dgamma.get_rvertex(channel).K2.set_vec(K2_ordered_result);
     if constexpr(not DEBUG_SYMMETRIES) {
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
         if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK2(dgamma.get_rvertex(channel));
@@ -553,7 +553,7 @@ void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::write_out_results_K2b(const vec<Q>& K2b_ordered_result){
     //assert( K2b_ordered_result.size() == nK_K2*n_spin*nBOS2*nFER2*n_in);
-    dgamma.get_rvertex(channel).K2b.add_vec(K2b_ordered_result);
+    dgamma.get_rvertex(channel).K2b.set_vec(K2b_ordered_result);
 }
 #endif
 
@@ -562,7 +562,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::write_out_results_K3(const vec<Q>& K3_ordered_result){
-    dgamma.get_rvertex(channel).K3.add_vec(K3_ordered_result);
+    dgamma.get_rvertex(channel).K3.set_vec(K3_ordered_result);
     if constexpr(not DEBUG_SYMMETRIES) {
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
         if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK3(dgamma.get_rvertex(channel));

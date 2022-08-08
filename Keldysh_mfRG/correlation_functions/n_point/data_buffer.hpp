@@ -291,9 +291,105 @@ public:
             //return result;
 
         } else { //asymptotic value
-            if constexpr (std::is_same_v<result_type,Q>) return result_type{};
-            else return result_type::Zero();
 
+            if constexpr (KELDYSH or ZERO_T) {
+                if constexpr (std::is_same_v<result_type, Q>) return result_type{};
+                else return result_type::Zero();
+            }
+            else { // finite T Matsubara: extrapolate with w^-2 tail
+                if constexpr (numberFrequencyDims == 1) {
+                    const double wmax = base_class::frequencies.primary_grid.w_upper;
+                    const double wabs = std::abs(frequencies[0]);
+                    indices[pos_first_freqpoint] = 0;
+                    if constexpr (std::is_same_v<result_type,Q>) {
+                        const result_type result = wmax * wmax / (wabs*wabs) * base_class::val(indices);
+                        return result;
+                    } else {
+                        const result_type result = wmax * wmax / (wabs*wabs) * base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
+                        return result;
+                    }
+                }
+                else if constexpr (numberFrequencyDims > 1) {
+                    const double wmax = base_class::frequencies.primary_grid.w_upper;
+                    const double vmax = base_class::frequencies.secondary_grid.w_upper;
+                    const double wabs = std::abs(frequencies[0]);
+
+                    if (wabs > wmax) {
+                        return result_type{};
+                    }
+                    else if constexpr (numberFrequencyDims == 2) {
+
+                        const double w = frequencies[0];
+                        const double v = frequencies[1];
+                        const int index = base_class::frequencies.primary_grid.get_grid_index(w);
+                        indices[pos_first_freqpoint] = index;
+
+                        if (v <= -vmax) {
+                            indices[pos_first_freqpoint + 1] = 0;
+                        }
+                        else {
+                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1;
+                        }
+
+                        if constexpr (std::is_same_v<result_type,Q>) {
+                            const result_type result = (vmax * vmax - w * w * 0.25) / (v * v - w * w * 0.25) * base_class::val(indices);
+                            return result;
+                        } else {
+                            const result_type result = (vmax * vmax - w * w * 0.25) / (v * v - w * w * 0.25) * base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
+                            return result;
+                        }
+
+                    }
+                    else if constexpr (numberFrequencyDims == 3) {
+
+                        const double w = frequencies[0];
+                        const double v = frequencies[1];
+                        const double vp= frequencies[2];
+                        const int index = base_class::frequencies.primary_grid.get_grid_index(w);
+                        indices[pos_first_freqpoint] = index;
+
+                        Q result = 1.;
+                        if (v <= -vmax) {
+                            indices[pos_first_freqpoint + 1] = 0;
+                            result *= vmax * vmax / (v * v);
+                        }
+                        else if (v >= vmax){
+                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 ;
+                            result *= vmax * vmax / (v * v);
+                        }
+                        else {
+                            const int index_v = base_class::frequencies.secondary_grid.get_grid_index(v);
+                            indices[pos_first_freqpoint + 1] = index_v;
+                        }
+                        if (vp <= -vmax) {
+                            indices[pos_first_freqpoint + 2] = 0;
+                            result *= vmax * vmax / (vp * vp);
+                        }
+                        else if (vp >= vmax){
+                            indices[pos_first_freqpoint + 2] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 ;
+                            result *= vmax * vmax / (vp * vp);
+                        }
+                        else {
+                            const int index_vp = base_class::frequencies.secondary_grid.get_grid_index(vp);
+                            indices[pos_first_freqpoint + 2] = index_vp;
+                        }
+
+                        if constexpr (std::is_same_v<result_type,Q>) {
+                            result *= base_class::val(indices);
+                        } else {
+                            result *= base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
+                        }
+                        return result;
+
+                    }
+
+                }
+                else if constexpr (numberFrequencyDims == 3) {
+                    return result_type{};
+                }
+                else {assert(false);}
+
+            }
         }
 
     };

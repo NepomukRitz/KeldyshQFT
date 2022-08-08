@@ -691,12 +691,14 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
 
     //// Straightforward summation:
     vec<Q> values(N);
+    Q result = 0;
     double vpp;
     for (int i = 0; i < N; i++) {
         vpp = ((Nmin + i)*2 + 1) * (M_PI * glb_T);
-        values[i] = integrand(vpp);
+        //values[i] = integrand(vpp);
+        result += integrand(vpp);
     }
-    return values.sum();
+    return result;// values.sum();
 
     //// Adaptive summator:
     /*

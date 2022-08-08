@@ -179,6 +179,7 @@ public:
         }
         else {
             assert(false);
+            return avertex;
         }
     }
     template <char channel_bubble, char channel_rvert, bool is_left_vertex> auto combine_SBE_to_K2 (const fullvert<Q>& vert_for_lambda, const fullvert<Q>& vert_for_w) const -> typename rvert<Q>::buffer_type_K2{

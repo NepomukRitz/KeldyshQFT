@@ -6,13 +6,13 @@
 struct ODE_solver_config {
 
     ODE_solver_config()
-            :   maximal_number_of_ODE_steps(nODE),
+            :   maximal_number_of_ODE_steps(50),
                 iter_start(0),
                 lambda_checkpoints({}),
                 filename(""),
                 max_stepResizing_attempts(1000),
-                relative_error(epsODE_rel),
-                absolute_error(epsODE_abs),
+                relative_error(1e-4),
+                absolute_error(1e-8),
                 a_State(1.),
                 a_dState_dLambda(0.){}
 

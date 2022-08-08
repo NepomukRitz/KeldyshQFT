@@ -122,13 +122,13 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
     //state_ini = read_state_from_hdf(data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") : "") + ".h5", 0);
 
 
-    /*
+
     state_ini.analyze_tails();
     check_SE_causality(state_ini); // check if the self-energy is causal at each step of the flow
     State<state_datatype> dPsi_dLambda(Lambda);
     rhs_n_loop_flow_t<state_datatype> rhs(frgConfig);
     rhs(state_ini, dPsi_dLambda, Lambda);
-     */
+
 
 }
 
@@ -138,7 +138,7 @@ void test_compare_with_Vienna_code(const fRG_config & frgConfig) {
     assert(glb_U == 4.);
     assert(glb_Gamma == 2.);
     assert(glb_T == 1.0);
-    assert(nODE == 20);
+    //assert(nODE == 20);
     assert(Lambda_ini == 0.);
     assert(Lambda_fin == 1.);
     assert(COUNT == 4);
@@ -158,13 +158,14 @@ void test_compare_with_Vienna_code(const fRG_config & frgConfig) {
 
     // initialize the flow with SOPT at Lambda_ini (important!)
     //sopt_state(state_ini, Lambda_ini);
-
-    write_state_to_hdf(outputFileName, Lambda_ini,  nODE + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+     const int nLambdas = 21;
+    write_state_to_hdf(outputFileName, Lambda_ini,  nLambdas, state_ini);  // save the initial state to hdf5 file
 
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg(frgConfig);
     ODE_solver_config config;// = ODE_solver_config_standard;
     config.filename = outputFileName;
+    config.maximal_number_of_ODE_steps = 20;
     using namespace boost::numeric::odeint;
     ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
                                                                               config, true);

@@ -137,7 +137,7 @@ namespace utils {
     #if DEBUG_SYMMETRIES
         std::string data_directory = "../Data_KF_debug/";
     #else
-        std::string data_directory = "../Data_KF" + job + "/";
+        std::string data_directory = "../Data_KF_" + job + "/";
     #endif
     #else
         #if DEBUG_SYMMETRIES
@@ -186,7 +186,7 @@ namespace utils {
         return filename;
     }
 
-    void print_job_info() {
+    void print_job_info(const fRG_config& config) {
         if (KELDYSH){
             if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
             else               print("SIAM in Keldysh formalism: \n");
@@ -202,7 +202,7 @@ namespace utils {
         print("T for this run is: ", glb_T, true);
         print("Lambda flows from ", Lambda_ini);
         print_add(" to ", Lambda_fin, true);
-        print("nODE for this run: ", nODE, true);
+        print("nODE for this run: ", config.nODE_, true);
         if constexpr (MPI_FLAG) print("MPI World Size = " + std::to_string(mpi_world_size()), true);
     #pragma omp parallel default(none)
         {

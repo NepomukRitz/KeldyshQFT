@@ -18,6 +18,7 @@
 #include "HUBBARD_sopt_selfenergy.hpp"
 #include "../bubble/precalculated_bubble.hpp"
 #include "../utilities/write_data2file.hpp"
+#include "../utilities/hdf5_routines.hpp"
 
 template <typename Q>
 auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){

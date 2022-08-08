@@ -68,25 +68,42 @@ public:
     void save_propagator_values(const std::string& filename, const rvec& frequencies) const {
         using buffer_type = multidimensional::multiarray<Q, 3>;
         const size_t number_of_frequencies = frequencies.size();
+        H5::H5File file(filename, H5F_ACC_TRUNC);
 
-        std::array<size_t,3> dims = {number_of_frequencies, 2, 2};
-        buffer_type values (dims);
+        if constexpr(KELDYSH_FORMALISM) {
+            std::array<size_t, 3> dims = {number_of_frequencies, 2, 2};
+            buffer_type values(dims);
 
-        selfenergy.Sigma.initInterpolator();
-        if (type != 'g')diff_selfenergy.Sigma.initInterpolator();
-        for (size_t i = 0; i < number_of_frequencies; i++) {
-            const double v = frequencies[i];
-            using buffertype_propagator = Eigen::Matrix<Q, 1, 4>;
-            const buffertype_propagator value = valsmooth_vectorized<buffertype_propagator>(v, 0);
-            values(i, 0, 0) = value(0);
-            values(i, 0, 1) = value(1);
-            values(i, 1, 0) = value(2);
-            values(i, 1, 1) = value(3);
+            selfenergy.Sigma.initInterpolator();
+            if (type != 'g')diff_selfenergy.Sigma.initInterpolator();
+            for (size_t i = 0; i < number_of_frequencies; i++) {
+                const double v = frequencies[i];
+                using buffertype_propagator = Eigen::Matrix<Q, 1, 4>;
+                const buffertype_propagator value = valsmooth_vectorized<buffertype_propagator>(v, 0);
+                values(i, 0, 0) = value(0);
+                values(i, 0, 1) = value(1);
+                values(i, 1, 0) = value(2);
+                values(i, 1, 1) = value(3);
+            }
+            write_to_hdf(file, "propagator", values, false);
+        }
+        else {
+            std::array<size_t, 3> dims = {number_of_frequencies, 1, 1};
+            buffer_type values(dims);
+
+            selfenergy.Sigma.initInterpolator();
+            if (type != 'g')diff_selfenergy.Sigma.initInterpolator();
+            for (size_t i = 0; i < number_of_frequencies; i++) {
+                const double v = frequencies[i];
+                using buffertype_propagator = Eigen::Matrix<Q, 1, 1>;
+                const double value = valsmooth(0,v, 0);
+                values(i, 0, 0) = value ;
+            }
+            write_to_hdf(file, "propagator", values, false);
+            write_to_hdf<Q>(file, "frequencies", frequencies, false);
         }
 
         //std::string filename = data_dir + "";
-        H5::H5File file(filename, H5F_ACC_TRUNC);
-        write_to_hdf(file, "propagator", values, false);
         file.close();
 
     }
@@ -489,7 +506,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
         default:
             utils::print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
-            return 0.;
+            exit(1); // Failure
     }
     assert(false);
     return 0.;
@@ -639,6 +656,7 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         default:
             utils::print("ERROR! Invalid Keldysh index. Abort.");
             assert(false);
+            exit(1); // Failure
             //return return_type::Zero();
     }
     assert(false);

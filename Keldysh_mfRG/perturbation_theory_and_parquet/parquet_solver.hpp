@@ -10,6 +10,7 @@
 #include "../bubble/bubble_function.hpp"        // compute bubble function
 #include "../loop/loop.hpp"           // compute loop function
 #include "../postprocessing/causality_FDT_checks.hpp"
+#include "perturbation_theory.hpp"
 
 /**
  * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
@@ -476,5 +477,9 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         ++iteration;
     }
 }
+
+
+void run_parquet(const std::vector<double>&);
+
 
 #endif //KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H

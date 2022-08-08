@@ -78,18 +78,17 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     std::string dir_str = data_dir + "intermediateResults/";
     int iteration=-1;
     int rkStep=-1;
-    bool save_intermediate = false;
     double t0 = utils::get_time();
 
-#ifndef NDEBUG
+    bool save = false;
     if (opt.size() > 1) {
          iteration = opt[0];
          rkStep = opt[1];
-        //if (rkStep==0)
-            save_intermediate = true;
-         if (rkStep==0 and iteration==0 and save_intermediate) utils::makedir(dir_str);
+         if (rkStep==0 and iteration==0 and config.save_intermediateResults and false) {
+             utils::makedir(dir_str);
+             save = true;
+         }
     }
-#endif
 
 
     // initialize empty state with frequency grids corresponding to those in Psi:
@@ -109,7 +108,15 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     //For flow without self-energy, comment out this line
     selfEnergyOneLoopFlow(dPsi.selfenergy, Psi.vertex, S);
     //calculate_dSigma_SOPT<Q>(dPsi.selfenergy, Psi, Lambda);
+    const SelfEnergy<Q> selfenergy_1loop = dPsi.selfenergy;
     //dPsi.selfenergy.check_resolution();
+
+    int counter_Selfenergy_iterations = 0;
+    double selfenergy_correction_abs = 1e10;
+    double selfenergy_correction_rel = 1.;
+#if SELF_ENERGY_FLOW_CORRECTIONS != 0
+    do {
+#endif
 
 #ifndef STATIC_FEEDBACK
 #ifdef KATANIN
@@ -148,10 +155,10 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 
             /// save intermediate states:
-    if (save_intermediate) {
+    if (save) {
         if (iteration == 0) {
-            //write_state_to_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi);
-            write_state_to_hdf<Q>(dir_str+"dPsi"+"_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi);
+            write_state_to_hdf<Q>(dir_str+ "Psi"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi);
+            write_state_to_hdf<Q>(dir_str+"dPsi"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi);
 
             if constexpr (DEBUG_SYMMETRIES) {
                 Psi.vertex.check_symmetries("Psi");
@@ -159,8 +166,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             }
         }
         else {
-            //add_state_to_hdf<Q>(dir_str+ "Psi_RKstep"+std::to_string(rkStep), iteration, Psi, false);
-            add_state_to_hdf<Q>(dir_str+"dPsi_RKstep"+std::to_string(rkStep), iteration, dPsi, false);
+            add_state_to_hdf<Q>(dir_str+ "Psi_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration, Psi, false);
+            add_state_to_hdf<Q>(dir_str+"dPsi_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration, dPsi, false);
         }
     }
 
@@ -196,27 +203,27 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 
         /// save intermediate states:
-        if (save_intermediate) {
+        if (save) {
             int i = 2;
             State<Q,true> dPsi_L(dGammaL_half1, dPsi.selfenergy, Lambda);
             State<Q,true> dPsi_R(dGammaR_half1, dPsi.selfenergy, Lambda);
-            //State<Q> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
+            State<Q,true> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
             if (iteration == 0) {
-                write_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
+                write_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i),
                              Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_L);
-                write_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
+                write_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i),
                              Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_R);
-                //write_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i),
-                //             Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_T);
+                write_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i),
+                             Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_T);
                 if constexpr(DEBUG_SYMMETRIES) {
                     // dPsi_L.vertex.check_symmetries("dPsi_L"); // we don't expect these to have the full symmetry of the vertex
                     // dPsi_R.vertex.check_symmetries("dPsi_R"); // we don't expect these to have the full symmetry of the vertex
-                    //dPsi_T.vertex.check_symmetries("dPsi_T");
+                    dPsi_T.vertex.check_symmetries("dPsi_T");
                 }
             } else {
-                add_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_L, false);
-                add_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_R, false);
-                //  add_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_T, false);
+                add_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i), iteration, dPsi_L, false);
+                add_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i), iteration, dPsi_R, false);
+                add_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i), iteration, dPsi_T, false);
 
             }
         }
@@ -230,6 +237,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             //dGammaC_tbar.set_Ir(true);
 #endif
 
+            double abs_loop = 1;
+            double rel_loop = 1;
             for (int i = 3; i <= nloops_max; i++) {
 
 
@@ -238,53 +247,76 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 // assign half 2 as half 1 of dGammaR [symmetric_full -> half1()=half2()]
                 GeneralVertex<Q, non_symmetric_diffleft,true> dGammaL(dGammaL_half1.half1(), dGammaR_half1.half1(), Psi.vertex);
                 if (VERBOSE) {
-                    compare_with_FDTs(dGammaL, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, config.nODE_ + U_NRG.size() + 1);
+                    compare_with_FDTs(dGammaL, Lambda, iteration,
+                                      "dGammaL_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2), false,
+                                      config.nODE_ + U_NRG.size() + 1);
                 }
 
 
                 // insert this non-symmetric_full vertex on the right of the bubble
-                if (VERBOSE) utils::print("Compute dGammaC (right insertion) ( ", i,"-loop): \n");
+                if (VERBOSE) utils::print("Compute dGammaC (right insertion) ( ", i, "-loop): \n");
+                //save_symmetry_expanded_vertex<false>(dGammaL, "dPsiLIn3LoopCRight");
                 Vertex<Q,true> dGammaC_r = calculate_dGammaC_right_insertion(Psi.vertex, dGammaL, Pi);
-                if(VERBOSE) dGammaC_r.half1().check_vertex_resolution();
+                if (VERBOSE) dGammaC_r.half1().check_vertex_resolution();
                 if (VERBOSE) {
-                    compare_with_FDTs(dGammaC_r, Lambda, iteration, "dGammaC_r_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, config.nODE_ + U_NRG.size() + 1);
+                    compare_with_FDTs(dGammaC_r, Lambda, iteration,
+                                      "dGammaC_r_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
+                                      false, config.nODE_ + U_NRG.size() + 1);
                 }
 
                 // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
                 // assign half 1
                 // assign half 2 as half 1 of dGammaL
-                GeneralVertex<Q, non_symmetric_diffright,true> dGammaR (dGammaR_half1.half1(), dGammaL_half1.half1(), Psi.vertex);
+                GeneralVertex<Q, non_symmetric_diffright, true> dGammaR(dGammaR_half1.half1(), dGammaL_half1.half1(), Psi.vertex);
                 if (VERBOSE) {
-                    compare_with_FDTs(dGammaR, Lambda, iteration, "dGammaR_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, config.nODE_ + U_NRG.size() + 1);
+                    compare_with_FDTs(dGammaR, Lambda, iteration,
+                                      "dGammaR_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2), false,
+                                      config.nODE_ + U_NRG.size() + 1);
                 }
 
 
                 // insert this non-symmetric_full vertex on the left of the bubble
+                //save_symmetry_expanded_vertex<true>(dGammaR, "dPsiRIn3LoopCLeft");
                 Vertex<Q,true> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
                 if (VERBOSE) {
-                    compare_with_FDTs(dGammaC_l, Lambda, iteration, "dGammaC_l_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, config.nODE_ + U_NRG.size() + 1);
+                    compare_with_FDTs(dGammaC_l, Lambda, iteration,
+                                      "dGammaC_l_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
+                                      false, config.nODE_ + U_NRG.size() + 1);
                 }
 
                 // symmetrize by averaging left and right insertion
-                Vertex<Q,true> dGammaC = (dGammaC_r + dGammaC_l) * 0.5;                  /// TODO: Find better solution --> K2 in dGammaC_l is bad, K3 in dGammaC_l can be obtained from dGammaC_r
+                for (char r : {'a', 'p', 't'}) {
+                    dGammaC_l.get_rvertex(r).K2 = dGammaC_r.get_rvertex(r).K2;
+                }
+                if constexpr(DEBUG_SYMMETRIES) {
+                    for (char r: {'a', 'p', 't'}) {
+                        dGammaC_r.get_rvertex(r).K2b = dGammaC_l.get_rvertex(r).K2b;
+                    }
+                }
+                //for (char r : {'a', 'p', 't'}) {
+                //    dGammaC_l.get_rvertex(r).K3 *= 0.;
+                //    dGammaC_r.get_rvertex(r).K3 *= 0.;
+                //}
+                Vertex<Q,true> dGammaC = (dGammaC_r + dGammaC_l) * 0.5; //dGammaC_r; //                  /// TODO: Find better solution --> K2 in dGammaC_l is bad, K3 in dGammaC_l can be obtained from dGammaC_r
+
 
                 /// save intermediate states:
-                if (save_intermediate) {
+                if (save) {
                     State<Q,true> dPsi_C (dGammaC, dPsi.selfenergy, Lambda);
-                    //State<Q> dPsi_C_left (dGammaC_l, dPsi.selfenergy, Lambda);
-                    //State<Q> dPsi_C_right(dGammaC_r, dPsi.selfenergy, Lambda);
+                    State<Q,true> dPsi_C_left (dGammaC_l, dPsi.selfenergy, Lambda);
+                    State<Q,true> dPsi_C_right(dGammaC_r, dPsi.selfenergy, Lambda);
                     if (iteration == 0) {
-                        write_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C);
-                        //write_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_left);
-                        //write_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_right);
+                        write_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations)+"_forLoop"+std::to_string(i),       Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C);
+                        write_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations)+"_forLoop"+std::to_string(i),  Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_left);
+                        write_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_right);
                         if constexpr(DEBUG_SYMMETRIES) {
                             //dPsi_C_left.vertex.check_symmetries("dPsi_C_left");   // we don't expect these to have the full symmetry of the vertex
                             //dPsi_C_right.vertex.check_symmetries("dPsi_C_right"); // we don't expect these to have the full symmetry of the vertex
                             dPsi_C.vertex.check_symmetries("dPsi_C");
                         }
-                    }
-                    else {
-                        add_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),       iteration, dPsi_C,       false);
+                    } else {
+                        add_state_to_hdf<Q>(dir_str + "dPsi_C" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
+                                            std::to_string(i), iteration, dPsi_C, false);
                         //add_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  iteration, dPsi_C_left,  false);
                         //add_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_C_right, false);
 
@@ -296,18 +328,19 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 }
 
 
-                if (VERBOSE) utils::print("Compute dGammaL ( ", i,"-loop): \n");
+                if (VERBOSE) utils::print("Compute dGammaL ( ", i, "-loop): \n");
+                //save_symmetry_expanded_vertex<true>(dGamma_1loop, "dPsiIn3LoopLLeft");
                 dGammaL_half1 = calculate_dGammaL(GeneralVertex<Q, symmetric_r_irred,true>(dGammaT.half1()), Psi.vertex, Pi);
-                if(VERBOSE) dGammaL_half1.half1().check_vertex_resolution();
-                if (VERBOSE) utils::print("Compute dGammaR ( ", i,"-loop): \n");
+                if (VERBOSE) dGammaL_half1.half1().check_vertex_resolution();
+                if (VERBOSE) utils::print("Compute dGammaR ( ", i, "-loop): \n");
+                //save_symmetry_expanded_vertex<true>(dGamma_1loop, "dPsiIn3LoopRRight");
                 dGammaR_half1 = calculate_dGammaR(GeneralVertex<Q, symmetric_r_irred,true>(dGammaT.half1()), Psi.vertex, Pi);
-                if(VERBOSE) dGammaR_half1.half1().check_vertex_resolution();
+                if (VERBOSE) dGammaR_half1.half1().check_vertex_resolution();
 
                 dGammaT = dGammaL_half1 + dGammaC +
                           dGammaR_half1; // since sum dGammaL + dGammaR is symmetric_full, half 1 is sufficient
                 dPsi.vertex += dGammaT;
-                if constexpr (not DEBUG_SYMMETRIES)
-                {
+                if constexpr (not DEBUG_SYMMETRIES) {
                     // subdiagrams don't fulfill the full symmetry of the vertex
                     // the symmetry-related diagram with a differentiated vertex on the left might be one with differentiated vertex on the right (vice versa)
                     // for further evaluation as part of a bigger diagram they need to be reordered to recover the correct dGammaL and dGammaR
@@ -327,24 +360,29 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 
                 /// save intermediate states:
-                if (save_intermediate and false) {
+                if (save) {
                     State<Q,true> dPsi_L(dGammaL_half1, dPsi.selfenergy, Lambda);
                     State<Q,true> dPsi_R(dGammaR_half1, dPsi.selfenergy, Lambda);
                     State<Q,true> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
                     if (iteration == 0) {
-                        write_state_to_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_L);
-                        write_state_to_hdf<Q>(dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_R);
-                        write_state_to_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_T);
+                        write_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
+                                              std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_L);
+                        write_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
+                                              std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_R);
+                        write_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
+                                              std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_T);
                         if constexpr(DEBUG_SYMMETRIES) {
                             // dPsi_L.vertex.check_symmetries("dPsi_L"); // we don't expect these to have the full symmetry of the vertex
                             // dPsi_R.vertex.check_symmetries("dPsi_R"); // we don't expect these to have the full symmetry of the vertex
                             dPsi_T.vertex.check_symmetries("dPsi_T");
                         }
-                    }
-                    else {
-                        add_state_to_hdf<Q>(dir_str+"dPsi_L"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_L, false);
-                        add_state_to_hdf<Q>(dir_str+"dPsi_R"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_R, false);
-                        add_state_to_hdf<Q>(dir_str+"dPsi_T"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_T, false);
+                    } else {
+                        add_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
+                                            std::to_string(i), iteration, dPsi_L, false);
+                        add_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
+                                            std::to_string(i), iteration, dPsi_R, false);
+                        add_state_to_hdf<Q>(dir_str + "dPsi_T" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
+                                            std::to_string(i), iteration, dPsi_T, false);
 
                     }
                     if (VERBOSE) {
@@ -357,26 +395,50 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                     }
                 }
 
+
+                abs_loop = dGammaT.norm();
+                rel_loop = dGammaT.norm() / dPsi.vertex.norm();
+
+                utils::print("Rel. contribution from loop ", i, ": ", rel_loop*100, " %\n");
+                utils::print("Abs. contribution from loop ", i, ": ", abs_loop, "\n");
+                if (abs_loop < loop_tol_abs or rel_loop < loop_tol_rel) break;
+
             }
 
 #if SELF_ENERGY_FLOW_CORRECTIONS == 1
             // compute multiloop corrections to self-energy flow
-            State<Q,false> Psi_SEcorrection(dPsi, Lambda);
+            State<Q,true> Psi_SEcorrection(dPsi.vertex, dPsi.selfenergy, Lambda);
             selfEnergyFlowCorrections(Psi_SEcorrection.selfenergy, dGammaC_tbar, Psi, G); // isolated SE correction
+            SelfEnergy<Q> selfEnergy_old = dPsi.selfenergy;
+            dPsi.selfenergy = selfenergy_1loop + Psi_SEcorrection.selfenergy;
+            SelfEnergy<Q> selfEnergy_err = dPsi.selfenergy - selfEnergy_old;
 
-            dPsi.selfenergy += Psi_SEcorrection.selfenergy;
+            selfenergy_correction_abs = selfEnergy_err.norm();
+            selfenergy_correction_rel = selfEnergy_err.norm() / dPsi.selfenergy.norm();
+            State<Q> state_self_diffrel(Lambda);
+            state_self_diffrel.selfenergy = selfEnergy_err * (1./ dPsi.selfenergy.norm());
+
 
             /// save intermediate states:
-            if (save_intermediate) {
+            if (save) {
                 State<Q,true> dPsi_C_tbar(Vertex<Q,true>(dGammaC_tbar.half1()), dPsi.selfenergy, Lambda);
                 if (iteration == 0) {
                     //write_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_tbar);
-                    write_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi_SEcorrection);
+                    write_state_to_hdf<Q>(dir_str + "SE_correction_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), Psi.Lambda,
+                                          config.nODE_ + U_NRG.size() + 1, Psi_SEcorrection);
+                    write_state_to_hdf<Q>(dir_str + "SE_correction_rel_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), Psi.Lambda,
+                                          config.nODE_ + U_NRG.size() + 1, state_self_diffrel);
 
-                }
-                else {
+                } else {
                     //add_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), iteration, dPsi_C_tbar, false);
-                    add_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep), iteration, Psi_SEcorrection, false);
+                    add_state_to_hdf<Q>(dir_str + "SE_correction_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration,
+                                        Psi_SEcorrection, false);
+                    add_state_to_hdf<Q>(dir_str + "SE_correction_rel_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration,
+                                        state_self_diffrel, false);
+
+#if DEBUG_SYMMETRIES
+                    add_state_to_hdf<Q>(dir_str+"SE_correction_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), iteration, Psi_SEcorrection);
+#endif
 
                 }
             }
@@ -391,9 +453,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             double diff = 1;
             int iteration_SDE = 0;
             do {
-                SelfEnergy<Q> dSigma_SDE = compute_diff_SDE<Q>(Psi, dPsi.vertex, dPsi.selfenergy)   ;
+                const SelfEnergy<Q> dSigma_SDE = compute_diff_SDE<Q>(Psi, dPsi.vertex, dPsi.selfenergy)   ;
 
-                SelfEnergy<Q> selfenergy_diff = dPsi.selfenergy - dSigma_SDE;
+                const SelfEnergy<Q> selfenergy_diff = dPsi.selfenergy - dSigma_SDE;
 
                 dPsi.selfenergy = dSigma_SDE;
                 const double norm_compare =  dPsi.selfenergy.norm(0);
@@ -403,11 +465,15 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 iteration_SDE++;
             }
             while (diff > tol and iteration_SDE < 4);
+
+            // Compute difference of old dSigma and new dSigma
             Psi_SDE_diff_documentation.selfenergy -= dPsi.selfenergy;
 
+            selfenergy_correction_abs = Psi_SDE_diff_documentation.norm();
+            selfenergy_correction_rel = Psi_SDE_diff_documentation.norm() / dPsi.selfenergy.norm();
+
             /// save intermediate states:
-            if (save_intermediate) {
-                State<Q,true> dPsi_C_tbar(Vertex<Q,true>(dGammaC_tbar.half1()), dPsi.selfenergy, Lambda);
+            if (save) {
                 if (iteration == 0) {
                     //write_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_tbar);
                     write_state_to_hdf<Q>(dir_str+"SE_SDE_diff_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, Psi_SDE_diff_documentation);
@@ -417,7 +483,6 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                     //add_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), iteration, dPsi_C_tbar, false);
                     add_state_to_hdf<Q>(dir_str+"SE_SDE_diff_RKstep"+std::to_string(rkStep), iteration, Psi_SDE_diff_documentation, false);
 
-
                 }
             }
             //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
@@ -425,8 +490,19 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             //    break;
 #endif
 
+            utils::print("Self-energy iteration ", counter_Selfenergy_iterations, "\n");
+            utils::print("Self-energy correction (abs.): ", selfenergy_correction_abs, "\n");
+            utils::print("Self-energy correction (rel.): ", selfenergy_correction_rel*100, " %\n");
+
+            counter_Selfenergy_iterations++;
         }
-    }
+//#endif
+
+        }
+
+#if SELF_ENERGY_FLOW_CORRECTIONS != 0
+    } while (nloops_max > 2 and counter_Selfenergy_iterations < nmax_Selfenergy_iterations and selfenergy_correction_abs > tol_selfenergy_correction_abs and selfenergy_correction_rel > tol_selfenergy_correction_rel);
+#endif
 
     if (true and mpi_world_rank() == 0) { //
         utils::print("Time needed for evaluation of RHS --> ");
@@ -499,6 +575,12 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
 
     //Vertex<Q,false> dPsiVertex_calc = dPsiVertex;
     //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
+    //Vertex<Q> PsiVertex_calc = PsiVertex;
+    //for (char r : {'a', 'p', 't'}) {
+    //    PsiVertex_calc.get_rvertex(r).K1 *= 0;
+    //    PsiVertex_calc.get_rvertex(r).K2 *= 0;
+    //    if (DEBUG_SYMMETRIES) PsiVertex_calc.get_rvertex(r).K2b *= 0;
+    //}
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;
@@ -545,6 +627,85 @@ auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
     return dGammaR;
 }
 
+
+
+template <typename Q>
+class oneBubble {
+
+public:
+    const Propagator<Q>& g;
+    bool diff = false;
+    /**
+     * Constructor:
+     * @param propagatorG : first propagator (always a standard one)
+     * @param propagatorS : second propagator (standard or single-scale/differentiated, depending on "diff_in")
+     * @param diff_in      : whether to compute standard (false) or differentiated (true) bubble
+     */
+    oneBubble(const Propagator<Q>& g_in) : g(g_in) {};
+
+    /**
+     * Call operator:
+     * @param iK    : Keldysh index of combined bubble object (0 <= iK <= 15)
+     * @param v1    : frequency of first propagator
+     * @param v2    : frequency of second propagator
+     * @param i_in  : internal structure index
+     * @return comp : value of the bubble evaluated at (iK, v1, v2)
+     */
+    auto value(int iK, double v1, double v2, int i_in) const -> Q{
+        return 1.;
+    }
+
+    template<char ch_bubble>
+    Q value_Matsubara(const double w, const double vpp, int i_in) const {
+        return 1.;
+    }
+
+    /**
+     * Wrapper for value function above, providing the natural arguments for evaluation of the bubble in each channel:
+     * @param iK      : Keldysh index of combined bubble object (0 <= iK <= 15)
+     * @param w       : bubble transfer frequency of the corresponding channel
+     * @param vpp     : bubble integration frequency of the corresponding channel
+     * @param i_in    : internal structure index
+     * @param channel : channel to which the bubble belongs
+     * @return Q      : value of the bubble evaluated at the arguments described above (usually comp)
+     */
+    auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q {
+        return 1.;
+    }
+
+    template<char ch_bubble>
+    auto convert_to_fermionic_frequencies_1(double vpp, double w) const -> double {
+        if constexpr(KELDYSH || ZERO_T) {
+            if constexpr(ch_bubble == 'p') return vpp + w * 0.5;
+            else return vpp - w * 0.5;
+        }
+        else { // Matsubata zeroT
+            if constexpr(ch_bubble == 'p') return vpp + ceil2bfreq(w * 0.5);
+            else return vpp - floor2bfreq(w * 0.5);
+        }
+    }
+    template<char ch_bubble>
+    auto convert_to_fermionic_frequencies_2(double vpp, double w) const -> double {
+        if constexpr(KELDYSH || ZERO_T) {
+            if constexpr(ch_bubble == 'p') return w * 0.5 - vpp;
+            else return vpp + w * 0.5;
+        }
+        else { // Matsubata zeroT
+            if constexpr(ch_bubble == 'p') return floor2bfreq(w * 0.5) - vpp;
+            else return vpp + ceil2bfreq(w * 0.5);
+        }
+    }
+
+
+    template<char ch_bubble>
+    auto value_vectorized(const double w, const double vpp, const int i_in) const {
+        return 1.;
+
+    }
+
+};
+
+
 /// for dGammaC in channel r we combine:     dgammaC_r = Gamma ◯ Pi_r ◯ dGammaL_r
 /// Hence dGammaL only returns values of the r-reducible sector
 template <typename Q, class Bubble_Object>
@@ -554,7 +715,14 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const G
     dGammaC.set_frequency_grid(PsiVertex);
 
     //GeneralVertex<Q, non_symmetric_diffleft> nonsymVertex_calc = nonsymVertex;
-    //nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
+    //for (char r: {'a', 'p', 't'}) {
+    //    nonsymVertex_calc.get_rvertex(r).K2 *= 0;
+    //    if (DEBUG_SYMMETRIES) nonsymVertex_calc.get_rvertex(r).K2b *= 0;
+    //    if (r != 'p')
+    //        nonsymVertex_calc.get_rvertex(r).K3 *= 0;
+    //}
+    ////nonsymVertex_calc.get_rvertex('p').K3 += 1;
+    ////nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;
@@ -581,7 +749,24 @@ auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffr
     dGammaC.set_frequency_grid(PsiVertex);
 
     //GeneralVertex<Q, non_symmetric_diffright> nonsymVertex_calc = nonsymVertex;
-    //nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
+    //for (char r: {'a', 'p', 't'}) {
+    //    nonsymVertex_calc.get_rvertex(r).K2 *= 0;
+    //    if (DEBUG_SYMMETRIES) nonsymVertex_calc.get_rvertex(r).K2b *= 0;
+    //    if (r != 'p')
+    //        nonsymVertex_calc.get_rvertex(r).K3 *= 0;
+    //}
+    ////nonsymVertex_calc.get_rvertex('p').K3 += 1;
+    //Vertex<Q> PsiVertex_calc = PsiVertex;
+    //for (char r: {'a', 'p', 't'}) {
+    //    if (r != 'a')
+    //        PsiVertex_calc.get_rvertex(r).K1 *= 0;
+    //    PsiVertex_calc.get_rvertex(r).K2 *= 0;
+    //    if (DEBUG_SYMMETRIES) PsiVertex_calc.get_rvertex(r).K2b *= 0;
+    //    //if (r != 'p')
+    //        //PsiVertex_calc.get_rvertex(r).K3 *= 0;
+    //}
+    ////PsiVertex_calc.get_rvertex('a').K1 += 1;
+    ////nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;
