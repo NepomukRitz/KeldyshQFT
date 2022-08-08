@@ -268,7 +268,6 @@ public:
                     const double wmax = base_class::frequencies.primary_grid.w_upper;
                     const double vmax = base_class::frequencies.secondary_grid.w_upper;
                     const double wabs = std::abs(frequencies[0]);
-                    const double vabs = std::abs(frequencies[1]);
 
                     if (wabs > wmax) {
                         return result_type{};
@@ -290,6 +289,42 @@ public:
                             const Q result = (vmax * vmax - w * w * 0.25) / (v * v - w * w * 0.25) * base_class::val(indices);
                             return result;
                         }
+                    }
+                    else if constexpr (numberFrequencyDims == 3) {
+
+                        const double w = frequencies[0];
+                        const double v = frequencies[1];
+                        const double vp= frequencies[2];
+                        const int index = base_class::frequencies.primary_grid.get_grid_index(w);
+                        indices[pos_first_freqpoint] = index;
+
+                        Q result = 1.;
+                        if (v <= -vmax) {
+                            indices[pos_first_freqpoint + 1] = 0;
+                            result *= vmax * vmax / (v * v);
+                        }
+                        else if (v >= vmax){
+                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 ;
+                            result *= vmax * vmax / (v * v);
+                        }
+                        else {
+                            const int index_v = base_class::frequencies.secondary_grid.get_grid_index(v);
+                            indices[pos_first_freqpoint + 1] = index_v;
+                        }
+                        if (vp <= -vmax) {
+                            indices[pos_first_freqpoint + 2] = 0;
+                            result *= vmax * vmax / (vp * vp);
+                        }
+                        else if (vp >= vmax){
+                            indices[pos_first_freqpoint + 2] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 ;
+                            result *= vmax * vmax / (vp * vp);
+                        }
+                        else {
+                            const int index_vp = base_class::frequencies.secondary_grid.get_grid_index(vp);
+                            indices[pos_first_freqpoint + 2] = index_vp;
+                        }
+                        result *= base_class::val(indices);
+                        return result;
                     }
 
                 }

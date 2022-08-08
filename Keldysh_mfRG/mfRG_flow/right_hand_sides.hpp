@@ -85,7 +85,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     double selfenergy_correction_abs = 1e10;
     double selfenergy_correction_rel = 1.;
 #ifdef SELF_ENERGY_FLOW_CORRECTIONS
-    while (counter_Selfenergy_iterations < nmax_Selfenergy_iterations and selfenergy_correction_abs > tol_selfenergy_correction_abs and selfenergy_correction_rel > tol_selfenergy_correction_rel) {
+    do {
 #endif
 
 #ifndef STATIC_FEEDBACK
@@ -370,8 +370,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 abs_loop = dGammaT.norm();
                 rel_loop = dGammaT.norm() / dPsi.vertex.norm();
 
-                utils::print("Rel. contribution from loop ", i, ":", rel_loop, "\n");
-                utils::print("Abs. contribution from loop ", i, ":", abs_loop, "\n");
+                utils::print("Rel. contribution from loop ", i, ": ", rel_loop*100, " %\n");
+                utils::print("Abs. contribution from loop ", i, ": ", abs_loop, "\n");
                 if (abs_loop < loop_tol_abs or rel_loop < loop_tol_rel) break;
 
             }
@@ -387,8 +387,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             selfenergy_correction_abs = selfEnergy_err.norm();
             selfenergy_correction_rel = selfEnergy_err.norm() / dPsi.selfenergy.norm();
             utils::print("Self-energy iteration ", counter_Selfenergy_iterations, "\n");
-            utils::print("Self-energy correction (abs.):", selfenergy_correction_abs, "\n");
-            utils::print("Self-energy correction (rel.):", selfenergy_correction_rel, "\n");
+            utils::print("Self-energy correction (abs.): ", selfenergy_correction_abs, "\n");
+            utils::print("Self-energy correction (rel.): ", selfenergy_correction_rel*100, " %\n");
             State<Q> state_self_diffrel(Lambda);
             state_self_diffrel.selfenergy = selfEnergy_err * (1./ dPsi.selfenergy.norm());
 
@@ -422,7 +422,10 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 #endif
 
         }
-    }
+
+#ifdef SELF_ENERGY_FLOW_CORRECTIONS
+    } while (nloops_max > 2 and counter_Selfenergy_iterations < nmax_Selfenergy_iterations and selfenergy_correction_abs > tol_selfenergy_correction_abs and selfenergy_correction_rel > tol_selfenergy_correction_rel);
+#endif
 
     if (true and mpi_world_rank() == 0) { //
         utils::print("Time needed for evaluation of RHS --> ");
