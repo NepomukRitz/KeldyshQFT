@@ -310,8 +310,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                         write_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations)+"_forLoop"+std::to_string(i),  Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_left);
                         write_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations)+"_forLoop"+std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_right);
                         if constexpr(DEBUG_SYMMETRIES) {
-                            //dPsi_C_left.vertex.check_symmetries("dPsi_C_left");   // we don't expect these to have the full symmetry of the vertex
-                            //dPsi_C_right.vertex.check_symmetries("dPsi_C_right"); // we don't expect these to have the full symmetry of the vertex
+                            dPsi_C_left.vertex.check_symmetries("dPsi_C_left");   // we don't expect these to have the full symmetry of the vertex
+                            dPsi_C_right.vertex.check_symmetries("dPsi_C_right"); // we don't expect these to have the full symmetry of the vertex
                             dPsi_C.vertex.check_symmetries("dPsi_C");
                         }
                     } else {
@@ -469,8 +469,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             // Compute difference of old dSigma and new dSigma
             Psi_SDE_diff_documentation.selfenergy -= dPsi.selfenergy;
 
-            selfenergy_correction_abs = Psi_SDE_diff_documentation.norm();
-            selfenergy_correction_rel = Psi_SDE_diff_documentation.norm() / dPsi.selfenergy.norm();
+            selfenergy_correction_abs = Psi_SDE_diff_documentation.selfenergy.norm();
+            selfenergy_correction_rel = Psi_SDE_diff_documentation.selfenergy.norm() / dPsi.selfenergy.norm();
 
             /// save intermediate states:
             if (save) {
@@ -544,14 +544,21 @@ void vertexOneLoopFlow(Vertex<Q,true>& dPsiVertex, const Vertex<Q,false>& PsiVer
         Vertex<Q,false> One = PsiVertex;
         for (char r: {'a', 'p','t'}) {
             One.get_rvertex(r).K2 *= 0;
+            if constexpr (DEBUG_SYMMETRIES) One.get_rvertex(r).K2b *= 0;
         }
         dPsiVertex *= 0;
         for (char r: "apt") {
             bubble_function(dPsiVertex, PsiVertex, One, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
-            bubble_function(dPsiVertex, One, PsiVertex, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
+            if constexpr (DEBUG_SYMMETRIES) dPsiVertex.get_rvertex(r).K2b *= 0.;
             Vertex<Q,true> dPsiVertex_temp = dPsiVertex;
             dPsiVertex_temp *= 0.;
+            bubble_function(dPsiVertex_temp, One, PsiVertex, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
+            dPsiVertex_temp.get_rvertex(r).K2 *= 0.;
+            dPsiVertex += dPsiVertex_temp;
+            dPsiVertex_temp *= 0.;
             bubble_function(dPsiVertex_temp, One, One, dPi, r);  // Differentiated bubble in channel r \in {a, p, t}
+            dPsiVertex_temp.get_rvertex(r).K2 *= 0.;
+            if constexpr (DEBUG_SYMMETRIES) dPsiVertex_temp.get_rvertex(r).K2b *= 0.;
             dPsiVertex -= dPsiVertex_temp;
 
         }
@@ -583,10 +590,7 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
     //}
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
-        Vertex<Q,false> One = PsiVertex;
-        for (char r: {'a', 'p','t'}) {
-            One.get_rvertex(r).K2 *= 0;
-        }
+        Vertex<Q,false> One(Lambda_ini);
         for (char r: "apt") {
             bubble_function(dGammaL, dPsiVertex, One, Pi, r);
         }
@@ -610,10 +614,7 @@ auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
     //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
-        Vertex<Q,false> One = PsiVertex;
-        for (char r: {'a', 'p','t'}) {
-            One.get_rvertex(r).K2 *= 0;
-        }
+        Vertex<Q,false> One(Lambda_ini);
         for (char r: "apt") {
             bubble_function(dGammaR, One, dPsiVertex, Pi, r);
         }
@@ -731,6 +732,7 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const G
         }
         for (char r: "apt") {
             bubble_function(dGammaC, One, nonsymVertex, Pi, r);
+            dGammaC.get_rvertex(r).K2 *= 0.;
         }
     }
     else {
@@ -775,6 +777,7 @@ auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffr
         }
         for (char r: "apt") {
             bubble_function(dGammaC, nonsymVertex, One, Pi, r);
+            if constexpr (DEBUG_SYMMETRIES) dGammaC.get_rvertex(r).K2b *= 0.;
         }
     }
     else {

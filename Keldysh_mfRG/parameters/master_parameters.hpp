@@ -12,7 +12,7 @@
 #define NDEBUG
 
 
-#define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES 1 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -39,13 +39,13 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
-#define SBE_DECOMPOSITION 0
+#define MAX_DIAG_CLASS 2
+#define SBE_DECOMPOSITION 1
 #define USE_NEW_MFRG_EQS 1
 
 inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
-#define SELF_ENERGY_FLOW_CORRECTIONS 1
+#define SELF_ENERGY_FLOW_CORRECTIONS 0
 const int nmax_Selfenergy_iterations = 5;
 const double tol_selfenergy_correction_abs = 1e-8;
 const double tol_selfenergy_correction_rel = 1e-4;;
@@ -163,7 +163,7 @@ constexpr double Lambda_fin = 1;// 1e-4;
 #else
 const double LN_10 = 2.30258509299;				///< Natural log of 10
 const double Lambda_ini = 2*exp(  1 * LN_10 );//pow(10,  1) ;// 1e4;
-const double Lambda_fin = 2*pow(10, -1) ;// 1e-4;
+const double Lambda_fin = 2*pow(10, -10) ;// 1e-4;
 #endif
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
