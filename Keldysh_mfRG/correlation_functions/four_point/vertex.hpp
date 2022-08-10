@@ -212,6 +212,10 @@ public:
             return tvertex.template combine_SBE_to_K2b<channel_bubble,channel_rvert,is_left_vertex>(vert_for_lambda.tvertex, vert_for_w.tvertex, vert_for_w.irred);
 
         }
+        else {
+            assert(false);
+            return typename rvert<Q>::buffer_type_K2b{};
+        }
 
     };
     template <char channel_bubble, char channel_rvert, bool is_left_vertex> auto combine_SBE_to_K3_SBE(const fullvert<Q>& vert_for_K2, const fullvert<Q>& vert_for_lambda) const -> typename rvert<Q>::buffer_type_K3_SBE{
@@ -833,20 +837,20 @@ public:
     assert(input.spin == 0);
     return vertices_bubbleintegrand[spin].template value_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
-    template <int spin, char ch_bubble, int spin_target, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
+    template <int spin, char ch_bubble, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
-        if constexpr (SBE_DECOMPOSITION and (spin == spin_target or spin == 2) and !differentiated) {
+        if constexpr (SBE_DECOMPOSITION and ((spin == 0 and ch_bubble != 't') or (spin == 1 and ch_bubble != 'a') or spin == 2) and !differentiated) {
             return vertices_bubbleintegrand[spin].template left_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input) + myIdentity<result_type>();
         }
         else {
             return vertices_bubbleintegrand[spin].template left_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
         }
     }
-    template <int spin, char ch_bubble, int spin_target, typename result_type> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type {
+    template <int spin, char ch_bubble, typename result_type> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
-        if constexpr (SBE_DECOMPOSITION and (spin == spin_target or spin == 2) and !differentiated) {
+        if constexpr (SBE_DECOMPOSITION and ((spin == 0 and ch_bubble != 't') or (spin == 1 and ch_bubble != 'a') or spin == 2) and !differentiated) {
             return vertices_bubbleintegrand[spin].template right_same_bare_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input) + myIdentity<result_type>();
         }
         else {
@@ -954,9 +958,10 @@ public:
     }
 
     template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void symmetry_expand() const {
+        double t_start = utils::get_time();
         symmetry_expand_impl<channel_bubble,is_left_vertex>(vertices_bubbleintegrand, half1(), half2());
 
-        if constexpr(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1) {
+        if constexpr(SBE_DECOMPOSITION and MAX_DIAG_CLASS > 1) { //
             if constexpr(!differentiated) {
                 construct_SBE_nondiff_K2<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand);
                 construct_SBE_nondiff_K3_SBE<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand);
@@ -972,9 +977,13 @@ public:
                 construct_SBE_diff_K2b<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
                 construct_SBE_nondiff_K2b<channel_bubble,is_left_vertex,need_full_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
 
-                vertex_nondifferentiated.vertices_bubbleintegrand.clear();
+                //vertex_nondifferentiated.vertices_bubbleintegrand.clear();
             }
         }
+
+        //double t = utils::get_time() - t_start;
+        //utils::print("symmetry expansion of vertex done, ");
+        //utils::get_time(t_start);
 
 
     }
@@ -1471,6 +1480,8 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
     if (SBE_DECOMPOSITION) {
+        if constexpr (r_irred) {return myzero<result_type>();}
+
         if constexpr     (ch_bubble == 'a') { const result_type K1_K2b = avertex.template left_same_bare_symmetry_expanded<result_type>(input); return K1_K2b;}
         else if constexpr(ch_bubble == 'p') { const result_type K1_K2b = pvertex.template left_same_bare_symmetry_expanded<result_type>(input); return K1_K2b;}
         else if constexpr(ch_bubble == 't') { const result_type K1_K2b = tvertex.template left_same_bare_symmetry_expanded<result_type>(input); return K1_K2b;}
@@ -1513,7 +1524,9 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
 #endif
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
-    if (SBE_DECOMPOSITION) {
+    if constexpr (SBE_DECOMPOSITION) {
+        if constexpr (r_irred) {return myzero<result_type>();}
+
         if constexpr     (ch_bubble == 'a') { const result_type K1_K2 = avertex.template right_same_bare_symmetry_expanded<result_type>(input); return K1_K2;}
         else if constexpr(ch_bubble == 'p') { const result_type K1_K2 = pvertex.template right_same_bare_symmetry_expanded<result_type>(input); return K1_K2;}
         else {static_assert(ch_bubble == 't', "Has to be t channel."); const result_type K1_K2 = tvertex.template right_same_bare_symmetry_expanded<result_type>(input); return K1_K2;}

@@ -135,22 +135,24 @@ namespace utils {
     std::string generate_data_directory(std::string& job) {
     #if KELDYSH_FORMALISM
     #if DEBUG_SYMMETRIES
-        std::string data_directory = "../Data_KF_debug/";
+        std::string data_directory = "../Data_KF_debug";
     #else
-        std::string data_directory = "../Data_KF_" + job + "/";
+        std::string data_directory = "../Data_KF_" + job;
     #endif
     #else
         #if DEBUG_SYMMETRIES
-        std::string data_directory = "../Data_MF_debug/";
+        std::string data_directory = "../Data_MF_debug";
 
     #else
-        std::string data_directory = "../Data_MF"+ job +"/";
+        std::string data_directory = "../Data_MF"+ job;
     #endif
     #endif
 
     #if SBE_DECOMPOSITION
-        data_directory = "../Data_KF_debug_SBE/";
+        data_directory += "_SBE";
     #endif
+
+        data_directory += "/";
 
         makedir(data_directory);
 

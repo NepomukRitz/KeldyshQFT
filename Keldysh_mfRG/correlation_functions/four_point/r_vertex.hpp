@@ -1380,6 +1380,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
     const std::array<size_t,rank_K3> dims_K3_SBE = K3_SBE_expanded_config.dims;
     const std::array<size_t,rank_K2> dims = rvert_for_lambda.K2_symmetry_expanded.get_dims();
 
+#if KELDYSH_FORMALISM
     buffer_type_K2  buffer_K2_rotated(0, dims);
     buffer_type_K2b buffer_lambda_rotated(0, dims);
     buffer_lambda_rotated.set_VertexFreqGrid(rvert_for_lambda.K2b_symmetry_expanded.get_VertexFreqGrid());
@@ -1433,12 +1434,16 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         buffer_lambda_rotated.setvert(value, idx);
 
     }
+#else
+    const buffer_type_K2 &  buffer_K2_rotated = rvert_for_K2.K2_symmetry_expanded;
+    const buffer_type_K2b& buffer_lambda_rotated = rvert_for_K2.K2b_symmetry_expanded;
+#endif
 
     buffer_type_K3_SBE buffer_K3_SBE_new(0, dims_K3_SBE);
     buffer_K3_SBE_new.set_VertexFreqGrid(rvert_for_K2.K2_symmetry_expanded.get_VertexFreqGrid());
     const size_t flat_dim = getFlatSize(dims_K3_SBE) / dims_K3_SBE[my_defs::K3::keldysh];
 
-#pragma omp parallel for schedule(dynamic, 50)
+#pragma omp parallel for schedule(dynamic, 500)
     for (my_index_t iflat = 0; iflat < flat_dim; iflat++) {
 
         my_defs::K3::index_type idx;
@@ -1465,6 +1470,8 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         buffer_K3_SBE_new.template setvert_vectorized<nrow*ncol>(value_K3_SBE, idx);
 
     }
+
+#if KELDYSH_FORMALISM
     buffer_type_K3_SBE buffer_K3_SBE_new_rotated(0, dims_K3_SBE);
     buffer_K3_SBE_new_rotated.set_VertexFreqGrid(rvert_for_K2.K2_symmetry_expanded.get_VertexFreqGrid());
 
@@ -1491,7 +1498,9 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         buffer_K3_SBE_new_rotated.setvert(value, idx);
 
     }
-
+#else
+    const buffer_type_K3_SBE& buffer_K3_SBE_new_rotated = buffer_K3_SBE_new;
+#endif
     return buffer_K3_SBE_new_rotated;
 }
 

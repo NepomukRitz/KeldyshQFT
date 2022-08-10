@@ -292,7 +292,7 @@ public:
 
         } else { //asymptotic value
 
-            if constexpr (KELDYSH or ZERO_T) {
+            if constexpr (KELDYSH or ZERO_T or true) {
                 if constexpr (std::is_same_v<result_type, Q>) return result_type{};
                 else return result_type::Zero();
             }
@@ -328,14 +328,14 @@ public:
                             indices[pos_first_freqpoint + 1] = 0;
                         }
                         else {
-                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1;
+                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 + signFlipCorrection_MF_int(w);
                         }
 
                         if constexpr (std::is_same_v<result_type,Q>) {
-                            const result_type result = (vmax * vmax - w * w * 0.25) / (v * v - w * w * 0.25) * base_class::val(indices);
+                            const result_type result = (vmax * vmax) / (v * v) * base_class::val(indices);
                             return result;
                         } else {
-                            const result_type result = (vmax * vmax - w * w * 0.25) / (v * v - w * w * 0.25) * base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
+                            const result_type result = (vmax * vmax) / (v * v) * base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
                             return result;
                         }
 
@@ -354,7 +354,7 @@ public:
                             result *= vmax * vmax / (v * v);
                         }
                         else if (v >= vmax){
-                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 ;
+                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 + signFlipCorrection_MF_int(w) ;
                             result *= vmax * vmax / (v * v);
                         }
                         else {
@@ -366,7 +366,7 @@ public:
                             result *= vmax * vmax / (vp * vp);
                         }
                         else if (vp >= vmax){
-                            indices[pos_first_freqpoint + 2] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 ;
+                            indices[pos_first_freqpoint + 2] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 + signFlipCorrection_MF_int(w) ;
                             result *= vmax * vmax / (vp * vp);
                         }
                         else {
@@ -384,10 +384,10 @@ public:
                     }
 
                 }
-                else if constexpr (numberFrequencyDims == 3) {
+                else {
                     return result_type{};
                 }
-                else {assert(false);}
+                //else {assert(false);}
 
             }
         }
