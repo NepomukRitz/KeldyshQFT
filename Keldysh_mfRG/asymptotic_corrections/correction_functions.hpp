@@ -196,28 +196,18 @@ auto asymp_corrections_bubble(K_class k,
             case k1: {
                 VertexInput input_for_expanded_vertex = input_l;
                 input_for_expanded_vertex.spin = 0;
-                Q gamma0L = vertex1.irred().template val<Q>(input_l.iK, i_in, spin);
-                Q gamma0R = vertex2.irred().template val<Q>(input_r.iK, i_in, spin);
 
-                Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
-                Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+                K1L    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+                K1R    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
 
-                K1L = gamma0L + K1L_temp;
-                K1R = gamma0R + K1R_temp;
 
                 res_l_V = vertex1.template left_same_bare_symmetry_expanded<spin,channel,Q>(input_l);
                 res_r_V = vertex2.template right_same_bare_symmetry_expanded<spin,channel,Q>(input_r);
 
 
-                gamma0L = vertex1.irred().template val<Q>(input_l.iK, i_in, 1 - spin);
-                gamma0R = vertex2.irred().template val<Q>(input_r.iK, i_in, 1 - spin);
-                K1L_temp = vertex1.template get_Kir_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(
-                        input_for_expanded_vertex);
-                K1R_temp = vertex2.template get_Kir_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(
-                        input_for_expanded_vertex);
+                K1L_hat = vertex1.template get_w_r_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+                K1R_hat = vertex2.template get_w_r_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(input_for_expanded_vertex);
 
-                K1L_hat = gamma0L + K1L_temp;
-                K1R_hat = gamma0R + K1R_temp;
                 res_l_Vhat = vertex1.template left_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
                 res_r_Vhat = vertex2.template right_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
             }

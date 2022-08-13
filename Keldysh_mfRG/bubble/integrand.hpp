@@ -720,22 +720,13 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
             load_vertex_keldyshComponents_right_scalar<2>(values_vertex_r_upup, input_r);
 
             if constexpr(diag_class == k1) {
-                const Q gamma0L     = vertex1.irred().template val<result_type_fetch>(input_l.iK, i_in, spin);
-                const Q gamma0R     = vertex2.irred().template val<result_type_fetch>(input_r.iK, i_in, spin);
-                const Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-                const Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-
-                const Q K1L = gamma0L + K1L_temp;
-                const Q K1R = gamma0R + K1R_temp;
+                const Q K1L    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
 
 
-                const Q gamma0L_upup     = vertex1.irred().template val<result_type_fetch>(0, i_in, 2);
-                const Q gamma0R_upup     = vertex2.irred().template val<result_type_fetch>(0, i_in, 2);
-                const Q K1L_temp_upup    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
-                const Q K1R_temp_upup    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1L_upup    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R_upup    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
 
-                const Q K1L_upup = gamma0L_upup + K1L_temp_upup;
-                const Q K1R_upup = gamma0R_upup + K1R_temp_upup;
 
 
                 result = K1L_upup * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r_upup) * K1R
@@ -766,13 +757,8 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
 
 
             if constexpr(diag_class == k1) {
-                const Q gamma0L     = vertex1.irred().template val<result_type_fetch>(input_l.iK, i_in,   spin);
-                const Q gamma0R     = vertex2.irred().template val<result_type_fetch>(input_r.iK, i_in, 1-spin);
-                const Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<  spin, channel, channel, diag_class, result_type_fetch>(input_external);
-                const Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<1-spin, channel, channel, diag_class, result_type_fetch>(input_external);
-
-                const Q K1L = gamma0L + K1L_temp;
-                const Q K1R_other = gamma0R + K1R_temp;
+                const Q K1L          = vertex1.template get_w_r_value_symmetry_expanded_nondiff<  spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R_other    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<1-spin, channel, channel, diag_class, result_type_fetch>(input_external);
 
                 result = (K1L * values_vertex_l_other * Pi_matrix * values_vertex_r_other * K1R_other);
             }
@@ -788,13 +774,8 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
 #endif
         else {
             if constexpr(diag_class == k1) {
-                const Q gamma0L     = vertex1.irred().template val<result_type_fetch>(input_l.iK, i_in, spin);
-                const Q gamma0R     = vertex2.irred().template val<result_type_fetch>(input_r.iK, i_in, spin);
-                const Q K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-                const Q K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-
-                const Q K1L = gamma0L + K1L_temp;
-                const Q K1R = gamma0R + K1R_temp;
+                const Q K1L    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                const Q K1R    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
 
                 result = (K1L * values_vertex_l * Pi_matrix * values_vertex_r * K1R);
             }
@@ -889,28 +870,22 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
             if constexpr(VECTORIZED_INTEGRATION) {
                 assert(input_external.iK == 0);
                 if constexpr(diag_class == k1) {
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, spin);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, spin);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
                     K1L_temp.resize(4, 4);
                     K1R_temp.resize(4, 4);
-                    gamma0L.resize(4, 4);
-                    gamma0R.resize(4, 4);
-                    const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
-                    const Eigen::Matrix<Q,4,4> K1R = gamma0R + K1R_temp;
 
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L_upup     = vertex1.irred().template val<result_type_fetch>(0, i_in, 2);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R_upup     = vertex2.irred().template val<result_type_fetch>(0, i_in, 2);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp_upup    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp_upup    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
+                    const Eigen::Matrix<Q,4,4> K1L = K1L_temp.transpose();
+                    const Eigen::Matrix<Q,4,4> K1R = K1R_temp;
+
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp_upup    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp_upup    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<2, channel, channel, diag_class, result_type_fetch>(input_external);
 
                     K1L_temp_upup.resize(4, 4);
                     K1R_temp_upup.resize(4, 4);
-                    gamma0L_upup.resize(4, 4);
-                    gamma0R_upup.resize(4, 4);
-                    const Eigen::Matrix<Q,4,4> K1L_upup = gamma0L_upup + K1L_temp_upup.transpose();
-                    const Eigen::Matrix<Q,4,4> K1R_upup = gamma0R_upup + K1R_temp_upup;
+
+                    const Eigen::Matrix<Q,4,4> K1L_upup = K1L_temp_upup.transpose();
+                    const Eigen::Matrix<Q,4,4> K1R_upup = K1R_temp_upup;
 
 
                     const return_type result = (K1L_upup * (values_vertex_l_upup) * Pi_matrix * (values_vertex_r_upup) * K1R
@@ -927,7 +902,15 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                 else {
                     const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r
                                               + values_vertex_l      * Pi_matrix * values_vertex_r_upup);
-                    return result;
+                    if constexpr (diag_class == k2) {
+                        return result * projection_lambdaBar;
+                    }
+                    else if constexpr (diag_class == k2b) {
+                        return projection_lambda * result;
+                    }
+                    else {
+                        return result;
+                    }
                 }
 
             } else {
@@ -943,23 +926,30 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
                 load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_other, input_r);
                 if constexpr (VECTORIZED_INTEGRATION) {
                     if constexpr(diag_class == k1) {
-                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, spin);
-                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, 1-spin);
-                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<  spin, channel, channel, diag_class, result_type_fetch>(input_external);
-                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<1-spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<  spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                        Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<1-spin, channel, channel, diag_class, result_type_fetch>(input_external);
                         K1L_temp.resize(4, 4);
                         K1R_temp.resize(4, 4);
-                        gamma0L.resize(4, 4);
-                        gamma0R.resize(4, 4);
-                        const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
-                        const Eigen::Matrix<Q,4,4> K1R_other = gamma0R + K1R_temp;
 
-                        const return_type result = (K1L * values_vertex_l * Pi_matrix * values_vertex_r * K1R_other);
+                        const Eigen::Matrix<Q,4,4> K1L = K1L_temp.transpose();
+                        const Eigen::Matrix<Q,4,4> K1R_other = K1R_temp;
+
+                        const return_type result = (K1L * values_vertex_l_other * Pi_matrix * values_vertex_r_other * K1R_other);
                         return result;
+                    }
+                    else if constexpr (diag_class == k2){
+                        const return_type result = (values_vertex_l_other * Pi_matrix * values_vertex_r);
+                        return result * projection_lambdaBar;
                     }
                     else {
                         const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r_other);
-                        return result;
+                        if constexpr (diag_class == k2b) {
+                            return projection_lambda * result;
+                        }
+                        else {
+                            return result;
+                        }
+
                     }
 
                 }
@@ -973,23 +963,29 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
         else {
             if constexpr(VECTORIZED_INTEGRATION) {
                 if constexpr(diag_class == k1) {
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0L     = vertex1.irred().template val<result_type_fetch>(0, i_in, spin);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> gamma0R     = vertex2.irred().template val<result_type_fetch>(0, i_in, spin);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
-                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_Kir_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1L_temp    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
+                    Eigen::Matrix<Q,Eigen::Dynamic, Eigen::Dynamic> K1R_temp    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, diag_class, result_type_fetch>(input_external);
                     K1L_temp.resize(4, 4);
                     K1R_temp.resize(4, 4);
-                    gamma0L.resize(4, 4);
-                    gamma0R.resize(4, 4);
-                    const Eigen::Matrix<Q,4,4> K1L = gamma0L + K1L_temp.transpose();
-                    const Eigen::Matrix<Q,4,4> K1R = gamma0R + K1R_temp;
+
+                    const Eigen::Matrix<Q,4,4> K1L = K1L_temp.transpose();
+                    const Eigen::Matrix<Q,4,4> K1R = K1R_temp;
 
                     const return_type result = (K1L * values_vertex_l * Pi_matrix * values_vertex_r * K1R);
+
                     return result;
                 }
                 else {
                     const return_type result = (values_vertex_l * Pi_matrix * values_vertex_r);
-                    return result;
+                    if constexpr (diag_class == k2) {
+                        return result * projection_lambdaBar;
+                    }
+                    else if constexpr (diag_class == k2b) {
+                        return projection_lambda * result;
+                    }
+                    else {
+                        return result;
+                    }
                 }
             } else {
                 assert(false);

@@ -572,7 +572,7 @@ template <typename Q>
 template<K_class k>auto rvert<Q>::valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q {
     IndicesSymmetryTransformations indices (input, channel);
     if constexpr(DEBUG_SYMMETRIES) {
-        return read_symmetryreduced_rvert<k>(indices, *this);
+        return read_value<k>(indices, *this);
     }
     else {
         const rvert<Q> &readMe = symmetry_reduce<k>(input, indices, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
@@ -688,11 +688,11 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             K1.frequencies.get_freqs_w(w, iw);
             VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
-            Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
+            const Q value_direct = read_symmetryreduced_rvert<k1>(indices, *this);
             components_K1.at(idx) = components.K(k1, input.spin, input.iK);
 
             const rvert<Q> &readMe = symmetry_reduce<k1>(input, indices, rvert_this, rvert_crossing);
-            Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
+            const Q value_symmet = read_symmetryreduced_rvert<k1>(indices, readMe);
 
             Q deviation = value_direct - value_symmet;
             if (components.K(k1, input.spin, input.iK) != -1) {// zero component is not being computed anyway
@@ -726,7 +726,9 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     indices_f.iK = iK;
 
                     Q result_freqsymm = read_symmetryreduced_rvert<k1>(indices_f, *this);
+                    symmrel_K1.at(idx) = value_symmet;
                     deviation = value_direct - result_freqsymm;
+                    symmrel_K1.at(idx) = result_freqsymm;
                     deviations_K1.at(idx) = deviation;
                 }
 
@@ -1380,7 +1382,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
     const std::array<size_t,rank_K3> dims_K3_SBE = K3_SBE_expanded_config.dims;
     const std::array<size_t,rank_K2> dims = rvert_for_lambda.K2_symmetry_expanded.get_dims();
 
-#if KELDYSH_FORMALISM
+//#if KELDYSH_FORMALISM
     buffer_type_K2  buffer_K2_rotated(0, dims);
     buffer_type_K2b buffer_lambda_rotated(0, dims);
     buffer_lambda_rotated.set_VertexFreqGrid(rvert_for_lambda.K2b_symmetry_expanded.get_VertexFreqGrid());
@@ -1434,10 +1436,10 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         buffer_lambda_rotated.setvert(value, idx);
 
     }
-#else
-    const buffer_type_K2 &  buffer_K2_rotated = rvert_for_K2.K2_symmetry_expanded;
-    const buffer_type_K2b& buffer_lambda_rotated = rvert_for_K2.K2b_symmetry_expanded;
-#endif
+//#else
+//    const buffer_type_K2 &  buffer_K2_rotated = rvert_for_K2.K2_symmetry_expanded;
+//    const buffer_type_K2b& buffer_lambda_rotated = rvert_for_lambda.K2b_symmetry_expanded;
+//#endif
 
     buffer_type_K3_SBE buffer_K3_SBE_new(0, dims_K3_SBE);
     buffer_K3_SBE_new.set_VertexFreqGrid(rvert_for_K2.K2_symmetry_expanded.get_VertexFreqGrid());
@@ -1471,7 +1473,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
 
     }
 
-#if KELDYSH_FORMALISM
+//#if KELDYSH_FORMALISM
     buffer_type_K3_SBE buffer_K3_SBE_new_rotated(0, dims_K3_SBE);
     buffer_K3_SBE_new_rotated.set_VertexFreqGrid(rvert_for_K2.K2_symmetry_expanded.get_VertexFreqGrid());
 
@@ -1498,9 +1500,9 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         buffer_K3_SBE_new_rotated.setvert(value, idx);
 
     }
-#else
-    const buffer_type_K3_SBE& buffer_K3_SBE_new_rotated = buffer_K3_SBE_new;
-#endif
+//#else
+//    const buffer_type_K3_SBE& buffer_K3_SBE_new_rotated = buffer_K3_SBE_new;
+//#endif
     return buffer_K3_SBE_new_rotated;
 }
 
@@ -1679,7 +1681,7 @@ template <typename Q>template<typename result_type>  auto rvert<Q>::left_same_ba
 }
 
 template <typename Q> template<typename result_type>  auto rvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type {
-    if (SBE_DECOMPOSITION) {
+    if constexpr (SBE_DECOMPOSITION) {
         if constexpr(MAX_DIAG_CLASS == 1)     return myzero<result_type>();
         else if constexpr(MAX_DIAG_CLASS > 1) return valsmooth_symmetry_expanded<k2,result_type>(input);
     }

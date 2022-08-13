@@ -47,12 +47,23 @@ template <typename T> T myzero() {
     }
 }
 
+template <typename T>
+constexpr T get_Id_Matrix_4x4(){
+    T res;
+    res << 1, 0, 0, 0,
+           0, 1, 0, 0,
+           0, 0, 1, 0,
+           0, 0, 0, 1;
+    return res;
+}
+
 template <typename T> T myIdentity() {
     if constexpr(std::is_same_v<T, comp> or std::is_same_v<T, double> or std::is_same_v<T, int>) {
         return (T)1;
     }
     else {
-        return T::Identity();
+        const T id = get_Id_Matrix_4x4<T>();
+        return id;
     }
 }
 
