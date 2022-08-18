@@ -426,14 +426,16 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         if constexpr(KELDYSH) {
             integration_result += bubble_value_prefactor() * integrator(integrand, vmin, vmax, -w / 2., w / 2., Delta, true);
         } else {
-            int interval_correction = signFlipCorrection_MF_int(w);
-            int W = (int) (w / (2 * M_PI * glb_T) + 0.1 * sgn(w));
-            double vmin_temp = (-POSINTRANGE - std::abs(W / 2) + interval_correction - 0.5) * 2 * M_PI * glb_T;
-            double vmax_temp = (POSINTRANGE - 1 + std::abs(W / 2) + 0.5) * 2 * M_PI * glb_T;
+            const int interval_correction = signFlipCorrection_MF_int(w);
+            const int W = (int) (w / (2 * M_PI * glb_T) + 0.1 * sgn(w));
+            const int Nmin_sum = -POSINTRANGE - std::abs(W / 2) + interval_correction;
+            const int Nmax_sum = POSINTRANGE - 1 + std::abs(W / 2);
+            const double vmin_temp = (2 * Nmin_sum     ) * M_PI * glb_T;
+            const double vmax_temp = (2 * Nmax_sum + 2. ) * M_PI * glb_T;
             // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*glb_T
 
             integration_result = bubble_value_prefactor() * (2 * M_PI) * glb_T *
-                    matsubarasum<Q>(integrand, -POSINTRANGE - std::abs(W / 2) + interval_correction, POSINTRANGE - 1 + std::abs(W / 2));
+                    matsubarasum<Q>(integrand, Nmin_sum, Nmax_sum);
 
             //integration_result +=
             //        bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,

@@ -292,21 +292,49 @@ public:
 
         } else { //asymptotic value
 
-            if constexpr (KELDYSH or ZERO_T or true) {
+            if constexpr (KELDYSH or ZERO_T) {
                 if constexpr (std::is_same_v<result_type, Q>) return result_type{};
                 else return result_type::Zero();
             }
             else { // finite T Matsubara: extrapolate with w^-2 tail
                 if constexpr (numberFrequencyDims == 1) {
-                    const double wmax = base_class::frequencies.primary_grid.w_upper;
-                    const double wabs = std::abs(frequencies[0]);
-                    indices[pos_first_freqpoint] = 0;
-                    if constexpr (std::is_same_v<result_type,Q>) {
-                        const result_type result = wmax * wmax / (wabs*wabs) * base_class::val(indices);
-                        return result;
-                    } else {
-                        const result_type result = wmax * wmax / (wabs*wabs) * base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
-                        return result;
+
+
+                    if constexpr (rank == SE_config.rank) {
+
+                        const double wmax = base_class::frequencies.primary_grid.w_upper;
+                        const double w = frequencies[0];
+                        const double wabs = std::abs(w);
+                        if (w <= -wmax) {
+                            indices[pos_first_freqpoint] = 0;
+                        }
+                        else {
+                            indices[pos_first_freqpoint] = base_class::frequencies.primary_grid.number_of_gridpoints - 1;
+                        }
+                        if constexpr (std::is_same_v<result_type, Q>) {
+                            const result_type result = wmax / (wabs) * base_class::val(indices);
+                            return result;
+                        } else {
+                            const result_type result = wmax / (wabs) *
+                                                       base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(
+                                                               indices);
+                            return result;
+                        }
+                    }
+                    else {
+
+                        const double wmax = base_class::frequencies.primary_grid.w_upper;
+                        const double wabs = std::abs(frequencies[0]);
+                        indices[pos_first_freqpoint] = 0;
+                        if constexpr (std::is_same_v<result_type, Q>) {
+                            const result_type result = wmax * wmax / (wabs * wabs) * base_class::val(indices);
+                            return result;
+                        } else {
+                            const result_type result = wmax * wmax / (wabs * wabs) *
+                                                       base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(
+                                                               indices);
+                            return result;
+                        }
                     }
                 }
                 else if constexpr (numberFrequencyDims > 1) {

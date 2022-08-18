@@ -425,7 +425,16 @@ public:
     }
     bool is_in_box(std::array<double,2> freqs) const {
         K2_convert2internalFreqs(freqs[0], freqs[1]);
-        if constexpr(k == k2) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol;
+        if constexpr(k == k2) {
+            if constexpr (!KELDYSH_FORMALISM and !ZERO_T) {
+                return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and (freqs[1] > -secondary_grid.w_upper - inter_tol and freqs[1] < secondary_grid.w_upper + signFlipCorrection_MF(freqs[0]) + inter_tol );
+
+            }
+            else {
+                return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol;
+            }
+
+        }
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     bool is_in_box(std::array<double,3> freqs) const {
