@@ -881,8 +881,16 @@ public:
     template <int spin, char ch_bubble, char channel_vertex, K_class k, typename result_type> auto get_w_r_value_symmetry_expanded_nondiff(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
-        if constexpr((symmtype == symmetric_r_irred and ch_bubble == channel_vertex) or ((symmtype == non_symmetric_diffleft or symmtype == non_symmetric_diffright) and ch_bubble != channel_vertex))  {
+        if constexpr(((symmtype == non_symmetric_diffleft or symmtype == non_symmetric_diffright) and ch_bubble != channel_vertex))  {
             return myzero<result_type>();
+        }
+        else if constexpr ((symmtype == symmetric_r_irred and ch_bubble == channel_vertex)) {
+            if constexpr (differentiated) {
+                return myzero<result_type>();
+            }
+            else {
+                return vertices_bubbleintegrand[spin].irred.template val<result_type>(input.iK, input.i_in, 0);
+            }
         }
         else {
             if constexpr(differentiated) {
