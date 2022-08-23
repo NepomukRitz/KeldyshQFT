@@ -882,7 +882,8 @@ public:
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
         if constexpr(((symmtype == non_symmetric_diffleft or symmtype == non_symmetric_diffright) and ch_bubble != channel_vertex))  {
-            return myzero<result_type>();
+            static_assert(differentiated);
+            return vertex_nondifferentiated.template get_w_r_value_symmetry_expanded_nondiff<spin,ch_bubble,channel_vertex,k,result_type>(input);
         }
         else if constexpr ((symmtype == symmetric_r_irred and ch_bubble == channel_vertex)) {
             if constexpr (differentiated) {
@@ -892,7 +893,7 @@ public:
                 return vertices_bubbleintegrand[spin].irred.template val<result_type>(input.iK, input.i_in, 0);
             }
         }
-        else {
+        else { // symmetric_full
             if constexpr(differentiated) {
                 return vertex_nondifferentiated.template get_w_r_value_symmetry_expanded_nondiff<spin,ch_bubble,channel_vertex,k,result_type>(input);
             }
