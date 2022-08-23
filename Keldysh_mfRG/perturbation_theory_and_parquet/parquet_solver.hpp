@@ -38,12 +38,19 @@ void compute_BSE(Vertex<Q,false>& Gamma_BSE, Vertex<Q,false>& Gamma_BSE_L, Verte
     for (char r : "apt")
         bubble_function(Gamma_BSE_R, Gamma, Ir, G, G, r, false);
 
+    if constexpr (SBE_DECOMPOSITION) {
+        for (char r: {'a', 'p', 't'}) {
+            Gamma_BSE_L.get_rvertex(r).K2 = Gamma_BSE_R.get_rvertex(r).K2;
+            if constexpr (DEBUG_SYMMETRIES) Gamma_BSE_R.get_rvertex(r).K2b= Gamma_BSE_L.get_rvertex(r).K2b;
+        }
+    }
+
     Gamma_BSE = (Gamma_BSE_L + Gamma_BSE_R) * 0.5; // symmetrize the BSE
 
     Vertex<Q,false> Gamma_BSE_diff = Gamma_BSE_R - Gamma_BSE_L;
-    const double max_diff_K1 = Gamma_BSE_diff.norm_K1(0) / Gamma_BSE_L.norm_K1(0);
-    const double max_diff_K2 = Gamma_BSE_diff.norm_K2(0) / Gamma_BSE_L.norm_K2(0);
-    const double max_diff_K3 = Gamma_BSE_diff.norm_K3(0) / Gamma_BSE_L.norm_K3(0);
+    const double max_diff_K1 = Gamma_BSE_diff.norm_K1(0) / Gamma_BSE.norm_K1(0);
+    const double max_diff_K2 = Gamma_BSE_diff.norm_K2(0) / Gamma_BSE.norm_K2(0);
+    const double max_diff_K3 = Gamma_BSE_diff.norm_K3(0) / Gamma_BSE.norm_K3(0);
     utils::print(" deviation between left and right bubble in BSE: \n\t K1: \t", max_diff_K1, "\n\t K2: \t", max_diff_K2, "\n\t K3: \t", max_diff_K3, "\n");
 
 }
@@ -413,6 +420,11 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
     else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
 
     compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
+    /// For testing (delete when testing is done):
+    //for (char r : {'a', 'p', 't'}) {
+    //    state_out.vertex.get_rvertex(r).K1 = state_in.vertex.get_rvertex(r).K1;
+    //}
+    //state_out.selfenergy = state_in.selfenergy;
 }
 
 /**
@@ -462,6 +474,12 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     while ((relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy) && iteration <= Nmax) {
         utils::print("iteration ", iteration, true);
         parquet_iteration(state_out, state_in, Lambda, iteration);  // compute lhs of parquet equations
+        /// for testing:
+        //if (iteration == 1) {
+        //    for (char r : {'a', 'p', 't'}) {
+        //        state_out.vertex.get_rvertex(r).K1 = state_in.vertex.get_rvertex(r).K1;
+        //    }
+        //}
         /// mixing of old and new state:
         state_out = mixing_ratio * state_out + (1-mixing_ratio) * state_in;
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
@@ -472,6 +490,16 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         relative_difference_selfenergy = state_diff.selfenergy.norm() / state_out.selfenergy.norm();
         utils::print("relative difference vertex:     ", relative_difference_vertex, true);
         utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
+
+        /// for testing:
+        //if (iteration == 1) {
+        //    state_out.vertex.template symmetry_expand<'a',true,false>();
+        //    state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_a_left_");
+        //    state_out.vertex.template symmetry_expand<'p',true,false>();
+        //    state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_p_left_");
+        //    state_out.vertex.template symmetry_expand<'t',true,false>();
+        //    state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_t_left_");
+        //}
 
         state_in = state_out;  // use output as input for next iteration
         ++iteration;

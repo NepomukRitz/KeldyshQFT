@@ -1202,8 +1202,12 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         valtype value_lambda = buffer_lambda_rotated.template interpolate<valtype_fetch>(input);
         value_w.resize(nrow,ncol);
         value_lambda.resize(nrow,ncol);
+        if constexpr (is_left_vertex and !std::is_same_v<valtype,Q>) {
+            value_w.transposeInPlace();
+            value_lambda.transposeInPlace();
+        }
 
-        valtype value_K2 =  is_left_vertex ? value_w * value_lambda : value_lambda * value_w;
+        valtype value_K2 = value_lambda * value_w;
         value_K2.resize(nrow*ncol,1);
         buffer_K2_new.template setvert_vectorized<nrow*ncol>(value_K2, idx);
 
@@ -1331,8 +1335,12 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         valtype value_lambda = buffer_lambda_rotated.template interpolate<valtype_fetch>(input);
         value_w.resize(nrow,ncol);
         value_lambda.resize(nrow,ncol);
+        if constexpr (is_left_vertex and !std::is_same_v<valtype,Q>) {
+            value_w.transposeInPlace();
+            value_lambda.transposeInPlace();
+        }
 
-        valtype value_K2b =  is_left_vertex ? value_lambda * value_w :  value_w * value_lambda;
+        valtype value_K2b = value_w * value_lambda;
         value_K2b.resize(nrow*ncol,1);
         buffer_K2b_new.template setvert_vectorized<nrow*ncol>(value_K2b, idx);
 
@@ -1466,8 +1474,12 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         valtype value_lambda = buffer_lambda_rotated.template interpolate<valtype_fetch>(input);
         value_K2.resize(nrow,ncol);
         value_lambda.resize(nrow,ncol);
+        if constexpr (is_left_vertex and !std::is_same_v<valtype,Q>) {
+            value_K2.transposeInPlace();
+            value_lambda.transposeInPlace();
+        }
 
-        valtype value_K3_SBE =  is_left_vertex ? value_lambda * value_K2 :  value_K2 * value_lambda;
+        valtype value_K3_SBE = value_K2 * value_lambda;
         value_K3_SBE.resize(nrow*ncol,1);
         buffer_K3_SBE_new.template setvert_vectorized<nrow*ncol>(value_K3_SBE, idx);
 
