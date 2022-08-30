@@ -36,7 +36,7 @@ H5::H5File open_hdf_file_readWrite(const std::string & filename) {
 
 void close_hdf_file(H5::H5File & file) {
     if (mpi_world_rank() == 0) {
-        close_hdf_file(file);
+        file.close();
     }
 }
 

@@ -742,13 +742,12 @@ int FrequencyGrid<angularGrid>::get_grid_index(const double frequency)const {
     const double t = t_from_frequency(frequency);
 #ifdef DENSEGRID
     assert(false);
-    int index = 0;
-#else
+#endif
     assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
     int index = int((t - t_lower) + 1e-12);
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
-#endif
+
     //assert(all_frequencies[index] <= frequency + (std::abs(frequency)+1)*1e-12);
     //assert(all_frequencies[index+1] >= frequency);
     assert(auxiliary_grid[index] <= t+inter_tol);
@@ -761,13 +760,12 @@ int FrequencyGrid<angularGrid>::get_grid_index(double& t, const double frequency
     t = t_from_frequency(frequency);
 #ifdef DENSEGRID
     assert(false);
-    int index = 0;
-#else
+#endif
     assert(std::abs(spacing_auxiliary_gridpoint - 1) < 1e-15);
     int index = int((t - t_lower) + 1e-12);
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
-#endif
+
     assert(auxiliary_grid[index] <= t + inter_tol);
     assert(auxiliary_grid[index+1] >= t - inter_tol or index == number_of_gridpoints-2);
     return index;
