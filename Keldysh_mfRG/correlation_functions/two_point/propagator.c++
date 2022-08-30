@@ -21,6 +21,19 @@ auto Eff_fac(double v) -> double {
     else return 1. - (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
 }
 
+double Fermi_distribution(const double nu) {
+    if constexpr (not ZERO_T){
+        return 1 / (exp(nu / glb_T) + 1.);
+    }
+    else{
+        if (nu > 0.) return 0.;
+        else if (nu == 0.) return 1/2.;
+        else if (nu < 0.) return 1.;
+        else assert(false);
+    }
+}
+
+
 template <>
 auto Propagator<double>::GK(const double v, const int i_in) const -> double {
     utils::print("Error! Keldysh computations require complex numbers! Abort.");

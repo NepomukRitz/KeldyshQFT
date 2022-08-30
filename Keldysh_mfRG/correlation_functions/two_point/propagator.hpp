@@ -24,6 +24,9 @@ auto Eff_distr(double v) -> double;
 // effective distribution factor: 1. - 2. * Eff_distr
 auto Eff_fac(double v) -> double;
 
+// Textbook version of the Fermi distribution
+double Fermi_distribution (double nu);
+
 
 /// Propagator class ///
 template <typename Q>
@@ -99,6 +102,8 @@ public:
     auto GK(double v, int i_in) const -> Q;
     auto SR(double v, int i_in) const -> Q;
     auto SK(double v, int i_in) const -> Q;
+    auto G_lesser(double v, int i_in) const -> Q;   // used for computations without particle-hole symmetry
+    auto S_lesser(double v, int i_in) const -> Q;   // used for computations without particle-hole symmetry
 
     /// Katanin extension
     Q Katanin_R(double v, int i_in) const;
@@ -250,6 +255,22 @@ auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
         return selfenergy.valsmooth(1, v, i_in) * (grn * gri) -
                glb_i * (grn * Eff_fac(v) * (1. + (glb_Gamma + Lambda) * gri));
     }
+}
+
+template <typename Q>
+auto Propagator<Q>::G_lesser(const double v, const int i_in) const -> Q
+{
+    assert(not PARTICLE_HOLE_SYMMETRY);
+    assert(KELDYSH);
+    return -2. * glb_i * Fermi_distribution(v) * std::imag(GR(v, i_in));
+}
+
+template <typename Q>
+auto Propagator<Q>::S_lesser(const double v, const int i_in) const -> Q
+{
+    assert(not PARTICLE_HOLE_SYMMETRY);
+    assert(KELDYSH);
+    return -2. * glb_i * Fermi_distribution(v) * std::imag(SR(v, i_in));
 }
 
 template<typename Q>
