@@ -46,11 +46,14 @@ template <typename Q, class Bubble_Object>
 void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
+    GeneralVertex<Q,symmetric_r_irred> bubble_a_r (Lambda);
+    bubble_a_r.set_Ir(true);
+    bubble_a_r.set_frequency_grid(bareState.vertex);
     //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, Pi, 'a');
+    bubble_function(bubble_a_r, bareState.vertex, bareState.vertex, Pi, 'a');
 
     //Calculate the Self-Energy
-    loop(PsiSelfEnergy, bareState.vertex, barePropagator, false);
+    loop(PsiSelfEnergy, bubble_a_r, barePropagator, false);
 }
 
 void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,

@@ -62,6 +62,7 @@ public:
     // operators for self-energy
     auto operator+= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma += self1.Sigma;
+        this->asymp_val_R += self1.asymp_val_R;
         return *this;
     }
     friend SelfEnergy<Q> operator+ (SelfEnergy<Q> lhs, const SelfEnergy<Q>& rhs) {
@@ -86,6 +87,7 @@ public:
     template <typename  Qfac>
     auto operator*= (Qfac alpha) -> SelfEnergy<Q> {
         this->Sigma *= alpha;
+        this->asymp_val_R *= alpha;
         return *this;
     }
     template <typename  Qfac>
@@ -108,6 +110,7 @@ public:
    // }
     auto operator-= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma -= self1.Sigma;
+        this->asymp_val_R -= self1.asymp_val_R;
         return *this;
     }
     friend SelfEnergy<Q> operator- (SelfEnergy<Q> lhs, const SelfEnergy<Q>& rhs) {
@@ -117,6 +120,7 @@ public:
     /// Elementwise division (needed for error estimate of adaptive ODE solvers)
     auto operator/= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma /= self1.Sigma;
+        this->asymp_val_R /= self1.asymp_val_R;
         return *this;
     }
     friend SelfEnergy<Q> operator/ (SelfEnergy<Q> lhs, const SelfEnergy<Q>& rhs) {

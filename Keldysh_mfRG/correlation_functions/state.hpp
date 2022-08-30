@@ -29,7 +29,7 @@ public:
 #endif
     }
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda, bool initialize=false) : Lambda(Lambda), vertex(Vertex<Q> (Lambda)), selfenergy(SelfEnergy<Q> (Lambda)) {
+    explicit State(double Lambda_in, bool initialize=false) : Lambda(Lambda_in), vertex(Vertex<Q> (Lambda_in)), selfenergy(SelfEnergy<Q> (Lambda_in)) {
         if (initialize) this->initialize();
     };
 

@@ -741,7 +741,8 @@ int FrequencyGrid<angularGrid>::get_grid_index(const double frequency)const {
     /// Do I need this? The next function basically does the same
     const double t = t_from_frequency(frequency);
 #ifdef DENSEGRID
-    static_assert(false, "angularGrid makes no sense for dense grid");
+    assert(false);
+    int index = 0;
 #else
     assert(std::abs(spacing_auxiliary_gridpoint - 1.) < 1e-10); // By making sure that spacing_auxiliary_gridpoint = 1, there is no need to divide through spacing_auxiliary_gridpoint
     int index = int((t - t_lower) + 1e-12);
@@ -759,7 +760,8 @@ int FrequencyGrid<angularGrid>::get_grid_index(const double frequency)const {
 int FrequencyGrid<angularGrid>::get_grid_index(double& t, const double frequency) const{
     t = t_from_frequency(frequency);
 #ifdef DENSEGRID
-    static_assert(false, "angularGrid makes no sense for dense grid");
+    assert(false);
+    int index = 0;
 #else
     assert(std::abs(spacing_auxiliary_gridpoint - 1) < 1e-15);
     int index = int((t - t_lower) + 1e-12);

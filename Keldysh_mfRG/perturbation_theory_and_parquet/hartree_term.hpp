@@ -22,8 +22,11 @@ class Hartree_Solver {
     const double v_lower =  10 * Delta; // arbitrary choice. Needs to be checked.
     const double v_upper = -10 * Delta;
 
+    char prop_type = 'g';
+
     static double fermi_distribution (double nu) ;
 public:
+    /// constructor used for obtaining the self-consistent solution of the Hartree-term
     explicit Hartree_Solver(const double Lambda_in): Lambda(Lambda_in){
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
@@ -31,10 +34,20 @@ public:
 
         Sigma.initialize(glb_U * filling, 0);
     };
+    /// constructor used for a one-shot calculation of the Hartree-term with a given selfenergy, e.g. in Parquet iterations.
+    Hartree_Solver(const double Lambda_in, const SelfEnergy<comp>& Sigma_in, const bool diff=false): Lambda(Lambda_in){
+        assert(KELDYSH);
+        assert(not HUBBARD_MODEL);
+        assert(EQUILIBRIUM); // because we use FDTs
+
+        Sigma = Sigma_in;
+        if (diff) prop_type = 'k'; // single-scale + Katanin extension
+    };
     double compute_Hartree_term(double convergence_threshold = 1e-12);
     double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12, bool Friedel_check = true,
                                            bool verbose = true);
     double compute_Hartree_term_Friedel(double convergence_threshold = 1e-12);
+    double compute_Hartree_term_oneshot();
     auto operator()(double nu) const -> double;
     void friedel_sum_rule_check() const;
     void write_out_propagators() const ;

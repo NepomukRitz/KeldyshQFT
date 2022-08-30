@@ -1,6 +1,7 @@
 #ifndef KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 #define KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 
+#include <string>
 #include "../parameters/master_parameters.hpp"     // system parameters
 #include "../grids/flow_grid.hpp"// flow grid
 #include "../correlation_functions/state.hpp"          // use State class
@@ -10,6 +11,7 @@
 #include "../bubble/bubble_function.hpp"        // compute bubble function
 #include "../loop/loop.hpp"           // compute loop function
 #include "../postprocessing/causality_FDT_checks.hpp"
+#include "perturbation_theory.hpp"
 
 /**
  * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
@@ -86,6 +88,18 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
 
     //G.save_propagator_values(data_dir + "parquetPropagator.h5", G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies());
 
+    /// Compute the Hartree term
+    if constexpr (not PARTICLE_HOLE_SYMMETRY){    // In this case, we have to update the Hartree term as well.
+        Hartree_Solver hartree_term (state_in.Lambda, state_in.selfenergy);
+        double hartree = hartree_term.compute_Hartree_term_oneshot();
+        Sigma_SDE_a.initialize(hartree, 0.);
+        Sigma_SDE_p.initialize(hartree, 0.);
+    }
+    else{
+        Sigma_SDE_a.initialize(glb_U / 2., 0.);
+        Sigma_SDE_p.initialize(glb_U / 2., 0.);
+    }
+
     // compute the a bubble with full vertex on the right
     GeneralVertex<Q,symmetric_r_irred> bubble_a_r (Lambda);
     bubble_a_r.set_Ir(true);
@@ -101,7 +115,6 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     GeneralVertex<Q,symmetric_r_irred> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
 
     // compute the self-energy via SDE using the a bubble
-    Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     //bubble_a.avertex().K2 *= 0.;
     loop(Sigma_SDE_a, bubble_a, G, false);
     utils::print("Check causality of Sigma_SDE_a: \n");
@@ -123,7 +136,6 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnerg
     GeneralVertex<Q,symmetric_r_irred> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
 
     // compute the self-energy via SDE using the p bubble
-    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     //bubble_p.pvertex().K2 *= 0.;
     loop(Sigma_SDE_p, bubble_p, G, false);
     utils::print("Check causality of Sigma_SDE_p: \n");
@@ -278,8 +290,7 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
     compute_BSE(state_out.vertex, state_in, Lambda, it_Lambda);                    // compute the gamma_r's via the BSE
     if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
     else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
-
-    compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
+    compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE.
 }
 
 /**
@@ -340,5 +351,9 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         ++iteration;
     }
 }
+
+
+void run_parquet(const std::vector<double>&);
+
 
 #endif //KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H

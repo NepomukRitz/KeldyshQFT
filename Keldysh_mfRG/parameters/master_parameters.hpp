@@ -9,7 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
+#define NDEBUG
 
 
 #define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
@@ -41,7 +41,7 @@ constexpr bool VERBOSE = false;
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
 
-inline int N_LOOPS;  // Number of loops
+inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS
 
@@ -51,7 +51,7 @@ inline int N_LOOPS;  // Number of loops
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.01; //0.1;                     // Temperature
+constexpr double glb_T = 0.01; // 0.5; // 0.1; // 0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -145,17 +145,17 @@ constexpr int nODE = 50;
 constexpr double epsODE_rel = 1e-4;
 constexpr double epsODE_abs = 1e-8;
 // ODE solvers:
-// 1 -> basic Runge-Kutta 4;
+// 1 -> basic Runge-Kutta 4; // WARNING: non-adaptive!
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 0.158113883; //19.5; // 1e4;                // NOLINT(cert-err58-cpp)
-constexpr double Lambda_fin = 1.; //0.;// 1e-12;
+constexpr double Lambda_ini = 19.8;// 1e4;  0.158113883;
+constexpr double Lambda_fin = 1e-12;// 1e-4; 1;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
-constexpr double dLambda_initial = 0.1;             //Initial step size for ODE solvers with adaptive step size control
+constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)

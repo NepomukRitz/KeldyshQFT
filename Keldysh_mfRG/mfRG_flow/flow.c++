@@ -4,7 +4,7 @@
  * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
  * Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.
  */
-State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_config& frgConfig, bool save_intermediate_results=false){
+State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_config& frgConfig){
 
     State<state_datatype> state_fin (Lambda_fin), state_ini(Lambda_ini);   // create final and initial state
 
@@ -86,7 +86,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
  *        computed. (See log file: "Successfully saved in hdf5 file: <inputFileName> in Lambda layer <Nmax>.)
  *        Use this number <Nmax> as input <it_start> for this function.
  */
-State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_config& frgConfig, const unsigned int it_start, bool save_intermediate_results=false) {
+State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_config& frgConfig, const unsigned int it_start) {
     if (it_start < frgConfig.nODE_ + U_NRG.size() + 1) { // start iteration needs to be within the range of values
 
         State<state_datatype> state_ini = read_state_from_hdf<state_datatype>(inputFileName, it_start); // read initial state
