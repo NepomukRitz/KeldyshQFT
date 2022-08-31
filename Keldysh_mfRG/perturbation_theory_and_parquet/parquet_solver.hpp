@@ -221,7 +221,7 @@ template<bool version, bool is_differentiated_vertex, bool is_differentiated_SE,
 SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const Vertex<Q,is_differentiated_vertex>& Gamma, const Propagator<Q> & G_loop) {
     assert((version == 0 and (channel == 'a' or channel == 'p')) or (version == 1 and (channel == 't' or channel == 'p')));
 
-    GeneralVertex<Q,symmetric_r_irred,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1());
+    GeneralVertex<Q,symmetric_r_irred,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1(), Gamma.get_vertex_nondiff());
     for (char r: {'a', 'p', 't'}) {
         if (r != channel and !(version==1 and channel=='t' and r == 'a')) Gamma_temp_onlyK2.get_rvertex(r).K1 *= 0.;
         if (MAX_DIAG_CLASS > 1) {
@@ -419,12 +419,12 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
     if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
     else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
 
-    compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
+    //compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
     /// For testing (delete when testing is done):
     //for (char r : {'a', 'p', 't'}) {
     //    state_out.vertex.get_rvertex(r).K1 = state_in.vertex.get_rvertex(r).K1;
     //}
-    //state_out.selfenergy = state_in.selfenergy;
+    state_out.selfenergy = state_in.selfenergy;
 }
 
 /**

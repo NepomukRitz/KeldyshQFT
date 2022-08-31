@@ -753,9 +753,9 @@ public:
     : vertex(vertex_in), vertex_half2(0), vertex_nondifferentiated(0) {
         static_assert((symmtype == symmetric_full or symmtype == symmetric_r_irred) and !differentiated , "Only use single-argument constructor for symmetric_full non-differentiated vertex!");}
 
-    explicit GeneralVertex(const fullvert<Q>& vertex_in, const GeneralVertex<Q,symmetric_full,false>& vertex_nondiff)
+    explicit GeneralVertex(const fullvert<Q>& vertex_in, const vertex_nondiff_t& vertex_nondiff)
             : vertex(vertex_in), vertex_half2(0), vertex_nondifferentiated(vertex_nondiff) {
-        static_assert((symmtype == symmetric_full or symmtype == symmetric_r_irred) and differentiated , "Only use two-argument constructor for symmetric_full differentiated vertex!");}
+        static_assert((symmtype == symmetric_full or symmtype == symmetric_r_irred), "Only use two-argument constructor for symmetric_full vertex!");}
     GeneralVertex(const fullvert<Q>& half1, const fullvert<Q>& half2, const GeneralVertex<Q,symmetric_full,false>& vertex_nondiff)
     : vertex(half1), vertex_half2(half2), vertex_nondifferentiated(vertex_nondiff) {
         static_assert(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright, "Only use two-argument constructor for non_symmetric vertex!");}
@@ -765,6 +765,7 @@ public:
     fullvert<Q>& half2() { if constexpr(symmtype==symmetric_full or symmtype==symmetric_r_irred) return vertex; else return vertex_half2;}
     const fullvert<Q>& half1() const { return vertex; }
     const fullvert<Q>& half2() const { if constexpr(symmtype == symmetric_full or symmtype == symmetric_r_irred ) return vertex; else return vertex_half2; }
+    const vertex_nondiff_t& get_vertex_nondiff() const {return vertex_nondifferentiated;}
 
     irreducible<Q>& irred() { return vertex.irred;}
     rvert<Q>& avertex() { return vertex.avertex;}
