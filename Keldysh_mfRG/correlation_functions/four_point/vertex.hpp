@@ -148,6 +148,7 @@ public:
 
     template<char ch_bubble, typename result_type> auto gammaRb_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred> auto value_symmetry_expanded(const VertexInput& input) const -> result_type;
+    template<char ch_bubble, typename result_type, bool r_irred> auto value_minus_gamma0_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred> auto left_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred> auto right_same_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto left_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
@@ -756,7 +757,7 @@ public:
     explicit GeneralVertex(const fullvert<Q>& vertex_in, const vertex_nondiff_t& vertex_nondiff)
             : vertex(vertex_in), vertex_half2(0), vertex_nondifferentiated(vertex_nondiff) {
         static_assert((symmtype == symmetric_full or symmtype == symmetric_r_irred), "Only use two-argument constructor for symmetric_full vertex!");}
-    GeneralVertex(const fullvert<Q>& half1, const fullvert<Q>& half2, const GeneralVertex<Q,symmetric_full,false>& vertex_nondiff)
+    GeneralVertex(const fullvert<Q>& half1, const fullvert<Q>& half2, const vertex_nondiff_t& vertex_nondiff)
     : vertex(half1), vertex_half2(half2), vertex_nondifferentiated(vertex_nondiff) {
         static_assert(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright, "Only use two-argument constructor for non_symmetric vertex!");}
 
@@ -838,11 +839,11 @@ public:
         return vertices_bubbleintegrand[spin].template value_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
 
-    template <int spin, char ch_bubble, typename result_type> auto value_symmetry_expanded(const VertexInput& input)  const -> result_type {
+    template <int spin, char ch_bubble, typename result_type> auto value_minus_gamma0_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
         assert(input.spin == 0);
         assert(spin < vertices_bubbleintegrand.size());
-        return vertices_bubbleintegrand[spin].template value_symmetry_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
+        return vertices_bubbleintegrand[spin].template value_minus_gamma0_symmetry_expanded<ch_bubble,result_type,symmtype!=symmetric_full>(input);
     }
     template <int spin, char ch_bubble, typename result_type> auto left_same_bare_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
@@ -1482,6 +1483,17 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
                 + avertex.template value_symmetry_expanded<ch_bubble,result_type>(input)
                 + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input)
                 + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input);
+    }
+}
+template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::value_minus_gamma0_symmetry_expanded(const VertexInput& input) const  -> result_type{
+    if constexpr(r_irred) {
+        const result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
+        return  gamma_Rb;
+    }
+    else {
+        return   avertex.template value_symmetry_expanded<ch_bubble,result_type>(input)
+               + pvertex.template value_symmetry_expanded<ch_bubble,result_type>(input)
+               + tvertex.template value_symmetry_expanded<ch_bubble,result_type>(input);
     }
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{

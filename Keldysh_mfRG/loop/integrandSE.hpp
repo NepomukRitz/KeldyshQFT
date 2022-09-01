@@ -392,14 +392,14 @@ auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex_vect
         const VertexInput inputClosedAbove_spin1(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
 #if VECTORIZED_INTEGRATION == 1
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result0 = vertex.template value_symmetry_expanded<pick_spin<version,0>() ,pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin0);
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result1 = vertex.template value_symmetry_expanded<pick_spin<version,1>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin1);
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result0 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>() ,pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin0);
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result1 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,1>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin1);
         result0.resize(4,return_type::ColsAtCompileTime);
         result1.resize(4,return_type::ColsAtCompileTime);
         //static_assert(decltype(result0)::RowsAtCompileTime == 4);
 #else
-        const buffertype_vertex result0 = vertex.template value_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove_spin0);
-        const buffertype_vertex result1 = vertex.template value_symmetry_expanded<pick_spin<version,1>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove_spin1);
+        const buffertype_vertex result0 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove_spin0);
+        const buffertype_vertex result1 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,1>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove_spin1);
 
 #endif
         return result0*2. + result1;
@@ -408,10 +408,10 @@ auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex_vect
         VertexInput inputClosedAbove(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
 #if VECTORIZED_INTEGRATION == 1
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result = vertex.template value_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove);
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove);
         result.resize(4,return_type::ColsAtCompileTime);
 #else
-        const buffertype_vertex result = vertex.template value_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove);
+        const buffertype_vertex result = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove);
 #endif
         return result;
     }

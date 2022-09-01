@@ -221,21 +221,23 @@ template<bool version, bool is_differentiated_vertex, bool is_differentiated_SE,
 SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const Vertex<Q,is_differentiated_vertex>& Gamma, const Propagator<Q> & G_loop) {
     assert((version == 0 and (channel == 'a' or channel == 'p')) or (version == 1 and (channel == 't' or channel == 'p')));
 
-    GeneralVertex<Q,symmetric_r_irred,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1(), Gamma.get_vertex_nondiff());
+    GeneralVertex<Q,non_symmetric_diffleft,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1(), Gamma.half1(), Gamma.get_vertex_nondiff());
     for (char r: {'a', 'p', 't'}) {
-        if (r != channel and !(version==1 and channel=='t' and r == 'a')) Gamma_temp_onlyK2.get_rvertex(r).K1 *= 0.;
-        if (MAX_DIAG_CLASS > 1) {
-            if (r != channel and !(version==1 and channel=='t' and r == 'a')) {
-                Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0;
-            }
-            else {
-                Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5; // ensures that both K2 and K2' are considered with a weight of 0.5
-                // (in the SDE there is either K2 or K2', we average over these two possibilities)
-            }
+        if (r != channel and !(version==1 and channel=='t' and r == 'a')) {
+            Gamma_temp_onlyK2.half1().get_rvertex(r).K1 *= 0.;
+            Gamma_temp_onlyK2.half2().get_rvertex(r).K1 *= 0.;
         }
-        if (MAX_DIAG_CLASS > 2) Gamma_temp_onlyK2.get_rvertex(r).K3 *= 0.;
+        if (MAX_DIAG_CLASS > 1) {
+            if (r != channel and !(version == 1 and channel == 't' and r == 'a')) {
+                Gamma_temp_onlyK2.half1().get_rvertex(r).K2 *= 0;
+            }
+            Gamma_temp_onlyK2.half2().get_rvertex(r).K2 *= 0;
+        }
+        if (MAX_DIAG_CLASS > 2) {
+            Gamma_temp_onlyK2.half1().get_rvertex(r).K3 *= 0.;
+            Gamma_temp_onlyK2.half2().get_rvertex(r).K3 *= 0.;
+        }
     }
-    Gamma_temp_onlyK2.irred().initialize(0.);
 
     // compute the self-energy via SDE using the Gamma_temp_onlyK2
     SelfEnergy<Q> Sigma_SDE(G_loop.selfenergy.Sigma.frequencies);
@@ -419,12 +421,12 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
     if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
     else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
 
-    //compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
+    compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
     /// For testing (delete when testing is done):
     //for (char r : {'a', 'p', 't'}) {
     //    state_out.vertex.get_rvertex(r).K1 = state_in.vertex.get_rvertex(r).K1;
     //}
-    state_out.selfenergy = state_in.selfenergy;
+    //state_out.selfenergy = state_in.selfenergy;
 }
 
 /**
@@ -492,14 +494,34 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
 
         /// for testing:
-        //if (iteration == 1) {
-        //    state_out.vertex.template symmetry_expand<'a',true,false>();
-        //    state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_a_left_");
-        //    state_out.vertex.template symmetry_expand<'p',true,false>();
-        //    state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_p_left_");
-        //    state_out.vertex.template symmetry_expand<'t',true,false>();
-        //    state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_t_left_");
-        //}
+        if (iteration == 2 and false) {
+            GeneralVertex<Q,symmetric_r_irred,false> Ir(state_out.vertex.half1());     // irreducible vertex
+            GeneralVertex<Q,symmetric_r_irred,false> Gamma_temp_onlyK2(state_out.vertex.half1(), state_out.vertex.get_vertex_nondiff());
+            const char channel = 'a';
+            for (char r: {'a', 'p', 't'}) {
+                if (r != channel) Gamma_temp_onlyK2.get_rvertex(r).K1 *= 0.;
+                if (MAX_DIAG_CLASS > 1) {
+                    if (r != channel) {
+                        Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0;
+                    }
+                    else {
+                        Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5; // ensures that both K2 and K2' are considered with a weight of 0.5
+                        // (in the SDE there is either K2 or K2', we average over these two possibilities)
+                    }
+                }
+                if (MAX_DIAG_CLASS > 2) Gamma_temp_onlyK2.get_rvertex(r).K3 *= 0.;
+            }
+            //Gamma_temp_onlyK2.irred().initialize(0.);
+
+            //state_out.vertex.template symmetry_expand<'a',true,false>();
+            //state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_a_left_");
+            //state_out.vertex.template symmetry_expand<'p',true,false>();
+            //state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_p_left_");
+            state_out.vertex.template symmetry_expand<'t',false,true>();
+            state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_t_left_");
+            Gamma_temp_onlyK2.template symmetry_expand<'t',true,true>();
+            Gamma_temp_onlyK2.save_expanded(data_dir + "Ir_symmetry_expanded_for_t_left_");
+        }
 
         state_in = state_out;  // use output as input for next iteration
         ++iteration;

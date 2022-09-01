@@ -793,19 +793,19 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
             )
         {
 
-            buffer_type_vertex_l values_vertex_l_other;
-            buffer_type_vertex_r values_vertex_r_other;
+            buffer_type_vertex_l values_vertex_l_upup;
+            buffer_type_vertex_r values_vertex_r_upup;
 
-            load_vertex_keldyshComponents_left_scalar<1 - spin>(values_vertex_l_other, input_l);
-            load_vertex_keldyshComponents_right_scalar<1 - spin>(values_vertex_r_other, input_r);
+            load_vertex_keldyshComponents_left_scalar<2>(values_vertex_l_upup, input_l);
+            load_vertex_keldyshComponents_right_scalar<2>(values_vertex_r_upup, input_r);
             if constexpr(KELDYSH)
             {
-                result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
-                          values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other)).eval()[0];
+                result = (values_vertex_l_upup * Pi_matrix * values_vertex_r +
+                          values_vertex_l      * Pi_matrix * values_vertex_r_upup).eval()[0];
             }
             else {
-                result = ((values_vertex_l + values_vertex_l_other) * Pi_matrix * values_vertex_r +
-                          values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_other));
+                result = (values_vertex_l_upup * Pi_matrix * values_vertex_r +
+                          values_vertex_l      * Pi_matrix * values_vertex_r_upup);
             }
         }
         #if DEBUG_SYMMETRIES
