@@ -106,8 +106,8 @@ void run_parquet(const std::vector<double>& U_NRG_list){
         sopt_state(state, Lambda);
         const double Delta = (glb_Gamma + Lambda) * 0.5;
         double U_over_Delta = glb_U / Delta;
-        const std::string parquet_filename = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+        const std::string parquet_filename = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
 //state = read_state_from_hdf(parquet_filename, 30);
-        parquet_solver(parquet_filename, state, Lambda, 1e-4, 30);
+        parquet_solver(parquet_filename, state, Lambda, 1e-6, 15);
     }
 }

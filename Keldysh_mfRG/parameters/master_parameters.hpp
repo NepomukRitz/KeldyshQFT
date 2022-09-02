@@ -9,10 +9,10 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 
-#define DEBUG_SYMMETRIES 1 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
 constexpr bool VERBOSE = false;
 
@@ -24,9 +24,9 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
-#define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
+#define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
-#define VECTORIZED_INTEGRATION 0 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
+#define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
@@ -45,10 +45,10 @@ constexpr bool VERBOSE = false;
 
 inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
-#define SELF_ENERGY_FLOW_CORRECTIONS 0
-const int nmax_Selfenergy_iterations = 5;
+#define SELF_ENERGY_FLOW_CORRECTIONS 2
+const int nmax_Selfenergy_iterations = 10;
 const double tol_selfenergy_correction_abs = 1e-8;
-const double tol_selfenergy_correction_rel = 1e-4;;
+const double tol_selfenergy_correction_rel = 1e-5;;
 const double loop_tol_abs = 1e-8;
 const double loop_tol_rel = 1e-4;
 
