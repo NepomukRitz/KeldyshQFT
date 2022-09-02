@@ -740,6 +740,7 @@ private:
 
 public:
     using base_type = Q;
+    bool is_differentiated() const {return differentiated;}
     /// Buffer for vectorized computation of an r-bubble
     /// Each entry contains exactly one spin component;
     /// all Keldysh components are present, they are ordered by GeneralVertex::symmetry_expand() such that they allow
@@ -965,6 +966,18 @@ public:
         vertex.set_initializedInterpol(false);
     }
 
+    mutable vec<bool> vanishing_component_channel_a = {false, false, false, false, false};
+    mutable vec<bool> vanishing_component_channel_p = {false, false, false, false, false};
+    mutable vec<bool> vanishing_component_channel_t = {false, false, false, false, false};
+    vec<bool>& get_vanishing_component_channel_r(const char channel) const {
+        if (channel == 'a') { return vanishing_component_channel_a;}
+        else if (channel == 'p') { return vanishing_component_channel_p;}
+        else if (channel == 't') { return vanishing_component_channel_t;}
+        else {assert(false);}
+    }
+    void set_to_zero_in_integrand(const char channel, const K_class kClass) {
+        get_vanishing_component_channel_r(channel)[kClass] = true;
+    }
     template<char channel_bubble, bool is_left_vertex, bool need_full_vertex> void symmetry_expand() const {
         double t_start = utils::get_time();
         symmetry_expand_impl<channel_bubble,is_left_vertex>(vertices_bubbleintegrand, half1(), half2());
@@ -985,6 +998,14 @@ public:
                 construct_SBE_diff_K2b<channel_bubble,is_left_vertex,need_full_vertex>(vertices_bubbleintegrand, vertex_nondifferentiated.vertices_bubbleintegrand);
                 //construct_SBE_nondiff_K2b<channel_bubble,is_left_vertex,need_full_vertex>(vertex_nondifferentiated.vertices_bubbleintegrand);
 
+            }
+        }
+
+        for (int ispin = 0; ispin < 3; ispin++) {
+            for (char r : {'a', 'p', 't'}) {
+                for (K_class k : {k1, k2, k2b, k3, k3_sbe}) {
+                    if (get_vanishing_component_channel_r(r)[k]) vertices_bubbleintegrand[ispin].get_rvertex(r).set_K_symmetryexpanded_to_zero(k);
+                }
             }
         }
 

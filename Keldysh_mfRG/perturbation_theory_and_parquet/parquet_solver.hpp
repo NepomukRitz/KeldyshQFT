@@ -224,19 +224,12 @@ SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const
     GeneralVertex<Q,non_symmetric_diffleft,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1(), Gamma.half1(), Gamma.get_vertex_nondiff());
     for (char r: {'a', 'p', 't'}) {
         if (r != channel and !(version==1 and channel=='t' and r == 'a')) {
-            Gamma_temp_onlyK2.half1().get_rvertex(r).K1 *= 0.;
-            Gamma_temp_onlyK2.half2().get_rvertex(r).K1 *= 0.;
+            Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k1);
+            Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2);
         }
-        if (MAX_DIAG_CLASS > 1) {
-            if (r != channel and !(version == 1 and channel == 't' and r == 'a')) {
-                Gamma_temp_onlyK2.half1().get_rvertex(r).K2 *= 0;
-            }
-            Gamma_temp_onlyK2.half2().get_rvertex(r).K2 *= 0;
-        }
-        if (MAX_DIAG_CLASS > 2) {
-            Gamma_temp_onlyK2.half1().get_rvertex(r).K3 *= 0.;
-            Gamma_temp_onlyK2.half2().get_rvertex(r).K3 *= 0.;
-        }
+        Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2b);
+        Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k3);
+        Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k3_sbe);
     }
 
     // compute the self-energy via SDE using the Gamma_temp_onlyK2
@@ -494,23 +487,23 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
 
         /// for testing:
-        if (iteration == 2 and false) {
+        if (iteration == 1) {
             GeneralVertex<Q,symmetric_r_irred,false> Ir(state_out.vertex.half1());     // irreducible vertex
-            GeneralVertex<Q,symmetric_r_irred,false> Gamma_temp_onlyK2(state_out.vertex.half1(), state_out.vertex.get_vertex_nondiff());
-            const char channel = 'a';
-            for (char r: {'a', 'p', 't'}) {
-                if (r != channel) Gamma_temp_onlyK2.get_rvertex(r).K1 *= 0.;
-                if (MAX_DIAG_CLASS > 1) {
-                    if (r != channel) {
-                        Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0;
-                    }
-                    else {
-                        Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5; // ensures that both K2 and K2' are considered with a weight of 0.5
-                        // (in the SDE there is either K2 or K2', we average over these two possibilities)
-                    }
-                }
-                if (MAX_DIAG_CLASS > 2) Gamma_temp_onlyK2.get_rvertex(r).K3 *= 0.;
-            }
+            //GeneralVertex<Q,symmetric_r_irred,false> Gamma_temp_onlyK2(state_out.vertex.half1(), state_out.vertex.get_vertex_nondiff());
+            //const char channel = 'a';
+            //for (char r: {'a', 'p', 't'}) {
+            //    if (r != channel) Gamma_temp_onlyK2.get_rvertex(r).K1 *= 0.;
+            //    if (MAX_DIAG_CLASS > 1) {
+            //        if (r != channel) {
+            //            Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0;
+            //        }
+            //        else {
+            //            Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5; // ensures that both K2 and K2' are considered with a weight of 0.5
+            //            // (in the SDE there is either K2 or K2', we average over these two possibilities)
+            //        }
+            //    }
+            //    if (MAX_DIAG_CLASS > 2) Gamma_temp_onlyK2.get_rvertex(r).K3 *= 0.;
+            //}
             //Gamma_temp_onlyK2.irred().initialize(0.);
 
             //state_out.vertex.template symmetry_expand<'a',true,false>();
@@ -519,8 +512,8 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
             //state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_p_left_");
             state_out.vertex.template symmetry_expand<'t',false,true>();
             state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_t_left_");
-            Gamma_temp_onlyK2.template symmetry_expand<'t',true,true>();
-            Gamma_temp_onlyK2.save_expanded(data_dir + "Ir_symmetry_expanded_for_t_left_");
+            Ir.template symmetry_expand<'t',true,true>();
+            Ir.save_expanded(data_dir + "Ir_symmetry_expanded_for_t_left_");
         }
 
         state_in = state_out;  // use output as input for next iteration

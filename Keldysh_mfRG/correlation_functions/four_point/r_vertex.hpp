@@ -142,6 +142,13 @@ public:
         return *this;
     }
 
+    void set_K_symmetryexpanded_to_zero(const K_class k) const {
+        if (k == k1) {K1_symmetry_expanded *= 0.;}
+        else if (k == k2)  {K2_symmetry_expanded *= 0.;}
+        else if (k == k2b) {K2b_symmetry_expanded *= 0.;}
+        else if (k == k3)  {K3_symmetry_expanded *= 0.;}
+        else if (k == k3_sbe) {K3_SBE_symmetry_expanded *= 0.;}
+    }
 
     /**
      * Constructor
