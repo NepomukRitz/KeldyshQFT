@@ -26,7 +26,9 @@ constexpr bool VERBOSE = false;
 #define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
-#define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
+#define VECTORIZED_INTEGRATION 0 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
+                                 // Keldysh: vectorizes over Keldysh indices
+                                 // Matsubara finite T: vectorizes Matsubara sum
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
@@ -39,7 +41,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 2
+#define MAX_DIAG_CLASS 3
 #define SBE_DECOMPOSITION 1
 #define USE_NEW_MFRG_EQS 1
 

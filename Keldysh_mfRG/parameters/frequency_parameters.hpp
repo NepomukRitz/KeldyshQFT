@@ -28,13 +28,13 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 //constexpr int nBOS3 = 201; //nBOS;
 //constexpr int nFER3 = 200; //nFER;
 //#else
-const int COUNT = 8;
+const int COUNT = 1;
 constexpr int nBOS = COUNT * 64 * 2 + 1;
 constexpr int nFER = COUNT * 32 * 2;
 constexpr int nBOS2 = COUNT * 8 * 2 + 1;//nBOS;
 constexpr int nFER2 = COUNT * 4 * 2;//nFER;
-constexpr int nBOS3 = COUNT * 4 * 2 + 1; //nBOS;
-constexpr int nFER3 = COUNT * 2 * 2; //nFER;
+constexpr int nBOS3 = COUNT * 4 * 4 + 1; //nBOS;
+constexpr int nFER3 = COUNT * 2 * 4; //nFER;
 
 //constexpr int nBOS  = COUNT * 2 * 2 + 1;
 //constexpr int nFER  = COUNT * 2 * 2;

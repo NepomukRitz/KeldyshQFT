@@ -753,4 +753,56 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
     */
 }
 
+template <int spin, int channel, typename Integrand> auto matsubarasum_vectorized(const Integrand& integrand, const int Nmin_v, const int Nmax_v, const int Nmin_sum, const int Nmax_sum, const int Nmin_vp, const int Nmax_vp) -> Eigen::Matrix<std::result_of_t<Integrand(double)>, Eigen::Dynamic, Eigen::Dynamic>{
+    using Q = std::result_of_t<Integrand(double)>;
+    constexpr int n_spin_sum = (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1;
+
+    Eigen::Matrix<Q, Eigen::Dynamic, Eigen::Dynamic> vertex_values_left ( Nmax_v -Nmin_v   +1              ,(Nmax_sum-Nmin_sum+1) * n_spin_sum);
+    Eigen::Matrix<Q, Eigen::Dynamic, Eigen::Dynamic> vertex_values_right((Nmax_sum-Nmin_sum+1) * n_spin_sum, Nmax_vp-Nmin_vp  +1              );
+    Eigen::Matrix<Q, Eigen::Dynamic, 1> Pi_values((Nmax_sum-Nmin_sum+1) * n_spin_sum);
+
+//#pragma omp parallel for schedule(guided)
+    for (int i = Nmin_sum; i <= Nmax_sum; i++) {
+        const double vpp = (i*2 + 1) * (M_PI * glb_T);
+        const Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1> res_temp = integrand.load_Pi_keldysh_and_spin_Components_vectorized(vpp);
+        //std::cout << Pi_values.template block<n_spin_sum,1>((-Nmin_sum+i)*n_spin_sum, 0) << std::endl;
+        Pi_values.template block<n_spin_sum,1>((-Nmin_sum+i)*n_spin_sum, 0) = res_temp;
+    }
+
+//#pragma omp parallel for schedule(static, 500) collapse(2)
+    for (int i = Nmin_v; i <= Nmax_v; i++) {
+        for (int j = Nmin_sum; j <= Nmax_sum; j++) {
+            const double v   = (i*2 + 1) * (M_PI * glb_T);
+            const double vpp = (j*2 + 1) * (M_PI * glb_T);
+            VertexInput input_l = integrand.input_external;
+            input_l.v1 = v;
+            input_l.v2 = vpp;
+            Q value;
+            vertex_values_left.template block<1,n_spin_sum>(-Nmin_v+i, (-Nmin_sum+j) * n_spin_sum) = integrand.load_vertex_keldysh_and_spin_Components_left_vectorized(input_l);
+        }
+    }
+
+//#pragma omp parallel for schedule(static, 500) collapse(2)
+    for (int i = Nmin_sum; i <= Nmax_sum; i++) {
+        for (int j = Nmin_vp; j <= Nmax_vp; j++) {
+            const double vpp   = (i*2 + 1) * (M_PI * glb_T);
+            const double vp = (j*2 + 1) * (M_PI * glb_T);
+            VertexInput input_r = integrand.input_external;
+            input_r.v1 = vpp;
+            input_r.v2 = vp;
+            Q value;
+            vertex_values_right.template block<n_spin_sum,1>((-Nmin_sum+i) * n_spin_sum, -Nmin_vp+j) = integrand.load_vertex_keldysh_and_spin_Components_right_vectorized(input_r);
+        }
+    }
+
+    Eigen::Matrix<std::result_of_t<Integrand(double)>, Eigen::Dynamic, Eigen::Dynamic> result = vertex_values_left * Pi_values.asDiagonal() * vertex_values_right;
+    auto result_alt = Pi_values.sum() * 2.5*2.5;
+
+    //std::cout << vertex_values_left << "\n * " << Pi_values << "\n * " << vertex_values_right << std::endl;
+    //std::cout << "result: " << result << std::endl;
+    //std::cout << "result_alt: " << result_alt << std::endl;
+    return vertex_values_left * Pi_values.asDiagonal() * vertex_values_right;
+
+}
+
 #endif //KELDYSH_MFRG_INTEGRATOR_HPP

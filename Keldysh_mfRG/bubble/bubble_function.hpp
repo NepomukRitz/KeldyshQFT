@@ -42,9 +42,9 @@ class BubbleFunctionCalculator{
 
     int mpi_size = mpi_world_size(); // number of mpi processes
     int mpi_rank = mpi_world_rank(); // number of the current mpi process
-    std::array<std::size_t,my_defs::K1::rank> dimsK1;
-    std::array<std::size_t,my_defs::K2::rank> dimsK2;
-    std::array<std::size_t,my_defs::K3::rank> dimsK3;
+    std::array<std::size_t,my_defs::K1::rank> dimsK1; // number of vertex components over which i_mpi and i_omp are looped
+    std::array<std::size_t,my_defs::K2::rank> dimsK2; // number of vertex components over which i_mpi and i_omp are looped
+    std::array<std::size_t,my_defs::K3::rank> dimsK3; // number of vertex components over which i_mpi and i_omp are looped
     std::vector<int> indepKeldyshComponents_K1;
     std::vector<int> indepKeldyshComponents_K2;
     std::vector<int> indepKeldyshComponents_K3;
@@ -127,10 +127,18 @@ class BubbleFunctionCalculator{
         dimsK2 = MAX_DIAG_CLASS > 1 ? vertex1.get_rvertex(channel).K2.get_dims() : std::array<std::size_t, my_defs::K2::rank>();
         dimsK3 = MAX_DIAG_CLASS > 2 ? vertex1.get_rvertex(channel).K3.get_dims() : std::array<std::size_t, my_defs::K3::rank>();
         if constexpr (VECTORIZED_INTEGRATION == 1) {
-            /// vectorization over Keldysh indices
-            dimsK1[my_defs::K1::keldysh] = 1;
-            dimsK2[my_defs::K2::keldysh] = 1;
-            dimsK3[my_defs::K3::keldysh] = 1;
+            if constexpr (KELDYSH_FORMALISM) {
+                /// vectorization over Keldysh indices
+                dimsK1[my_defs::K1::keldysh] = 1;
+                dimsK2[my_defs::K2::keldysh] = 1;
+                dimsK3[my_defs::K3::keldysh] = 1;
+            }
+            else {
+                /// vectorization over fermionic frequencies
+                dimsK2[my_defs::K2::nu] = 1;
+                dimsK3[my_defs::K3::nu] = 1;
+                dimsK3[my_defs::K3::nup] = 1;
+            }
         }
 
         indepKeldyshComponents_K1 = channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p'? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t);
@@ -246,8 +254,8 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         t_start = utils::get_time();
         calculate_bubble_function<k2>();
         tK2 = utils::get_time() - t_start;
-        //utils::print("K2", channel, " done, ");
-        //utils::get_time(t_start);
+        utils::print("K2", channel, " done, ");
+        utils::get_time(t_start);
 
 #if DEBUG_SYMMETRIES
         t_start = utils::get_time();
@@ -261,8 +269,8 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         t_start = utils::get_time();
         calculate_bubble_function<k3>();
         tK3 = utils::get_time() - t_start;
-        //utils::print("K3", channel, " done, ");
-        //utils::get_time(t_start);
+        utils::print("K3", channel, " done, ");
+        utils::get_time(t_start);
     }
 
 }
@@ -373,7 +381,7 @@ void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::calculate_value(value_type& value, const int i0, const int i_in, const int iw,
                                            const double w, const double v, const double vp){
-#if VECTORIZED_INTEGRATION==1
+#if VECTORIZED_INTEGRATION==1 and KELDYSH_FORMALISM
     using Integrand_class = Integrand<k, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,Eigen::Matrix<Q,4,4>>;
 #else
     using Integrand_class = Integrand<k, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,Q>;
@@ -430,20 +438,63 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             const int W = (int) (w / (2 * M_PI * glb_T) + 0.1 * sgn(w));
             const int Nmin_sum = -POSINTRANGE - std::abs(W / 2) + interval_correction;
             const int Nmax_sum = POSINTRANGE - 1 + std::abs(W / 2);
-            const double vmin_temp = (2 * Nmin_sum     ) * M_PI * glb_T;
-            const double vmax_temp = (2 * Nmax_sum + 2. ) * M_PI * glb_T;
-            // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*glb_T
+            const double vmin_temp = (2 * Nmin_sum) * M_PI * glb_T;
+            const double vmax_temp = (2 * Nmax_sum + 2.) * M_PI * glb_T;
 
-            integration_result = bubble_value_prefactor() * (2 * M_PI) * glb_T *
-                    matsubarasum<Q>(integrand, Nmin_sum, Nmax_sum);
 
-            //integration_result +=
-            //        bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
-            //                                                                     vmin_temp, vmax_temp, w, v, vp, i0, i2,
-            //                                                                     i_in, diff);
-            /// Compute high-frequency contributions via quadrature:
-            integration_result += bubble_value_prefactor() *
-                    asymp_corrections_bubble_via_quadrature<Q>(integrand, vmin_temp, vmax_temp);
+            if constexpr (VECTORIZED_INTEGRATION) // (VECTORIZED_INTEGRATION and k == k3)
+            {
+                int Nmin_v, Nmax_v, Nmin_vp, Nmax_vp, N_vp;
+                if (k == k1) {
+                    Nmin_v = 0; Nmax_v = 0; Nmin_vp = 0; Nmax_vp = 0; N_vp = 1;
+                }
+                else if (k == k2) {
+                    Nmin_v = -nFER2/2; Nmax_v = DEBUG_SYMMETRIES ? nFER2/2-1 : -1; Nmin_vp = 0; Nmax_vp = 0; N_vp = 1;
+                }
+                else if (k == k2b) {
+                    Nmin_v = 0; Nmax_v = 0; Nmin_vp = -nFER2/2; Nmax_vp = DEBUG_SYMMETRIES ? nFER2/2-1 : -1; N_vp = nFER2;
+                }
+                else {
+                    Nmin_v = -nFER3/2; Nmax_v = DEBUG_SYMMETRIES ? nFER3/2-1 : -1; Nmin_vp = -nFER3/2; Nmax_vp = nFER3/2-1; N_vp = nFER3;
+                }
+                Eigen::Matrix<Q, Eigen::Dynamic, Eigen::Dynamic> summation_result =
+                        matsubarasum_vectorized<spin,channel>(integrand, Nmin_v, Nmax_v, Nmin_sum, Nmax_sum, Nmin_vp, Nmax_vp) * bubble_value_prefactor() * (2 * M_PI) * glb_T;
+
+                for (int i = Nmin_v; i <= Nmax_v; i++) {
+                    for (int j = Nmin_vp; j <= Nmax_vp; j++) {
+                        const double v_temp  = (i*2 + 1) * (M_PI * glb_T);
+                        const double vp_temp = (j*2 + 1) * (M_PI * glb_T);
+                        Integrand_class integrand_asymp(vertex1, vertex2, Pi, i0, i2, iw, w, v_temp, vp_temp, i_in, i_spin, diff);
+                        summation_result(-Nmin_v+i,-Nmin_vp+j) += bubble_value_prefactor() *
+                                                                 asymp_corrections_bubble_via_quadrature<Q>(integrand_asymp, vmin_temp, vmax_temp);
+                    }
+                }
+
+                //if (k == k2) {
+                //    std::cout << "summation result" << summation_result << std::endl;
+                //}
+
+                for (int i = Nmin_v; i <= Nmax_v; i++) {
+                    for (int j = Nmin_vp; j <= Nmax_vp; j++) {
+                        value[(-Nmin_v+i)*N_vp  + (-Nmin_vp+j)] = summation_result(-Nmin_v+i,-Nmin_vp+j);
+                    }
+                }
+            }
+            else
+            {
+                // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*glb_T
+
+                integration_result = bubble_value_prefactor() * (2 * M_PI) * glb_T *
+                                     matsubarasum<Q>(integrand, Nmin_sum, Nmax_sum);
+
+                //integration_result +=
+                //        bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
+                //                                                                     vmin_temp, vmax_temp, w, v, vp, i0, i2,
+                //                                                                     i_in, diff);
+                /// Compute high-frequency contributions via quadrature:
+                integration_result += bubble_value_prefactor() *
+                                      asymp_corrections_bubble_via_quadrature<Q>(integrand, vmin_temp, vmax_temp);
+            }
         }
     }
 
@@ -466,27 +517,35 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     /// write integration_result into value
     if constexpr(VECTORIZED_INTEGRATION == 1) {
 
-
-        // for vector-/matrix-valued result:
-        if constexpr(DEBUG_SYMMETRIES) {
-            // if DEBUG_SYMMETRIES is true, we compute and store ALL components
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    value[rotate_Keldysh_matrix<channel, true>(i * 4 + j)] = integration_result(i, j);
+        if constexpr (KELDYSH_FORMALISM) {
+            // for vector-/matrix-valued result:
+            if constexpr(DEBUG_SYMMETRIES) {
+                // if DEBUG_SYMMETRIES is true, we compute and store ALL components
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        value[rotate_Keldysh_matrix<channel, true>(i * 4 + j)] = integration_result(i, j);
+                    }
+                }
+            }
+            else {
+                // if DEBUG_SYMMETRIES is false, we compute and store symmetry-reduced components (given in indepKeldyshComponents_Ki)
+                std::vector<int> &indepKeldyshComponents = (k == k1 ? indepKeldyshComponents_K1 : (k == k3 ? indepKeldyshComponents_K3 : indepKeldyshComponents_K2));
+                const int size = indepKeldyshComponents.size();
+                for (int i = 0; i < size; i++) {
+                    int left, right;
+                    get_i0_left_right<channel>(indepKeldyshComponents[i], left, right);
+                    const Q val_temp = integration_result(left, right);
+                    value[i] = val_temp;
                 }
             }
         }
-        else {
-            // if DEBUG_SYMMETRIES is false, we compute and store symmetry-reduced components (given in indepKeldyshComponents_Ki)
-            std::vector<int> &indepKeldyshComponents = (k == k1 ? indepKeldyshComponents_K1 : (k == k3 ? indepKeldyshComponents_K3 : indepKeldyshComponents_K2));
-            const int size = indepKeldyshComponents.size();
-            for (int i = 0; i < size; i++) {
-                int left, right;
-                get_i0_left_right<channel>(indepKeldyshComponents[i], left, right);
-                const Q val_temp = integration_result(left, right);
-                value[i] = val_temp;
-            }
+        else { // Matsubara finite_T
+            static_assert(!ZERO_T);
+
+
         }
+
+
     } else {
         // for scalar result:
         value[0] = integration_result;
@@ -580,6 +639,14 @@ void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, int& n_vectorization, const K_class diag_class){
 
+    /// The computation of the vertex components of dgamma.Ki (i = 1, 2, 2', 3) can be parallelized
+    /// parallelization is achieved via...
+    ///     ... MPI --> distribute over multiple nodes (n_mpi = maximal number of MPI processes)
+    ///     ... OMP --> distribute over multiple threads within the same node (n_omp = number of
+    ///     ... vectorization --> use efficient matrix routines
+    ///                           If vectorization is used (*this)->get_value() returns a vector with the components over which we vectorize
+    ///                           and in (*this)->calculate_bubble_function() we need to loop over the remaining dimensions (these are given in dimsK1, dimsK2 and dimsK3)
+
     const int nK_K1 = dimsK1[my_defs::K1::keldysh];
     const int nK_K2 = dimsK2[my_defs::K2::keldysh];
     const int nK_K3 = dimsK3[my_defs::K3::keldysh];
@@ -592,14 +659,14 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             break;
         case k2:
         case k2b:
-            n_mpi = nK_K2 * n_spin * nw2_w;
-            n_omp = nw2_v * n_in_K2;
-            n_vectorization = VECTORIZED_INTEGRATION == 1 ? vertex1.get_rvertex(channel).K2.get_dims()[my_defs::K2::keldysh] : 1;
+            n_mpi = nK_K2 * n_spin * (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? 1 :nw2_w);
+            n_omp = n_in_K2 * (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? nw2_w : nw2_v);
+            n_vectorization = VECTORIZED_INTEGRATION == 1 ? (KELDYSH_FORMALISM ? vertex1.get_rvertex(channel).K2.get_dims()[my_defs::K2::keldysh] : nw2_v) : 1;
             break;
         case k3:
-            n_mpi = nK_K3 * n_spin * nw3_w;
-            n_omp = nw3_v * nw3_v_p * n_in_K3;
-            n_vectorization = VECTORIZED_INTEGRATION == 1 ? vertex1.get_rvertex(channel).K3.get_dims()[my_defs::K3::keldysh] : 1;
+            n_mpi = nK_K3 * n_spin * (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? 1 : nw3_w);
+            n_omp = (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? nw3_w : nw3_v * nw3_v_p) * n_in_K3;
+            n_vectorization = VECTORIZED_INTEGRATION == 1 ? (KELDYSH_FORMALISM ? vertex1.get_rvertex(channel).K3.get_dims()[my_defs::K3::keldysh] : nw3_v * nw3_v_p) : 1;
             break;
         default: ;
     }
@@ -708,15 +775,21 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     }
     else {
         if constexpr(VECTORIZED_INTEGRATION) {
-            // Make sure that the frequency point does not belong to the symmetry-reduced sector for all relevant Keldysh components
-            // otherwise we have to compute that point
-            const double safety = 1e-10;
-            int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-            const int number_of_indep_Components = dgamma.get_rvertex(channel).K1.get_dims()[my_defs::K1::keldysh];
-            for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
-                if (dgamma.get_rvertex(channel).freq_transformations.K1[i0_temp][sign_w] == 0) trafo = 0;
+            if constexpr (KELDYSH_FORMALISM) {
+                // Make sure that the frequency point does not belong to the symmetry-reduced sector for all relevant Keldysh components
+                // otherwise we have to compute that point
+                const double safety = 1e-10;
+                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                const int number_of_indep_Components = dgamma.get_rvertex(channel).K1.get_dims()[my_defs::K1::keldysh];
+                for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
+                    if (dgamma.get_rvertex(channel).freq_transformations.K1[i0_temp][sign_w] == 0) trafo = 0;
+                }
             }
-
+            else { // Matsubara finite T
+                const double safety = 1e-10;
+                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                if (sign_w == 0) trafo = 0;
+            }
         }
         else {
             const double safety = 1e-10;
@@ -746,17 +819,23 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     }
     else {
         if constexpr (VECTORIZED_INTEGRATION) {
-            // Make sure that the frequency point does not belong to the symmetry-reduced sector for any relevant Keldysh component
-            // otherwise we have to compute that point via quadrature
-            const double safety = 1e-10;
-            int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-            int sign_v = sign_index<double>(v - safety); // safety to ensure that w=0 gets sign_w=-1
-            const int number_of_indep_Components = dgamma.get_rvertex(channel).K2.get_dims()[my_defs::K2::keldysh];
+            if constexpr (KELDYSH_FORMALISM) {
+                // Make sure that the frequency point does not belong to the symmetry-reduced sector for any relevant Keldysh component
+                // otherwise we have to compute that point via quadrature
+                const double safety = 1e-10;
+                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                int sign_v = sign_index<double>(v - safety); // safety to ensure that w=0 gets sign_w=-1
+                const int number_of_indep_Components = dgamma.get_rvertex(channel).K2.get_dims()[my_defs::K2::keldysh];
 
-            for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
-                if (dgamma.get_rvertex(channel).freq_transformations.K2[i0_temp][sign_w * 2 + sign_v] == 0) trafo = 0;
+                for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
+                    if (dgamma.get_rvertex(channel).freq_transformations.K2[i0_temp][sign_w * 2 + sign_v] == 0) trafo = 0;
+                }
             }
-
+            else {// Matsubara finite T
+                const double safety = 1e-10;
+                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                if (sign_w == 0) trafo = 0;
+            }
         }
         else{
             const double safety = 1e-10;
@@ -812,18 +891,27 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     }
     else {
         if constexpr(VECTORIZED_INTEGRATION) {
-            // Make sure that the frequency point does not belong to the symmetry-reduced sector for all relevant Keldysh components
-            // otherwise we have to compute that point
-            const double safety = 1e-10;
-            int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-            int sign_f = sign_index(v + vp - safety);
-            int sign_fp = sign_index(v - vp - safety);
-            const int number_of_indep_Components = dgamma.get_rvertex(channel).K3.get_dims()[my_defs::K3::keldysh];
+            if constexpr (KELDYSH_FORMALISM) {
 
-            for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
-                if (dgamma.get_rvertex(channel).freq_transformations.K3[i0_temp][sign_w * 4 + sign_f * 2 + sign_fp] ==
-                    0)
-                    trafo = 0;
+                // Make sure that the frequency point does not belong to the symmetry-reduced sector for all relevant Keldysh components
+                // otherwise we have to compute that point
+                const double safety = 1e-10;
+                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                int sign_f = sign_index(v + vp - safety);
+                int sign_fp = sign_index(v - vp - safety);
+                const int number_of_indep_Components = dgamma.get_rvertex(channel).K3.get_dims()[my_defs::K3::keldysh];
+
+                for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
+                    if (dgamma.get_rvertex(channel).freq_transformations.K3[i0_temp][sign_w * 4 + sign_f * 2 + sign_fp] ==
+                        0)
+                        trafo = 0;
+                }
+            }
+            else {// Matsubara finite T
+                const double safety = 1e-10;
+                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                if (sign_w == 0) trafo = 0;
+
             }
 
         }

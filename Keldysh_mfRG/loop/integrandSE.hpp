@@ -25,7 +25,7 @@ namespace selfenergy_loop {
  */
 template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 class IntegrandSE {
-#if VECTORIZED_INTEGRATION
+#if VECTORIZED_INTEGRATION and KELDYSH_FORMALISM
     using buffertype_propagator = Eigen::Matrix<Q,1,4>;
     using buffertype_vertex = Eigen::Matrix<Q,4,myColsAtCompileTime<return_type>()>;
 #else
@@ -250,7 +250,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand(const
     int npoints = freqs.size();
 
     Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_vals(4, npoints);
-    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_vals(VECTORIZED_INTEGRATION ? 16 : 1, npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_vals(VECTORIZED_INTEGRATION and KELDYSH_FORMALISM ? 16 : 1, npoints);
 
     get_integrand_vals(freqs, integrand_vals, vertex_vals);
 
@@ -390,7 +390,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex_vect
     if constexpr(all_spins) {
         const VertexInput inputClosedAbove_spin0(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
         const VertexInput inputClosedAbove_spin1(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
-#if VECTORIZED_INTEGRATION == 1
+#if VECTORIZED_INTEGRATION == 1 and KELDYSH_FORMALISM
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result0 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>() ,pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin0);
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result1 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,1>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin1);
@@ -406,7 +406,7 @@ auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex_vect
     }
     else {
         VertexInput inputClosedAbove(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
-#if VECTORIZED_INTEGRATION == 1
+#if VECTORIZED_INTEGRATION == 1 and KELDYSH_FORMALISM
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove);
         result.resize(4,return_type::ColsAtCompileTime);
