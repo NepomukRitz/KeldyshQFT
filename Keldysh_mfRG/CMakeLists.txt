@@ -41,15 +41,15 @@ project(Keldysh_mfRG)
 ## include header and source code files
 include_directories(${CMAKE_SOURCE_DIR})
 file(GLOB_RECURSE keldysh_SRC *.c++)                                    # collects all filenames with extension .c++
-file(GLOB_RECURSE test_SRC ${CMAKE_SOURCE_DIR}/tests/unit_tests/*.cxx)  # collects all filenames with extension .cxx
+file(GLOB_RECURSE test_SRC ${CMAKE_SOURCE_DIR}/tests/unit_tests/*.cxx ${CMAKE_SOURCE_DIR}/tests/*.cxx)  # collects all filenames with extension .cxx
 file(GLOB_RECURSE keldysh_H *.hpp *.h)                                  # collects all filenames with extension .h and .hpp
 
 
 ## standard executable for production runs
-add_executable(Keldysh_mfRG main.cpp ${keldysh_H} ${keldysh_SRC} tests/test_Hartree.hpp tests/test_Hartree.c++ tests/test_Hubbard_SOPT.hpp tests/test_Hubbard_SOPT.c++)
+add_executable(Keldysh_mfRG main.cpp ${keldysh_H} ${keldysh_SRC})
 
 ## executable for (unit) tests (using Catch)
-add_executable(Keldysh_mfRG_testing tests/unit_tests/unit_tests.cpp ${keldysh_H} ${keldysh_SRC} ${test_SRC} tests/test_Hartree.hpp tests/test_Hartree.c++ tests/test_Hubbard_SOPT.hpp tests/test_Hubbard_SOPT.c++)
+add_executable(Keldysh_mfRG_testing tests/unit_tests/unit_tests.cpp ${keldysh_H} ${keldysh_SRC} ${test_SRC})
 
 ## executable for production runs of FPP project
 add_executable(FPP_mfRG FPP/FPP_main.cpp ${keldysh_H} ${keldysh_SRC})
