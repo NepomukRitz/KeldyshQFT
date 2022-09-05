@@ -5,7 +5,7 @@
  */
 
 // if defined, also run integration tests (else only unit tests)
-#define INTEGRATION_TESTS
+//#define INTEGRATION_TESTS
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
@@ -13,10 +13,10 @@
 #include "../../data_structures.hpp"
 #include "../../parameters/master_parameters.hpp"  // define system parameters
 #include "../../utilities/hdf5_routines.hpp"
-#include "../test_PrecalculatedBubble.hpp"
 #include "../test_perturbation_theory.hpp"
 #include "../../perturbation_theory_and_parquet/perturbation_theory.hpp"
-#include "../../perturbation_theory_and_parquet/hartree_term.hpp"
+#include "../test_Hartree.hpp"
+#include "../test_Hubbard_SOPT.hpp"
 #include "mpi.h"
 
 
@@ -72,9 +72,9 @@ int main(int argc, char* argv[]) {
 
 #endif
 
-    // run unit tests
+    /// run unit tests
 
-    //utils::print("   -----   Performing unit tests   -----", true);
+    utils::print("   -----   Performing unit tests   -----", true);
 
     //utils::check_input();
 
@@ -93,50 +93,18 @@ int main(int argc, char* argv[]) {
 
     //compute_non_symmetric_diags(0.8, true, 1, true);
 
-    //test_Bubble_in_Momentum_Space();
-
-    //double lambda = 1;
-    //State<state_datatype> state_ini (lambda);
-    //state_ini.initialize();
-    //sopt_state(state_ini, lambda);
-
-    /*
-    Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
-    auto Pi = PT_initialize_Bubble(barePropagator);
-    // save_PreBubble_in_freq_space(Pi, 0);
-
-    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/";
-    const std::string filename  = "SOPT_test_Nq_" + std::to_string(glb_N_q) + "_T_" + std::to_string(glb_T) + "_Lambda_" + std::to_string(lambda) + "_no_Hartree";
-    write_state_to_hdf<comp>(directory+filename, lambda, 1, state_ini);
-    */
-
-    /*
-    // Test Hartree functionality
-    const rvec lambdas = {999., 199., 99., 19., 9.};
-    utils::print("Filling calculations for eVg/U = " + std::to_string(glb_Vg/glb_U) +
-    " and an integrator accuaracy of " + std::to_string(integrator_tol), true);
-    utils::print(" ", true);
-    for (const double Lambda : lambdas) {
-        const double Delta = (glb_Gamma + Lambda) / 2.; // Hybridization
-        Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
-        const double hartree_value_num     = Hartree_Term.compute_Hartree_term_bracketing(1e-15, false, false);
-        const double hartree_value_friedel = Hartree_Term.compute_Hartree_term_Friedel(1e-15);
-
-        utils::print("For U/Delta = " + std::to_string(glb_U/Delta) + " we obtain a filling of:", true);
-        utils::print(std::to_string(hartree_value_num / glb_U) + " (numerically)", true);
-        utils::print(std::to_string(hartree_value_friedel / glb_U) + " (from the Friedel rule)", true);
-        utils::print(" ", true);
-    }
-     */
-    //data_dir = "../../../Hartree_Propagators/";
-    //utils::makedir(data_dir);
-    //Hartree_Term.write_out_propagators();
+    /// Hubbard model SOPT tests
+    //Hubbard_SOPT_test();
 
 
+    /// Test Hartree functionality
+    //compare_to_Friedel_rule();
+    //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
+
+    /// Test perturbation theory machine
     //const double Lambda = 9.;
     //PT_Machine<state_datatype> PT_Calculator (2, Lambda, false);
     //PT_Calculator.debug_TOPT();
-
 
 
     return Catch::Session().run(argc, argv);
