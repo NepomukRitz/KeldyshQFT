@@ -82,7 +82,15 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
     Propagator<comp> G (Lambda, Sigma, prop_type);
     double val = - 1. / M_PI * fermi_distribution(nu);
 
-    return val * G.GR(nu, 0).imag();
+    if (test_different_Keldysh_component){
+        if      (test_Keldysh_component == "A_real") return val * std::conj(G.SR(nu, 0)).real();
+        else if (test_Keldysh_component == "A_imag") return val * std::conj(G.SR(nu, 0)).imag();
+        else if (test_Keldysh_component == "R_real") return val * G.SR(nu, 0).real();
+        else if (test_Keldysh_component == "R_imag") return val * G.SR(nu, 0).imag();
+        else if (test_Keldysh_component == "K_real") return val * G.SK(nu, 0).real();
+        else if (test_Keldysh_component == "K_imag") return val * G.SK(nu, 0).imag();
+    }
+    else return val * G.GR(nu, 0).imag();
 }
 
 void Hartree_Solver::friedel_sum_rule_check() const {
