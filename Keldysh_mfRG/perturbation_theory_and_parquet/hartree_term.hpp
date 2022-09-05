@@ -65,13 +65,23 @@ public:
         assert(test_all_Keldysh_components);
         // now compute the Hartree-term once with each Keldysh-component of the single-scale propagator
         test_different_Keldysh_component = true;
-        for (std::string component : {"A_real", "A_imag", "R_real", "R_imag", "K_real", "K_imag"}) {
+        for (std::string component : {"A_real", "A_imag", "R_real", "R_imag", "K_real", "K_imag", "lesser"}) {
             test_Keldysh_component = component;
             double test_result = compute_Hartree_term_oneshot();
-            utils::print("Closing the Hartree loop with the " + test_Keldysh_component + " component of S gives "
-                         + std::to_string(test_result), true);
+            //utils::print("Closing the Hartree loop with the " + test_Keldysh_component + " component of S gives "
+            //             + std::to_string(test_result), true);
+            std::cout << "Closing the Hartree loop with the " << test_Keldysh_component << " component of S gives " << test_result << "\n";
         }
+        double test_Keldysh = 0.;
+        double test_lesser = 0.;
+        test_Keldysh_component = "K_imag";
+        test_Keldysh = compute_Hartree_term_oneshot();
+        test_Keldysh_component = "lesser";
+        test_lesser = compute_Hartree_term_oneshot();
+        double rel_diff = (test_Keldysh - test_lesser) /test_Keldysh;
+        std::cout << "Relative difference between closing with S^K or 2S^lesser " << rel_diff << "\n";
     }
+
     double compute_Hartree_term(double convergence_threshold = 1e-12);
     double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12, bool Friedel_check = true,
                                            bool verbose = true);

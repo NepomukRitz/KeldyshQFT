@@ -83,12 +83,13 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
     double val = - 1. / M_PI * fermi_distribution(nu);
 
     if (test_different_Keldysh_component){
-        if      (test_Keldysh_component == "A_real") return val * std::conj(G.SR(nu, 0)).real();
-        else if (test_Keldysh_component == "A_imag") return val * std::conj(G.SR(nu, 0)).imag();
-        else if (test_Keldysh_component == "R_real") return val * G.SR(nu, 0).real();
-        else if (test_Keldysh_component == "R_imag") return val * G.SR(nu, 0).imag();
-        else if (test_Keldysh_component == "K_real") return val * G.SK(nu, 0).real();
-        else if (test_Keldysh_component == "K_imag") return val * G.SK(nu, 0).imag();
+        if      (test_Keldysh_component == "A_real") return std::conj(G.SR(nu, 0)).real();
+        else if (test_Keldysh_component == "A_imag") return std::conj(G.SR(nu, 0)).imag();
+        else if (test_Keldysh_component == "R_real") return G.SR(nu, 0).real();
+        else if (test_Keldysh_component == "R_imag") return G.SR(nu, 0).imag();
+        else if (test_Keldysh_component == "K_real") return G.SK(nu, 0).real();
+        else if (test_Keldysh_component == "K_imag") return G.SK(nu, 0).imag();
+        else if (test_Keldysh_component == "lesser") return - 4 * fermi_distribution(nu) * G.SR(nu, 0).imag();
     }
     else return val * G.GR(nu, 0).imag();
 }

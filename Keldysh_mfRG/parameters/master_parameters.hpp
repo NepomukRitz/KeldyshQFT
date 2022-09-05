@@ -27,7 +27,7 @@ constexpr bool VERBOSE = false;
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 
@@ -136,7 +136,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen), including Fabian's idea for Keldysh
 // 4: interaction cutoff
-#define REG 4
+#define REG 2
 
 
 

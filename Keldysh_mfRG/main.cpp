@@ -65,7 +65,7 @@ auto main(int argc, char * argv[]) -> int {
 
 
     /// Hartree test
-    Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
+    //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
 
     /*
     // SIAM PT4 specific:
