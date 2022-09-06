@@ -497,19 +497,10 @@ void loop(SelfEnergy<state_datatype>& self, const GeneralVertex<Q,vertType>& ful
     fullvertex.template symmetry_expand<'t',false>();
 #endif
     prop.selfenergy.Sigma.initInterpolator();
-    if (all_spins) {
 #pragma omp parallel for schedule(dynamic) //default(none) shared(self, fullvertex, prop, all_spins)
-        for (int iSE = 0; iSE < nSE * n_in; ++iSE) {
-            LoopCalculator<Q, vertType, true> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
-            LoopIntegrationMachine.perform_computation();
-        }
-    }
-    else {
-#pragma omp parallel for schedule(dynamic) //default(none) shared(self, fullvertex, prop, all_spins)
-        for (int iSE = 0; iSE < nSE * n_in; ++iSE) {
-            LoopCalculator<Q, vertType, false> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
-            LoopIntegrationMachine.perform_computation();
-        }
+    for (int iSE = 0; iSE < nSE * n_in; ++iSE) {
+        LoopCalculator<Q, vertType, true> LoopIntegrationMachine(self, fullvertex, prop, all_spins, iSE);
+        LoopIntegrationMachine.perform_computation();
     }
 
 

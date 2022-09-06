@@ -91,7 +91,13 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
         else if (test_Keldysh_component == "K_imag") return G.SK(nu, 0).imag();
         else if (test_Keldysh_component == "lesser") return - 4 * fermi_distribution(nu) * G.SR(nu, 0).imag();
     }
-    else return val * G.GR(nu, 0).imag();
+    else {
+        switch (prop_type) {
+            case 'g': return val * G.GR(nu, 0).imag();
+            case 's': return val * G.SR(nu, 0).imag(); // TODO: sign and prefactor??
+            default: assert(false);
+        }
+    }
 }
 
 void Hartree_Solver::friedel_sum_rule_check() const {

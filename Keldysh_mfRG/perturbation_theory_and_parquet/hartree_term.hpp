@@ -39,7 +39,7 @@ public:
 
         Sigma.initialize(glb_U * filling, 0);
     };
-    /// constructor used for a one-shot calculation of the Hartree-term with a given selfenergy, e.g. in Parquet iterations.
+    /// constructor used for a one-shot calculation of the Hartree-term with a given selfenergy, e.g. in parquet iterations or in the 1l flow equation.
     Hartree_Solver(const double Lambda_in, const SelfEnergy<comp>& Sigma_in, const bool diff=false): Lambda(Lambda_in){
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
