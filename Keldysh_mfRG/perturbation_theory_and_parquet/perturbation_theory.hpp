@@ -31,22 +31,26 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 }
 
 template <typename Q, class Bubble_Object>
-void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
+void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi){
     std::string channels = "apt";
     for (char r: channels) {
-//#if not defined(NDEBUG)
+#if not defined(NDEBUG)
         utils::print("Computing the vertex in SOPT in channel ", false);
-        utils::print_add(r, true);
-//#endif
+        utils::print_add(r, false);
+        utils::print_add(" ... ", false);
+#endif
         bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
+#if not defined(NDEBUG)
+        utils::print_add("done.", true);
+#endif
     }
 }
 
 template <typename Q, class Bubble_Object>
-void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const Bubble_Object& Pi){
+    Propagator<Q> barePropagator(bareState.Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
-    GeneralVertex<Q,symmetric_r_irred> bubble_a_r (Lambda);
+    GeneralVertex<Q,symmetric_r_irred> bubble_a_r (bareState.Lambda);
     bubble_a_r.set_Ir(true);
     bubble_a_r.set_frequency_grid(bareState.vertex);
     //Do an a-Bubble for the calculation of the self-energy
@@ -130,46 +134,40 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
  * @param state        : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
-void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
-    State<Q> bareState (Psi, Lambda);
-    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
-
+void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi) {
 #if not defined(NDEBUG)
-    utils::print("Computing the vertex in SOPT...", true);
+    utils::print("Computing the self energy in SOPT ... ", false);
 #endif
-    //Calculate the bubbles -> Vertex in SOPT saved in Psi
-    vertexInSOPT(Psi.vertex, bareState, Pi, Lambda);
-
+    if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, Psi, Psi.vertex, Psi.Lambda); /// WILL NOT WORK NOW!!
+    // TODO: Compute the vertex in SOPT for the Hubbard model inside the function selfEnergyInSOPT_HUBBARD, just as it is done for the SIAM
+    else                        selfEnergyInSOPT(Psi.selfenergy, Psi, Pi);
 #if not defined(NDEBUG)
-    utils::print("Computing the self energy in SOPT...", true);
+    utils::print_add("done.", true);
 #endif
-    //Calculate the self-energy in SOPT, saved in Psi
-    if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, bareState, Psi.vertex, Lambda);
-    else                        selfEnergyInSOPT(Psi.selfenergy, bareState, Pi, Lambda);
 
+    vertexInSOPT(Psi.vertex, Psi, Pi);  // Uses the previously defined bubble, which does not contain the SOPT SE yet.
 }
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
 template<typename Q>
-void sopt_state(State<Q>& Psi, const double Lambda, const bool diff = false) {
-    State<Q> bareState (Psi, Lambda); // copy frequency grids
-    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value (except currently for the Hubbard model)
+void sopt_state(State<Q>& Psi, const bool diff = false) {
+    assert(Psi.initialized);
 
-#if not defined(NDEBUG)
-    utils::print("Start initializing bubble object...", true);
+    #if not defined(NDEBUG)
+    utils::print("Start initializing bubble object ... ", false);
 #endif
 
     // Initialize bubble objects
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
-    Propagator<Q> bareSingleScalePropagator(Lambda, bareState.selfenergy, diff ? 's' : 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Psi.Lambda, Psi.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> bareSingleScalePropagator(Psi.Lambda, Psi.selfenergy, diff ? 's' : 'g');    //Bare propagator
     //auto Pi = PT_initialize_Bubble(barePropagator);
     Bubble<Q> Pi (barePropagator, bareSingleScalePropagator, diff);
 
 #if not defined(NDEBUG)
-    utils::print("...done.", true);
+    utils::print_add("done.", true);
 #endif
 
-    sopt_state_impl(Psi, Pi, Lambda);
+    sopt_state_impl(Psi, Pi);
 }
 
 

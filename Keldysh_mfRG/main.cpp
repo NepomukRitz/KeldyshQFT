@@ -54,7 +54,7 @@ auto main(int argc, char * argv[]) -> int {
     config.nloops = n_loops;
     config.U = 1.;
     //config.save_intermediateResults = true;
-    //n_loop_flow(data_dir+utils::generate_filename(config), config);
+    n_loop_flow(data_dir+utils::generate_filename(config), config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 

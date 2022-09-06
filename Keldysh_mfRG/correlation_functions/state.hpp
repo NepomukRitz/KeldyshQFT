@@ -22,6 +22,7 @@ public:
     double Lambda;
     Vertex<Q> vertex;
     SelfEnergy<Q> selfenergy;
+    bool initialized = false;
 
     State(): Lambda(0.) , vertex(fullvert<Q>(0., true)), selfenergy(SelfEnergy<Q>(0.)) {
 #ifndef NDEBUG
@@ -129,7 +130,7 @@ template <typename Q> void State<Q>::initialize() {
         this->selfenergy.initialize(glb_U / 2., 0.);
         if (std::abs(glb_Vg) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
             assert (not PARTICLE_HOLE_SYMMETRY);
-            Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
+            auto Hartree_Term = Hartree_Solver (Lambda);
             const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing();
             this->selfenergy.initialize(hartree_value, 0.);
         }
@@ -139,6 +140,7 @@ template <typename Q> void State<Q>::initialize() {
     if (KELDYSH and CONTOUR_BASIS != 1) this->vertex.initialize(-glb_U/2.);
     else this->vertex.initialize(-glb_U);
 
+    this->initialized = true;
 }
 
 // set frequency grids of newly created state to those of existing reference state
