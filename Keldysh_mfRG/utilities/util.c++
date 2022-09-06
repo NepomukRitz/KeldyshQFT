@@ -156,6 +156,7 @@ namespace utils {
         std::string n2 = "n2=" + std::to_string(nBOS2) + "_";
         std::string n3 = "n3=" + std::to_string(nBOS3) + "_";
         std::string gamma = "Gamma=" + std::to_string(glb_Gamma) + "_";
+        std::string gate = "eVg=" + std::to_string(glb_Vg) + "_";
         std::string voltage = "V=" + std::to_string(glb_V) + "_";
         std::string temp = "T=" + std::to_string(glb_T) + "_";
         std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
@@ -169,8 +170,8 @@ namespace utils {
     #endif
         if (MAX_DIAG_CLASS >= 3) filename += n3;
         filename += gamma;
-        if(glb_V != 0.)
-            filename += voltage;
+        if (not PARTICLE_HOLE_SYMMETRY) filename += gate;
+        if(glb_V != 0.) filename += voltage;
         filename += temp;
         filename += lambda + ode + extension;
 
