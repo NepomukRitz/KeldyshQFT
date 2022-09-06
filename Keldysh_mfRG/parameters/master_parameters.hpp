@@ -42,17 +42,17 @@ constexpr bool VERBOSE = false;
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
 #define MAX_DIAG_CLASS 3
-#define SBE_DECOMPOSITION 1
+#define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1
 
 inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
-#define SELF_ENERGY_FLOW_CORRECTIONS 2
+#define SELF_ENERGY_FLOW_CORRECTIONS 1
 const int nmax_Selfenergy_iterations = 10;
-const double tol_selfenergy_correction_abs = 1e-8;
+const double tol_selfenergy_correction_abs = 1e-9;
 const double tol_selfenergy_correction_rel = 1e-5;;
-const double loop_tol_abs = 1e-8;
-const double loop_tol_rel = 1e-4;
+const double loop_tol_abs = 1e-9;
+const double loop_tol_rel = 1e-5;
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
@@ -60,7 +60,7 @@ const double loop_tol_rel = 1e-4;
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 10.; //0.1; //0.01;                     // Temperature
+constexpr double glb_T = 1.0; //0.1; //0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -142,7 +142,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 // 4: interaction cutoff
-#define REG 2
+#define REG 3
 
 
 

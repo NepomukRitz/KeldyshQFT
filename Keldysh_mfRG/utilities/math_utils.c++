@@ -61,8 +61,8 @@ auto round2bfreq(const double w) -> double {
     const double result = round2Infty(w / a) * a;
     assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
     assert((int)(result / a * 2 + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(std::abs(result) >= std::abs(w) - 1e-15 * (std::abs(w ) + 1));
-    assert(std::abs(result) <  std::abs(w) + 2*M_PI*glb_T + 1e-15 * (std::abs(w) + 1));
+    assert(std::abs(result) >= std::abs(w) - 1e-10 * (std::abs(w ) + 1));
+    assert(std::abs(result) <  std::abs(w) + 2*M_PI*glb_T + 1e-10 * (std::abs(w) + 1));
     return result;
 }
 auto floor2ffreq(const double w) -> double {

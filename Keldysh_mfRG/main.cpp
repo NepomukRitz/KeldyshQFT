@@ -67,15 +67,15 @@ auto main(int argc, char * argv[]) -> int {
     utils::print_job_info(config);
     std::string filename = utils::generate_filename(config);
 
-    //n_loop_flow(data_dir+filename, config);
-    //test_symmetries(2*exp(  1 * LN_10 ), config);
+    n_loop_flow(data_dir+filename, config);
+    //test_symmetries(1., config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
     //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
 
 
     ///parquet runs:
-    const std::vector<double> myU_NRG {1.25};
-    run_parquet(myU_NRG);
+    const std::vector<double> myU_NRG {1.25}; // {0.75, 1.25, 1.5};
+    //run_parquet(myU_NRG);
 
 
 

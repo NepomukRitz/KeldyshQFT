@@ -254,8 +254,8 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         t_start = utils::get_time();
         calculate_bubble_function<k2>();
         tK2 = utils::get_time() - t_start;
-        utils::print("K2", channel, " done, ");
-        utils::get_time(t_start);
+        //utils::print("K2", channel, " done, ");
+        //utils::get_time(t_start);
 
 #if DEBUG_SYMMETRIES
         t_start = utils::get_time();
@@ -269,8 +269,8 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         t_start = utils::get_time();
         calculate_bubble_function<k3>();
         tK3 = utils::get_time() - t_start;
-        utils::print("K3", channel, " done, ");
-        utils::get_time(t_start);
+        //utils::print("K3", channel, " done, ");
+        //utils::get_time(t_start);
     }
 
 }

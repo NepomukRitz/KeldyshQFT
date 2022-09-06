@@ -487,7 +487,7 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
 
         /// for testing:
-        if (iteration == 1) {
+        if (iteration == 1 and false) {
             GeneralVertex<Q,symmetric_r_irred,false> Ir(state_out.vertex.half1());     // irreducible vertex
             //GeneralVertex<Q,symmetric_r_irred,false> Gamma_temp_onlyK2(state_out.vertex.half1(), state_out.vertex.get_vertex_nondiff());
             //const char channel = 'a';
