@@ -841,7 +841,7 @@ public:
     }
 
     template <int spin, char ch_bubble, typename result_type> auto value_minus_gamma0_symmetry_expanded(const VertexInput& input)  const -> result_type {
-        static_assert(spin == 0 or spin == 1, "Used unsupported spin index");
+        static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
         assert(spin < vertices_bubbleintegrand.size());
         return vertices_bubbleintegrand[spin].template value_minus_gamma0_symmetry_expanded<ch_bubble,result_type,symmtype!=symmetric_full>(input);
@@ -974,6 +974,9 @@ public:
         else if (channel == 'p') { return vanishing_component_channel_p;}
         else if (channel == 't') { return vanishing_component_channel_t;}
         else {assert(false);}
+    }
+    void swap_vanishing_component_channel_a_and_t() const {
+        vanishing_component_channel_a.swap(vanishing_component_channel_t);
     }
     void set_to_zero_in_integrand(const char channel, const K_class kClass) {
         get_vanishing_component_channel_r(channel)[kClass] = true;

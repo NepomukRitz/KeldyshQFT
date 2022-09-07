@@ -80,9 +80,10 @@ void compute_BSE(Vertex<Q,false>& Gamma_BSE, const State<Q>& state_in, const dou
 #endif
 }
 
-template<typename Q>
-SelfEnergy<Q> compute_SDE_impl(const char channel, const double Lambda, const Vertex<Q,false>& Gamma, const Propagator<Q> & G_bubble, const Propagator<Q> & dG_bubble, const bool diff_bubble, const Propagator<Q> & G_loop, const bool is_differentiated_SE) {
-    assert(channel == 'a' or channel == 'p');
+/// compute the (non-differentiated) SDE by forming a bubble in channel r --> 0.5*(B_r(Gamma_0, Gamma)+B_r(Gamma, Gamma_0))
+/// and close the loop over the result
+template<char channel, typename Q>
+SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma, const Propagator<Q> & G_bubble, const Propagator<Q> & G_loop) {
 
     Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
     Gamma_0.set_frequency_grid(Gamma);
@@ -93,21 +94,45 @@ SelfEnergy<Q> compute_SDE_impl(const char channel, const double Lambda, const Ve
     GeneralVertex<Q,symmetric_r_irred,false> bubble_r (Lambda);
     bubble_r.set_Ir(true);
     bubble_r.set_frequency_grid(Gamma);
-    bubble_function(bubble_r, Gamma_0, Gamma, G_bubble, diff_bubble ? dG_bubble : G_bubble, channel, diff_bubble);  // full vertex on the right
+    bubble_function(bubble_r, Gamma_0, Gamma, G_bubble, G_bubble, channel, false);  // full vertex on the right
 
-    // compute the a bubble with full vertex on the left
+
+        // compute the r bubble with full vertex on the left
     GeneralVertex<Q,symmetric_r_irred,false> bubble_l (Lambda);
     bubble_l.set_Ir(true);
     bubble_l.set_frequency_grid(Gamma);
-    bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, diff_bubble ? dG_bubble : G_bubble, channel, diff_bubble);  // full vertex on the left
+    bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, G_bubble, channel, false);  // full vertex on the left
+    if constexpr (channel == 't') {
+        Gamma.swap_vanishing_component_channel_a_and_t();
+
+        GeneralVertex<Q,symmetric_r_irred,false> bubble_r_other (Lambda);
+        bubble_r_other.set_Ir(true);
+        bubble_r_other.set_frequency_grid(Gamma);
+        bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 'a', false);  // full vertex on the right
+        bubble_r += bubble_r_other;
+
+        GeneralVertex<Q,symmetric_r_irred,false> bubble_l_other (Lambda);
+        bubble_l_other.set_Ir(true);
+        bubble_l_other.set_frequency_grid(Gamma);
+        bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 'a', false);  // full vertex on the left
+        bubble_l += bubble_l_other;
+    }
 
     GeneralVertex<Q,symmetric_r_irred,false> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the a bubble
-
+    for (char r: {'a', 'p', 't'}) {
+        bubble.set_to_zero_in_integrand(r, k3_sbe);
+        if (channel != r) {
+            bubble.set_to_zero_in_integrand(r, k1);
+            bubble.set_to_zero_in_integrand(r, k2);
+            bubble.set_to_zero_in_integrand(r, k2b);
+            bubble.set_to_zero_in_integrand(r, k3);
+        }
+    }
 
     // compute the self-energy via SDE using the bubble
     SelfEnergy<Q> Sigma_SDE(G_bubble.selfenergy.Sigma.frequencies);
-    Sigma_SDE.initialize(is_differentiated_SE ? 0. : glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
-    loop<false,0>(Sigma_SDE, bubble, G_loop);
+    Sigma_SDE.initialize( glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    loop<false,channel == 't' ? 1 : 0>(Sigma_SDE, bubble, G_loop);
 
     //utils::print("Check causality of Sigma_SDE_", channel, ": \n");
     //check_SE_causality(Sigma_SDE);
@@ -116,8 +141,53 @@ SelfEnergy<Q> compute_SDE_impl(const char channel, const double Lambda, const Ve
     return Sigma_SDE;
 }
 
+
+template <char channel, typename Q>
+void compute_SDE_impl_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
+    /// prepare vertex Γ for computing   0.5 * [L_i( B_r(Γ_0, Γ_0 + γ_r) + B_r(Γ_0 + γ_r, Γ_0), G)]  using compute_SDE_impl<channel>(...)
+
+    Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
+    Vertex<Q,false> Gamma_temp_only_Gamma0_and_gamma_r = state_in.vertex;
+
+    for (char r: {'a', 'p', 't'}) {
+        if (channel != r) {
+            Gamma_temp_only_Gamma0_and_gamma_r.set_to_zero_in_integrand(r, k1);
+            Gamma_temp_only_Gamma0_and_gamma_r.set_to_zero_in_integrand(r, k2);
+            Gamma_temp_only_Gamma0_and_gamma_r.set_to_zero_in_integrand(r, k2b);
+            Gamma_temp_only_Gamma0_and_gamma_r.set_to_zero_in_integrand(r, k3);
+            Gamma_temp_only_Gamma0_and_gamma_r.set_to_zero_in_integrand(r, k3_sbe);
+        }
+    }
+
+    Sigma_SDE = compute_SDE_impl<channel,Q>(Lambda, Gamma_temp_only_Gamma0_and_gamma_r, G, G);
+
+}
+
+/// compute the (non-differentiated) SDE by splitting up the full vertex in Γ = R + γ_a + γ_p + γ_t
+/// form the bubble in the 'natural' channels and close the loop accordingly
+/// i.e. Σ = L_0( B_a(Γ_0, Γ_0), G) + L_0( B_a(Γ_0, γ_a), G) + L_0( B_p(Γ_0, γ_p), G) + L_1( B_t(Γ_0, γ_t), G)
+///      where L_i stands for a loop with version i     and     B_r for a bubble in channel r   (everything with non-differentiated full propagators G)
+template <typename Q>
+void compute_SDE_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
+
+    State<Q,false> Psi_0 (state_in, Lambda);                  // bare vertex with self-energy copied from state_in
+    Psi_0.initialize();
+    Psi_0.selfenergy = Sigma_SDE;
+    SelfEnergy<Q> Sigma_SDE_0 = Sigma_SDE;
+    SelfEnergy<Q> Sigma_SDE_aplus0 = Sigma_SDE;
+    SelfEnergy<Q> Sigma_SDE_pplus0 = Sigma_SDE;
+    SelfEnergy<Q> Sigma_SDE_tplus0 = Sigma_SDE;
+    compute_SDE_impl_v1_helper<'a',Q>(Sigma_SDE_0, Psi_0, Lambda);
+    compute_SDE_impl_v1_helper<'a',Q>(Sigma_SDE_aplus0, state_in, Lambda);
+    compute_SDE_impl_v1_helper<'p',Q>(Sigma_SDE_pplus0, state_in, Lambda);
+    compute_SDE_impl_v1_helper<'t',Q>(Sigma_SDE_tplus0, state_in, Lambda);
+    Sigma_SDE = Sigma_SDE_aplus0 + Sigma_SDE_pplus0 + Sigma_SDE_tplus0 - 2. * Sigma_SDE_0;
+}
+
 /**
  * Insert the self-energy of input "state" into the rhs of the (symmetrized) Schwinger-Dyson equation and compute the lhs.
+ *      Original implementation of SDE
+ *      corresponds to   -->   0.5*[compute_SDE_impl('a', ...)+compute_SDE_impl('p', ...)]
  * @param Sigma_SDE   : Self-energy computed as the lhs of the BSE
  * @param Sigma_SDE_a : self-energy computed from an a bubble (symmetrized w.r.t full vertex on the left/right)
  * @param Sigma_SDE_p : self-energy computed from a p bubble (symmetrized w.r.t full vertex on the left/right)
@@ -128,7 +198,13 @@ template <typename Q>
 void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, SelfEnergy<Q>& Sigma_SDE_p,
                  const State<Q>& state_in, const double Lambda) {
     bool write_state = false;
-
+    /// alternative to below code (does the same stuff in more compact code):
+    Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
+    Sigma_SDE_a = compute_SDE_impl<'a',Q>(Lambda, state_in.vertex, G, G);
+    Sigma_SDE_p = compute_SDE_impl<'p',Q>(Lambda, state_in.vertex, G, G);
+    Sigma_SDE = 0.5 * (Sigma_SDE_a + Sigma_SDE_p);
+    ///
+    /*
     Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
     Gamma_0.set_frequency_grid(state_in.vertex);
     if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
@@ -214,9 +290,10 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
 #endif
     }
     SDE_counter++;
-
+    */
 }
 
+/// Compute the SDE by closing the loop over K1a+K2a or K1p+K2p
 template<bool version, bool is_differentiated_vertex, bool is_differentiated_SE, typename Q>
 SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const Vertex<Q,is_differentiated_vertex>& Gamma, const Propagator<Q> & G_loop) {
     assert((version == 0 and (channel == 'a' or channel == 'p')) or (version == 1 and (channel == 't' or channel == 'p')));
@@ -226,8 +303,16 @@ SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const
         if (r != channel and !(version==1 and channel=='t' and r == 'a')) {
             Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k1);
             Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2);
+            Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2b);
         }
-        Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2b);
+        else {
+            Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5;
+            if constexpr (is_differentiated_vertex) {Gamma_temp_onlyK2.get_vertex_nondiff().get_rvertex(r).K2 *= 0.5;}
+            if constexpr (DEBUG_SYMMETRIES) {
+                Gamma_temp_onlyK2.get_rvertex(r).K2b *= 0.5;
+                if constexpr (is_differentiated_vertex) {Gamma_temp_onlyK2.get_vertex_nondiff().get_rvertex(r).K2b *= 0.5;}
+            }
+        }
         Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k3);
         Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k3_sbe);
     }
@@ -241,6 +326,16 @@ SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const
     return Sigma_SDE;
 }
 
+
+template <typename Q>
+void compute_SDE_v3(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
+    Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
+    SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl_v3<0, false, false>('a', Lambda, state_in.vertex, G);
+    SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl_v3<0, false, false>('p', Lambda, state_in.vertex, G);
+    Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
+}
+
+
 /**
  * Wrapper for the above function, with only the total (symmetrized) result Sigma_SDE returned.
  * @param Sigma_SDE : Self-energy computed as the lhs of the BSE
@@ -252,17 +347,19 @@ void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     SelfEnergy<Q> Sigma_SDE_a(state_in.selfenergy.Sigma.frequencies);
     SelfEnergy<Q> Sigma_SDE_p(state_in.selfenergy.Sigma.frequencies);
     compute_SDE_impl_v2(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
+
+    utils::print("difference bw SDE_a and SDE_p: \n");
+    utils::print("\t", (Sigma_SDE_a - Sigma_SDE_p).norm(), "\n");
 }
 
 
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
-    Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
-    SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl_v3<0, false, false>('a', Lambda, state_in.vertex, G);
-    SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl_v3<0, false, false>('p', Lambda, state_in.vertex, G);
-    Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
+    /// Pick your favorite version:
+    compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda);
+    //compute_SDE_v2<Q>(Sigma_SDE, state_in, Lambda);
+    //compute_SDE_v3<Q>(Sigma_SDE, state_in, Lambda);
 
-    //compute_SDE_v2(Sigma_SDE, state_in, Lambda);
 
 }
 

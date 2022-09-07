@@ -499,6 +499,20 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() 
 
 /**
  * Loop function for calculating the self energy
+ * @tparam all_spins: sum over spins in loop?
+ * @tparam version  : 0 --> symmetry_expand vertex in 't' channel and close the loop ABOVE
+ *                           ___<___ prop
+ *                          /       \
+ *                          \_______/
+ *                           |  Γ |
+ *                         <_|____|_<
+ *
+ *                   1 --> symmetry_expand vertex in 'a' channel and close the loop RIGHT
+ *
+ *                          >_______/ \ prop
+ *                           |  Γ |    |
+ *                         <_|____|_   v
+ *                                  \ /
  * @tparam Q        : Type of the elements of the vertex, usually comp
  * @param self      : SelfEnergy<Q> object of which the Retarded and Keldysh components will be updated in the loop
  * @param fullvertex: Vertex object for the calculation of the loop

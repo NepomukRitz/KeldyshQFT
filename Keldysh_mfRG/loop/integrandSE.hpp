@@ -15,7 +15,7 @@
 
 namespace selfenergy_loop {
     template<bool version> constexpr char pick_channel() {return version == 0 ? 't' : 'a';}
-    template<bool version, int ispin> constexpr int pick_spin() {return version == 0 ? ispin : 1-ispin;}
+    template<bool version, int ispin> constexpr int pick_spin() {return version == 0 ? ispin : 2-ispin;}
 }
 
 /**
