@@ -91,34 +91,42 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
     else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
 
     // compute the r-bubble with full vertex on the right
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_r (Lambda);
-    bubble_r.set_Ir(true);
+    GeneralVertex<Q,symmetric_full,false> bubble_r (Lambda);
     bubble_r.set_frequency_grid(Gamma);
     bubble_function(bubble_r, Gamma_0, Gamma, G_bubble, G_bubble, channel, false);  // full vertex on the right
 
 
+
         // compute the r bubble with full vertex on the left
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_l (Lambda);
-    bubble_l.set_Ir(true);
+    GeneralVertex<Q,symmetric_full,false> bubble_l (Lambda);
     bubble_l.set_frequency_grid(Gamma);
     bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, G_bubble, channel, false);  // full vertex on the left
     if constexpr (channel == 't') {
         Gamma.swap_vanishing_component_channel_a_and_t();
 
-        GeneralVertex<Q,symmetric_r_irred,false> bubble_r_other (Lambda);
+        GeneralVertex<Q,symmetric_full,false> bubble_r_other (Lambda);
         bubble_r_other.set_Ir(true);
         bubble_r_other.set_frequency_grid(Gamma);
         bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 'a', false);  // full vertex on the right
         bubble_r += bubble_r_other;
 
-        GeneralVertex<Q,symmetric_r_irred,false> bubble_l_other (Lambda);
+        GeneralVertex<Q,symmetric_full,false> bubble_l_other (Lambda);
         bubble_l_other.set_Ir(true);
         bubble_l_other.set_frequency_grid(Gamma);
         bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 'a', false);  // full vertex on the left
         bubble_l += bubble_l_other;
     }
 
-    GeneralVertex<Q,symmetric_r_irred,false> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the a bubble
+    // if bubble_l.K1+K2_r identical to Gamma.K1+K2_r ?
+    //utils::print("For channel r = ", channel, "\n");
+    //utils::print("difference in bubble_l.K1r and Gamma.K1r: \t", (bubble_l.get_rvertex(channel).K1 - Gamma.get_rvertex(channel).K1).get_vec().max_norm() / Gamma.get_rvertex(channel).K1.get_vec().max_norm(), "\n");
+    //utils::print("difference in bubble_l.K2r and Gamma.K2r: \t", (bubble_l.get_rvertex(channel).K2 - Gamma.get_rvertex(channel).K2).get_vec().max_norm() / Gamma.get_rvertex(channel).K2.get_vec().max_norm(), "\n");
+
+    GeneralVertex<Q,symmetric_full,false> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the a bubble
+
+
+
+
     for (char r: {'a', 'p', 't'}) {
         bubble.set_to_zero_in_integrand(r, k3_sbe);
         if (channel != r) {
@@ -129,11 +137,25 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
         }
     }
 
+
+
     // compute the self-energy via SDE using the bubble
     SelfEnergy<Q> Sigma_SDE(G_bubble.selfenergy.Sigma.frequencies);
     Sigma_SDE.initialize( glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop<false,channel == 't' ? 1 : 0>(Sigma_SDE, bubble, G_loop);
 
+    //if (channel == 'a') {
+    //    State<Q, false> Psi_a_l(bubble_l, Sigma_SDE, Lambda);
+    //    State<Q, false> Psi_a_r(bubble_r, Sigma_SDE, Lambda);
+    //    add_state_to_hdf(data_dir + "Psi_SDE_a_l.h5", SDE_counter + 1, Psi_a_l, true);
+    //    add_state_to_hdf(data_dir + "Psi_SDE_a_r.h5", SDE_counter + 1, Psi_a_r, true);
+    //}
+    //else if (channel == 'p') {
+    //    State<Q, false> Psi_p_l(bubble_l, Sigma_SDE, Lambda);
+    //    State<Q, false> Psi_p_r(bubble_r, Sigma_SDE, Lambda);
+    //    add_state_to_hdf(data_dir + "Psi_SDE_p_l.h5", SDE_counter + 1, Psi_p_l, true);
+    //    add_state_to_hdf(data_dir + "Psi_SDE_p_r.h5", SDE_counter + 1, Psi_p_r, true);
+    //}
     //utils::print("Check causality of Sigma_SDE_", channel, ": \n");
     //check_SE_causality(Sigma_SDE);
     //compare_with_FDTs(bubble, Lambda, 0, "SDE_bubble_" + std::to_string(channel));
@@ -177,10 +199,10 @@ void compute_SDE_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     SelfEnergy<Q> Sigma_SDE_aplus0 = Sigma_SDE;
     SelfEnergy<Q> Sigma_SDE_pplus0 = Sigma_SDE;
     SelfEnergy<Q> Sigma_SDE_tplus0 = Sigma_SDE;
-    compute_SDE_impl_v1_helper<'a',Q>(Sigma_SDE_0, Psi_0, Lambda);
-    compute_SDE_impl_v1_helper<'a',Q>(Sigma_SDE_aplus0, state_in, Lambda);
-    compute_SDE_impl_v1_helper<'p',Q>(Sigma_SDE_pplus0, state_in, Lambda);
-    compute_SDE_impl_v1_helper<'t',Q>(Sigma_SDE_tplus0, state_in, Lambda);
+    compute_SDE_impl_v1<'a',Q>(Sigma_SDE_0, Psi_0, Lambda);
+    compute_SDE_impl_v1<'a',Q>(Sigma_SDE_aplus0, state_in, Lambda);
+    compute_SDE_impl_v1<'p',Q>(Sigma_SDE_pplus0, state_in, Lambda);
+    compute_SDE_impl_v1<'t',Q>(Sigma_SDE_tplus0, state_in, Lambda);
     Sigma_SDE = Sigma_SDE_aplus0 + Sigma_SDE_pplus0 + Sigma_SDE_tplus0 - 2. * Sigma_SDE_0;
 }
 
@@ -200,6 +222,10 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     bool write_state = false;
     /// alternative to below code (does the same stuff in more compact code):
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
+    //Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
+    //Gamma_0.set_frequency_grid(state_in.vertex);
+    //if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
+    //else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
     Sigma_SDE_a = compute_SDE_impl<'a',Q>(Lambda, state_in.vertex, G, G);
     Sigma_SDE_p = compute_SDE_impl<'p',Q>(Lambda, state_in.vertex, G, G);
     Sigma_SDE = 0.5 * (Sigma_SDE_a + Sigma_SDE_p);
@@ -293,26 +319,59 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     */
 }
 
+template <char channel, typename Q>
+void check_selfconsistency_of_K1K2(const Vertex<Q,false>& Gamma, double Lambda, const Propagator<Q> G_bubble) {
+
+    Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
+    Gamma_0.set_frequency_grid(Gamma);
+    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
+    else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
+
+    // compute the r bubble with full vertex on the left
+    GeneralVertex<Q,symmetric_r_irred,false> bubble_l (Lambda);
+    bubble_l.set_Ir(true);
+    bubble_l.set_frequency_grid(Gamma);
+    bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, G_bubble, channel, false);  // full vertex on the left
+    if constexpr (channel == 't') {
+        Gamma.swap_vanishing_component_channel_a_and_t();
+
+        GeneralVertex<Q,symmetric_r_irred,false> bubble_l_other (Lambda);
+        bubble_l_other.set_Ir(true);
+        bubble_l_other.set_frequency_grid(Gamma);
+        bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 'a', false);  // full vertex on the left
+        bubble_l += bubble_l_other;
+    }
+
+    // if bubble_l.K1+K2_r identical to Gamma.K1+K2_r ?
+    utils::print("For channel r = ", channel, "\n");
+    utils::print("difference in bubble_l.K1r and Gamma.K1r: \t", (bubble_l.get_rvertex(channel).K1 - Gamma.get_rvertex(channel).K1).get_vec().max_norm() / Gamma.get_rvertex(channel).K1.get_vec().max_norm(), "\n");
+    utils::print("difference in bubble_l.K2r and Gamma.K2r: \t", (bubble_l.get_rvertex(channel).K2 - Gamma.get_rvertex(channel).K2).get_vec().max_norm() / Gamma.get_rvertex(channel).K2.get_vec().max_norm(), "\n");
+
+}
+
 /// Compute the SDE by closing the loop over K1a+K2a or K1p+K2p
 template<bool version, bool is_differentiated_vertex, bool is_differentiated_SE, typename Q>
 SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const Vertex<Q,is_differentiated_vertex>& Gamma, const Propagator<Q> & G_loop) {
     assert((version == 0 and (channel == 'a' or channel == 'p')) or (version == 1 and (channel == 't' or channel == 'p')));
 
+    check_selfconsistency_of_K1K2<'a',Q>(Gamma, Lambda, G_loop);
+    check_selfconsistency_of_K1K2<'p',Q>(Gamma, Lambda, G_loop);
+
     GeneralVertex<Q,non_symmetric_diffleft,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1(), Gamma.half1(), Gamma.get_vertex_nondiff());
     for (char r: {'a', 'p', 't'}) {
-        if (r != channel and !(version==1 and channel=='t' and r == 'a')) {
+        if (r != channel) {
             Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k1);
             Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2);
-            Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2b);
         }
         else {
-            Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5;
-            if constexpr (is_differentiated_vertex) {Gamma_temp_onlyK2.get_vertex_nondiff().get_rvertex(r).K2 *= 0.5;}
+            //Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5;
+            //if constexpr (is_differentiated_vertex) {Gamma_temp_onlyK2.get_vertex_nondiff().get_rvertex(r).K2 *= 0.5;}
             if constexpr (DEBUG_SYMMETRIES) {
                 Gamma_temp_onlyK2.get_rvertex(r).K2b *= 0.5;
                 if constexpr (is_differentiated_vertex) {Gamma_temp_onlyK2.get_vertex_nondiff().get_rvertex(r).K2b *= 0.5;}
             }
         }
+        Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2b);
         Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k3);
         Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k3_sbe);
     }
@@ -333,6 +392,16 @@ void compute_SDE_v3(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl_v3<0, false, false>('a', Lambda, state_in.vertex, G);
     SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl_v3<0, false, false>('p', Lambda, state_in.vertex, G);
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
+
+    utils::print("difference bw SDE_a and SDE_p: \n");
+    utils::print("\t", (Sigma_SDE_a - Sigma_SDE_p).norm() / Sigma_SDE_p.norm(), "\n");
+
+    //State<Q,false> Psi_a = state_in;
+    //State<Q,false> Psi_p = state_in;
+    //Psi_a.selfenergy = Sigma_SDE_a;
+    //Psi_p.selfenergy = Sigma_SDE_p;
+    //add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
+    //add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
 }
 
 
@@ -349,16 +418,34 @@ void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     compute_SDE_impl_v2(Sigma_SDE, Sigma_SDE_a, Sigma_SDE_p, state_in, Lambda);
 
     utils::print("difference bw SDE_a and SDE_p: \n");
-    utils::print("\t", (Sigma_SDE_a - Sigma_SDE_p).norm(), "\n");
+    utils::print("\t", (Sigma_SDE_a - Sigma_SDE_p).norm() / Sigma_SDE_p.norm(), "\n");
+
+    //State<Q,false> Psi_a = state_in;
+    //State<Q,false> Psi_p = state_in;
+    //Psi_a.selfenergy = Sigma_SDE_a;
+    //Psi_p.selfenergy = Sigma_SDE_p;
+    //add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
+    //add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
 }
 
 
 template <typename Q>
-void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda) {
+void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, int version) {
     /// Pick your favorite version:
-    compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda);
-    //compute_SDE_v2<Q>(Sigma_SDE, state_in, Lambda);
-    //compute_SDE_v3<Q>(Sigma_SDE, state_in, Lambda);
+
+    if (version == 1) {
+        compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda);
+        SelfEnergy<Q> Sigma_compare = Sigma_SDE;
+        compute_SDE_v3<Q>(Sigma_compare, state_in, Lambda);
+        utils::print("rel. dev. bw. v1 and v3: \t", (Sigma_SDE - Sigma_compare).norm(), "\n");
+    }
+    else if (version == 2) {
+        compute_SDE_v2<Q>(Sigma_SDE, state_in, Lambda);
+    }
+    else {
+        compute_SDE_v3<Q>(Sigma_SDE, state_in, Lambda);
+    }
+    SDE_counter ++;
 
 
 }
@@ -506,12 +593,12 @@ void parquet_checks(const std::string filename);
  * @param Lambda     : Lambda value at which to compute the parquet equations
  */
 template <typename Q>
-void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
+void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda, const int version) {
     compute_BSE(state_out.vertex, state_in, Lambda, it_Lambda);                    // compute the gamma_r's via the BSE
     if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
     else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
 
-    compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
+    compute_SDE(state_out.selfenergy, state_in, Lambda, version);  // compute the self-energy via the SDE
     /// For testing (delete when testing is done):
     //for (char r : {'a', 'p', 't'}) {
     //    state_out.vertex.get_rvertex(r).K1 = state_in.vertex.get_rvertex(r).K1;
@@ -531,11 +618,12 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
  * @param mixing_ratio: mixing ratio in [0.1 - 0.5] for stabilizing the parquet iteration
  */
 template <typename Q>
-void parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda,
+void parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
                     const double accuracy=1e-6, const int Nmax=6, const double mixing_ratio=1.0) {
     assert((mixing_ratio >= 0.1 and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
     double relative_difference_vertex = 1.;
     double relative_difference_selfenergy = 1.;
+    SDE_counter = 0;
 
     State<Q> state_out (state_in, Lambda);   // lhs of the parquet equations
     State<Q> state_diff (state_in, Lambda);  // difference between input and output of the parquet equations
@@ -544,12 +632,12 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
 
 #ifndef NDEBUG
-    bool write_state = false;
+    bool write_state = true;
     if (write_state) {
-        write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1,
-                           state_in); // save input into 0-th layer of hdf5 file
-        write_state_to_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1,
-                           state_in); // save input into 0-th layer of hdf5 file
+        //write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1,
+        //                   state_in); // save input into 0-th layer of hdf5 file
+        //write_state_to_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1,
+        //                   state_in); // save input into 0-th layer of hdf5 file
 
         write_state_to_hdf(data_dir + "Psi_SDE_a.h5", Lambda, Nmax + 1, state_in, true);
         write_state_to_hdf(data_dir + "Psi_SDE_p.h5", Lambda, Nmax + 1, state_in, true);
@@ -565,7 +653,7 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
     // first check if converged, and also stop if maximal number of iterations is reached
     while ((relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy) && iteration <= Nmax) {
         utils::print("iteration ", iteration, true);
-        parquet_iteration(state_out, state_in, Lambda, iteration);  // compute lhs of parquet equations
+        parquet_iteration(state_out, state_in, Lambda, iteration, version);  // compute lhs of parquet equations
         /// for testing:
         //if (iteration == 1) {
         //    for (char r : {'a', 'p', 't'}) {
@@ -619,7 +707,7 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
 }
 
 
-void run_parquet(const std::vector<double>&);
+void run_parquet(const std::vector<double>&, int version);
 
 
 #endif //KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
