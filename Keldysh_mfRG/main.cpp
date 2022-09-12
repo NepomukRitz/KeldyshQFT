@@ -20,23 +20,21 @@
 
 
 auto main(int argc, char * argv[]) -> int {
-
-    std::cout << "number of args: " << argc-1 << ", expected: 1" << std::endl;
-    const int n_loops = atoi(argv[1]);
-    N_LOOPS = n_loops;
-
 #ifdef USE_MPI
     if (MPI_FLAG) {
         MPI_Init(nullptr, nullptr);
     }
 #endif
 
-
+    /// Parse and check command line arguments:
+    utils::print("number of args: ", argc-1, ", expected: 1 \n");
+    const int n_loops = atoi(argv[1]);
+    N_LOOPS = n_loops;
     utils::check_input();
 
     /// Job and Data directory
-    std::string job = "Loop=" + std::to_string(n_loops);
-    job += "U=" + std::to_string(glb_U);
+    std::string job = "T=" + std::to_string(glb_T);
+    job += "_U=" + std::to_string(glb_U);
 #ifndef PARTICLE_HOLE_SYMM
     job += "_eVg=" + std::to_string(glb_Vg);
 #endif
@@ -75,7 +73,9 @@ auto main(int argc, char * argv[]) -> int {
 
     ///parquet runs:
     const std::vector<double> myU_NRG {1.25}; // {0.75, 1.25, 1.5};
-    //run_parquet(myU_NRG);
+    //run_parquet(myU_NRG, 1);
+    //run_parquet(myU_NRG, 2);
+    //run_parquet(myU_NRG, 3);
 
 
 

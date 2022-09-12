@@ -25,7 +25,7 @@ hsize_t h5_cast(int dim) {
 
 namespace hdf5_impl {
     template <typename gridType>
-    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const unsigned int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose) {
+    void write_freqparams_to_hdf_LambdaLayer(H5::Group& group, const gridType& freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose) {
         write_to_hdf_LambdaLayer<char>(group, "type", std::vector<char>({freqgrid.get_type()}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<int>(group, "diag_class", std::vector<int>({freqgrid.get_diag_class()}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<int>(group, "purely_positive", std::vector<int>({freqgrid.purely_positive}), Lambda_it, numberLambdaLayers, file_exists);
@@ -58,7 +58,7 @@ namespace hdf5_impl {
     }
 
     template<typename gridType>
-    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, const unsigned int Lambda_it, const double Lambda) {
+    void init_freqgrid_from_hdf_LambdaLayer(H5::Group& group, gridType& freqgrid, const int Lambda_it, const double Lambda) {
         std::vector<char> type;
         std::vector<int> diag_class;
         std::vector<int> purely_positive;
@@ -111,7 +111,7 @@ namespace hdf5_impl {
 }
 
 
-State<state_datatype> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it) {
+State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it) {
     H5::H5File file_out(filename, H5F_ACC_RDONLY);
 
     std::vector<double> Lambda;
@@ -200,9 +200,64 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const un
     hdf5_impl::init_freqgrid_from_hdf_LambdaLayer(group_freqparams_ffreqs3t2,state.vertex.tvertex().K3.frequencies. tertiary_grid, Lambda_it, Lambda[0]);
 #endif
 
+    /// check whether parameters in HDF file agree with parameters/master_parameters.hpp
+        /// Write used parameters for documentation purpose
+        int REG_loaded, MAX_DIAG_CLASS_loaded, N_LOOPS_loaded, GRID_loaded;
+        double glb_Gamma_loaded, glb_T_loaded, glb_mu_loaded, glb_U_loaded, glb_epsilon_loaded, glb_V_loaded;
+
+    H5::Group group_params(file_out.openGroup(PARAM_LIST));
+    read_from_hdf(group_params, "REG", REG_loaded);
+    read_from_hdf(group_params, "Gamma", glb_Gamma_loaded);
+    read_from_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS_loaded);
+    read_from_hdf(group_params, "N_LOOPS", N_LOOPS_loaded);
+    read_from_hdf(group_params, "T", glb_T_loaded);
+    read_from_hdf(group_params, "mu", glb_mu_loaded);
+    read_from_hdf(group_params, "U", glb_U_loaded);
+    read_from_hdf(group_params, "epsilon", glb_epsilon_loaded);
+    read_from_hdf(group_params, "V", glb_V_loaded);
+    //read_from_hdf(group_params, "ODEsolver", ODEsolver_loaded);
+    read_from_hdf(group_params, "GRID", GRID_loaded);
+    bool are_parameters_identical = REG == REG_loaded and
+            glb_Gamma == glb_Gamma_loaded and
+            MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded and
+            N_LOOPS ==N_LOOPS_loaded and
+            glb_T == glb_T_loaded and
+            glb_mu == glb_mu_loaded and
+            glb_U == glb_U_loaded and
+            glb_epsilon == glb_epsilon_loaded and
+            glb_V == glb_V_loaded and
+            GRID == GRID_loaded;
+    if (!are_parameters_identical) {
+        utils::print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        utils::print("\t Warning!: \t Parameters of executable do not agree with those in HDF file ", filename, "\n");
+        utils::print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+    }
+
     file_out.close();
 
     return state;
+}
+
+
+bool check_convergence_hdf(const H5std_string& filename, int& Lambda_it) {
+    H5::H5File file_out;
+    H5::Exception::dontPrint();
+    bool is_converged;
+    try {
+        file_out = H5::H5File(filename, H5F_ACC_RDONLY);
+
+        H5::Group group_params(file_out.openGroup(PARAM_LIST));
+        read_from_hdf(group_params, IS_CONVERGED, is_converged);
+        read_from_hdf(group_params, "last_Lambda_it", Lambda_it);
+
+    } catch(const H5::FileIException&) {
+        is_converged = false;
+        Lambda_it = -1;
+    }
+
+    file_out.close();
+
+    return is_converged;
 }
 
 

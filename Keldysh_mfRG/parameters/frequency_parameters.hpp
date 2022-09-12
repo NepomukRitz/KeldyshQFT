@@ -33,8 +33,8 @@ constexpr int nBOS = COUNT * 64 * 2 + 1;
 constexpr int nFER = COUNT * 32 * 2;
 constexpr int nBOS2 = COUNT * 8 * 2 + 1;//nBOS;
 constexpr int nFER2 = COUNT * 4 * 2;//nFER;
-constexpr int nBOS3 = COUNT * 4 * 4 + 1; //nBOS;
-constexpr int nFER3 = COUNT * 2 * 4; //nFER;
+constexpr int nBOS3 = COUNT * 8 * 2 + 1; //nBOS;
+constexpr int nFER3 = COUNT * 4 * 2; //nFER;
 
 //constexpr int nBOS  = COUNT * 2 * 2 + 1;
 //constexpr int nFER  = COUNT * 2 * 2;

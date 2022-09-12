@@ -194,11 +194,11 @@ void compute_SDE_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
 
     State<Q,false> Psi_0 (state_in, Lambda);                  // bare vertex with self-energy copied from state_in
     Psi_0.initialize();
-    Psi_0.selfenergy = Sigma_SDE;
-    SelfEnergy<Q> Sigma_SDE_0 = Sigma_SDE;
-    SelfEnergy<Q> Sigma_SDE_aplus0 = Sigma_SDE;
-    SelfEnergy<Q> Sigma_SDE_pplus0 = Sigma_SDE;
-    SelfEnergy<Q> Sigma_SDE_tplus0 = Sigma_SDE;
+    Psi_0.selfenergy = state_in.selfenergy;
+    SelfEnergy<Q> Sigma_SDE_0 = state_in.selfenergy;
+    SelfEnergy<Q> Sigma_SDE_aplus0 = state_in.selfenergy;
+    SelfEnergy<Q> Sigma_SDE_pplus0 = state_in.selfenergy;
+    SelfEnergy<Q> Sigma_SDE_tplus0 = state_in.selfenergy;
     compute_SDE_impl_v1<'a',Q>(Sigma_SDE_0, Psi_0, Lambda);
     compute_SDE_impl_v1<'a',Q>(Sigma_SDE_aplus0, state_in, Lambda);
     compute_SDE_impl_v1<'p',Q>(Sigma_SDE_pplus0, state_in, Lambda);
@@ -228,6 +228,10 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     //else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
     Sigma_SDE_a = compute_SDE_impl<'a',Q>(Lambda, state_in.vertex, G, G);
     Sigma_SDE_p = compute_SDE_impl<'p',Q>(Lambda, state_in.vertex, G, G);
+
+    //SelfEnergy<Q> Sigma_SDE_t = compute_SDE_impl<'t',Q>(Lambda, state_in.vertex, G, G);
+    //utils::print("deviation between a and t version: ", (Sigma_SDE_a - Sigma_SDE_t).norm() / Sigma_SDE_a.norm(), "\n");
+
     Sigma_SDE = 0.5 * (Sigma_SDE_a + Sigma_SDE_p);
     ///
     /*
@@ -342,10 +346,10 @@ void check_selfconsistency_of_K1K2(const Vertex<Q,false>& Gamma, double Lambda, 
         bubble_l += bubble_l_other;
     }
 
-    // if bubble_l.K1+K2_r identical to Gamma.K1+K2_r ?
-    utils::print("For channel r = ", channel, "\n");
-    utils::print("difference in bubble_l.K1r and Gamma.K1r: \t", (bubble_l.get_rvertex(channel).K1 - Gamma.get_rvertex(channel).K1).get_vec().max_norm() / Gamma.get_rvertex(channel).K1.get_vec().max_norm(), "\n");
-    utils::print("difference in bubble_l.K2r and Gamma.K2r: \t", (bubble_l.get_rvertex(channel).K2 - Gamma.get_rvertex(channel).K2).get_vec().max_norm() / Gamma.get_rvertex(channel).K2.get_vec().max_norm(), "\n");
+    /// is bubble_l.K1+K2_r identical to Gamma.K1+K2_r ?
+    //utils::print("For channel r = ", channel, "\n");
+    //utils::print("difference in bubble_l.K1r and Gamma.K1r: \t", (bubble_l.get_rvertex(channel).K1 - Gamma.get_rvertex(channel).K1).get_vec().max_norm() / Gamma.get_rvertex(channel).K1.get_vec().max_norm(), "\n");
+    //utils::print("difference in bubble_l.K2r and Gamma.K2r: \t", (bubble_l.get_rvertex(channel).K2 - Gamma.get_rvertex(channel).K2).get_vec().max_norm() / Gamma.get_rvertex(channel).K2.get_vec().max_norm(), "\n");
 
 }
 
@@ -391,11 +395,15 @@ void compute_SDE_v3(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
     SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl_v3<0, false, false>('a', Lambda, state_in.vertex, G);
     SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl_v3<0, false, false>('p', Lambda, state_in.vertex, G);
+    SelfEnergy<Q> Sigma_SDE_t = compute_SDE_impl_v3<1, false, false>('t', Lambda, state_in.vertex, G);
     Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
 
     utils::print("difference bw SDE_a and SDE_p: \n");
     utils::print("\t", (Sigma_SDE_a - Sigma_SDE_p).norm() / Sigma_SDE_p.norm(), "\n");
+    //utils::print("difference bw SDE_t and SDE_a: \n");
+    //utils::print("\t", (Sigma_SDE_a - Sigma_SDE_t).norm() / Sigma_SDE_t.norm(), "\n");
 
+    /// Save results via a- and p-channel separately:
     //State<Q,false> Psi_a = state_in;
     //State<Q,false> Psi_p = state_in;
     //Psi_a.selfenergy = Sigma_SDE_a;
@@ -435,9 +443,9 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const doubl
 
     if (version == 1) {
         compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda);
-        SelfEnergy<Q> Sigma_compare = Sigma_SDE;
-        compute_SDE_v3<Q>(Sigma_compare, state_in, Lambda);
-        utils::print("rel. dev. bw. v1 and v3: \t", (Sigma_SDE - Sigma_compare).norm(), "\n");
+        //SelfEnergy<Q> Sigma_compare = Sigma_SDE;
+        //compute_SDE_v3<Q>(Sigma_compare, state_in, Lambda);
+        //utils::print("rel. dev. bw. v1 and v3: \t", (Sigma_SDE - Sigma_compare).norm(), "\n");
     }
     else if (version == 2) {
         compute_SDE_v2<Q>(Sigma_SDE, state_in, Lambda);
@@ -618,21 +626,31 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
  * @param mixing_ratio: mixing ratio in [0.1 - 0.5] for stabilizing the parquet iteration
  */
 template <typename Q>
-void parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
+int parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
                     const double accuracy=1e-6, const int Nmax=6, const double mixing_ratio=1.0) {
     assert((mixing_ratio >= 0.1 and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
-    double relative_difference_vertex = 1.;
-    double relative_difference_selfenergy = 1.;
     SDE_counter = 0;
+    utils::print("\t --- Start parquet solver ---\n");
+    utils::print("Results in ", filename, "\n");
 
-    State<Q> state_out (state_in, Lambda);   // lhs of the parquet equations
-    State<Q> state_diff (state_in, Lambda);  // difference between input and output of the parquet equations
+
+    int Lambda_it = -1;
+    bool is_converged = check_convergence_hdf(filename, Lambda_it);
+    if (is_converged) {
+        utils::print("Loading converged parquet result from file (Lambda_it = ", Lambda_it, ") \n");
+        state_in = read_state_from_hdf(filename, Lambda_it);
+        return 0;
+    }
+    if (Lambda_it >= 0) {
+        utils::print("Loading non-converged parquet result from file (Lambda_it = ", Lambda_it, ") \n");
+        state_in = read_state_from_hdf(filename, Lambda_it);
+    }
 
     write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
 
 #ifndef NDEBUG
-    bool write_state = true;
+    bool write_state = false;
     if (write_state) {
         //write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1,
         //                   state_in); // save input into 0-th layer of hdf5 file
@@ -647,11 +665,15 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         write_state_to_hdf(data_dir + "Psi_SDE_p_r.h5", Lambda, Nmax + 1, state_in, true);
     }
 #endif
+    State<Q> state_out (state_in, Lambda);   // lhs of the parquet equations
+    State<Q> state_diff (state_in, Lambda);  // difference between input and output of the parquet equations
 
 
     int iteration = 1;
     // first check if converged, and also stop if maximal number of iterations is reached
-    while ((relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy) && iteration <= Nmax) {
+    bool unfinished = true;
+    while (unfinished) {
+        double t_start = utils::get_time();
         utils::print("iteration ", iteration, true);
         parquet_iteration(state_out, state_in, Lambda, iteration, version);  // compute lhs of parquet equations
         /// for testing:
@@ -663,13 +685,16 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         /// mixing of old and new state:
         state_out = mixing_ratio * state_out + (1-mixing_ratio) * state_in;
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
-        add_state_to_hdf(filename, iteration, state_out);  // store result into file
 
         // compute relative differences between input and output w.r.t. output
-        relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();
-        relative_difference_selfenergy = state_diff.selfenergy.norm() / state_out.selfenergy.norm();
+        const double relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();
+        const double relative_difference_selfenergy = state_diff.selfenergy.norm    () / state_out.selfenergy.norm();
         utils::print("relative difference vertex:     ", relative_difference_vertex, true);
         utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
+        const bool is_converged = !(relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy);
+        unfinished = !is_converged && iteration < Nmax;
+
+        add_state_to_hdf(filename, iteration, state_out, is_converged);  // store result into file
 
         /// for testing:
         if (iteration == 1 and false) {
@@ -702,8 +727,13 @@ void parquet_solver(const std::string filename, State<Q>& state_in, const double
         }
 
         state_in = state_out;  // use output as input for next iteration
+
+        utils::print("Time needed for parquet iteration: ");
+        utils::get_time(t_start);
+
         ++iteration;
     }
+    return 0;
 }
 
 

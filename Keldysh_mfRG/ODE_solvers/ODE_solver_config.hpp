@@ -7,6 +7,9 @@ struct ODE_solver_config {
 
     ODE_solver_config()
             :   maximal_number_of_ODE_steps(50),
+                Lambda_i(Lambda_ini),
+                Lambda_now(Lambda_ini),
+                Lambda_f(Lambda_fin),
                 iter_start(0),
                 lambda_checkpoints({}),
                 filename(""),
@@ -16,8 +19,11 @@ struct ODE_solver_config {
                 a_State(1.),
                 a_dState_dLambda(0.){}
 
-    ODE_solver_config(int maximal_number_of_ODE_steps_in, int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in)
+    ODE_solver_config(int maximal_number_of_ODE_steps_in, double Lambda_i_in, double Lambda_f_in, int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in)
             :   maximal_number_of_ODE_steps(maximal_number_of_ODE_steps_in),
+                Lambda_i(Lambda_i_in),
+                Lambda_now(Lambda_i_in),
+                Lambda_f(Lambda_f_in),
                 iter_start(0),
                 lambda_checkpoints({}),
                 filename(""),
@@ -27,9 +33,12 @@ struct ODE_solver_config {
                 a_State(1.),
                 a_dState_dLambda(0.){}
 
-    ODE_solver_config(unsigned int maximal_number_of_ODE_steps_in, unsigned int iter_start_in, std::vector<double> lambda_checkpoints_in, std::string filename_in,
+    ODE_solver_config(unsigned int maximal_number_of_ODE_steps_in, double Lambda_i_in, double Lambda_f_in, unsigned int iter_start_in, std::vector<double> lambda_checkpoints_in, std::string filename_in,
                       unsigned int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in, double a_State_in, double a_dState_dLambda_in)
             :   maximal_number_of_ODE_steps(maximal_number_of_ODE_steps_in),
+                Lambda_i(Lambda_i_in),
+                Lambda_now(Lambda_i_in),
+                Lambda_f(Lambda_f_in),
                 iter_start(iter_start_in),
                 lambda_checkpoints(lambda_checkpoints_in),
                 filename(filename_in),
@@ -46,6 +55,8 @@ struct ODE_solver_config {
 
     /// parameters for adaptive ODE solvers:
     unsigned int max_stepResizing_attempts;
+    double Lambda_i, Lambda_f;  // initial and final Lambda
+    mutable double Lambda_now;
     double relative_error;
     double absolute_error;
     double a_State;          //weights for computation of relative error (for error estimate)

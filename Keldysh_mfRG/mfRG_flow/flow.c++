@@ -22,7 +22,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
         // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
         const std::string parquet_temp_filename = data_dir + "parquetInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) : "" ) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
-        parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1e-4, 1);
+        parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1, 1e-4, 1);
 
         state_temp.vertex.half1().check_vertex_resolution();
         state_temp.findBestFreqGrid(true);
@@ -37,14 +37,33 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     sopt_state(state_ini, Lambda_ini);
 
     const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1e-6, 5);
+    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1,1e-6, 5);
 
 
     //// better: read state from converged parquet solution
     //state_ini = read_state_from_hdf(parquet_filename, 4);
+    int Lambda_it = -1;
+    double Lambda_now;
+    bool is_converged = check_convergence_hdf(outputFileName, Lambda_it);
+    if (is_converged) {
+        utils::print("Loading converged mfRG result from file (Lambda_it = ", Lambda_it, ") \n");
+        state_fin = read_state_from_hdf(outputFileName, Lambda_it);
+        return state_fin;
+    }
+    if (Lambda_it >= 0) {
+        // load state if file exists already
+        utils::print("Loading non-converged mfRG result from file (Lambda_it = ", Lambda_it, ") \n");
+        state_ini = read_state_from_hdf(outputFileName, Lambda_it);
+        Lambda_now = state_ini.Lambda;
+    }
+    else {
+        // start new file if it does not exist yet
+        write_state_to_hdf(outputFileName, Lambda_ini,  frgConfig.nODE_ + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
+        Lambda_it = 0;
+        Lambda_now = Lambda_ini;
+    }
 
 
-    write_state_to_hdf(outputFileName, Lambda_ini,  frgConfig.nODE_ + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
     //state_ini.vertex.half1().check_vertex_resolution();
 #ifdef ADAPTIVE_GRID
     state_ini.findBestFreqGrid(true);
@@ -63,6 +82,10 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     config.maximal_number_of_ODE_steps = frgConfig.nODE_;
     config.absolute_error = frgConfig.epsODE_abs_;
     config.relative_error = frgConfig.epsODE_rel_;
+    config.iter_start = Lambda_it;
+    config.Lambda_i = Lambda_ini;
+    config.Lambda_now = Lambda_now;
+    config.Lambda_f = Lambda_fin;
 
     /// old Runge-Kutta solver:
     //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
@@ -72,17 +95,17 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
 #else
     using param = flowgrid::exp_parametrization;
 #endif
-    ode_solver<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+    ode_solver<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
 
     //using namespace boost::numeric::odeint;
-    //ode_solver_boost<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
+    //ode_solver_boost<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
 
     /// use parquet solver to compute result at Lambda_fin (for comparison with frg result)
     State<state_datatype> state_parquet_compare (Lambda_fin);
     state_parquet_compare.initialize();
     //sopt_state(state_parquet_compare, Lambda_fin);
     //const std::string parquet_filename_forcomparison = data_dir + "parquet_for_comparison_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-    //parquet_solver(parquet_filename_forcomparison, state_parquet_compare, Lambda_fin, 1e-6, 10);
+    //parquet_solver(parquet_filename_forcomparison, state_parquet_compare, Lambda_fin, 1, 1e-6, 10);
 
 
     return state_fin;
@@ -126,6 +149,9 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         config.iter_start = it_start;
         config.lambda_checkpoints = Lambda_checkpoints;
         config.filename = inputFileName;
+        config.Lambda_i = Lambda_ini;
+        config.Lambda_now = Lambda_now;
+        config.Lambda_f = Lambda_fin;
         using namespace boost::numeric::odeint;
 
 #if REG == 4
@@ -136,7 +162,7 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         //ode_solver_boost<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
         //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
         // compute the flow using an ODE solver
-        ode_solver<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_now, rhs_mfrg, config, true);
+        ode_solver<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
 
         //using namespace boost::numeric::odeint;
         //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);

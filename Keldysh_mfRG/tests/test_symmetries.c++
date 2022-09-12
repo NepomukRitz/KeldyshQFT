@@ -24,7 +24,7 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
         // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
         const std::string parquet_temp_filename = data_dir + "parquetInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) : "" ) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
-        parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1e-4, 1);
+        parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1, 1e-4, 1);
 
         state_temp.vertex.half1().check_vertex_resolution();
         state_temp.findBestFreqGrid(true);
@@ -171,7 +171,7 @@ void test_compare_with_Vienna_code(const fRG_config & frgConfig) {
     config.filename = outputFileName;
     config.maximal_number_of_ODE_steps = 20;
     using namespace boost::numeric::odeint;
-    ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg,
+    ode_solver_boost<State<state_datatype>, flowgrid::linear_parametrization>(state_fin, state_ini, rhs_mfrg,
                                                                               config, true);
 
 }

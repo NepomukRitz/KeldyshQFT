@@ -17,7 +17,7 @@
 //The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
 template <class Q>
 class irreducible{
-    friend State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
+    friend State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
     using buffer_type = multidimensional::multiarray<Q,2>;
     buffer_type empty_bare() {
         if (KELDYSH) return buffer_type ({16,n_in});

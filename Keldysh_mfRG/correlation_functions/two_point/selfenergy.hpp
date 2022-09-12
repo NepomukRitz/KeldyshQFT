@@ -348,7 +348,7 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) const -> double {
 
     else{ //p-norm
         double result = std::abs(Sigma.get_vec().get_elements().pow(p).sum());
-        return pow(result, (double)p);
+        return pow(result, 1/(double)p);
     }
 }
 
