@@ -16,14 +16,14 @@ void full_PT4(const std::vector<double>& U_over_Delta_list) {
         state_SOPT.initialize();
         sopt_state(state_SOPT);
         const std::string SOPT_filename = data_dir + "SOPT_U_over_Delta=" + std::to_string(U_over_Delta)
-                                          + "_T/U=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg) + "_n1=" + std::to_string(nBOS) + ".h5";
+                                          + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg) + "_n1=" + std::to_string(nBOS) + ".h5";
         write_state_to_hdf(SOPT_filename, Lambda, 1, state_SOPT);
 
         State<state_datatype> state_TOPT (Lambda);
         state_TOPT.initialize();
         topt_state(state_TOPT, Lambda);
         const std::string TOPT_filename = data_dir + "TOPT_U_over_Delta=" + std::to_string(U_over_Delta)
-                                          + "_T/U=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg)
+                                          + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg)
                                           + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + ".h5";
         write_state_to_hdf(TOPT_filename, Lambda, 1, state_TOPT);
 
@@ -31,7 +31,7 @@ void full_PT4(const std::vector<double>& U_over_Delta_list) {
         state_FOPT.initialize();
         fopt_state(state_FOPT, Lambda);
         const std::string FOPT_filename = data_dir + "TOPT_U_over_Delta=" + std::to_string(U_over_Delta)
-                                          + "_T/U=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg)
+                                          + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg)
                                           + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2)
                                           + "_n3=" + std::to_string(nBOS3) + ".h5";
         write_state_to_hdf(FOPT_filename, Lambda, 1, state_FOPT);
