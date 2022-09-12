@@ -54,7 +54,7 @@ auto main(int argc, char * argv[]) -> int {
     config.nloops = n_loops;
     config.U = 1.;
     //config.save_intermediateResults = true;
-    n_loop_flow(data_dir+utils::generate_filename(config), config);
+    //n_loop_flow(data_dir+utils::generate_filename(config), config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
@@ -63,7 +63,9 @@ auto main(int argc, char * argv[]) -> int {
     //const std::vector<double> myU_NRG {0.25, 0.5, 0.75, 1., 1.25};
     //run_parquet(myU_NRG);
 
-
+    /// Perturbation Theory
+    const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
+    full_PT4(U_over_Delta_list);
     /// Hartree test
     //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
 

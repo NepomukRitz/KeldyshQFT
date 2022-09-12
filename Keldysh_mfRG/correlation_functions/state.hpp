@@ -42,7 +42,7 @@ public:
     State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in, const double Lambda_in)
     : Lambda(Lambda_in), vertex(vertex_in), selfenergy(selfenergy_in) {};
 
-    void initialize();
+    void initialize(bool checks=true);
     void update_grid(double Lambda);
     void findBestFreqGrid(bool verbose);
     void set_frequency_grid(const State<Q>& state_in);
@@ -120,7 +120,7 @@ public:
 };
 
 
-template <typename Q> void State<Q>::initialize() {
+template <typename Q> void State<Q>::initialize(bool checks) {
     // Initial conditions
     // Assign initial conditions to self energy
     if ((!KELDYSH && PARTICLE_HOLE_SYMMETRY) || HUBBARD_MODEL) {
@@ -131,7 +131,7 @@ template <typename Q> void State<Q>::initialize() {
         if (std::abs(glb_Vg) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
             assert (not PARTICLE_HOLE_SYMMETRY);
             auto Hartree_Term = Hartree_Solver (Lambda);
-            const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing();
+            const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing(1e-12, checks, checks);
             this->selfenergy.initialize(hartree_value, 0.);
         }
     }

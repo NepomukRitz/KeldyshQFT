@@ -153,7 +153,7 @@ template<typename Q>
 void sopt_state(State<Q>& Psi, const bool diff = false) {
     assert(Psi.initialized);
 
-    #if not defined(NDEBUG)
+#if not defined(NDEBUG)
     utils::print("Start initializing bubble object ... ", false);
 #endif
 
@@ -175,7 +175,7 @@ template<typename Q>
 void topt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> bareState (Psi, Lambda);
-    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
@@ -183,11 +183,17 @@ void topt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> SoptPsi (Psi, Lambda);
     //SoptPsi.initialize();
-    sopt_state_impl(SoptPsi, Pi, Lambda);
+    sopt_state_impl(SoptPsi, Pi);
 
+#if not defined(NDEBUG)
+    utils::print("Computing the vertex in TOPT ... ", false);
+#endif
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
     vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Lambda);
+#if not defined(NDEBUG)
+    utils::print_add("done.", true);
+#endif
 
     Psi.selfenergy = bareState.selfenergy + SoptPsi.selfenergy;
 
@@ -198,7 +204,7 @@ template<typename Q>
 void fopt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> bareState (Psi, Lambda); // copy frequency grids
-    bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
@@ -206,19 +212,30 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 
     State<Q> SoptPsi (Psi, Lambda);
     //SoptPsi.initialize();
-    sopt_state_impl(SoptPsi, Pi, Lambda);
+    sopt_state_impl(SoptPsi, Pi);
 
 
     //SoptPsi.findBestFreqGrid(Lambda);
 
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
+#if not defined(NDEBUG)
+    utils::print("Computing the vertex in TOPT ... ", false);
+#endif
     vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Lambda);
+#if not defined(NDEBUG)
+    utils::print_add("done.", true);
+    utils::print("Computing the vertex in FOPT ... ", false);
+#endif
     vertexInFOPT(Psi.vertex, bareState, Pi, Lambda);
-
+#if not defined(NDEBUG)
+    utils::print_add("done.", true);
+#endif
     Psi.selfenergy = bareState.selfenergy + SoptPsi.selfenergy;
 
 }
+
+void full_PT4(const std::vector<double>& U_over_Delta_list);
 
 template<typename Q>
 class PT_Machine{
