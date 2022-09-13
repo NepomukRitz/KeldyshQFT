@@ -40,11 +40,14 @@ class BubbleFunctionCalculator{
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
 
+    int number_of_nodes;
     int mpi_size = mpi_world_size(); // number of mpi processes
     int mpi_rank = mpi_world_rank(); // number of the current mpi process
     std::array<std::size_t,my_defs::K1::rank> dimsK1; // number of vertex components over which i_mpi and i_omp are looped
     std::array<std::size_t,my_defs::K2::rank> dimsK2; // number of vertex components over which i_mpi and i_omp are looped
     std::array<std::size_t,my_defs::K3::rank> dimsK3; // number of vertex components over which i_mpi and i_omp are looped
+    int dims_flat_K1, dims_flat_K2, dims_flat_K3; // flat dimensions of above arrays;
+    int n_vectorization_K1, n_vectorization_K2, n_vectorization_K3;
     std::vector<int> indepKeldyshComponents_K1;
     std::vector<int> indepKeldyshComponents_K2;
     std::vector<int> indepKeldyshComponents_K3;
@@ -100,9 +103,10 @@ class BubbleFunctionCalculator{
     BubbleFunctionCalculator(vertexType_result& dgamma_in,
                              const vertexType_left& vertex1_in,
                              const vertexType_right& vertex2_in,
-                             const Bubble_Object& Pi_in)
+                             const Bubble_Object& Pi_in,
+                             const int number_of_nodes_in)
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
-                             Pi(Pi_in){
+                             Pi(Pi_in), number_of_nodes(number_of_nodes_in){
 #if not  DEBUG_SYMMETRIES
         //check_presence_of_symmetry_related_contributions();
 #endif
@@ -122,24 +126,45 @@ class BubbleFunctionCalculator{
         ///  i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud).
         ///  The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.
 
+        vec<int> vectorization_dimensions_K1;
+        vec<int> vectorization_dimensions_K2;
+        vec<int> vectorization_dimensions_K3;
+        if constexpr (VECTORIZED_INTEGRATION) {
+            if constexpr (KELDYSH_FORMALISM) {
+                vectorization_dimensions_K1 = {my_defs::K1::keldysh};
+                vectorization_dimensions_K2 = {my_defs::K2::keldysh};
+                vectorization_dimensions_K3 = {my_defs::K3::keldysh};
+            }
+            else if constexpr (!KELDYSH_FORMALISM and !ZERO_T) {
+                vectorization_dimensions_K2 = {my_defs::K2::nu};
+                vectorization_dimensions_K3 = {my_defs::K3::nu, my_defs::K3::nup};
+            }
+        }
 
         dimsK1 = vertex1.get_rvertex(channel).K1.get_dims();
         dimsK2 = MAX_DIAG_CLASS > 1 ? vertex1.get_rvertex(channel).K2.get_dims() : std::array<std::size_t, my_defs::K2::rank>();
         dimsK3 = MAX_DIAG_CLASS > 2 ? vertex1.get_rvertex(channel).K3.get_dims() : std::array<std::size_t, my_defs::K3::rank>();
-        if constexpr (VECTORIZED_INTEGRATION == 1) {
-            if constexpr (KELDYSH_FORMALISM) {
-                /// vectorization over Keldysh indices
-                dimsK1[my_defs::K1::keldysh] = 1;
-                dimsK2[my_defs::K2::keldysh] = 1;
-                dimsK3[my_defs::K3::keldysh] = 1;
-            }
-            else {
-                /// vectorization over fermionic frequencies
-                dimsK2[my_defs::K2::nu] = 1;
-                dimsK3[my_defs::K3::nu] = 1;
-                dimsK3[my_defs::K3::nup] = 1;
-            }
+        n_vectorization_K1 = 1;
+        n_vectorization_K2 = 1;
+        n_vectorization_K3 = 1;
+        for (int i : vectorization_dimensions_K1) {
+            n_vectorization_K1 *= dimsK1[i];
+            dimsK1[i] = 1;
+            //utils::print("vectorization_dimensions_K1 \t i=", i, "\n");
         }
+        for (int i : vectorization_dimensions_K2) {
+            n_vectorization_K2 *= dimsK2[i];
+            dimsK2[i] = 1;
+            //utils::print("vectorization_dimensions_K2 \t i=", i, "\n");
+        }
+        for (int i : vectorization_dimensions_K3) {
+            n_vectorization_K3 *= dimsK3[i];
+            dimsK3[i] = 1;
+            //utils::print("vectorization_dimensions_K3 \t i=", i, "\n");
+        }
+        dims_flat_K1 = getFlatSize(dimsK1);
+        dims_flat_K2 = getFlatSize(dimsK2);
+        dims_flat_K3 = getFlatSize(dimsK3);
 
         indepKeldyshComponents_K1 = channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p'? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t);
         indepKeldyshComponents_K2 = channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p'? non_zero_Keldysh_K2p : non_zero_Keldysh_K2t);
@@ -294,13 +319,17 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
     // start for-loop over external arguments, using MPI and OMP
     int iterator = 0;
+    // total number of processes for MPI and OMP parallelization:
+    const int dimsKi_flat = diag_class == k1 ? dims_flat_K1 : (diag_class == k3 ? dims_flat_K3 : dims_flat_K2);
     for (int i_mpi = 0; i_mpi < n_mpi; ++i_mpi) {
         if (i_mpi % mpi_size == mpi_rank) {
 #pragma omp parallel for schedule(dynamic)
             for (int i_omp = 0; i_omp < n_omp; ++i_omp) {
-                value_type value = get_value<diag_class>(i_mpi, i_omp, n_omp, n_vectorization);
-                for (int k = 0; k < n_vectorization; k++) {
-                    Buffer[(iterator * n_omp + i_omp) * n_vectorization + k] = value[k]; // write result of integration into MPI buffer
+                if (i_mpi * n_omp + i_omp < dimsKi_flat) {
+                    value_type value = get_value<diag_class>(i_mpi, i_omp, n_omp, n_vectorization);
+                    for (int k = 0; k < n_vectorization; k++) {
+                        Buffer[(iterator * n_omp + i_omp) * n_vectorization + k] = value[k]; // write result of integration into MPI buffer
+                    }
                 }
             }
             ++iterator;
@@ -311,6 +340,15 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     mpi_collect(Buffer, Result, n_mpi, n_omp * n_vectorization);
     vec<Q> Ordered_result = mpi_reorder_result(Result, n_mpi, n_omp * n_vectorization);
 
+    const int target_size_of_result = diag_class == k1 ? dims_flat_K1 * n_vectorization_K1 : (diag_class == k3 ? dims_flat_K3 * n_vectorization_K3 : dims_flat_K2 * n_vectorization_K2);
+#ifndef NDEBUG
+    const int current_size_of_result = Ordered_result.size();
+    for (int i = target_size_of_result; i < current_size_of_result; i++) {
+        assert(std::abs(Ordered_result[i]) < 1e-12);
+    }
+#endif
+    // cut off superflous vector elements:
+    Ordered_result.resize(target_size_of_result);
     write_out_results(Ordered_result, diag_class);
 
     vertex1.set_initializedInterpol(false);
@@ -653,20 +691,23 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
     switch (diag_class) {
         case k1:
-            n_mpi = nK_K1 * n_spin;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
-            n_omp = nw1_w * n_in_K1; // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
-            n_vectorization = VECTORIZED_INTEGRATION == 1 ? vertex1.get_rvertex(channel).K1.get_dims()[my_defs::K1::keldysh] : 1;
+            // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+            n_mpi = number_of_nodes;
+            n_vectorization = n_vectorization_K1;
+            // set external arguments for OMP-parallelization (# of tasks per MPI-task distributed via OMP)
+            // below formula performs integer division with rounding up
+            n_omp = (dims_flat_K1 + n_mpi - 1) / n_mpi;
             break;
         case k2:
         case k2b:
-            n_mpi = nK_K2 * n_spin * (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? 1 :nw2_w);
-            n_omp = n_in_K2 * (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? nw2_w : nw2_v);
-            n_vectorization = VECTORIZED_INTEGRATION == 1 ? (KELDYSH_FORMALISM ? vertex1.get_rvertex(channel).K2.get_dims()[my_defs::K2::keldysh] : nw2_v) : 1;
+            n_mpi = number_of_nodes;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+            n_vectorization = n_vectorization_K2;
+            n_omp = (dims_flat_K2 + n_mpi - 1) / n_mpi;
             break;
         case k3:
-            n_mpi = nK_K3 * n_spin * (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? 1 : nw3_w);
-            n_omp = (VECTORIZED_INTEGRATION and !KELDYSH_FORMALISM ? nw3_w : nw3_v * nw3_v_p) * n_in_K3;
-            n_vectorization = VECTORIZED_INTEGRATION == 1 ? (KELDYSH_FORMALISM ? vertex1.get_rvertex(channel).K3.get_dims()[my_defs::K3::keldysh] : nw3_v * nw3_v_p) : 1;
+            n_mpi = number_of_nodes;        // set external arguments for MPI-parallelization (# of tasks distributed via MPI)
+            n_vectorization = n_vectorization_K3;
+            n_omp = (dims_flat_K3 + n_mpi - 1) / n_mpi;
             break;
         default: ;
     }
@@ -1007,21 +1048,22 @@ void bubble_function(vertexType_result& dgamma,
                                  const vertexType_left& vertex1,
                                  const vertexType_right& vertex2,
                                  const Bubble_Object& Pi,
-                                 const char channel){
+                                 const char channel,
+                                 const fRG_config& config){
     using Q = typename vertexType_result::base_type;
     if (channel == 'a') {
         BubbleFunctionCalculator<'a', Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>
-                BubbleComputer (dgamma, vertex1, vertex2, Pi);
+                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes);
         BubbleComputer.perform_computation();
     }
     else if (channel == 'p') {
         BubbleFunctionCalculator<'p', Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>
-                BubbleComputer (dgamma, vertex1, vertex2, Pi);
+                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes);
         BubbleComputer.perform_computation();
     }
     else if (channel == 't') {
         BubbleFunctionCalculator<'t', Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>
-                BubbleComputer (dgamma, vertex1, vertex2, Pi);
+                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes);
         BubbleComputer.perform_computation();
     }
     //else {utils::print("Error! Incompatible channel given to bubble_function. Abort"); }
@@ -1036,9 +1078,9 @@ template <typename Q,
 void bubble_function(vertexType_result& dgamma,
                      const vertexType_left& vertex1,
                      const vertexType_right& vertex2,
-                     const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff){
+                     const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff, const fRG_config& config){
     Bubble<Q> Pi(G, S, diff);
-    bubble_function(dgamma, vertex1, vertex2, Pi, channel);
+    bubble_function(dgamma, vertex1, vertex2, Pi, channel, config);
 }
 
 #endif //KELDYSH_MFRG_BUBBLE_FUNCTION_HPP

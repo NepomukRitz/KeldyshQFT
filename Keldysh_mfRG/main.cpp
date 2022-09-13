@@ -6,8 +6,8 @@
 #include <omp.h>
 #include "utilities/mpi_setup.hpp"
 #include "mfRG_flow/flow.hpp"
-#include "tests/test_perturbation_theory.hpp"
-#include "tests/test_interpolation.hpp"
+//#include "tests/test_perturbation_theory.hpp"
+//#include "tests/test_interpolation.hpp"
 #include "utilities/util.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
 #include "tests/test_symmetries.hpp"
@@ -27,8 +27,9 @@ auto main(int argc, char * argv[]) -> int {
 #endif
 
     /// Parse and check command line arguments:
-    utils::print("number of args: ", argc-1, ", expected: 1 \n");
+    utils::print("number of args: ", argc-1, ", expected: 2 \n");
     const int n_loops = atoi(argv[1]);
+    const int n_nodes = atoi(argv[2]);
     N_LOOPS = n_loops;
     utils::check_input();
 
@@ -61,6 +62,7 @@ auto main(int argc, char * argv[]) -> int {
     config.nloops = n_loops;
     config.U = 2.5;
     config.save_intermediateResults = false;
+    config.number_of_nodes = n_nodes;
 
     utils::print_job_info(config);
     std::string filename = utils::generate_filename(config);

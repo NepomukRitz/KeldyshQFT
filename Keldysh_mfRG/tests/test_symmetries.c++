@@ -34,7 +34,7 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
     }
 #endif
 
-    sopt_state(state_ini, Lambda);
+    sopt_state(state_ini, Lambda, frgConfig);
 
     compare_with_FDTs(state_ini.vertex, Lambda, 0, "SOPT_");
 

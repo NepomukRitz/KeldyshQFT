@@ -32,14 +32,14 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 }
 
 template <typename Q, class Bubble_Object>
-void vertexInSOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
+void vertexInSOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, double Lambda, const fRG_config& config){
     std::string channels = "apt";
     for (char r: channels) {
 //#if not defined(NDEBUG)
         utils::print("Computing the vertex in SOPT in channel ", false);
         utils::print_add(r, true);
 //#endif
-        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
+        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r, config);
     }
 }
 
@@ -132,7 +132,7 @@ void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_
  * @param state        : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
-void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda) {
+void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda, const fRG_config& config) {
     State<Q> bareState (Psi, Lambda);
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
@@ -140,7 +140,7 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda
     utils::print("Computing the vertex in SOPT...", true);
 #endif
     //Calculate the bubbles -> Vertex in SOPT saved in Psi
-    vertexInSOPT(Psi.vertex, bareState, Pi, Lambda);
+    vertexInSOPT(Psi.vertex, bareState, Pi, Lambda, config);
 
 #if not defined(NDEBUG)
     utils::print("Computing the self energy in SOPT...", true);
@@ -153,7 +153,7 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const double Lambda
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
 template<typename Q>
-void sopt_state(State<Q>& Psi, const double Lambda, const bool diff = false) {
+void sopt_state(State<Q>& Psi, const double Lambda, const fRG_config& config, const bool diff = false) {
     State<Q> bareState (Psi, Lambda); // copy frequency grids
     bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value (except currently for the Hubbard model)
 
@@ -171,7 +171,7 @@ void sopt_state(State<Q>& Psi, const double Lambda, const bool diff = false) {
     utils::print("...done.", true);
 #endif
 
-    sopt_state_impl(Psi, Pi, Lambda);
+    sopt_state_impl(Psi, Pi, Lambda, config);
 }
 
 

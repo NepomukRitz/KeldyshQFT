@@ -651,6 +651,7 @@ struct fRG_config {
     double U;
     bool save_intermediateResults;
     int nloops;
+    int number_of_nodes=1;
 };
 
 

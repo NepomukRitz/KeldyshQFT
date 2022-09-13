@@ -29,7 +29,7 @@ public:
     test_PrecalculateBubble(): g(Lambda_ini, 'g'), s(Lambda_ini, 's'){
         State<comp> testing_state (Lambda_ini);
         testing_state.initialize();
-        sopt_state(testing_state, Lambda_ini);
+        sopt_state(testing_state, Lambda_ini, fRG_config());
 
         g = Propagator<Q>(Lambda_ini, testing_state.selfenergy, 'g');
         s = Propagator<Q>(Lambda_ini, testing_state.selfenergy, 's');
@@ -170,7 +170,7 @@ public:
                        Pre_Bubble (g, s, 0, 'a'), Usual_Bubble (g, s, false){
      State<comp> testing_state (Lambda_ini);
      testing_state.initialize();
-     sopt_state(testing_state, Lambda_ini);
+     sopt_state(testing_state, Lambda_ini, fRG_config());
 
      g = Propagator<Q> (Lambda_ini, testing_state.selfenergy,'g'); // this is done to obtain the frequency grid
      s = Propagator<Q> (Lambda_ini, testing_state.selfenergy,'s');
