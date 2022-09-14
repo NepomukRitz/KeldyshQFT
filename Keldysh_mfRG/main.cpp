@@ -6,7 +6,7 @@
 #include <omp.h>
 #include "utilities/mpi_setup.hpp"
 #include "mfRG_flow/flow.hpp"
-//#include "tests/test_perturbation_theory.hpp"
+#include "tests/test_perturbation_theory.hpp"
 //#include "tests/test_interpolation.hpp"
 #include "utilities/util.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
@@ -75,9 +75,9 @@ auto main(int argc, char * argv[]) -> int {
 
     ///parquet runs:
     const std::vector<double> myU_NRG {1.25}; // {0.75, 1.25, 1.5};
-    //run_parquet(myU_NRG, 1);
-    //run_parquet(myU_NRG, 2);
-    //run_parquet(myU_NRG, 3);
+    //run_parquet(config, myU_NRG, 1);
+    //run_parquet(config, myU_NRG, 2);
+    //run_parquet(config, myU_NRG, 3);
 
 
 

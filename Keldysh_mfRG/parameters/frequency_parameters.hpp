@@ -42,7 +42,7 @@ constexpr int nFER3 = COUNT * 4 * 2; //nFER;
 //constexpr int nFER2 = COUNT * 2 * 2;//nFER;
 //constexpr int nBOS3 = COUNT * 4 * 2 + 1; //nBOS;
 //constexpr int nFER3 = COUNT * 2 * 2; //nFER;
-const int POSINTRANGE = 32  * COUNT;
+const int POSINTRANGE = 64  * COUNT;
 //#endif
 
 

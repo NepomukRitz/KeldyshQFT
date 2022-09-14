@@ -26,7 +26,7 @@ constexpr bool VERBOSE = false;
 #define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
-#define VECTORIZED_INTEGRATION 0 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
+#define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
                                  // Keldysh: vectorizes over Keldysh indices
                                  // Matsubara finite T: vectorizes Matsubara sum
 //#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
@@ -142,7 +142,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 // 4: interaction cutoff
-#define REG 2
+#define REG 3
 
 
 
