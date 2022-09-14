@@ -256,6 +256,9 @@ private:
     Vertex<Q> SOPT_pvertex = Vertex<Q>(Lambda);
     Vertex<Q> SOPT_tvertex = Vertex<Q>(Lambda);
 
+    /// Selfenergy to be computed
+    SelfEnergy<Q> SOPT_Selfenergy = bareState.selfenergy; // Already contains the Hartree value.
+
     /// Function which actually perform the computations
     void compute_SOPT();
     void compute_TOPT();
@@ -265,20 +268,26 @@ private:
     const double Delta = (Lambda + glb_Gamma)/2. ;
     const double U_over_Delta = glb_U / Delta;
 
-    void write_out_results() const;
+    void write_out_results_zero_freq() const;
+    void write_out_results_full() const;
 
 public:
-    PT_Machine(const unsigned int order_in, const double Lambda_in, const bool write_results=true): order(order_in), Lambda(Lambda_in){
+    PT_Machine(const unsigned int order_in, const double U_over_Delta,
+               const bool write_results_zero_freq=true,
+               const bool write_results_full=false): order(order_in), Lambda(2. * glb_U / U_over_Delta - glb_Gamma){
         assert((order > 0) and (order < 5));
         if (order_in > 2) assert(MAX_DIAG_CLASS >= 2);
         if (order_in > 3) assert(MAX_DIAG_CLASS == 3);
         assert(KELDYSH);
-#ifndef DEBUG_SYMMETRIES
-        utils::print("Cannot use spin symmetries for these calculations.");
-        assert(false);
-#endif
+        if constexpr (not DEBUG_SYMMETRIES){
+            utils::print("Cannot use spin symmetries for these calculations.");
+            assert(false);
+        }
+
         utils::print("Perturbation Theory for the SIAM up to order " + std::to_string(order)
-        + " in the Keldysh formalism for the fully retarded vertex components at zero frequency.", true);
+        + " in the Keldysh formalism for the ", false);
+        if (write_results_zero_freq) utils::print_add("fully retarded vertex components at zero frequency.", true);
+        if (write_results_full)      utils::print_add("full state.", true);
         utils::print("For this run we have U over Delta = " + std::to_string(U_over_Delta)
         + " and eVg over U = " + std::to_string(glb_Vg / glb_U), true);
 
@@ -287,7 +296,8 @@ public:
         if (order >= 3) compute_TOPT();
         if (order == 4) compute_FOPT();
 
-        if (write_results) write_out_results();
+        if (write_results_zero_freq) write_out_results_zero_freq();
+        if (write_results_full) write_out_results_full();
     };
 
     void debug_TOPT();
@@ -316,6 +326,10 @@ void PT_Machine<Q>::compute_SOPT() {
     assert(SOPT_Vertex.norm_K1(0) > 0.);
     if (order >= 3) assert(SOPT_Vertex.norm_K2(0) < 1e-15);
     if (order == 4) assert(SOPT_Vertex.norm_K3(0) < 1e-15);
+    utils::print_add(" done.", true);
+
+    utils::print("Now computing the selfenergy in SOPT...", false);
+    loop(SOPT_Selfenergy, SOPT_avertex, barePropagator, false); // add the first term from the SDE.
     utils::print_add(" done.", true);
 }
 
@@ -410,7 +424,7 @@ void PT_Machine<Q>::compute_FOPT() {
 }
 
 template<typename Q>
-void PT_Machine<Q>::write_out_results() const {
+void PT_Machine<Q>::write_out_results_zero_freq() const {
     // Always fully retarded components, up-down spin component, and at zero frequencies
     assert(KELDYSH);
     std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
@@ -525,6 +539,31 @@ void PT_Machine<Q>::write_out_results() const {
                             FOPT_K2_imag, FOPT_K2p_imag, FOPT_K3_imag});
 
     utils::print_add(" done.", true);
+}
+
+template<typename Q>
+void PT_Machine<Q>::write_out_results_full() const {
+    const std::string PT_filename = data_dir + "PT4_U_over_Delta=" + std::to_string(U_over_Delta)
+                                    + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg)
+                                    + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2)
+                                    + "_n3=" + std::to_string(nBOS3) + ".h5";
+
+    State<Q> SOPT_State = State<Q>(Lambda);
+    SOPT_State.selfenergy = SOPT_Selfenergy;
+    SOPT_State.vertex = SOPT_Vertex;
+
+    write_state_to_hdf(PT_filename, 0, order-1, SOPT_State);
+
+    if (order>=3){
+        State<Q> TOPT_State = State<Q>(Lambda);
+        TOPT_State.vertex = TOPT_Vertex;
+        add_state_to_hdf(PT_filename, 1, TOPT_State);
+    }
+    if (order>=4){
+        State<Q> FOPT_State = State<Q>(Lambda);
+        FOPT_State.vertex = FOPT_Vertex;
+        add_state_to_hdf(PT_filename, 2, FOPT_State);
+    }
 }
 
 template<typename Q>

@@ -18,7 +18,8 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
 
-// Number of bosonic and fermionic frequency points
+// Number of bosonic and fermionic frequency points.
+// Good production values for Keldysh: nBOS = nFER = 401, nBOS2 = nFER2 = 201, nBOS3 = nFER3 = 51
 //#if KELDYSH_FORMALISM
 constexpr int nBOS = 401;
 constexpr int nFER = 401;

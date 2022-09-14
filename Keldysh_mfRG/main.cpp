@@ -65,7 +65,10 @@ auto main(int argc, char * argv[]) -> int {
 
     /// Perturbation Theory
     const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
-    full_PT4(U_over_Delta_list);
+    for (double U_over_Delta: U_over_Delta_list) {
+        PT_Machine<state_datatype> PT_Calculator (4, U_over_Delta, false, true);
+    }
+    //full_PT4(U_over_Delta_list);
     /// Hartree test
     //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
 

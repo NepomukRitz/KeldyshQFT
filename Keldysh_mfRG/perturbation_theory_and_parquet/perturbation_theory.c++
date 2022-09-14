@@ -30,7 +30,7 @@ void full_PT4(const std::vector<double>& U_over_Delta_list) {
         State<state_datatype> state_FOPT (Lambda);
         state_FOPT.initialize();
         fopt_state(state_FOPT, Lambda);
-        const std::string FOPT_filename = data_dir + "TOPT_U_over_Delta=" + std::to_string(U_over_Delta)
+        const std::string FOPT_filename = data_dir + "FOPT_U_over_Delta=" + std::to_string(U_over_Delta)
                                           + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg)
                                           + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2)
                                           + "_n3=" + std::to_string(nBOS3) + ".h5";
