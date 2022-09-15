@@ -54,7 +54,7 @@ public:
 
         for (my_index_t i = 0; i < numberFrequencyDims; i++) {
             idx_low[pos_first_freqpoint+i] = freq_idx[i];
-            assert(freq_idx[i] < 2000);
+            assert(freq_idx[i] < 10000);
         }
 
         for (my_index_t j = 0; j < numSamples_half(); j++) {

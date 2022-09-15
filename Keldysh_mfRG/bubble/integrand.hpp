@@ -694,7 +694,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
 auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_vertex_keldysh_and_spin_Components_left_vectorized(const VertexInput& input) const -> Eigen::Matrix<Q, 1, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1> {
-    static_assert(!KELDYSH and !ZERO_T);
+    assert(!KELDYSH and !ZERO_T);
 
     using result_type = Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1>;
     result_type result;
@@ -818,7 +818,7 @@ auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
 auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_vertex_keldysh_and_spin_Components_right_vectorized(const VertexInput& input) const -> Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1>{
-    static_assert(!KELDYSH and !ZERO_T);
+    assert(!KELDYSH and !ZERO_T);
 
     using result_type = Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1>;
     result_type result;

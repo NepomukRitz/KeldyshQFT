@@ -230,6 +230,31 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     if (!are_parameters_identical) {
         utils::print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
         utils::print("\t Warning!: \t Parameters of executable do not agree with those in HDF file ", filename, "\n");
+        const vec<bool> is_identical_parameter = {
+                glb_Gamma == glb_Gamma_loaded
+                ,MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded
+                ,N_LOOPS == N_LOOPS_loaded
+                ,glb_T == glb_T_loaded
+                ,glb_mu == glb_mu_loaded
+                ,glb_U == glb_U_loaded
+                ,glb_epsilon == glb_epsilon_loaded
+                ,glb_V == glb_V_loaded
+                ,GRID == GRID_loaded
+        };
+        const vec<std::string> parameter_names = {
+                "glb_Gamma"
+                ,"MAX_DIAG_CLASS"
+                ,"N_LOOPS"
+                ,"glb_T"
+                ,"glb_mu"
+                ,"glb_U"
+                ,"glb_epsilon"
+                ,"glb_V"
+                ,"GRID"
+        };
+        for (int i = 0; i < is_identical_parameter.size(); i++){
+            if (!is_identical_parameter[i]) utils::print("\t parameter ", parameter_names[i], " is different.\n");
+        }
         utils::print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
     }
 

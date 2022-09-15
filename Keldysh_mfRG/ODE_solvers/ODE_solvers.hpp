@@ -812,8 +812,8 @@ namespace boost {
                 typedef ERR_STEPPER< State_t, double, State_t, double, boost::numeric::odeint::vector_space_algebra > error_stepper_t;
                     error_stepper_t stepper();
 
-                if constexpr(!std::is_same_v<FlowGrid, flowgrid::exp_parametrization>) assert(Lambda_i>0 && Lambda_f > 0); // non-positive numbers not allowed for exp-parametrized flowgrid.
-                vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_f, Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, config.maximal_number_of_ODE_steps, config.lambda_checkpoints);
+                if constexpr(!std::is_same_v<FlowGrid, flowgrid::exp_parametrization>) assert(config.Lambda_i>0 && config.Lambda_f > 0); // non-positive numbers not allowed for exp-parametrized flowgrid.
+                vec<double> lambdas_try = flowgrid::construct_flow_grid(config.Lambda_f, config.Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, config.maximal_number_of_ODE_steps, config.lambda_checkpoints);
                 result = detail::integrate_nonadaptive<error_stepper_t, State_t, FlowGrid>(
                         error_stepper_t(), rhs, state_now,
                         t_now, t_final, lambdas_try, lambdas_did, config, verbose); //, typename Stepper::stepper_category() );

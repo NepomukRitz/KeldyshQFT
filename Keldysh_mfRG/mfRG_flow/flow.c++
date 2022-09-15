@@ -107,6 +107,9 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     //const std::string parquet_filename_forcomparison = data_dir + "parquet_for_comparison_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
     //parquet_solver(parquet_filename_forcomparison, state_parquet_compare, Lambda_fin, 1, 1e-6, 10);
 
+    std::string filename_result = outputFileName + "_final";
+    write_state_to_hdf(filename_result, Lambda_ini,   1, state_fin);  // save the initial state to hdf5 file
+
 
     return state_fin;
 }
@@ -167,6 +170,9 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         //using namespace boost::numeric::odeint;
         //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
 
+
+        std::string filename_result = inputFileName + "_final";
+        write_state_to_hdf(filename_result, Lambda_ini,   1, state_fin);  // save the initial state to hdf5 file
 
         return state_fin;
     }

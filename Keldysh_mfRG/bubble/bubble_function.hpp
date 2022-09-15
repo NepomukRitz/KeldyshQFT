@@ -585,7 +585,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             }
         }
         else { // Matsubara finite_T
-            static_assert(!ZERO_T);
+            assert(!ZERO_T);
 
 
         }

@@ -48,7 +48,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                     number_of_gridpoints = nBOS;
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
-                        Delta_factor = 10.;
+                        Delta_factor = 5.;
                     }
                     else {
                         U_factor = 10./3.;
@@ -90,7 +90,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                     #else
                     if (KELDYSH){
                         U_factor = 0./3.;
-                        Delta_factor = 20.;
+                        Delta_factor = 15.;
                     }
                     else{
                         U_factor = 10./3.;
@@ -113,7 +113,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
                     #else
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
-                        Delta_factor = 10.;
+                        Delta_factor = 20.;
                     }
                     else {
                         U_factor = 4./3.;
@@ -155,7 +155,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda) {
 
     all_frequencies = rvec(number_of_gridpoints);
     auxiliary_grid = rvec(number_of_gridpoints);
-    set_essential_parameters(scale*100., scale);
+    set_essential_parameters(scale*15., scale);
     initialize_grid();
 }
 
@@ -243,9 +243,9 @@ auto FrequencyGrid<eliasGrid>::get_grid_index(double& t, double w_in) const -> i
  * @return
  */
 auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
-    if (KELDYSH) return grid_transf_v2(w, this->W_scale);
+    if constexpr (KELDYSH) return grid_transf_v2(w, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
-        if (ZERO_T) return grid_transf_v3(w, this->W_scale);
+        if constexpr (ZERO_T) return grid_transf_v3(w, this->W_scale);
         else return grid_transf_lin(w, this->W_scale);
 
     }
@@ -253,7 +253,7 @@ auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
         //    return grid_transf_v2(w, this->W_scale);
         //}
     else {
-        if (ZERO_T) return grid_transf_v4(w, this->W_scale);
+        if constexpr (ZERO_T) return grid_transf_v4(w, this->W_scale);
         else                   return grid_transf_lin(w, this->W_scale);
     }
 }
@@ -264,7 +264,7 @@ auto FrequencyGrid<eliasGrid>::t_from_frequency(double w) const -> double {
  * @return
  */
 auto FrequencyGrid<eliasGrid>::frequency_from_t(double t) const -> double {
-    if (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
+    if constexpr (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
     else if (this->type == 'f' and this->diag_class == 1) {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
         else return grid_transf_inv_lin(t, this->W_scale);
@@ -273,7 +273,7 @@ auto FrequencyGrid<eliasGrid>::frequency_from_t(double t) const -> double {
         //    return grid_transf_inv_v2(w, this->W_scale);
         //}
     else { // TODO(medium): Remove commented part?
-        if (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale);
+        if constexpr (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale);
         else return grid_transf_inv_lin(t, this->W_scale);
     }
 }

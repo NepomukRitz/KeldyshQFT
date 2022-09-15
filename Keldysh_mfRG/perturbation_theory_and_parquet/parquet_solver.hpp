@@ -358,8 +358,8 @@ template<bool version, bool is_differentiated_vertex, bool is_differentiated_SE,
 SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const Vertex<Q,is_differentiated_vertex>& Gamma, const Propagator<Q> & G_loop, const fRG_config& config) {
     assert((version == 0 and (channel == 'a' or channel == 'p')) or (version == 1 and (channel == 't' or channel == 'p')));
 
-    check_selfconsistency_of_K1K2<'a',Q>(Gamma, Lambda, G_loop, config);
-    check_selfconsistency_of_K1K2<'p',Q>(Gamma, Lambda, G_loop, config);
+    //check_selfconsistency_of_K1K2<'a',Q>(Gamma, Lambda, G_loop, config);
+    //check_selfconsistency_of_K1K2<'p',Q>(Gamma, Lambda, G_loop, config);
 
     GeneralVertex<Q,non_symmetric_diffleft,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1(), Gamma.half1(), Gamma.get_vertex_nondiff());
     for (char r: {'a', 'p', 't'}) {
