@@ -135,17 +135,20 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
  */
 template<typename Q, class Bubble_Object>
 void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi) {
+    State<Q> bareState = State<Q> (Psi.Lambda);
+    bareState.initialize(false);
+
 #if not defined(NDEBUG)
     utils::print("Computing the self energy in SOPT ... ", false);
 #endif
     if constexpr(HUBBARD_MODEL) selfEnergyInSOPT_HUBBARD(Psi.selfenergy, Psi, Psi.vertex, Psi.Lambda); /// WILL NOT WORK NOW!!
     // TODO: Compute the vertex in SOPT for the Hubbard model inside the function selfEnergyInSOPT_HUBBARD, just as it is done for the SIAM
-    else                        selfEnergyInSOPT(Psi.selfenergy, Psi, Pi);
+    else                        selfEnergyInSOPT(Psi.selfenergy, bareState, Pi);
 #if not defined(NDEBUG)
     utils::print_add("done.", true);
 #endif
 
-    vertexInSOPT(Psi.vertex, Psi, Pi);  // Uses the previously defined bubble, which does not contain the SOPT SE yet.
+    vertexInSOPT(Psi.vertex, bareState, Pi);  // Uses the previously defined bubble, which does not contain the SOPT SE yet.
 }
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
