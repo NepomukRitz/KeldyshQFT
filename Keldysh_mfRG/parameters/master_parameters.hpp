@@ -27,11 +27,11 @@ constexpr bool VERBOSE = false;
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 // Determines whether particle-hole symmetry is assumed
-//#define PARTICLE_HOLE_SYMM
+#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 

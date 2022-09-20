@@ -64,10 +64,10 @@ auto main(int argc, char * argv[]) -> int {
     //run_parquet(myU_NRG);
 
     /// Perturbation Theory
-    const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
-    for (double U_over_Delta: U_over_Delta_list) {
-        PT_Machine<state_datatype> PT_Calculator (4, U_over_Delta, false, true);
-    }
+    //const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
+    //for (double U_over_Delta: U_over_Delta_list) {
+    //    PT_Machine<state_datatype> PT_Calculator (4, U_over_Delta, false, true);
+    //}
     //full_PT4(U_over_Delta_list);
     /// Hartree test
     //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
@@ -87,9 +87,9 @@ auto main(int argc, char * argv[]) -> int {
 
     //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
 
+*/
+    test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
 
-    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
-    */
     utils::hello_world();
 
 #ifdef USE_MPI

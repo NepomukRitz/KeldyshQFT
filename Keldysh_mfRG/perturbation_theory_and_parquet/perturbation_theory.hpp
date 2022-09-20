@@ -47,7 +47,7 @@ void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_
 }
 
 template <typename Q, class Bubble_Object>
-void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, State<Q>& bareState, const Bubble_Object& Pi){
+void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, const Bubble_Object& Pi){
     Propagator<Q> barePropagator(bareState.Lambda, bareState.selfenergy, 'g');    //Bare propagator
 
     GeneralVertex<Q,symmetric_r_irred> bubble_a_r (bareState.Lambda);
@@ -556,12 +556,12 @@ void PT_Machine<Q>::write_out_results_full() const {
 
     if (order>=3){
         State<Q> TOPT_State = State<Q>(Lambda);
-        TOPT_State.vertex = TOPT_Vertex;
+        TOPT_State.vertex = SOPT_Vertex + TOPT_Vertex;
         add_state_to_hdf(PT_filename, 1, TOPT_State);
     }
     if (order>=4){
         State<Q> FOPT_State = State<Q>(Lambda);
-        FOPT_State.vertex = FOPT_Vertex;
+        FOPT_State.vertex = SOPT_Vertex + TOPT_Vertex + FOPT_Vertex;
         add_state_to_hdf(PT_filename, 2, FOPT_State);
     }
 }

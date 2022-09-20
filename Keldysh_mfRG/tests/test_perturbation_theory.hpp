@@ -2632,7 +2632,7 @@ template <int type = 2>
 auto SOPT_K1a(double w, double Lambda) -> comp {
 
     double Delta = REG == 2 ? (glb_Gamma + Lambda) / 2. : glb_Gamma * 0.5;
-    const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
+    const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5 * glb_U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
 
     auto advanced = [Delta,HF_corr](const double w_) -> comp {
@@ -2665,7 +2665,7 @@ auto SOPT_K1a(double w, double Lambda) -> comp {
 template <int type = 2>
 auto SOPT_K1a_diff(double w, double Lambda) -> comp {
     double Delta = (glb_Gamma + Lambda) / 2.;
-    const double hartree_term = Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
+    const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5 * glb_U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
 
     auto advanced = [Delta,HF_corr](const double w_) -> comp {
@@ -2795,7 +2795,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     state_cpp.initialize();             // initialize state
     //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
     //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
-    sopt_state(state_cpp, Lambda, diff);
+    sopt_state(state_cpp, diff);
     //state_cpp.vertex.half1().check_vertex_resolution();
     //state_cpp.analyze_tails();
 
