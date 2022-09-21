@@ -89,7 +89,7 @@ auto main(int argc, char * argv[]) -> int {
     //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
 
 */
-    test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
+    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
 
     utils::hello_world();
 
