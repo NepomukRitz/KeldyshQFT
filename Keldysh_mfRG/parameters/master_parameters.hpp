@@ -9,8 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
-
+#define NDEBUG
 
 #define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
@@ -27,7 +26,7 @@ constexpr bool VERBOSE = false;
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
-#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 // Determines whether particle-hole symmetry is assumed
@@ -52,7 +51,7 @@ const double tol_selfenergy_correction_rel = 1e-4;
 
 /// Physical parameters ///
 #if not defined(ZERO_TEMP)
-constexpr double glb_T = 0.01; // 0.5; // 0.1; // 0.01;                     // Temperature
+inline double glb_T; //= 0.01; // 0.5; // 0.1; // 0.01;                     // Temperature
 #else
 constexpr double glb_T = 0.0;                     // Temperature -- don't change!
 #endif
@@ -64,7 +63,7 @@ constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.
 #endif
 constexpr double glb_U = 1.0;                      // Impurity on-site interaction strength
 constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 0.5;                // Hybridization of Anderson model
+constexpr double glb_Gamma = 0.2;                // Hybridization of Anderson model
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -153,8 +152,8 @@ constexpr double epsODE_abs = 1e-8;
 #define ODEsolver 3
 
 // Limits of the fRG flow
-constexpr double Lambda_ini = 19.5;// 1e4;  0.158113883;
-constexpr double Lambda_fin = 1e-12;// 1e-4; 1;
+constexpr double Lambda_ini = 19.8;// 1e4;  0.158113883;
+constexpr double Lambda_fin = 0.2;// 1e-4; 1;
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
 

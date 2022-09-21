@@ -22,8 +22,9 @@
 
 auto main(int argc, char * argv[]) -> int {
 
-    std::cout << "number of args: " << argc-1 << ", expected: 1" << std::endl;
+    std::cout << "number of args: " << argc-1 << ", expected: 2" << std::endl;
     const int n_loops = atoi(argv[1]);
+    glb_T = atof(argv[2]);
 
 #ifdef USE_MPI
     if (MPI_FLAG) {
@@ -54,7 +55,7 @@ auto main(int argc, char * argv[]) -> int {
     config.nloops = n_loops;
     config.U = 1.;
     //config.save_intermediateResults = true;
-    //n_loop_flow(data_dir+utils::generate_filename(config), config);
+    n_loop_flow(data_dir+utils::generate_filename(config), config);
     //test_symmetries(1.8, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
 
