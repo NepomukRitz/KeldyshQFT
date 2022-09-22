@@ -160,7 +160,7 @@ namespace utils {
     void makedir(const std::string& dir_str);
 
 
-    void check_input();
+    void check_input(const fRG_config& config);
 
     std::string generate_data_directory(std::string& job);
 

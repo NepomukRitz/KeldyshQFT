@@ -398,8 +398,8 @@ auto correctionFunctionBubbleP_REG4_Matsubara_PHS(double w, double vmin, double 
 
 template <typename Q> // TODO(medium): Split up into several functions?
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
-                                 Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
-    Q eps_p = glb_epsilon + Sigma_H;
+                                 double epsilon, Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
+    Q eps_p = epsilon + Sigma_H;
     if (REG == 2) {
         if (KELDYSH) {
             return correctionFunctionBubbleAT_REG2_Keldysh(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
@@ -433,8 +433,8 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
 
 template <typename Q>
 auto correctionFunctionBubbleP (double w, double vmin, double vmax,
-                                Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
-    Q eps_p = glb_epsilon + Sigma_H;
+                                double epsilon, Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
+    Q eps_p = epsilon + Sigma_H;
     if (REG==2) {
         if (KELDYSH) {
             return correctionFunctionBubbleP_REG2_Keldysh(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
@@ -468,11 +468,11 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
 /** Wrapper for the two functions above, distinguishing a/t channels from p channel. */
 template <typename Q>
 auto correctionFunctionBubble (double w, double vmin, double vmax,
-                               Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, char channel, bool diff) -> Q {
+                               double epsilon, Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, char channel, bool diff) -> Q {
     if (channel == 'p')
-        return correctionFunctionBubbleP (w, vmin, vmax, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
+        return correctionFunctionBubbleP (w, vmin, vmax, epsilon, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
     else
-        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
+        return correctionFunctionBubbleAT(w, vmin, vmax, epsilon, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
 }
 
 #endif //KELDYSH_MFRG_BUBBLE_CORRECTIONS_HPP

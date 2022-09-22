@@ -56,17 +56,17 @@ auto asymp_corrections_bubble(K_class k,
                               const vertexType_2& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, bool diff) -> Q {
+                              freqType w, freqType v, freqType vp, int i0_in, int i2, int i_in, bool diff) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
     Q Sigma_H = G.selfenergy.asymp_val_R;             // Hartree self-energy
     double Delta;
     if (REG==2) {
-        Delta = (glb_Gamma + G.Lambda) / 2.;       // Hybridization (~ flow parameter) at which the bubble is evaluated
+        Delta = (G.Gamma + G.Lambda) / 2.;       // Hybridization (~ flow parameter) at which the bubble is evaluated
     }
     else {
-        Delta = glb_Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
+        Delta = G.Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
     }
     Q res{}, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
@@ -142,8 +142,8 @@ auto asymp_corrections_bubble(K_class k,
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
-    VertexInput input_l (indices[0], SBE_DECOMPOSITION ? 0 : spin, w, v, 10.*vmin, i_in, channel);
-    VertexInput input_r (indices[1], SBE_DECOMPOSITION ? 0 : spin, w, 10.*vmin, vp, i_in, channel);
+    VertexInput input_l (indices[0], SBE_DECOMPOSITION ? 0 : spin, w, v, 10*vmin+1, i_in, channel);
+    VertexInput input_r (indices[1], SBE_DECOMPOSITION ? 0 : spin, w, 10*vmin+1, vp, i_in, channel);
 
     // compute values of left/right vertex
     Q K1L, K1R;
@@ -241,7 +241,7 @@ auto asymp_corrections_bubble(K_class k,
     }
 
     // compute the value of the (analytically integrated) bubble
-    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
+    Q Pival = correctionFunctionBubble(w * ((KELDYSH_FORMALISM or ZERO_T) ? 1. : M_PI*G.T), vmin * ((KELDYSH_FORMALISM or ZERO_T) ? 1. : M_PI*G.T), vmax * ((KELDYSH_FORMALISM or ZERO_T) ? 1. : M_PI*G.T), G.epsilon, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
 
 
     if constexpr (SBE_DECOMPOSITION) {
@@ -371,7 +371,7 @@ auto asymp_corrections_loop(const vertexType& vertex,
                             double v, int iK, int ispin, int i_in, const bool all_spins) -> Q {
 
     Q Sigma_H = G.selfenergy.asymp_val_R;       // Hartree self-energy
-    double Delta = (glb_Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
+    double Delta = (G.Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
 
     if (KELDYSH){
         // Keldysh components of the vertex needed for retarded and Keldysh self-energy
@@ -405,9 +405,9 @@ auto asymp_corrections_loop(const vertexType& vertex,
         }
 
         // analytical integration of the propagator
-        Q GR = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
-        Q GA = correctionFunctionSelfEnergy(1, vmin, vmax, Sigma_H, Delta, G.type);
-        Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, Sigma_H, Delta, G.type);
+        Q GR = correctionFunctionSelfEnergy(0, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
+        Q GA = correctionFunctionSelfEnergy(1, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
+        Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
 
         return factorRetarded * GR + factorAdvanced * GA + factorKeldysh * GK;
     }
@@ -424,7 +424,7 @@ auto asymp_corrections_loop(const vertexType& vertex,
             Vertexfactor += vertex.tvertex().left_same_bare(input, vertex.avertex());
         }
         // analytical integration of the propagator
-        Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
+        Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
 
         return Vertexfactor * Gfactor;
     }

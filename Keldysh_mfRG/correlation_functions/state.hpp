@@ -5,6 +5,7 @@
 #ifndef KELDYSH_MFRG_STATE_HPP
 #define KELDYSH_MFRG_STATE_HPP
 
+#include "../data_structures.hpp"
 #include "four_point/vertex.hpp"                   // vertex class
 #include "two_point/selfenergy.hpp"               // self-energy class
 #include "two_point/propagator.hpp"               // propagator class
@@ -20,26 +21,27 @@ class State{
 
 public:
     double Lambda;
+    fRG_config config;
     Vertex<Q,differentiated> vertex;
     SelfEnergy<Q> selfenergy;
 
-    State(): Lambda(0.) , vertex(fullvert<Q>(0.)), selfenergy(SelfEnergy<Q>(0.)) {
+    State(): Lambda(0.) , vertex(fullvert<Q>(0., fRG_config())), selfenergy(SelfEnergy<Q>(0., fRG_config())) {
 #ifndef NDEBUG
         //utils::print("Watch out! Use of default constructor for State<Q>!", true);
 #endif
     }
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda, bool initialize=false) : Lambda(Lambda), vertex(Vertex<Q,differentiated> (Lambda)), selfenergy(SelfEnergy<Q> (Lambda)) {
+    explicit State(double Lambda, const fRG_config& config_in, bool initialize=false) : Lambda(Lambda), config(config_in), vertex(Lambda, config_in), selfenergy(Lambda, config_in) {
         if (initialize) this->initialize();
     };
 
     /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
     State(const State<Q,false>& state_in, const double Lambda_in)
-    : Lambda(Lambda_in),  vertex(differentiated ? Vertex<Q,differentiated> (Lambda, state_in.vertex) : Vertex<Q,differentiated> (0)), selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)){vertex.set_frequency_grid(state_in.vertex);};
+    : Lambda(Lambda_in), config(state_in.config),  vertex(differentiated ? Vertex<Q,differentiated> (Lambda, config, state_in.vertex) : Vertex<Q,differentiated> (0, config)), selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)){vertex.set_frequency_grid(state_in.vertex);};
 
     /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
-    State(const Vertex<Q,differentiated>& vertex_in, const SelfEnergy<Q>& selfenergy_in, const double Lambda_in)
-    : Lambda(Lambda_in), vertex(vertex_in), selfenergy(selfenergy_in) {};
+    State(const Vertex<Q,differentiated>& vertex_in, const SelfEnergy<Q>& selfenergy_in, const fRG_config& config_in, const double Lambda_in)
+    : Lambda(Lambda_in), config(config_in), vertex(vertex_in), selfenergy(selfenergy_in) {};
 
     void initialize();
     void update_grid(double Lambda);
@@ -126,18 +128,18 @@ template <typename Q, bool differentiated> void State<Q,differentiated>::initial
         this->selfenergy.initialize(0., 0.); // TODO(high): Proper treatment for the Hubbard model.
         }
     else {
-        this->selfenergy.initialize(glb_U / 2., 0.);
-        if (std::abs(glb_Vg) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
+        this->selfenergy.initialize(config.U / 2., 0.);
+        if (std::abs(config.epsilon + config.U * 0.5) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
             assert (not PARTICLE_HOLE_SYMMETRY);
-            Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
+            Hartree_Solver Hartree_Term = Hartree_Solver (Lambda, config);
             const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing();
             this->selfenergy.initialize(hartree_value, 0.);
         }
     }
 
     // Assign initial conditions to bare vertex
-    if (KELDYSH and CONTOUR_BASIS != 1) this->vertex.initialize(-glb_U/2.);
-    else this->vertex.initialize(-glb_U);
+    if (KELDYSH and CONTOUR_BASIS != 1) this->vertex.initialize(-config.U/2.);
+    else this->vertex.initialize(-config.U);
 
 }
 
@@ -148,8 +150,8 @@ template <typename Q, bool differentiated> void State<Q,differentiated>::set_fre
 }
 
 template <typename Q, bool differentiated> void State<Q,differentiated>::update_grid(double Lambda) {
-    this->selfenergy.update_grid(Lambda);
-    this->vertex.update_grid(Lambda);
+    this->selfenergy.update_grid(Lambda, config);
+    this->vertex.update_grid(Lambda, config);
 }
 
 

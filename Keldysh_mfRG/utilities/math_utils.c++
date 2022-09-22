@@ -22,6 +22,32 @@ double sgn(const double x) {
     return (x >= 0) - (x <= 0); // (x > 0) ? 1. : ((x < 0) ? -1. : 0.);
 }
 
+int integer_division_ceil(int a, int b) {
+    assert(b>0);
+    if (a >= 0) {
+        const int result = (a + b - 1) / b;
+        return result;
+    }
+    else {
+        const int result = - ((-a) / b);
+        return result;
+    }
+}
+
+int integer_division_floor(int a, int b) {
+    assert(b>0);
+    if (a >= 0) {
+        const int result = a / b;
+        assert(result <= a);
+        return result;
+    }
+    else {
+        const int result = - ((-a + b - 1) / b);
+        assert(result <= 0);
+        return result;
+    }
+}
+
 auto round2Infty(const double x) -> double {
     const double tol = 1e-10;
     // trunc() rounds towards zero
@@ -35,58 +61,52 @@ auto myround(const double x) -> double {
     else return ceil(x-tol);
 }
 
-auto floor2bfreq(const double w) -> double {
-    const double tol = 1e-8;
-    const double a = (2. * M_PI * glb_T);
-    const double result = floor(w / a+tol) * a;
-    assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
-    assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    const double tol2 = 1e-10 * (std::abs(w )+1);
-    assert(result <= w + tol2);
-    assert(result >  w - 2*M_PI*glb_T - tol2);
+auto floor2bfreq(const int w) -> int {
+    const int a = 2;
+    const int result = integer_division_floor(w , a) * a;
+    assert(result <= w);
+    assert(result >= w - 2);
     return result;
 }
-auto ceil2bfreq(const double w) -> double {
-    double a = (2. * M_PI * glb_T);
-    const double tol = 0.1;
-    const double result = ceil(w / a-tol) * a;
-    assert(std::abs(result - w) < a*0.9); // make sure that result and w are less than (2*pi*T) apart
-    assert((int)(result / a * 2 + sign(result) * tol) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(result >= w - 1e-10 * (std::abs(w ) + 1));
-    assert(result <  w + 2*M_PI*glb_T + 1e-10 * std::abs(w + 1));
-    return result;
-}
-auto round2bfreq(const double w) -> double {
-    const double a = (2. * M_PI * glb_T);
-    const double result = round2Infty(w / a) * a;
-    assert(std::abs(result - w) < a); // make sure that result and w are less than (2*pi*T) apart
-    assert((int)(result / a * 2 + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T)
-    assert(std::abs(result) >= std::abs(w) - 1e-10 * (std::abs(w ) + 1));
-    assert(std::abs(result) <  std::abs(w) + 2*M_PI*glb_T + 1e-10 * (std::abs(w) + 1));
-    return result;
-}
-auto floor2ffreq(const double w) -> double {
-    const double tol = 0.1;
-    const double a = (M_PI * glb_T);
-    return (floor((w / a - 1.) / 2.+tol) * 2. + 1 ) * a;
-}
-auto ceil2ffreq(const double w) -> double {
-    const double tol = 0.1;
-    const double a = (M_PI * glb_T);
-    return (ceil((w / a - 1.-tol) / 2.) * 2. + 1 ) * a;
-}
-auto round2ffreq(const double w) -> double {
-    const double a = (M_PI * glb_T);
-    const double result = (myround((w / a - 1.) / 2.) * 2. + 1 ) * a;
-    assert(std::abs(result - w) < a*2); // make sure that result and w are less than (2*pi*T) apart
-    assert((int)((result / a - 1.) + sign(result) * 0.1) % 2 == 0 ); // make sure that result a multiple of (2*pi*T) apart
-    assert(std::abs(result) >= std::abs(w) *(1- 1e-10));
+auto ceil2bfreq(const int w) -> int {
+    const int a = 2;
+    const double result = integer_division_ceil(w , a) * a;
+    assert(result >= w);
+    assert(result <= w + 2);
     return result;
 }
 
-auto signFlipCorrection_MF(const double w) -> double {
+auto floor2bfreq(const double w) -> double {
+    const double tol = 1e-8;
+    const double a = (2.);
+    const double result = floor(w / a+tol) * a;
+    assert(result <= w);
+    assert(result >= w - 2);
+    return result;
+}
+auto ceil2bfreq(const double w) -> double {
+    const double tol = 1e-8;
+    const double a = (2.);
+    const double result = ceil(w / a-tol) * a;
+    assert(result >= w);
+    assert(result <= w + 2);
+    return result;
+}
+
+auto round2bfreq(const double w) -> double {
+    const int w_int = (int) (w + 0.1*sign(w));
+    const double result = 2.* (double) (w_int / 2); // rounding toward zero in integer division
+    return result;
+}
+auto round2ffreq(const double w) -> double {
+    const int w_int = (int) (w + 0.1*sign(w));
+    const double result = 2.* (double) ((w_int-1) / 2) + 1.; // rounding toward zero in integer division
+    return result;
+}
+
+auto signFlipCorrection_MF(const freqType w) -> freqType {
 #if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
-    const double correction = signFlipCorrection_MF_int(w) * (2 * M_PI * glb_T);
+    const freqType correction = signFlipCorrection_MF_int(w) * 2;
     return correction;
 #else
     assert(false);
@@ -94,9 +114,9 @@ auto signFlipCorrection_MF(const double w) -> double {
 #endif
 }
 
-int signFlipCorrection_MF_int(const double w) {
+int signFlipCorrection_MF_int(const freqType w) {
 #if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
-    const int correction = -((int) (std::abs(w / (2. * M_PI * glb_T)) + 0.1) ) % 2;
+    const int correction = -((int) (std::abs(w / 2) ) ) % 2;
     assert(correction==0 or correction == -1);
     return correction;
 #else
@@ -105,7 +125,7 @@ int signFlipCorrection_MF_int(const double w) {
 #endif
 }
 
-auto is_doubleOccurencies(const rvec& freqs) -> int {
+auto is_doubleOccurencies(const vec<freqType>& freqs) -> int {
     for (unsigned int i = 0; i < freqs.size() - 1; i++){
         if (freqs[i] == freqs[i+1]) return 1;
     }
@@ -161,7 +181,7 @@ template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t)
     w_t = v2;
 }
 
-void K2_convert2internalFreqs(double &w, double &v) { /// Insert this function before interpolation
+void K2_convert2internalFreqs(freqType &w, freqType &v) { /// Insert this function before interpolation
     /// need to convert natural parametrization to internal coordinates when interpolating
 #ifdef ROTATEK2
     // The internal parametrization corresponds to the fermionic frequencies at the two fermionic legs of K2
@@ -181,7 +201,7 @@ void K2_convert2internalFreqs(double &w, double &v) { /// Insert this function b
         w = rho;
     }
 }
-void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function before returning frequency values
+void K2_convert2naturalFreqs(freqType &w, freqType &v) { /// Insert this function before returning frequency values
     /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v)
     if constexpr (GRID == 2) {
         /// convert polar coordinates to frequencies (w,v) = rho * (cos phi * 2, sin phi)
@@ -199,7 +219,7 @@ void K2_convert2naturalFreqs(double &w, double &v) { /// Insert this function be
 }
 
 
-void K3_convert2internalFreqs(double &w, double &v, double &vp) { /// Insert this function before interpolation
+void K3_convert2internalFreqs(freqType &w, freqType &v, freqType &vp) { /// Insert this function before interpolation
     /// need to convert natural parametrization to internal coordinates when interpolating
 
     if constexpr (GRID == 2) {
@@ -222,7 +242,7 @@ void K3_convert2internalFreqs(double &w, double &v, double &vp) { /// Insert thi
         w = rho;
     }
 }
-void K3_convert2naturalFreqs(double &w, double &v, double &vp) { /// Insert this function before returning frequency values
+void K3_convert2naturalFreqs(freqType &w, freqType &v, freqType &vp) { /// Insert this function before returning frequency values
     /// need to convert internal coordinates to natural parametrization when retrieving frequencies at a specific grid point -> get_freqs_w(w,v,vp)
     if constexpr (GRID == 2) {
         // for spherical coordinates:

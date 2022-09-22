@@ -26,7 +26,7 @@ void compute_BSE(Vertex<Q,false>& Gamma_BSE, Vertex<Q,false>& Gamma_BSE_L, Verte
     Vertex<Q,false> Gamma = state_in.vertex;  // full vertex
     GeneralVertex<Q,symmetric_r_irred,false> Ir(state_in.vertex.half1());     // irreducible vertex
     Ir.set_Ir(true);            // (irreducible in the channel of the bubble in which it is evaluated)
-    Propagator<Q> G (Lambda, state_in.selfenergy, 'g'); // full propagator
+    Propagator<Q> G (Lambda, state_in.selfenergy, 'g', state_in.config); // full propagator
 
     // compute the BSE by inserting I_r on the left and the full Gamma on the right
     Gamma_BSE_L.set_frequency_grid(Gamma);
@@ -44,8 +44,10 @@ void compute_BSE(Vertex<Q,false>& Gamma_BSE, Vertex<Q,false>& Gamma_BSE_L, Verte
             if constexpr (DEBUG_SYMMETRIES) Gamma_BSE_R.get_rvertex(r).K2b= Gamma_BSE_L.get_rvertex(r).K2b;
         }
     }
+    //for (char r : {'a', 'p', 't'})
+    //    Gamma_BSE_L.get_rvertex(r).K1 = state_in.vertex.get_rvertex(r).K1;
 
-    Gamma_BSE = (Gamma_BSE_L + Gamma_BSE_R) * 0.5; // symmetrize the BSE
+        Gamma_BSE = (Gamma_BSE_L + Gamma_BSE_R) * 0.5; // symmetrize the BSE
 
     Vertex<Q,false> Gamma_BSE_diff = Gamma_BSE_R - Gamma_BSE_L;
     const double max_diff_K1 = Gamma_BSE_diff.norm_K1(0) / Gamma_BSE.norm_K1(0);
@@ -65,15 +67,15 @@ inline int SDE_counter = 0;
  */
 template <typename Q>
 void compute_BSE(Vertex<Q,false>& Gamma_BSE, const State<Q>& state_in, const double Lambda, const fRG_config& config, const int it_Lambda) {
-    Vertex<Q,false> Gamma_BSE_L (Lambda);
-    Vertex<Q,false> Gamma_BSE_R (Lambda);
+    Vertex<Q,false> Gamma_BSE_L (Lambda, state_in.config);
+    Vertex<Q,false> Gamma_BSE_R (Lambda, state_in.config);
     compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda, config);
 
 #ifndef NDEBUG
     bool write_state = false;
     if (write_state) {
-        State<Q> state_L(Gamma_BSE_L, state_in.selfenergy, Lambda);
-        State<Q> state_R(Gamma_BSE_R, state_in.selfenergy, Lambda);
+        State<Q> state_L(Gamma_BSE_L, state_in.selfenergy, config, Lambda);
+        State<Q> state_R(Gamma_BSE_R, state_in.selfenergy, config, Lambda);
         add_state_to_hdf(data_dir + "Parquet_GammaL", it_Lambda, state_L); // save input into 0-th layer of hdf5 file
         add_state_to_hdf(data_dir + "Parquet_GammaR", it_Lambda, state_R); // save input into 0-th layer of hdf5 file
     }
@@ -85,35 +87,46 @@ void compute_BSE(Vertex<Q,false>& Gamma_BSE, const State<Q>& state_in, const dou
 template<char channel, typename Q>
 SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma, const Propagator<Q> & G_bubble, const Propagator<Q> & G_loop, const fRG_config& config) {
 
-    Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
+    Vertex<Q,false> Gamma_0 (Lambda, config);                  // bare vertex
     Gamma_0.set_frequency_grid(Gamma);
-    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
-    else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
+    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-config.U / 2.);         // initialize bare vertex (Keldysh)
+    else         Gamma_0.initialize(-config.U);              // initialize bare vertex (Matsubara)
 
     // compute the r-bubble with full vertex on the right
-    GeneralVertex<Q,symmetric_full,false> bubble_r (Lambda);
+    GeneralVertex<Q,symmetric_full,false> bubble_r (Lambda, config);
     bubble_r.set_frequency_grid(Gamma);
     bubble_function(bubble_r, Gamma_0, Gamma, G_bubble, G_bubble, channel, false, config);  // full vertex on the right
 
 
 
         // compute the r bubble with full vertex on the left
-    GeneralVertex<Q,symmetric_full,false> bubble_l (Lambda);
+    GeneralVertex<Q,symmetric_full,false> bubble_l (Lambda, config);
     bubble_l.set_frequency_grid(Gamma);
     bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, G_bubble, channel, false, config);  // full vertex on the left
     if constexpr (channel == 't') {
         Gamma.swap_vanishing_component_channel_a_and_t();
 
-        GeneralVertex<Q,symmetric_full,false> bubble_r_other (Lambda);
-        bubble_r_other.set_Ir(true);
+        GeneralVertex<Q,symmetric_full,false> bubble_r_other (Lambda, config);
         bubble_r_other.set_frequency_grid(Gamma);
         bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 'a', false, config);  // full vertex on the right
         bubble_r += bubble_r_other;
 
-        GeneralVertex<Q,symmetric_full,false> bubble_l_other (Lambda);
-        bubble_l_other.set_Ir(true);
+        GeneralVertex<Q,symmetric_full,false> bubble_l_other (Lambda, config);
         bubble_l_other.set_frequency_grid(Gamma);
         bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 'a', false, config);  // full vertex on the left
+        bubble_l += bubble_l_other;
+    }
+    else if constexpr (channel == 'a') {
+        Gamma.swap_vanishing_component_channel_a_and_t();
+
+        GeneralVertex<Q,symmetric_full,false> bubble_r_other (Lambda, config);
+        bubble_r_other.set_frequency_grid(Gamma);
+        bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 't', false, config);  // full vertex on the right
+        bubble_r += bubble_r_other;
+
+        GeneralVertex<Q,symmetric_full,false> bubble_l_other (Lambda, config);
+        bubble_l_other.set_frequency_grid(Gamma);
+        bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 't', false, config);  // full vertex on the left
         bubble_l += bubble_l_other;
     }
 
@@ -141,7 +154,7 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
 
     // compute the self-energy via SDE using the bubble
     SelfEnergy<Q> Sigma_SDE(G_bubble.selfenergy.Sigma.frequencies);
-    Sigma_SDE.initialize( glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    Sigma_SDE.initialize( config.U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop<false,channel == 't' ? 1 : 0>(Sigma_SDE, bubble, G_loop);
 
     //if (channel == 'a') {
@@ -168,7 +181,7 @@ template <char channel, typename Q>
 void compute_SDE_impl_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, const fRG_config& config) {
     /// prepare vertex Γ for computing   0.5 * [L_i( B_r(Γ_0, Γ_0 + γ_r) + B_r(Γ_0 + γ_r, Γ_0), G)]  using compute_SDE_impl<channel>(...)
 
-    Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
+    Propagator<Q> G (Lambda, state_in.selfenergy, 'g', state_in.config);   // full propagator
     Vertex<Q,false> Gamma_temp_only_Gamma0_and_gamma_r = state_in.vertex;
 
     for (char r: {'a', 'p', 't'}) {
@@ -192,6 +205,11 @@ void compute_SDE_impl_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, con
 template <typename Q>
 void compute_SDE_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, const fRG_config& config) {
 
+    assert(!KELDYSH_FORMALISM); /// TODO: There are still issues with the symmetries in Keldysh
+                                /// Problem: To read out certain Keldysh components we use the transformations T1 and T2 (exchange symmetry)
+                                /// This switches between the channels a and t ==> We cannot split up the a- and the t-channel
+                                /// Rather, we would need to compute the intermediate bubble both in the a- and the t-channel
+                                /// In Matsubara the symmetry tables for the updown spin-component don't contain these transformations that transform between different channels
     State<Q,false> Psi_0 (state_in, Lambda);                  // bare vertex with self-energy copied from state_in
     Psi_0.initialize();
     Psi_0.selfenergy = state_in.selfenergy;
@@ -202,7 +220,8 @@ void compute_SDE_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     compute_SDE_impl_v1<'a',Q>(Sigma_SDE_0, Psi_0, Lambda, config);
     compute_SDE_impl_v1<'a',Q>(Sigma_SDE_aplus0, state_in, Lambda, config);
     compute_SDE_impl_v1<'p',Q>(Sigma_SDE_pplus0, state_in, Lambda, config);
-    compute_SDE_impl_v1<'t',Q>(Sigma_SDE_tplus0, state_in, Lambda, config);
+    compute_SDE_impl_v1<'t',Q>(Sigma_SDE_tplus0, state_in, Lambda, config); /// TODO(micro-optimization): write SDE in the way that Fabian likes:
+                                                                               /// Compute B(Gamma0, gamma_t)^upup directly and store it at the location where we actually store updown. Then let the loop read out the upup Komponent from this place. (There should be no issues with the symmetries.)
     Sigma_SDE = Sigma_SDE_aplus0 + Sigma_SDE_pplus0 + Sigma_SDE_tplus0 - 2. * Sigma_SDE_0;
 }
 
@@ -221,11 +240,11 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
                  const State<Q>& state_in, const double Lambda, const fRG_config& config) {
     bool write_state = false;
     /// alternative to below code (does the same stuff in more compact code):
-    Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
+    Propagator<Q> G (Lambda, state_in.selfenergy, 'g', state_in.config);   // full propagator
     //Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
     //Gamma_0.set_frequency_grid(state_in.vertex);
-    //if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
-    //else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
+    //if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-config.U / 2.);         // initialize bare vertex (Keldysh)
+    //else         Gamma_0.initialize(-config.U);              // initialize bare vertex (Matsubara)
     Sigma_SDE_a = compute_SDE_impl<'a',Q>(Lambda, state_in.vertex, G, G, config);
     Sigma_SDE_p = compute_SDE_impl<'p',Q>(Lambda, state_in.vertex, G, G, config);
 
@@ -237,8 +256,8 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     /*
     Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
     Gamma_0.set_frequency_grid(state_in.vertex);
-    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
-    else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
+    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-config.U / 2.);         // initialize bare vertex (Keldysh)
+    else         Gamma_0.initialize(-config.U);              // initialize bare vertex (Matsubara)
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
 
     //G.save_propagator_values(data_dir + "parquetPropagator.h5", G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies());
@@ -258,7 +277,7 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     GeneralVertex<Q,symmetric_r_irred,false> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
 
     // compute the self-energy via SDE using the a bubble
-    Sigma_SDE_a.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    Sigma_SDE_a.initialize(config.U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     //bubble_a.avertex().K2 *= 0.;
     loop<false,0>(Sigma_SDE_a, bubble_a, G);
     utils::print("Check causality of Sigma_SDE_a: \n");
@@ -280,7 +299,7 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     GeneralVertex<Q,symmetric_r_irred,false> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
 
     // compute the self-energy via SDE using the p bubble
-    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    Sigma_SDE_p.initialize(config.U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     //bubble_p.pvertex().K2 *= 0.;
     loop<false,0>(Sigma_SDE_p, bubble_p, G);
     utils::print("Check causality of Sigma_SDE_p: \n");
@@ -299,9 +318,9 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     if (write_state) {
         std::string filename = data_dir + "SDE_iteration" + std::to_string(SDE_counter);
         H5::H5File file_out = H5::H5File(filename, H5F_ACC_TRUNC);
-        write_to_hdf(file_out, "Sigma_SDE_a", Sigma_SDE_a.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_p", Sigma_SDE_p.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE", Sigma_SDE.Sigma.get_vec(), false);
+        write_to_hdf(file_out, "Sigma_SDE_a", Sigma_SDE_a.Sigma.get_vec(), config, false);
+        write_to_hdf(file_out, "Sigma_SDE_p", Sigma_SDE_p.Sigma.get_vec(), config, false);
+        write_to_hdf(file_out, "Sigma_SDE", Sigma_SDE.Sigma.get_vec(), config, false);
         file_out.close();
 
 #ifndef NDEBUG
@@ -326,13 +345,13 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
 template <char channel, typename Q>
 void check_selfconsistency_of_K1K2(const Vertex<Q,false>& Gamma, double Lambda, const Propagator<Q> G_bubble, const fRG_config& config) {
 
-    Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
+    Vertex<Q,false> Gamma_0 (Lambda, config);                  // bare vertex
     Gamma_0.set_frequency_grid(Gamma);
-    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-glb_U / 2.);         // initialize bare vertex (Keldysh)
-    else         Gamma_0.initialize(-glb_U);              // initialize bare vertex (Matsubara)
+    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-config.U / 2.);         // initialize bare vertex (Keldysh)
+    else         Gamma_0.initialize(-config.U);              // initialize bare vertex (Matsubara)
 
     // compute the r bubble with full vertex on the left
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_l (Lambda);
+    GeneralVertex<Q,symmetric_r_irred,false> bubble_l (Lambda, config);
     bubble_l.set_Ir(true);
     bubble_l.set_frequency_grid(Gamma);
     bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, G_bubble, channel, false, config);  // full vertex on the left
@@ -382,7 +401,7 @@ SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const
 
     // compute the self-energy via SDE using the Gamma_temp_onlyK2
     SelfEnergy<Q> Sigma_SDE(G_loop.selfenergy.Sigma.frequencies);
-    Sigma_SDE.initialize( is_differentiated_SE ? 0. : glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
+    Sigma_SDE.initialize( is_differentiated_SE ? 0. : config.U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
     loop<false,version>(Sigma_SDE, Gamma_temp_onlyK2, G_loop);
 
 
@@ -392,7 +411,7 @@ SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const
 
 template <typename Q>
 void compute_SDE_v3(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, const fRG_config& config) {
-    Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
+    Propagator<Q> G(Lambda, state_in.selfenergy, 'g', state_in.config);
     SelfEnergy<Q> Sigma_SDE_a = compute_SDE_impl_v3<0, false, false>('a', Lambda, state_in.vertex, G, config);
     SelfEnergy<Q> Sigma_SDE_p = compute_SDE_impl_v3<0, false, false>('p', Lambda, state_in.vertex, G, config);
     SelfEnergy<Q> Sigma_SDE_t = compute_SDE_impl_v3<1, false, false>('t', Lambda, state_in.vertex, G, config);
@@ -519,45 +538,45 @@ void susceptibilities_postprocessing(Vertex<Q,false>& chi, Vertex<Q,false>& chi_
                                      const State<Q>& state, const double Lambda, const fRG_config& config) {
     Vertex<Q,false> Gamma = state.vertex;  // full vertex (just a redefinition
 
-    Vertex<Q,false> Gamma_0 (Lambda);                     // bare vertex
+    Vertex<Q,false> Gamma_0 (Lambda, config);                     // bare vertex
     Gamma_0.set_frequency_grid(Gamma);
-    Gamma_0.initialize(not CONTOUR_BASIS ? -glb_U / 2. : -glb_U);             // initialize bare vertex
-    Propagator<Q> G (Lambda, state.selfenergy, 'g');   // full propagator
+    Gamma_0.initialize(not CONTOUR_BASIS ? -config.U / 2. : -config.U);             // initialize bare vertex
+    Propagator<Q> G (Lambda, state.selfenergy, 'g', config);   // full propagator
 
     // compute susceptibilities in all three channels
     for (char r : "apt") {
         // contribution from the bare bubble
-        Vertex<Q,false> chi_0 (Lambda);
+        Vertex<Q,false> chi_0 (Lambda, config);
         chi_0.set_frequency_grid(Gamma);
         bubble_function(chi_0, Gamma_0, Gamma_0, G, G, r, false, config);
 
         // temporary vertex with full vertex on the right (first: compute half1)
-        Vertex<Q,false> Gamma0_Gamma_half1 (Lambda);
+        Vertex<Q,false> Gamma0_Gamma_half1 (Lambda, config);
         Gamma0_Gamma_half1.set_frequency_grid(Gamma);
         bubble_function(Gamma0_Gamma_half1, Gamma_0, Gamma, G, G, r, false, config);
 
         // temporary vertex with full vertex on the left (first: compute half1)
-        Vertex<Q,false> Gamma_Gamma0_half1 (Lambda);
+        Vertex<Q,false> Gamma_Gamma0_half1 (Lambda, config);
         Gamma_Gamma0_half1.set_frequency_grid(Gamma);
         bubble_function(Gamma_Gamma0_half1, Gamma, Gamma_0, G, G, r, false, config);
 
         // construct non-symmetric_full vertices out of the two half1 vertices above
-        GeneralVertex<Q, non_symmetric_diffleft,false> Gamma0_Gamma (Lambda);
+        GeneralVertex<Q, non_symmetric_diffleft,false> Gamma0_Gamma (Lambda, config);
         Gamma0_Gamma.half1() = Gamma0_Gamma_half1.half1();
         Gamma0_Gamma.half2() = Gamma_Gamma0_half1.half1();
         Gamma0_Gamma.set_only_same_channel(true);  // left/right bubble need to be in the same channel
 
-        GeneralVertex<Q, non_symmetric_diffright,false> Gamma_Gamma0 (Lambda);
+        GeneralVertex<Q, non_symmetric_diffright,false> Gamma_Gamma0 (Lambda, config);
         Gamma_Gamma0.half1() = Gamma_Gamma0_half1.half1();
         Gamma_Gamma0.half2() = Gamma0_Gamma_half1.half1();
 
         // contribution from the full vertex, with temporary vertex on the left
-        Vertex<Q,false> chi_L (Lambda);
+        Vertex<Q,false> chi_L (Lambda, config);
         chi_L.set_frequency_grid(Gamma);
         bubble_function(chi_L, Gamma0_Gamma, Gamma_0, G, G, r, false, config);
 
         // contribution from the full vertex, with temporary vertex on the right
-        Vertex<Q,false> chi_R (Lambda);
+        Vertex<Q,false> chi_R (Lambda, config);
         chi_R.set_frequency_grid(Gamma);
         bubble_function(chi_R, Gamma_0, Gamma_Gamma0, G, G, r, false, config);
 
@@ -603,8 +622,8 @@ void parquet_checks(const std::string filename);
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const fRG_config& config, const int it_Lambda, const int version) {
     compute_BSE(state_out.vertex, state_in, Lambda, config, it_Lambda);                    // compute the gamma_r's via the BSE
-    if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-glb_U/2.);     // add the irreducible vertex
-    else         state_out.vertex.initialize(-glb_U);        // add the irreducible vertex
+    if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-config.U/2.);     // add the irreducible vertex
+    else         state_out.vertex.initialize(-config.U);        // add the irreducible vertex
 
     compute_SDE(state_out.selfenergy, state_in, Lambda, config, version);  // compute the self-energy via the SDE
     /// For testing (delete when testing is done):
@@ -626,24 +645,28 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
  * @param mixing_ratio: mixing ratio in [0.1 - 0.5] for stabilizing the parquet iteration
  */
 template <typename Q>
-int parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const fRG_config& config , const int version,
-                    const double accuracy=1e-6, const int Nmax=6, const double mixing_ratio=1.0) {
+int parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
+                    const double accuracy=1e-6, const int Nmax=6, const bool overwrite_old_results=true, const double mixing_ratio=1.0) {
     assert((mixing_ratio >= 0.1 and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
     SDE_counter = 0;
     utils::print("\t --- Start parquet solver ---\n");
-    utils::print("Results in ", filename, "\n");
+    utils::print("Results get stored in ", filename, "\n");
 
-
-    int Lambda_it = -1;
-    bool is_converged = check_convergence_hdf(filename, Lambda_it);
-    if (is_converged) {
-        utils::print("Loading converged parquet result from file (Lambda_it = ", Lambda_it, ") \n");
-        state_in = read_state_from_hdf(filename, Lambda_it);
-        return 0;
+    if (overwrite_old_results) {
+        utils::print("Start from scratch.\n");
     }
-    if (Lambda_it >= 0) {
-        utils::print("Loading non-converged parquet result from file (Lambda_it = ", Lambda_it, ") \n");
-        state_in = read_state_from_hdf(filename, Lambda_it);
+    else {
+        int Lambda_it = -1;
+        bool is_converged = check_convergence_hdf(filename, Lambda_it);
+        if (is_converged) {
+            utils::print("Loading converged parquet result from file (Lambda_it = ", Lambda_it, ") \n");
+            state_in = read_state_from_hdf(filename, Lambda_it);
+            return 0;
+        }
+        if (Lambda_it >= 0) {
+            utils::print("Loading non-converged parquet result from file (Lambda_it = ", Lambda_it, ") \n");
+            state_in = read_state_from_hdf(filename, Lambda_it);
+        }
     }
 
     write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
@@ -673,9 +696,30 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
     // first check if converged, and also stop if maximal number of iterations is reached
     bool unfinished = true;
     while (unfinished) {
+
+        /// for testing:
+        if (false) {
+            GeneralVertex<Q,symmetric_r_irred,false> Ir(state_in.vertex.half1());     // irreducible vertex
+
+            state_in.vertex.template symmetry_expand<'a',false,true>();
+            state_in.vertex.save_expanded(data_dir + "Psi_"+ std::to_string(iteration) +"_symmetry_expanded_for_a_left_");
+            Ir.template symmetry_expand<'a',true,true>();
+            Ir.save_expanded(data_dir + "Ir_" + std::to_string(iteration) + "_symmetry_expanded_for_a_left_");
+
+            state_in.vertex.template symmetry_expand<'p',false,true>();
+            state_in.vertex.save_expanded(data_dir + "Psi_" + std::to_string(iteration) + "_symmetry_expanded_for_p_left_");
+            Ir.template symmetry_expand<'p',true,true>();
+            Ir.save_expanded(data_dir + "Ir_" + std::to_string(iteration) + "_symmetry_expanded_for_p_left_");
+
+            state_in.vertex.template symmetry_expand<'t',false,true>();
+            state_in.vertex.save_expanded(data_dir + "Psi_" + std::to_string(iteration) + "_symmetry_expanded_for_t_left_");
+            Ir.template symmetry_expand<'t',true,true>();
+            Ir.save_expanded(data_dir + "Ir_" + std::to_string(iteration) + "_symmetry_expanded_for_t_left_");
+        }
+
         double t_start = utils::get_time();
         utils::print("iteration ", iteration, true);
-        parquet_iteration(state_out, state_in, Lambda, config, iteration, version);  // compute lhs of parquet equations
+        parquet_iteration(state_out, state_in, Lambda, state_in.config, iteration, version);  // compute lhs of parquet equations
         /// for testing:
         //if (iteration == 1) {
         //    for (char r : {'a', 'p', 't'}) {
@@ -696,35 +740,6 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
 
         add_state_to_hdf(filename, iteration, state_out, is_converged);  // store result into file
 
-        /// for testing:
-        if (iteration == 1 and false) {
-            GeneralVertex<Q,symmetric_r_irred,false> Ir(state_out.vertex.half1());     // irreducible vertex
-            //GeneralVertex<Q,symmetric_r_irred,false> Gamma_temp_onlyK2(state_out.vertex.half1(), state_out.vertex.get_vertex_nondiff());
-            //const char channel = 'a';
-            //for (char r: {'a', 'p', 't'}) {
-            //    if (r != channel) Gamma_temp_onlyK2.get_rvertex(r).K1 *= 0.;
-            //    if (MAX_DIAG_CLASS > 1) {
-            //        if (r != channel) {
-            //            Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0;
-            //        }
-            //        else {
-            //            Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5; // ensures that both K2 and K2' are considered with a weight of 0.5
-            //            // (in the SDE there is either K2 or K2', we average over these two possibilities)
-            //        }
-            //    }
-            //    if (MAX_DIAG_CLASS > 2) Gamma_temp_onlyK2.get_rvertex(r).K3 *= 0.;
-            //}
-            //Gamma_temp_onlyK2.irred().initialize(0.);
-
-            //state_out.vertex.template symmetry_expand<'a',true,false>();
-            //state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_a_left_");
-            //state_out.vertex.template symmetry_expand<'p',true,false>();
-            //state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_p_left_");
-            state_out.vertex.template symmetry_expand<'t',false,true>();
-            state_out.vertex.save_expanded(data_dir + "Psi_symmetry_expanded_for_t_left_");
-            Ir.template symmetry_expand<'t',true,true>();
-            Ir.save_expanded(data_dir + "Ir_symmetry_expanded_for_t_left_");
-        }
 
         state_in = state_out;  // use output as input for next iteration
 
@@ -737,7 +752,7 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
 }
 
 
-void run_parquet(const fRG_config& config, const std::vector<double>&, int version);
+void run_parquet(const fRG_config& config, const std::vector<double>&, int version, bool overwrite_old_results);
 
 
 #endif //KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H

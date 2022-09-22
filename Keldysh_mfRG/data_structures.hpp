@@ -379,7 +379,7 @@ template <typename T>
 double vec<T>::max_norm() const {
     double out = 0.;
     for (size_t i=0; i<this->size(); ++i) {
-        out = std::max(out, std::abs((*this)[i]));
+        out = std::max(out, (double)std::abs((*this)[i]));
     }
     return out;
 }
@@ -491,35 +491,35 @@ namespace my_defs {
         enum names {keldysh, nu, internal};
         using index_type = std::array<my_index_t, rank>;
         using dimensions_type = std::array<my_index_t, rank>;
-        using frequencies_type = std::array<double, 1>;
+        using frequencies_type = std::array<freqType, 1>;
     }
     namespace K1 {
         constexpr my_index_t rank = 4;
         enum names {spin,  omega,  keldysh,  internal};
         using index_type = std::array<my_index_t, rank>;
         using dimensions_type = std::array<my_index_t, rank>;
-        using frequencies_type = std::array<double, 1>;
+        using frequencies_type = std::array<freqType, 1>;
     }
     namespace K2 {
         constexpr my_index_t rank = 5;
         enum names {spin,  omega,  nu,  keldysh,  internal};
         using index_type = std::array<my_index_t, rank>;
         using dimensions_type = std::array<my_index_t, rank>;
-        using frequencies_type = std::array<double, 2>;
+        using frequencies_type = std::array<freqType, 2>;
     }
     namespace K2b{
         constexpr my_index_t rank = 5;
         enum names {spin,  omega,  nup,  keldysh,  internal};
         using index_type = std::array<my_index_t, rank>;
         using dimensions_type = std::array<my_index_t, rank>;
-        using frequencies_type = std::array<double, 2>;
+        using frequencies_type = std::array<freqType, 2>;
     }
     namespace K3 {
         constexpr  my_index_t rank = 6;
         enum names {spin,  omega,  nu,  nup,  keldysh,  internal};
         using index_type = std::array<my_index_t, rank>;
         using dimensions_type = std::array<my_index_t, rank>;
-        using frequencies_type = std::array<double, 3>;
+        using frequencies_type = std::array<freqType, 3>;
     }
 }
 
@@ -534,14 +534,14 @@ namespace my_defs {
  * */
 struct VertexInput{
     int iK;
-    double w, v1, v2;
+    freqType w, v1, v2;
     my_index_t i_in;
     my_index_t spin;
     char channel_bubble;
     K_class kClass_aim;
     my_index_t iw_r;
 
-    VertexInput(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)
+    VertexInput(int iK_in, my_index_t spin_in, freqType w_in, freqType v1_in, freqType v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)
             :
 //#if KELDYSH_FORMALISM
             iK(iK_in),
@@ -648,7 +648,10 @@ struct fRG_config {
     int nODE_;
     double epsODE_abs_;
     double epsODE_rel_;
-    double U;
+    double U = 1.;           // Impurity on-site interaction strength
+    double T = 1.;           // temperature
+    double Gamma = 1.;       // hybridization strength
+    double epsilon = -0.5;     // Impurity on-site energy
     bool save_intermediateResults;
     int nloops;
     int number_of_nodes=1;

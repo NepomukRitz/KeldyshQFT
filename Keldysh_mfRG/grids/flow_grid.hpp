@@ -15,7 +15,7 @@ namespace flowgrid {
 
     void add_points_to_Lambda_grid(std::vector<double>& grid, const std::vector<double>& lambda_checkpoints);
 
-    rvec get_Lambda_checkpoints(const std::vector<double>& Us);
+    rvec get_Lambda_checkpoints(const std::vector<double>& Us, const fRG_config& config);
 
     double log_substitution(double x);
     double log_resubstitution(double x);

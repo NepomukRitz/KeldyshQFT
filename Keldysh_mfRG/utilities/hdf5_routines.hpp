@@ -539,57 +539,57 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_a, state.vertex.avertex().K1.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_p, state.vertex.pvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K1_t, state.vertex.tvertex().K1.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS_LIST, state.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTa, state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS_LISTt, state.vertex.tvertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS_LIST, state.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS_LISTa, state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS_LISTp, state.vertex.pvertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS_LISTt, state.vertex.tvertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
 #if MAX_DIAG_CLASS>1
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_a, state.vertex.avertex().K2.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_p, state.vertex.pvertex().K2.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2_t, state.vertex.tvertex().K2.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS2_LISTa, state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS2_LISTp, state.vertex.pvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS2_LISTt, state.vertex.tvertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
 #if DEBUG_SYMMETRIES
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_a, state.vertex.avertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_p, state.vertex.pvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K2b_t, state.vertex.tvertex().K2b.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS2b_LISTa, state.vertex.avertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS2b_LISTp, state.vertex.pvertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS2b_LISTt, state.vertex.tvertex().K2b.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
 #endif
 #endif
 #if MAX_DIAG_CLASS>2
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_a, state.vertex.avertex().K3.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_p, state.vertex.pvertex().K3.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
         write_to_hdf_LambdaLayer<Q>(file_out, DATASET_K3_t, state.vertex.tvertex().K3.get_vec(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, BFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTa2,state.vertex.avertex().K3.frequencies.get_freqGrid_3().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTp2,state.vertex.pvertex().K3.frequencies.get_freqGrid_3().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
-        write_to_hdf_LambdaLayer<double>(file_out, FFREQS3_LISTt2,state.vertex.tvertex().K3.frequencies.get_freqGrid_3().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, BFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_b().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS3_LISTa, state.vertex.avertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS3_LISTp, state.vertex.pvertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS3_LISTt, state.vertex.tvertex().K3.frequencies.get_freqGrid_f().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS3_LISTa2,state.vertex.avertex().K3.frequencies.get_freqGrid_3().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS3_LISTp2,state.vertex.pvertex().K3.frequencies.get_freqGrid_3().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
+        write_to_hdf_LambdaLayer<freqType>(file_out, FFREQS3_LISTt2,state.vertex.tvertex().K3.frequencies.get_freqGrid_3().get_all_frequencies(), Lambda_it, numberLambdaLayers, is_dataset_existent);
 #endif
         if(!is_dataset_existent) {
             /// Write used parameters for documentation purpose
             H5::Group group_params(file_out.createGroup(PARAM_LIST));
             write_to_hdf(group_params, "REG", REG, is_dataset_existent);
-            write_to_hdf(group_params, "Gamma", glb_Gamma, is_dataset_existent);
+            write_to_hdf(group_params, "Gamma", state.config.Gamma, is_dataset_existent);
             write_to_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS, is_dataset_existent);
-            write_to_hdf(group_params, "N_LOOPS", N_LOOPS, is_dataset_existent);
-            write_to_hdf(group_params, "T", glb_T, is_dataset_existent);
+            write_to_hdf(group_params, "N_LOOPS", state.config.nloops, is_dataset_existent);
+            write_to_hdf(group_params, "T", state.config.T, is_dataset_existent);
             write_to_hdf(group_params, "mu", glb_mu, is_dataset_existent);
-            write_to_hdf(group_params, "U", glb_U, is_dataset_existent);
-            write_to_hdf(group_params, "epsilon", glb_epsilon, is_dataset_existent);
+            write_to_hdf(group_params, "U", state.config.U, is_dataset_existent);
+            write_to_hdf(group_params, "epsilon", state.config.epsilon, is_dataset_existent);
             write_to_hdf(group_params, "V", glb_V, is_dataset_existent);
             write_to_hdf(group_params, "ODEsolver", ODEsolver, is_dataset_existent);
             write_to_hdf(group_params, "GRID", GRID, is_dataset_existent);
@@ -778,7 +778,7 @@ bool check_convergence_hdf(const H5std_string& filename, int& Lambda_it) ;
  * @return            : Lambdas in a vector of doubles
  */
 rvec read_Lambdas_from_hdf(H5std_string FILE_NAME);
-
+fRG_config read_config_from_hdf(H5std_string FILE_NAME);
 
 
 /// --- Test function --- ///

@@ -26,7 +26,7 @@ public:
         VertexInput input2 (7 , it_spin, 0., v, vp, i_in, 'a');
         VertexInput input3 (14, it_spin, 0., v, vp, i_in, 'a');
         return G.GA(v, i_in) * G.GR(v, i_in)
-               * (vertex.template value<'a'>(input1) - Fermi_fac(v, glb_mu) * (vertex.template value<'a'>(input2) - vertex.template value<'a'>(input3)));
+               * (vertex.template value<'a'>(input1) - Fermi_fac(v, glb_mu, G.T) * (vertex.template value<'a'>(input2) - vertex.template value<'a'>(input3)));
     }
 
 };

@@ -287,11 +287,11 @@ void SOPT_FFT(cvec& SEout_R, cvec& SEout_K, cvec& K1aout_R, cvec& K1aout_K, cvec
     bool writeflag_FFT = true; // whether to write data into file
     bool tailflag_FFT = true; // whether to include analytic treatment of tail
     double hyb_FFT = 0; // hybridization for high-freuqency decay, e.g., G^R(v)=1/(v+i*hyb)
-    if(tailflag_FFT) hyb_FFT = (glb_Gamma+Gin.Lambda)/2.;
+    if(tailflag_FFT) hyb_FFT = (Gin.Gamma+Gin.Lambda)/2.;
     /// ------------------- READ INPUT --------------------- ///
     rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
     const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
-    if(dvFFT > glb_T) cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << glb_T << "." << endl;
+    if(dvFFT > Gin.T) std::cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << Gin.T << "." << endl;
     for (int i = 0; i < nFFT; ++i) // fill frequency grid
         vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
     cvec GvR (nFFT), GvK (nFFT); // separate vectors for retarded and Keldysh component of input GF
@@ -538,7 +538,7 @@ void diffSOPT_FFT(cvec& dSEout_R, cvec& dK1aout_R, const Propagator<comp>& Gin, 
     /// ------------------- READ INPUT --------------------- ///
     rvec vFFT(nFFT); // allocate equidistant frequency grid for Fourier trafo
     const double dvFFT = V_FFT / (double)nFFT; // frequency spacing
-    if(dvFFT > glb_T) cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << glb_T << "." << endl;
+    if(dvFFT > Sin.T) std::cout << "Warning in SOPT_FFT: frequency spacing dv=" << dvFFT << " is greater than temperature T=" << Sin.T << "." << endl;
     for (int i = 0; i < nFFT; ++i) // fill frequency grid
         vFFT[i] = -V_FFT / 2. + dvFFT * (double)i;
     cvec GvR (nFFT), GvK (nFFT), SvR (nFFT), SvK (nFFT); // separate vectors for retarded and Keldysh component of input GF

@@ -11,8 +11,8 @@
 // Temporary vectors bfreqs, ffreqs, used in right_hand_sides.h, fourier_trafo.h, testFunctions.h, integrator.h
 extern FrequencyGrid<eliasGrid> frequencyGrid_bos;
 extern FrequencyGrid<eliasGrid> frequencyGrid_fer;
-extern rvec bfreqs;
-extern rvec ffreqs;
+extern vec<freqType> bfreqs;
+extern vec<freqType> ffreqs;
 
 /* compute the dot product of two vectors (integrand values and weights) */
 template <typename Q>
@@ -86,6 +86,7 @@ template <typename Q, typename Integrand> auto integrator_simpson(const Integran
 template <typename Q, typename Integrand> auto integrator_simpson(const Integrand& integrand, double a, double b, double w, int N) -> Q {
     Q result = 0.;   // initialize result
 
+    const double glb_Gamma = 1.;
     double Delta = 2*glb_Gamma;  // half-width of the region around the sharp feature which should get better resolution
     int Nw = N/5;                // number of additional points around the sharp feature
     if (!(Nw % 2)) Nw += 1;      // number of points needs to be odd
@@ -114,6 +115,7 @@ template <typename Q, typename Integrand> auto integrator_simpson(const Integran
 
     Q result = 0.;   // initialize result
     int Na, Nb, Nc;     // number of points in different intervals
+    const double glb_T = 1.;
 
     double Delta = 5*glb_T;  // half-width of the region around the sharp features which should get better resolution
     int Nw = N/10;           // number of additional points around each of the sharp features

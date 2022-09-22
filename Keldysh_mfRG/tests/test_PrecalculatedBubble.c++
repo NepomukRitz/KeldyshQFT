@@ -2,8 +2,8 @@
 
 void test_Bubble_in_Momentum_Space(){
     double Lambda = 0.01;
-    Propagator<comp> g (Lambda, 'g');
-    Propagator<comp> s (Lambda, 's');
+    Propagator<comp> g (Lambda, 'g', fRG_config());
+    Propagator<comp> s (Lambda, 's', fRG_config());
 
     double starting_time = utils::get_time();
     PrecalculatedBubble<comp> DotBubble (g, s, true);
@@ -61,15 +61,20 @@ void test_Bubble_in_Momentum_Space(){
     std::string filename = "/scratch-local/Nepomuk.Ritz/testing_data/FFT_parallelized_full_bubble_in_mom_space_Nq_"
                            + std::to_string(glb_N_q) + ".h5";
     write_h5_rvecs(filename,
-                   {"propagator_frequencies", "bubble_frequencies",
+                   {
                     "RealValuesOfPropagator", "ImaginaryValuesOfPropagator",
                     "RealValuesOfSingleScale", "ImaginaryValuesOfSingleScale",
                     "RealValuesOfBubble", "ImaginaryValuesOfBubble",
                     "RealValuesOfDottedBubble", "ImaginaryValuesOfDottedBubble"},
-                   {g.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies(), Bubble.fermionic_grid.get_all_frequencies(),
+                   {
                     prop.real(), prop.imag(), single_scale.real(), single_scale.imag(),
                     Bubble.FermionicBubble.real(), Bubble.FermionicBubble.imag(),
                     DotBubble.FermionicBubble.real(), DotBubble.FermionicBubble.imag()});
+
+    H5::H5File file_out(filename, H5F_ACC_RDWR);
+    write_to_hdf(file_out, "propagator_frequencies", g.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file_out, "bubble_frequencies", Bubble.fermionic_grid.get_all_frequencies(), false);
+    file_out.close();
 #endif
 }
 
@@ -88,6 +93,10 @@ void save_PreBubble_in_freq_space(const PrecalculatedBubble<comp>& Pi, const int
         }
     }
     write_h5_rvecs(filename,
-                   {"frequencies", "RealBubble", "ImagBubble"},
-                   {Pi.fermionic_grid.get_all_frequencies(), pi.real(), pi.imag()});
+                   {"RealBubble", "ImagBubble"},
+                   {pi.real(), pi.imag()});
+
+    H5::H5File file_out(filename, H5F_ACC_RDWR);
+    write_to_hdf(file_out, "frequencies", Pi.fermionic_grid.get_all_frequencies(), false);
+    file_out.close();
 }

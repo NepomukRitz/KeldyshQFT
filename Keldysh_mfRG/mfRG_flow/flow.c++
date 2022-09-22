@@ -6,7 +6,7 @@
  */
 State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_config& frgConfig){
 
-    State<state_datatype> state_fin (Lambda_fin), state_ini(Lambda_ini);   // create final and initial state
+    State<state_datatype> state_fin (Lambda_fin, frgConfig), state_ini(Lambda_ini, frgConfig);   // create final and initial state
 
 #ifdef ADAPTIVE_GRID
     /// Iterate:
@@ -37,7 +37,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     sopt_state(state_ini, Lambda_ini, frgConfig);
 
     const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-    parquet_solver(parquet_filename, state_ini, Lambda_ini, frgConfig, 1,1e-6, 5);
+    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1,1e-6, 5);
 
 
     //// better: read state from converged parquet solution
@@ -73,7 +73,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
 
     //compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, true, frgConfig.nODE_ + U_NRG.size() + 1);
 
-    std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
+    std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG, frgConfig);
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg(frgConfig);
     ODE_solver_config config;// = ODE_solver_config_standard;
@@ -93,7 +93,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
 #if REG == 4
     using param = flowgrid::linear_parametrization;
 #else
-    using param = flowgrid::exp_parametrization;
+    using param = flowgrid::sqrt_parametrization;
 #endif
     ode_solver<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
 
@@ -101,7 +101,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     //ode_solver_boost<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
 
     /// use parquet solver to compute result at Lambda_fin (for comparison with frg result)
-    State<state_datatype> state_parquet_compare (Lambda_fin);
+    State<state_datatype> state_parquet_compare (Lambda_fin, frgConfig);
     state_parquet_compare.initialize();
     //sopt_state(state_parquet_compare, Lambda_fin);
     //const std::string parquet_filename_forcomparison = data_dir + "parquet_for_comparison_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
@@ -130,12 +130,12 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         write_state_to_hdf(inputFileName, Lambda_ini,  frgConfig.nODE_ + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 
         double Lambda_now = state_ini.Lambda;
-        State<state_datatype> state_fin (Lambda_fin);
+        State<state_datatype> state_fin (Lambda_fin, frgConfig);
 
         //state_ini.findBestFreqGrid(true);
         //state_ini.vertex.half1().check_vertex_resolution();
 
-        std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG);
+        std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG, frgConfig);
 
 
 //        compare_with_FDTs(state_ini.vertex, Lambda_now, 0, inputFileName, true, frgConfig.nODE_ + U_NRG.size() + 1);

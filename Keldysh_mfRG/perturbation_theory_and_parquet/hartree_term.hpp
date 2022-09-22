@@ -13,23 +13,24 @@
 
 /// Class which determines the Hartree-term for the self-energy self-consistently in units of glb_U given the system parameters
 class Hartree_Solver {
-    double Lambda; // flow parameter, needed for correct frequency grid.
-    double Delta = (glb_Gamma + Lambda) / 2.; // Hybridization
+    const double Lambda; // flow parameter, needed for correct frequency grid.
+    const fRG_config& config;
+    const double Delta = (config.Gamma + Lambda) / 2.; // Hybridization
 
-    SelfEnergy<comp> selfEnergy = SelfEnergy<comp> (Lambda);
+    SelfEnergy<comp> selfEnergy = SelfEnergy<comp> (Lambda, config);
     double filling = 1./2.; // filling at the particle-hole symmetric point
 
     const double v_lower =  10 * Delta; // arbitrary choice. Needs to be checked.
     const double v_upper = -10 * Delta;
 
-    static double fermi_distribution (double nu) ;
+    double fermi_distribution (double nu) const;
 public:
-    explicit Hartree_Solver(const double Lambda_in): Lambda(Lambda_in){
+    explicit Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
-        selfEnergy.initialize(glb_U * filling, 0);
+        selfEnergy.initialize(config.U * filling, 0);
         selfEnergy.Sigma.initInterpolator();
     };
     double compute_Hartree_term(double convergence_threshold = 1e-12);

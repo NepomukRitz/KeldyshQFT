@@ -34,7 +34,7 @@ class BubbleFunctionCalculator{
     const Bubble_Object& Pi;
     const bool diff = Pi.diff;
 
-    const double Delta = (Pi.g.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
+    const double Delta = (Pi.g.Lambda + Pi.g.Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
 
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
@@ -52,7 +52,7 @@ class BubbleFunctionCalculator{
     std::vector<int> indepKeldyshComponents_K2;
     std::vector<int> indepKeldyshComponents_K3;
 
-    double vmin = 0, vmax = 0;
+    freqType vmin = 0, vmax = 0;
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
 
     double tK1 = 0, tK2 = 0, tK3 = 0;
@@ -65,7 +65,7 @@ class BubbleFunctionCalculator{
 
     template<K_class diag_class> void calculate_bubble_function();
     template<K_class diag_class> value_type get_value(int i_mpi, int i_omp, int n_omp, int n_vectorization);
-    template<K_class diag_class,int spin> void calculate_value(value_type &value, int i0, int i_in, int iw, double w, double v, double vp);
+    template<K_class diag_class,int spin> void calculate_value(value_type &value, int i0, int i_in, int iw, freqType w, freqType v, freqType vp);
 
     void write_out_results(const vec<Q>& Ordered_result, K_class diag_class);
     void write_out_results_K1(const vec<Q>& K1_ordered_result);
@@ -75,23 +75,23 @@ class BubbleFunctionCalculator{
 
     void set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, int& n_vectorization, K_class diag_class);
 
-    void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, double& w,
+    void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, freqType & w,
                                                                  int i_mpi, int n_omp, int i_omp);
     void convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& ispin, int& iw, int& iv, int& i_in,
-                                                                 double& w, double& v,
+                                                                 freqType& w, freqType& v,
                                                                  int i_mpi, int n_omp, int i_omp);
     void convert_external_MPI_OMP_indices_to_physical_indices_K2b(int& iK2, int& i0, int& ispin, int& iw, int& ivp, int& i_in,
-                                                                 double& w, double& vp,
+                                                                  freqType& w, freqType& vp,
                                                                  int i_mpi, int n_omp, int i_omp);
     void convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& ispin, int& iw, int& iv, int& ivp, int& i_in,
-                                                                 double& w, double& v, double& vp,
+                                                                 freqType& w, freqType& v, freqType& vp,
                                                                  int i_mpi, int n_omp, int i_omp);
 
-    int get_trafo_K1(int i0, double w);
-    int get_trafo_K2(int i0, double w, double v);
-    int get_trafo_K3(int i0, double w, double v, double vp);
+    int get_trafo_K1(int i0, freqType w);
+    int get_trafo_K2(int i0, freqType w, freqType v);
+    int get_trafo_K3(int i0, freqType w, freqType v, freqType vp);
 
-    void get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<double>>& intervals, double w);
+    void get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<freqType>>& intervals, freqType w);
 
     Q bubble_value_prefactor();
 
@@ -216,10 +216,10 @@ void BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, ve
     }
     if constexpr((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
-        Nmin = - POSINTRANGE; // (int) (vmin/(M_PI*glb_T)-1)/2;
+        Nmin = - POSINTRANGE;
         Nmax = - Nmin - 1;
-        vmin = (Nmin*2+1)*(M_PI*glb_T);
-        vmax = (Nmax*2+1)*(M_PI*glb_T);
+        vmin = (Nmin*2+1)*(M_PI*Pi.g.T);
+        vmax = (Nmax*2+1)*(M_PI*Pi.g.T);
     }
 }
 
@@ -364,7 +364,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         Bubble_Object>::get_value(const int i_mpi, const int i_omp, const int n_omp, const int n_vectorization) -> value_type{
     value_type value(n_vectorization);
     int iK1, iK2, i0, ispin, iw, iv, ivp, i_in;
-    double w, v, vp;
+    freqType w, v, vp;
     int trafo;
     switch (diag_class) {
         case k1:
@@ -418,13 +418,13 @@ template<K_class k, int spin>
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::calculate_value(value_type& value, const int i0, const int i_in, const int iw,
-                                           const double w, const double v, const double vp){
+                                           const freqType w, const freqType v, const freqType vp){
 #if VECTORIZED_INTEGRATION==1 and KELDYSH_FORMALISM
     using Integrand_class = Integrand<k, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,Eigen::Matrix<Q,4,4>>;
 #else
     using Integrand_class = Integrand<k, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,Q>;
 #endif
-    using integrand_valtype = std::result_of_t<Integrand_class(double)>;
+    using integrand_valtype = std::result_of_t<Integrand_class(freqType)>;
     integrand_valtype integration_result = myzero<integrand_valtype>();
 
 #if not SWITCH_SUM_N_INTEGRAL
@@ -473,11 +473,11 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             integration_result += bubble_value_prefactor() * integrator(integrand, vmin, vmax, -w / 2., w / 2., Delta, true);
         } else {
             const int interval_correction = signFlipCorrection_MF_int(w);
-            const int W = (int) (w / (2 * M_PI * glb_T) + 0.1 * sgn(w));
+            const int W = (int) (w / 2);
             const int Nmin_sum = -POSINTRANGE - std::abs(W / 2) + interval_correction;
             const int Nmax_sum = POSINTRANGE - 1 + std::abs(W / 2);
-            const double vmin_temp = (2 * Nmin_sum) * M_PI * glb_T;
-            const double vmax_temp = (2 * Nmax_sum + 2.) * M_PI * glb_T;
+            const freqType vmin_temp = (2 * Nmin_sum);
+            const freqType vmax_temp = (2 * Nmax_sum + 2.);
 
 
             if constexpr (VECTORIZED_INTEGRATION) // (VECTORIZED_INTEGRATION and k == k3)
@@ -496,15 +496,15 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                     Nmin_v = -nFER3/2; Nmax_v = DEBUG_SYMMETRIES ? nFER3/2-1 : -1; Nmin_vp = -nFER3/2; Nmax_vp = nFER3/2-1; N_vp = nFER3;
                 }
                 Eigen::Matrix<Q, Eigen::Dynamic, Eigen::Dynamic> summation_result =
-                        matsubarasum_vectorized<spin,channel>(integrand, Nmin_v, Nmax_v, Nmin_sum, Nmax_sum, Nmin_vp, Nmax_vp) * bubble_value_prefactor() * (2 * M_PI) * glb_T;
+                        matsubarasum_vectorized<spin,channel>(integrand, Nmin_v, Nmax_v, Nmin_sum, Nmax_sum, Nmin_vp, Nmax_vp) * bubble_value_prefactor() * (2 * M_PI) * Pi.g.T;
 
                 for (int i = Nmin_v; i <= Nmax_v; i++) {
                     for (int j = Nmin_vp; j <= Nmax_vp; j++) {
-                        const double v_temp  = (i*2 + 1) * (M_PI * glb_T);
-                        const double vp_temp = (j*2 + 1) * (M_PI * glb_T);
+                        const freqType v_temp  = (i*2 + 1);
+                        const freqType vp_temp = (j*2 + 1);
                         Integrand_class integrand_asymp(vertex1, vertex2, Pi, i0, i2, iw, w, v_temp, vp_temp, i_in, i_spin, diff);
                         /// determine integral of the integrand's tails via quadrature:
-                        //summation_result(-Nmin_v+i,-Nmin_vp+j) += bubble_value_prefactor() *
+                        //summation_result(-Nmin_v+i,-Nmin_vp+j) += bubble_value_prefactor() * M_PI * Pi.g.T *
                         //                                         asymp_corrections_bubble_via_quadrature<Q>(integrand_asymp, vmin_temp, vmax_temp);
                         /// determine integral of the integrand's tails via formula (corresponds to quadrature of bare bubble):
                         summation_result(-Nmin_v+i,-Nmin_vp+j) +=
@@ -526,9 +526,9 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             }
             else
             {
-                // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*glb_T
+                // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*T
 
-                integration_result = bubble_value_prefactor() * (2 * M_PI) * glb_T *
+                integration_result = bubble_value_prefactor() * (2 * M_PI) * Pi.g.T *
                                      matsubarasum<Q>(integrand, Nmin_sum, Nmax_sum);
 
                 /// determine integral of the integrand's tails via quadrature:
@@ -537,7 +537,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                                                                                      vmin_temp, vmax_temp, w, v, vp, i0, i2,
                                                                                      i_in, diff);
                 /// Compute high-frequency contributions via quadrature:
-                //integration_result += bubble_value_prefactor() *
+                //integration_result += bubble_value_prefactor() * M_PI * Pi.g.T *
                 //                      asymp_corrections_bubble_via_quadrature<Q>(integrand, vmin_temp, vmax_temp);
             }
         }
@@ -724,7 +724,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
         typename vertexType_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
-        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, double& w,
+        Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, freqType& w,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK1 = i_mpi * n_omp + i_omp;
 
@@ -746,7 +746,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2(int& iK2, int& i0, int& ispin,  int& iw, int& iv, int& i_in,
-                                                                                double& w, double& v,
+                                                                                freqType& w, freqType& v,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
     iK2 = i_mpi * n_omp + i_omp;
 
@@ -769,7 +769,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K2b(int& iK2, int& i0, int& ispin,  int& iw, int& ivp, int& i_in,
-                                                                                double& w, double& vp,
+                                                                                freqType& w, freqType& vp,
                                                                                 const int i_mpi, const int n_omp, const int i_omp){
     iK2 = i_mpi * n_omp + i_omp;
 
@@ -792,7 +792,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
         Bubble_Object>::convert_external_MPI_OMP_indices_to_physical_indices_K3(int& iK3, int& i0, int& ispin,  int& iw, int& iv, int& ivp, int& i_in,
-                                                                                     double& w, double& v, double& vp,
+                                                                                freqType& w, freqType& v, freqType& vp,
                                                                                      const int i_mpi, const int n_omp, const int i_omp){
     iK3 = i_mpi * n_omp + i_omp;
 
@@ -815,7 +815,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
         typename vertexType_right, class Bubble_Object>
 int
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
-                Bubble_Object>::get_trafo_K1(const int i0, const double w){
+                Bubble_Object>::get_trafo_K1(const int i0, const freqType w){
     int trafo = 1;
 
     if constexpr(DEBUG_SYMMETRIES) {
@@ -826,22 +826,19 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             if constexpr (KELDYSH_FORMALISM) {
                 // Make sure that the frequency point does not belong to the symmetry-reduced sector for all relevant Keldysh components
                 // otherwise we have to compute that point
-                const double safety = 1e-10;
-                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                int sign_w = sign_index<freqType>(w );
                 const int number_of_indep_Components = dgamma.get_rvertex(channel).K1.get_dims()[my_defs::K1::keldysh];
                 for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
                     if (dgamma.get_rvertex(channel).freq_transformations.K1[i0_temp][sign_w] == 0) trafo = 0;
                 }
             }
             else { // Matsubara finite T
-                const double safety = 1e-10;
-                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
                 if (sign_w == 0) trafo = 0;
             }
         }
         else {
-            const double safety = 1e-10;
-            int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+            int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
             trafo = dgamma.get_rvertex(channel).freq_transformations.K1[i0][sign_w];
 
 #if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
@@ -857,7 +854,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
         typename vertexType_right, class Bubble_Object>
 int
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
-        Bubble_Object>::get_trafo_K2(const int i0, const double w, const double v){
+        Bubble_Object>::get_trafo_K2(const int i0, const freqType w, const freqType v){
     int trafo = 1;
     if constexpr (DEBUG_SYMMETRIES) {
         trafo = 0; // compute integrals for all frequency components
@@ -870,9 +867,8 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             if constexpr (KELDYSH_FORMALISM) {
                 // Make sure that the frequency point does not belong to the symmetry-reduced sector for any relevant Keldysh component
                 // otherwise we have to compute that point via quadrature
-                const double safety = 1e-10;
-                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-                int sign_v = sign_index<double>(v - safety); // safety to ensure that w=0 gets sign_w=-1
+                int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
+                int sign_v = sign_index<freqType>(v ); // safety to ensure that w=0 gets sign_w=-1
                 const int number_of_indep_Components = dgamma.get_rvertex(channel).K2.get_dims()[my_defs::K2::keldysh];
 
                 for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
@@ -880,18 +876,16 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 }
             }
             else {// Matsubara finite T
-                const double safety = 1e-10;
-                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
                 if (sign_w == 0) trafo = 0;
             }
         }
         else{
-            const double safety = 1e-10;
-            int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-            int sign_v = sign_index<double>(v - safety); // safety to ensure that w=0 gets sign_w=-1
+            int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
+            int sign_v = sign_index<freqType>(v ); // safety to ensure that w=0 gets sign_w=-1
             trafo = dgamma.get_rvertex(channel).freq_transformations.K2[i0][sign_w*2 + sign_v];
 
-        if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
+        if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w,Pi.g.T)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
             trafo = 0;
         }
     #if USE_FDT
@@ -899,13 +893,13 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     #if CONTOUR_BASIS != 1
         switch (channel) {
             case 'a':
-                if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>glb_T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+                if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>Pi.g.T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
                 break;
             case 'p':
-                if ((i0 == 0 or i0 == 1 or i0 == 3) and abs(w)>glb_T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+                if ((i0 == 0 or i0 == 1 or i0 == 3) and abs(w)>Pi.g.T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
                 break;
             case 't':
-                if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>glb_T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
+                if ((i0 == 0 or i0 == 2 or i0 == 3) and abs(w)>Pi.g.T*26.) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
                 break;
             default:
                 break;
@@ -926,7 +920,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
         typename vertexType_right, class Bubble_Object>
 int
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
-        Bubble_Object>::get_trafo_K3(const int i0, const double w, const double v, const double vp){
+        Bubble_Object>::get_trafo_K3(const int i0, const freqType w, const freqType v, const freqType vp){
     int trafo = 1;
     if constexpr(DEBUG_SYMMETRIES) {
         trafo = 0; // compute integrals for all frequency components
@@ -943,10 +937,9 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
                 // Make sure that the frequency point does not belong to the symmetry-reduced sector for all relevant Keldysh components
                 // otherwise we have to compute that point
-                const double safety = 1e-10;
-                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-                int sign_f = sign_index(v + vp - safety);
-                int sign_fp = sign_index(v - vp - safety);
+                int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
+                int sign_f = sign_index<freqType>(v + vp );
+                int sign_fp = sign_index<freqType>(v - vp );
                 const int number_of_indep_Components = dgamma.get_rvertex(channel).K3.get_dims()[my_defs::K3::keldysh];
 
                 for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
@@ -956,18 +949,16 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 }
             }
             else {// Matsubara finite T
-                const double safety = 1e-10;
-                int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
+                int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
                 if (sign_w == 0) trafo = 0;
 
             }
 
         }
         else {
-            const double safety = 1e-5;
-            int sign_w = sign_index<double>(w - safety); // safety to ensure that w=0 gets sign_w=-1
-            int sign_f = sign_index(v + vp - safety);
-            int sign_fp= sign_index(v - vp - safety);
+            int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
+            int sign_f = sign_index<freqType>(v + vp );
+            int sign_fp= sign_index<freqType>(v - vp );
             trafo = dgamma.get_rvertex(channel).freq_transformations.K3[i0][sign_w * 4 + sign_f * 2 + sign_fp];
 
 
@@ -997,14 +988,14 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
         typename vertexType_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
-                Bubble_Object>::get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<double>>& intervals,
-                                                                 const double w){
+                Bubble_Object>::get_Matsubara_integration_intervals(size_t& num_intervals, vec<vec<freqType>>& intervals,
+                                                                 const freqType w){
     if( -std::abs(w/2)+inter_tol < std::abs(w/2)-inter_tol){
-        intervals = {{vmin, -std::abs(w/2)-inter_tol}, {-std::abs(w/2)+inter_tol, std::abs(w/2)-inter_tol}, {std::abs(w/2)+inter_tol, vmax}};
+        intervals = {{vmin, -std::abs(w/2)}, {-std::abs(w/2), std::abs(w/2)}, {std::abs(w/2), vmax}};
         num_intervals = 3;
     }
     else {
-        intervals = {{vmin, -std::abs(w/2)-inter_tol}, {std::abs(w/2)+inter_tol, vmax}};
+        intervals = {{vmin, -std::abs(w/2)}, {std::abs(w/2), vmax}};
         num_intervals = 2;
     }
 }

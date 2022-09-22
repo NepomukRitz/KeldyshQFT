@@ -155,33 +155,33 @@ public:
      * @param channel_in
      * @param Lambda
      */
-    rvert(const char channel_in, const double Lambda, const bool is_reserve)
+    rvert(const char channel_in, const double Lambda, const fRG_config& config, const bool is_reserve)
     : channel(channel_in)
       {
         if (is_reserve) {
-            if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
-            if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
-            if (MAX_DIAG_CLASS >= 3) K3 = buffer_type_K3(Lambda, K3_config.dims);
+            if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
+            if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
+            if (MAX_DIAG_CLASS >= 3) K3 = buffer_type_K3(Lambda, K3_config.dims, config);
             if constexpr(HUBBARD_MODEL) {
                 if (MAX_DIAG_CLASS >= 1) {
-                    K1_a_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
-                    K1_p_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
-                    K1_t_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims);
+                    K1_a_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
+                    K1_p_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
+                    K1_t_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
                 }
                 if (MAX_DIAG_CLASS >= 2) {
-                    K2_a_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
-                    K2_p_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
-                    K2_t_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
+                    K2_a_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
+                    K2_p_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
+                    K2_t_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
                 }
                 if (MAX_DIAG_CLASS >= 3) {
-                    K3_a_proj = buffer_type_K3(Lambda, K3_config.dims);
-                    K3_p_proj = buffer_type_K3(Lambda, K3_config.dims);
-                    K3_t_proj = buffer_type_K3(Lambda, K3_config.dims);
+                    K3_a_proj = buffer_type_K3(Lambda, K3_config.dims, config);
+                    K3_p_proj = buffer_type_K3(Lambda, K3_config.dims, config);
+                    K3_t_proj = buffer_type_K3(Lambda, K3_config.dims, config);
                 }
             }
 
 #if DEBUG_SYMMETRIES
-            K2b = buffer_type_K2b(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims);
+            K2b = buffer_type_K2b(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
 #endif
         }
       };
@@ -268,7 +268,7 @@ public:
     /**
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
-    void update_grid(double Lambda);
+    void update_grid(double Lambda, const fRG_config& config);
 
     /**
      * Interpolate the vertex to updated grid.
@@ -600,7 +600,7 @@ template<K_class k, typename result_type> auto rvert<Q>::valsmooth_symmetry_expa
 
 
 
-template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const double w, const double v, const double vp, const char channel) {
+template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const freqType w, const freqType v, const freqType vp, const char channel) {
     assert(k != k2b);
 
     int iK;
@@ -641,22 +641,22 @@ template<K_class k> bool is_zero_due_to_FDTs(const int iK_symmreduced, const dou
     std::array<int,4> contourIndices;
     getMultIndex(contourIndices, iK, dimsKeldysh);
 
-    std::array<double,4> frequenciesFermionic;
+    std::array<freqType,4> frequenciesFermionic;
     switch (channel) {
         case 'a':
-            frequenciesFermionic = {v-w*0.5, vp+w*0.5, -(vp-w*0.5), -(v+w*0.5)};
+            frequenciesFermionic = {v-w/2, vp+w/2, -(vp-w/2), -(v+w/2)};
             break;
         case 'p':
-            frequenciesFermionic = {v+w*0.5, -v+w*0.5, -(vp+w*0.5), -(-vp+w*0.5)};
+            frequenciesFermionic = {v+w/2, -v+w/2, -(vp+w/2), -(-vp+w/2)};
             break;
         case 't':
-            frequenciesFermionic = {vp+w*0.5, v-w*0.5, -(vp-w*0.5), -(v+w*0.5)};
+            frequenciesFermionic = {vp+w/2, v-w/2, -(vp-w/2), -(v+w/2)};
             break;
         default:
             break;
     }
 
-    double freq_check = 0;
+    freqType freq_check = 0;
     for (int i = 0; i < 4; i++) {
         freq_check += contourIndices[i] * frequenciesFermionic[i];
     }
@@ -691,7 +691,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
             my_index_t iw = idx[my_defs::K1::omega];
             my_index_t i_in = idx[my_defs::K1::internal];
 
-            double w;
+            freqType w;
             K1.frequencies.get_freqs_w(w, iw);
             VertexInput input(iK, ispin, w, 0., 0., i_in, channel);
             IndicesSymmetryTransformations indices(input, channel);
@@ -771,7 +771,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 my_index_t iv = idx[my_defs::K2::nu];
                 my_index_t i_in = idx[my_defs::K2::internal];
 
-                double w, v;
+                freqType w, v;
                 K2.frequencies.get_freqs_w(w, v, iw, iv);
                 VertexInput input(iK, ispin, w, v, 0., i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
@@ -836,7 +836,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 my_index_t iv = idx[my_defs::K2b::nup];
                 my_index_t i_in = idx[my_defs::K2b::internal];
 
-                double w, vp;
+                freqType w, vp;
                 K2b.frequencies.get_freqs_w(w, vp, iw, iv);
                 VertexInput input(iK, ispin, w, 0., vp, i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
@@ -873,7 +873,7 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                 my_index_t ivp = idx[my_defs::K3::nup];
                 my_index_t i_in = idx[my_defs::K3::internal];
 
-                double w, v, vp;
+                freqType w, v, vp;
                 K3.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
                 VertexInput input(iK, ispin, w, v, vp, i_in, channel);
                 IndicesSymmetryTransformations indices(input, channel);
@@ -955,10 +955,10 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
 template<typename Q> template<char channel_bubble, bool is_left_vertex> void rvert<Q>::symmetry_expand(const rvert<Q>& rvert_this, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel, const int spin) const {
     /// TODO: Currently copies frequency_grid of same rvertex; but might actually need the frequency grid of conjugate channel
     assert(0 <= spin and spin < 2);
-    K1_symmetry_expanded = buffer_type_K1(0., K1_expanded_config.dims);
-    K2_symmetry_expanded = buffer_type_K2(0., K2_expanded_config.dims);
-    K2b_symmetry_expanded = buffer_type_K2b (0., K2_expanded_config.dims);
-    K3_symmetry_expanded = buffer_type_K3(0., K3_expanded_config.dims);
+    K1_symmetry_expanded = buffer_type_K1(0., K1_expanded_config.dims, fRG_config());
+    K2_symmetry_expanded = buffer_type_K2(0., K2_expanded_config.dims, fRG_config());
+    K2b_symmetry_expanded = buffer_type_K2b (0., K2_expanded_config.dims, fRG_config());
+    K3_symmetry_expanded = buffer_type_K3(0., K3_expanded_config.dims, fRG_config());
     if (spin == 0) {
         K1_symmetry_expanded.set_VertexFreqGrid(rvert_this.K1.get_VertexFreqGrid());
         K2_symmetry_expanded.set_VertexFreqGrid(rvert_this.K2.get_VertexFreqGrid());
@@ -990,7 +990,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
         my_index_t iw    = idx[my_defs::K1::omega];
         my_index_t i_in  = idx[my_defs::K1::internal];
         assert(idx[my_defs::K1::spin] == 0);
-        double w;
+        freqType w;
         K1_symmetry_expanded.frequencies.get_freqs_w(w, iw);
         if (std::isfinite(w)) {
             VertexInput input(rotate_Keldysh_matrix<channel_bubble, is_left_vertex>(iK), ispin, w, 0., 0., i_in, channel);
@@ -1021,7 +1021,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             my_index_t i_in     = idx[my_defs::K2::internal];
 
 
-            double w, v;
+            freqType w, v;
             K2_symmetry_expanded.frequencies.get_freqs_w(w, v, iw, iv);
             VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, 0., i_in, channel);
             Q value = rvert_this.template valsmooth<k2>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
@@ -1046,7 +1046,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             my_index_t iv       = idx[my_defs::K2b::nup];
             my_index_t i_in     = idx[my_defs::K2b::internal];
 
-            double w, vp;
+            freqType w, vp;
             K2b_symmetry_expanded.frequencies.get_freqs_w(w, vp, iw, iv);
             VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, 0., vp, i_in, channel);
             Q value = rvert_this.template valsmooth<k2b>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
@@ -1078,7 +1078,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
             my_index_t i_in     = idx[my_defs::K3::internal];
 
 
-            double w, v, vp;
+            freqType w, v, vp;
             K3_symmetry_expanded.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
             VertexInput input(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK), ispin, w, v, vp, i_in, channel);
             Q value = rvert_this.template valsmooth<k3>(input, rvert_crossing, vertex_half2_samechannel, vertex_half2_switchedchannel);
@@ -1131,8 +1131,8 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
     const size_t flat_dim = getFlatSize(dims) / dims[my_defs::K2::keldysh];
 
 
-    buffer_type_K1 buffer_w_rotated(0, dims_K1);
-    buffer_type_K2 buffer_lambda_rotated(0, dims);
+    buffer_type_K1 buffer_w_rotated(0, dims_K1, fRG_config());
+    buffer_type_K2 buffer_lambda_rotated(0, dims, fRG_config());
     buffer_lambda_rotated.set_VertexFreqGrid(rvert_for_lambda.K2_symmetry_expanded.get_VertexFreqGrid());
     buffer_w_rotated.set_VertexFreqGrid(rvert_for_w.K1_symmetry_expanded.get_VertexFreqGrid());
 
@@ -1152,7 +1152,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2::internal];
 
 
-        double w, v;
+        freqType w, v;
         buffer_lambda_rotated.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(unrotate_Keldysh_matrix<channel_bubble,is_left_vertex>(rotate_Keldysh_matrix<channel_rvert,is_left_vertex>(iK)), ispin, w, v, 0., i_in, channel);
         Q value = rvert_for_lambda.template valsmooth_symmetry_expanded<k2,Q>(input);
@@ -1175,7 +1175,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K1::internal];
 
 
-        double w;
+        freqType w;
         buffer_w_rotated.frequencies.get_freqs_w(w, iw);
         VertexInput input(unrotate_Keldysh_matrix<channel_bubble,is_left_vertex>(rotate_Keldysh_matrix<channel_rvert,is_left_vertex>(iK)), ispin, w, 0., 0., i_in, channel);
         Q value = rvert_for_w.template valsmooth_symmetry_expanded<k1,Q>(input);
@@ -1184,7 +1184,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
 
     }
 
-    buffer_type_K2 buffer_K2_new(0, dims);
+    buffer_type_K2 buffer_K2_new(0, dims, fRG_config());
     buffer_K2_new.set_VertexFreqGrid(rvert_for_lambda.K2_symmetry_expanded.get_VertexFreqGrid());
 
 #pragma omp parallel for schedule(dynamic, 50)
@@ -1202,7 +1202,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2::internal];
 
 
-        double w, v;
+        freqType w, v;
         rvert_for_lambda.K2_symmetry_expanded.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(iK, ispin, w, v, 0., i_in, channel);
         valtype value_w      =      buffer_w_rotated.template interpolate<valtype_fetch>(input) + bare_vertex.template val<valtype_fetch>(input.iK, input.i_in, input.spin);
@@ -1215,7 +1215,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         buffer_K2_new.template setvert_vectorized<nrow*ncol>(value_K2, idx);
 
     }
-    buffer_type_K2 buffer_K2_new_rotated(0, dims);
+    buffer_type_K2 buffer_K2_new_rotated(0, dims, fRG_config());
     buffer_K2_new_rotated.set_VertexFreqGrid(rvert_for_lambda.K2_symmetry_expanded.get_VertexFreqGrid());
 
     /// rotate legs to natural order of r-bubble:
@@ -1234,7 +1234,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2::internal];
 
 
-        double w, v;
+        freqType w, v;
         buffer_K2_new_rotated.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(unrotate_Keldysh_matrix<channel_rvert,is_left_vertex>(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK)), ispin, w, v, 0., i_in, channel);
         Q value = buffer_K2_new.interpolate(input);
@@ -1264,8 +1264,8 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
     const size_t flat_dim = getFlatSize(dims) / dims[my_defs::K2b::keldysh];
 
 
-    buffer_type_K1 buffer_w_rotated(0, dims_K1);
-    buffer_type_K2b buffer_lambda_rotated(0, dims);
+    buffer_type_K1 buffer_w_rotated(0, dims_K1, fRG_config());
+    buffer_type_K2b buffer_lambda_rotated(0, dims, fRG_config());
     buffer_lambda_rotated.set_VertexFreqGrid(rvert_for_lambda.K2b_symmetry_expanded.get_VertexFreqGrid());
     buffer_w_rotated.set_VertexFreqGrid(rvert_for_w.K1_symmetry_expanded.get_VertexFreqGrid());
 
@@ -1285,7 +1285,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2b::internal];
 
 
-        double w, v;
+        freqType w, v;
         buffer_lambda_rotated.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(unrotate_Keldysh_matrix<channel_bubble,is_left_vertex>(rotate_Keldysh_matrix<channel_rvert,is_left_vertex>(iK)), ispin, w, 0., v, i_in, channel);
         Q value = rvert_for_lambda.template valsmooth_symmetry_expanded<k2b,Q>(input);
@@ -1306,7 +1306,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K1::internal];
 
 
-        double w;
+        freqType w;
         buffer_w_rotated.frequencies.get_freqs_w(w, iw);
         VertexInput input(unrotate_Keldysh_matrix<channel_bubble,is_left_vertex>(rotate_Keldysh_matrix<channel_rvert,is_left_vertex>(iK)), ispin, w, 0., 0., i_in, channel);
         Q value = rvert_for_w.template valsmooth_symmetry_expanded<k1,Q>(input);
@@ -1315,7 +1315,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
 
     }
 
-    buffer_type_K2b buffer_K2b_new(0, dims);
+    buffer_type_K2b buffer_K2b_new(0, dims, fRG_config());
     buffer_K2b_new.set_VertexFreqGrid(rvert_for_lambda.K2b_symmetry_expanded.get_VertexFreqGrid());
 
 #pragma omp parallel for schedule(dynamic, 50)
@@ -1331,7 +1331,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2b::internal];
 
 
-        double w, v;
+        freqType w, v;
         rvert_for_lambda.K2b_symmetry_expanded.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(iK, ispin, w, 0., v, i_in, channel);
         valtype value_w      =      buffer_w_rotated.template interpolate<valtype_fetch>(input) + bare_vertex.template val<valtype_fetch>(input.iK, input.i_in, input.spin);
@@ -1344,7 +1344,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         buffer_K2b_new.template setvert_vectorized<nrow*ncol>(value_K2b, idx);
 
     }
-    buffer_type_K2b buffer_K2b_new_rotated(0, dims);
+    buffer_type_K2b buffer_K2b_new_rotated(0, dims, fRG_config());
     buffer_K2b_new_rotated.set_VertexFreqGrid(rvert_for_lambda.K2b_symmetry_expanded.get_VertexFreqGrid());
 
     /// rotate legs to natural order of r-bubble:
@@ -1361,7 +1361,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2b::internal];
 
 
-        double w, v;
+        freqType w, v;
         buffer_K2b_new_rotated.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(unrotate_Keldysh_matrix<channel_rvert,is_left_vertex>(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK)), ispin, w, 0., v, i_in, channel);
         Q value = buffer_K2b_new.interpolate(input);
@@ -1390,8 +1390,8 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
     const std::array<size_t,rank_K2> dims = rvert_for_lambda.K2_symmetry_expanded.get_dims();
 
 //#if KELDYSH_FORMALISM
-    buffer_type_K2  buffer_K2_rotated(0, dims);
-    buffer_type_K2b buffer_lambda_rotated(0, dims);
+    buffer_type_K2  buffer_K2_rotated(0, dims, fRG_config());
+    buffer_type_K2b buffer_lambda_rotated(0, dims, fRG_config());
     buffer_lambda_rotated.set_VertexFreqGrid(rvert_for_lambda.K2b_symmetry_expanded.get_VertexFreqGrid());
     buffer_K2_rotated.set_VertexFreqGrid(rvert_for_K2.K2_symmetry_expanded.get_VertexFreqGrid());
 
@@ -1411,7 +1411,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2::internal];
 
 
-        double w, v;
+        freqType w, v;
         buffer_K2_rotated.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(unrotate_Keldysh_matrix<channel_bubble,is_left_vertex>(rotate_Keldysh_matrix<channel_rvert,is_left_vertex>(iK)), ispin, w, v, 0., i_in, channel);
         Q value = rvert_for_K2.template valsmooth_symmetry_expanded<k2,Q>(input);
@@ -1435,7 +1435,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K2b::internal];
 
 
-        double w, v;
+        freqType w, v;
         buffer_lambda_rotated.frequencies.get_freqs_w(w, v, iw, iv);
         VertexInput input(unrotate_Keldysh_matrix<channel_bubble,is_left_vertex>(rotate_Keldysh_matrix<channel_rvert,is_left_vertex>(iK)), ispin, w, 0., v, i_in, channel);
         Q value = rvert_for_lambda.template valsmooth_symmetry_expanded<k2b,Q>(input);
@@ -1448,7 +1448,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
 //    const buffer_type_K2b& buffer_lambda_rotated = rvert_for_lambda.K2b_symmetry_expanded;
 //#endif
 
-    buffer_type_K3_SBE buffer_K3_SBE_new(0, dims_K3_SBE);
+    buffer_type_K3_SBE buffer_K3_SBE_new(0, dims_K3_SBE, fRG_config());
     buffer_K3_SBE_new.set_VertexFreqGrid(rvert_for_K2.K2_symmetry_expanded.get_VertexFreqGrid());
     const size_t flat_dim = getFlatSize(dims_K3_SBE) / dims_K3_SBE[my_defs::K3::keldysh];
 
@@ -1466,7 +1466,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K3::internal];
 
 
-        double w, v, vp;
+        freqType w, v, vp;
         buffer_K3_SBE_new.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
         VertexInput input(iK, ispin, w, v, vp, i_in, channel);
         valtype value_K2      =    buffer_K2_rotated.template interpolate<valtype_fetch>(input);
@@ -1481,7 +1481,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
     }
 
 //#if KELDYSH_FORMALISM
-    buffer_type_K3_SBE buffer_K3_SBE_new_rotated(0, dims_K3_SBE);
+    buffer_type_K3_SBE buffer_K3_SBE_new_rotated(0, dims_K3_SBE, fRG_config());
     buffer_K3_SBE_new_rotated.set_VertexFreqGrid(rvert_for_K2.K2_symmetry_expanded.get_VertexFreqGrid());
 
     /// rotate legs to natural order of r-bubble:
@@ -1499,7 +1499,7 @@ template<typename Q> template<char channel_bubble, char channel_rvert, bool is_l
         const my_index_t i_in     = idx[my_defs::K3::internal];
 
 
-        double w, v, vp;
+        freqType w, v, vp;
         buffer_K3_SBE_new_rotated.frequencies.get_freqs_w(w, v, vp, iw, iv, ivp);
         VertexInput input(unrotate_Keldysh_matrix<channel_rvert,is_left_vertex>(rotate_Keldysh_matrix<channel_bubble,is_left_vertex>(iK)), ispin, w, v, vp, i_in, channel);
         Q value = buffer_K3_SBE_new.interpolate(input);
@@ -1786,12 +1786,12 @@ void rvert<Q>::cross_project() {
 
 
 template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexInput& input) const {
-    double w, v1, v2;
+    freqType w, v1, v2;
 
     // Needed for finite-temperature Matsubara
-    double floor2bf_w;
-    double floor2bf_inputw;
-    if (!KELDYSH and !ZERO_T){ floor2bf_inputw = floor2bfreq(input.w / 2.);}
+    freqType floor2bf_w;
+    freqType floor2bf_inputw;
+    if (!KELDYSH and !ZERO_T){ floor2bf_inputw = floor2bfreq(input.w / 2);}
     switch (channel) {
         case 'a':
             switch (ch_bubble) {
@@ -1805,7 +1805,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                         w  = -input.v1-input.v2 - input.w + 2 * floor2bf_inputw;    // input.w  = w_p
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 = input.w + input.v1 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_p
                         v2 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
                     }
@@ -1818,7 +1818,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                         w  = input.v1-input.v2;                                     // input.w  = w_t
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_t
                         v2 = input.v1 + floor2bf_w - w - floor2bf_inputw;               // input.v2 = v'_t
                     }
@@ -1831,7 +1831,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                         w  = input.v1 - input.v2;                                   // input.w  = v_1'
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 = input.w - floor2bf_w;                                  // input.v1 = v_2'
                         v2 = input.v2 - floor2bf_w;                                 // input.v2 = v_1
                     }
@@ -1850,7 +1850,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                         w  = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_a
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 = - input.w - input.v2 + floor2bf_w + floor2bf_inputw;       // input.v1 = v_a
                         v2 = - input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_a
                     }
@@ -1865,7 +1865,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else {
                         w = input.v1 + input.v2 + input.w - 2 * floor2bf_inputw;       // input.w  = w_t
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 =          - input.v1 + floor2bf_w + floor2bf_inputw;                 // input.v1 = v_t
                         v2 = -input.w - input.v1 + floor2bf_w + floor2bf_inputw;       // input.v2 = v'_t
                     }
@@ -1877,7 +1877,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                             w  = input.w + input.v1;                                        // input.w  = v_1'
-                            floor2bf_w = floor2bfreq(w / 2.);
+                            floor2bf_w = floor2bfreq(w / 2);
                             v1 = - input.v1 + floor2bf_w;                                   // input.v1 = v_2'
                             v2 = input.v2 - w + floor2bf_w;                                 // input.v2 = v_1
                     }
@@ -1895,7 +1895,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                         w  = input.v1-input.v2;                                     // input.w  = w_a
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 = input.w + input.v2 + floor2bf_w - floor2bf_inputw;     // input.v1 = v_a
                         v2 =           input.v2 + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_a'
                     }
@@ -1908,7 +1908,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                         w  = input.v1-input.v2;                                     // input.w  = w_p
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 =-input.v1           + floor2bf_w + floor2bf_inputw;             // input.v1 = v_p
                         v2 = input.v2 + input.w + floor2bf_w - floor2bf_inputw;     // input.v2 = v'_p
                     }
@@ -1923,7 +1923,7 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
                     }
                     else{
                         w  = input.w - input.v2;                                    // input.w  = v_1'
-                        floor2bf_w = floor2bfreq(w / 2.);
+                        floor2bf_w = floor2bfreq(w / 2);
                         v1 = input.v1 + floor2bf_w;                                 // input.v1 = v_2'
                         v2 = input.v2 + floor2bf_w;                                 // input.v2 = v_1
                     }
@@ -1939,9 +1939,9 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
 }
 
 
-template <typename Q> void rvert<Q>::update_grid(double Lambda) {
+template <typename Q> void rvert<Q>::update_grid(double Lambda, const fRG_config& config) {
 
-    apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.update_grid(Lambda); });
+    apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.update_grid(Lambda, config); });
 
 }
 
@@ -1992,7 +1992,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
                 break;
             default:;
         }
-        double w_in;
+        freqType w_in;
         K1.frequencies.get_freqs_w(w_in, itw);
         IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, 0., 0., i_in, channel, k1, 0, channel);
         int sign_w = sign_index(indices.w);
@@ -2084,7 +2084,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             case 't': i0_tmp = non_zero_Keldysh_K2t[itK]; break;
             default: ;
         }
-        double w_in, v_in;
+        freqType w_in, v_in;
         K2.frequencies.get_freqs_w(w_in, v_in, itw, itv);
         IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, 0., i_in, channel, k2, 0, channel);
         int sign_w = sign_index(w_in);
@@ -2136,7 +2136,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         i0_tmp = non_zero_Keldysh_K3[itK];
 
 
-        double w_in, v_in, vp_in;
+        freqType w_in, v_in, vp_in;
         K3.frequencies.get_freqs_w(w_in, v_in, vp_in, itw, itv, itvp);
         IndicesSymmetryTransformations indices(i0_tmp, it_spin, w_in, v_in, vp_in, i_in, channel, k2, 0, channel);
         int sign_w = sign_index(w_in);

@@ -12,16 +12,16 @@
 
 
 // Fermi--Dirac distribution function
-auto Fermi_distr(double v, double mu) -> double;
+auto Fermi_distr(double v, double mu, const double T) -> double;
 
 // Fermi distribution factor: 1. - 2. * Fermi_distr
-auto Fermi_fac(double v, double mu) -> double;
+auto Fermi_fac(double v, double mu, const double T) -> double;
 
 // effective distribution function
-auto Eff_distr(double v) -> double;
+auto Eff_distr(double v, const double T) -> double;
 
 // effective distribution factor: 1. - 2. * Eff_distr
-auto Eff_fac(double v) -> double;
+auto Eff_fac(double v, const double T) -> double;
 
 
 /// Propagator class ///
@@ -32,6 +32,9 @@ public:
     const SelfEnergy<Q>& selfenergy;
     const SelfEnergy<Q>& diff_selfenergy;
     const char type;      // 'g' for propagator, 's' for single scale propagator, 'k' for 's'+'e', 'e' for Katanin extension
+    const double epsilon;
+    const double Gamma;
+    const double T;
 
 public:
     /**
@@ -39,8 +42,9 @@ public:
      * @param Lambda_in : Input scale
      * @param type_in   : Type of propagator being handled
      */
-    Propagator(double Lambda_in, char type_in)
-            : Lambda(Lambda_in), selfenergy(SelfEnergy<Q> (Lambda_in)), diff_selfenergy(SelfEnergy<Q> (Lambda_in)), type(type_in) { }
+    Propagator(double Lambda_in, char type_in, const fRG_config& config)
+            : Lambda(Lambda_in), selfenergy(SelfEnergy<Q> (Lambda_in, config)), diff_selfenergy(SelfEnergy<Q> (Lambda_in, config)), type(type_in),
+              epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
 
 
     /**
@@ -49,8 +53,9 @@ public:
      * @param self_in   : SelfEnergy
      * @param type_in   : Type of propagator being handled
      */
-    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, char type_in)
-            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(SelfEnergy<Q> (Lambda_in)), type(type_in) { }
+    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, char type_in, const fRG_config& config)
+            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(SelfEnergy<Q> (Lambda_in, config)), type(type_in),
+            epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
 
     /**
      * Dressed propagator for flows. Needs both a SelfEnergy and a Differential SelfEnergy
@@ -59,11 +64,12 @@ public:
      * @param diffSelf_in   : Differential SelfEnergy
      * @param type_in       : Type of propagator being handled
      */
-    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, const SelfEnergy<Q>& diffSelf_in, char type_in)
-            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in) { }
+    Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, const SelfEnergy<Q>& diffSelf_in, char type_in, const fRG_config& config)
+            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in),
+             epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
 
-    auto valsmooth(int, double, int i_in) const -> Q;
-    template <typename return_type> auto valsmooth_vectorized(double, int i_in) const -> return_type;
+    auto valsmooth(int, freqType , int i_in) const -> Q;
+    template <typename return_type> auto valsmooth_vectorized(freqType, int i_in) const -> return_type;
 
     void save_propagator_values(const std::string& filename, const rvec& frequencies) const {
         using buffer_type = multidimensional::multiarray<Q, 3>;
@@ -116,62 +122,52 @@ public:
     auto SK(double v, int i_in) const -> Q;
 
     // Matsubara propagators
-    auto GM(double v, int i_in) const -> Q;
-    auto SM(double v, int i_in) const -> Q;
+    auto GM(freqType v, int i_in) const -> Q;
+    auto SM(freqType v, int i_in) const -> Q;
     auto GM(double v, double ksquared, int i_in) const -> Q;
     auto SM(double v, double ksquared, int i_in) const -> Q;
 
     auto norm() const -> double;
 
     /// model-specific bare propagators
-    Q G0inv(double v, int i_in) const;
-    Q G0inv_SIAM(double v, int i_in) const;
-    Q G0inv_Hubbard(double v, int i_in) const;
+    // Matsubara propagators (inverse bare):
+    Q G0M_inv(freqType v, int i_in) const;
+    Q G0M_inv_SIAM(freqType v, int i_in) const;
+    Q G0M_inv_Hubbard(freqType v, int i_in) const;
+    // retarded Keldysh propagators (inverse bare):
+    Q G0R_inv(freqType v, int i_in) const;
+    Q G0R_inv_SIAM(freqType v, int i_in) const;
+    Q G0R_inv_Hubbard(freqType v, int i_in) const;
 
     /// propagators for REG == 1
-    Q GR_REG1_SIAM(double v, int i_in) const;
-    Q SR_REG1(double v, int i_in) const;
+    Q GR_REG1(freqType v, int i_in) const;
+    Q SR_REG1(freqType v, int i_in) const;
+    Q GM_REG1(freqType v, int i_in) const;
+    Q SM_REG1(freqType v, int i_in) const;
 
     Q GM_REG1_FPP(double v, double ksquared, int i_in) const;
     Q SM_REG1_FPP(double v, double ksquared, int i_in) const;
 
     /// propagators for REG == 2
-    Q GR_REG2(double v, int i_in) const;
-    Q SR_REG2(double v, int i_in) const;
-    double GR_REG2_Hubbard(double v, int i_in) const;
-
-
-    Q GM_REG2_Hubbard(double v, int i_in) const;
-    Q GM_REG2_SIAM(double v, int i_in) const;
-    Q GM_REG2_SIAM_PHS(double v, int i_in) const;
-    Q GM_REG2_SIAM_NoPHS(double v, int i_in) const;
-
-    Q SM_REG2_Hubbard(double v, int i_in) const;
-    Q SM_REG2_SIAM(double v, int i_in) const;
-    Q SM_REG2_SIAM_PHS(double v, int i_in) const;
-    Q SM_REG2_SIAM_NoPHS(double v, int i_in) const;
+    Q GR_REG2(freqType v, int i_in) const;
+    Q SR_REG2(freqType v, int i_in) const;
+    Q GM_REG2(freqType v, int i_in) const;
+    Q SM_REG2(freqType v, int i_in) const;
 
     /// propagators for REG == 3
-    Q GR_REG3_Hubbard(double v, int i_in) const;
-    Q GR_REG3_SIAM(double v, int i_in) const;
-
-    Q SR_REG3_Hubbard(double v, int i_in) const;
-    Q SR_REG3_SIAM(double v, int i_in) const;
+    Q GR_REG3(freqType v, int i_in) const;
+    Q SR_REG3(freqType v, int i_in) const;
+    Q GM_REG3(freqType v, int i_in) const;
+    Q SM_REG3(freqType v, int i_in) const;
 
     Q GM_REG3_FPP(double v, double ksquared, int i_in) const;
-    Q GM_REG3_Hubbard(double v, int i_in) const;
-    Q GM_REG3_SIAM(double v, int i_in) const;
-    Q GM_REG3_SIAM_PHS(double v, int i_in) const;
-    Q GM_REG3_SIAM_NoPHS(double v, int i_in) const;
-    Q SM_REG3(double v, int i_in) const;
     Q SM_REG3_FPP(double v, double ksquared, int i_in) const;
 
-    Q GR_REG4(double v, int i_in) const;
-    Q SR_REG4(double v, int i_in) const;
-
-    Q GM_REG4_SIAM(double v, int i_in) const;
-    Q GM_REG4_SIAM_PHS(double v, int i_in) const;
-    Q SM_REG4(double v, int i_in) const;
+    /// propagators for REG == 3
+    Q GR_REG4(freqType v, int i_in) const;
+    Q SR_REG4(freqType v, int i_in) const;
+    Q GM_REG4(freqType v, int i_in) const;
+    Q SM_REG4(freqType v, int i_in) const;
 
     void initInterpolator() const;
 };
@@ -180,22 +176,12 @@ public:
 template <typename Q>
 auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
 {
-    if (REG == 1) {
-        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {return GR_REG1_SIAM(v, i_in);}        // SIAM
-    }
-    else if (REG == 2) {
-        return GR_REG2(v, i_in);
-    }
-    else if (REG == 3) {
-
-        if (HUBBARD_MODEL) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-        else               {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);} // SIAM
-    }
+    if      constexpr (REG == 1) { return GR_REG1(v, i_in); }
+    else if constexpr (REG == 2) { return GR_REG2(v, i_in); }
+    else if constexpr (REG == 3) { return GR_REG3(v, i_in); }
+    else if constexpr (REG == 4) { return GR_REG4(v, i_in); }
     else {
-        assert(REG==4);
-        return GR_REG4(v, i_in);
-        //utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);
+        utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);
     }
 }
 
@@ -208,10 +194,10 @@ auto Propagator<Q>::GA(const double v, const int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
 {
-    if (EQUILIBRIUM) {
+    if constexpr (EQUILIBRIUM) {
         // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
         //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
-        return glb_i * (Eff_fac(v) * 2. * myimag(GR(v, i_in))); // more efficient: only one interpolation instead of two
+        return glb_i * (Eff_fac(v,T) * 2. * myimag(GR(v, i_in))); // more efficient: only one interpolation instead of two
     }
     else {
         // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
@@ -219,10 +205,10 @@ auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
         // \Sigma^K = (1-2n_F)(\Sigma^R-\Sigma^A), accordingly for \Sigma^K_res
         // \Rightarrow G^K = (1-2n_F) G^R G^A [ (\Sigma+\Sigma_res)^R - (\Sigma+\Sigma_res)^A ]
         //                 = (1-2n_F) G^R G^A [ (G^A)^{-1} - (G^R)^{-1} ] = (1-2n_F) (G^R-G^A)
-        // note that \Sigma_res^R = - i (glb_Gamma+Lambda) / 2.
-        // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(glb_Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
+        // note that \Sigma_res^R = - i (Gamma+Lambda) / 2.
+        // return GR(v, i_in) * (selfenergy.valsmooth(1, v, i_in) - glb_i*(Gamma+Lambda)*(1.-2.*Eff_distr(v))) * GA(v, i_in);
         // more efficient: only one interpolation instead of two; std::norm(c)=std::std::abs(c)^2
-        return std::norm(GR(v, i_in)) * (selfenergy.valsmooth(1, v, i_in) - glb_i * ((glb_Gamma + Lambda) * Eff_fac(v)));
+        return std::norm(GR(v, i_in)) * (selfenergy.valsmooth(1, v, i_in) - glb_i * ((Gamma + Lambda) * Eff_fac(v,T)));
     }
 }
 
@@ -230,24 +216,22 @@ auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::SR(const double v, const int i_in) const -> Q
 {
-    if      (REG == 1) return SR_REG1(v, i_in);
-    else if (REG == 2) return SR_REG2(v, i_in);
-    else if (REG == 3) {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+    if      constexpr (REG == 1) { return SR_REG1(v, i_in); }
+    else if constexpr (REG == 2) { return SR_REG2(v, i_in); }
+    else if constexpr (REG == 3) { return SR_REG3(v, i_in); }
+    else if constexpr (REG == 4) { return SR_REG4(v, i_in); }
     else {
-        assert(REG == 4);
-        assert(!HUBBARD_MODEL);
-        return SR_REG4(v, i_in);
-        //utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
+        utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);
     }
 }
 
 template <typename Q>
 auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
 {
-    if (EQUILIBRIUM) {
+    if constexpr (EQUILIBRIUM) {
         // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
         //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - myconj(SR(v, i_in)));
-        return glb_i * (Eff_fac(v) * 2. * myimag(SR(v, i_in)));
+        return glb_i * (Eff_fac(v,T) * 2. * myimag(SR(v, i_in)));
     }
     else {
         // Derivation of general matrix form:
@@ -266,54 +250,37 @@ auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
         double gri = myimag(gr);
         double grn = std::norm(gr);
         return selfenergy.valsmooth(1, v, i_in) * (grn * gri) -
-               glb_i * (grn * Eff_fac(v) * (1. + (glb_Gamma + Lambda) * gri));
+               glb_i * (grn * Eff_fac(v,T) * (1. + (Gamma + Lambda) * gri));
     }
 }
 
 
 template <typename Q>
-auto Propagator<Q>::GM(const double v, const int i_in) const -> Q
+auto Propagator<Q>::GM(const freqType v, const int i_in) const -> Q
 {
     assert(!FPP);
-    if      (REG == 1)      {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-    else if (REG == 2) {
-        if constexpr (HUBBARD_MODEL)    return GM_REG2_Hubbard(v, i_in);
-        else                            return GM_REG2_SIAM(v, i_in);
-    }
-    else if (REG == 3) {
-        if constexpr (HUBBARD_MODEL)    return GM_REG3_Hubbard(v, i_in);
-        else                            return GM_REG3_SIAM(v, i_in);
-    }
-    else if (REG == 4) {
-        if constexpr (HUBBARD_MODEL)    std::runtime_error("Interaction Regulator not yet implemented for Hubbard model");
-        else return GM_REG4_SIAM(v, i_in);
-    }
+    if      constexpr (REG == 1) { return GM_REG1(v, i_in); }
+    else if constexpr (REG == 2) { return GM_REG2(v, i_in); }
+    else if constexpr (REG == 3) { return GM_REG3(v, i_in); }
+    else if constexpr (REG == 4) { return GM_REG4(v, i_in); }
     else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
 template <typename Q>
 auto Propagator<Q>::GM(const double v, const double ksquared, const int i_in) const -> Q {
     assert(FPP);
-    if (REG == 1){
-        return GM_REG1_FPP(v,ksquared,i_in);
-    }
-    else if (REG == 3){
-        return GM_REG3_FPP(v,ksquared,i_in);
-    }
-    else {std::cout << "The Regulator " << REG << "is not implemented. \n"; assert(false);}
+    std::cout << "The Regulator " << REG << "is not implemented. \n"; assert(false);
+    return 0;
 }
 
 template <typename Q>
-auto Propagator<Q>::SM(const double v, const int i_in) const -> Q
+auto Propagator<Q>::SM(const freqType v, const int i_in) const -> Q
 {
     assert(!FPP);
-    if      (REG == 1)      {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
-    else if (REG == 2) {
-        if constexpr (HUBBARD_MODEL)    return SM_REG2_Hubbard(v, i_in);
-        else                            return SM_REG2_SIAM(v, i_in);
-    }
-    else if (REG == 3)      return SM_REG3(v, i_in);
-    else if (REG == 4)      return SM_REG4(v, i_in);
+    if      constexpr (REG == 1) { return SM_REG1(v, i_in); }
+    else if constexpr (REG == 2) { return SM_REG2(v, i_in); }
+    else if constexpr (REG == 3) { return SM_REG3(v, i_in); }
+    else if constexpr (REG == 4) { return SM_REG4(v, i_in); }
     else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
 }
 
@@ -332,7 +299,7 @@ auto Propagator<Q>::SM(const double v, const double ksquared, const int i_in) co
 }
 
 template <typename Q>
-auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) const -> Q {
+auto Propagator<Q>::valsmooth(const int iK, const freqType v, const int i_in) const -> Q {
     switch (type){
         case 'g' :                              //Good ol' regular propagator
             if constexpr (KELDYSH){
@@ -515,7 +482,7 @@ auto Propagator<Q>::valsmooth(const int iK, const double v, const int i_in) cons
 
 template <typename Q>
 template <typename return_type>
-auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -> return_type{
+auto Propagator<Q>::valsmooth_vectorized(const freqType v, const int i_in) const -> return_type{
     //using return_type = Eigen::Matrix<Q,1,4>;
     switch (type){
         case 'g' :                              //Good ol' regular propagator
@@ -580,7 +547,7 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'k': // including the Katanin extension
             if constexpr (KELDYSH){
-                const Q N = Eff_fac(v);
+                const Q N = Eff_fac(v,T);
                 const Q GR_ = GR(v, i_in);
                 const Q GA_ = conj(GR_);
                 const Q GK_ = GK(v, i_in);
@@ -618,7 +585,7 @@ auto Propagator<Q>::valsmooth_vectorized(const double v, const int i_in) const -
         break;
         case 'e': // purely the Katanin extension
             if constexpr (KELDYSH){
-                const Q N = Eff_fac(v);
+                const Q N = Eff_fac(v,T);
                 const Q GR_ = GR(v, i_in);
                 const Q GA_ = conj(GR_);
                 const Q GK_ = GK(v, i_in);
@@ -675,19 +642,43 @@ auto Propagator<Q>::norm() const -> double {
 }
 
 
-
 template <typename Q>
-auto Propagator<Q>::G0inv(const double v, const int i_in) const -> Q {
-    if constexpr(HUBBARD_MODEL) { return G0inv_Hubbard(v, i_in);}
-    else { return G0inv_SIAM(v, i_in);}
+auto Propagator<Q>::G0M_inv(const freqType v, const int i_in) const -> Q {
+    if constexpr(HUBBARD_MODEL) { return G0M_inv_Hubbard(v, i_in);}
+    else { return G0M_inv_SIAM(v, i_in);}
 }
 template <typename Q>
-auto Propagator<Q>::G0inv_SIAM(const double v, const int i_in) const -> Q {
-    const Q G0inv_R = v - glb_epsilon + glb_i * glb_Gamma * 0.5;
+auto Propagator<Q>::G0M_inv_SIAM(const freqType v, const int i_in) const -> Q {
+    if constexpr (PARTICLE_HOLE_SYMMETRY) {
+        const Q G0inv = v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) + Gamma * 0.5 * sign(v);
+        assert(isfinite(G0inv));
+        return G0inv;
+    }
+    else {
+        const Q G0inv_R = v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) * glb_i - epsilon + glb_i * Gamma * 0.5 * sign(v);
+        return G0inv_R;
+    }
+}
+template <typename Q>
+auto Propagator<Q>::G0M_inv_Hubbard(const freqType v, const int i_in) const -> Q {
+    double k_x, k_y;
+    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
+    const Q G0inv_R = v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) + 2 * (cos(k_x) + cos(k_y));
+    return G0inv_R;
+}
+
+template <typename Q>
+auto Propagator<Q>::G0R_inv(const freqType v, const int i_in) const -> Q {
+    if constexpr(HUBBARD_MODEL) { return G0R_inv_Hubbard(v, i_in);}
+    else { return G0R_inv_SIAM(v, i_in);}
+}
+template <typename Q>
+auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
+    const Q G0inv_R = v - epsilon + glb_i * Gamma * 0.5;
     return G0inv_R;
 }
 template <typename Q>
-auto Propagator<Q>::G0inv_Hubbard(const double v, const int i_in) const -> Q {
+auto Propagator<Q>::G0R_inv_Hubbard(const freqType v, const int i_in) const -> Q {
     double k_x, k_y;
     get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
     const Q G0inv_R = v + 2 * (cos(k_x) + cos(k_y));
@@ -696,19 +687,38 @@ auto Propagator<Q>::G0inv_Hubbard(const double v, const int i_in) const -> Q {
 
 
 /******* PROPAGATOR FUNCTIONS for sharp frequency-cutoff regulator ***********/
+/// G_0^Λ(v) = θ(|v| - Λ) G_0(v)
+
+
 template <typename Q>
-auto Propagator<Q>::GR_REG1_SIAM(const double v, const int i_in) const -> Q {
-    Q GR = 1. / (v - glb_epsilon - selfenergy.valsmooth(0, v, i_in));
+auto Propagator<Q>::GR_REG1(const freqType v, const int i_in) const -> Q {
+    Q GR = 1. / (G0R_inv(v, i_in) - selfenergy.valsmooth(0, v, i_in));
     if (std::abs(v) < Lambda)       return GR;
     else if (std::abs(v) == Lambda) return GR/2.;
     else                            return 0.;
 }
 
 template <typename Q>
-auto Propagator<Q>::SR_REG1(const double v, const int i_in) const -> Q {
+auto Propagator<Q>::SR_REG1(const freqType v, const int i_in) const -> Q {
     if (std::abs(v) == Lambda) return -GR(v, i_in);
     else                       return 0.;
 }
+
+
+template <typename Q>
+auto Propagator<Q>::GM_REG1(const freqType v, const int i_in) const -> Q {
+    Q GM = 1. / (G0M_inv(v, i_in) - selfenergy.valsmooth(0, v, i_in));
+    if (std::abs(v) < Lambda)       return GM;
+    else if (std::abs(v) == Lambda) return GM/2.;
+    else                            return 0.;
+}
+
+template <typename Q>
+auto Propagator<Q>::SM_REG1(const freqType v, const int i_in) const -> Q {
+    if (std::abs(v) == Lambda) return -GM(v, i_in);
+    else                       return 0.;
+}
+
 
 template <typename Q>
 auto Propagator<Q>::GM_REG1_FPP(const double v, const double ksquared, const int i_in) const -> Q {
@@ -739,113 +749,87 @@ auto Propagator<Q>::SM_REG1_FPP(const double v, const double ksquared, const int
 /////// PROPAGATOR FUNCTIONS for hybridization regulator ///////
 
 template <typename Q>
-auto Propagator<Q>::GR_REG2(const double v, const int i_in) const -> Q {
-    const Q res = 1./( G0inv(v, i_in) + glb_i*Lambda*0.5 - selfenergy.valsmooth(0, v, i_in) );
+auto Propagator<Q>::GR_REG2(const freqType v, const int i_in) const -> Q {
+    const Q res = 1./( G0R_inv(v, i_in) + glb_i*Lambda*0.5 - selfenergy.valsmooth(0, v, i_in) );
     return res;
 }
 
-template <>
-inline auto Propagator<double>::GR_REG2_Hubbard(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
-
 template <typename Q>
-auto Propagator<Q>::SR_REG2(const double v, const int i_in) const -> Q {
-    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
-    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
-    Q G = GR(v, i_in);
+auto Propagator<Q>::SR_REG2(const freqType v, const int i_in) const -> Q {
+    const Q G = GR(v, i_in);
     return -0.5*glb_i*G*G; // more efficient: only one interpolation instead of two, and G*G instead of pow(G, 2)
 }
 
 // full propagator (Matsubara)
 template <typename Q>
-auto Propagator<Q>::GM_REG2_Hubbard(const double v, const int i_in) const -> Q {
-    double k_x; double k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    return 1. / (glb_i*v + 2 * (cos(k_x) + cos(k_y)) + glb_i * Lambda / 2. - selfenergy.valsmooth(0, v, i_in));
-    // TODO: Currently only at half filling!
-}
-
-template <typename Q>
-auto Propagator<Q>::GM_REG2_SIAM(const double v, const int i_in) const -> Q {
-    if constexpr (PARTICLE_HOLE_SYMMETRY)   return GM_REG2_SIAM_PHS(v, i_in);
-    else                                    return GM_REG2_SIAM_NoPHS(v, i_in);
-}
-
-template <typename Q>
-auto Propagator<Q>::GM_REG2_SIAM_PHS(const double v, const int i_in) const -> Q {
-    assert(v != 0.);
-    return 1. / ( v + (glb_Gamma+Lambda)/2.*sign(v) - selfenergy.valsmooth(0, v, i_in) );
-}
-
-template <typename Q>
-auto Propagator<Q>::GM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> Q {
-    assert(v != 0.);
-    return 1./( (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma+Lambda)/2.*sign(v)) - selfenergy.valsmooth(0, v, i_in) );
+auto Propagator<Q>::GM_REG2(const freqType v, const int i_in) const -> Q {
+    if constexpr (PARTICLE_HOLE_SYMMETRY) {
+        const Q G0inv = G0M_inv(v, i_in);
+        const auto sin = sign(v);
+        const Q res_inv = ( G0inv + Lambda*0.5*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+        const Q res = 1./( G0inv + Lambda*0.5*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+        assert(isfinite(res));
+        return res;
+    }
+    else {
+        const Q res = 1./( G0M_inv(v, i_in) + glb_i*Lambda*0.5*sign(v) - selfenergy.valsmooth(0, v, i_in) );
+        return res;
+    }
 }
 
 // single scale propagator (Matsubara)
 template <typename Q>
-auto Propagator<Q>::SM_REG2_Hubbard(const double v, const int i_in) const -> Q {
-    return 0.;
-// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+auto Propagator<Q>::SM_REG2(const freqType v, const int i_in) const -> Q {
+    const Q G = GM(v, i_in);
+    if constexpr (PARTICLE_HOLE_SYMMETRY) {
+        return -0.5*G*G*sign(v);
+    }
+    else {
+        return -0.5*glb_i*G*G*sign(v);
+    }
 }
 
-template <typename Q>
-auto Propagator<Q>::SM_REG2_SIAM(const double v, const int i_in) const -> Q{
-    if constexpr (PARTICLE_HOLE_SYMMETRY)   return SM_REG2_SIAM_PHS(v, i_in);
-    else                                    return SM_REG2_SIAM_NoPHS(v, i_in);
-}
 
-template <typename Q>
-auto Propagator<Q>::SM_REG2_SIAM_PHS(const double v, const int i_in) const -> Q {
-    assert(v != 0.);
-    Q G = GM(v, i_in);
-    return -0.5*G*G*sign(v);
-}
 
-template <typename Q>
-auto Propagator<Q>::SM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> Q {
-    assert(v != 0.);
-    Q G = GM(v, i_in);
-    return -0.5*glb_i*G*G*sign(v);
-}
 
 
 // TODO(high): Does the w-regulator even make sense for Keldysh?
 /////// PROPAGATOR FUNCTIONS for frequency-regulator ///////
 
+
 template <typename Q>
-auto Propagator<Q>::GR_REG3_Hubbard(const double v, const int i_in) const -> Q {
-    return 0.;
-    // TODO: write GR for Hubbard model
+auto Propagator<Q>::GR_REG3(const freqType v, const int i_in) const -> Q {
+    const double reg = v*v / (v*v + Lambda*Lambda);
+    const Q res = 1. / ( G0R_inv(v, i_in) /reg - selfenergy.valsmooth(0, v, i_in) );
+    return res;
 }
 
 template <typename Q>
-auto Propagator<Q>::GR_REG3_SIAM(const double v, const int i_in) const -> Q {
-    return v*v / (v*v + Lambda*Lambda) * 1./( (v - glb_epsilon) + glb_i*(glb_Gamma/2.) - selfenergy.valsmooth(0, v, i_in) );
+auto Propagator<Q>::SR_REG3(const freqType v, const int i_in) const -> Q {
+    const Q G = GR(v, i_in);
+    const Q G0inv = G0R_inv(v, i_in);
+    return -2 * Lambda / (v * v) * G * G0inv * G;
 }
 
-template <typename Q>
-auto Propagator<Q>::SR_REG3_Hubbard(const double v, const int i_in) const -> Q {
-    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
-    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
-    Q G = GR(v, i_in);
-    return 0; // TODO: write SR, does it make sense for Keldysh?
-}
 
-template <typename Q>
-auto Propagator<Q>::SR_REG3_SIAM(const double v, const int i_in) const -> Q {
-    //return -0.5*glb_i*GR(v, i_in)*GR(v, i_in);
-    //return -0.5*glb_i*pow(GR(v, i_in), 2); // more efficient: only one interpolation instead of two
-    Q G = GR(v, i_in);
-    return 0; // TODO: write SR, does it make sense for Keldysh?
-}
 
 // full propagator (Matsubara)
+template <typename Q>
+auto Propagator<Q>::GM_REG3(const freqType v, const int i_in) const -> Q {
+    const double reg = v*v / (v*v + Lambda*Lambda);
+    const Q res = 1./( G0M_inv(v, i_in) / reg - selfenergy.valsmooth(0, v, i_in) );
+    return res;
+}
+// single scale propagator (Matsubara)
+template <typename Q>
+auto Propagator<Q>::SM_REG3(const freqType v, const int i_in) const -> Q {
+    assert(v != 0.);
+    const Q G = GM(v, i_in);
+    const Q G0inv = G0M_inv(v, i_in);
+    return -2 * Lambda / (v * v) * G * G0inv * G;
+// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
+}
+
 
 template <typename Q>
 auto Propagator<Q>::GM_REG3_FPP(const double v, const double ksquared, const int i_in) const -> Q {
@@ -891,81 +875,44 @@ auto Propagator<Q>::SM_REG3_FPP(const double v, const double ksquared, const int
     }
 }
 
-template <typename Q>
-auto Propagator<Q>::GM_REG3_Hubbard(const double v, const int i_in) const -> Q {
-    return 0.;
-    // TODO: write GM for Hubbard model
-}
 
-template <typename Q>
-auto Propagator<Q>::GM_REG3_SIAM(const double v, const int i_in) const -> Q {
-    if constexpr (PARTICLE_HOLE_SYMMETRY)   return GM_REG3_SIAM_PHS(v, i_in);
-    else                                    return GM_REG3_SIAM_NoPHS(v, i_in);
-}
 
-template <typename Q>
-auto Propagator<Q>::GM_REG3_SIAM_PHS(const double v, const int i_in) const -> Q {
-    assert(v != 0.);
-    double reg = v*v / (v*v + Lambda*Lambda);
-    Q G0inv = v + (glb_Gamma)*0.5*sign(v);
-    return 1./( G0inv / reg - selfenergy.valsmooth(0, v, i_in) );
-}
 
-template <typename Q>
-auto Propagator<Q>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> Q {
-    double reg = v*v / (v*v + Lambda*Lambda);
-    Q G0inv =  (glb_i*v - glb_epsilon) + glb_i*((glb_Gamma)/2.*sign(v));
-    return 1./( G0inv / reg - selfenergy.valsmooth(0, v, i_in) );
-}
 
-// single scale propagator (Matsubara)
-template <typename Q>
-auto Propagator<Q>::SM_REG3(const double v, const int i_in) const -> Q {
-    assert(v != 0.);
-    Q G = GM(v, i_in);
-    Q G0inv = v + (glb_Gamma)*0.5*sign(v);
-    return -2 * Lambda / (v * v) * G * G0inv * G;
-// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
-}
 
 
 ///     REG == 4: ( interaction flow )
 
 
 template <typename Q>
-auto Propagator<Q>::GR_REG4(const double v, const int i_in) const -> Q {
+auto Propagator<Q>::GR_REG4(const freqType v, const int i_in) const -> Q {
     const Q asymp_val = selfenergy.asymp_val_R;
-    const Q res = Lambda / ( G0inv(v, i_in) - asymp_val - Lambda * (selfenergy.valsmooth(0, v, i_in) - asymp_val) );
+    const Q res = Lambda / ( G0R_inv(v, i_in) - asymp_val - Lambda * (selfenergy.valsmooth(0, v, i_in) - asymp_val) );
     return res;
 }
 template <typename Q>
-auto Propagator<Q>::SR_REG4(const double v, const int i_in) const -> Q {
+auto Propagator<Q>::SR_REG4(const freqType v, const int i_in) const -> Q {
     const Q asymp_val = selfenergy.asymp_val_R;
-    const Q G = 1. /( G0inv(v, i_in) - asymp_val - Lambda * (selfenergy.valsmooth(0, v, i_in) - asymp_val) );
-    Q res = (G0inv(v, i_in) - asymp_val) * G * G;
+    const Q G0R = G0R_inv(v, i_in);
+    const Q G = 1. /( G0R - asymp_val - Lambda * (selfenergy.valsmooth(0, v, i_in) - asymp_val) );
+    const Q res = (G0R - asymp_val) * G * G;
     return res;
 }
-
+// full propagator (Matsubara)
 template <typename Q>
-auto Propagator<Q>::GM_REG4_SIAM(const double v, const int i_in) const -> Q {
-    if constexpr (PARTICLE_HOLE_SYMMETRY)   return GM_REG4_SIAM_PHS(v, i_in);
-    else                                    std::runtime_error("Interaction Regulator not yet implemented for non-PHS.");
+auto Propagator<Q>::GM_REG4(const freqType v, const int i_in) const -> Q {
+    const double reg = Lambda;
+    const Q res = reg /( G0M_inv(v, i_in) - reg * selfenergy.valsmooth(0, v, i_in) );
+    return res;
 }
-
-template <typename Q>
-auto Propagator<Q>::GM_REG4_SIAM_PHS(const double v, const int i_in) const -> Q {
-    assert(v != 0.);
-    Q val =  Lambda /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
-    assert(isfinite(val));
-    return val;
-}
-
 // single scale propagator (Matsubara)
 template <typename Q>
-auto Propagator<Q>::SM_REG4(const double v, const int i_in) const -> Q {
+auto Propagator<Q>::SM_REG4(const freqType v, const int i_in) const -> Q {
     assert(v != 0.);
-    Q G = 1. /( v + (glb_Gamma)/2.*sign(v) - Lambda * selfenergy.valsmooth(0, v, i_in) );
-    Q val = (v + (glb_Gamma)/2.*sign(v)) * G * G;
+    const double reg = Lambda;
+    const Q G0_inv = G0M_inv(v, i_in);
+    const Q G = 1. /( G0_inv - reg * selfenergy.valsmooth(0, v, i_in) );
+    const Q val = G0_inv * G * G;
     assert(isfinite(val));
     return val;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.

@@ -116,9 +116,12 @@ public:
     bool completely_crossprojected = false; // Have all reducible parts fully been cross-projected? Needed for the Hubbard model.
 
     fullvert() = default;
-    explicit fullvert(const double Lambda) : avertex('a', Lambda, true),
-                              pvertex('p', Lambda, true),
-                              tvertex('t', Lambda, true) {}
+    explicit fullvert(const double Lambda) : avertex('a', Lambda, fRG_config(), true),
+                                                                       pvertex('p', Lambda, fRG_config(), true),
+                                                                       tvertex('t', Lambda, fRG_config(), true) {}
+    explicit fullvert(const double Lambda, const fRG_config& config) : avertex('a', Lambda, fRG_config(), true),
+                              pvertex('p', Lambda, config, true),
+                              tvertex('t', Lambda, config, true) {}
 
 private:
     /// Returns \gamma_{\bar{r}} := the sum of the contributions of the diagrammatic classes r' =/= r
@@ -253,7 +256,7 @@ public:
     void set_frequency_grid(const fullvert<Q>& vertex);
 
     // Interpolate vertex to updated grid
-    void update_grid(double Lambda);
+    void update_grid(double Lambda, const fRG_config& config);
     /*
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid);
@@ -747,10 +750,11 @@ public:
     ///     vectorized operations for the computation in channel r
     mutable std::vector<fullvert<Q>> vertices_bubbleintegrand;
 
-    explicit GeneralVertex(const double Lambda_in) : vertex(Lambda_in), vertex_half2(Lambda_in), vertex_nondifferentiated(Lambda_in) {assert(!differentiated);}
-    GeneralVertex(const double Lambda_in, const vertex_nondiff_t& vertex_nondiff) : vertex(Lambda_in), vertex_half2(Lambda_in), vertex_nondifferentiated(vertex_nondiff) {static_assert(differentiated);}
+    explicit GeneralVertex() : vertex(0, fRG_config()), vertex_half2(0), vertex_nondifferentiated(0) {}
+    explicit GeneralVertex(const double Lambda_in, const fRG_config& config) : vertex(fullvert<Q>(Lambda_in, config)), vertex_half2(Lambda_in) {assert(!differentiated);}
+    GeneralVertex(const double Lambda_in, const fRG_config& config, const vertex_nondiff_t& vertex_nondiff) : vertex(Lambda_in, config), vertex_half2(Lambda_in), vertex_nondifferentiated(vertex_nondiff) {static_assert(differentiated);}
     template <typename ... Types >
-    explicit GeneralVertex(const double Lambda_in, const Types& ... t) : vertex(Lambda_in), vertex_half2(Lambda_in), vertex_nondifferentiated(Lambda_in) {assert(false);}
+    explicit GeneralVertex(const double Lambda_in, const fRG_config& config, const Types& ... t) : vertex(Lambda_in, config), vertex_half2(Lambda_in), vertex_nondifferentiated(Lambda_in) {assert(false);}
     explicit GeneralVertex(const fullvert<Q>& vertex_in)
     : vertex(vertex_in), vertex_half2(0), vertex_nondifferentiated(0) {
         static_assert((symmtype == symmetric_full or symmtype == symmetric_r_irred) and !differentiated , "Only use single-argument constructor for symmetric_full non-differentiated vertex!");}
@@ -924,9 +928,9 @@ public:
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.set_frequency_grid(vertex_in.vertex_half2);
     }
 
-    void update_grid(double Lambda) {  // Interpolate vertex to updated grid
-        vertex.update_grid(Lambda);
-        if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.update_grid(Lambda);
+    void update_grid(double Lambda, const fRG_config& config) {  // Interpolate vertex to updated grid
+        vertex.update_grid(Lambda, config);
+        if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.update_grid(Lambda, config);
     };
 
     void set_Ir(bool Ir) {  // set the Ir flag (irreducible or full) for all spin components
@@ -1686,8 +1690,8 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& rig
     }
 
 #if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and USE_FDT
-    for (char r:"apt") compute_components_through_FDTs(*this, *this, right_vertex, r);
-    for (char r:"apt") compute_components_through_FDTs(right_vertex, right_vertex, *this, r);
+    for (char r:"apt") compute_components_through_FDTs(*this, *this, right_vertex, r, Pi.g.T);
+    for (char r:"apt") compute_components_through_FDTs(right_vertex, right_vertex, *this, r, Pi.g.T);
 #endif
 
     set_initializedInterpol(false);
@@ -1712,10 +1716,10 @@ template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &ve
     }, vertex.tvertex);
 }
 
-template <typename Q> void fullvert<Q>::update_grid(double Lambda) {
-    this->avertex.update_grid(Lambda);
-    this->pvertex.update_grid(Lambda);
-    this->tvertex.update_grid(Lambda);
+template <typename Q> void fullvert<Q>::update_grid(double Lambda, const fRG_config& config) {
+    this->avertex.update_grid(Lambda, config);
+    this->pvertex.update_grid(Lambda, config);
+    this->tvertex.update_grid(Lambda, config);
 }
 /*
 template <typename Q>

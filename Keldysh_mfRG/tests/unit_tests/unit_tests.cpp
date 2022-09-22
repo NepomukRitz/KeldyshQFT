@@ -117,11 +117,12 @@ int main(int argc, char* argv[]) {
     /*
     // Test Hartree functionality
     const rvec lambdas = {999., 199., 99., 19., 9.};
-    utils::print("Filling calculations for eVg/U = " + std::to_string(glb_Vg/glb_U) +
+    utils::print("Filling calculations for eVg/U = " + std::to_string((config.epsilon+config.U*0.5)/glb_U) +
     " and an integrator accuaracy of " + std::to_string(integrator_tol), true);
     utils::print(" ", true);
+    double Gamma = 1.;
     for (const double Lambda : lambdas) {
-        const double Delta = (glb_Gamma + Lambda) / 2.; // Hybridization
+        const double Delta = (Gamma + Lambda) / 2.; // Hybridization
         Hartree_Solver Hartree_Term = Hartree_Solver (Lambda);
         const double hartree_value_num     = Hartree_Term.compute_Hartree_term_bracketing(1e-15, false, false);
         const double hartree_value_friedel = Hartree_Term.compute_Hartree_term_Friedel(1e-15);

@@ -24,7 +24,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
-#define CONTOUR_BASIS 1     // 0 for Keldysh basis; 1 for Contour basis
+#define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
                                  // Keldysh: vectorizes over Keldysh indices
@@ -41,11 +41,10 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 2
 #define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1
 
-inline int N_LOOPS;  // Number of loops; defined in main.cpp
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS 1
 const int nmax_Selfenergy_iterations = 10;
@@ -59,20 +58,9 @@ const double loop_tol_rel = 1e-5;
 //#define STATIC_FEEDBACK
 
 /// Physical parameters ///
-#if not defined(ZERO_TEMP)
-constexpr double glb_T = 1.0; //0.1; //0.01;                     // Temperature
-#else
-constexpr double glb_T = 0.0;                     // Temperature -- don't change!
-#endif
+
 constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.o.g. ALWAYS set to zero (for the SIAM)
-#ifdef PARTICLE_HOLE_SYMM
-    constexpr double glb_Vg = glb_mu;               // Impurity level shift -- has to be the same as the chemical potential when we have particle-hole symmetry
-#else
-    constexpr double glb_Vg = 0.5;                  // Impurity level shift
-#endif
-constexpr double glb_U = 2.5;                      // Impurity on-site interaction strength
-constexpr double glb_epsilon = glb_Vg - glb_U/2.;  // Impurity on-site energy                                               //NOLINT(cert-err58-cpp)
-constexpr double glb_Gamma = 2.0;                // Hybridization of Anderson model
+
 constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
@@ -142,7 +130,7 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen)
 // 4: interaction cutoff
-#define REG 3
+#define REG 2
 
 
 
@@ -156,7 +144,7 @@ constexpr int n_in = 1;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 3
+#define ODEsolver 1
 
 // Limits of the fRG flow
 #if REG == 4
@@ -164,8 +152,8 @@ constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp
 constexpr double Lambda_fin = 1;// 1e-4;
 #else
 const double LN_10 = 2.30258509299;				///< Natural log of 10
-const double Lambda_ini = 2*exp(  1 * LN_10 );//pow(10,  1) ;// 1e4;
-const double Lambda_fin = 2*pow(10, -10) ;// 1e-4;
+const double Lambda_ini = 20;//pow(10,  1) ;// 1e4;
+const double Lambda_fin = 0 ;// 1e-4;
 #endif
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
@@ -214,6 +202,11 @@ constexpr bool PARTICLE_HOLE_SYMMETRY = true;
 constexpr bool PARTICLE_HOLE_SYMMETRY = false;
 #endif
 
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
+    using freqType = double;
+#else
+    using freqType = double;
+#endif
 
 inline std::string data_dir;
 

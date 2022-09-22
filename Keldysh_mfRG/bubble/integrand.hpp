@@ -34,7 +34,7 @@ class IntegrandBubble{
     const Propagator<Q>& g1;
     const Propagator<Q>& g2;
     bool diff;
-    double w;
+    freqType w;
     int iK;
     const char channel;
 
@@ -48,7 +48,7 @@ public:
      * @param iK_in     : Keldysh index to be taken
      * @param channel_in: Char indicating the channel in which the bubble should be calculated and which determines the frequency transformations
      */
-    IntegrandBubble(const Propagator<Q>& g1_in, const Propagator<Q>& g2_in, bool diff_in, double w_in, int iK_in, char channel_in)
+    IntegrandBubble(const Propagator<Q>& g1_in, const Propagator<Q>& g2_in, bool diff_in, freqType w_in, int iK_in, char channel_in)
             : g1(g1_in), g2(g2_in), diff(diff_in), w(w_in), iK(iK_in), channel(channel_in) {};
 
     /**
@@ -57,9 +57,9 @@ public:
      * @return The value g1(v1)*g2(v2), where v1 and v2 are calculated according to the channel. The components of the
      * propagators taken depend on the Keldysh component
      */
-    auto operator() (double vpp) const -> Q {
+    auto operator() (freqType vpp) const -> Q {
         Q ans;
-        double v1, v2;
+        freqType v1, v2;
         Bubble<Q> Pi(g1, g2, diff);
 
         switch(channel){
@@ -100,7 +100,7 @@ private:
     int i0_right;
     const int i2;
     const int iw=0;
-    const double w, v = 0., vp = 0.;
+    const freqType w, v = 0., vp = 0.;
     const int i_in;
     const int i_spin;
     const bool diff;
@@ -126,7 +126,7 @@ private:
 
     bool case_always_has_to_be_zero() const;
 
-    void compute_vertices(double vpp, Q& res_l_V, Q& res_r_V, Q& res_l_Vhat, Q& res_r_Vhat) const;
+    void compute_vertices(freqType vpp, Q& res_l_V, Q& res_r_V, Q& res_l_Vhat, Q& res_r_Vhat) const;
 
     template<int ispin> void load_vertex_keldyshComponents_left_scalar (buffer_type_vertex_l& values_vertex, const VertexInput& input) const;
     template<int ispin> void load_vertex_keldyshComponents_right_scalar(buffer_type_vertex_r& values_vertex, const VertexInput& input) const;
@@ -136,11 +136,11 @@ private:
 public:
     auto load_vertex_keldysh_and_spin_Components_left_vectorized (const VertexInput& input) const -> Eigen::Matrix<Q, 1, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1>;
     auto load_vertex_keldysh_and_spin_Components_right_vectorized(const VertexInput& input) const -> Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1>;
-    auto load_Pi_keldysh_and_spin_Components_vectorized(const double input) const -> Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1>;
+    auto load_Pi_keldysh_and_spin_Components_vectorized(const freqType input) const -> Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1>;
 
 private:
-    Q sum_over_internal_scalar(double vpp) const;
-    return_type sum_over_internal_vectorized(double vpp) const;
+    Q sum_over_internal_scalar(freqType vpp) const;
+    return_type sum_over_internal_vectorized(freqType vpp) const;
         public:
     /**
      * Constructor for asymptotic class Ki:
@@ -158,7 +158,7 @@ private:
     Integrand(const vertexType_left& vertex1_in,
               const vertexType_right& vertex2_in,
               const Bubble_Object& Pi_in,
-              int i0_in, int i2_in, const int iw_in, const double w_in, const double v_in, const double vp_in, const int i_in_in,
+              int i0_in, int i2_in, const int iw_in, const freqType w_in, const freqType v_in, const freqType vp_in, const int i_in_in,
               const int i_spin_in, const bool diff_in)
               :vertex1(vertex1_in), vertex2(vertex2_in), Pi(Pi_in), i0_symmred(i0_in),
               i2(i2_in), iw(iw_in), w(w_in), v(v_in), vp(vp_in), i_in(i_in_in), i_spin(i_spin_in), diff(diff_in),
@@ -172,7 +172,7 @@ private:
      * @param vpp : frequency at which to evaluate integrand (to be integrated over)
      * @return Q  : value of the integrand object evaluated at frequency vpp (comp or double)
      */
-    auto operator() (double vpp) const -> return_type;
+    auto operator() (freqType vpp) const -> return_type;
 
     void save_integrand() const;
     void save_integrand(const rvec& freqs, const std::string& filename_prefix) const;
@@ -333,7 +333,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
 }
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
-auto Integrand<diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::operator()(double vpp) const -> return_type {
+auto Integrand<diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::operator()(freqType vpp) const -> return_type {
     return_type result;
 #if not SWITCH_SUM_N_INTEGRAL
 
@@ -450,7 +450,7 @@ bool Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
 }
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
-void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::compute_vertices(const double vpp,
+void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::compute_vertices(const freqType vpp,
                                                                                   Q& res_l_V, Q& res_r_V,
                                                                                   Q& res_l_Vhat, Q& res_r_Vhat) const{
     if (MAX_DIAG_CLASS <= 1){
@@ -944,7 +944,7 @@ auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
 
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
-auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_Pi_keldysh_and_spin_Components_vectorized(const double vpp) const -> Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1> {
+auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::load_Pi_keldysh_and_spin_Components_vectorized(const freqType vpp) const -> Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1> {
 
     using result_type = Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1>;
     auto Pi_matrix = Pi.template value_vectorized<channel>(input_external.w, vpp, input_external.i_in);
@@ -963,7 +963,7 @@ auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
 
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
-Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::sum_over_internal_scalar(const double vpp) const {
+Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::sum_over_internal_scalar(const freqType vpp) const {
 
     VertexInput input_l = input_external, input_r = input_external;
     input_l.v2 = vpp; input_r.v1 = vpp;
@@ -1110,7 +1110,7 @@ Q Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubb
 
 
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
-return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::sum_over_internal_vectorized(const double vpp) const {
+return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::sum_over_internal_vectorized(const freqType vpp) const {
 
     VertexInput input_l = input_external, input_r = input_external;
     input_l.v2 = vpp; input_r.v1 = vpp;
@@ -1333,7 +1333,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
     integrand_vals = Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>(VECTORIZED_INTEGRATION and KELDYSH_FORMALISM ?16:1, npoints);
     for (int i=0; i<npoints; ++i) {
 
-        double vpp = freqs[i];
+        freqType vpp = freqs[i];
 
 
         Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> Pival;
@@ -1390,7 +1390,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
     rvec freqs (npoints);
 
     for (int i=0; i<npoints; ++i) {
-        double wl, wu;
+        freqType wl, wu;
         switch (diag_class) {
             case k1:
                 wl = vertex1.avertex().K1.frequencies.get_wlower_b();
@@ -1408,7 +1408,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
                 break;
             default:;
         }
-        double vpp = wl + i * (wu - wl) / (npoints - 1);
+        freqType vpp = wl + i * (wu - wl) / (npoints - 1);
         //if (diag_class == k1 and not HUBBARD_MODEL) {vertex1.avertex().K1.frequencies.get_freqs_w(vpp, i);}
         freqs[i] = vpp;
     }

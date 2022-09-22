@@ -28,7 +28,7 @@ template <bool is_SBE_lambda> void T1 (IndicesSymmetryTransformations& indices) 
             indices.v1 *= 1.;
             indices.v2 *= -1.;
             if (!KELDYSH && !ZERO_T){
-                double rounding_correction = signFlipCorrection_MF(indices.w);  // correction due to rounding towards Matsubara frequencies
+                freqType rounding_correction = signFlipCorrection_MF(indices.w);  // correction due to rounding towards Matsubara frequencies
                 indices.v2 += rounding_correction;
                 // correction due to rounding towards Matsubara frequencies
             }
@@ -39,7 +39,7 @@ template <bool is_SBE_lambda> void T1 (IndicesSymmetryTransformations& indices) 
 
         indices.w  *= -1.;
         if (MAX_DIAG_CLASS > 1) {
-            double temp = indices.v1;
+            freqType temp = indices.v1;
             indices.v1 = indices.v2;
             indices.v2 = temp;
         }

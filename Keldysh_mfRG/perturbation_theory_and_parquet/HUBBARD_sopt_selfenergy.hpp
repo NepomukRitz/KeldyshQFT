@@ -51,7 +51,7 @@ private:
 
     const State<comp>& bareState;
     const Vertex<comp,false>& vertex_in_SOPT;
-    const Propagator<comp> barePropagator = Propagator<comp>(Lambda, bareState.selfenergy, 'g');
+    const Propagator<comp> barePropagator = Propagator<comp>(Lambda, bareState.selfenergy, 'g', bareState.config);
 
     SelfEnergy<comp>& SOPT_SE_Hubbard; // result
 
@@ -60,7 +60,7 @@ private:
     const double v_upper = SOPT_SE_Hubbard.Sigma.frequencies.get_wupper_b();
 
     // hybridization (needed for proper splitting of the integration domain):
-    const double Delta = (Lambda + glb_Gamma) / 2.; // TODO(medium): Is this meaningful for the Hubbard model?
+    const double Delta = (Lambda + bareState.config.Gamma) / 2.; // TODO(medium): Is this meaningful for the Hubbard model?
 
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
     const comp prefactor = -1./(2.*M_PI*glb_i);

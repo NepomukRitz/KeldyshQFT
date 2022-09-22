@@ -30,15 +30,15 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<int>(group, "diag_class", std::vector<int>({freqgrid.get_diag_class()}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<int>(group, "purely_positive", std::vector<int>({freqgrid.purely_positive}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<int>(group, "number_of_gridpoints", std::vector<int>({freqgrid.number_of_gridpoints}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(group, "w_upper", std::vector<double>({freqgrid.w_upper}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<double>(group, "w_lower", std::vector<double>({freqgrid.w_lower}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<freqType>(group, "w_upper", std::vector<freqType>({freqgrid.w_upper}), Lambda_it, numberLambdaLayers, file_exists);
+        write_to_hdf_LambdaLayer<freqType>(group, "w_lower", std::vector<freqType>({freqgrid.w_lower}), Lambda_it, numberLambdaLayers, file_exists);
         if constexpr(std::is_same_v<gridType,FrequencyGrid<eliasGrid>>)
         {
             write_to_hdf_LambdaLayer<double>(group, "Delta_factor", std::vector<double>({freqgrid.Delta_factor}),
                                              Lambda_it, numberLambdaLayers, file_exists);
             write_to_hdf_LambdaLayer<double>(group, "U_factor", std::vector<double>({freqgrid.U_factor}), Lambda_it,
                                              numberLambdaLayers, file_exists);
-            write_to_hdf_LambdaLayer<double>(group, "W_scale", std::vector<double>({freqgrid.W_scale}), Lambda_it,
+            write_to_hdf_LambdaLayer<freqType>(group, "W_scale", std::vector<freqType>({freqgrid.W_scale}), Lambda_it,
                                              numberLambdaLayers, file_exists);
 
         }
@@ -72,7 +72,7 @@ namespace hdf5_impl {
         read_from_hdf_LambdaLayer<double>(group, "w_upper", w_upper, Lambda_it);
         read_from_hdf_LambdaLayer<double>(group, "w_lower", w_lower, Lambda_it);
 
-        gridType freqgrid_new(type[0], diag_class[0], Lambda, purely_positive[0]);
+        gridType freqgrid_new(type[0], diag_class[0], Lambda, fRG_config(), purely_positive[0]);
         freqgrid_new.w_upper = w_upper[0];
         freqgrid_new.w_lower = w_lower[0];
 
@@ -116,7 +116,8 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
 
     std::vector<double> Lambda;
     read_from_hdf_LambdaLayer<double>(file_out, LAMBDA_LIST, Lambda, Lambda_it);
-    State<state_datatype> state(Lambda[0]);
+    fRG_config config = read_config_from_hdf(filename);
+    State<state_datatype> state(Lambda[0], config);
 
     std::vector<state_datatype> Sigma_H;
     read_from_hdf_LambdaLayer<state_datatype>(file_out, SELF_LIST, state.selfenergy.Sigma.data, Lambda_it);
@@ -218,37 +219,31 @@ State<state_datatype> read_state_from_hdf(const H5std_string& filename, const in
     //read_from_hdf(group_params, "ODEsolver", ODEsolver_loaded);
     read_from_hdf(group_params, "GRID", GRID_loaded);
     bool are_parameters_identical = REG == REG_loaded and
-            glb_Gamma == glb_Gamma_loaded and
             MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded and
-            N_LOOPS ==N_LOOPS_loaded and
-            glb_T == glb_T_loaded and
+            //glb_T == glb_T_loaded and
             glb_mu == glb_mu_loaded and
-            glb_U == glb_U_loaded and
-            glb_epsilon == glb_epsilon_loaded and
+            //glb_U == glb_U_loaded and
+            //glb_epsilon == glb_epsilon_loaded and
             glb_V == glb_V_loaded and
             GRID == GRID_loaded;
     if (!are_parameters_identical) {
         utils::print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
         utils::print("\t Warning!: \t Parameters of executable do not agree with those in HDF file ", filename, "\n");
         const vec<bool> is_identical_parameter = {
-                glb_Gamma == glb_Gamma_loaded
-                ,MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded
-                ,N_LOOPS == N_LOOPS_loaded
-                ,glb_T == glb_T_loaded
+                MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded
+                //,glb_T == glb_T_loaded
                 ,glb_mu == glb_mu_loaded
-                ,glb_U == glb_U_loaded
-                ,glb_epsilon == glb_epsilon_loaded
+                //,glb_U == glb_U_loaded
+                //,glb_epsilon == glb_epsilon_loaded
                 ,glb_V == glb_V_loaded
                 ,GRID == GRID_loaded
         };
         const vec<std::string> parameter_names = {
-                "glb_Gamma"
-                ,"MAX_DIAG_CLASS"
-                ,"N_LOOPS"
-                ,"glb_T"
+                "MAX_DIAG_CLASS"
+                //,"glb_T"
                 ,"glb_mu"
-                ,"glb_U"
-                ,"glb_epsilon"
+                //,"glb_U"
+                //,"glb_epsilon"
                 ,"glb_V"
                 ,"GRID"
         };
@@ -422,7 +417,8 @@ bool test_read_write_state_hdf(bool verbose) {
     const double Lambda = 1.;
     const int Lambda_it = 1;
     const int numberLambdaLayers = 10;
-    State<state_datatype> state_output(Lambda);
+    fRG_config config;
+    State<state_datatype> state_output(Lambda, config);
     state_output.initialize();
     state_output = state_output + 1.;
 
@@ -462,3 +458,32 @@ bool test_read_write_state_hdf(bool verbose) {
 
 }
 
+
+fRG_config read_config_from_hdf(const H5std_string FILE_NAME) {
+    H5::H5File file_out(FILE_NAME, H5F_ACC_RDONLY);
+
+    fRG_config config;
+    int REG_loaded, MAX_DIAG_CLASS_loaded, N_LOOPS_loaded, GRID_loaded;
+    double glb_Gamma_loaded, glb_T_loaded, glb_mu_loaded, glb_U_loaded, glb_epsilon_loaded, glb_V_loaded;
+
+    H5::Group group_params(file_out.openGroup(PARAM_LIST));
+    read_from_hdf(group_params, "REG", REG_loaded);
+    read_from_hdf(group_params, "Gamma", glb_Gamma_loaded);
+    read_from_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS_loaded);
+    read_from_hdf(group_params, "N_LOOPS", N_LOOPS_loaded);
+    read_from_hdf(group_params, "T", glb_T_loaded);
+    read_from_hdf(group_params, "mu", glb_mu_loaded);
+    read_from_hdf(group_params, "U", glb_U_loaded);
+    read_from_hdf(group_params, "epsilon", glb_epsilon_loaded);
+    read_from_hdf(group_params, "V", glb_V_loaded);
+
+    // write values in fRG_config
+    config.nloops = N_LOOPS_loaded;
+    config.U = glb_U_loaded;
+    config.Gamma = glb_Gamma_loaded;
+    config.T = glb_T_loaded;
+    config.epsilon = glb_epsilon_loaded;
+
+    return config;
+
+}

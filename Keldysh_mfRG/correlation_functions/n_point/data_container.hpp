@@ -21,6 +21,10 @@ template <typename Q> class rvert; // forward declaration of rvert
 template <typename Q, bool differentiated> class State; // forward declaration of State
 template<typename Q, std::size_t depth, typename H5object>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
+template<typename Q, typename H5object, int nrows, int ncols>
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,nrows, ncols>& data, const bool data_set_exists);
+template <typename Q, typename H5object>
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
 //template <typename Q, vertexType symm_type> class GeneralVertex;
 ////template <typename Q>class symmetric_full;
 //template <typename Q>using Vertex = GeneralVertex<Q, symmetric_full>;
@@ -191,7 +195,7 @@ class Buffer;
         frequencyGrid_type frequencies;    // frequency grid
         DataContainer() = default;
 
-        explicit DataContainer(double Lambda, dimensions_type dims) : base_class(dims), frequencies(Lambda) {};
+        explicit DataContainer(double Lambda, dimensions_type dims, const fRG_config& config) : base_class(dims), frequencies(Lambda, config) {};
 
         /// Functions for getting and setting the frequency grid and its members
         auto get_VertexFreqGrid() const -> const frequencyGrid_type &;

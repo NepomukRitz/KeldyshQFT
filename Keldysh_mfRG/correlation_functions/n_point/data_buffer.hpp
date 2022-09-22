@@ -19,7 +19,7 @@ class Interpolator : public dataContainer_type {
     using base_class = dataContainer_type;
     using this_class = Interpolator;
 
-    using frequencies_type = std::array<double, numberFrequencyDims>;
+    using frequencies_type = std::array<freqType, numberFrequencyDims>;
 
     static constexpr my_index_t numSamples() {
         return my_integer_pow<numberFrequencyDims>(my_index_t(2));
@@ -38,7 +38,7 @@ public:
 
     mutable bool initialized = false;
     Interpolator() : initialized(false) {};
-    explicit Interpolator (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+    explicit Interpolator (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
     void initInterpolator() const {initialized = true;};
     void set_initializedInterpol(const bool is) const {initialized = is;}
 
@@ -516,7 +516,7 @@ public:
     using dimensions_type = typename dataContainer_type::dimensions_type;
 
     Interpolator() = default;
-    explicit Interpolator (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+    explicit Interpolator (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
 
     template <typename result_type = Q,
             typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
@@ -662,14 +662,14 @@ template <typename Q, K_class k, size_t rank, my_index_t numberFrequencyDims, my
 class dataBuffer: public Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>, inter> {
     using base_class = Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>, inter>;
     using this_class = dataBuffer<Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter>;
-    using frequencies_type = std::array<double, numberFrequencyDims>;
+    using frequencies_type = std::array<freqType, numberFrequencyDims>;
 
 public:
     using index_type = typename base_class::index_type;
     using dimensions_type = typename base_class::dimensions_type;
 
     dataBuffer() : base_class() {};
-    explicit dataBuffer (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+    explicit dataBuffer (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
     //void initInterpolator() const {initialized = true;};
 
     template<typename result_type=Q,
@@ -678,9 +678,9 @@ public:
         return base_class::template interpolate_impl<result_type>(input.template get_freqs<k>(), input.template get_indices<k>());
     }
 
-    void update_grid(double Lambda) {
+    void update_grid(double Lambda, const fRG_config& config) {
         frequencyGrid_type frequencies_new = base_class::get_VertexFreqGrid();  // new frequency grid
-        frequencies_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
+        frequencies_new.guess_essential_parameters(Lambda, config);                     // rescale new frequency grid
         update_grid(frequencies_new, *this);
     }
 

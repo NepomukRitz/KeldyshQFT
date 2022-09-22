@@ -34,13 +34,13 @@ class LoopCalculator{
     const Propagator<Q>& prop;
     //const bool all_spins;
 
-    const double Delta = (prop.Lambda + glb_Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
+    const double Delta = (prop.Lambda + prop.Gamma) / 2.; // hybridization (needed for proper splitting of the integration domain)
 
     const int iv;
     const int spin = 0;
     const int i_in;
 
-    const double v = self.Sigma.frequencies.primary_grid.get_frequency(iv);
+    const freqType v = self.Sigma.frequencies.primary_grid.get_frequency(iv);
 
     double v_lower, v_upper;
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
@@ -88,8 +88,8 @@ void LoopCalculator<Q,vertType, all_spins, version>::set_v_limits() {
         // make sure that the limits for the Matsubara sum are fermionic
         Nmin = -POSINTRANGE;
         Nmax = - Nmin - 1;
-        v_lower = (Nmin*2+1)*(M_PI*glb_T);
-        v_upper = (Nmax*2+1)*(M_PI*glb_T);
+        v_lower = (Nmin*2+1)*(M_PI*prop.T);
+        v_upper = (Nmax*2+1)*(M_PI*prop.T);
     }
 }
 
@@ -477,7 +477,7 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() 
     if (isfinite(v)) {
         IntegrandSE<Q,vertType,all_spins,Q,version> integrand(0, fullvertex, prop, 0, pick_spin<version,0>(), v, i_in);
 
-        integratedR = - glb_T * matsubarasum<Q>(integrand, Nmin, Nmax);
+        integratedR = - prop.T * matsubarasum<Q>(integrand, Nmin, Nmax);
 
         //if (all_spins) {
         //    integratedR *= 2.;

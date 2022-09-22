@@ -31,8 +31,8 @@ public:
     buffer_type Sigma;
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
-    explicit  SelfEnergy(double Lambda) : Sigma(Lambda, SE_config.dims) {};
-    explicit  SelfEnergy(const freqGrid_type& frequencies_in) : Sigma(0, SE_config.dims) {Sigma.set_VertexFreqGrid( frequencies_in);};
+    explicit  SelfEnergy(double Lambda, const fRG_config& config) : Sigma(Lambda, SE_config.dims, config) {};
+    explicit  SelfEnergy(const freqGrid_type& frequencies_in) : Sigma(0, SE_config.dims, fRG_config()) {Sigma.set_VertexFreqGrid( frequencies_in);};
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
     auto val(int iK, int iv, int i_in) const -> Q;  //Returns value at given input on freq grid
@@ -45,8 +45,8 @@ public:
     auto norm(int p) const -> double;
     auto norm() const -> double;
 
-    /// Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + glb_Gamma)/2
-    void update_grid(double Lambda);
+    /// Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2
+    void update_grid(double Lambda, const fRG_config& config);
     /// Interpolate self-energy to input grid
     void update_grid(const freqGrid_type&  frequencies_new);   // Interpolate self-energy to updated grid
     /// Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma
@@ -244,8 +244,8 @@ template <typename Q> void SelfEnergy<Q>::set_frequency_grid(const SelfEnergy<Q>
     Sigma.frequencies = selfEnergy.Sigma.frequencies;
 };
 
-template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda) {
-    Sigma.update_grid(Lambda);
+template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda, const fRG_config& config) {
+    Sigma.update_grid(Lambda, config);
 
 }
 
@@ -403,7 +403,7 @@ template <typename Q> void SelfEnergy<Q>:: check_symmetries() const
         vec<Q> dev(nFER);
         for (int i = 0; i < nFER; i++) {
             for (int j = 0; j < n_in; j++) {
-                double v;
+                freqType v;
                 Sigma.frequencies.get_freqs_w(v, i);
                 dev[i] = valsmooth(0, v, j) + myconj(valsmooth(0,-v, j)) - 2.*asymp_val_R;
             }

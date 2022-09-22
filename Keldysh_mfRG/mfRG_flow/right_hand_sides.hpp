@@ -95,11 +95,11 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     State<Q,true> dPsi(Psi, Lambda); // result
 
 #ifndef STATIC_FEEDBACK
-    Propagator<Q> S (Lambda, Psi.selfenergy, 's');
-    Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+    Propagator<Q> S (Lambda, Psi.selfenergy, 's', Psi.config);
+    Propagator<Q> G (Lambda, Psi.selfenergy, 'g', Psi.config);
 #else
     SelfEnergy<Q> bareSelfEnergy (Psi.selfenergy.Sigma.frequencies);
-    bareSelfEnergy.initialize(glb_U/2., 0.);
+    bareSelfEnergy.initialize(config.U/2., 0.);
 
     Propagator<Q> S (Lambda, bareSelfEnergy, 's');
     Propagator<Q> G (Lambda, bareSelfEnergy, 'g');
@@ -121,7 +121,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 #ifndef STATIC_FEEDBACK
 #ifdef KATANIN
-    Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k');
+    Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k', Psi.config);
 #else
     Propagator<Q> dG (Lambda, Psi.selfenergy, 's');
 #endif // KATANIN
@@ -168,8 +168,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         if(VERBOSE) {
         dPsi.vertex.half1().check_vertex_resolution();
         dPsi.analyze_tails();
-        compare_with_FDTs(Psi.vertex, Lambda, iteration, "Psi_RKstep"+std::to_string(rkStep), false, config.nODE_ + U_NRG.size() + 1);
-        compare_with_FDTs(dPsi.vertex, Lambda, iteration, "dPsi_RKstep"+std::to_string(rkStep), false, config.nODE_ + U_NRG.size() + 1);
+        compare_with_FDTs(Psi.vertex, Lambda, iteration, "Psi_RKstep"+std::to_string(rkStep), Psi.config.T, false, config.nODE_ + U_NRG.size() + 1);
+        compare_with_FDTs(dPsi.vertex, Lambda, iteration, "dPsi_RKstep"+std::to_string(rkStep), Psi.config.T, false, config.nODE_ + U_NRG.size() + 1);
     }
 
 
@@ -210,7 +210,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         Vertex<Q,true> dGammaL_half1 = calculate_dGammaL(dGamma_1loop, Psi.vertex, Pi, config);
         if(VERBOSE) {
             dGammaL_half1.half1().check_vertex_resolution();
-            compare_with_FDTs(dGammaL_half1, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), false, config.nODE_ + U_NRG.size() + 1);
+            compare_with_FDTs(dGammaL_half1, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), Psi.config.T, false, config.nODE_ + U_NRG.size() + 1);
         }
 
         if (VERBOSE) utils::print("Compute dGammaR (2-loop):", true);
@@ -234,9 +234,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         /// save intermediate states:
         if (save) {
             int i = 2;
-            State<Q,true> dPsi_L(dGammaL_half1, dPsi.selfenergy, Lambda);
-            State<Q,true> dPsi_R(dGammaR_half1, dPsi.selfenergy, Lambda);
-            State<Q,true> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
+            State<Q,true> dPsi_L(dGammaL_half1, dPsi.selfenergy, Psi.config, Lambda);
+            State<Q,true> dPsi_R(dGammaR_half1, dPsi.selfenergy, Psi.config, Lambda);
+            State<Q,true> dPsi_T(dGammaT, dPsi.selfenergy, Psi.config, Lambda);
 
 #if DEBUG_SYMMETRIES
             dGammaL_half1.template symmetry_expand<'a',false,false>();
@@ -278,7 +278,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 #if SELF_ENERGY_FLOW_CORRECTIONS != 0
             // initialize central part of the vertex flow in the a and p channels (\bar{t}), needed for self-energy corrections
-            GeneralVertex<Q, symmetric_r_irred,true> dGammaC_tbar(Lambda,Psi.vertex);
+            GeneralVertex<Q, symmetric_r_irred,true> dGammaC_tbar(Lambda, Psi.config, Psi.vertex);
             dGammaC_tbar.set_frequency_grid(Psi.vertex);
             //dGammaC_tbar.set_Ir(true);
 #endif
@@ -294,7 +294,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 GeneralVertex<Q, non_symmetric_diffleft,true> dGammaL(dGammaL_half1.half1(), dGammaR_half1.half1(), Psi.vertex);
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaL, Lambda, iteration,
-                                      "dGammaL_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2), false,
+                                      "dGammaL_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2), Psi.config.T, false,
                                       config.nODE_ + U_NRG.size() + 1);
                 }
 
@@ -318,7 +318,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaC_r, Lambda, iteration,
                                       "dGammaC_r_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
-                                      false, config.nODE_ + U_NRG.size() + 1);
+                                      Psi.config.T,false, config.nODE_ + U_NRG.size() + 1);
                 }
 
                 // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
@@ -327,8 +327,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 GeneralVertex<Q, non_symmetric_diffright, true> dGammaR(dGammaR_half1.half1(), dGammaL_half1.half1(), Psi.vertex);
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaR, Lambda, iteration,
-                                      "dGammaR_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2), false,
-                                      config.nODE_ + U_NRG.size() + 1);
+                                      "dGammaR_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
+                                      Psi.config.T, false,config.nODE_ + U_NRG.size() + 1);
                 }
 
                 //dGammaR.template symmetry_expand<'a',true,false>();
@@ -363,9 +363,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
                 /// save intermediate states:
                 if (save) {
-                    State<Q,true> dPsi_C (dGammaC, dPsi.selfenergy, Lambda);
-                    State<Q,true> dPsi_C_left (dGammaC_l, dPsi.selfenergy, Lambda);
-                    State<Q,true> dPsi_C_right(dGammaC_r, dPsi.selfenergy, Lambda);
+                    State<Q,true> dPsi_C (dGammaC, dPsi.selfenergy, Psi.config, Lambda);
+                    State<Q,true> dPsi_C_left (dGammaC_l, dPsi.selfenergy, Psi.config, Lambda);
+                    State<Q,true> dPsi_C_right(dGammaC_r, dPsi.selfenergy, Psi.config, Lambda);
                     if (iteration == 0) {
                         write_state_to_hdf<Q>(dir_str+"dPsi_C"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations)+"_forLoop"+std::to_string(i),       Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C);
                         write_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations)+"_forLoop"+std::to_string(i),  Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_left);
@@ -423,9 +423,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
                 /// save intermediate states:
                 if (save) {
-                    State<Q,true> dPsi_L(dGammaL_half1, dPsi.selfenergy, Lambda);
-                    State<Q,true> dPsi_R(dGammaR_half1, dPsi.selfenergy, Lambda);
-                    State<Q,true> dPsi_T(dGammaT, dPsi.selfenergy, Lambda);
+                    State<Q,true> dPsi_L(dGammaL_half1, dPsi.selfenergy, Psi.config, Lambda);
+                    State<Q,true> dPsi_R(dGammaR_half1, dPsi.selfenergy, Psi.config, Lambda);
+                    State<Q,true> dPsi_T(dGammaT, dPsi.selfenergy, Psi.config, Lambda);
                     if (iteration == 0) {
                         write_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations) + "_forLoop" +
                                               std::to_string(i), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_L);
@@ -469,7 +469,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
 #if SELF_ENERGY_FLOW_CORRECTIONS == 1
             // compute multiloop corrections to self-energy flow
-            State<Q,true> Psi_SEcorrection(dPsi.vertex, dPsi.selfenergy, Lambda);
+            State<Q,true> Psi_SEcorrection(dPsi.vertex, dPsi.selfenergy, Psi.config, Lambda);
             selfEnergyFlowCorrections(Psi_SEcorrection.selfenergy, dGammaC_tbar, Psi, G); // isolated SE correction
             SelfEnergy<Q> selfEnergy_old = dPsi.selfenergy;
             dPsi.selfenergy = selfenergy_1loop + Psi_SEcorrection.selfenergy;
@@ -477,13 +477,13 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 
             selfenergy_correction_abs = selfEnergy_err.norm();
             selfenergy_correction_rel = selfEnergy_err.norm() / dPsi.selfenergy.norm();
-            State<Q> state_self_diffrel(Lambda);
+            State<Q> state_self_diffrel(Lambda, Psi.config);
             state_self_diffrel.selfenergy = selfEnergy_err * (1./ dPsi.selfenergy.norm());
 
 
             /// save intermediate states:
             if (save) {
-                State<Q,true> dPsi_C_tbar(Vertex<Q,true>(dGammaC_tbar.half1(), Psi.vertex), dPsi.selfenergy, Lambda);
+                State<Q,true> dPsi_C_tbar(Vertex<Q,true>(dGammaC_tbar.half1(), Psi.vertex), dPsi.selfenergy, Psi.config, Lambda);
                 if (iteration == 0) {
                     //write_state_to_hdf<Q>(dir_str+"dPsi_C_tbar_RKstep"+std::to_string(rkStep), Psi.Lambda, config.nODE_ + U_NRG.size() + 1, dPsi_C_tbar);
                     write_state_to_hdf<Q>(dir_str + "SE_correction_RKstep" + std::to_string(rkStep)+std::to_string(counter_Selfenergy_iterations), Psi.Lambda,
@@ -573,7 +573,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     }
 
 
-    State<Q,false> dPsi_return(Vertex<Q,false>(dPsi.vertex.half1()), dPsi.selfenergy, Lambda);
+    State<Q,false> dPsi_return(Vertex<Q,false>(dPsi.vertex.half1()), dPsi.selfenergy, Psi.config, Lambda);
     return dPsi_return;
 
 }
@@ -639,7 +639,7 @@ void vertexOneLoopFlow(Vertex<Q,true>& dPsiVertex, const Vertex<Q,false>& PsiVer
 /// Hence dgamma_rbar only returns values of the r-IRreducible sector
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true>{
-    Vertex<Q,true> dGammaL(Lambda_ini, PsiVertex);
+    Vertex<Q,true> dGammaL(Lambda_ini, config, PsiVertex);
     dGammaL.set_frequency_grid(PsiVertex);
 
     //Vertex<Q,false> dPsiVertex_calc = dPsiVertex;
@@ -652,7 +652,7 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
     //}
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
-        Vertex<Q,false> One(Lambda_ini);
+        Vertex<Q,false> One(Lambda_ini, config);
         for (char r: "apt") {
             bubble_function(dGammaL, dPsiVertex, One, Pi, r, config);
         }
@@ -669,14 +669,14 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
 /// Hence dgamma_rbar only returns values of the r-IRreducible sector
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true>{
-    Vertex<Q,true> dGammaR(Lambda_ini, PsiVertex);
+    Vertex<Q,true> dGammaR(Lambda_ini, config, PsiVertex);
     dGammaR.set_frequency_grid(PsiVertex);
 
     //Vertex<Q,true> dPsiVertex_calc = dPsiVertex;
     //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
-        Vertex<Q,false> One(Lambda_ini);
+        Vertex<Q,false> One(Lambda_ini, config);
         for (char r: "apt") {
             bubble_function(dGammaR, One, dPsiVertex, Pi, r, config);
         }
@@ -774,7 +774,7 @@ public:
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const GeneralVertex<Q, non_symmetric_diffleft,true>& nonsymVertex,
                                        const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true> {
-    Vertex<Q,true> dGammaC (Lambda_ini, PsiVertex);
+    Vertex<Q,true> dGammaC (Lambda_ini, config, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
 
     //GeneralVertex<Q, non_symmetric_diffleft> nonsymVertex_calc = nonsymVertex;
@@ -809,7 +809,7 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const G
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffright,true>& nonsymVertex, const Vertex<Q,false>& PsiVertex,
                                       const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true> {
-    Vertex<Q,true> dGammaC (Lambda_ini, PsiVertex);
+    Vertex<Q,true> dGammaC (Lambda_ini, config, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
 
     //GeneralVertex<Q, non_symmetric_diffright> nonsymVertex_calc = nonsymVertex;
@@ -868,7 +868,7 @@ void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const GeneralVerte
     loop<true,0>(dSigma_tbar, dGammaC_tbar, G);
 
     // compute second multiloop correction to self-energy flow, reducible in the t channel
-    Propagator<Q> extension (G.Lambda, Psi.selfenergy, dSigma_tbar, 'e');
+    Propagator<Q> extension (G.Lambda, Psi.selfenergy, dSigma_tbar, 'e', Psi.config);
     loop<true,0>(dSigma_t, Psi.vertex, extension);
 
     dPsiSelfEnergy = dSigma_tbar + dSigma_t;
@@ -881,7 +881,7 @@ auto vertexConvergedInLoops(Vertex<Q,true>& dGamma_T, Vertex<Q,true>&dGamma) -> 
 }
 template <typename Q>
 auto selfEnergyConverged(SelfEnergy<Q>& dPsiSelfEnergy, SelfEnergy<Q>& PsiSelfEnergy, Propagator<Q>& dG) -> bool {
-    Propagator<Q> compare(dG.Lambda, PsiSelfEnergy, dPsiSelfEnergy, 'k');
+    Propagator<Q> compare(dG.Lambda, PsiSelfEnergy, dPsiSelfEnergy, 'k', fRG_config());
     compare += dG*((Q)-1.);
 
     return (  compare.norm()/ dG.norm() < converged_tol );

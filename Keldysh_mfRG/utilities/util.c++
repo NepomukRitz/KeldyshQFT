@@ -97,11 +97,11 @@ namespace utils {
         }
     }
 
-    void check_input() {
+    void check_input(const fRG_config& config) {
     #ifdef STATIC_FEEDBACK
         assert(MAX_DIAG_CLASS == 1);
     #endif
-        if (MAX_DIAG_CLASS<2) assert(N_LOOPS < 2);
+        if (MAX_DIAG_CLASS<2) assert(config.nloops < 2);
     #ifdef ROTATEK2
         assert (nBOS2 == nFER2);
     #endif
@@ -130,6 +130,16 @@ namespace utils {
     #if SBE_DECOMPOSITION
     static_assert(SWITCH_SUM_N_INTEGRAL, "SBE requires preprocessing of vertex data.");
     #endif
+
+        #ifdef ZERO_TEMP
+            assert(config.T < 1e-10);
+        #endif
+        #ifdef PARTICLE_HOLE_SYMM
+            assert(std::abs(config.epsilon + config.U * 0.5) < 1e-10);
+        #endif
+        if (EQUILIBRIUM) {
+            assert(std::abs(glb_V) < 1e-10);
+        }
     }
 
     std::string generate_data_directory(std::string& job) {
@@ -165,9 +175,9 @@ namespace utils {
         std::string n1 = "n1=" + std::to_string(nBOS) + "_";
         std::string n2 = "n2=" + std::to_string(nBOS2) + "_";
         std::string n3 = "n3=" + std::to_string(nBOS3) + "_";
-        std::string gamma = "Gamma=" + std::to_string(glb_Gamma) + "_";
+        std::string gamma = "Gamma=" + std::to_string(config.Gamma) + "_";
         std::string voltage = "V=" + std::to_string(glb_V) + "_";
-        std::string temp = "T=" + std::to_string(glb_T) + "_";
+        std::string temp = "T=" + std::to_string(config.T) + "_";
         std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
         std::string ode = "nODE=" + std::to_string(config.nODE_);
         std::string extension = ".h5";
@@ -181,7 +191,7 @@ namespace utils {
         filename += gamma;
         if(glb_V != 0.)
             filename += voltage;
-        if(glb_T != 0.01)
+        if(config.T != 0.01)
             filename += temp;
         filename += lambda + ode + extension;
 
@@ -200,8 +210,8 @@ namespace utils {
 
         if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
-        print("U for this run is: ", glb_U, true);
-        print("T for this run is: ", glb_T, true);
+        print("U for this run is: ", config.U, true);
+        print("T for this run is: ", config.T, true);
         print("Lambda flows from ", Lambda_ini);
         print_add(" to ", Lambda_fin, true);
         print("nODE for this run: ", config.nODE_, true);
