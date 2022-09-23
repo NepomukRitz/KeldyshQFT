@@ -503,14 +503,18 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                         const freqType v_temp  = (i*2 + 1);
                         const freqType vp_temp = (j*2 + 1);
                         Integrand_class integrand_asymp(vertex1, vertex2, Pi, i0, i2, iw, w, v_temp, vp_temp, i_in, i_spin, diff);
-                        /// determine integral of the integrand's tails via quadrature:
-                        //summation_result(-Nmin_v+i,-Nmin_vp+j) += bubble_value_prefactor() * M_PI * Pi.g.T *
-                        //                                         asymp_corrections_bubble_via_quadrature<Q>(integrand_asymp, vmin_temp, vmax_temp);
+#if ANALYTIC_TAILS
                         /// determine integral of the integrand's tails via formula (corresponds to quadrature of bare bubble):
                         summation_result(-Nmin_v+i,-Nmin_vp+j) +=
                                 bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
                                                                                                   vmin_temp, vmax_temp, w, v_temp, vp_temp, i0, i2,
                                                                                                   i_in, diff);
+#else
+                        /// determine integral of the integrand's tails via quadrature:
+                        summation_result(-Nmin_v+i,-Nmin_vp+j) += bubble_value_prefactor() * M_PI * Pi.g.T *
+                                                                  asymp_corrections_bubble_via_quadrature<Q>(integrand_asymp, vmin_temp, vmax_temp);
+
+#endif
                     }
                 }
 
@@ -530,15 +534,18 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
                 integration_result = bubble_value_prefactor() * (2 * M_PI) * Pi.g.T *
                                      matsubarasum<Q>(integrand, Nmin_sum, Nmax_sum);
+#if ANALYTIC_TAILS
 
                 /// determine integral of the integrand's tails via quadrature:
                 integration_result +=
                         bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
                                                                                      vmin_temp, vmax_temp, w, v, vp, i0, i2,
                                                                                      i_in, diff);
+#else
                 /// Compute high-frequency contributions via quadrature:
-                //integration_result += bubble_value_prefactor() * M_PI * Pi.g.T *
-                //                      asymp_corrections_bubble_via_quadrature<Q>(integrand, vmin_temp, vmax_temp);
+                integration_result += bubble_value_prefactor() * M_PI * Pi.g.T *
+                                      asymp_corrections_bubble_via_quadrature<Q>(integrand, vmin_temp, vmax_temp);
+#endif
             }
         }
     }

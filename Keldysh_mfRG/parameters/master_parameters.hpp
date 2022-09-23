@@ -45,6 +45,8 @@ constexpr bool VERBOSE = false;
 #define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1
 
+#define ANALYTIC_TAILS 1
+
 #define KATANIN
 #define SELF_ENERGY_FLOW_CORRECTIONS 1
 const int nmax_Selfenergy_iterations = 10;

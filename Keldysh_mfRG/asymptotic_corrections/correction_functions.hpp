@@ -190,7 +190,7 @@ auto asymp_corrections_bubble(K_class k,
         }
     }
     else { // SBE_DECOMPOSITION
-        assert(false); // TODO: Fix problems with analytic tails for SBE ? (alternatively just use quadrature)
+        //assert(false); // TODO: Fix problems with analytic tails for SBE ? (alternatively just use quadrature)
         assert(not KELDYSH and SWITCH_SUM_N_INTEGRAL);
         switch (k) {
             case k1: {
@@ -249,20 +249,20 @@ auto asymp_corrections_bubble(K_class k,
 
             switch (k) {
                 case k1:
-                    res = (K1L + K1L_hat) * (1 + res_l_V + res_l_Vhat) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R)
-                          + (K1L + K1L_hat) * (1 + res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R + K1R_hat)
-                          + (K1L + K1L_hat) * (res_l_V) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R + K1R_hat)
+                    res =   (K1L + K1L_hat) * (res_l_V + res_l_Vhat) * Pival * (res_r_V + res_r_Vhat) * (K1R)
+                          + (K1L + K1L_hat) * (res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R + K1R_hat)
+                          + (K1L + K1L_hat) * (res_l_V) * Pival * (res_r_V + res_r_Vhat) * (K1R + K1R_hat)
                           + (K1L + K1L_hat) * (res_l_V) * Pival * (res_r_V) * (K1R)
-                          + (K1L) * (res_l_V) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R)
+                          + (K1L) * (res_l_V) * Pival * (res_r_V + res_r_Vhat) * (K1R)
                           + (K1L) * (res_l_V) * Pival * (res_r_V) * (K1R + K1R_hat)
-                          + (K1L) * (1 + res_l_V + res_l_Vhat) * Pival * (1 + res_r_V + res_r_Vhat) * (K1R + K1R_hat)
-                          + (K1L) * (1 + res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R);
+                          + (K1L) * (res_l_V + res_l_Vhat) * Pival * (res_r_V + res_r_Vhat) * (K1R + K1R_hat)
+                          + (K1L) * (res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R);
                     break;
                 case k2:
-                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (1 + res_r_V + res_r_Vhat);
+                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
                     break;
                 case k2b:
-                    res = (1 + res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
+                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
                     break;
                 case k3:
                     res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
@@ -273,13 +273,13 @@ auto asymp_corrections_bubble(K_class k,
 
             switch (k) {
                 case k1:
-                    res = K1L * (1 + res_l_V) * Pival * (1 + res_r_V) * K1R;
+                    res = K1L * (res_l_Vhat) * Pival * (res_r_Vhat) * K1R_hat;
                     break;
                 case k2:
-                    res = res_l_V * Pival * (1 + res_r_Vhat);
+                    res = res_l_Vhat * Pival * (res_r_V);
                     break;
                 case k2b:
-                    res = (1 + res_l_Vhat) * Pival * res_r_V;
+                    res = (res_l_V) * Pival * res_r_Vhat;
                     break;
                 case k3:
                     res = res_l_V * Pival * res_r_Vhat;
@@ -290,13 +290,13 @@ auto asymp_corrections_bubble(K_class k,
 
             switch (k) {
                 case k1:
-                    res = K1L * (1 + res_l_V) * Pival * (1 + res_r_V) * K1R;
+                    res = K1L * (res_l_V) * Pival * (res_r_V) * K1R;
                     break;
                 case k2:
-                    res = res_l_V * Pival * (1 + res_r_V);
+                    res = res_l_V * Pival * (res_r_V);
                     break;
                 case k2b:
-                    res = (1 + res_l_V) * Pival * res_r_V;
+                    res = (res_l_V) * Pival * res_r_V;
                     break;
                 case k3:
                     res = res_l_V * Pival * res_r_V;

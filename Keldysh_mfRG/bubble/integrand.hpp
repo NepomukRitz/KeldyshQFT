@@ -801,7 +801,7 @@ auto Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
 
             load_vertex_keldyshComponents_left_scalar<spin>(values_vertex_l, input);
 
-            result(0) = values_vertex_l_other;
+            result(0) = values_vertex_l;
         }
 #endif
         else {
