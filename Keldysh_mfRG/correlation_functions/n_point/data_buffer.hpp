@@ -796,10 +796,17 @@ public:
 
     }
 
-    auto operator+= (const this_class& rhs) -> this_class {base_class::data += rhs.data; return *this;}
-    auto operator-= (const this_class& rhs) -> this_class {base_class::data -= rhs.data; return *this;}
-    auto operator*= (const this_class& rhs) -> this_class {base_class::data *= rhs.data; return *this;}
-    auto operator/= (const this_class& rhs) -> this_class {base_class::data /= rhs.data; return *this;}
+    void check_if_frequencyGrid_identical(const this_class &rhs) const {
+        assert((base_class::frequencies.primary_grid.get_all_frequencies() - rhs.frequencies.primary_grid.get_all_frequencies()).max_norm() < 1e-10);
+        if constexpr (numberFrequencyDims > 1) {
+            assert((base_class::frequencies.secondary_grid.get_all_frequencies() - rhs.frequencies.secondary_grid.get_all_frequencies()).max_norm() < 1e-10);
+        }
+    }
+
+    auto operator+= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data += rhs.data; return *this;}
+    auto operator-= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data -= rhs.data; return *this;}
+    auto operator*= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data *= rhs.data; return *this;}
+    auto operator/= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data /= rhs.data; return *this;}
     friend this_class operator+ (const this_class& lhs, const this_class& rhs) {
         this_class lhs_temp = lhs;
         lhs_temp += rhs;
