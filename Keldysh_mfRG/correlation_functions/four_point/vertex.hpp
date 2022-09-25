@@ -116,10 +116,12 @@ public:
     bool completely_crossprojected = false; // Have all reducible parts fully been cross-projected? Needed for the Hubbard model.
 
     fullvert() = default;
-    explicit fullvert(const double Lambda) : avertex('a', Lambda, fRG_config(), true),
-                                                                       pvertex('p', Lambda, fRG_config(), true),
-                                                                       tvertex('t', Lambda, fRG_config(), true) {}
-    explicit fullvert(const double Lambda, const fRG_config& config) : avertex('a', Lambda, fRG_config(), true),
+    explicit fullvert(const double Lambda) :
+                              avertex('a', Lambda, fRG_config(), true),
+                              pvertex('p', Lambda, fRG_config(), true),
+                              tvertex('t', Lambda, fRG_config(), true) {}
+    explicit fullvert(const double Lambda, const fRG_config& config) :
+                              avertex('a', Lambda, config, true),
                               pvertex('p', Lambda, config, true),
                               tvertex('t', Lambda, config, true) {}
 
@@ -729,6 +731,9 @@ private:
         vertices_expanded_target[2].irred *= 0. ;
         for (char r : {'a', 'p', 't'}) {
             vertices_expanded_target[2].get_rvertex(r).K1_symmetry_expanded += vertices_expanded_target[1].get_rvertex(r).K1_symmetry_expanded;
+#ifdef ADAPTIVE_GRID
+            assert(false); /// This requires that both spin components are stored on the same grid
+#endif
 
             if (MAX_DIAG_CLASS > 1) {
                 vertices_expanded_target[2].get_rvertex(r).K2_symmetry_expanded += vertices_expanded_target[1].get_rvertex(r).K2_symmetry_expanded;
