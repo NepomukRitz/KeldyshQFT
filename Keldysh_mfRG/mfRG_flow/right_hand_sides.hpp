@@ -322,7 +322,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 }
 
                 // insert this non-symmetric_full vertex on the left of the bubble
-                Vertex<Q, true> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi);
+                Vertex<Q, true> dGammaC_l = calculate_dGammaC_left_insertion(dGammaR, Psi.vertex, Pi, config);
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaC_l, Lambda, iteration,
                                       "dGammaC_l_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
@@ -364,8 +364,6 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                                             std::to_string(i), iteration, dPsi_C, false);
                         //add_state_to_hdf<Q>(dir_str+"dPsi_C_left"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i),  iteration, dPsi_C_left,  false);
                         //add_state_to_hdf<Q>(dir_str+"dPsi_C_right"+"_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(i), iteration, dPsi_C_right, false);
-                        add_state_to_hdf<Q>(dir_str + "dPsi_L" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_L, false);
-                        add_state_to_hdf<Q>(dir_str + "dPsi_R" + "_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(i), iteration, dPsi_R, false);
 
                     }
                     if (VERBOSE) {

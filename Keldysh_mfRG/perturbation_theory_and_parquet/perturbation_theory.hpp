@@ -32,7 +32,7 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 }
 
 template <typename Q, class Bubble_Object>
-void vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, const fRG_config& config){
+void vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi){
     std::string channels = "apt";
     for (char r: channels) {
 #if not defined(NDEBUG)
@@ -40,7 +40,7 @@ void vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const 
         utils::print_add(r, false);
         utils::print_add(" ... ", false);
 #endif
-        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r, config);
+        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r, bareState.config);
 #if not defined(NDEBUG)
         utils::print_add("done.", true);
 #endif
@@ -51,11 +51,11 @@ template <typename Q, class Bubble_Object>
 void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, const Bubble_Object& Pi){
     Propagator<Q> barePropagator(bareState.Lambda, bareState.selfenergy, 'g', bareState.config);    //Bare propagator
 
-    GeneralVertex<Q,symmetric_r_irred, false> bubble_a (bareState.Lambda);
+    GeneralVertex<Q,symmetric_r_irred, false> bubble_a (bareState.Lambda, bareState.config);
     bubble_a.set_Ir(true);
     bubble_a.set_frequency_grid(bareState.vertex);
     //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, Pi, 'a', bareState.config);
+    bubble_function(bubble_a, bareState.vertex, bareState.vertex, Pi, 'a', bareState.config);
 
     //Calculate the Self-Energy
     loop<false,0>(PsiSelfEnergy, bubble_a, barePropagator);
@@ -71,11 +71,11 @@ void vertexInTOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const S
     Vertex<Q,false> bubblevertex_a(Lambda, SoptPsi.config);
     bubblevertex_a.set_frequency_grid(PsiVertex);
     bubblevertex_a.initialize(0.);
-    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q,false> bubblevertex_p(Lambda);
+    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a', bareState.config);
+    Vertex<Q,false> bubblevertex_p(Lambda, bareState.config);
     bubblevertex_p.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
-    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
+    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p', bareState.config);
 
 #if DEBUG_SYMMETRIES
     Vertex<Q,false> bubblevertex_t(Lambda);
@@ -94,9 +94,9 @@ void vertexInTOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const S
 #else
     //bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'a'); // TOPT diagram for K1a // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
     //bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'p'); // TOPT diagram for K1p // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
-    bubble_function(PsiVertex, SoptPsi.vertex, bareState.vertex, Pi, 't'); // Eye diagram for K2t and TOPT diagram for K1t
-    bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'a'); // Eye diagram for K2a
-    bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'p'); // Eye diagram for K2p
+    bubble_function(PsiVertex, SoptPsi.vertex, bareState.vertex, Pi, 't', bareState.config); // Eye diagram for K2t and TOPT diagram for K1t
+    bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'a', bareState.config); // Eye diagram for K2a
+    bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'p', bareState.config); // Eye diagram for K2p
 #endif
 
 }
@@ -107,24 +107,24 @@ void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_
     Vertex<Q,false> bubblevertex_a(Lambda, bareState.config);
     bubblevertex_a.set_frequency_grid(PsiVertex);
     bubblevertex_a.initialize(0.);
-    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q,false> bubblevertex_p(Lambda);
+    bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a', bareState.config);
+    Vertex<Q,false> bubblevertex_p(Lambda, bareState.config);
     bubblevertex_p.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
-    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
-    Vertex<Q,false> bubblevertex_t(Lambda);
+    bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p', bareState.config);
+    Vertex<Q,false> bubblevertex_t(Lambda, bareState.config);
     bubblevertex_t.set_frequency_grid(PsiVertex);
     bubblevertex_t.initialize(0.);
-    bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
+    bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't', bareState.config);
 
 #if DEBUG_SYMMETRIES
     bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bubblevertex_p + bubblevertex_t, Pi, 'a'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
     bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bubblevertex_a + bubblevertex_t, Pi, 'p'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
 #else
-    bubble_function(PsiVertex, bubblevertex_p, bubblevertex_p, Pi, 'a');
-    bubble_function(PsiVertex, bubblevertex_a, bubblevertex_a, Pi, 'p');
+    bubble_function(PsiVertex, bubblevertex_p, bubblevertex_p, Pi, 'a', bareState.config);
+    bubble_function(PsiVertex, bubblevertex_a, bubblevertex_a, Pi, 'p', bareState.config);
 #endif
-    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bubblevertex_a + bubblevertex_p, Pi, 't');
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bubblevertex_a + bubblevertex_p, Pi, 't', bareState.config);
 }
 
 /**
@@ -137,7 +137,7 @@ void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_
  */
 template<typename Q, class Bubble_Object>
 void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi) {
-    State<Q> bareState = State<Q> (Psi.Lambda);
+    State<Q> bareState = State<Q> (Psi.Lambda, Psi.config);
     bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
 #if not defined(NDEBUG)
@@ -155,7 +155,7 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi) {
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
 template<typename Q>
-void sopt_state(State<Q>& Psi, const fRG_config& config, const bool diff = false) {
+void sopt_state(State<Q>& Psi, const bool diff = false) {
     assert(Psi.initialized);
 
 #if not defined(NDEBUG)
@@ -175,18 +175,22 @@ void sopt_state(State<Q>& Psi, const fRG_config& config, const bool diff = false
     sopt_state_impl(Psi, Pi);
 }
 
+template <typename Q>
+void sopt_state(State<Q>& Psi, const  double Lambda, const fRG_config& config) {
+    sopt_state(Psi, Psi.Lambda, Psi.config);
+}
 
 template<typename Q>
-void topt_state(State<Q>& Psi, double Lambda) {
+void topt_state(State<Q>& Psi) {
 
-    State<Q> bareState (Psi, Lambda);
+    State<Q> bareState (Psi, Psi.Lambda);
     bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g', Psi.config);    //Bare propagator
+    Propagator<Q> barePropagator(Psi.Lambda, bareState.selfenergy, 'g', Psi.config);    //Bare propagator
     auto Pi = PT_initialize_Bubble(barePropagator);
 
-    State<Q> SoptPsi (Psi, Lambda);
+    State<Q> SoptPsi (Psi, Psi.Lambda);
     //SoptPsi.initialize();
     sopt_state_impl(SoptPsi, Pi);
 
@@ -195,7 +199,7 @@ void topt_state(State<Q>& Psi, double Lambda) {
 #endif
     //Calculate the bubbles -> Vertex in TOPT saved in Psi
     Psi.vertex = SoptPsi.vertex + bareState.vertex;
-    vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Lambda);
+    vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Psi.Lambda);
 #if not defined(NDEBUG)
     utils::print_add("done.", true);
 #endif
@@ -206,16 +210,16 @@ void topt_state(State<Q>& Psi, double Lambda) {
 
 
 template<typename Q>
-void fopt_state(State<Q>& Psi, double Lambda) {
+void fopt_state(State<Q>& Psi) {
 
-    State<Q> bareState (Psi, Lambda); // copy frequency grids
+    State<Q> bareState (Psi, Psi.Lambda); // copy frequency grids
     bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g', Psi.config);    //Bare propagator
+    Propagator<Q> barePropagator(Psi.Lambda, bareState.selfenergy, 'g', Psi.config);    //Bare propagator
     auto Pi = PT_initialize_Bubble(barePropagator);
 
-    State<Q> SoptPsi (Psi, Lambda);
+    State<Q> SoptPsi (Psi, Psi.Lambda);
     //SoptPsi.initialize();
     sopt_state_impl(SoptPsi, Pi);
 
@@ -227,12 +231,12 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 #if not defined(NDEBUG)
     utils::print("Computing the vertex in TOPT ... ", false);
 #endif
-    vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Lambda);
+    vertexInTOPT(Psi.vertex, bareState, SoptPsi, Pi, Psi.Lambda);
 #if not defined(NDEBUG)
     utils::print_add("done.", true);
     utils::print("Computing the vertex in FOPT ... ", false);
 #endif
-    vertexInFOPT(Psi.vertex, bareState, Pi, Lambda);
+    vertexInFOPT(Psi.vertex, bareState, Pi, Psi.Lambda);
 #if not defined(NDEBUG)
     utils::print_add("done.", true);
 #endif
@@ -240,7 +244,7 @@ void fopt_state(State<Q>& Psi, double Lambda) {
 
 }
 
-void full_PT4(const std::vector<double>& U_over_Delta_list);
+void full_PT4(const std::vector<double>& U_over_Delta_list, const fRG_config& config_in);
 
 template<typename Q>
 class PT_Machine{
@@ -551,7 +555,7 @@ void PT_Machine<Q>::write_out_results_zero_freq() const {
 template<typename Q>
 void PT_Machine<Q>::write_out_results_full() const {
     const std::string PT_filename = data_dir + "PT4_U_over_Delta=" + std::to_string(U_over_Delta)
-                                    + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(config.epsilon+config.U*0.5)
+                                    + "_T=" + std::to_string(config.T) + "_eVg=" + std::to_string(config.epsilon+config.U*0.5)
                                     + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2)
                                     + "_n3=" + std::to_string(nBOS3) + ".h5";
 

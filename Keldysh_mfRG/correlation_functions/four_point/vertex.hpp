@@ -982,7 +982,7 @@ public:
         if (channel == 'a') { return vanishing_component_channel_a;}
         else if (channel == 'p') { return vanishing_component_channel_p;}
         else if (channel == 't') { return vanishing_component_channel_t;}
-        else {assert(false);}
+        else {assert(false);return vanishing_component_channel_a;}
     }
     void swap_vanishing_component_channel_a_and_t() const {
         vanishing_component_channel_a.swap(vanishing_component_channel_t);

@@ -70,7 +70,7 @@ template <typename Q>
 void compute_BSE(Vertex<Q,false>& Gamma_BSE, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
     Vertex<Q,false> Gamma_BSE_L (Lambda, state_in.config);
     Vertex<Q,false> Gamma_BSE_R (Lambda, state_in.config);
-    compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda, state_in.config);
+    compute_BSE(Gamma_BSE, Gamma_BSE_L, Gamma_BSE_R, state_in, Lambda);
 
 #ifndef NDEBUG
     bool write_state = false;
@@ -452,7 +452,7 @@ void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
 
 
 template <typename Q>
-void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, const fRG_config& config, int version) {
+void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, int version) {
     /// Compute the Hartree term
     if constexpr (not PARTICLE_HOLE_SYMMETRY){    // In this case, we have to update the Hartree term as well.
         Hartree_Solver hartree_term (state_in.Lambda, state_in.selfenergy);
@@ -460,21 +460,21 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const doubl
         Sigma_SDE.initialize(hartree, 0.);
     }
     else{
-        Sigma_SDE.initialize(config.U / 2., 0.);
+        Sigma_SDE.initialize(state_in.config.U / 2., 0.);
     }
 
     /// Pick your favorite version:
     if (version == 1) {
-        compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda, config);
+        compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda, state_in.config);
         //SelfEnergy<Q> Sigma_compare = Sigma_SDE;
         //compute_SDE_v3<Q>(Sigma_compare, state_in, Lambda, config);
         //utils::print("rel. dev. bw. v1 and v3: \t", (Sigma_SDE - Sigma_compare).norm(), "\n");
     }
     else if (version == 2) {
-        compute_SDE_v2<Q>(Sigma_SDE, state_in, Lambda, config);
+        compute_SDE_v2<Q>(Sigma_SDE, state_in, Lambda, state_in.config);
     }
     else {
-        compute_SDE_v3<Q>(Sigma_SDE, state_in, Lambda, config);
+        compute_SDE_v3<Q>(Sigma_SDE, state_in, Lambda, state_in.config);
     }
     SDE_counter ++;
 
@@ -624,12 +624,12 @@ void parquet_checks(const std::string filename);
  * @param Lambda     : Lambda value at which to compute the parquet equations
  */
 template <typename Q>
-void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda) {
+void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda, const int version) {
     compute_BSE(state_out.vertex, state_in, Lambda, it_Lambda);                    // compute the gamma_r's via the BSE
     if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-state_in.config.U/2.);     // add the irreducible vertex
     else         state_out.vertex.initialize(-state_in.config.U);        // add the irreducible vertex
 
-    compute_SDE(state_out.selfenergy, state_in, Lambda);  // compute the self-energy via the SDE
+    compute_SDE(state_out.selfenergy, state_in, Lambda, version);  // compute the self-energy via the SDE
 }
 
 /**
@@ -718,7 +718,7 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
 
         double t_start = utils::get_time();
         utils::print("iteration ", iteration, true);
-        parquet_iteration(state_out, state_in, Lambda, state_in.config, iteration, version);  // compute lhs of parquet equations
+        parquet_iteration(state_out, state_in, Lambda, iteration, version);  // compute lhs of parquet equations
         /// for testing:
         //if (iteration == 1) {
         //    for (char r : {'a', 'p', 't'}) {

@@ -68,7 +68,7 @@ void sum_rule_K1tK(const std::string filename) {
     rvec sum_rule (nLambda);
 
     for (int iLambda=0; iLambda<nLambda; ++iLambda) {
-        State<state_datatype> state = read_state_from_hdf<state_datatype>(filename, iLambda);           // read state
+        State<state_datatype> state = read_state_from_hdf(filename, iLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
         double wmax = state.vertex.tvertex().K1.frequencies.get_wupper_b();   // upper integration boundary
 
@@ -92,7 +92,7 @@ void check_Kramers_Kronig(const std::string filename) {
     else if (nLambda == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
 
     for (unsigned int i=0; i<iLambdas.size(); ++i) {
-        State<state_datatype> state = read_state_from_hdf<state_datatype>(filename, iLambdas[i]);  // read data from file
+        State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
         // check Kramers-Kronig for retarded self-energy
         vec<freqType> vSigma = state.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies();  // frequency grid points
         // get retarded component (first half of stored data points)

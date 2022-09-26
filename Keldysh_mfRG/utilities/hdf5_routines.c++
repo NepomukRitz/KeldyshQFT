@@ -149,13 +149,13 @@ namespace hdf5_impl {
 }
 
 
-State<state_datatype> read_state_from_hdf(const H5std_string& filename, const int Lambda_it) {
-    H5::H5File file_out(filename, H5F_ACC_RDONLY);
+State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, const int Lambda_it) {
+    H5::H5File file_out = open_hdf_file_readOnly(filename);
 
     std::vector<double> Lambda;
     read_from_hdf_LambdaLayer<double>(file_out, LAMBDA_LIST, Lambda, Lambda_it);
     fRG_config config = read_config_from_hdf(filename);
-    State<state_datatype> state(Lambda[0], config);
+    State<state_datatype,false> state(Lambda[0], config);
 
     std::vector<state_datatype> Sigma_H;
     read_from_hdf_LambdaLayer<state_datatype>(file_out, SELF_LIST, state.selfenergy.Sigma.data, Lambda_it);

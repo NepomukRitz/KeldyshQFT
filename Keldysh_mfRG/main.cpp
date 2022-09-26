@@ -76,16 +76,16 @@ auto main(int argc, char * argv[]) -> int {
     data_dir = utils::generate_data_directory(job);
 
     n_loop_flow(data_dir+filename, config);
-    //test_symmetries(1., config);
+    test_symmetries(1., config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
     //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
 
 
     ///parquet runs:
     const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
-    run_parquet(config, myU_NRG, 1);
-    //run_parquet(config, myU_NRG, 2);
-    //run_parquet(config, myU_NRG, 3);
+    run_parquet(config, myU_NRG, 1, true);
+    //run_parquet(config, myU_NRG, 2, true);
+    //run_parquet(config, myU_NRG, 3, true);
 
 
     /// Perturbation Theory

@@ -7,7 +7,7 @@ void Hubbard_SOPT_test(){
     double lambda = 1;
     State<state_datatype> state_ini (lambda);
     state_ini.initialize();
-    sopt_state(state_ini, lambda);
+    sopt_state(state_ini);
 
     Propagator<comp> barePropagator(lambda, state_ini.selfenergy, 'g');
     auto Pi = PT_initialize_Bubble(barePropagator);

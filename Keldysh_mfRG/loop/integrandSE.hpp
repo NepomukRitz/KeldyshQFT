@@ -263,7 +263,7 @@ void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand(const
 
     utils::print("saving integrand to file ", filename, "\n");
     if (mpi_world_rank() == 0) {
-        H5::H5File file = create_hdf_file(filename);
+        H5::H5File file = H5::H5File(filename, H5F_ACC_TRUNC);
         write_to_hdf(file, "v", freqs, false);
         write_to_hdf(file, "integrand", integrand_vals, false);
         write_to_hdf(file, "vertex", vertex_vals, false);

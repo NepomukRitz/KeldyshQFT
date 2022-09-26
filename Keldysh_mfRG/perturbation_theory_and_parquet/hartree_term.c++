@@ -97,7 +97,7 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
         switch (prop_type) {
             case 'g': return val * G.GR(nu, 0).imag();
             case 's': return val * G.SR(nu, 0).imag(); // TODO: sign and prefactor??
-            default: assert(false);
+            default: assert(false); return 0.;
         }
     }
 }

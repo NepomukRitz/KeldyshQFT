@@ -42,7 +42,7 @@ void testSelfEnergy_and_K1(double Lambda){
     //Calculate the vertex
     State<Q> SOPT_state(Lambda);
     SOPT_state.initialize();
-    sopt_state(SOPT_state, Lambda);
+    sopt_state(SOPT_state);
 
     Vertex<Q,false> temp_vertex_a (Lambda), temp_vertex_p (Lambda); //All zeros
     temp_vertex_a.initialize((KELDYSH_FORMALISM and !CONTOUR_BASIS) ? -stdConfig.U*0.5 : -stdConfig.U);
@@ -1191,7 +1191,7 @@ class TestIntegrandK1a{
             //SOPTstate = State<Q>(Lambda);
             SOPTstate.initialize();             // initialize state
 
-            sopt_state(SOPTstate, Lambda);
+            sopt_state(SOPTstate);
         }
 
     void save_integrand(double vmax) {

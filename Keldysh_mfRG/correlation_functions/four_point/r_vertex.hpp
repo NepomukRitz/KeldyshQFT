@@ -17,7 +17,7 @@
 #include "../../utilities/math_utils.hpp"
 #include "../../utilities/minimizer.hpp"
 #include "../n_point/data_buffer.hpp"
-#include "../../utilities/hdf5_routines.hpp"
+//#include "../../utilities/hdf5_routines.hpp"
 
 /// Possible (unit-)tests:
 /// [IMPLEMENTED in test_symmetries.c++] check read-out from symmetry-reduced sector and correctness of symmetry tables
@@ -1095,7 +1095,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
 
 template<typename Q> void rvert<Q>::save_expanded(const std::string& filename) const {
-    H5::H5File file = create_hdf_file(filename);
+    H5::H5File file = H5::H5File(filename, H5F_ACC_TRUNC);
     const std::string ch(1, channel);
     write_to_hdf(file, "K1" + ch, K1_symmetry_expanded .get_vec(), false);
     write_to_hdf(file, "K2" + ch, K2_symmetry_expanded .get_vec(), false);
