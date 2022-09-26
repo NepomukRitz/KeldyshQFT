@@ -10,15 +10,15 @@ double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) 
         double filling_new = integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
         diff = filling_new - filling;
         filling = filling_new;
-        SelfEnergy<comp> Sigma_new (Lambda);
-        Sigma_new.initialize(glb_U * filling, 0);
-        Sigma = Sigma_new;
+        SelfEnergy<comp> Sigma_new (Lambda, config);
+        Sigma_new.initialize(config.U * filling, 0);
+        selfEnergy = Sigma_new;
     }
     utils::print_add("  ", true);
     utils::print("Determined filling of: " + std::to_string(filling), true);
     utils::print("Number of iterations needed: " + std::to_string(n_iter), true);
     friedel_sum_rule_check();
-    return glb_U * filling;
+    return config.U * filling;
 }
 
 double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_threshold, const bool Friedel_check,
@@ -31,9 +31,10 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
         assert(n_iter < 1e5); // Avoid infinite loop
         n_iter++;
         filling = (filling_min + filling_max) / 2.;
-        SelfEnergy<comp> Sigma_new (Lambda);
-        Sigma_new.initialize(glb_U * filling, 0);
-        Sigma = Sigma_new;
+        SelfEnergy<comp> Sigma_new (Lambda, config);
+        Sigma_new.initialize(config.U * filling, 0);
+        Sigma_new.Sigma.initInterpolator();
+        selfEnergy = Sigma_new;
         LHS = integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true) - filling;
         if (LHS > 0.) {
             filling_min = filling;
@@ -43,7 +44,7 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
         }
         else { // LHS == 0.0 exactly
             utils::print("Warning, obtained a numerically exact result for the filling. Might be suspicious.", true);
-            return glb_U * filling;
+            return config.U * filling;
         }
     }
     if (verbose) {
@@ -52,7 +53,7 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
         utils::print("Number of iterations needed: " + std::to_string(n_iter), true);
     }
     if (Friedel_check) friedel_sum_rule_check();
-    return glb_U * filling;
+    return config.U * filling;
 }
 
 
@@ -65,21 +66,22 @@ double Hartree_Solver::compute_Hartree_term_Friedel(const double convergence_thr
     while (diff > convergence_threshold) {
         assert(counter < 1e5);
         n_ini = n;
-        n = 1./2. - 1./M_PI * atan(glb_Vg / Delta + glb_U / Delta * (n - 1./2.));
+        double Vg = config.U*0.5 + config.epsilon;
+        n = 1./2. - 1./M_PI * atan(Vg / Delta + config.U / Delta * (n - 1./2.));
         diff = std::abs(n_ini - n);
         counter++;
     }
-    return glb_U * n;
+    return config.U * n;
 }
 
 double Hartree_Solver::compute_Hartree_term_oneshot() {
-    return glb_U * integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
+    return config.U * integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
 }
 
 auto Hartree_Solver::operator()(const double nu) const -> double {
     // integrand for the filling (not the Hartree value!) given according to the formula
     // 1/pi * n_F(nu) Im G^R(nu)
-    Propagator<comp> G (Lambda, Sigma, prop_type);
+    Propagator<comp> G (Lambda, selfEnergy, prop_type, config);
     double val = - 1. / M_PI * fermi_distribution(nu);
 
     if (test_different_Keldysh_component){
@@ -101,7 +103,7 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
 }
 
 void Hartree_Solver::friedel_sum_rule_check() const {
-    const double filling_friedel = 1./2. - 1./M_PI * atan((glb_epsilon + glb_U * filling)/(Delta));
+    const double filling_friedel = 1./2. - 1./M_PI * atan((config.epsilon + config.U * filling)/(Delta));
     utils::print("Filling determined self-consistently = " + std::to_string(filling), true);
     utils::print("Filling from the Friedel sum rule, valid at zero T = " + std::to_string(filling_friedel), true);
     const double relative_difference = std::abs((filling - filling_friedel) / filling);
@@ -115,12 +117,12 @@ void Hartree_Solver::friedel_sum_rule_check() const {
 }
 
 void Hartree_Solver::write_out_propagators() const {
-    Propagator<comp> G (Lambda, Sigma, 'g');
+    Propagator<comp> G (Lambda, selfEnergy, 'g', config);
     rvec GR_real = {};
     rvec GR_imag = {};
     rvec GK_real = {};
     rvec GK_imag = {};
-    rvec freqs = G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies();
+    vec<freqType> freqs = G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies();
     for (double nu : freqs) {
         GR_real.push_back(G.GR(nu, 0).real());
         GR_imag.push_back(G.GR(nu, 0).imag());
@@ -129,17 +131,19 @@ void Hartree_Solver::write_out_propagators() const {
     }
 
     const std::string filename = data_dir + "Hartree_Propagators_with_U_over_Delta_" \
-    + std::to_string(glb_U / Delta) + "_and_eVg_over_U_" + std::to_string(glb_Vg / glb_U) + ".h5";
+    + std::to_string(config.U / Delta) + "_and_eVg_over_U_" + std::to_string((config.epsilon+config.U*0.5) / config.U) + ".h5";
 
     write_h5_rvecs(filename,
-                   {"GR_real", "GR_imag", "GK_real", "GK_imag", "freqs"},
-                   {GR_real, GR_imag, GK_real, GK_imag, freqs});
-
+                   {"GR_real", "GR_imag", "GK_real", "GK_imag"},
+                   {GR_real, GR_imag, GK_real, GK_imag});
+    H5::H5File file_out(filename, H5F_ACC_RDWR);
+    write_to_hdf(file_out, "freqs", freqs, false);
+    file_out.close();
 }
 
-double Hartree_Solver::fermi_distribution(const double nu) {
+double Hartree_Solver::fermi_distribution(const double nu) const {
     if constexpr (not ZERO_T){
-        return 1 / (exp(nu / glb_T) + 1.);
+        return 1 / (exp(nu / config.T) + 1.);
     }
     else{
         if (nu > 0.) return 0.;

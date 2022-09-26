@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_TESTFUNCTIONS_H
 
 #include <cmath>                    // use M_PI as pi
+#include "../data_structures.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"                // propagators
 #include "../correlation_functions/state.hpp"                  // State class
 #include "../loop/loop.hpp"                   // self-energy loop
@@ -18,45 +19,56 @@
 #include "../perturbation_theory_and_parquet/hartree_term.hpp"
 
 
+namespace {
+    fRG_config stdConfig = {0, 1e-8, 1e-5, 1., 0.1, 1., -0.5, false, 1, 1};
+}
 
 
 /**
- * Function to test the loop function and the calculation of the SelfEnergy
+ * Function to test the loop function and the calculation of the SelfEnergy in SOPT
+ * compute the selfenergy with an a-bubble and with a p-bubble and compare --> Are they identical?
  * @param state : State initialized with initial conditions
  */
 template <typename Q>
-void testSelfEnergy_and_K1(State<Q>& state, double Lambda){
-
-    Propagator<Q> g(Lambda, state.selfenergy, 'g');
+void testSelfEnergy_and_K1(double Lambda){
+    SelfEnergy<Q> SE_via_a(Lambda);
+    SelfEnergy<Q> SE_via_p(Lambda);
+    SelfEnergy<Q> SE_bare(Lambda);
+    SE_via_a.initialize(stdConfig.U*0.5, 0.);
+    SE_via_p.initialize(stdConfig.U*0.5, 0.);
+    SE_bare.initialize(stdConfig.U*0.5, 0.);
+    Propagator<Q> g(Lambda, SE_bare, 'g');
 
     //Calculate the vertex
-    sopt_state(state, Lambda);
+    State<Q> SOPT_state(Lambda);
+    SOPT_state.initialize();
+    sopt_state(SOPT_state, Lambda);
 
-    Vertex<Q> temp_vertex_a (1, Lambda), temp_vertex_p (1, Lambda); //All zeros
-    temp_vertex_a.avertex() = state.vertex.avertex();
-    temp_vertex_p.pvertex() = state.vertex.pvertex();
+    Vertex<Q,false> temp_vertex_a (Lambda), temp_vertex_p (Lambda); //All zeros
+    temp_vertex_a.initialize((KELDYSH_FORMALISM and !CONTOUR_BASIS) ? -stdConfig.U*0.5 : -stdConfig.U);
+    temp_vertex_p.initialize((KELDYSH_FORMALISM and !CONTOUR_BASIS) ? -stdConfig.U*0.5 : -stdConfig.U);
+    temp_vertex_a.avertex() = SOPT_state.vertex.avertex();
+    temp_vertex_p.pvertex() = SOPT_state.vertex.pvertex();
 
-    loop(state.selfenergy, temp_vertex_a, g, false);//Calculate the SelfEnergy in SOPT
+    loop<false,0>(SE_via_a, temp_vertex_a, g);//Calculate the SelfEnergy in SOPT
+    loop<false,0>(SE_via_p, temp_vertex_p, g);//Calculate the SelfEnergy in SOPT
 
-    //Print results in .h5 format
-    cvec SER(nFER);
-    cvec SEK(nFER);
+    SelfEnergy<Q> SE_diff = SE_via_a - SE_via_p;
 
-    for(int iv = 0; iv<nFER; iv++){
-        SER[iv] = state.selfenergy.val(iv, 0, 0);
-        SEK[iv] = state.selfenergy.val(iv, 1, 0);
+    double diff_max = SE_diff.Sigma.get_vec().max_norm();
+    double diff_max_vertex = (temp_vertex_a.avertex().K1.get_vec() + temp_vertex_p.pvertex().K1.get_vec()).max_norm();
+    utils::print("Maximal difference between SOPT K1 via a-bubble and p-bubble: \t", diff_max_vertex, " \n");
+    utils::print("Maximal difference between SOPT selfenergy via a-bubble and p-bubble: \t", diff_max, " \n");
+
+    if (false) {
+        /// output both results in HDF5 file
+        H5::H5File file_out(data_dir + "comparison_SOPT_via_a_p_channel.h5", H5F_ACC_TRUNC);
+        write_to_hdf(file_out, "SOPT_via_a", SE_via_a.Sigma.get_vec(), false);
+        write_to_hdf(file_out, "SOPT_via_p", SE_via_p.Sigma.get_vec(), false);
+        file_out.close();
+
     }
 
-    //Print results
-    write_h5_rvecs("SOPT_test.h5", {"v", "ReSER", "ImSER", "ReSEK", "ImSEK",
-                                  "K1a_R", "K1a_I", "K1p_R", "K1p_I", "K1t_R", "K1t_I"},
-                                 {ffreqs, SER.real(), SER.imag(), SEK.real(), SEK.imag(),
-                                  state.vertex.avertex().K1.real(),
-                                  state.vertex.avertex().K1.imag(),
-                                  state.vertex.pvertex().K1.real(),
-                                  state.vertex.pvertex().K1.imag(),
-                                  state.vertex.tvertex().K1.real(),
-                                  state.vertex.tvertex().K1.imag()});
 
 }
 
@@ -97,9 +109,9 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
     K1t.initialize();
 
     //Calculate K1a, K1p and K1t contributions separately
-    bubble_function(K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, stdConfig);
 
     //Create and initialize the K2r-objects to test
     State<Q> test_K2r_with_K1a (Lambda);
@@ -112,17 +124,17 @@ auto test_K2_consistency(double Lambda, const char r) -> bool{
 
     if(r=='p' ||  r=='t') {
         //Perform TOPT calculation of K2r with K1a
-        bubble_function(test_K2r_with_K1a.vertex, K1a.vertex, bare.vertex, G, G, r, false);
+        bubble_function(test_K2r_with_K1a.vertex, K1a.vertex, bare.vertex, G, G, r, false, stdConfig);
     }
 
     if(r=='a' || r=='t') {
         //Perform TOPT calculation of K2r with K1p
-        bubble_function(test_K2r_with_K1p.vertex, K1p.vertex, bare.vertex, G, G, r, false);
+        bubble_function(test_K2r_with_K1p.vertex, K1p.vertex, bare.vertex, G, G, r, false, stdConfig);
     }
 
     if(r=='a' || r=='p') {
         //Perform TOPT calculation of K2r with K1t
-        bubble_function(test_K2r_with_K1t.vertex, K1t.vertex, bare.vertex, G, G, r, false);
+        bubble_function(test_K2r_with_K1t.vertex, K1t.vertex, bare.vertex, G, G, r, false, stdConfig);
     }
 
 
@@ -167,61 +179,61 @@ void test_PT4(double Lambda, bool write_flag = false) {
     utils::print("Compute K1 (and K2, K3) up to PT4.", true);
     const int it_spin = 0;
     // Initialize a bare state
-    State<state_datatype> bare (Lambda);
+    State<state_datatype> bare (Lambda, stdConfig);
     bare.initialize();
 
     // Initialize a bare propagator
-    Propagator<state_datatype> G(Lambda, bare.selfenergy, 'g');
+    Propagator<state_datatype> G(Lambda, bare.selfenergy, 'g', stdConfig);
 
     // Compute K1 in PT2
-    State<state_datatype> PT2_K1a (Lambda);
-    State<state_datatype> PT2_K1p (Lambda);
-    State<state_datatype> PT2_K1t (Lambda);
+    State<state_datatype> PT2_K1a (Lambda, stdConfig);
+    State<state_datatype> PT2_K1p (Lambda, stdConfig);
+    State<state_datatype> PT2_K1t (Lambda, stdConfig);
 
     double t0 = utils::get_time();
-    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, stdConfig);
     utils::print("Computed K1 in PT2.", true);
     utils::get_time(t0);
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT2_K1a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1a);
-        write_state_to_hdf(data_dir + "PT2_K1p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1p);
-        write_state_to_hdf(data_dir + "PT2_K1t_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1t);
+        write_state_to_hdf(data_dir + "PT2_K1a_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1a);
+        write_state_to_hdf(data_dir + "PT2_K1p_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1p);
+        write_state_to_hdf(data_dir + "PT2_K1t_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1t);
     }
 
     // Compute K1 in PT3, using K1 in PT2
-    State<state_datatype> PT3_K1a (Lambda);
-    State<state_datatype> PT3_K1p (Lambda);
-    State<state_datatype> PT3_K1t (Lambda);
+    State<state_datatype> PT3_K1a (Lambda, stdConfig);
+    State<state_datatype> PT3_K1p (Lambda, stdConfig);
+    State<state_datatype> PT3_K1t (Lambda, stdConfig);
 
     t0 = utils::get_time();
-    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false, stdConfig);
     // for K1t in PT3, need a-vertex in PT2 due to a <-> t symmetry
-    bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT3_K1t.vertex, PT2_K1t.vertex + PT2_K1a.vertex, bare.vertex, G, G, 't', false, stdConfig);
     vec<state_datatype> zerosK2 (PT3_K1t.vertex.tvertex().K2.get_vec().size());
     if (MAX_DIAG_CLASS >= 2) PT3_K1t.vertex.tvertex().K2.set_vec(zerosK2); // set K2 part of this vertex to zero
     utils::print("Computed K1 in PT3.", true);
     utils::get_time(t0);
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT3_K1a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1a);
-        write_state_to_hdf(data_dir + "PT3_K1p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1p);
-        write_state_to_hdf(data_dir + "PT3_K1t_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1t);
+        write_state_to_hdf(data_dir + "PT3_K1a_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1a);
+        write_state_to_hdf(data_dir + "PT3_K1p_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1p);
+        write_state_to_hdf(data_dir + "PT3_K1t_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K1t);
     }
 
     // Compute K2 in PT3, using K1p, K1t in PT2
-    State<state_datatype> PT3_K2a (Lambda);
-    State<state_datatype> PT3_K2p (Lambda);
-    State<state_datatype> PT3_K2t (Lambda);
-    State<state_datatype> PT3_K2t_a (Lambda);
-    State<state_datatype> PT3_K2t_p (Lambda);
+    State<state_datatype> PT3_K2a (Lambda, stdConfig);
+    State<state_datatype> PT3_K2p (Lambda, stdConfig);
+    State<state_datatype> PT3_K2t (Lambda, stdConfig);
+    State<state_datatype> PT3_K2t_a (Lambda, stdConfig);
+    State<state_datatype> PT3_K2t_p (Lambda, stdConfig);
 
     t0 = utils::get_time();
-    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3 (PT2_K1t = 0)
-    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'p', false);   // K2p in PT3 (PT2_K1t = 0)
-    bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false);   // contribution of K2t in PT3 obtained by inserting K1a in PT2
-    bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false);   // contribution of K2t in PT3 obtained by inserting K1p in PT2
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'a', false, stdConfig);   // K2a in PT3 (PT2_K1t = 0)
+    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'p', false, stdConfig);   // K2p in PT3 (PT2_K1t = 0)
+    bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false, stdConfig);   // contribution of K2t in PT3 obtained by inserting K1a in PT2
+    bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false, stdConfig);   // contribution of K2t in PT3 obtained by inserting K1p in PT2
     // PT3_K2t_a should also have a K1-contribution due to a-t symmetry (PT2_K1t implicitly inserted) --> set to zero
     vec<state_datatype> zerosK1 (PT3_K2t_a.vertex.tvertex().K1.get_vec().size());
     PT3_K2t_a.vertex.tvertex().K1.set_vec(zerosK1);
@@ -231,87 +243,87 @@ void test_PT4(double Lambda, bool write_flag = false) {
     utils::print("Computed K2 in PT3.", true);
     utils::get_time(t0);
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT3_K2a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2a);
-        write_state_to_hdf(data_dir + "PT3_K2p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2p);
-        write_state_to_hdf(data_dir + "PT3_K2t_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t);
-        write_state_to_hdf(data_dir + "PT3_K2t_a_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_a);
-        write_state_to_hdf(data_dir + "PT3_K2t_p_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_p);
+        write_state_to_hdf(data_dir + "PT3_K2a_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2a);
+        write_state_to_hdf(data_dir + "PT3_K2p_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2p);
+        write_state_to_hdf(data_dir + "PT3_K2t_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t);
+        write_state_to_hdf(data_dir + "PT3_K2t_a_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_a);
+        write_state_to_hdf(data_dir + "PT3_K2t_p_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT3_K2t_p);
     }
 
 
     // Compute K3 in PT4, using K1 and K2 in PT2 and PT3
-    State<state_datatype> PT4_31 (Lambda);
-    State<state_datatype> PT4_31_a_a1 (Lambda);
-    State<state_datatype> PT4_31_a_p1 (Lambda);
-    State<state_datatype> PT4_31_a_t1 (Lambda);
-    State<state_datatype> PT4_31_a_a2 (Lambda);
-    State<state_datatype> PT4_31_a_p2 (Lambda);
-    State<state_datatype> PT4_31_a_t2 (Lambda);
-    State<state_datatype> PT4_31_p_a1 (Lambda);
-    State<state_datatype> PT4_31_p_p1 (Lambda);
-    State<state_datatype> PT4_31_p_t1 (Lambda);
-    State<state_datatype> PT4_31_p_a2 (Lambda);
-    State<state_datatype> PT4_31_p_p2 (Lambda);
-    State<state_datatype> PT4_31_p_t2 (Lambda);
-    State<state_datatype> PT4_31_t_a1 (Lambda);
-    State<state_datatype> PT4_31_t_p1 (Lambda);
-    State<state_datatype> PT4_31_t_t1 (Lambda);
-    State<state_datatype> PT4_31_t_a2 (Lambda);
-    State<state_datatype> PT4_31_t_p2 (Lambda);
-    State<state_datatype> PT4_31_t_t2 (Lambda);
+    State<state_datatype> PT4_31 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_a_a1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_a_p1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_a_t1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_a_a2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_a_p2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_a_t2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_p_a1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_p_p1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_p_t1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_p_a2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_p_p2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_p_t2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_t_a1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_t_p1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_t_t1 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_t_a2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_t_p2 (Lambda, stdConfig);
+    State<state_datatype> PT4_31_t_t2 (Lambda, stdConfig);
 
-    State<state_datatype> PT4_13 (Lambda);
-    State<state_datatype> PT4_13_a_a1 (Lambda);
-    State<state_datatype> PT4_13_a_p1 (Lambda);
-    State<state_datatype> PT4_13_a_t1 (Lambda);
-    State<state_datatype> PT4_13_a_a2 (Lambda);
-    State<state_datatype> PT4_13_a_p2 (Lambda);
-    State<state_datatype> PT4_13_a_t2 (Lambda);
-    State<state_datatype> PT4_13_p_a1 (Lambda);
-    State<state_datatype> PT4_13_p_p1 (Lambda);
-    State<state_datatype> PT4_13_p_t1 (Lambda);
-    State<state_datatype> PT4_13_p_a2 (Lambda);
-    State<state_datatype> PT4_13_p_p2 (Lambda);
-    State<state_datatype> PT4_13_p_t2 (Lambda);
-    State<state_datatype> PT4_13_t_a1 (Lambda);
-    State<state_datatype> PT4_13_t_p1 (Lambda);
-    State<state_datatype> PT4_13_t_t1 (Lambda);
-    State<state_datatype> PT4_13_t_a2 (Lambda);
-    State<state_datatype> PT4_13_t_p2 (Lambda);
-    State<state_datatype> PT4_13_t_t2 (Lambda);
+    State<state_datatype> PT4_13 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_a_a1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_a_p1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_a_t1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_a_a2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_a_p2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_a_t2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_p_a1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_p_p1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_p_t1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_p_a2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_p_p2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_p_t2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_t_a1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_t_p1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_t_t1 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_t_a2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_t_p2 (Lambda, stdConfig);
+    State<state_datatype> PT4_13_t_t2 (Lambda, stdConfig);
 
-    State<state_datatype> PT4_22 (Lambda);
-    State<state_datatype> PT4_22_a_aa (Lambda);
-    State<state_datatype> PT4_22_a_ap (Lambda);
-    State<state_datatype> PT4_22_a_pa (Lambda);
-    State<state_datatype> PT4_22_a_pp (Lambda);
-    State<state_datatype> PT4_22_p_aa (Lambda);
-    State<state_datatype> PT4_22_p_ap (Lambda);
-    State<state_datatype> PT4_22_p_pa (Lambda);
-    State<state_datatype> PT4_22_p_pp (Lambda);
-    State<state_datatype> PT4_22_t_aa (Lambda);
-    State<state_datatype> PT4_22_t_ap (Lambda);
-    State<state_datatype> PT4_22_t_pa (Lambda);
-    State<state_datatype> PT4_22_t_pp (Lambda);
+    State<state_datatype> PT4_22 (Lambda, stdConfig);
+    State<state_datatype> PT4_22_a_aa (Lambda, stdConfig);
+    State<state_datatype> PT4_22_a_ap (Lambda, stdConfig);
+    State<state_datatype> PT4_22_a_pa (Lambda, stdConfig);
+    State<state_datatype> PT4_22_a_pp (Lambda, stdConfig);
+    State<state_datatype> PT4_22_p_aa (Lambda, stdConfig);
+    State<state_datatype> PT4_22_p_ap (Lambda, stdConfig);
+    State<state_datatype> PT4_22_p_pa (Lambda, stdConfig);
+    State<state_datatype> PT4_22_p_pp (Lambda, stdConfig);
+    State<state_datatype> PT4_22_t_aa (Lambda, stdConfig);
+    State<state_datatype> PT4_22_t_ap (Lambda, stdConfig);
+    State<state_datatype> PT4_22_t_pa (Lambda, stdConfig);
+    State<state_datatype> PT4_22_t_pp (Lambda, stdConfig);
 
     t0 = utils::get_time();
 
     // a-channel:
     // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
-    bubble_function(PT4_31_a_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT4_31_a_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT4_31_a_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT4_31_a_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT4_31_a_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT4_31_a_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_31_a_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_31_a_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_31_a_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_31_a_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_31_a_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_31_a_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'a', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_31_a_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a1);
-        write_state_to_hdf(data_dir + "PT4_31_a_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p1);
-        write_state_to_hdf(data_dir + "PT4_31_a_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t1);
-        write_state_to_hdf(data_dir + "PT4_31_a_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a2);
-        write_state_to_hdf(data_dir + "PT4_31_a_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p2);
-        write_state_to_hdf(data_dir + "PT4_31_a_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t2);
+        write_state_to_hdf(data_dir + "PT4_31_a_a1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a1);
+        write_state_to_hdf(data_dir + "PT4_31_a_p1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p1);
+        write_state_to_hdf(data_dir + "PT4_31_a_t1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t1);
+        write_state_to_hdf(data_dir + "PT4_31_a_a2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_a2);
+        write_state_to_hdf(data_dir + "PT4_31_a_p2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_p2);
+        write_state_to_hdf(data_dir + "PT4_31_a_t2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_a_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -324,21 +336,21 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
     // 1-3: insert bare vertex on the left, all possible PT3 vertices on the right
     // this can only give a K1 contribution, since we do not compute K2'
-    bubble_function(PT4_13_a_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_13_a_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, stdConfig);
     // the following should all give zero
-    bubble_function(PT4_13_a_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'a', false);
-    bubble_function(PT4_13_a_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 'a', false);
-    bubble_function(PT4_13_a_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
-    bubble_function(PT4_13_a_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 'a', false);
-    bubble_function(PT4_13_a_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'a', false);
+    bubble_function(PT4_13_a_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_13_a_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_13_a_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_13_a_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_13_a_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'a', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_13_a_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a1);
-        write_state_to_hdf(data_dir + "PT4_13_a_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p1);
-        write_state_to_hdf(data_dir + "PT4_13_a_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t1);
-        write_state_to_hdf(data_dir + "PT4_13_a_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a2);
-        write_state_to_hdf(data_dir + "PT4_13_a_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p2);
-        write_state_to_hdf(data_dir + "PT4_13_a_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t2);
+        write_state_to_hdf(data_dir + "PT4_13_a_a1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a1);
+        write_state_to_hdf(data_dir + "PT4_13_a_p1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p1);
+        write_state_to_hdf(data_dir + "PT4_13_a_t1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t1);
+        write_state_to_hdf(data_dir + "PT4_13_a_a2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_a2);
+        write_state_to_hdf(data_dir + "PT4_13_a_p2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_p2);
+        write_state_to_hdf(data_dir + "PT4_13_a_t2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_a_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -350,16 +362,16 @@ void test_PT4(double Lambda, bool write_flag = false) {
                              + PT4_13_a_t2.vertex.avertex();
 
     // 2-2: insert all possible PT2 vertices on the left and right (PT2_K1t is always zero -> neglect it)
-    bubble_function(PT4_22_a_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
-    bubble_function(PT4_22_a_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 'a', false);
-    bubble_function(PT4_22_a_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 'a', false);
-    bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false);
+    bubble_function(PT4_22_a_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_22_a_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_22_a_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_22_a_aa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_aa);
-        write_state_to_hdf(data_dir + "PT4_22_a_ap_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_ap);
-        write_state_to_hdf(data_dir + "PT4_22_a_pa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pa);
-        write_state_to_hdf(data_dir + "PT4_22_a_pp_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pp);
+        write_state_to_hdf(data_dir + "PT4_22_a_aa_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_aa);
+        write_state_to_hdf(data_dir + "PT4_22_a_ap_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_ap);
+        write_state_to_hdf(data_dir + "PT4_22_a_pa_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pa);
+        write_state_to_hdf(data_dir + "PT4_22_a_pp_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_a_pp);
     }
 
     // sum of contributions obtained from different insertions
@@ -372,20 +384,20 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
     // p-channel:
     // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
-    bubble_function(PT4_31_p_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(PT4_31_p_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(PT4_31_p_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(PT4_31_p_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(PT4_31_p_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(PT4_31_p_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT4_31_p_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_31_p_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_31_p_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_31_p_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_31_p_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_31_p_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 'p', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_31_p_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a1);
-        write_state_to_hdf(data_dir + "PT4_31_p_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p1);
-        write_state_to_hdf(data_dir + "PT4_31_p_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t1);
-        write_state_to_hdf(data_dir + "PT4_31_p_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a2);
-        write_state_to_hdf(data_dir + "PT4_31_p_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p2);
-        write_state_to_hdf(data_dir + "PT4_31_p_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t2);
+        write_state_to_hdf(data_dir + "PT4_31_p_a1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a1);
+        write_state_to_hdf(data_dir + "PT4_31_p_p1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p1);
+        write_state_to_hdf(data_dir + "PT4_31_p_t1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t1);
+        write_state_to_hdf(data_dir + "PT4_31_p_a2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_a2);
+        write_state_to_hdf(data_dir + "PT4_31_p_p2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_p2);
+        write_state_to_hdf(data_dir + "PT4_31_p_t2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_p_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -398,21 +410,21 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
     // 1-3: insert bare vertex on the left, all possible PT3 vertices on the right
     // this can only give a K1 contribution, since we do not compute K2'
-    bubble_function(PT4_13_p_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'p', false);
+    bubble_function(PT4_13_p_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'p', false, stdConfig);
     // the following should all give zero
-    bubble_function(PT4_13_p_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'p', false);
-    bubble_function(PT4_13_p_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 'p', false);
-    bubble_function(PT4_13_p_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'p', false);
-    bubble_function(PT4_13_p_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 'p', false);
-    bubble_function(PT4_13_p_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'p', false);
+    bubble_function(PT4_13_p_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_13_p_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_13_p_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_13_p_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_13_p_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 'p', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_13_p_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a1);
-        write_state_to_hdf(data_dir + "PT4_13_p_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p1);
-        write_state_to_hdf(data_dir + "PT4_13_p_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t1);
-        write_state_to_hdf(data_dir + "PT4_13_p_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a2);
-        write_state_to_hdf(data_dir + "PT4_13_p_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p2);
-        write_state_to_hdf(data_dir + "PT4_13_p_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t2);
+        write_state_to_hdf(data_dir + "PT4_13_p_a1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a1);
+        write_state_to_hdf(data_dir + "PT4_13_p_p1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p1);
+        write_state_to_hdf(data_dir + "PT4_13_p_t1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t1);
+        write_state_to_hdf(data_dir + "PT4_13_p_a2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_a2);
+        write_state_to_hdf(data_dir + "PT4_13_p_p2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_p2);
+        write_state_to_hdf(data_dir + "PT4_13_p_t2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_p_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -424,16 +436,16 @@ void test_PT4(double Lambda, bool write_flag = false) {
                              + PT4_13_p_t2.vertex.pvertex();
 
     // 2-2: insert all possible PT2 vertices on the left and right (PT2_K1t is always zero -> neglect it)
-    bubble_function(PT4_22_p_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'p', false);
-    bubble_function(PT4_22_p_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 'p', false);
-    bubble_function(PT4_22_p_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 'p', false);
-    bubble_function(PT4_22_p_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'p', false);
+    bubble_function(PT4_22_p_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_22_p_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_22_p_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_22_p_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'p', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_22_p_aa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_aa);
-        write_state_to_hdf(data_dir + "PT4_22_p_ap_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_ap);
-        write_state_to_hdf(data_dir + "PT4_22_p_pa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pa);
-        write_state_to_hdf(data_dir + "PT4_22_p_pp_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pp);
+        write_state_to_hdf(data_dir + "PT4_22_p_aa_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_aa);
+        write_state_to_hdf(data_dir + "PT4_22_p_ap_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_ap);
+        write_state_to_hdf(data_dir + "PT4_22_p_pa_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pa);
+        write_state_to_hdf(data_dir + "PT4_22_p_pp_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_p_pp);
     }
 
     // sum of contributions obtained from different insertions
@@ -449,20 +461,20 @@ void test_PT4(double Lambda, bool write_flag = false) {
     // (spin sum in the t-channel makes use of this symmetry)                             // TODO: remove?
 
     // 3-1: insert all possible PT3 vertices on the left, bare vertex on the right
-    bubble_function(PT4_31_t_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 't', false);
-    bubble_function(PT4_31_t_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 't', false);
-    bubble_function(PT4_31_t_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 't', false);
-    bubble_function(PT4_31_t_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 't', false);
-    bubble_function(PT4_31_t_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 't', false);
-    bubble_function(PT4_31_t_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT4_31_t_a1.vertex, PT3_K1a.vertex, bare.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_31_t_p1.vertex, PT3_K1p.vertex, bare.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_31_t_t1.vertex, PT3_K1t.vertex, bare.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_31_t_a2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_31_t_p2.vertex, PT3_K2p.vertex, bare.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_31_t_t2.vertex, PT3_K2t.vertex, bare.vertex, G, G, 't', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_31_t_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a1);
-        write_state_to_hdf(data_dir + "PT4_31_t_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p1);
-        write_state_to_hdf(data_dir + "PT4_31_t_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t1);
-        write_state_to_hdf(data_dir + "PT4_31_t_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a2);
-        write_state_to_hdf(data_dir + "PT4_31_t_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p2);
-        write_state_to_hdf(data_dir + "PT4_31_t_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t2);
+        write_state_to_hdf(data_dir + "PT4_31_t_a1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a1);
+        write_state_to_hdf(data_dir + "PT4_31_t_p1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p1);
+        write_state_to_hdf(data_dir + "PT4_31_t_t1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t1);
+        write_state_to_hdf(data_dir + "PT4_31_t_a2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_a2);
+        write_state_to_hdf(data_dir + "PT4_31_t_p2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_p2);
+        write_state_to_hdf(data_dir + "PT4_31_t_t2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31_t_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -474,20 +486,20 @@ void test_PT4(double Lambda, bool write_flag = false) {
                              + PT4_31_t_t2.vertex.tvertex();
 
     // 1-3: insert bare vertex on the left, all possible PT3 vertices on the right
-    bubble_function(PT4_13_t_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 't', false);
-    bubble_function(PT4_13_t_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 't', false);
-    bubble_function(PT4_13_t_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 't', false);
-    bubble_function(PT4_13_t_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 't', false);
-    bubble_function(PT4_13_t_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 't', false);
-    bubble_function(PT4_13_t_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 't', false);
+    bubble_function(PT4_13_t_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_13_t_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_13_t_t1.vertex, bare.vertex, PT3_K1t.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_13_t_a2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_13_t_p2.vertex, bare.vertex, PT3_K2p.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_13_t_t2.vertex, bare.vertex, PT3_K2t.vertex, G, G, 't', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_13_t_a1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a1);
-        write_state_to_hdf(data_dir + "PT4_13_t_p1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p1);
-        write_state_to_hdf(data_dir + "PT4_13_t_t1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t1);
-        write_state_to_hdf(data_dir + "PT4_13_t_a2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a2);
-        write_state_to_hdf(data_dir + "PT4_13_t_p2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p2);
-        write_state_to_hdf(data_dir + "PT4_13_t_t2_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t2);
+        write_state_to_hdf(data_dir + "PT4_13_t_a1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a1);
+        write_state_to_hdf(data_dir + "PT4_13_t_p1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p1);
+        write_state_to_hdf(data_dir + "PT4_13_t_t1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t1);
+        write_state_to_hdf(data_dir + "PT4_13_t_a2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_a2);
+        write_state_to_hdf(data_dir + "PT4_13_t_p2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_p2);
+        write_state_to_hdf(data_dir + "PT4_13_t_t2_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13_t_t2);
     }
 
     // sum of contributions obtained from different insertions
@@ -499,16 +511,16 @@ void test_PT4(double Lambda, bool write_flag = false) {
                              + PT4_13_t_t2.vertex.tvertex();
 
     // 2-2: insert all possible PT2 vertices on the left and right (PT2_K1t is always zero -> neglect it)
-    bubble_function(PT4_22_t_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 't', false);
-    bubble_function(PT4_22_t_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 't', false);
-    bubble_function(PT4_22_t_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 't', false);
-    bubble_function(PT4_22_t_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 't', false);
+    bubble_function(PT4_22_t_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_22_t_ap.vertex, PT2_K1a.vertex, PT2_K1p.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_22_t_pa.vertex, PT2_K1p.vertex, PT2_K1a.vertex, G, G, 't', false, stdConfig);
+    bubble_function(PT4_22_t_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 't', false, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_22_t_aa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_aa);
-        write_state_to_hdf(data_dir + "PT4_22_t_ap_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_ap);
-        write_state_to_hdf(data_dir + "PT4_22_t_pa_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pa);
-        write_state_to_hdf(data_dir + "PT4_22_t_pp_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pp);
+        write_state_to_hdf(data_dir + "PT4_22_t_aa_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_aa);
+        write_state_to_hdf(data_dir + "PT4_22_t_ap_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_ap);
+        write_state_to_hdf(data_dir + "PT4_22_t_pa_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pa);
+        write_state_to_hdf(data_dir + "PT4_22_t_pp_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22_t_pp);
     }
 
     // sum of contributions obtained from different insertions
@@ -521,9 +533,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
     utils::print("Computed t-channel in PT4.", true);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "PT4_31_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31);
-        write_state_to_hdf(data_dir + "PT4_13_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13);
-        write_state_to_hdf(data_dir + "PT4_22_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22);
+        write_state_to_hdf(data_dir + "PT4_31_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_31);
+        write_state_to_hdf(data_dir + "PT4_13_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_13);
+        write_state_to_hdf(data_dir + "PT4_22_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT4_22);
     }
 
     utils::print("Computed K1, K2, K3 in PT4.", true);
@@ -607,15 +619,15 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT3_K1p_0 = PT3_K1p.vertex.pvertex().valsmooth<k1>(input_p, PT3_K1p.vertex.pvertex());
     state_datatype PT3_K1t_0 = PT3_K1t.vertex.tvertex().valsmooth<k1>(input_t, PT3_K1t.vertex.avertex());
 #if KELDYSH_FORMALISM
-    state_datatype PT2_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
-    state_datatype PT3_K1_exact = -(1./2.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    state_datatype PT2_K1_exact = -(1./2.) * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 1);
+    state_datatype PT3_K1_exact = -(1./2.) * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 2);
 #else
 #ifdef ZERO_TEMP
-    state_datatype PT2_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 1);
-    state_datatype PT3_K1_exact = - glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+    state_datatype PT2_K1_exact = - stdConfig.U * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 1);
+    state_datatype PT3_K1_exact = - stdConfig.U * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 2);
 #else
-    state_datatype PT2_K1_exact = - glb_U * pow(glb_U * boost::math::polygamma(1, (glb_Gamma + Lambda) / 2. / (glb_T * 2.*M_PI) + 0.5) / (glb_T * 2 * M_PI * M_PI), 1);
-    state_datatype PT3_K1_exact = - glb_U * pow(glb_U * boost::math::polygamma(1, (glb_Gamma + Lambda) / 2. / (glb_T * 2.*M_PI) + 0.5) / (glb_T * 2 * M_PI * M_PI), 2);
+    state_datatype PT2_K1_exact = - stdConfig.U * pow(stdConfig.U * boost::math::polygamma(1, (stdConfig.Gamma + Lambda) / 2. / (stdConfig.T * 2.*M_PI) + 0.5) / (stdConfig.T * 2 * M_PI * M_PI), 1);
+    state_datatype PT3_K1_exact = - stdConfig.U * pow(stdConfig.U * boost::math::polygamma(1, (stdConfig.Gamma + Lambda) / 2. / (stdConfig.T * 2.*M_PI) + 0.5) / (stdConfig.T * 2 * M_PI * M_PI), 2);
 #endif
 #endif
     std::cout << "PT2 K1 exact: " << PT2_K1_exact << "\n";
@@ -674,9 +686,9 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
 #if KELDYSH_FORMALISM
         state_datatype PT3_K2_exact =
-                -(1. / 2.) * (2. - M_PI * M_PI / 4.) * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+                -(1. / 2.) * (2. - M_PI * M_PI / 4.) * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 2);
 #else
-        state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * glb_U * pow(glb_U / (M_PI * (glb_Gamma + Lambda) / 2.), 2);
+        state_datatype PT3_K2_exact = - (2. - M_PI*M_PI/4.) * stdConfig.U * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 2);
         std::cout << "PT3 K2 exact: " << PT3_K2_exact << "\n";
         std::cout << "Computed value: " << PT3_K2t_0[0] << "\n";
 #endif
@@ -776,10 +788,10 @@ void test_PT4(double Lambda, bool write_flag = false) {
     State<Q> PT4_K1a31_2 (Lambda);
 
     t0 = utils::get_time();
-    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
-    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
-    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
-    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
     utils::print("Computed K1 in PT4.", true);
     utils::get_time(t0);
 
@@ -811,15 +823,15 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
     State<Q> PT2_K1a (Lambda);
     State<Q> PT2_K1p (Lambda);
 
-    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, stdConfig);
 
     // Compute K1a and K1p in PT3
     State<Q> PT3_K1a (Lambda);
     State<Q> PT3_K1p (Lambda);
 
-    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false);
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT3_K1p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 'p', false, stdConfig);
 
     // Compute K3a, K1p (ladder), K3p, K1a (ladder) in PT4
     State<Q> PT4_22_a_pp (Lambda);
@@ -827,33 +839,33 @@ void test_K3_dynamics_SE_PT4(double Lambda) {
     State<Q> PT4_22_p_aa (Lambda);
     State<Q> PT4_13_a_a1 (Lambda);
 
-    bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false);
-    bubble_function(PT4_13_p_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'p', false);
-    bubble_function(PT4_22_p_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'p', false);
-    bubble_function(PT4_13_a_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_22_a_pp.vertex, PT2_K1p.vertex, PT2_K1p.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_13_p_p1.vertex, bare.vertex, PT3_K1p.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_22_p_aa.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT4_13_a_a1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, stdConfig);
 
     // a-channel:
     // close K3a (single diagram: PT2_K1p - a-bubble - PT2_K1p)
     State<Q> SE_K3a (Lambda);
-    loop(SE_K3a.selfenergy, PT4_22_a_pp.vertex, G, false);
+    loop<false,0>(SE_K3a.selfenergy, PT4_22_a_pp.vertex, G);
 
     // close K1p ladder (use 1-3 vertex in p-channel, since it contains only p-ladder)
     State<Q> SE_K1p_ladder (Lambda);
-    loop(SE_K1p_ladder.selfenergy, PT4_13_p_p1.vertex, G, false);
+    loop<false,0>(SE_K1p_ladder.selfenergy, PT4_13_p_p1.vertex, G);
 
     // p-channel:
     // close K3p (single diagram: PT2_K1a - p-bubble - PT2_K1a)
     State<Q> SE_K3p (Lambda);
-    loop(SE_K3p.selfenergy, PT4_22_p_aa.vertex, G, false);
+    loop<false,0>(SE_K3p.selfenergy, PT4_22_p_aa.vertex, G);
 
     // close K1a ladder (use 1-3 vertex in a-channel, since it contains only a-ladder)
     State<Q> SE_K1a_ladder (Lambda);
-    loop(SE_K1a_ladder.selfenergy, PT4_13_a_a1.vertex, G, false);
+    loop<false,0>(SE_K1a_ladder.selfenergy, PT4_13_a_a1.vertex, G);
 
-    write_state_to_hdf("SE_K3a_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3a);
-    write_state_to_hdf("SE_K1p_ladder_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1p_ladder);
-    write_state_to_hdf("SE_K3p_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3p);
-    write_state_to_hdf("SE_K1a_ladder_U" + std::to_string(1./((glb_Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1a_ladder);
+    write_state_to_hdf("SE_K3a_U" + std::to_string(1./((stdConfig.Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3a);
+    write_state_to_hdf("SE_K1p_ladder_U" + std::to_string(1./((stdConfig.Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1p_ladder);
+    write_state_to_hdf("SE_K3p_U" + std::to_string(1./((stdConfig.Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K3p);
+    write_state_to_hdf("SE_K1a_ladder_U" + std::to_string(1./((stdConfig.Gamma+Lambda)/2.)) + ".h5", Lambda, 1, SE_K1a_ladder);
 }
 
 
@@ -880,9 +892,9 @@ void test_K2_correctness(double Lambda){
 
     //Save K1-bubbles in separate objects - SOPT
     double t0 = utils::get_time();
-    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false);
-    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false);
-    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false);
+    bubble_function(PT2_K1a.vertex, bare.vertex, bare.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT2_K1p.vertex, bare.vertex, bare.vertex, G, G, 'p', false, stdConfig);
+    bubble_function(PT2_K1t.vertex, bare.vertex, bare.vertex, G, G, 't', false, stdConfig);
     utils::get_time(t0);
 
     State<Q> PT2_SE_a (Lambda);
@@ -892,14 +904,9 @@ void test_K2_correctness(double Lambda){
     State<Q> PT2_SE_p_4 (Lambda);
     State<Q> PT2_SE_p_5 (Lambda);
 
-    loop(PT2_SE_a.selfenergy, PT2_K1a.vertex, S, true);
-    loop(PT2_SE_p.selfenergy, PT2_K1p.vertex, S, true);
-    loop(PT2_SE_t.selfenergy, PT2_K1t.vertex, S, true);
-#ifdef DEBUG_MODE
-    loop(PT2_SE_p_1.selfenergy, PT2_K1p.vertex, S, true, 1);
-    loop(PT2_SE_p_4.selfenergy, PT2_K1p.vertex, S, true, 4);
-    loop(PT2_SE_p_5.selfenergy, PT2_K1p.vertex, S, true, 5);
-#endif
+    loop<true,0>(PT2_SE_a.selfenergy, PT2_K1a.vertex, S);
+    loop<true,0>(PT2_SE_p.selfenergy, PT2_K1p.vertex, S);
+    loop<true,0>(PT2_SE_t.selfenergy, PT2_K1t.vertex, S);
 
     State<Q> PT3_K2a (Lambda);    //Create state for K2a calculation
     State<Q> PT3_K2a_ia (Lambda);
@@ -918,7 +925,7 @@ void test_K2_correctness(double Lambda){
     //Do appropriate calculation for K2a with K1p and K1t being fed back into the left vertex. Notice part = 'L' to ensure
     //that the correct contributions are added on both sides. - TOPT
     t0 = utils::get_time();
-    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
+    bubble_function(PT3_K2a.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, stdConfig);   // K2a in PT3
 
 #ifdef DEBUG_MODE
     bubble_function(PT3_K2a_ia.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 9, 6);
@@ -929,13 +936,13 @@ void test_K2_correctness(double Lambda){
     bubble_function(PT3_K2a_ivb.vertex, PT2_K1p.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'a', false, 'L', 16, 16, 6, 15);
 #endif
 
-    bubble_function(PT3_K2a_t.vertex, PT2_K1t.vertex, bare.vertex, G, G, 'a', false);   // K2a in PT3
+    bubble_function(PT3_K2a_t.vertex, PT2_K1t.vertex, bare.vertex, G, G, 'a', false, stdConfig);   // K2a in PT3
     //PT3_K2a = read_hdf("PT4_check_of_K2a_K2_switchedcc_adap_m3m9_g501_101_nI1501_state_PT3_K2a", 0, 1);
 
-    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false);    // K2p  in PT3
-    //bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
-    bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
-    bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false);    // K2t  in PT3
+    bubble_function(PT3_K2p.vertex, PT2_K1a.vertex + PT2_K1t.vertex, bare.vertex, G, G, 'p', false, stdConfig);    // K2p  in PT3
+    //bubble_function(PT3_K2t.vertex, PT2_K1a.vertex + PT2_K1p.vertex, bare.vertex, G, G, 't', false, stdConfig);    // K2t  in PT3
+    bubble_function(PT3_K2t_a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 't', false, stdConfig);    // K2t  in PT3
+    bubble_function(PT3_K2t_p.vertex, PT2_K1p.vertex, bare.vertex, G, G, 't', false, stdConfig);    // K2t  in PT3
     PT3_K2t.vertex = PT3_K2t_a.vertex + PT3_K2t_p.vertex;
     utils::get_time(t0);
 
@@ -964,28 +971,18 @@ void test_K2_correctness(double Lambda){
     State<Q> PT3_SE_t_p_4 (Lambda);
     State<Q> PT3_SE_t_p_5 (Lambda);
 
-    loop(PT3_SE.selfenergy, PT3_K2.vertex, S, true);
-    loop(PT3_SE_a.selfenergy, PT3_K2a.vertex, S, true);
-    loop(PT3_SE_p.selfenergy, PT3_K2p.vertex, S, true);
-    loop(PT3_SE_t.selfenergy, PT3_K2t.vertex, S, true);
+    loop<true,0>(PT3_SE.selfenergy, PT3_K2.vertex, S);
+    loop<true,0>(PT3_SE_a.selfenergy, PT3_K2a.vertex, S);
+    loop<true,0>(PT3_SE_p.selfenergy, PT3_K2p.vertex, S);
+    loop<true,0>(PT3_SE_t.selfenergy, PT3_K2t.vertex, S);
 
-    loop(PT3_SE_t_a.selfenergy, PT3_K2t_a.vertex, S, true);
-    loop(PT3_SE_t_p.selfenergy, PT3_K2t_p.vertex, S, true);
-#ifdef DEBUG_MODE
-    loop(PT3_SE_t_1.selfenergy, PT3_K2t.vertex, S, true, 1);
-    loop(PT3_SE_t_4.selfenergy, PT3_K2t.vertex, S, true, 4);
-    loop(PT3_SE_t_5.selfenergy, PT3_K2t.vertex, S, true, 5);
-    loop(PT3_SE_t_a_1.selfenergy, PT3_K2t_a.vertex, S, true, 1);
-    loop(PT3_SE_t_a_4.selfenergy, PT3_K2t_a.vertex, S, true, 4);
-    loop(PT3_SE_t_a_5.selfenergy, PT3_K2t_a.vertex, S, true, 5);
-    loop(PT3_SE_t_p_1.selfenergy, PT3_K2t_p.vertex, S, true, 1);
-    loop(PT3_SE_t_p_4.selfenergy, PT3_K2t_p.vertex, S, true, 4);
-    loop(PT3_SE_t_p_5.selfenergy, PT3_K2t_p.vertex, S, true, 5);
-#endif
+    loop<true,0>(PT3_SE_t_a.selfenergy, PT3_K2t_a.vertex, S);
+    loop<true,0>(PT3_SE_t_p.selfenergy, PT3_K2t_p.vertex, S);
+
 
     State<Q> PT3_K1a (Lambda);    //Create state to compare with K1a
     t0 = utils::get_time();
-    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT3_K1a.vertex, PT2_K1a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
     utils::get_time(t0);
 
     State<Q> PT123_a = bare + PT2_K1a + PT3_K1a + PT3_K2a;  //Create vertex of the right side of BSE
@@ -1008,11 +1005,11 @@ void test_K2_correctness(double Lambda){
     State<Q> PT4_K1a13_2_ivb (Lambda);
 
     t0 = utils::get_time();
-    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false);
-    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, stdConfig);
 
-    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false);
-    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false);
+    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, stdConfig);
+    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
     utils::get_time(t0);
     t0 = utils::get_time();
 #ifdef DEBUG_MODE
@@ -1037,7 +1034,7 @@ void test_K2_correctness(double Lambda){
         K1a_diff[iw] = PT4_K1a22.vertex.avertex().K1.val(0, iw,0, 0) - PT2_K1a.vertex.avertex().K1.val(0, iw,0, 0);
     }
 
-    utils::print("Testing correctness of K2a. Using U=" +std::to_string(glb_U)+ " and Lambda="+std::to_string(Lambda)
+    utils::print("Testing correctness of K2a. Using U=" +std::to_string(stdConfig.U)+ " and Lambda="+std::to_string(Lambda)
         +", the maximal difference between direct K1a and K1a over integration of K2a is " +std::to_string(K1a_diff.max_norm())+"." , true);
     if(write_flag) write_h5_rvecs( data_dir + "/PT4_check_of_K2a_cleanup_GL_gW20_51_21_nI1501_U1", {"w",
                                                        "PT2_K1a_R", "PT2_K1a_I",
@@ -1199,7 +1196,7 @@ class TestIntegrandK1a{
 
     void save_integrand(double vmax) {
         int npoints = 1e5;
-        FrequencyGrid bfreqs('b', 1, Lambda);
+        FrequencyGrid bfreqs('b', 1, Lambda, stdConfig);
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
@@ -1292,13 +1289,13 @@ void test_integrate_over_K1(double Lambda) {
     double vp = -1e2;
     TestIntegrandK1a<Q> IntegrandK1a(Lambda, 'a', 0., v, vp);
     IntegrandK1a.save_integrand(1e4);
-    double exact_result = -glb_U*glb_U/4;
+    double exact_result = -stdConfig.U*stdConfig.U/4;
 
     double vmax = 1e2;
     //Integrand& integrand, const double vmin, const double vmax, double w_half, const vec<double>& freqs, const double Delta, const int num_freqs;
     vec<double> freqs = {};
     int num_freqs = 0;
-    double Delta = (glb_Gamma+Lambda)/2.;
+    double Delta = (stdConfig.Gamma+Lambda)/2.;
     Q result = integrator_Matsubara_T0(IntegrandK1a, -vmax, vmax, 0, freqs, Delta)/ (2*M_PI);
     utils::print("Result of the integration over K1a:", result, true);
     utils::print("relative difference: ", (result-exact_result)/exact_result, true);
@@ -1323,21 +1320,21 @@ void test_integrate_over_K1(double Lambda) {
 
 #if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
 auto SOPT_K1a(double w, double Lambda) -> double {
-    double Delta = (glb_Gamma + Lambda) / 2.;
+    double Delta = (stdConfig.Gamma + Lambda) / 2.;
     double result;
     if (w == 0.)
-        result = - glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu);
+        result = - stdConfig.U*stdConfig.U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu);
     else
-        result = - glb_U*glb_U * Delta/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
+        result = - stdConfig.U*stdConfig.U * Delta/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
     return result;
 }
 auto SOPT_K1a_diff(double w, double Lambda) -> double {
-    double Delta = (glb_Gamma + Lambda) / 2.;
-    if (abs(w) < inter_tol) return - glb_U*glb_U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
-                        + glb_U*glb_U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
-    double term1 =  - glb_U*glb_U      / 2/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
-    double term2 =  + glb_U*glb_U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu)) / (2*Delta + std::abs(w));
-    double term3 =  - glb_U*glb_U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w)))     /(   1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu))
+    double Delta = (stdConfig.Gamma + Lambda) / 2.;
+    if (abs(w) < inter_tol) return - stdConfig.U*stdConfig.U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
+                        + stdConfig.U*stdConfig.U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
+    double term1 =  - stdConfig.U*stdConfig.U      / 2/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
+    double term2 =  + stdConfig.U*stdConfig.U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu)) / (2*Delta + std::abs(w));
+    double term3 =  - stdConfig.U*stdConfig.U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w)))     /(   1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu))
             *(
                     std::abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
                    -std::abs(w) * (2*Delta + std::abs(w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
@@ -1526,7 +1523,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
+        return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * stdConfig.U ;
         //return vpp*vpp;
     }
 };
@@ -1625,7 +1622,7 @@ template <typename Q>
 void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     const int it_spin = 0;
     double vmax = 100;
-    double Delta = (glb_Gamma + Lambda) / 2.;
+    double Delta = (stdConfig.Gamma + Lambda) / 2.;
     State<Q> bareState (Lambda);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
@@ -1687,17 +1684,17 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         Q val_K1;
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, i, 0, 0);
+        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/stdConfig.U, i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1, idx_K1);
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, i, 0, 0);
+        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/stdConfig.U, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1, idx_K1);
         w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
-        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1/glb_U, idx_K1);
+        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1/stdConfig.U, idx_K1);
     }
 
 #if MAX_DIAG_CLASS > 1
@@ -1875,7 +1872,7 @@ public:
         //    return 0.;
         //}
         //else {
-            return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * glb_U ;
+            return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * stdConfig.U ;
         //}
         //return vpp*vpp;
     }
@@ -2079,7 +2076,7 @@ public:
     const double v = 0.;
     const double vp = 0.;
     double vmax = 1e3;
-    const double Delta = (Lambda * glb_Gamma)/2;
+    const double Delta = (Lambda * stdConfig.Gamma)/2;
     const char channel = 'a';
     const bool diff;
 
@@ -2162,7 +2159,7 @@ public:
 
         K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
         state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp, vp}, Delta);
-        return -glb_U * Pi.value(0, w, vpp, 0, 'a') * val_K2;
+        return -stdConfig.U * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
 };
@@ -2177,7 +2174,7 @@ public:
     const double w, v;
     const double vp = 0.;
     double vmax = 1e3;
-    const double Delta = (Lambda * glb_Gamma)/2;
+    const double Delta = (Lambda * stdConfig.Gamma)/2;
     const char channel = 'a';
     const bool diff;
 
@@ -2275,7 +2272,7 @@ public:
     const double Lambda;
     const double w, v, vp;
     double vmax = 1e3;
-    const double Delta = (Lambda * glb_Gamma)/2;
+    const double Delta = (Lambda * stdConfig.Gamma)/2;
     const char channel = 'a';
     const bool diff;
 
@@ -2375,24 +2372,24 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g'); // bare propagator
     Propagator<state_datatype> S (Lambda, bare.selfenergy, 's'); // bare differentiated propagator = single scale propagator
     const Bubble<state_datatype> Pi(G, S, false);
-    double Delta = (glb_Gamma + Lambda)/2;
+    double Delta = (stdConfig.Gamma + Lambda)/2;
 
     // Psi := K1p in PT2 + bare vertex
     State<state_datatype> Psi (Lambda);
     Psi.initialize();         // initialize bare state
-    bubble_function(Psi.vertex, bare.vertex, bare.vertex, G, G, 'p', false); // Psi = Gamma_0 + K1p
+    bubble_function(Psi.vertex, bare.vertex, bare.vertex, G, G, 'p', false, stdConfig); // Psi = Gamma_0 + K1p
 
     // K1a_dot in PT2
     State<state_datatype> PT2_K1adot (Lambda);
-    bubble_function(PT2_K1adot.vertex, bare.vertex, bare.vertex, G, S, 'a', true);
+    bubble_function(PT2_K1adot.vertex, bare.vertex, bare.vertex, G, S, 'a', true, stdConfig);
     // K1p_dot in PT2
     State<state_datatype> PT2_K1pdot (Lambda);
-    bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true);
+    bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true, stdConfig);
 
     if (write_flag) {
-        write_state_to_hdf(data_dir + "Psi_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
-        write_state_to_hdf(data_dir + "PT2_K1a_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
-        write_state_to_hdf(data_dir + "PT2_K1p_dot_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
+        write_state_to_hdf(data_dir + "Psi_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, Psi);
+        write_state_to_hdf(data_dir + "PT2_K1a_dot_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1adot);
+        write_state_to_hdf(data_dir + "PT2_K1p_dot_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, PT2_K1pdot);
     }
 
     std::vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
@@ -2402,21 +2399,21 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> centralstate_dot = central_bubblestates[i];
 
         // intermediate results
-        State<state_datatype> K1rdot_PIa_K1p (Lambda);
-        bubble_function(K1rdot_PIa_K1p.vertex, centralstate_dot.vertex, Psi.vertex, G, G, 'a', false);
+        State<state_datatype,false> K1rdot_PIa_K1p (Lambda);
+        bubble_function(K1rdot_PIa_K1p.vertex, centralstate_dot.vertex, Psi.vertex, G, G, 'a', false, stdConfig);
 
 
         State<state_datatype> K1p_PIa_K1rdot (Lambda);
-        bubble_function(K1p_PIa_K1rdot.vertex, Psi.vertex, centralstate_dot.vertex, G, G, 'a', false);
+        bubble_function(K1p_PIa_K1rdot.vertex, Psi.vertex, centralstate_dot.vertex, G, G, 'a', false, stdConfig);
 
 
         if (write_flag) {
-            write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
-            write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_UNREORDERED_version" + std::to_string(i) + "_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
         }
 
-        Vertex<state_datatype> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
-        Vertex<state_datatype> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
+        Vertex<state_datatype,false> dGammaL_half1 = K1rdot_PIa_K1p.vertex;
+        Vertex<state_datatype,false> dGammaR_half1 = K1p_PIa_K1rdot.vertex;
 #if not DEBUG_SYMMETRIES
         dGammaL_half1.half1().reorder_due2antisymmetry(dGammaR_half1.half1());
 #endif
@@ -2424,7 +2421,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
         // create non-symmetric_full vertex with differentiated vertex on the left
-        GeneralVertex<state_datatype , non_symmetric_diffleft> dGammaL(Lambda);
+        GeneralVertex<state_datatype , non_symmetric_diffleft, false> dGammaL(Lambda);
         dGammaL.half1()  = dGammaL_half1.half1();  // assign half 1 to dGammaL
         dGammaL.half2() = dGammaR_half1.half1();  // assign half 2 as half 1 to dGammaR [symmetric_full -> left()=right()]
 
@@ -2433,11 +2430,11 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> dGammaC_r(Lambda);
 
         dGammaL.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
-        bubble_function(dGammaC_r.vertex, Psi.vertex, dGammaL, G, G, 'a', false);
+        bubble_function(dGammaC_r.vertex, Psi.vertex, dGammaL, G, G, 'a', false, stdConfig);
 
 
         // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<state_datatype , non_symmetric_diffright> dGammaR (Lambda);
+        GeneralVertex<state_datatype , non_symmetric_diffright,false> dGammaR (Lambda);
         dGammaR.half1() = dGammaR_half1.half1();  // assign half 1
         dGammaR.half2() = dGammaL_half1.half1();  // assign half 2 as half 1 of dGammaL
 
@@ -2446,14 +2443,14 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> dGammaC_l(Lambda);
         dGammaR.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
-        bubble_function(dGammaC_l.vertex, dGammaR, Psi.vertex, G, G, 'a', false);
+        bubble_function(dGammaC_l.vertex, dGammaR, Psi.vertex, G, G, 'a', false, stdConfig);
 
 
         if (write_flag) {
-            write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
-            write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
-            write_state_to_hdf(data_dir + "dGammaC_r_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
-            write_state_to_hdf(data_dir + "dGammaC_l_version" + std::to_string(i) + "_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
+            write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_version" + std::to_string(i) + "_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1rdot_PIa_K1p);
+            write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_version" + std::to_string(i) + "_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, K1p_PIa_K1rdot);
+            write_state_to_hdf(data_dir + "dGammaC_r_version" + std::to_string(i) + "_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_r);
+            write_state_to_hdf(data_dir + "dGammaC_l_version" + std::to_string(i) + "_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5", Lambda, 1, dGammaC_l);
         }
     //}
 
@@ -2473,11 +2470,11 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             K1pdot_exact.vertex.pvertex().K1.setvert(val_K1, it_spin, it, 0, 0);
             //    }
         }
-        write_state_to_hdf(data_dir + "K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_state_to_hdf(data_dir + "K1rdot_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1pdot_exact);
 
         State<state_datatype> K1rdot_diff = PT2_K1pdot - K1pdot_exact;        // intermediate result: contains K2 and K3
-        write_state_to_hdf(data_dir + "K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_state_to_hdf(data_dir + "K1rdot_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1rdot_diff);
 
 
@@ -2514,14 +2511,14 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //    }
         }
 #endif
-        write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1rdot_PIa_K1p_exact);
 
 
 
         State<state_datatype> K1rdot_PIa_K1p_diff =
                 K1rdot_PIa_K1p - K1rdot_PIa_K1p_exact;        // intermediate result: contains K2 and K3
-        write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_state_to_hdf(data_dir + "K1rdot_PIa_K1p_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1rdot_PIa_K1p_diff);
 
 
@@ -2550,12 +2547,12 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //    }
         }
 #endif
-        write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   K1p_PIa_K1rdot_exact);
 
         State<state_datatype> K1p_PIa_K1rdot_diff =
                 K1p_PIa_K1rdot - K1p_PIa_K1rdot_exact;        // intermediate result: contains K2 and K3
-        write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_state_to_hdf(data_dir + "K1p_PIa_K1rdot_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   K1p_PIa_K1rdot_diff);
 
 
@@ -2607,15 +2604,15 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
             //}
         }
 #endif
-        write_state_to_hdf(data_dir + "dGammaC_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
+        write_state_to_hdf(data_dir + "dGammaC_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_exact", Lambda, 1,
                   dGammaC_exact);
 
         State<state_datatype> dGammaC_l_diff = dGammaC_l - dGammaC_exact;        // final result: contains K1, K2 and K3
-        write_state_to_hdf(data_dir + "dGammaC_l_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_state_to_hdf(data_dir + "dGammaC_l_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   dGammaC_l_diff);
 
         State<state_datatype> dGammaC_r_diff = dGammaC_r - dGammaC_exact;        // final result: contains K1, K2 and K3
-        write_state_to_hdf(data_dir + "dGammaC_r_version1_U" + std::to_string(glb_U / ((glb_Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
+        write_state_to_hdf(data_dir + "dGammaC_r_version1_U" + std::to_string(stdConfig.U / ((stdConfig.Gamma + Lambda) / 2.)) + ".h5_diff", Lambda, 1,
                   dGammaC_r_diff);
 
         utils::print("Relative maxabs difference in dGammaC_l --> K1: ", dGammaC_l_diff.vertex.half1().norm_K1(0) / dGammaC_l.vertex.half1().norm_K1(0)  , true);
@@ -2628,54 +2625,55 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     }
 }
 #else
-template <int type = 2>
-auto SOPT_K1a(double w, double Lambda) -> comp {
+template <typename Q, int type = 2>
+auto SOPT_K1a(double w, double Lambda) -> Q {
 
-    double Delta = REG == 2 ? (glb_Gamma + Lambda) / 2. : glb_Gamma * 0.5;
-    const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5 * glb_U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
-    const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
+    double Delta = REG == 2 ? (stdConfig.Gamma + Lambda) / 2. : stdConfig.Gamma * 0.5;
+    const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5*stdConfig.U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
+    const double HF_corr = stdConfig.epsilon + hartree_term;
 
-    auto advanced = [Delta,HF_corr](const double w_) -> comp {
+    auto advanced = [Delta,HF_corr,Lambda](const double w_) -> Q {
+        const Q factor = REG == 4 ? Lambda*Lambda : 1.;
         if (w_ == 0.)
-            return - glb_U*glb_U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
+            return - factor * stdConfig.U*stdConfig.U * Delta / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5;
         else
-            return - glb_U*glb_U * Delta/M_PI / ((glb_i * w_)*(2*Delta + (glb_i * w_))) * log(1. + ((glb_i * w_)*(2*Delta + (glb_i * w_)))/(Delta*Delta + HF_corr*HF_corr)) * 0.5;
+            return - factor * stdConfig.U*stdConfig.U * Delta/M_PI / ((glb_i * w_)*(2*Delta + (glb_i * w_))) * log(1. + ((glb_i * w_)*(2*Delta + (glb_i * w_)))/(Delta*Delta + HF_corr*HF_corr)) * 0.5;
     };
 
     if (type == 2) {
         /// advanced component of K1a in SOPT:
-        comp result = advanced(w);
+        Q result = advanced(w);
         return result;
     }
     else if (type == 1) {
         /// retarded component of K1a in SOPT:
-        comp result = conj(advanced(w));
+        Q result = conj(advanced(w));
         return result;
     }
     else {
         assert(type == 0);
         /// Keldysh component of K1a in SOPT:
-        const comp adv = advanced(w);
-        const comp ret = conj(adv);
-        const comp result = sgn(w) * (ret - adv);
+        const Q adv = advanced(w);
+        const Q ret = conj(adv);
+        const Q result = sgn(w) * (ret - adv);
         return result;
     }
 
 }
-template <int type = 2>
-auto SOPT_K1a_diff(double w, double Lambda) -> comp {
-    double Delta = (glb_Gamma + Lambda) / 2.;
-    const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5 * glb_U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
-    const double HF_corr = glb_Vg + hartree_term - 0.5 * glb_U;
+template <typename Q, int type = 2>
+auto SOPT_K1a_diff(double w, double Lambda) -> Q {
+    double Delta = (stdConfig.Gamma + Lambda) / 2.;
+    const double hartree_term = Hartree_Solver(Lambda, stdConfig).compute_Hartree_term_bracketing();
+    const double HF_corr = (stdConfig.epsilon+stdConfig.U*0.5) + hartree_term - 0.5 * stdConfig.U;
 
-    auto advanced = [Delta,HF_corr](const double w_) -> comp {
-        if (std::abs(w_)  == 0) return (- glb_U*glb_U / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5
-                                        + glb_U*glb_U / M_PI / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta * Delta )*0.5 ;
+    auto advanced = [Delta,HF_corr](const double w_) -> Q {
+        if (std::abs(w_)  == 0) return (- stdConfig.U*stdConfig.U / M_PI / (Delta*Delta + HF_corr*HF_corr) * 0.5
+                                        + stdConfig.U*stdConfig.U / M_PI / (Delta*Delta + HF_corr*HF_corr) / (Delta*Delta + HF_corr*HF_corr) * Delta * Delta )*0.5 ;
         else {
-            comp term1 = -glb_U * glb_U * 0.5   / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr));
-            comp term2 = +glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr)) /
+            Q term1 = -stdConfig.U * stdConfig.U * 0.5   / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr));
+            Q term2 = +stdConfig.U * stdConfig.U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) * log(1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr)) /
                          (2. * Delta + (glb_i * w_));
-            comp term3 = -glb_U * glb_U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) /    (1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr))
+            Q term3 = -stdConfig.U * stdConfig.U * Delta / M_PI / ((glb_i * w_) * (2. * Delta + (glb_i * w_))) /    (1. + ((glb_i * w_) * (2 * Delta + (glb_i * w_))) / (Delta * Delta + HF_corr * HF_corr))
                          * (
                                  (glb_i * w_) / (Delta * Delta + HF_corr * HF_corr)
                                  - (glb_i * w_) * (2 * Delta + (glb_i * w_)) / (Delta * Delta + HF_corr * HF_corr) /
@@ -2688,20 +2686,20 @@ auto SOPT_K1a_diff(double w, double Lambda) -> comp {
 
     if (type == 2) {
         /// advanced component of K1a in SOPT:
-        comp result = advanced(w);
+        Q result = advanced(w);
         return result;
     }
     else if (type == 1) {
         /// retarded component of K1a in SOPT:
-        comp result = conj(advanced(w));
+        Q result = conj(advanced(w));
         return result;
     }
     else {
         assert(type == 0);
         /// Keldysh component of K1a in SOPT:
-        const comp adv = advanced(w);
-        const comp ret = conj(adv);
-        const comp result = sgn(w) * (ret - adv);
+        const Q adv = advanced(w);
+        const Q ret = conj(adv);
+        const Q result = sgn(w) * (ret - adv);
         return result;
     }
 }
@@ -2715,12 +2713,12 @@ class Integrand_SOPT_SE {
 
 public:
     Integrand_SOPT_SE(const double v, const double Lambda, const Propagator<Q>& propagator) :
-    v(v), Lambda(Lambda), Delta(REG == 2 ? (Lambda + glb_Gamma) * 0.5 : glb_Gamma * 0.5), barePropagator(propagator) {};
+    v(v), Lambda(Lambda), Delta(REG == 2 ? (Lambda + stdConfig.Gamma) * 0.5 : stdConfig.Gamma * 0.5), barePropagator(propagator) {};
 
     auto value(const double vp) const -> Q {
-        const Q KR = SOPT_K1a<2>(vp - v, Lambda);
+        const Q KR = SOPT_K1a<Q,2>(vp - v, Lambda);
         const Q KA = conj(KR);
-        const Q KK = SOPT_K1a<0>(vp - v, Lambda);
+        const Q KK = SOPT_K1a<Q,0>(vp - v, Lambda);
         const Q K00 = ( KR + KA + KK);// * 0.5;
         const Q K01 = ( KR - KA - KK);// * 0.5;
         const Q K10 = (-KR + KA - KK);// * 0.5;
@@ -2777,15 +2775,18 @@ public:
 
 };
 
-#if REG==2
 template <typename Q>
-void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
+void test_PT_state(std::string outputFileName, const double Lambda, const bool diff) {
 #ifndef ZERO_TEMP
     assert(false);
 #endif
     const int it_spin = 0;
     double vmax = 100;
-    double Delta = (glb_Gamma + Lambda) / 2.;
+#if REG==2
+    double Delta = (stdConfig.Gamma + Lambda) / 2.;
+#else
+    double Delta = (stdConfig.Gamma) / 2.;
+#endif
     State<Q> bareState (Lambda);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
@@ -2821,29 +2822,46 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
 
-        const Q KR = diff ? SOPT_K1a_diff<1>(w, Lambda) : SOPT_K1a<1>(w, Lambda);
-        const Q KA = conj(KR);
-        const Q KK = diff ? SOPT_K1a_diff<0>(w, Lambda) : SOPT_K1a<0>(w, Lambda);
-        const Q K00 = ( KR + KA + KK);// * 0.5;
-        const Q K01 = ( KR - KA - KK);// * 0.5;
-        const Q K10 = (-KR + KA - KK);// * 0.5;
-        const Q K11 = (-KR - KA + KK);// * 0.5;
+        Q KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        Q KA = myconj(KR);
+        Q KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
+        Q K00 = ( KR + KA + KK);// * 0.5;
+        Q K01 = ( KR - KA - KK);// * 0.5;
+        Q K10 = (-KR + KA - KK);// * 0.5;
+        Q K11 = (-KR - KA + KK);// * 0.5;
         Q val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
         Q val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
-        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/stdConfig.U, 0, i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1  , it_spin,  i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);
+
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
-        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/glb_U, 0, i, 0);
+        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        KA = myconj(KR);
+        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
+        K00 = ( KR + KA + KK);// * 0.5;
+        K01 = ( KR - KA - KK);// * 0.5;
+        K10 = (-KR + KA - KK);// * 0.5;
+        K11 = (-KR - KA + KK);// * 0.5;
+        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        val_K1_K = CONTOUR_BASIS != 1 ? KK : K01;
+        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/stdConfig.U, 0, i, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1  , it_spin, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1_K, it_spin, i, 1, 0);
+
         w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
+        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        KA = myconj(KR);
+        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
+        K00 = ( KR + KA + KK);// * 0.5;
+        K01 = ( KR - KA - KK);// * 0.5;
+        K10 = (-KR + KA - KK);// * 0.5;
+        K11 = (-KR - KA + KK);// * 0.5;
+        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
+        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
         val_K1_K = state_cpp.vertex.tvertex().K1.val(it_spin, i, 1, 0);
-        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./glb_U    , it_spin, i, 0, 0);
+        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./stdConfig.U    , it_spin, i, 0, 0);
         PT_state.vertex.tvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);
     }
     write_state_to_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
@@ -2858,7 +2876,6 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     utils::print("K1t-difference: ", state_diff.vertex.tvertex().K1.get_vec().max_norm() / PT_state.vertex.tvertex().K1.get_vec().max_norm(), true);
 
 }
-#endif
 
 #endif // SIAM Matsubara T=0
 
@@ -2884,12 +2901,12 @@ auto rhs_channel_decomposition(const State<Q>& Psi, const double Lambda) -> Stat
     Propagator<Q> S(Lambda, selfEnergy, 's');    //Initialization of Propagator objects
 
     // Self-energy flow
-    loop(dPsi.selfenergy, Psi.vertex, S, true);  // self-energy loop
+    loop<true,0>(dPsi.selfenergy, Psi.vertex, S);  // self-energy loop
 
     // Vertex flow
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true); // diff. bubble in the a-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', true); // diff. bubble in the p-channel
-    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', true); // diff. bubble in the t-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'a', true, stdConfig); // diff. bubble in the a-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 'p', true, stdConfig); // diff. bubble in the p-channel
+    bubble_function(dPsi.vertex, Psi.vertex, Psi.vertex, G, S, 't', true, stdConfig); // diff. bubble in the t-channel
 
     return dPsi;
 }

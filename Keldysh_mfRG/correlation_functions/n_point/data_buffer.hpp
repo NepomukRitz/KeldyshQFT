@@ -19,7 +19,7 @@ class Interpolator : public dataContainer_type {
     using base_class = dataContainer_type;
     using this_class = Interpolator;
 
-    using frequencies_type = std::array<double, numberFrequencyDims>;
+    using frequencies_type = std::array<freqType, numberFrequencyDims>;
 
     static constexpr my_index_t numSamples() {
         return my_integer_pow<numberFrequencyDims>(my_index_t(2));
@@ -38,7 +38,7 @@ public:
 
     mutable bool initialized = false;
     Interpolator() : initialized(false) {};
-    explicit Interpolator (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+    explicit Interpolator (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
     void initInterpolator() const {initialized = true;};
     void set_initializedInterpol(const bool is) const {initialized = is;}
 
@@ -54,7 +54,7 @@ public:
 
         for (my_index_t i = 0; i < numberFrequencyDims; i++) {
             idx_low[pos_first_freqpoint+i] = freq_idx[i];
-            assert(freq_idx[i] < 2000);
+            assert(freq_idx[i] < 10000);
         }
 
         for (my_index_t j = 0; j < numSamples_half(); j++) {
@@ -188,38 +188,77 @@ public:
 
 #ifdef DENSEGRID
             result_type result;
-            if constexpr(numberFrequencyDims == 1)
+            if constexpr (std::is_same_v<result_type,Q>)
             {
-                result = interpolate_nearest1D<result_type>(frequencies[0], base_class::get_VertexFreqGrid().primary_grid,
-                                                  [&](int i) -> result_type {
-                                                      indices[pos_first_freqpoint] = i;
-                                                      return base_class::val(indices);
-                                                  });
+                if constexpr(numberFrequencyDims == 1)
+                {
+                    result = interpolate_nearest1D<result_type>(frequencies[0],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                [&](int i) -> result_type {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 2)
+                {
+                    result = interpolate_nearest2D<result_type>(frequencies[0], frequencies[1],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                [&](int i, int j) -> result_type {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 3)
+                {
+                    result = interpolate_nearest3D<result_type>(frequencies[0], frequencies[1], frequencies[2],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                base_class::get_VertexFreqGrid().tertiary_grid,
+                                                                [&](int i, int j, int l) -> result_type {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    indices[pos_first_freqpoint + 2] = l;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
             }
-            else if constexpr(numberFrequencyDims == 2){
-                result =  interpolate_nearest2D<result_type>(frequencies[0], frequencies[1],
-                                                   base_class::get_VertexFreqGrid().  primary_grid,
-                                                   base_class::get_VertexFreqGrid().secondary_grid,
-                                                   [&](int i, int j) -> result_type {
-                                                       indices[pos_first_freqpoint  ] = i;
-                                                       indices[pos_first_freqpoint+1] = j;
-                                                       return base_class::val(indices);
-                                                   });
+            else {
+                if constexpr(numberFrequencyDims == 1)
+                {
+                    result << interpolate_nearest1D<Q>(frequencies[0],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                [&](int i) -> Q {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 2)
+                {
+                    result << interpolate_nearest2D<Q>(frequencies[0], frequencies[1],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                [&](int i, int j) -> Q {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
+                else if constexpr(numberFrequencyDims == 3)
+                {
+                    result << interpolate_nearest3D<Q>(frequencies[0], frequencies[1], frequencies[2],
+                                                                base_class::get_VertexFreqGrid().primary_grid,
+                                                                base_class::get_VertexFreqGrid().secondary_grid,
+                                                                base_class::get_VertexFreqGrid().tertiary_grid,
+                                                                [&](int i, int j, int l) -> Q {
+                                                                    indices[pos_first_freqpoint] = i;
+                                                                    indices[pos_first_freqpoint + 1] = j;
+                                                                    indices[pos_first_freqpoint + 2] = l;
+                                                                    return base_class::val(indices);
+                                                                });
+                }
             }
-            else if constexpr(numberFrequencyDims == 3)
-            {
-                result =  interpolate_nearest3D<result_type>(frequencies[0], frequencies[1], frequencies[2],
-                                                   base_class::get_VertexFreqGrid().  primary_grid,
-                                                   base_class::get_VertexFreqGrid().secondary_grid,
-                                                   base_class::get_VertexFreqGrid(). tertiary_grid,
-                                                   [&](int i, int j, int l) -> result_type {
-                                                       indices[pos_first_freqpoint  ] = i;
-                                                       indices[pos_first_freqpoint+1] = j;
-                                                       indices[pos_first_freqpoint+2] = l;
-                                                       return base_class::val(indices);
-                                                   });
-            }
-
             return result;
 #else
             // get weights from frequency Grid
@@ -252,9 +291,133 @@ public:
             //return result;
 
         } else { //asymptotic value
-            if constexpr (std::is_same_v<result_type,Q>) return result_type{};
-            else return result_type::Zero();
 
+            if constexpr (KELDYSH or ZERO_T) {
+                if constexpr (std::is_same_v<result_type, Q>) return result_type{};
+                else return result_type::Zero();
+            }
+            else { // finite T Matsubara: extrapolate with w^-2 tail
+                if constexpr (numberFrequencyDims == 1) {
+
+
+                    if constexpr (rank == SE_config.rank) {
+
+                        const double wmax = base_class::frequencies.primary_grid.w_upper;
+                        const double w = frequencies[0];
+                        const double wabs = std::abs(w);
+                        if (w <= -wmax) {
+                            indices[pos_first_freqpoint] = 0;
+                        }
+                        else {
+                            indices[pos_first_freqpoint] = base_class::frequencies.primary_grid.number_of_gridpoints - 1;
+                        }
+                        if constexpr (std::is_same_v<result_type, Q>) {
+                            const result_type result = wmax / (wabs) * base_class::val(indices);
+                            return result;
+                        } else {
+                            const result_type result = wmax / (wabs) *
+                                                       base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(
+                                                               indices);
+                            return result;
+                        }
+                    }
+                    else {
+
+                        const double wmax = base_class::frequencies.primary_grid.w_upper;
+                        const double wabs = std::abs(frequencies[0]);
+                        indices[pos_first_freqpoint] = 0;
+                        if constexpr (std::is_same_v<result_type, Q>) {
+                            const result_type result = wmax * wmax / (wabs * wabs) * base_class::val(indices);
+                            return result;
+                        } else {
+                            const result_type result = wmax * wmax / (wabs * wabs) *
+                                                       base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(
+                                                               indices);
+                            return result;
+                        }
+                    }
+                }
+                else if constexpr (numberFrequencyDims > 1) {
+                    const double wmax = base_class::frequencies.primary_grid.w_upper;
+                    const double vmax = base_class::frequencies.secondary_grid.w_upper;
+                    const double wabs = std::abs(frequencies[0]);
+
+                    if (wabs > wmax) {
+                        return result_type{};
+                    }
+                    else if constexpr (numberFrequencyDims == 2) {
+
+                        const double w = frequencies[0];
+                        const double v = frequencies[1];
+                        const int index = base_class::frequencies.primary_grid.get_grid_index(w);
+                        indices[pos_first_freqpoint] = index;
+
+                        if (v <= -vmax) {
+                            indices[pos_first_freqpoint + 1] = 0;
+                        }
+                        else {
+                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 + signFlipCorrection_MF_int(w);
+                        }
+
+                        if constexpr (std::is_same_v<result_type,Q>) {
+                            const result_type result = (vmax * vmax) / (v * v) * base_class::val(indices);
+                            return result;
+                        } else {
+                            const result_type result = (vmax * vmax) / (v * v) * base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
+                            return result;
+                        }
+
+                    }
+                    else if constexpr (numberFrequencyDims == 3) {
+
+                        const double w = frequencies[0];
+                        const double v = frequencies[1];
+                        const double vp= frequencies[2];
+                        const int index = base_class::frequencies.primary_grid.get_grid_index(w);
+                        indices[pos_first_freqpoint] = index;
+
+                        Q result = 1.;
+                        if (v <= -vmax) {
+                            indices[pos_first_freqpoint + 1] = 0;
+                            result *= vmax * vmax / (v * v);
+                        }
+                        else if (v >= vmax){
+                            indices[pos_first_freqpoint + 1] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 + signFlipCorrection_MF_int(w) ;
+                            result *= vmax * vmax / (v * v);
+                        }
+                        else {
+                            const int index_v = base_class::frequencies.secondary_grid.get_grid_index(v);
+                            indices[pos_first_freqpoint + 1] = index_v;
+                        }
+                        if (vp <= -vmax) {
+                            indices[pos_first_freqpoint + 2] = 0;
+                            result *= vmax * vmax / (vp * vp);
+                        }
+                        else if (vp >= vmax){
+                            indices[pos_first_freqpoint + 2] = base_class::frequencies.secondary_grid.number_of_gridpoints - 1 + signFlipCorrection_MF_int(w) ;
+                            result *= vmax * vmax / (vp * vp);
+                        }
+                        else {
+                            const int index_vp = base_class::frequencies.secondary_grid.get_grid_index(vp);
+                            indices[pos_first_freqpoint + 2] = index_vp;
+                        }
+
+                        if constexpr (std::is_same_v<result_type,Q>) {
+                            result *= base_class::val(indices);
+                        } else {
+                            result *= base_class::template get_values<numberFrequencyDims, pos_first_freqpoint, vecsize, 1>(indices);
+                        }
+                        return result;
+
+                    }
+
+                }
+                else {
+                    return result_type{};
+                }
+                //else {assert(false);}
+
+            }
         }
 
     };
@@ -353,7 +516,7 @@ public:
     using dimensions_type = typename dataContainer_type::dimensions_type;
 
     Interpolator() = default;
-    explicit Interpolator (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+    explicit Interpolator (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
 
     template <typename result_type = Q,
             typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
@@ -499,14 +662,14 @@ template <typename Q, K_class k, size_t rank, my_index_t numberFrequencyDims, my
 class dataBuffer: public Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>, inter> {
     using base_class = Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer<Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type>, inter>;
     using this_class = dataBuffer<Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter>;
-    using frequencies_type = std::array<double, numberFrequencyDims>;
+    using frequencies_type = std::array<freqType, numberFrequencyDims>;
 
 public:
     using index_type = typename base_class::index_type;
     using dimensions_type = typename base_class::dimensions_type;
 
     dataBuffer() : base_class() {};
-    explicit dataBuffer (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
+    explicit dataBuffer (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
     //void initInterpolator() const {initialized = true;};
 
     template<typename result_type=Q,
@@ -515,9 +678,9 @@ public:
         return base_class::template interpolate_impl<result_type>(input.template get_freqs<k>(), input.template get_indices<k>());
     }
 
-    void update_grid(double Lambda) {
+    void update_grid(double Lambda, const fRG_config& config) {
         frequencyGrid_type frequencies_new = base_class::get_VertexFreqGrid();  // new frequency grid
-        frequencies_new.guess_essential_parameters(Lambda);                     // rescale new frequency grid
+        frequencies_new.guess_essential_parameters(Lambda, config);                     // rescale new frequency grid
         update_grid(frequencies_new, *this);
     }
 
@@ -633,10 +796,17 @@ public:
 
     }
 
-    auto operator+= (const this_class& rhs) -> this_class {base_class::data += rhs.data; return *this;}
-    auto operator-= (const this_class& rhs) -> this_class {base_class::data -= rhs.data; return *this;}
-    auto operator*= (const this_class& rhs) -> this_class {base_class::data *= rhs.data; return *this;}
-    auto operator/= (const this_class& rhs) -> this_class {base_class::data /= rhs.data; return *this;}
+    void check_if_frequencyGrid_identical(const this_class &rhs) const {
+        assert((base_class::frequencies.primary_grid.get_all_frequencies() - rhs.frequencies.primary_grid.get_all_frequencies()).max_norm() < 1e-10);
+        if constexpr (numberFrequencyDims > 1) {
+            assert((base_class::frequencies.secondary_grid.get_all_frequencies() - rhs.frequencies.secondary_grid.get_all_frequencies()).max_norm() < 1e-10);
+        }
+    }
+
+    auto operator+= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data += rhs.data; return *this;}
+    auto operator-= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data -= rhs.data; return *this;}
+    auto operator*= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data *= rhs.data; return *this;}
+    auto operator/= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data /= rhs.data; return *this;}
     friend this_class operator+ (const this_class& lhs, const this_class& rhs) {
         this_class lhs_temp = lhs;
         lhs_temp += rhs;

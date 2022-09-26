@@ -177,33 +177,133 @@ auto correctionFunctionBubble_REG4_Matsubara_PHS(double w, double vmin, double v
 /// Correction functions for interaction regulator (REG == 3)
 
 template <typename Q>
-auto correctionFunctionBubble_REG3_Matsubara_PHS_nondiff(double w, double vmax, double Lambda) {
+auto correctionFunctionBubble_REG3_Matsubara_PHS_nondiff(const double w, const double vmax, const double Lambda, const double Delta) {
     Q value;
     if (std::abs(w) < 1e-10) {
-        if (Lambda/vmax < 1e-5) {
+        if (Lambda/vmax < 1e-2) {
             value = -0.5 * (
-                    vmax / (vmax*vmax + Lambda*Lambda) + 1 / vmax
+                    vmax / (vmax*vmax + Lambda*Lambda) + 1 / vmax - Lambda*Lambda / (3.*vmax*vmax*vmax)
             );
         }
         else {
             value = -0.5 * (
                     vmax / (vmax*vmax + Lambda*Lambda) + atan(Lambda / vmax) / Lambda
             );
+            const double addition = -0.5 * Delta * (
+                -1. *(
+                    (
+                    2. * (
+                            (2.* pow(Delta,3))/(Delta + vmax)
+                            +
+                            (3. * Delta*Delta * Lambda*Lambda + pow(Lambda,4) + 2.* pow(Delta,3) *vmax)
+                                /
+                                (Lambda*Lambda + vmax*vmax)
+                         )
+                    )
+                    /
+                    pow((Delta*Delta + Lambda*Lambda), 2)
+                )
+                +
+                Delta * std::imag((
+                    log(-glb_i * Lambda + vmax)/pow((Delta + glb_i * Lambda), 2)
+                    +
+                    log( glb_i * Lambda + vmax)/pow((glb_i * Delta + Lambda),2)
+                    )/Lambda)
+                    +
+                    std::imag(
+                            log(-glb_i * Lambda + vmax)/(Delta * Lambda + glb_i * Lambda*Lambda)
+                            - log(glb_i * Lambda + vmax)/(Delta * Lambda - glb_i * Lambda*Lambda)
+                            )
+                    +
+                    std::real(
+                            (2. * Delta * ((6. * pow(Delta,3) - 2. * Delta * Lambda * Lambda) * log(Delta + vmax) - pow((Delta - glb_i * Lambda),3) * log(-glb_i * Lambda + vmax)
+                    - pow((Delta + glb_i * Lambda),3) * log(glb_i * Lambda + vmax)))
+                        /
+                        pow((Delta*Delta + Lambda*Lambda),3)
+                    )
+                    -
+                    2. * std::real(log(-glb_i * Lambda + vmax)/pow((Delta + glb_i * Lambda),2))
+            );
+            value += addition;
         }
     }
     else {
         value = -0.25 * (
                 log((pow(vmax+w/2,2) + Lambda*Lambda)/(pow(vmax-w/2,2) + Lambda*Lambda)) / w
                 +
-                2. * std::real(log((vmax + w/2 + glb_i * Lambda) / (vmax - w/2 - glb_i * Lambda)) / (w + 2. * glb_i*Lambda))
+                2. * std::real(log(
+                        (vmax + w/2 + glb_i * Lambda) / (vmax - w/2 - glb_i * Lambda)) / (w + 2. * glb_i*Lambda))
         );
+
+
+        double addition = 0.;
+        for (int sigma1 : {-1, 1}) {
+            for (int sigma2 : {-1, 1}) {
+                for (int sigma3 : {-1, 1}) {
+                    addition += 4. * Delta * std::real(
+                            - log(w + 2*vmax + 2.*glb_i*(Lambda*sigma1)) / (
+                                    (w + glb_i*(Lambda*(sigma1-sigma2))) *
+                                    (2.*Delta - w - 2.*glb_i*(Lambda*sigma1) + w*sigma3)
+                            )
+
+                            + log(-w + 2*vmax + 2.*glb_i*(Lambda*sigma2)) / (
+                                    (w + glb_i*(Lambda*(sigma1-sigma2))) *
+                                    (2.*Delta + w - 2.*glb_i*(Lambda*sigma2) + w*sigma3)
+                            )
+
+                            + 2.*log(2.*Delta + 2*vmax + w*sigma3) / (
+                                    (2.*Delta - w - 2.*glb_i*(Lambda*sigma1) + w*sigma3) *
+                                    (2.*Delta + w - 2.*glb_i*(Lambda*sigma2) + w*sigma3)
+                            )
+                    );
+                    assert(std::isfinite(addition));
+                }
+            }
+        }
+        for (int sigma1 : {-1, 1}) {
+            for (int sigma2 : {-1, 1}) {
+                addition += 2. * Delta * Delta * std::real(
+                        glb_i * log(w + 2*vmax + 2.*glb_i*(Lambda*sigma1)) / (
+                                (Delta - glb_i*(Lambda*sigma1))*
+                                (Delta - w - glb_i*(Lambda*sigma1)) *
+                                (-glb_i*w + Lambda*(sigma1-sigma2))
+                        )
+                );
+
+                addition += 2. * Delta * Delta * std::real(
+                        -
+                        log(2.*Delta - w + 2*vmax) / (
+                                w *
+                                (-Delta + w + glb_i*(Lambda*sigma1))*
+                                (Delta - glb_i*(Lambda*sigma2))
+                        )
+                        -
+                        log(2.*Delta + w + 2*vmax) / (
+                                w *
+                                (Delta + w - glb_i*(Lambda*sigma2))*
+                                (Delta - glb_i*(Lambda*sigma1))
+                        )
+                        +
+                        glb_i * log(-w + 2*vmax + 2.*glb_i*(Lambda*sigma2)) / (
+                                (Delta - glb_i*(Lambda*sigma2))*
+                                (Delta + w - glb_i*(Lambda*sigma2)) *
+                                (glb_i*w - Lambda*(sigma1-sigma2))
+                        )
+                );
+                assert(std::isfinite(addition));
+
+            }
+        }
+        addition *= -0.25*0.5   ;
+
+        value += addition;
     }
     return value;
 }
 
 
 template <typename Q>
-auto correctionFunctionBubble_REG3_Matsubara_PHS_diff(double w, double vmax, double Lambda) {
+auto correctionFunctionBubble_REG3_Matsubara_PHS_diff(double w, double vmax, double Lambda, const double Delta) {
     Q value;
     if (std::abs(w) < 1e-10) {
         if (Lambda/vmax < 1e-5) {
@@ -240,10 +340,10 @@ auto correctionFunctionBubbleAT_REG3_Matsubara_PHS(double w, double vmin, double
                                                    double eta_1, double eta_2, bool diff) -> Q {
     Q val;
     if (diff) {
-        val = correctionFunctionBubble_REG3_Matsubara_PHS_diff<Q>(w, vmax, Lambda) + correctionFunctionBubble_REG3_Matsubara_PHS_diff<Q>(w, -vmin, Lambda);
+        val = correctionFunctionBubble_REG3_Matsubara_PHS_diff<Q>(w, vmax, Lambda, Delta) + correctionFunctionBubble_REG3_Matsubara_PHS_diff<Q>(w, -vmin, Lambda, Delta);
     }
     else {
-        val = correctionFunctionBubble_REG3_Matsubara_PHS_nondiff<Q>(w, vmax, Lambda) + correctionFunctionBubble_REG3_Matsubara_PHS_nondiff<Q>(w, -vmin, Lambda);
+        val = correctionFunctionBubble_REG3_Matsubara_PHS_nondiff<Q>(w, vmax, Lambda, Delta) + correctionFunctionBubble_REG3_Matsubara_PHS_nondiff<Q>(w, -vmin, Lambda, Delta);
     }
 
     isfinite(val);
@@ -298,8 +398,8 @@ auto correctionFunctionBubbleP_REG4_Matsubara_PHS(double w, double vmin, double 
 
 template <typename Q> // TODO(medium): Split up into several functions?
 auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
-                                 Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
-    Q eps_p = glb_epsilon + Sigma_H;
+                                 double epsilon, Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
+    Q eps_p = epsilon + Sigma_H;
     if (REG == 2) {
         if (KELDYSH) {
             return correctionFunctionBubbleAT_REG2_Keldysh(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
@@ -333,8 +433,8 @@ auto correctionFunctionBubbleAT (double w, double vmin, double vmax,
 
 template <typename Q>
 auto correctionFunctionBubbleP (double w, double vmin, double vmax,
-                                Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
-    Q eps_p = glb_epsilon + Sigma_H;
+                                double epsilon, Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, bool diff) -> Q {
+    Q eps_p = epsilon + Sigma_H;
     if (REG==2) {
         if (KELDYSH) {
             return correctionFunctionBubbleP_REG2_Keldysh(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
@@ -368,11 +468,11 @@ auto correctionFunctionBubbleP (double w, double vmin, double vmax,
 /** Wrapper for the two functions above, distinguishing a/t channels from p channel. */
 template <typename Q>
 auto correctionFunctionBubble (double w, double vmin, double vmax,
-                               Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, char channel, bool diff) -> Q {
+                               double epsilon, Q Sigma_H, double Delta, double Lambda, double eta_1, double eta_2, char channel, bool diff) -> Q {
     if (channel == 'p')
-        return correctionFunctionBubbleP (w, vmin, vmax, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
+        return correctionFunctionBubbleP (w, vmin, vmax, epsilon, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
     else
-        return correctionFunctionBubbleAT(w, vmin, vmax, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
+        return correctionFunctionBubbleAT(w, vmin, vmax, epsilon, Sigma_H, Delta, Lambda, eta_1, eta_2, diff);
 }
 
 #endif //KELDYSH_MFRG_BUBBLE_CORRECTIONS_HPP

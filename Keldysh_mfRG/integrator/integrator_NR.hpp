@@ -208,7 +208,7 @@ public:
             : integrand(integrand1, b), adaptor(integrator_tol_rel, integrand) {}
 
     auto integrate() -> Q {
-        return adaptor.integrate(1e-20, 1.);
+        return adaptor.integrate(1e-14, 1.);
     }
 
 };
@@ -226,7 +226,7 @@ public:
             : integrand(integrand1, b), adaptor(integrator_tol_rel, integrand) {}
 
     auto integrate() -> Q {
-        return adaptor.integrate(1e-20, 1.);
+        return adaptor.integrate(1e-14, 1.);
     }
 
 };

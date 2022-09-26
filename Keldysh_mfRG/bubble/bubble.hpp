@@ -41,7 +41,7 @@ public:
      * @param i_in  : internal structure index
      * @return comp : value of the bubble evaluated at (iK, v1, v2)
      */
-    auto value(int iK, double v1, double v2, int i_in) const -> Q{
+    auto value(int iK, freqType v1, freqType v2, int i_in) const -> Q{
         Q ans;
         if(diff){
             if (KELDYSH){
@@ -130,11 +130,11 @@ public:
     }
 
     template<char ch_bubble>
-    Q value_Matsubara(const double w, const double vpp, int i_in) const {
+    Q value_Matsubara(const freqType w, const freqType vpp, int i_in) const {
         Q result;
 
-        double v1 = convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w);
-        double v2 = convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w);
+        freqType v1 = convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w);
+        freqType v2 = convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w);
         if (diff) {
             result = g.valsmooth(0, v1, i_in) * s.valsmooth(0, v2, i_in) + s.valsmooth(0, v1, i_in) * g.valsmooth(0, v2, i_in);
 
@@ -159,14 +159,14 @@ public:
      * @param channel : channel to which the bubble belongs
      * @return Q      : value of the bubble evaluated at the arguments described above (usually comp)
      */
-    auto value(int iK, double w, double vpp, int i_in, char channel) const -> Q {
-        double wa_1, wa_2, wp_1, wp_2, wt_1, wt_2;
+    auto value(int iK, freqType w, freqType vpp, int i_in, char channel) const -> Q {
+        freqType wa_1, wa_2, wp_1, wp_2, wt_1, wt_2;
         if (KELDYSH || ZERO_T){
             wa_1 = wa_2 = wp_1 = wp_2 = wt_1 = wt_2 = w / 2.;
         }
         else{ // bosonic frequencies have to be rounded to an integer value for finite-temperature Matsubara calculation
-            wa_1 = wp_2 = wt_1 = floor2bfreq(w / 2.);
-            wa_2 = wp_1 = wt_2 = ceil2bfreq(w / 2.);
+            wa_1 = wp_2 = wt_1 = floor2bfreq(w / 2);
+            wa_2 = wp_1 = wt_2 = ceil2bfreq(w / 2);
         } // TODO(medium): Put this first part into an extra function?
         Q Pival;
         switch (channel) {
@@ -186,82 +186,32 @@ public:
     }
 
     template<char ch_bubble>
-    auto convert_to_fermionic_frequencies_1(double vpp, double w) const -> double {
+    auto convert_to_fermionic_frequencies_1(freqType vpp, freqType w) const -> freqType {
         if constexpr(KELDYSH || ZERO_T) {
             if constexpr(ch_bubble == 'p') return vpp + w * 0.5;
             else return vpp - w * 0.5;
         }
-        else { // Matsubata zeroT
-            if constexpr(ch_bubble == 'p') return vpp + ceil2bfreq(w * 0.5);
-            else return vpp - floor2bfreq(w * 0.5);
+        else { // Matsubata finiteT
+            if constexpr(ch_bubble == 'p') return vpp + ceil2bfreq(w / 2);
+            else return vpp - floor2bfreq(w / 2);
         }
     }
     template<char ch_bubble>
-    auto convert_to_fermionic_frequencies_2(double vpp, double w) const -> double {
+    auto convert_to_fermionic_frequencies_2(freqType vpp, freqType w) const -> freqType {
         if constexpr(KELDYSH || ZERO_T) {
             if constexpr(ch_bubble == 'p') return w * 0.5 - vpp;
             else return vpp + w * 0.5;
         }
         else { // Matsubata zeroT
-            if constexpr(ch_bubble == 'p') return floor2bfreq(w * 0.5) - vpp;
-            else return vpp + ceil2bfreq(w * 0.5);
+            if constexpr(ch_bubble == 'p') return floor2bfreq(w / 2) - vpp;
+            else return vpp + ceil2bfreq(w / 2);
         }
     }
 
 
     template<char ch_bubble>
-    auto value_vectorized(const double w, const double vpp, const int i_in) const {
-        if constexpr(KELDYSH and CONTOUR_BASIS != 1)
-        {
-            //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
-            using result_type = Eigen::Matrix<Q, 4, 4>;
-            Q GR_1 = g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            Q GA_1 = conj(GR_1);
-            Q GK_1 = g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            Q GR_2 = g.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-            Q GA_2 = conj(GR_2);
-            Q GK_2 = g.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-
-            result_type result;
-
-        if (diff) {
-            Q SR_1 = s.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w),i_in);
-            Q SA_1 = conj(SR_1);
-            Q SK_1 = s.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w),i_in);
-            Q SR_2 = s.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w),i_in);
-            Q SA_2 = conj(SR_2);
-            Q SK_2 = s.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w),i_in);
-            if constexpr(ch_bubble == 'p') {
-                result << 0.,                 0.,                        0.,           SA_1*GA_2+GA_1*SA_2,
-                        0.,                   0.,                 SA_1*GR_2+GA_1*SR_2, SA_1*GK_2+GA_1*SK_2,
-                        0.,                  SR_1*GA_2+GR_1*SA_2,        0.,           SK_1*GA_2+GK_1*SA_2,
-                        SR_1*GR_2+GR_1*SR_2, SR_1*GK_2+GR_1*SK_2, SK_1*GR_2+GK_1*SR_2, SK_1*GK_2+GK_1*SK_2;
-            }
-            else { // a or t -channel
-                result << 0.,                 0.,                        0.,           SA_1*GR_2+GA_1*SR_2,
-                        0.,                  0.,                  SA_1*GA_2+GA_1*SA_2, SA_1*GK_2+GA_1*SK_2,
-                        0.,                  SR_1*GR_2+GR_1*SR_2,        0.,           SK_1*GR_2+GK_1*SR_2,
-                        SR_1*GA_2+GR_1*SA_2, SR_1*GK_2+GR_1*SK_2, SK_1*GA_2+GK_1*SA_2, SK_1*GK_2+GK_1*SK_2;
-            }
-        }
-        else {
-            if constexpr(ch_bubble=='p') {
-                result <<    0.,         0.,         0., GA_1*GA_2,
-                        0.,         0.,       GA_1*GR_2, GA_1*GK_2,
-                        0.,        GR_1*GA_2,        0., GK_1*GA_2,
-                        GR_1*GR_2, GR_1*GK_2, GK_1*GR_2, GK_1*GK_2;
-            }
-            else { // a or t -channel
-                result <<    0.,         0.,       0.,   GA_1*GR_2,
-                        0.,         0.,       GA_1*GA_2, GA_1*GK_2,
-                        0.,        GR_1*GR_2,        0., GK_1*GR_2,
-                        GR_1*GA_2, GR_1*GK_2, GK_1*GA_2, GK_1*GK_2;
-
-                }
-            }
-            return result;
-        }
-        else if constexpr(KELDYSH and CONTOUR_BASIS == 1) {
+    auto value_vectorized(const freqType w, const freqType vpp, const int i_in) const {
+        if constexpr(KELDYSH) {
             //static_assert(KELDYSH, "vector-valued integrand only allowed for Keldysh formalism.");
             using result_type = Eigen::Matrix<Q, 4, 4>;
             using buffertype_propagator = Eigen::Matrix<Q, 2, 2>;

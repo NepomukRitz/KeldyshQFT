@@ -237,7 +237,7 @@ namespace multidimensional
             const auto flat_start = flat_index(index_type({static_cast<size_t>(i)...}));;
             return elements.template segment<vecsize>(flat_start);
         }
-        template <std::size_t pos_first_freq_index, std::size_t freqrank, std::size_t vecsize>
+        template <std::size_t vecsize>
         constexpr auto at_vectorized(const index_type & idx  ) const -> Eigen::Matrix<T,vecsize,1>{
 #ifndef NDEBUG
             for (size_t it = 0; it < depth; it++) {
@@ -252,6 +252,16 @@ namespace multidimensional
             assert(flat_idx+vecsize <= (size_t)elements.size());
 
             return elements.template segment<vecsize>(flat_idx);
+        }
+        template <std::size_t vecsize>
+        void set_vectorized(const Eigen::Matrix<T, vecsize, 1>& value, const index_type & idx  ) {
+#ifndef NDEBUG
+            for (size_t it = 0; it < depth; it++) {
+                assert(idx[it] < m_length[it]);
+            }
+#endif
+            const auto flat_start = flat_index(idx);
+            elements.template segment<vecsize>(flat_start) = value;
         }
 
         template <my_index_t num_first_dims>

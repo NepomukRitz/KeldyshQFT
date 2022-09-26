@@ -7,7 +7,7 @@
 #include "utilities/mpi_setup.hpp"
 #include "mfRG_flow/flow.hpp"
 #include "tests/test_perturbation_theory.hpp"
-#include "tests/test_interpolation.hpp"
+//#include "tests/test_interpolation.hpp"
 #include "utilities/util.hpp"
 #include "utilities/hdf5_routines.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
@@ -21,24 +21,25 @@
 
 
 auto main(int argc, char * argv[]) -> int {
-
-    std::cout << "number of args: " << argc-1 << ", expected: 2" << std::endl;
-    const int n_loops = atoi(argv[1]);
-    glb_T = atof(argv[2]);
-
 #ifdef USE_MPI
     if (MPI_FLAG) {
         MPI_Init(nullptr, nullptr);
     }
 #endif
 
+    /// Parse and check command line arguments:
+    utils::print("number of args: ", argc-1, ", expected: 2 \n");
+    const int n_loops = atoi(argv[1]);
+    const int n_nodes = atoi(argv[2]);
+    //const double U_in = atof(argv[3]);
+    //const double T_in = atof(argv[4]);
+    //const double Gamma_in = atof(argv[5]);
+    //const double Vg_in = atof(argv[6]);
 
-    utils::print_job_info();
-    utils::check_input();
+
 
     //
     //test_PT4(0.5, true);
-    //test_PT_state<state_datatype>( data_dir+filename, 1.8, false);
     //test_interpolate_K12<state_datatype>(1.8);
     //test_compare_with_Vienna_code();
     //findBestWscale4K1<state_datatype>(1.8);
@@ -47,22 +48,45 @@ auto main(int argc, char * argv[]) -> int {
 
 
 
-    /// config for fRG runs:
+
+
+    ///fRG runs:
     fRG_config config;
     config.nODE_ = 50;
     config.epsODE_abs_ = 1e-8;
-    config.epsODE_rel_ = 1e-5;
+    config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
-    config.U = 1.;
-    //config.save_intermediateResults = true;
-    //n_loop_flow(data_dir+utils::generate_filename(config), config);
-    //test_symmetries(1.8, config);
+    config.U = 1.0;
+    config.T = 0.1;
+    config.Gamma = 0.2;
+    config.epsilon = - config.U * 0.5;
+    config.save_intermediateResults = false;
+    config.number_of_nodes = n_nodes;
+
+    utils::check_input(config);
+    utils::print_job_info(config);
+    std::string filename = utils::generate_filename(config);
+
+    /// Job and Data directory
+    std::string job = "T=" + std::to_string(config.T);
+    job += "_U=" + std::to_string(config.U);
+#ifndef PARTICLE_HOLE_SYMM
+    job += "_eVg=" + std::to_string(config.Vg);
+#endif
+    data_dir = utils::generate_data_directory(job);
+
+    n_loop_flow(data_dir+filename, config);
+    //test_symmetries(1., config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
+    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
 
 
-    /// Parquet runs:
-    const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.};
-    run_parquet(myU_NRG);
+    ///parquet runs:
+    const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
+    run_parquet(config, myU_NRG, 1);
+    //run_parquet(config, myU_NRG, 2);
+    //run_parquet(config, myU_NRG, 3);
+
 
     /// Perturbation Theory
     //const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
@@ -76,7 +100,7 @@ auto main(int argc, char * argv[]) -> int {
     /*
     // SIAM PT4 specific:
     data_dir = "../Data_SIAM_PT4/better_resolution_for_K2/";
-    //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/SOPT_integrand/eVg_over_U_" + std::to_string(glb_Vg / glb_U) + "/";
+    //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/SOPT_integrand/eVg_over_U_" + std::to_string((config.epsilon+config.U*0.5) / glb_U) + "/";
     //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/smaller_integration_interval/";
     utils::makedir(data_dir);
 

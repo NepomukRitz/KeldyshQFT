@@ -1,29 +1,29 @@
 #include "propagator.hpp"
 
-auto Fermi_distr(double v, double mu) -> double {
-    // return 1./(exp((v-mu)/glb_T)+1.);
-    if constexpr (!ZERO_T) return 0.5 * (1. - tanh((v-mu)/(2.*glb_T))); // numerically preferential
+auto Fermi_distr(const double v, const double mu, const double T) -> double {
+    // return 1./(exp((v-mu)/T)+1.);
+    if constexpr (!ZERO_T) return 0.5 * (1. - tanh((v-mu)/(2.*T))); // numerically preferential
     else return (v-mu) < 0. ? 1. : 0.;
 }
 
-auto Fermi_fac(double v, double mu) -> double {
-    if constexpr (!ZERO_T) return tanh((v-mu)/(2.*glb_T));
+auto Fermi_fac(const double v, const double mu, const double T) -> double {
+    if constexpr (!ZERO_T) return tanh((v-mu)/(2.*T));
     else return sgn(v-mu);
 }
 
-auto Eff_distr(double v) -> double {
-    if (EQUILIBRIUM) return Fermi_distr(v, glb_mu);
-    else return 0.5 * (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
+auto Eff_distr(const double v, const double T) -> double {
+    if (EQUILIBRIUM) return Fermi_distr(v, glb_mu, T);
+    else return 0.5 * (Fermi_distr(v, glb_mu + glb_V / 2., T) + Fermi_distr(v, glb_mu - glb_V / 2., T));
 }
 
-auto Eff_fac(double v) -> double {
-    if (EQUILIBRIUM) return Fermi_fac(v, glb_mu);
-    else return 1. - (Fermi_distr(v, glb_mu + glb_V / 2.) + Fermi_distr(v, glb_mu - glb_V / 2.));
+auto Eff_fac(const double v, const double T) -> double {
+    if (EQUILIBRIUM) return Fermi_fac(v, glb_mu, T);
+    else return 1. - (Fermi_distr(v, glb_mu + glb_V / 2., T) + Fermi_distr(v, glb_mu - glb_V / 2., T));
 }
 
-double Fermi_distribution(const double nu) {
+double Fermi_distribution(const double nu, const double T) {
     if constexpr (not ZERO_T){
-        return 1 / (exp(nu / glb_T) + 1.);
+        return 1 / (exp(nu / T) + 1.);
     }
     else{
         if (nu > 0.) return 0.;
@@ -48,51 +48,3 @@ auto Propagator<double>::SK(const double v, const int i_in) const -> double {
     return 0.;
 }
 
-template <>
-auto Propagator<double>::SR_REG2(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
-template <>
-auto Propagator<double>::GR_REG2_SIAM(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
-template <>
-auto Propagator<double>::GM_REG2_Hubbard(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! The hybridization regulator only handles complex numbers!");
-    assert(false);
-    return 0.;
-}
-
-template <>
-auto Propagator<double>::GM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
-    assert(false);
-    return 0.;
-}
-
-template <>
-auto Propagator<double>::SM_REG2_SIAM_NoPHS(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
-    assert(false);
-    return 0.;
-}
-
-template <>
-auto Propagator<double>::GR_REG3_SIAM(const double v, const int i_in) const -> double {
-    utils::print("Error! Keldysh computations require complex numbers! Abort.");
-    assert(false);
-    return 0.;
-}
-
-template <>
-auto Propagator<double>::GM_REG3_SIAM_NoPHS(const double v, const int i_in) const -> double {
-    utils::print("Caution, some settings must be inconsistent! Without particle hole symmetry we should only have complex numbers!");
-    assert(false);
-    return 0.;
-}

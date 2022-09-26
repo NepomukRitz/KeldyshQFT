@@ -8,6 +8,7 @@
 #include "bubble_corrections.hpp"
 #include "loop_corrections.hpp"
 #include <cmath>                        // for log function
+#include "../integrator/integrator.hpp"
 
 /// Possible unit-tests:
 /// compare with quadrature routines for (semi-)infinite intervals
@@ -15,7 +16,11 @@
 
 // TODO(medium) Write a class containing functions for all correction functions to minimize the number of times that many arguments have to be given to functions.
 
-
+/// Computes tails via quadrature routine
+template <typename Q, typename Integrand>
+auto asymp_corrections_bubble_via_quadrature(const Integrand& integrand, const double vmin, const double vmax) -> Q {
+    return integrator_onlyTails(integrand, vmin, vmax);
+}
 
 /**
  * Compute the analytical result for the asymptotic tails of the bubble integral, assuming the self-energy to be decayed
@@ -43,25 +48,25 @@
  * @param channel         : Diagrammatic channel
  * @return                : Value of the asymptotic correction
  */
-template <char channel, typename Q,
-          vertexType symmetry_left,
-          vertexType symmetry_right>
+template <char channel, int spin, typename Q,
+          typename vertexType_1,
+          typename vertexType_2>
 auto asymp_corrections_bubble(K_class k,
-                              const GeneralVertex<Q, symmetry_left>& vertex1,
-                              const GeneralVertex<Q, symmetry_right>& vertex2,
+                              const vertexType_1& vertex1,
+                              const vertexType_2& vertex2,
                               const Propagator<Q>& G,
                               double vmin, double vmax,
-                              double w, double v, double vp, int i0_in, int i2, int i_in, bool diff, int spin) -> Q {
+                              freqType w, freqType v, freqType vp, int i0_in, int i2, int i_in, bool diff) -> Q {
 
     int i0;                 // external Keldysh index (in the range [0,...,15])
     double eta_1, eta_2;    // +1/-1 distinguish retarded/advanced components of first and second propagator
     Q Sigma_H = G.selfenergy.asymp_val_R;             // Hartree self-energy
     double Delta;
     if (REG==2) {
-        Delta = (glb_Gamma + G.Lambda) / 2.;       // Hybridization (~ flow parameter) at which the bubble is evaluated
+        Delta = (G.Gamma + G.Lambda) / 2.;       // Hybridization (~ flow parameter) at which the bubble is evaluated
     }
     else {
-        Delta = glb_Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
+        Delta = G.Gamma / 2.;                    // Hybridization (~ flow parameter) at which the bubble is evaluated
     }
     Q res{}, res_l_V, res_r_V, res_l_Vhat, res_r_Vhat;  // define result and vertex values
 
@@ -137,86 +142,204 @@ auto asymp_corrections_bubble(K_class k,
 
     // Define the arguments of left and right vertices. The value of the integration variable is set to 10*vmin, which
     // lies outside the vertex frequency grid and should thus be equivalent to +/- infinity.
-    VertexInput input_l (indices[0], spin, w, v, 10.*vmin, i_in, channel);
-    VertexInput input_r (indices[1], spin, w, 10.*vmin, vp, i_in, channel);
+    VertexInput input_l (indices[0], SBE_DECOMPOSITION ? 0 : spin, w, v, 10*vmin+1, i_in, channel);
+    VertexInput input_r (indices[1], SBE_DECOMPOSITION ? 0 : spin, w, 10*vmin+1, vp, i_in, channel);
 
     // compute values of left/right vertex
-    switch (k) {
-        case k1:
-            res_l_V = vertex1.template left_same_bare<channel>(input_l);
-            res_r_V = vertex2.template right_same_bare<channel>(input_r);
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+    Q K1L, K1R;
+    Q K1L_hat, K1R_hat;
+    if constexpr (not SBE_DECOMPOSITION) {
+        switch (k) {
+            case k1:
+                res_l_V = vertex1.template left_same_bare<channel>(input_l);
+                res_r_V = vertex2.template right_same_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
-            break;
-        case k2:
-            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_V = vertex2.template right_same_bare<channel>(input_r);
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
+                break;
+            case k2:
+                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_V = vertex2.template right_same_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare<channel>(input_r);
 
-            break;
-        case k2b:
-            res_l_V = vertex1.template left_same_bare<channel>(input_l);
-            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+                break;
+            case k2b:
+                res_l_V = vertex1.template left_same_bare<channel>(input_l);
+                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_same_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
 
-            break;
-        case k3:
-            res_l_V = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_V = vertex2.template right_diff_bare<channel>(input_r);
+                break;
+            case k3:
+                res_l_V = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_V = vertex2.template right_diff_bare<channel>(input_r);
 
-            input_l.spin = 1 - spin;
-            input_r.spin = 1 - spin;
-            res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
-            res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
-            break;
-        default:;
+                input_l.spin = 1 - spin;
+                input_r.spin = 1 - spin;
+                res_l_Vhat = vertex1.template left_diff_bare<channel>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare<channel>(input_r);
+                break;
+            default:;
+        }
+    }
+    else { // SBE_DECOMPOSITION
+        //assert(false); // TODO: Fix problems with analytic tails for SBE ? (alternatively just use quadrature)
+        assert(not KELDYSH and SWITCH_SUM_N_INTEGRAL);
+        switch (k) {
+            case k1: {
+                VertexInput input_for_expanded_vertex = input_l;
+                input_for_expanded_vertex.spin = 0;
+
+                K1L    = vertex1.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+                K1R    = vertex2.template get_w_r_value_symmetry_expanded_nondiff<spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+
+
+                res_l_V = vertex1.template left_same_bare_symmetry_expanded<spin,channel,Q>(input_l);
+                res_r_V = vertex2.template right_same_bare_symmetry_expanded<spin,channel,Q>(input_r);
+
+
+                K1L_hat = vertex1.template get_w_r_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+                K1R_hat = vertex2.template get_w_r_value_symmetry_expanded_nondiff<1 - spin, channel, channel, k1, Q>(input_for_expanded_vertex);
+
+                res_l_Vhat = vertex1.template left_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
+            }
+                break;
+            case k2:
+                res_l_V = vertex1.template left_diff_bare_symmetry_expanded<spin, channel, Q>(input_l);
+                res_r_V = vertex2.template right_same_bare_symmetry_expanded<spin, channel, Q>(input_r);
+
+                res_l_Vhat = vertex1.template left_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
+
+                break;
+            case k2b:
+                res_l_V = vertex1.template left_same_bare_symmetry_expanded<spin, channel, Q>(input_l);
+                res_r_V = vertex2.template right_diff_bare_symmetry_expanded<spin, channel, Q>(input_r);
+
+                res_l_Vhat = vertex1.template left_same_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
+
+                break;
+            case k3:
+                res_l_V = vertex1.template left_diff_bare_symmetry_expanded<spin, channel, Q>(input_l);
+                res_r_V = vertex2.template right_diff_bare_symmetry_expanded<spin, channel, Q>(input_r);
+
+                res_l_Vhat = vertex1.template left_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_l);
+                res_r_Vhat = vertex2.template right_diff_bare_symmetry_expanded<1 - spin, channel, Q>(input_r);
+                break;
+            default:;
+        }
+
     }
 
     // compute the value of the (analytically integrated) bubble
-    Q Pival = correctionFunctionBubble(w, vmin, vmax, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
+    Q Pival = correctionFunctionBubble(w * ((KELDYSH_FORMALISM or ZERO_T) ? 1. : M_PI*G.T), vmin * ((KELDYSH_FORMALISM or ZERO_T) ? 1. : M_PI*G.T), vmax * ((KELDYSH_FORMALISM or ZERO_T) ? 1. : M_PI*G.T), G.epsilon, Sigma_H, Delta, G.Lambda, eta_1, eta_2, channel, diff);
 
-    // compute result, with spin sum depending on the channel
-    switch (channel) {
-        case 'a':
-            if (spin == 0) {
-                res = res_l_V * Pival * res_r_V;
+
+    if constexpr (SBE_DECOMPOSITION) {
+        if ((channel == 't' and spin == 0) or (channel == 'a' and spin == 1)) {
+
+            switch (k) {
+                case k1:
+                    res =   (K1L + K1L_hat) * (res_l_V + res_l_Vhat) * Pival * (res_r_V + res_r_Vhat) * (K1R)
+                          + (K1L + K1L_hat) * (res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R + K1R_hat)
+                          + (K1L + K1L_hat) * (res_l_V) * Pival * (res_r_V + res_r_Vhat) * (K1R + K1R_hat)
+                          + (K1L + K1L_hat) * (res_l_V) * Pival * (res_r_V) * (K1R)
+                          + (K1L) * (res_l_V) * Pival * (res_r_V + res_r_Vhat) * (K1R)
+                          + (K1L) * (res_l_V) * Pival * (res_r_V) * (K1R + K1R_hat)
+                          + (K1L) * (res_l_V + res_l_Vhat) * Pival * (res_r_V + res_r_Vhat) * (K1R + K1R_hat)
+                          + (K1L) * (res_l_V + res_l_Vhat) * Pival * (res_r_V) * (K1R);
+                    break;
+                case k2:
+                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
+                    break;
+                case k2b:
+                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
+                    break;
+                case k3:
+                    res = (res_l_V + res_l_Vhat) * Pival * res_r_V + res_l_V * Pival * (res_r_V + res_r_Vhat);
+                    break;
+                default:;
             }
+        } else if (channel == 'p' and spin == 1) {
+
+            switch (k) {
+                case k1:
+                    res = K1L * (res_l_Vhat) * Pival * (res_r_Vhat) * K1R_hat;
+                    break;
+                case k2:
+                    res = res_l_Vhat * Pival * (res_r_V);
+                    break;
+                case k2b:
+                    res = (res_l_V) * Pival * res_r_Vhat;
+                    break;
+                case k3:
+                    res = res_l_V * Pival * res_r_Vhat;
+                    break;
+                default:;
+            }
+        } else {
+
+            switch (k) {
+                case k1:
+                    res = K1L * (res_l_V) * Pival * (res_r_V) * K1R;
+                    break;
+                case k2:
+                    res = res_l_V * Pival * (res_r_V);
+                    break;
+                case k2b:
+                    res = (res_l_V) * Pival * res_r_V;
+                    break;
+                case k3:
+                    res = res_l_V * Pival * res_r_V;
+                    break;
+                default:;
+            }
+        }
+    }
+    else {
+        // compute result, with spin sum depending on the channel
+        switch (channel) {
+            case 'a':
+                if (spin == 0) {
+                    res = res_l_V * Pival * res_r_V;
+                }
 #if DEBUG_SYMMETRIES
-            else if (spin == 1) {
-                res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-            }
+                else if (spin == 1) {
+                    res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+                }
 #endif
-            break;
-        case 'p':
-            if (spin == 0) {
-                res = res_l_V * Pival * res_r_V;
-            }
+                break;
+            case 'p':
+                if (spin == 0) {
+                    res = res_l_V * Pival * res_r_V;
+                }
 #if DEBUG_SYMMETRIES
-            else if (spin == 1) {
-                res = res_l_V * Pival * res_r_Vhat;
-            }
+                else if (spin == 1) {
+                    res = res_l_V * Pival * res_r_Vhat;
+                }
 #endif
-            break;
-        case 't':
-            if (spin == 0) {
-                res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
-            }
+                break;
+            case 't':
+                if (spin == 0) {
+                    res = res_l_V * Pival * (res_r_V + res_r_Vhat) + (res_l_V + res_l_Vhat) * Pival * res_r_V;
+                }
 #if DEBUG_SYMMETRIES
-            else if (spin == 1) {
-                 res = res_l_V * Pival * res_r_V;
-            }
+                else if (spin == 1) {
+                    res = res_l_V * Pival * res_r_V;
+                }
 #endif
-            break;
-        default:;
+                break;
+            default:;
+        }
     }
     assert(isfinite(res));
     return res;
@@ -241,14 +364,14 @@ auto asymp_corrections_bubble(K_class k,
  * @param all_spins  : Determines if spin sum in loop is performed.
  * @return
  */
-template <typename Q, vertexType vertType> // TODO(medium): split up into two functions
-auto asymp_corrections_loop(const GeneralVertex<Q,vertType>& vertex,
+template <typename Q, typename vertexType> // TODO(medium): split up into two functions
+auto asymp_corrections_loop(const vertexType& vertex,
                             const Propagator<Q>& G,
                             double vmin, double vmax,
                             double v, int iK, int ispin, int i_in, const bool all_spins) -> Q {
 
     Q Sigma_H = G.selfenergy.asymp_val_R;       // Hartree self-energy
-    double Delta = (glb_Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
+    double Delta = (G.Gamma + G.Lambda) / 2.; // Hybridization (~ flow parameter) at which the bubble is evaluated
 
     if (KELDYSH){
         // Keldysh components of the vertex needed for retarded and Keldysh self-energy
@@ -282,9 +405,9 @@ auto asymp_corrections_loop(const GeneralVertex<Q,vertType>& vertex,
         }
 
         // analytical integration of the propagator
-        Q GR = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
-        Q GA = correctionFunctionSelfEnergy(1, vmin, vmax, Sigma_H, Delta, G.type);
-        Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, Sigma_H, Delta, G.type);
+        Q GR = correctionFunctionSelfEnergy(0, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
+        Q GA = correctionFunctionSelfEnergy(1, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
+        Q GK = correctionFunctionSelfEnergy(2, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
 
         return factorRetarded * GR + factorAdvanced * GA + factorKeldysh * GK;
     }
@@ -301,7 +424,7 @@ auto asymp_corrections_loop(const GeneralVertex<Q,vertType>& vertex,
             Vertexfactor += vertex.tvertex().left_same_bare(input, vertex.avertex());
         }
         // analytical integration of the propagator
-        Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, Sigma_H, Delta, G.type);
+        Q Gfactor = correctionFunctionSelfEnergy(0, vmin, vmax, G.epsilon, Sigma_H, Delta, G.type);
 
         return Vertexfactor * Gfactor;
     }

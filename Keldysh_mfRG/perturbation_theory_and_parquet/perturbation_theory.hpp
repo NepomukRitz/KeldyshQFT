@@ -18,6 +18,7 @@
 #include "HUBBARD_sopt_selfenergy.hpp"
 #include "../bubble/precalculated_bubble.hpp"
 #include "../utilities/write_data2file.hpp"
+#include "../utilities/hdf5_routines.hpp"
 
 template <typename Q>
 auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
@@ -31,7 +32,7 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
 }
 
 template <typename Q, class Bubble_Object>
-void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi){
+void vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi, const fRG_config& config){
     std::string channels = "apt";
     for (char r: channels) {
 #if not defined(NDEBUG)
@@ -39,7 +40,7 @@ void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_
         utils::print_add(r, false);
         utils::print_add(" ... ", false);
 #endif
-        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r);
+        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r, config);
 #if not defined(NDEBUG)
         utils::print_add("done.", true);
 #endif
@@ -48,35 +49,36 @@ void vertexInSOPT(Vertex<Q>& PsiVertex, const State<Q>& bareState, const Bubble_
 
 template <typename Q, class Bubble_Object>
 void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, const Bubble_Object& Pi){
-    Propagator<Q> barePropagator(bareState.Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(bareState.Lambda, bareState.selfenergy, 'g', bareState.config);    //Bare propagator
 
-    GeneralVertex<Q,symmetric_r_irred> bubble_a_r (bareState.Lambda);
-    bubble_a_r.set_Ir(true);
-    bubble_a_r.set_frequency_grid(bareState.vertex);
+    GeneralVertex<Q,symmetric_r_irred, false> bubble_a (bareState.Lambda);
+    bubble_a.set_Ir(true);
+    bubble_a.set_frequency_grid(bareState.vertex);
     //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bubble_a_r, bareState.vertex, bareState.vertex, Pi, 'a');
+    bubble_function(bareState.vertex, bareState.vertex, bareState.vertex, Pi, 'a', bareState.config);
 
     //Calculate the Self-Energy
-    loop(PsiSelfEnergy, bubble_a_r, barePropagator, false);
+    loop<false,0>(PsiSelfEnergy, bubble_a, barePropagator);
+
 }
 
 void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
-                              const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
+                              const State<comp>& bareState, const Vertex<comp,false>& vertex_in_SOPT,
                               double Lambda);
 
 template <typename Q, class Bubble_Object>
-void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
-    Vertex<Q> bubblevertex_a(Lambda);
+void vertexInTOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const State<Q>& SoptPsi, const Bubble_Object& Pi, double Lambda){
+    Vertex<Q,false> bubblevertex_a(Lambda, SoptPsi.config);
     bubblevertex_a.set_frequency_grid(PsiVertex);
     bubblevertex_a.initialize(0.);
     bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q> bubblevertex_p(Lambda);
+    Vertex<Q,false> bubblevertex_p(Lambda);
     bubblevertex_p.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
 
 #if DEBUG_SYMMETRIES
-    Vertex<Q> bubblevertex_t(Lambda);
+    Vertex<Q,false> bubblevertex_t(Lambda);
     bubblevertex_t.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
@@ -101,16 +103,16 @@ void vertexInTOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, State<Q>& SoptPsi, 
 
 
 template <typename Q, class Bubble_Object>
-void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
-    Vertex<Q> bubblevertex_a(Lambda);
+void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_Object& Pi, double Lambda){
+    Vertex<Q,false> bubblevertex_a(Lambda, bareState.config);
     bubblevertex_a.set_frequency_grid(PsiVertex);
     bubblevertex_a.initialize(0.);
     bubble_function(bubblevertex_a, bareState.vertex, bareState.vertex, Pi, 'a');
-    Vertex<Q> bubblevertex_p(Lambda);
+    Vertex<Q,false> bubblevertex_p(Lambda);
     bubblevertex_p.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p');
-    Vertex<Q> bubblevertex_t(Lambda);
+    Vertex<Q,false> bubblevertex_t(Lambda);
     bubblevertex_t.set_frequency_grid(PsiVertex);
     bubblevertex_t.initialize(0.);
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
@@ -136,7 +138,7 @@ void vertexInFOPT(Vertex<Q>& PsiVertex, State<Q>& bareState, const Bubble_Object
 template<typename Q, class Bubble_Object>
 void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi) {
     State<Q> bareState = State<Q> (Psi.Lambda);
-    bareState.initialize(false);
+    bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
 #if not defined(NDEBUG)
     utils::print("Computing the self energy in SOPT ... ", false);
@@ -153,7 +155,7 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi) {
 
 // Overload of sopt_state, in case no Bubble object has been initialized yet.
 template<typename Q>
-void sopt_state(State<Q>& Psi, const bool diff = false) {
+void sopt_state(State<Q>& Psi, const fRG_config& config, const bool diff = false) {
     assert(Psi.initialized);
 
 #if not defined(NDEBUG)
@@ -161,8 +163,8 @@ void sopt_state(State<Q>& Psi, const bool diff = false) {
 #endif
 
     // Initialize bubble objects
-    Propagator<Q> barePropagator(Psi.Lambda, Psi.selfenergy, 'g');    //Bare propagator
-    Propagator<Q> bareSingleScalePropagator(Psi.Lambda, Psi.selfenergy, diff ? 's' : 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Psi.Lambda, Psi.selfenergy, 'g', Psi.config);    //Bare propagator
+    Propagator<Q> bareSingleScalePropagator(Psi.Lambda, Psi.selfenergy, diff ? 's' : 'g', Psi.config);    //Bare propagator
     //auto Pi = PT_initialize_Bubble(barePropagator);
     Bubble<Q> Pi (barePropagator, bareSingleScalePropagator, diff);
 
@@ -181,7 +183,7 @@ void topt_state(State<Q>& Psi, double Lambda) {
     bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g', Psi.config);    //Bare propagator
     auto Pi = PT_initialize_Bubble(barePropagator);
 
     State<Q> SoptPsi (Psi, Lambda);
@@ -210,7 +212,7 @@ void fopt_state(State<Q>& Psi, double Lambda) {
     bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
 
     // Initialize bubble objects
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g', Psi.config);    //Bare propagator
     auto Pi = PT_initialize_Bubble(barePropagator);
 
     State<Q> SoptPsi (Psi, Lambda);
@@ -245,19 +247,21 @@ class PT_Machine{
 private:
     const unsigned int order;
     const double Lambda;
-    const State<Q> bareState = State<Q>(Lambda, true); // state with bare vertex and Hartree self-energy
-    const Propagator<Q> barePropagator = Propagator<Q>(Lambda, bareState.selfenergy, 'g');
+    const fRG_config& config;
+
+    const State<Q> bareState = State<Q>(Lambda, config, true); // state with bare vertex and Hartree self-energy
+    const Propagator<Q> barePropagator = Propagator<Q>(Lambda, bareState.selfenergy, 'g', config);
     const Bubble<Q> Pi = Bubble<Q> (barePropagator, barePropagator, false); // Works only for the SIAM
 
     /// Vertices to be computed
-    Vertex<Q> SOPT_Vertex = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_Vertex = Vertex<Q>(Lambda);
-    Vertex<Q> FOPT_Vertex = Vertex<Q>(Lambda);
+    Vertex<Q,false> SOPT_Vertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_Vertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> FOPT_Vertex = Vertex<Q,false>(Lambda);
 
     // SOPT vertices containing only specific channels. Useful when computing higher order contributions
-    Vertex<Q> SOPT_avertex = Vertex<Q>(Lambda);
-    Vertex<Q> SOPT_pvertex = Vertex<Q>(Lambda);
-    Vertex<Q> SOPT_tvertex = Vertex<Q>(Lambda);
+    Vertex<Q,false> SOPT_avertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> SOPT_pvertex = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> SOPT_tvertex = Vertex<Q,false>(Lambda);
 
     /// Selfenergy to be computed
     SelfEnergy<Q> SOPT_Selfenergy = bareState.selfenergy; // Already contains the Hartree value.
@@ -268,16 +272,16 @@ private:
     void compute_FOPT();
 
     const std::string channels = "apt";
-    const double Delta = (Lambda + glb_Gamma)/2. ;
-    const double U_over_Delta = glb_U / Delta;
+    const double Delta = (Lambda + config.Gamma)/2. ;
+    const double U_over_Delta = config.U / Delta;
 
     void write_out_results_zero_freq() const;
     void write_out_results_full() const;
 
 public:
-    PT_Machine(const unsigned int order_in, const double U_over_Delta,
+    PT_Machine(const unsigned int order_in, const fRG_config& config_in, const double U_over_Delta,
                const bool write_results_zero_freq=true,
-               const bool write_results_full=false): order(order_in), Lambda(2. * glb_U / U_over_Delta - glb_Gamma){
+               const bool write_results_full=false): order(order_in), config(config_in), Lambda(2. * config_in.U / U_over_Delta - config_in.Gamma){
         assert((order > 0) and (order < 5));
         if (order_in > 2) assert(MAX_DIAG_CLASS >= 2);
         if (order_in > 3) assert(MAX_DIAG_CLASS == 3);
@@ -292,7 +296,7 @@ public:
         if (write_results_zero_freq) utils::print_add("fully retarded vertex components at zero frequency.", true);
         if (write_results_full)      utils::print_add("full state.", true);
         utils::print("For this run we have U over Delta = " + std::to_string(U_over_Delta)
-        + " and eVg over U = " + std::to_string(glb_Vg / glb_U), true);
+        + " and eVg over U = " + std::to_string((config.epsilon+config.U*0.5) / config.U), true);
 
         // perform computations
         compute_SOPT();
@@ -352,7 +356,7 @@ void PT_Machine<Q>::compute_TOPT() {
 
     // Compensate for overcounting the ladder
     utils::print("Compensate for overcounting the ladder...", true);
-    Vertex<Q> TOPT_Ladder = Vertex<Q>(Lambda);
+    Vertex<Q,false> TOPT_Ladder = Vertex<Q,false>(Lambda);
     utils::print("...in the a channel...", true);
     bubble_function(TOPT_Ladder, SOPT_avertex, bareState.vertex, Pi, 'a');
     utils::print("...in the p channel...", true);
@@ -385,8 +389,8 @@ void PT_Machine<Q>::compute_FOPT() {
 
         // Compensate for counting K1 twice in the first two steps
         utils::print("...and compensate for counting K1 twice...", true);
-        Vertex<Q> K1_comp_step1 = Vertex<Q>(Lambda);
-        Vertex<Q> K1_comp = Vertex<Q>(Lambda);
+        Vertex<Q,false> K1_comp_step1 = Vertex<Q,false>(Lambda);
+        Vertex<Q,false> K1_comp = Vertex<Q,false>(Lambda);
         bubble_function(K1_comp_step1, bareState.vertex, SOPT_Vertex, Pi, r);
         bubble_function(K1_comp, K1_comp_step1, bareState.vertex, Pi, r);
 
@@ -396,12 +400,12 @@ void PT_Machine<Q>::compute_FOPT() {
 
     // Compensate overcounting K1, K2 and K2p terms in the third step
     utils::print("Compensate for overcounting K1, K2 and K2p terms before...", true);
-    Vertex<Q> K2_comp = Vertex<Q>(Lambda);
+    Vertex<Q,false> K2_comp = Vertex<Q,false>(Lambda);
     bubble_function(K2_comp, SOPT_Vertex, SOPT_avertex, Pi, 'a');
     bubble_function(K2_comp, SOPT_Vertex, SOPT_pvertex, Pi, 'p');
     bubble_function(K2_comp, SOPT_Vertex, SOPT_tvertex, Pi, 't');
 
-    Vertex<Q> K2p_comp = Vertex<Q>(Lambda);
+    Vertex<Q,false> K2p_comp = Vertex<Q,false>(Lambda);
     bubble_function(K2p_comp, SOPT_avertex, SOPT_Vertex, Pi, 'a');
     bubble_function(K2p_comp, SOPT_pvertex, SOPT_Vertex, Pi, 'p');
     bubble_function(K2p_comp, SOPT_tvertex, SOPT_Vertex, Pi, 't');
@@ -411,7 +415,7 @@ void PT_Machine<Q>::compute_FOPT() {
 
     // Compensate for compensating for the ladder twice in the previous step
     utils::print("... and compensate for overcompensating the ladder in the previous step...", true);
-    Vertex<Q> Ladder_comp = Vertex<Q>(Lambda);
+    Vertex<Q,false> Ladder_comp = Vertex<Q,false>(Lambda);
     bubble_function(Ladder_comp, SOPT_avertex, SOPT_avertex, Pi, 'a');
     bubble_function(Ladder_comp, SOPT_pvertex, SOPT_pvertex, Pi, 'p');
     bubble_function(Ladder_comp, SOPT_tvertex, SOPT_tvertex, Pi, 't');
@@ -433,10 +437,10 @@ void PT_Machine<Q>::write_out_results_zero_freq() const {
     std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
     + std::to_string(U_over_Delta);
 #ifndef PARTICLE_HOLE_SYMM
-    filename += "_and_eVg_over_U_" + std::to_string(glb_Vg / glb_U);
+    filename += "_and_eVg_over_U_" + std::to_string((config.epsilon+config.U*0.5) / config.U);
 #endif
 #ifndef ZERO_TEMP
-    filename += "_and_T_over_Delta_" + std::to_string(glb_T / Delta);
+    filename += "_and_T_over_Delta_" + std::to_string(config.T / Delta);
 #endif
     filename += ".h5";
 
@@ -456,81 +460,81 @@ void PT_Machine<Q>::write_out_results_zero_freq() const {
     VertexInput a_input (7, 0, 0, 0, 0, 0, 'a');
     VertexInput p_input (7, 0, 0, 0, 0, 0, 'p');
     VertexInput t_input (7, 0, 0, 0, 0, 0, 't');
-    rvec SOPT = {SOPT_Vertex.avertex().template valsmooth<k1>(a_input, SOPT_Vertex.tvertex()).real() / glb_U,
-                 SOPT_Vertex.pvertex().template valsmooth<k1>(p_input, SOPT_Vertex.pvertex()).real() / glb_U,
-                 SOPT_Vertex.tvertex().template valsmooth<k1>(t_input, SOPT_Vertex.avertex()).real() / glb_U};
+    rvec SOPT = {SOPT_Vertex.avertex().template valsmooth<k1>(a_input, SOPT_Vertex.tvertex()).real() / config.U,
+                 SOPT_Vertex.pvertex().template valsmooth<k1>(p_input, SOPT_Vertex.pvertex()).real() / config.U,
+                 SOPT_Vertex.tvertex().template valsmooth<k1>(t_input, SOPT_Vertex.avertex()).real() / config.U};
 
     rvec TOPT_K1, TOPT_K2, TOPT_K2p, FOPT_K1, FOPT_K2, FOPT_K2p, FOPT_K3 = {};
     rvec TOPT_K1_imag, TOPT_K2_imag, TOPT_K2p_imag, FOPT_K1_imag, FOPT_K2_imag, FOPT_K2p_imag, FOPT_K3_imag = {};
 
     if (order >= 3){
-        TOPT_K1 = {TOPT_Vertex.avertex().template valsmooth<k1>(a_input, TOPT_Vertex.tvertex()).real() / glb_U,
-                   TOPT_Vertex.pvertex().template valsmooth<k1>(p_input, TOPT_Vertex.pvertex()).real() / glb_U,
-                   TOPT_Vertex.tvertex().template valsmooth<k1>(t_input, TOPT_Vertex.avertex()).real() / glb_U};
+        TOPT_K1 = {TOPT_Vertex.avertex().template valsmooth<k1>(a_input, TOPT_Vertex.tvertex()).real() / config.U,
+                   TOPT_Vertex.pvertex().template valsmooth<k1>(p_input, TOPT_Vertex.pvertex()).real() / config.U,
+                   TOPT_Vertex.tvertex().template valsmooth<k1>(t_input, TOPT_Vertex.avertex()).real() / config.U};
 
-        TOPT_K2 = {TOPT_Vertex.avertex().template valsmooth<k2>(a_input, TOPT_Vertex.tvertex()).real() / glb_U,
-                   TOPT_Vertex.pvertex().template valsmooth<k2>(p_input, TOPT_Vertex.pvertex()).real() / glb_U,
-                   TOPT_Vertex.tvertex().template valsmooth<k2>(t_input, TOPT_Vertex.avertex()).real() / glb_U};
+        TOPT_K2 = {TOPT_Vertex.avertex().template valsmooth<k2>(a_input, TOPT_Vertex.tvertex()).real() / config.U,
+                   TOPT_Vertex.pvertex().template valsmooth<k2>(p_input, TOPT_Vertex.pvertex()).real() / config.U,
+                   TOPT_Vertex.tvertex().template valsmooth<k2>(t_input, TOPT_Vertex.avertex()).real() / config.U};
 
-        TOPT_K2p = {TOPT_Vertex.avertex().template valsmooth<k2b>(a_input, TOPT_Vertex.tvertex()).real() / glb_U,
-                    TOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, TOPT_Vertex.pvertex()).real() / glb_U,
-                    TOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, TOPT_Vertex.avertex()).real() / glb_U};
+        TOPT_K2p = {TOPT_Vertex.avertex().template valsmooth<k2b>(a_input, TOPT_Vertex.tvertex()).real() / config.U,
+                    TOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, TOPT_Vertex.pvertex()).real() / config.U,
+                    TOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, TOPT_Vertex.avertex()).real() / config.U};
     }
 
     if (order == 4){
-        FOPT_K1 = {FOPT_Vertex.avertex().template valsmooth<k1>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
-                   FOPT_Vertex.pvertex().template valsmooth<k1>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
-                   FOPT_Vertex.tvertex().template valsmooth<k1>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
+        FOPT_K1 = {FOPT_Vertex.avertex().template valsmooth<k1>(a_input, FOPT_Vertex.tvertex()).real() / config.U,
+                   FOPT_Vertex.pvertex().template valsmooth<k1>(p_input, FOPT_Vertex.pvertex()).real() / config.U,
+                   FOPT_Vertex.tvertex().template valsmooth<k1>(t_input, FOPT_Vertex.avertex()).real() / config.U};
 
-        FOPT_K2 = {FOPT_Vertex.avertex().template valsmooth<k2>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
-                   FOPT_Vertex.pvertex().template valsmooth<k2>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
-                   FOPT_Vertex.tvertex().template valsmooth<k2>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
+        FOPT_K2 = {FOPT_Vertex.avertex().template valsmooth<k2>(a_input, FOPT_Vertex.tvertex()).real() / config.U,
+                   FOPT_Vertex.pvertex().template valsmooth<k2>(p_input, FOPT_Vertex.pvertex()).real() / config.U,
+                   FOPT_Vertex.tvertex().template valsmooth<k2>(t_input, FOPT_Vertex.avertex()).real() / config.U};
 
-        FOPT_K2p = {FOPT_Vertex.avertex().template valsmooth<k2b>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
-                    FOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
-                    FOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
+        FOPT_K2p = {FOPT_Vertex.avertex().template valsmooth<k2b>(a_input, FOPT_Vertex.tvertex()).real() / config.U,
+                    FOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, FOPT_Vertex.pvertex()).real() / config.U,
+                    FOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, FOPT_Vertex.avertex()).real() / config.U};
 
-        FOPT_K3 = {FOPT_Vertex.avertex().template valsmooth<k3>(a_input, FOPT_Vertex.tvertex()).real() / glb_U,
-                   FOPT_Vertex.pvertex().template valsmooth<k3>(p_input, FOPT_Vertex.pvertex()).real() / glb_U,
-                   FOPT_Vertex.tvertex().template valsmooth<k3>(t_input, FOPT_Vertex.avertex()).real() / glb_U};
+        FOPT_K3 = {FOPT_Vertex.avertex().template valsmooth<k3>(a_input, FOPT_Vertex.tvertex()).real() / config.U,
+                   FOPT_Vertex.pvertex().template valsmooth<k3>(p_input, FOPT_Vertex.pvertex()).real() / config.U,
+                   FOPT_Vertex.tvertex().template valsmooth<k3>(t_input, FOPT_Vertex.avertex()).real() / config.U};
     }
 
 
     // Also store imaginary parts to do consistency checks:
 
-    rvec SOPT_imag = {SOPT_Vertex.avertex().template valsmooth<k1>(a_input, SOPT_Vertex.tvertex()).imag() / glb_U,
-                      SOPT_Vertex.pvertex().template valsmooth<k1>(p_input, SOPT_Vertex.pvertex()).imag() / glb_U,
-                      SOPT_Vertex.tvertex().template valsmooth<k1>(t_input, SOPT_Vertex.avertex()).imag() / glb_U};
+    rvec SOPT_imag = {SOPT_Vertex.avertex().template valsmooth<k1>(a_input, SOPT_Vertex.tvertex()).imag() / config.U,
+                      SOPT_Vertex.pvertex().template valsmooth<k1>(p_input, SOPT_Vertex.pvertex()).imag() / config.U,
+                      SOPT_Vertex.tvertex().template valsmooth<k1>(t_input, SOPT_Vertex.avertex()).imag() / config.U};
     if (order >= 3){
-        TOPT_K1_imag = {TOPT_Vertex.avertex().template valsmooth<k1>(a_input, TOPT_Vertex.tvertex()).imag() / glb_U,
-                        TOPT_Vertex.pvertex().template valsmooth<k1>(p_input, TOPT_Vertex.pvertex()).imag() / glb_U,
-                        TOPT_Vertex.tvertex().template valsmooth<k1>(t_input, TOPT_Vertex.avertex()).imag() / glb_U};
+        TOPT_K1_imag = {TOPT_Vertex.avertex().template valsmooth<k1>(a_input, TOPT_Vertex.tvertex()).imag() / config.U,
+                        TOPT_Vertex.pvertex().template valsmooth<k1>(p_input, TOPT_Vertex.pvertex()).imag() / config.U,
+                        TOPT_Vertex.tvertex().template valsmooth<k1>(t_input, TOPT_Vertex.avertex()).imag() / config.U};
 
-        TOPT_K2_imag = {TOPT_Vertex.avertex().template valsmooth<k2>(a_input, TOPT_Vertex.tvertex()).imag() / glb_U,
-                        TOPT_Vertex.pvertex().template valsmooth<k2>(p_input, TOPT_Vertex.pvertex()).imag() / glb_U,
-                        TOPT_Vertex.tvertex().template valsmooth<k2>(t_input, TOPT_Vertex.avertex()).imag() / glb_U};
+        TOPT_K2_imag = {TOPT_Vertex.avertex().template valsmooth<k2>(a_input, TOPT_Vertex.tvertex()).imag() / config.U,
+                        TOPT_Vertex.pvertex().template valsmooth<k2>(p_input, TOPT_Vertex.pvertex()).imag() / config.U,
+                        TOPT_Vertex.tvertex().template valsmooth<k2>(t_input, TOPT_Vertex.avertex()).imag() / config.U};
 
-        TOPT_K2p_imag = {TOPT_Vertex.avertex().template valsmooth<k2b>(a_input, TOPT_Vertex.tvertex()).imag() / glb_U,
-                         TOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, TOPT_Vertex.pvertex()).imag() / glb_U,
-                         TOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, TOPT_Vertex.avertex()).imag() / glb_U};
+        TOPT_K2p_imag = {TOPT_Vertex.avertex().template valsmooth<k2b>(a_input, TOPT_Vertex.tvertex()).imag() / config.U,
+                         TOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, TOPT_Vertex.pvertex()).imag() / config.U,
+                         TOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, TOPT_Vertex.avertex()).imag() / config.U};
     }
 
     if (order == 4){
-        FOPT_K1_imag = {FOPT_Vertex.avertex().template valsmooth<k1>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
-                        FOPT_Vertex.pvertex().template valsmooth<k1>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
-                        FOPT_Vertex.tvertex().template valsmooth<k1>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+        FOPT_K1_imag = {FOPT_Vertex.avertex().template valsmooth<k1>(a_input, FOPT_Vertex.tvertex()).imag() / config.U,
+                        FOPT_Vertex.pvertex().template valsmooth<k1>(p_input, FOPT_Vertex.pvertex()).imag() / config.U,
+                        FOPT_Vertex.tvertex().template valsmooth<k1>(t_input, FOPT_Vertex.avertex()).imag() / config.U};
 
-        FOPT_K2_imag = {FOPT_Vertex.avertex().template valsmooth<k2>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
-                        FOPT_Vertex.pvertex().template valsmooth<k2>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
-                        FOPT_Vertex.tvertex().template valsmooth<k2>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+        FOPT_K2_imag = {FOPT_Vertex.avertex().template valsmooth<k2>(a_input, FOPT_Vertex.tvertex()).imag() / config.U,
+                        FOPT_Vertex.pvertex().template valsmooth<k2>(p_input, FOPT_Vertex.pvertex()).imag() / config.U,
+                        FOPT_Vertex.tvertex().template valsmooth<k2>(t_input, FOPT_Vertex.avertex()).imag() / config.U};
 
-        FOPT_K2p_imag = {FOPT_Vertex.avertex().template valsmooth<k2b>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
-                         FOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
-                         FOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+        FOPT_K2p_imag = {FOPT_Vertex.avertex().template valsmooth<k2b>(a_input, FOPT_Vertex.tvertex()).imag() / config.U,
+                         FOPT_Vertex.pvertex().template valsmooth<k2b>(p_input, FOPT_Vertex.pvertex()).imag() / config.U,
+                         FOPT_Vertex.tvertex().template valsmooth<k2b>(t_input, FOPT_Vertex.avertex()).imag() / config.U};
 
-        FOPT_K3_imag = {FOPT_Vertex.avertex().template valsmooth<k3>(a_input, FOPT_Vertex.tvertex()).imag() / glb_U,
-                        FOPT_Vertex.pvertex().template valsmooth<k3>(p_input, FOPT_Vertex.pvertex()).imag() / glb_U,
-                        FOPT_Vertex.tvertex().template valsmooth<k3>(t_input, FOPT_Vertex.avertex()).imag() / glb_U};
+        FOPT_K3_imag = {FOPT_Vertex.avertex().template valsmooth<k3>(a_input, FOPT_Vertex.tvertex()).imag() / config.U,
+                        FOPT_Vertex.pvertex().template valsmooth<k3>(p_input, FOPT_Vertex.pvertex()).imag() / config.U,
+                        FOPT_Vertex.tvertex().template valsmooth<k3>(t_input, FOPT_Vertex.avertex()).imag() / config.U};
     }
 
     write_h5_rvecs(filename,
@@ -547,7 +551,7 @@ void PT_Machine<Q>::write_out_results_zero_freq() const {
 template<typename Q>
 void PT_Machine<Q>::write_out_results_full() const {
     const std::string PT_filename = data_dir + "PT4_U_over_Delta=" + std::to_string(U_over_Delta)
-                                    + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(glb_Vg)
+                                    + "_T=" + std::to_string(glb_T) + "_eVg=" + std::to_string(config.epsilon+config.U*0.5)
                                     + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2)
                                     + "_n3=" + std::to_string(nBOS3) + ".h5";
 
@@ -571,10 +575,10 @@ void PT_Machine<Q>::write_out_results_full() const {
 
 template<typename Q>
 void PT_Machine<Q>::debug_TOPT() {
-    Vertex<Q> TOPT_K1_a = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_K1_p = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_K1_t_left = Vertex<Q>(Lambda);
-    Vertex<Q> TOPT_K1_t_right = Vertex<Q>(Lambda);
+    Vertex<Q,false> TOPT_K1_a = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_K1_p = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_K1_t_left = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> TOPT_K1_t_right = Vertex<Q,false>(Lambda);
 
     utils::print("Now calculating K1 contribution for third order...", true);
     utils::print("...in the a channel...", true);
@@ -591,7 +595,7 @@ void PT_Machine<Q>::debug_TOPT() {
     VertexInput p_input (7, 0, 0, 0, 0, 0, 'p');
     VertexInput t_input (7, 0, 0, 0, 0, 0, 't');
 
-    double exact = - 1./2. * (U_over_Delta/M_PI) * (U_over_Delta/M_PI) * glb_U;
+    double exact = - 1./2. * (U_over_Delta/M_PI) * (U_over_Delta/M_PI) * config.U;
 
     const double TOPT_K1_a_val = TOPT_K1_a.value(a_input).real();
     const double TOPT_K1_p_val = TOPT_K1_p.value(p_input).real();
@@ -608,54 +612,54 @@ void PT_Machine<Q>::debug_TOPT() {
 template<typename Q>
 void PT_Machine<Q>::debug_FOPT_K1() {
     utils::print("---------- Build K1-diagrams at fourth order ----------", true);
-    Vertex<Q> a_ladder = Vertex<Q>(Lambda);
-    Vertex<Q> a_nonladder_p = Vertex<Q>(Lambda);
-    Vertex<Q> a_nonladder_t = Vertex<Q>(Lambda);
-    Vertex<Q> p_ladder = Vertex<Q>(Lambda);
-    Vertex<Q> p_nonladder_a = Vertex<Q>(Lambda);
-    Vertex<Q> p_nonladder_t = Vertex<Q>(Lambda);
-    Vertex<Q> t_ladder = Vertex<Q>(Lambda);
-    Vertex<Q> t_nonladder_a = Vertex<Q>(Lambda);
-    Vertex<Q> t_nonladder_p = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_ladder = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> a_nonladder_p = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> a_nonladder_t = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> p_ladder = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> p_nonladder_a = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> p_nonladder_t = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> t_ladder = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> t_nonladder_a = Vertex<Q,false>(Lambda);
+    Vertex<Q,false> t_nonladder_p = Vertex<Q,false>(Lambda);
 
     utils::print("Now calculating the a-channel contributions...", true);
-    Vertex<Q> a_ladder_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_ladder_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(a_ladder_intermediate, SOPT_avertex, bareState.vertex, Pi, 'a');
     bubble_function(a_ladder, bareState.vertex, a_ladder_intermediate, Pi, 'a');
     utils::print("a-ladder done.", true);
-    Vertex<Q> a_nonladder_p_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_nonladder_p_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(a_nonladder_p_intermediate, SOPT_pvertex, bareState.vertex, Pi, 'a');
     bubble_function(a_nonladder_p, bareState.vertex, a_nonladder_p_intermediate, Pi, 'a');
     utils::print("a-non-ladder contribution from the p channel done.", true);
-    Vertex<Q> a_nonladder_t_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> a_nonladder_t_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(a_nonladder_t_intermediate, SOPT_tvertex, bareState.vertex, Pi, 'a');
     bubble_function(a_nonladder_t, bareState.vertex, a_nonladder_t_intermediate, Pi, 'a');
     utils::print("a-non-ladder contribution from the p channel done.", true);
 
     utils::print("Now calculating the p-channel contributions...", true);
-    Vertex<Q> p_ladder_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> p_ladder_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(p_ladder_intermediate, SOPT_pvertex, bareState.vertex, Pi, 'p');
     bubble_function(p_ladder, bareState.vertex, p_ladder_intermediate, Pi, 'p');
     utils::print("p-ladder done.", true);
-    Vertex<Q> p_nonladder_a_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> p_nonladder_a_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(p_nonladder_a_intermediate, SOPT_avertex, bareState.vertex, Pi, 'p');
     bubble_function(p_nonladder_a, bareState.vertex, p_nonladder_a_intermediate, Pi, 'p');
     utils::print("p-non-ladder contribution from the a channel done.", true);
-    Vertex<Q> p_nonladder_t_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> p_nonladder_t_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(p_nonladder_t_intermediate, SOPT_tvertex, bareState.vertex, Pi, 'p');
     bubble_function(p_nonladder_t, bareState.vertex, p_nonladder_t_intermediate, Pi, 'p');
     utils::print("p-non-ladder contribution from the p channel done.", true);
 
     utils::print("Now calculating the t-channel contributions...", true);
-    Vertex<Q> t_ladder_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> t_ladder_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(t_ladder_intermediate, SOPT_tvertex, bareState.vertex, Pi, 't');
     bubble_function(t_ladder, bareState.vertex, t_ladder_intermediate, Pi, 't');
     utils::print("t-ladder done.", true);
-    Vertex<Q> t_nonladder_a_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> t_nonladder_a_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(t_nonladder_a_intermediate, SOPT_avertex, bareState.vertex, Pi, 't');
     bubble_function(t_nonladder_a, bareState.vertex, t_nonladder_a_intermediate, Pi, 't');
     utils::print("t-non-ladder contribution from the a channel done.", true);
-    Vertex<Q> t_nonladder_p_intermediate = Vertex<Q>(Lambda);
+    Vertex<Q,false> t_nonladder_p_intermediate = Vertex<Q,false>(Lambda);
     bubble_function(t_nonladder_p_intermediate, SOPT_pvertex, bareState.vertex, Pi, 't');
     bubble_function(t_nonladder_p, bareState.vertex, t_nonladder_p_intermediate, Pi, 't');
     utils::print("t-non-ladder contribution from the p channel done.", true);
@@ -668,17 +672,17 @@ void PT_Machine<Q>::debug_FOPT_K1() {
     VertexInput p_input (7, 0, 0, 0, 0, 0, 'p');
     VertexInput t_input (7, 0, 0, 0, 0, 0, 't');
 
-    rvec K1a = {a_ladder.value(a_input).real() / glb_U,
-                a_nonladder_p.value(a_input).real() / glb_U,
-                a_nonladder_t.value(a_input).real() / glb_U};
+    rvec K1a = {a_ladder.value(a_input).real() / config.U,
+                a_nonladder_p.value(a_input).real() / config.U,
+                a_nonladder_t.value(a_input).real() / config.U};
 
-    rvec K1p = {p_ladder.value(p_input).real() / glb_U,
-                p_nonladder_a.value(p_input).real() / glb_U,
-                p_nonladder_t.value(p_input).real() / glb_U};
+    rvec K1p = {p_ladder.value(p_input).real() / config.U,
+                p_nonladder_a.value(p_input).real() / config.U,
+                p_nonladder_t.value(p_input).real() / config.U};
 
-    rvec K1t = {t_ladder.value(t_input).real() / glb_U,
-                t_nonladder_a.value(t_input).real() / glb_U,
-                t_nonladder_p.value(t_input).real() / glb_U};
+    rvec K1t = {t_ladder.value(t_input).real() / config.U,
+                t_nonladder_a.value(t_input).real() / config.U,
+                t_nonladder_p.value(t_input).real() / config.U};
 
     write_h5_rvecs(filename, {"K1a", "K1p", "K1t"}, {K1a, K1p, K1t});
     utils::print_add(" done.", true);

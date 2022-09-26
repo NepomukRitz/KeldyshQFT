@@ -45,7 +45,11 @@ int main(int argc, char* argv[]) {
     /* check that the flow of the K1a-vertex (no selfenergy feedback) from Lambda_i = 20 to Lambda_f = 9.5
      * (initialized via SOPT) is very close to the SOPT solution at Lambda_f = 9.5.
      * Lambda_f = 9.5 corresponds to U/Delta = 0.2 for Gamma = 0.5, U = 1. */
+#if REG == 4
+    test_rhs_bubbles_flow_wstate<state_datatype>(10, 1., 0.5);
+#else
     test_rhs_bubbles_flow_wstate<state_datatype>(10, 20., 9.5);
+#endif
 
     //test_K2_in_PT4(20.);
 

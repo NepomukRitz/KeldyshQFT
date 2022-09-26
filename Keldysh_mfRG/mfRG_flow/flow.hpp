@@ -31,7 +31,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
  *        computed. (See log file: "Successfully saved in hdf5 file: <inputFileName> in Lambda layer <Nmax>.)
  *        Use this number <Nmax> as input <it_start> for this function.
  */
-State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_config& config, int it_start);
+State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_config& config, unsigned int it_start);
 
 
 #endif //KELDYSH_MFRG_FLOW_HPP

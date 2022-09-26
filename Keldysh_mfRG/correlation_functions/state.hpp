@@ -5,6 +5,7 @@
 #ifndef KELDYSH_MFRG_STATE_HPP
 #define KELDYSH_MFRG_STATE_HPP
 
+#include "../data_structures.hpp"
 #include "four_point/vertex.hpp"                   // vertex class
 #include "two_point/selfenergy.hpp"               // self-energy class
 #include "two_point/propagator.hpp"               // propagator class
@@ -13,39 +14,40 @@
 #include <boost/numeric/odeint.hpp>
 #include <string>
 
-template <typename Q>
+template <typename Q, bool differentiated=false>
 class State{
     friend State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_intermediate_results);
     template <typename T> friend void test_PT_state(std::string outputFileName, double Lambda, bool diff);
 
 public:
     double Lambda;
-    Vertex<Q> vertex;
+    fRG_config config;
+    Vertex<Q,differentiated> vertex;
     SelfEnergy<Q> selfenergy;
     bool initialized = false;
 
-    State(): Lambda(0.) , vertex(fullvert<Q>(0., true)), selfenergy(SelfEnergy<Q>(0.)) {
+    State(): Lambda(0.) , vertex(fullvert<Q>(0., fRG_config())), selfenergy(SelfEnergy<Q>(0., fRG_config())) {
 #ifndef NDEBUG
         //utils::print("Watch out! Use of default constructor for State<Q>!", true);
 #endif
     }
     /// Initializes state with frequency grids corresponding to the given value of Lambda.
-    explicit State(double Lambda_in, bool initialize=false) : Lambda(Lambda_in), vertex(Vertex<Q> (Lambda_in)), selfenergy(SelfEnergy<Q> (Lambda_in)) {
+    explicit State(double Lambda, const fRG_config& config_in, bool initialize=false) : Lambda(Lambda), config(config_in), vertex(Lambda, config_in), selfenergy(Lambda, config_in) {
         if (initialize) this->initialize();
     };
 
     /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
-    State(const State<Q>& state_in, const double Lambda_in)
-    : Lambda(Lambda_in),  vertex(Vertex<Q> (0)), selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)){vertex.set_frequency_grid(state_in.vertex);};
+    State(const State<Q,false>& state_in, const double Lambda_in)
+    : Lambda(Lambda_in), config(state_in.config),  vertex(differentiated ? Vertex<Q,differentiated> (Lambda, config, state_in.vertex) : Vertex<Q,differentiated> (0, config)), selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)){vertex.set_frequency_grid(state_in.vertex);};
 
     /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
-    State(const Vertex<Q>& vertex_in, const SelfEnergy<Q>& selfenergy_in, const double Lambda_in)
-    : Lambda(Lambda_in), vertex(vertex_in), selfenergy(selfenergy_in) {};
+    State(const Vertex<Q,differentiated>& vertex_in, const SelfEnergy<Q>& selfenergy_in, const fRG_config& config_in, const double Lambda_in)
+    : Lambda(Lambda_in), config(config_in), vertex(vertex_in), selfenergy(selfenergy_in) {};
 
     void initialize(bool checks=true);
     void update_grid(double Lambda);
     void findBestFreqGrid(bool verbose);
-    void set_frequency_grid(const State<Q>& state_in);
+    void set_frequency_grid(const State<Q,false>& state_in);
 
     // operators containing State objects
     auto operator+= (const State& state) -> State {
@@ -53,7 +55,7 @@ public:
         this->selfenergy += state.selfenergy;
         return (*this);
     }
-    friend State<Q> operator+ (State<Q> lhs, const State<Q>& rhs) {
+    friend State<Q,differentiated> operator+ (State<Q,differentiated> lhs, const State<Q,differentiated>& rhs) {
         lhs += rhs;
         return lhs;
     }
@@ -62,11 +64,11 @@ public:
         this->selfenergy += alpha;
         return (*this);
     }
-    friend State<Q> operator+ (State<Q> lhs, const double rhs) {
+    friend State<Q,differentiated> operator+ (State<Q,differentiated> lhs, const double rhs) {
         lhs += rhs;
         return lhs;
     }
-    friend State<Q> operator+ (const double& rhs, State<Q> lhs) {
+    friend State<Q,differentiated> operator+ (const double& rhs, State<Q,differentiated> lhs) {
         lhs += rhs;
         return lhs;
     }
@@ -75,11 +77,11 @@ public:
         this->selfenergy *= alpha;
         return (*this);
     }
-    friend State<Q> operator* (State<Q> lhs, const double& rhs) {
+    friend State<Q,differentiated> operator* (State<Q,differentiated> lhs, const double& rhs) {
         lhs *= rhs;
         return lhs;
     }
-    friend State<Q> operator* (const double& rhs, State<Q> lhs) {
+    friend State<Q,differentiated> operator* (const double& rhs, State<Q,differentiated> lhs) {
         lhs *= rhs;
         return lhs;
     }
@@ -88,7 +90,7 @@ public:
         this->selfenergy -= state.selfenergy;
         return (*this);
     }
-    friend State<Q> operator- (State<Q> lhs, const State<Q>& rhs) {
+    friend State<Q,differentiated> operator- (State<Q,differentiated> lhs, const State<Q,differentiated>& rhs) {
         lhs -= rhs;
         return lhs;
     }
@@ -98,7 +100,7 @@ public:
         this->selfenergy /= state.selfenergy;
         return (*this);
     }
-    friend State<Q> operator/ (State<Q> lhs, const State<Q>& rhs) {
+    friend State<Q,differentiated> operator/ (State<Q,differentiated> lhs, const State<Q,differentiated>& rhs) {
         lhs /= rhs;
         return lhs;
     }
@@ -107,8 +109,8 @@ public:
 
     void analyze_tails() const;
 
-    auto abs() const -> State<Q> {
-        State<Q> state_abs = (*this);
+    auto abs() const -> State<Q,differentiated> {
+        State<Q,differentiated> state_abs = (*this);
         state_abs.selfenergy.Sigma.set_vec(selfenergy.Sigma.data.abs());
         state_abs.vertex.avertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
         state_abs.vertex.pvertex().template apply_unary_op_to_all_vertexBuffers([&](auto buffer) -> void {buffer.data = buffer.data.abs();});
@@ -120,60 +122,60 @@ public:
 };
 
 
-template <typename Q> void State<Q>::initialize(bool checks) {
+template <typename Q, bool differentiated> void State<Q,differentiated>::initialize(bool checks) {
     // Initial conditions
     // Assign initial conditions to self energy
     if ((!KELDYSH && PARTICLE_HOLE_SYMMETRY) || HUBBARD_MODEL) {
         this->selfenergy.initialize(0., 0.); // TODO(high): Proper treatment for the Hubbard model.
         }
     else {
-        this->selfenergy.initialize(glb_U / 2., 0.);
-        if (std::abs(glb_Vg) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
+        this->selfenergy.initialize(config.U / 2., 0.);
+        if (std::abs(config.epsilon + config.U * 0.5) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
             assert (not PARTICLE_HOLE_SYMMETRY);
-            auto Hartree_Term = Hartree_Solver (Lambda);
+            Hartree_Solver Hartree_Term = Hartree_Solver (Lambda, config);
             const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing(1e-12, checks, checks);
             this->selfenergy.initialize(hartree_value, 0.);
         }
     }
 
     // Assign initial conditions to bare vertex
-    if (KELDYSH and CONTOUR_BASIS != 1) this->vertex.initialize(-glb_U/2.);
-    else this->vertex.initialize(-glb_U);
+    if (KELDYSH and CONTOUR_BASIS != 1) this->vertex.initialize(-config.U/2.);
+    else this->vertex.initialize(-config.U);
 
     this->initialized = true;
 }
 
 // set frequency grids of newly created state to those of existing reference state
-template <typename Q> void State<Q>::set_frequency_grid(const State<Q>& state_in) {
+template <typename Q, bool differentiated> void State<Q,differentiated>::set_frequency_grid(const State<Q,false>& state_in) {
     this->selfenergy.set_frequency_grid(state_in.selfenergy);
     this->vertex.set_frequency_grid(state_in.vertex);
 }
 
-template <typename Q> void State<Q>::update_grid(double Lambda) {
-    this->selfenergy.update_grid(Lambda);
-    this->vertex.update_grid(Lambda);
+template <typename Q, bool differentiated> void State<Q,differentiated>::update_grid(double Lambda) {
+    this->selfenergy.update_grid(Lambda, config);
+    this->vertex.update_grid(Lambda, config);
 }
 
 
-template <typename Q> void State<Q>::findBestFreqGrid(const bool verbose) {
+template <typename Q, bool differentiated> void State<Q,differentiated>::findBestFreqGrid(const bool verbose) {
     this->selfenergy.findBestFreqGrid(verbose);
     this->vertex.half1().findBestFreqGrid(verbose);
 }
 
-template <typename Q> void State<Q>::check_resolution() const {
+template <typename Q, bool differentiated> void State<Q,differentiated>::check_resolution() const {
     vertex.half1().check_vertex_resolution();
     selfenergy.check_resolution();
 }
 
-template <typename Q> void State<Q>::analyze_tails() const {
+template <typename Q, bool differentiated> void State<Q,differentiated>::analyze_tails() const {
     selfenergy.analyze_tails(true);
     vertex.half1().analyze_tails_K1(true);
     if (MAX_DIAG_CLASS > 1) {vertex.half1().analyze_tails_K2w(true); vertex.half1().analyze_tails_K2v(true);}
     if (MAX_DIAG_CLASS > 2) {vertex.half1().analyze_tails_K3w(true); vertex.half1().analyze_tails_K3v(true); vertex.half1().analyze_tails_K3vp(true);}
 }
 
-template<typename Q>
-auto State<Q>::norm() const -> double {
+template<typename Q, bool differentiated>
+auto State<Q,differentiated>::norm() const -> double {
     double max_vert = vertex.half1().sum_norm(0);
     double max_self = selfenergy.norm(0);
     //print("norm von dGamma und dSigma: ", max_vert, max_self, "\n");
@@ -182,9 +184,9 @@ auto State<Q>::norm() const -> double {
 
 
 template<typename Q>
-auto max_rel_err(const State<Q>& err, const State<Q>& scale_State) -> double {
+auto max_rel_err(const State<Q,false>& err, const State<Q,false>& scale_State) -> double {
     /// element-wise relative deviation
-    //State<Q> relState = (err / scale_State);
+    //State<Q,false> relState = (err / scale_State);
     //return relState.norm();
 
     /// alternative: relative deviation of norm
@@ -192,9 +194,9 @@ auto max_rel_err(const State<Q>& err, const State<Q>& scale_State) -> double {
 
 }
 
-template <typename Q>
-State<Q> abs(const State<Q>& state) {
-    State<Q> state_abs = state.abs();
+template <typename Q, bool differentiated=false>
+State<Q,differentiated> abs(const State<Q,differentiated>& state) {
+    State<Q,differentiated> state_abs = state.abs();
     return state_abs;
 }
 

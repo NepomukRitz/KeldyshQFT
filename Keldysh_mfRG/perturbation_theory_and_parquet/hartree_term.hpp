@@ -15,10 +15,11 @@
 
 /// Class which determines the Hartree-term for the self-energy self-consistently in units of glb_U given the system parameters
 class Hartree_Solver {
-    double Lambda; // flow parameter, needed for correct frequency grid.
-    double Delta = (glb_Gamma + Lambda) / 2.; // Hybridization
+    const double Lambda; // flow parameter, needed for correct frequency grid.
+    const fRG_config& config;
+    const double Delta = (config.Gamma + Lambda) / 2.; // Hybridization
 
-    SelfEnergy<comp> Sigma = SelfEnergy<comp> (Lambda);
+    SelfEnergy<comp> selfEnergy = SelfEnergy<comp> (Lambda, config);
     double filling = 1./2.; // filling at the particle-hole symmetric point
 
     const double v_lower =  10 * Delta; // arbitrary choice. Needs to be checked.
@@ -29,36 +30,38 @@ class Hartree_Solver {
     bool test_different_Keldysh_component = false;
     std::string test_Keldysh_component;
 
-    static double fermi_distribution (double nu) ;
+    double fermi_distribution (double nu) const;
 public:
     /// constructor used for obtaining the self-consistent solution of the Hartree-term
-    explicit Hartree_Solver(const double Lambda_in): Lambda(Lambda_in){
+    explicit Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
-        Sigma.initialize(glb_U * filling, 0);
+        selfEnergy.initialize(config.U * filling, 0);
+        selfEnergy.Sigma.initInterpolator();
     };
     /// constructor used for a one-shot calculation of the Hartree-term with a given selfenergy, e.g. in parquet iterations or in the 1l flow equation.
-    Hartree_Solver(const double Lambda_in, const SelfEnergy<comp>& Sigma_in, const bool diff=false): Lambda(Lambda_in){
+    Hartree_Solver(const double Lambda_in, const SelfEnergy<comp>& Sigma_in, const fRG_config& config_in, const bool diff=false): Lambda(Lambda_in), config(config_in){
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
-        Sigma = Sigma_in;
+        selfEnergy = Sigma_in;
         if (diff) prop_type = 's'; // single-scale
     };
     /// constructor used for testing the Hartree-term computation with different Keldysh components of the single-scale propagator
-    Hartree_Solver(const double Lambda_in, bool test_all_Keldysh_components):
-    Lambda(Lambda_in){
+    Hartree_Solver(const double Lambda_in, const fRG_config& config_in, bool test_all_Keldysh_components):
+    Lambda(Lambda_in), config(config_in){
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
-        Sigma.initialize(glb_U * filling, 0);
+        selfEnergy.initialize(config.U * filling, 0);
+        selfEnergy.Sigma.initInterpolator();
 
         // first compute the proper Hartree term
-        Sigma.initialize(
+        selfEnergy.initialize(
                 this->compute_Hartree_term_bracketing(1e-12, false, true),
                 0);
 

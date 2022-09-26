@@ -24,7 +24,8 @@ TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
         if (MAX_DIAG_CLASS > 2) REQUIRE( testvertex1.K3.get_vec().max_norm() < 1e-10 );
     }
 
-    testvertex1 += 1.;
+    testvertex1 += 0.5;
+    testvertex1 *= 2.0;
 
     SECTION( "Is vertex data exactly 1?" ) {
         REQUIRE( std::abs(testvertex1.K1.get_vec()[0] - 1.)  < 1e-10 );
@@ -311,8 +312,8 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     int i_spin = 0;
     int i_in = 0;
     state_datatype value = 0.;
-    for (int iw = 1; iw<=(nBOS2-1)/2; iw++){
-        for (int iv = 1; iv<(nFER2)/2; iv++) {
+    for (int iw = 0; iw<=(nBOS2-1)/2; iw++){
+        for (int iv = 0; iv<(nFER2)/2; iv++) {
             avertex.K2.setvert(value, i_spin, iw, iv, iK, i_in);
             value += 1;
         }
@@ -326,9 +327,9 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
     value = 0.;
     ;
     for (int iw = 0; iw<=(nBOS2-1)/2; iw++){
-        double correction = (!KELDYSH and !ZERO_T) ? signFlipCorrection_MF_int(iw) : 0;
         for (int iv = 0; iv<(nFER2)/2; iv++) {
             avertex.K2.frequencies.get_freqs_w(indices.w, indices.v1, iw, iv);
+            double correction = (!KELDYSH and !ZERO_T) ? signFlipCorrection_MF(indices.w) : 0;
             #ifndef ZERO_TEMP   // Matsubara T>0
             indices.v1 += correction;
             #endif
@@ -337,10 +338,12 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
                 asymmetry += 1;
             }
             state_datatype compare_val = avertex.K2.interpolate(indices);
+            const double val1 = avertex.K2.val(i_spin, iw,             iv, iK, i_in);
+            const double val2 = avertex.K2.val(i_spin, iw, nFER2 - 1 - iv, iK, i_in);
             if (std::abs(avertex.K2.val(i_spin, iw, nFER2 - 1 - iv, iK, i_in) - compare_val) > asymmetry_tolerance) {
-                asymmetry += std::abs(avertex.K2.val(i_spin, iw, nFER2 - 1 - iv, iK, i_in) - compare_val);
+                asymmetry += std::abs(val2 - compare_val);
             }
-            if (correction == 0 and std::abs(avertex.K2.val(i_spin, iw, iv, iK, i_in) - avertex.K2.val(i_spin, iw, nFER2 - 1 - iv, iK, i_in)) > asymmetry_tolerance ) {
+            if (correction == 0 and std::abs(val1 - val2) > asymmetry_tolerance ) {
                 asymmetry += 1;
             }
 

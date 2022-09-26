@@ -567,6 +567,51 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
     }
 }
 
+/**
+ * wrapper function, used for bubbles.
+ * @param integrand
+ * @param intervals         :   list of intervals (lower and upper limit for integrations)
+ * @param num_intervals     :   number of intervals
+ */
+template <typename Integrand> auto integrator_onlyTails(Integrand& integrand, const double vmin, const double vmax) -> std::result_of_t<Integrand(double)> {
+    using return_type = std::result_of_t<Integrand(double)>;
+    if constexpr (INTEGRATOR_TYPE == 0) { // Riemann sum
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 1) { // Simpson
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 2) { // Simpson + additional points
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 3) { // adaptive Simpson
+        return_type result;
+        assert(false);
+        return result;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 4) { // GSL
+        return integrator_gsl_qag_tails<return_type>(integrand, vmin, vmax, nINT);
+    }
+    else if constexpr (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+
+        Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, vmin);
+        Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, vmax);
+        const return_type val = adapt_il.integrate() + adapt_iu.integrate();
+
+        return val;
+    }
+    else if constexpr (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
+        return integrator_gsl_qag_tails<return_type>(integrand, vmin, vmax, nINT);
+    }
+}
+
+
 //#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
 /**
  * wrapper function, used for bubbles. Splits up integration interval in suitable pieces for Matsubara T=0
@@ -646,12 +691,14 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
 
     //// Straightforward summation:
     vec<Q> values(N);
-    double vpp;
+    Q result = 0;
+    freqType vpp;
     for (int i = 0; i < N; i++) {
-        vpp = ((Nmin + i)*2 + 1) * (M_PI * glb_T);
-        values[i] = integrand(vpp);
+        vpp = ((Nmin + i)*2 + 1);
+        //values[i] = integrand(vpp);
+        result += integrand(vpp);
     }
-    return values.sum();
+    return result;// values.sum();
 
     //// Adaptive summator:
     /*
@@ -704,6 +751,58 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
 
     }
     */
+}
+
+template <int spin, int channel, typename Integrand> auto matsubarasum_vectorized(const Integrand& integrand, const int Nmin_v, const int Nmax_v, const int Nmin_sum, const int Nmax_sum, const int Nmin_vp, const int Nmax_vp) -> Eigen::Matrix<std::result_of_t<Integrand(freqType)>, Eigen::Dynamic, Eigen::Dynamic>{
+    using Q = std::result_of_t<Integrand(freqType)>;
+    constexpr int n_spin_sum = (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1;
+
+    Eigen::Matrix<Q, Eigen::Dynamic, Eigen::Dynamic> vertex_values_left ( Nmax_v -Nmin_v   +1              ,(Nmax_sum-Nmin_sum+1) * n_spin_sum);
+    Eigen::Matrix<Q, Eigen::Dynamic, Eigen::Dynamic> vertex_values_right((Nmax_sum-Nmin_sum+1) * n_spin_sum, Nmax_vp-Nmin_vp  +1              );
+    Eigen::Matrix<Q, Eigen::Dynamic, 1> Pi_values((Nmax_sum-Nmin_sum+1) * n_spin_sum);
+
+//#pragma omp parallel for schedule(guided)
+    for (int i = Nmin_sum; i <= Nmax_sum; i++) {
+        const freqType vpp = (i*2 + 1);
+        const Eigen::Matrix<Q, (channel == 't' and spin == 0) or (channel == 'a' and spin == 1) ? 2 : 1, 1> res_temp = integrand.load_Pi_keldysh_and_spin_Components_vectorized(vpp);
+        //std::cout << Pi_values.template block<n_spin_sum,1>((-Nmin_sum+i)*n_spin_sum, 0) << std::endl;
+        Pi_values.template block<n_spin_sum,1>((-Nmin_sum+i)*n_spin_sum, 0) = res_temp;
+    }
+
+//#pragma omp parallel for schedule(static, 500) collapse(2)
+    for (int i = Nmin_v; i <= Nmax_v; i++) {
+        for (int j = Nmin_sum; j <= Nmax_sum; j++) {
+            const freqType v   = (i*2 + 1) ;
+            const freqType vpp = (j*2 + 1) ;
+            VertexInput input_l = integrand.input_external;
+            input_l.v1 = v;
+            input_l.v2 = vpp;
+            Q value;
+            vertex_values_left.template block<1,n_spin_sum>(-Nmin_v+i, (-Nmin_sum+j) * n_spin_sum) = integrand.load_vertex_keldysh_and_spin_Components_left_vectorized(input_l);
+        }
+    }
+
+//#pragma omp parallel for schedule(static, 500) collapse(2)
+    for (int i = Nmin_sum; i <= Nmax_sum; i++) {
+        for (int j = Nmin_vp; j <= Nmax_vp; j++) {
+            const freqType vpp= (i*2 + 1);
+            const freqType vp = (j*2 + 1);
+            VertexInput input_r = integrand.input_external;
+            input_r.v1 = vpp;
+            input_r.v2 = vp;
+            Q value;
+            vertex_values_right.template block<n_spin_sum,1>((-Nmin_sum+i) * n_spin_sum, -Nmin_vp+j) = integrand.load_vertex_keldysh_and_spin_Components_right_vectorized(input_r);
+        }
+    }
+
+    Eigen::Matrix<std::result_of_t<Integrand(freqType)>, Eigen::Dynamic, Eigen::Dynamic> result = vertex_values_left * Pi_values.asDiagonal() * vertex_values_right;
+    auto result_alt = Pi_values.sum() * 2.5*2.5;
+
+    //std::cout << vertex_values_left << "\n * " << Pi_values << "\n * " << vertex_values_right << std::endl;
+    //std::cout << "result: " << result << std::endl;
+    //std::cout << "result_alt: " << result_alt << std::endl;
+    return vertex_values_left * Pi_values.asDiagonal() * vertex_values_right;
+
 }
 
 #endif //KELDYSH_MFRG_INTEGRATOR_HPP

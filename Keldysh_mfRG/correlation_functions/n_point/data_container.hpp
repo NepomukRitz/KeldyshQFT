@@ -18,9 +18,13 @@
 
 template <typename Q> class rvert; // forward declaration of rvert
 //template <typename Q> class fullvert; // forward declaration of fullvert
-template <typename Q> class State; // forward declaration of State
+template <typename Q, bool differentiated> class State; // forward declaration of State
 template<typename Q, std::size_t depth, typename H5object>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
+template<typename Q, typename H5object, int nrows, int ncols>
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,nrows, ncols>& data, const bool data_set_exists);
+template <typename Q, typename H5object>
+void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
 //template <typename Q, vertexType symm_type> class GeneralVertex;
 ////template <typename Q>class symmetric_full;
 //template <typename Q>using Vertex = GeneralVertex<Q, symmetric_full>;
@@ -33,8 +37,9 @@ class Buffer;
  */
     template<typename Q, std::size_t rank>
     class dataContainerBase {
-        friend class State<Q>;
-        template<typename T> friend State<T> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
+        friend class State<Q,false>;
+        friend class State<Q,true>;
+        friend State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, const unsigned int Lambda_it);
 
 
     protected:
@@ -87,11 +92,11 @@ class Buffer;
                 typename std::enable_if_t<(sizeof...(Types) == freqrank + pos_first_freq + 1) and
                                           (are_all_integral<size_t, Types...>::value), bool> = true>
         auto val_vectorized(const Types &... i) const -> Eigen::Matrix<Q, vecsize, 1> {
-            return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(i...);
+            return data.template at_vectorized<vecsize>(i...);
         }
         template<std::size_t freqrank, std::size_t vecsize>
         auto val_vectorized(const index_type &idx) const -> Eigen::Matrix<Q, vecsize, 1> {
-            return data.template at_vectorized<pos_first_freq, freqrank, vecsize>(idx);
+            return data.template at_vectorized<vecsize>(idx);
         }
 
         /// Sets a value at a multiIndex
@@ -101,6 +106,11 @@ class Buffer;
         void setvert(const Q value, const Types &... i) { data.at(i...) = value; }
 
         void setvert(const Q value, const index_type &idx) { data.at(idx) = value; }
+
+        template<std::size_t vecsize>
+        void setvert_vectorized(const Eigen::Matrix<Q, vecsize, 1>& value, const index_type &idx) {
+            data.template set_vectorized<vecsize>(value, idx);
+        }
 
         auto get_dims() const { return data.length(); }
 
@@ -168,12 +178,12 @@ class Buffer;
         friend void test_PT_state(std::string outputFileName, double Lambda, bool write_flag);
 
         template<typename T>
-        friend void result_set_frequency_grids(State<T> &result, Buffer &buffer);
+        friend void result_set_frequency_grids(State<T,false> &result, Buffer &buffer);
 
         template<typename T>
-        friend void check_FDTs(const State<T> &state, bool verbose);
+        friend void check_FDTs(const State<T,false> &state, bool verbose);
 
-        template <typename T> friend State<T> read_state_from_hdf(const H5std_string &filename, const int Lambda_it);
+        friend State<state_datatype,false> read_state_from_hdf(const H5std_string &filename, const int Lambda_it);
 
     protected:
         using base_class = dataContainerBase<Q, rank>;
@@ -185,7 +195,7 @@ class Buffer;
         frequencyGrid_type frequencies;    // frequency grid
         DataContainer() = default;
 
-        explicit DataContainer(double Lambda, dimensions_type dims) : base_class(dims), frequencies(Lambda) {};
+        explicit DataContainer(double Lambda, dimensions_type dims, const fRG_config& config) : base_class(dims), frequencies(Lambda, config) {};
 
         /// Functions for getting and setting the frequency grid and its members
         auto get_VertexFreqGrid() const -> const frequencyGrid_type &;

@@ -149,6 +149,10 @@ constexpr buffer_config<5> K2_expanded_config{
     std::array<size_t,5>({1, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in_K2})
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
+constexpr buffer_config<6> K3_SBE_expanded_config{
+        std::array<size_t,6>({1, nBOS2, nFER2, GRID!=2 ? nFER2 : (nFER2-1)/2+1, KELDYSH ?  16 : 1, n_in_K3})
+        , 3  // number of frequency dimensions
+        , 1};// position of first frequency index
 constexpr buffer_config<6> K3_expanded_config{
     std::array<size_t,6>({1, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH ?  16 : 1, n_in_K3})
     , 3  // number of frequency dimensions
@@ -164,11 +168,17 @@ constexpr int glb_number_of_Keldysh_components_bubble = 9; // length of the prev
 // Vector of indices of independent components of the diagrammatic classes, density channel
 #if CONTOUR_BASIS != 1
 const std::vector<int> non_zero_Keldysh_K1a({1,3,15});
-const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
 const std::vector<int> non_zero_Keldysh_K1p({1,5,15});
-const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
 const std::vector<int> non_zero_Keldysh_K1t({1,3,15});
+#if SBE_DECOMPOSITION
+const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,9});
+const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,12});
+const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,5});
+#else
+const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
+const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
 const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
+#endif
 const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
 #else
 #ifndef PARTICLE_HOLE_SYMM
@@ -295,6 +305,54 @@ template<char channel_bubble, bool is_left_vertex> auto rotate_Keldysh_matrix(co
     assert(iK_read < 16);
     return iK_read;
 }
+
+template<char channel_bubble, bool is_left_vertex> auto unrotate_Keldysh_matrix(const my_index_t iK) -> my_index_t {
+    constexpr std::array<my_index_t, 4> Keldysh4pointdims = {2,2,2,2};
+    std::array<my_index_t ,4> alpha;
+    getMultIndex(alpha, iK, Keldysh4pointdims);
+
+    my_index_t i0_left, i0_right;
+    if constexpr(channel_bubble == 'a') {
+
+        if constexpr(is_left_vertex) {
+            i0_left  = alpha[0] * 2 + alpha[3];
+            i0_right = alpha[2] * 2 + alpha[1];
+        }
+        else {
+            i0_left  = alpha[2] * 2 + alpha[1];
+            i0_right = alpha[0] * 2 + alpha[3];
+        }
+    }
+    else if constexpr(channel_bubble == 'p') {
+        if constexpr(is_left_vertex) {
+            i0_left = alpha[0]*2 + alpha[1];
+            i0_right= alpha[2]*2 + alpha[3];
+        }
+        else {
+            i0_left = alpha[2]*2 + alpha[3];
+            i0_right= alpha[0]*2 + alpha[1];
+
+        }
+    }
+    else {
+        static_assert(channel_bubble=='t', "Please use a, p or t for the channels.");
+
+        if constexpr(is_left_vertex) {
+            i0_left  = alpha[1] * 2 + alpha[3];
+            i0_right = alpha[2] * 2 + alpha[0];
+        }
+        else {
+            i0_left  = alpha[2] * 2 + alpha[0];
+            i0_right = alpha[1] * 2 + alpha[3];
+
+        }
+    }
+
+    const my_index_t iK_read = i0_left * 4 + i0_right;
+    assert(iK_read < 16);
+    return iK_read;
+}
+
 
 /**
  * Function that returns, for an input i0, i2 in 0...15, the two Keldysh indices of the left [0] and right [1] vertices

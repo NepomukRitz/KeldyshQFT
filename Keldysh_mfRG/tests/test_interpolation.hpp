@@ -194,6 +194,7 @@ namespace {
         State<Q> K2aexact;
         Bubble<Q> Pi;
         double Lambda;
+        double Gamma = 1.;
     public:
         explicit Cost_pick_Wscale_4_K1(double Lambda, Bubble<Q>& Pi) : Lambda(Lambda),  bareState(Lambda), K2aexact(Lambda), Pi(Pi) {
             bareState.initialize();
@@ -206,7 +207,7 @@ namespace {
                     K2aexact.vertex.avertex().frequencies.get_freqs_w(w, v, i, j);
                     Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, false, Pi);
                     double vmax = 100.;
-                    double Delta = (glb_Gamma+Lambda)/2.;
+                    double Delta = (Gamma+Lambda)/2.;
                     Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
                     K2aexact.vertex.avertex().K2_setvert(0, i, j, 0, val_K2);
                     K2aexact.vertex.pvertex().K2_setvert(0, i, j, 0, val_K2);

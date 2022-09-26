@@ -14,21 +14,30 @@
 /// possible tests: ---> See bubble integrand
 
 
+namespace selfenergy_loop {
+    template<bool version> constexpr char pick_channel() {return version == 0 ? 't' : 'a';}
+    template<bool version, int ispin> constexpr int pick_spin() {return version == 0 ? ispin : 2-ispin;}
+}
+
 /**
  * Class for the integrand of the Retarded SelfEnergy
  * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
  * @tparam Q Type in which the integrand takes values, usually comp
  */
-template <typename Q, vertexType vertType, bool all_spins, typename return_type=Q>
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 class IntegrandSE {
+#if VECTORIZED_INTEGRATION and KELDYSH_FORMALISM
     using buffertype_propagator = Eigen::Matrix<Q,1,4>;
     using buffertype_vertex = Eigen::Matrix<Q,4,myColsAtCompileTime<return_type>()>;
-
+#else
+    using buffertype_propagator = Q;
+    using buffertype_vertex = Q;
+#endif
 
     const int type;
     std::vector<int> components = std::vector<int>((CONTOUR_BASIS != 1 ? 6 : 16));
 
-    const GeneralVertex<Q,vertType>& vertex;
+    const vertType& vertex;
     const Propagator<Q>& propagator;
 
     const int iK;
@@ -53,7 +62,12 @@ class IntegrandSE {
     auto evaluate_vertex_vectorized(const double vp) const -> buffertype_vertex;
 
 public:
-    IntegrandSE(const int type_in, const GeneralVertex<Q,vertType>& vertex_in, const Propagator<Q>& prop_in,
+    /// type:   determines Keldysh components (always type = 0 for MF)
+    // is the element in Sigma matrix   0  1    ___     K  A
+    //                                  2  3            R  0
+    // type = 0   -> Keldysh component
+    // type = 2   -> Retarded component
+    IntegrandSE(const int type_in, const vertType& vertex_in, const Propagator<Q>& prop_in,
                 const int iK_in, const int i_spin_in, const double v_in, const int i_in_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in),
                  i0_vertex_left(type_in*4), i0_vertex_right(type_in*4){
@@ -76,67 +90,118 @@ public:
 
 };
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::set_Keldysh_components_to_be_calculated() {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::set_Keldysh_components_to_be_calculated() {
 #if not SWITCH_SUM_N_INTEGRAL
-#if CONTOUR_BASIS != 1
-    if(type==2){  //Check which kind of contribution is calculated
-        // retarded selfenergy
-        components[0]=3;    //Vertex component associated to Retarded propagator
-        components[1]=6;    //Vertex component associated to Advanced propagator
-        components[2]=7;    //Vertex component associated to Keldysh propagator
-        components[3]=3;    //Vertex component associated to Retarded propagator in symmetrized flow
-        components[4]=9;    //Vertex component associated to Advanced propagator in symmetrized flow
-        components[5]=11;   //Vertex component associated to Keldysh propagator in symmetrized flow
+    if constexpr(version == 0) {
+        #if CONTOUR_BASIS != 1
+            if(type==2){  //Check which kind of contribution is calculated
+                // retarded selfenergy
+                components[0]=3;    //Vertex component associated to Retarded propagator
+                components[1]=6;    //Vertex component associated to Advanced propagator
+                components[2]=7;    //Vertex component associated to Keldysh propagator
+                components[3]=3;    //Vertex component associated to Retarded propagator in symmetrized flow
+                components[4]=9;    //Vertex component associated to Advanced propagator in symmetrized flow
+                components[5]=11;   //Vertex component associated to Keldysh propagator in symmetrized flow
+            }
+            else {
+                assert(type==0);
+                // Keldysh selfenergy
+                components[0]=1;    //Vertex component associated to Retarded propagator
+                components[1]=4;    //Vertex component associated to Advanced propagator
+                components[2]=5;    //Vertex component associated to Keldysh propagator
+                components[3]=2;    //Vertex component associated to Retarded propagator in symmetrized flow
+                components[4]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
+                components[5]=10;   //Vertex component associated to Keldysh propagator in symmetrized flow
+            }
+        #else
+            if(type==0){  //Check which kind of contribution is calculated
+                components[0]=0;    //Vertex component associated to propagator with contour indices 00
+                components[1]=4;    //Vertex component associated to propagator with contour indices 01
+                components[2]=1;    //Vertex component associated to propagator with contour indices 10
+                components[3]=5;    //Vertex component associated to propagator with contour indices 11
+            }
+            else if (type==1){
+                components[0]=2;    //Vertex component associated to propagator with contour indices 00
+                components[1]=6;    //Vertex component associated to propagator with contour indices 01
+                components[2]=3;    //Vertex component associated to propagator with contour indices 10
+                components[3]=7;    //Vertex component associated to propagator with contour indices 11
+            }
+            else if (type==2){
+                components[0]=8;    //Vertex component associated to propagator with contour indices 00
+                components[1]=12;    //Vertex component associated to propagator with contour indices 01
+                components[2]=9;   //Vertex component associated to propagator with contour indices 10
+                components[3]=13;   //Vertex component associated to propagator with contour indices 11
+            }
+            else {
+                assert(type == 3);
+                components[0]=10;   //Vertex component associated to propagator with contour indices 00
+                components[1]=14;   //Vertex component associated to propagator with contour indices 01
+                components[2]=11;   //Vertex component associated to propagator with contour indices 10
+                components[3]=15;   //Vertex component associated to propagator with contour indices 11
+            }
+        #endif
     }
-    else {
-        assert(type==0);
-        // Keldysh selfenergy
-        components[0]=1;    //Vertex component associated to Retarded propagator
-        components[1]=4;    //Vertex component associated to Advanced propagator
-        components[2]=5;    //Vertex component associated to Keldysh propagator
-        components[3]=2;    //Vertex component associated to Retarded propagator in symmetrized flow
-        components[4]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
-        components[5]=10;   //Vertex component associated to Keldysh propagator in symmetrized flow
+    else { // version == 1
+        #if CONTOUR_BASIS != 1
+            if(type==2){  //Check which kind of contribution is calculated
+                // retarded selfenergy
+                components[0]=3;    //Vertex component associated to Retarded propagator
+                components[1]=5;    //Vertex component associated to Advanced propagator
+                components[2]=7;    //Vertex component associated to Keldysh propagator
+                components[3]=3;    //Vertex component associated to Retarded propagator in symmetrized flow
+                components[4]=10;    //Vertex component associated to Advanced propagator in symmetrized flow
+                components[5]=11;   //Vertex component associated to Keldysh propagator in symmetrized flow
+            }
+            else {
+                assert(type==0);
+                // Keldysh selfenergy
+                components[0]=2;    //Vertex component associated to Retarded propagator
+                components[1]=4;    //Vertex component associated to Advanced propagator
+                components[2]=6;    //Vertex component associated to Keldysh propagator
+                components[3]=1;    //Vertex component associated to Retarded propagator in symmetrized flow
+                components[4]=8;    //Vertex component associated to Advanced propagator in symmetrized flow
+                components[5]=9;   //Vertex component associated to Keldysh propagator in symmetrized flow
+            }
+        #else
+            if(type==0){  //Check which kind of contribution is calculated
+                components[0]=0;    //Vertex component associated to propagator with contour indices 00
+                components[1]=4;    //Vertex component associated to propagator with contour indices 01
+                components[2]=2;    //Vertex component associated to propagator with contour indices 10
+                components[3]=6;    //Vertex component associated to propagator with contour indices 11
+            }
+            else if (type==1){
+                components[0]=1;    //Vertex component associated to propagator with contour indices 00
+                components[1]=5;    //Vertex component associated to propagator with contour indices 01
+                components[2]=3;    //Vertex component associated to propagator with contour indices 10
+                components[3]=7;    //Vertex component associated to propagator with contour indices 11
+            }
+            else if (type==2){
+                components[0]=8;    //Vertex component associated to propagator with contour indices 00
+                components[1]=12;    //Vertex component associated to propagator with contour indices 01
+                components[2]=10;   //Vertex component associated to propagator with contour indices 10
+                components[3]=14;   //Vertex component associated to propagator with contour indices 11
+            }
+            else {
+                assert(type == 3);
+                components[0]=9;   //Vertex component associated to propagator with contour indices 00
+                components[1]=13;   //Vertex component associated to propagator with contour indices 01
+                components[2]=11;   //Vertex component associated to propagator with contour indices 10
+                components[3]=15;   //Vertex component associated to propagator with contour indices 11
+            }
+        #endif
     }
-#else
-    if(type==0){  //Check which kind of contribution is calculated
-        components[0]=0;    //Vertex component associated to propagator with contour indices 00
-        components[1]=4;    //Vertex component associated to propagator with contour indices 01
-        components[2]=1;    //Vertex component associated to propagator with contour indices 10
-        components[3]=5;    //Vertex component associated to propagator with contour indices 11
-    }
-    else if (type==1){
-        components[0]=2;    //Vertex component associated to propagator with contour indices 00
-        components[1]=6;    //Vertex component associated to propagator with contour indices 01
-        components[2]=3;    //Vertex component associated to propagator with contour indices 10
-        components[3]=7;    //Vertex component associated to propagator with contour indices 11
-    }
-    else if (type==2){
-        components[0]=8;    //Vertex component associated to propagator with contour indices 00
-        components[1]=12;    //Vertex component associated to propagator with contour indices 01
-        components[2]=9;   //Vertex component associated to propagator with contour indices 10
-        components[3]=13;   //Vertex component associated to propagator with contour indices 11
-    }
-    else {
-        assert(type == 3);
-        components[0]=10;   //Vertex component associated to propagator with contour indices 00
-        components[1]=14;   //Vertex component associated to propagator with contour indices 01
-        components[2]=11;   //Vertex component associated to propagator with contour indices 10
-        components[3]=15;   //Vertex component associated to propagator with contour indices 11
-    }
-#endif
 #endif
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-auto IntegrandSE<Q,vertType,all_spins,return_type>::operator()(const double vp) const -> return_type {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+auto IntegrandSE<Q,vertType,all_spins,return_type,version>::operator()(const double vp) const -> return_type {
     if constexpr(KELDYSH){return Keldysh_value(vp);}
     else{return Matsubara_value(vp);}
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals) const {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::get_integrand_vals(const rvec& freqs, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& integrand_vals, Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic>& vertex_vals) const {
     int npoints = freqs.size();
 
     for (int i=0; i<npoints; ++i) {
@@ -160,8 +225,8 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::get_integrand_vals(const rve
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand() const {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand() const {
     /// Define standard frequency points on which to evaluate the integrand
     int npoints = 1e5;
 
@@ -181,12 +246,12 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand() const {
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::save_integrand(const rvec& freqs, const std::string& filename_prefix) const {
     int npoints = freqs.size();
 
     Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> integrand_vals(4, npoints);
-    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_vals(VECTORIZED_INTEGRATION ? 16 : 1, npoints);
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> vertex_vals(VECTORIZED_INTEGRATION and KELDYSH_FORMALISM ? 16 : 1, npoints);
 
     get_integrand_vals(freqs, integrand_vals, vertex_vals);
 
@@ -205,8 +270,8 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::save_integrand(const rvec& f
     }
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-return_type IntegrandSE<Q,vertType,all_spins,return_type>::Keldysh_value(const double vp) const {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+auto IntegrandSE<Q,vertType,all_spins,return_type,version>::Keldysh_value(const double vp) const -> return_type {
 #if SWITCH_SUM_N_INTEGRAL
 
     buffertype_propagator G1 = evaluate_propagator_vectorized( vp);
@@ -250,13 +315,12 @@ else {
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-Q IntegrandSE<Q,vertType,all_spins,return_type>::Matsubara_value(const double vp) const {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+auto IntegrandSE<Q,vertType,all_spins,return_type,version>::Matsubara_value(const double vp) const -> Q {
     Q GM;
     evaluate_propagator(GM, vp);
 
-    Q factorClosedAbove;
-    evaluate_vertex(factorClosedAbove, 0, vp);
+    Q factorClosedAbove = evaluate_vertex_vectorized(vp);
 
     if (!PARTICLE_HOLE_SYMMETRY) {
         return (GM * factorClosedAbove);
@@ -269,8 +333,8 @@ Q IntegrandSE<Q,vertType,all_spins,return_type>::Matsubara_value(const double vp
     }
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_propagator(Q &Gi, const int iK, const double vp) const {
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator(Q &Gi, const int iK, const double vp) const {
 #if CONTOUR_BASIS != 1
     switch (iK) {
         case 0:
@@ -290,63 +354,67 @@ void IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_propagator(Q &Gi, c
 
 }
 
-template<typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_propagator(Q &GM, const double vp) const {
+template<typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator(Q &GM, const double vp) const {
     GM = propagator.valsmooth(0, vp, i_in);           // Matsubara propagator (full or single scale)
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type>
-auto IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_propagator_vectorized(const double vp) const -> buffertype_propagator {
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_propagator_vectorized(const double vp) const -> buffertype_propagator {
     buffertype_propagator G = propagator.template valsmooth_vectorized<buffertype_propagator>(vp, i_in);
     std::swap(G(1), G(2));
     return G;
 }
 
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex(Q &factorClosedAbove, Q &factorClosedBelow,
                                      const int iK, const double vp) const {
-    VertexInput inputClosedAbove (components[iK]  , i_spin, 0., vp, v, i_in, 't');
-    VertexInput inputClosedBelow (components[iK+3], i_spin, 0., v, vp, i_in, 't');
-    factorClosedAbove = vertex.template value<'t'>(inputClosedAbove);
-    factorClosedBelow = vertex.template value<'t'>(inputClosedBelow);
+    using namespace selfenergy_loop;
+
+    VertexInput inputClosedAbove (components[iK]  , i_spin, 0., vp, v, i_in, pick_channel<version>());
+    VertexInput inputClosedBelow (components[iK+3], i_spin, 0., v, vp, i_in, pick_channel<version>());
+    factorClosedAbove = vertex.template value<pick_channel<version>()>(inputClosedAbove);
+    factorClosedBelow = vertex.template value<pick_channel<version>()>(inputClosedBelow);
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type>
-void IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_vertex(Q &factorClosedAbove, const int iK, const double vp) const {
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+void IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex(Q &factorClosedAbove, const int iK, const double vp) const {
+    using namespace selfenergy_loop;
     // "components" are all zero in Matsubara case -> this function also works for Matsubara
-    VertexInput inputClosedAbove (components[iK], i_spin, 0, vp, v, i_in, 't');
-    factorClosedAbove = vertex.template value<'t'>(inputClosedAbove);
+    VertexInput inputClosedAbove (components[iK], i_spin, 0, vp, v, i_in, pick_channel<version>());
+    factorClosedAbove = vertex.template value<pick_channel<version>()>(inputClosedAbove);
 }
 
-template <typename Q, vertexType vertType, bool all_spins, typename return_type>
-auto IntegrandSE<Q,vertType,all_spins,return_type>::evaluate_vertex_vectorized(const double vp) const -> buffertype_vertex {
+template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
+auto IntegrandSE<Q,vertType,all_spins,return_type,version>::evaluate_vertex_vectorized(const double vp) const -> buffertype_vertex {
+    using namespace selfenergy_loop;
 
     if constexpr(all_spins) {
-        const VertexInput inputClosedAbove_spin0(i0_vertex_right, 0, 0, vp, v, i_in, 't');
-        const VertexInput inputClosedAbove_spin1(i0_vertex_right, 0, 0, vp, v, i_in, 't');
-#if VECTORIZED_INTEGRATION == 1
+        const VertexInput inputClosedAbove_spin0(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
+        const VertexInput inputClosedAbove_spin1(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
+#if VECTORIZED_INTEGRATION == 1 and KELDYSH_FORMALISM
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result0 = vertex.template value_symmetry_expanded<0,'t',valuetype_fetch>(inputClosedAbove_spin0);
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result1 = vertex.template value_symmetry_expanded<1,'t',valuetype_fetch>(inputClosedAbove_spin1);
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result0 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>() ,pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin0);
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result1 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,1>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove_spin1);
         result0.resize(4,return_type::ColsAtCompileTime);
         result1.resize(4,return_type::ColsAtCompileTime);
         //static_assert(decltype(result0)::RowsAtCompileTime == 4);
 #else
-        const buffertype_vertex result0 = vertex.template value_symmetry_expanded<0,'t',buffertype_vertex>(inputClosedAbove_spin0);
-        const buffertype_vertex result1 = vertex.template value_symmetry_expanded<1,'t',buffertype_vertex>(inputClosedAbove_spin1);
+        const buffertype_vertex result0 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove_spin0);
+        const buffertype_vertex result1 = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,1>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove_spin1);
 
 #endif
         return result0*2. + result1;
     }
     else {
-        VertexInput inputClosedAbove(i0_vertex_right, 0, 0, vp, v, i_in, 't');
-#if VECTORIZED_INTEGRATION == 1
+        VertexInput inputClosedAbove(i0_vertex_right, 0, 0, vp, v, i_in, pick_channel<version>());
+#if VECTORIZED_INTEGRATION == 1 and KELDYSH_FORMALISM
         using valuetype_fetch = Eigen::Matrix<Q,4*return_type::ColsAtCompileTime,1>;
-        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result = vertex.template value_symmetry_expanded<0,'t',valuetype_fetch>(inputClosedAbove);
+        Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> result = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),valuetype_fetch>(inputClosedAbove);
         result.resize(4,return_type::ColsAtCompileTime);
 #else
-        const buffertype_vertex result = vertex.template value_symmetry_expanded<0,'t',buffertype_vertex>(inputClosedAbove);
+        const buffertype_vertex result = vertex.template value_minus_gamma0_symmetry_expanded<pick_spin<version,0>(),pick_channel<version>(),buffertype_vertex>(inputClosedAbove);
 #endif
         return result;
     }

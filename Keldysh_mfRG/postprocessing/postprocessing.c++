@@ -13,13 +13,13 @@ void compute_Phi_tilde(const std::string filename) {
         rvec Phi_integrated (Lambdas.size() * n_in);
 
         for (unsigned int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
-            State<state_datatype> state = read_state_from_hdf<state_datatype>(filename, iLambda);
-            state.selfenergy.asymp_val_R = glb_U / 2.;
+            State<state_datatype> state = read_state_from_hdf(filename, iLambda);
+            state.selfenergy.asymp_val_R = state.config.U / 2.;
 
             double vmin = state.selfenergy.Sigma.frequencies.primary_grid.w_lower;
             double vmax = state.selfenergy.Sigma.frequencies.primary_grid.w_upper;
 
-            Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g');
+            Propagator<state_datatype> G (Lambdas[iLambda], state.selfenergy, 'g', state.config);
 
             for (int i_in=0; i_in<n_in; ++i_in) {
 //    #pragma omp parallel for schedule(dynamic) // For some reason, this pragma can become problematic...
@@ -31,7 +31,7 @@ void compute_Phi_tilde(const std::string filename) {
                     // rhs of Ward identity
                     Integrand_Phi_tilde<state_datatype> integrand (G, state.vertex, v, i_in);
                     Phi[iLambda * nFER * n_in + iv * n_in + i_in]
-                            = (glb_Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
+                            = (state.config.Gamma + Lambdas[iLambda]) / (2 * M_PI) * myimag(integrator<state_datatype>(integrand, vmin, vmax));
                 }
                 // integrate difference of lhs and rhs of Ward identity
                 Integrand_Ward_id_integrated integrandWardIdIntegrated (state.selfenergy.Sigma.frequencies.  primary_grid, Phi, state.selfenergy,
@@ -61,9 +61,9 @@ void compute_Phi_tilde(const std::string filename) {
 
 void sum_rule_K1tK(const std::string filename) {
     utils::print("Checking fullfilment of the sum rule for K1t", true);
-    int nLambda = nODE + U_NRG.size() + 1;
 
     rvec Lambdas = read_Lambdas_from_hdf(filename);
+    const int nLambda = Lambdas.size();
 
     rvec sum_rule (nLambda);
 
@@ -73,26 +73,28 @@ void sum_rule_K1tK(const std::string filename) {
         double wmax = state.vertex.tvertex().K1.frequencies.get_wupper_b();   // upper integration boundary
 
         if (KELDYSH){
-            sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (glb_U * glb_U));
+            sum_rule[iLambda] = myreal(1. / (glb_i * M_PI) * integrator<state_datatype>(integrand, 0, wmax) / (state.config.U * state.config.U));
         }
         else{
-            sum_rule[iLambda] = myreal((1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax)) / (glb_U * glb_U));
+            sum_rule[iLambda] = myreal((1. / (M_PI) * integrator<state_datatype>(integrand, 0, wmax)) / (state.config.U * state.config.U));
 
         }
     }
 
     write_h5_rvecs(filename + "_sum_rule_K1tK", {"Lambdas", "sum_rule"}, {Lambdas, sum_rule});
 }
-
+#if KELDYSH_FORMALISM
 void check_Kramers_Kronig(const std::string filename) {
     vec<int> iLambdas {}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
-    if (nODE == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
-    else if (nODE == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
+    rvec Lambdas = read_Lambdas_from_hdf(filename);
+    const int nLambda = Lambdas.size();
+    if (nLambda == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
+    else if (nLambda == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
 
     for (unsigned int i=0; i<iLambdas.size(); ++i) {
         State<state_datatype> state = read_state_from_hdf<state_datatype>(filename, iLambdas[i]);  // read data from file
         // check Kramers-Kronig for retarded self-energy
-        rvec vSigma = state.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies();  // frequency grid points
+        vec<freqType> vSigma = state.selfenergy.Sigma.frequencies.  primary_grid.get_all_frequencies();  // frequency grid points
         // get retarded component (first half of stored data points)
         std::array<my_index_t ,3> start_SE = {0, 0, 0};
         std::array<my_index_t,3> end_SE   = {0,nSE-1, n_in};
@@ -106,7 +108,7 @@ void check_Kramers_Kronig(const std::string filename) {
         std::array<my_index_t,4> start_K1 = {0, 0, 0, 0};
         std::array<my_index_t,4> end_K1   = {0,0,nBOS-1, n_in_K1};
         // check Kramers-Kronig for retarded component of K1r
-        rvec wK1 = state.vertex.avertex().K1.get_VertexFreqGrid().  primary_grid.get_all_frequencies();  // frequency grid points
+        vec<freqType> wK1 = state.vertex.avertex().K1.get_VertexFreqGrid().  primary_grid.get_all_frequencies();  // frequency grid points
         // get retarded component of K1a (first half of stored data points)
         auto K1aR = state.vertex.avertex().K1.get_vec().eigen_segment(start_K1, end_K1);
         vec<comp> K1aR_vec = vec<comp>(K1aR.data(), K1aR.data() + K1aR.size());
@@ -140,5 +142,10 @@ void check_Kramers_Kronig(const std::string filename) {
                         K1aR_im, K1aR_re, K1aR_re_KK,
                         K1pR_im, K1pR_re, K1pR_re_KK,
                         K1tR_im, K1tR_re, K1tR_re_KK});
+
+        H5::H5File file_out(filename, H5F_ACC_RDWR);
+        write_to_hdf(file_out, "v", vSigma, false);
+        file_out.close();
     }
 }
+#endif

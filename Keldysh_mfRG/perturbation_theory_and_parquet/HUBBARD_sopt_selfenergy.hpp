@@ -36,7 +36,7 @@ private:
 class Hubbard_SE_SOPT_Computer{
 public:
     Hubbard_SE_SOPT_Computer(const double Lambda_in, SelfEnergy<comp>& SOPT_SE_Hubbard_in,
-                             const State<comp>& bareState_in, const Vertex<comp>& vertex_in_SOPT_in)
+                             const State<comp>& bareState_in, const Vertex<comp,false>& vertex_in_SOPT_in)
             : Lambda(Lambda_in), bareState(bareState_in), vertex_in_SOPT(vertex_in_SOPT_in), SOPT_SE_Hubbard(SOPT_SE_Hubbard_in)
               {
         assert(HUBBARD_MODEL);
@@ -50,8 +50,8 @@ private:
     const double Lambda;
 
     const State<comp>& bareState;
-    const Vertex<comp>& vertex_in_SOPT;
-    const Propagator<comp> barePropagator = Propagator<comp>(Lambda, bareState.selfenergy, 'g');
+    const Vertex<comp,false>& vertex_in_SOPT;
+    const Propagator<comp> barePropagator = Propagator<comp>(Lambda, bareState.selfenergy, 'g', bareState.config);
 
     SelfEnergy<comp>& SOPT_SE_Hubbard; // result
 
@@ -60,7 +60,7 @@ private:
     const double v_upper = SOPT_SE_Hubbard.Sigma.frequencies.get_wupper_b();
 
     // hybridization (needed for proper splitting of the integration domain):
-    const double Delta = (Lambda + glb_Gamma) / 2.; // TODO(medium): Is this meaningful for the Hubbard model?
+    const double Delta = (Lambda + bareState.config.Gamma) / 2.; // TODO(medium): Is this meaningful for the Hubbard model?
 
     // prefactor for the integral is due to the loop (-1) and freq/momen integral (1/(2*pi*i))
     const comp prefactor = -1./(2.*M_PI*glb_i);

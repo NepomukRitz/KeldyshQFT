@@ -80,8 +80,8 @@ auto correctionFunctionSelfEnergy_Matsubara_NoPHS(int iK, double vmin, double vm
 
 
 template <typename Q>
-auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, Q Sigma_H, double Delta, char type) -> Q {
-    Q eps_p = glb_epsilon + Sigma_H;
+auto correctionFunctionSelfEnergy(int iK, double vmin, double vmax, double epsilon, Q Sigma_H, double Delta, char type) -> Q {
+    Q eps_p = epsilon + Sigma_H;
     if (KELDYSH)                    return correctionFunctionSelfEnergy_Keldysh(iK, vmin, vmax, eps_p, Delta, type);
     else{
         if (PARTICLE_HOLE_SYMMETRY) return correctionFunctionSelfEnergy_Matsubara_PHS(iK, vmin, vmax, eps_p, Delta, type);

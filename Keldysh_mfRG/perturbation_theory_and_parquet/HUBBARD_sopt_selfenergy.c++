@@ -83,7 +83,7 @@ void Hubbard_SE_SOPT_Computer::prepare_FFT_vectors(vec<comp>& g_values, vec<comp
             default: assert(false);
         }
 
-        double w1 = 0.;
+        freqType w1 = 0.;
         vertex_in_SOPT.avertex().K1.frequencies.get_freqs_w(w1, iw1);
 
         VertexInput input(vertex_Keldysh_component(iK, iK_internal), it_spin, w1, 0., 0., i_in, 'a'); // TODO: Spin sum!?
@@ -140,8 +140,11 @@ void Hubbard_SE_SOPT_Computer::save_integrand(const vec<comp>& integrand, const 
     const std::string filename  = directory + "SE_integrand_iK_" + std::to_string(iK)+ "_iK_internal_" + std::to_string(iK_internal) + ".h5";
 
     write_h5_rvecs(filename,
-                   {"prop_freq", "vert_freq", "integrand_re", "integrand_im"},
-                   {barePropagator.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies(),
-                    vertex_in_SOPT.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(),
+                   {"integrand_re", "integrand_im"},
+                   {
                     integrand.real(), integrand.imag()});
+    H5::H5File file_out(filename, H5F_ACC_RDWR);
+    write_to_hdf(file_out, "prop_freq", barePropagator.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies(), false);
+    write_to_hdf(file_out, "vert_freq", vertex_in_SOPT.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(), false);
+    file_out.close();
 }

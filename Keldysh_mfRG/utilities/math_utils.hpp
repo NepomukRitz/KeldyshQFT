@@ -26,6 +26,8 @@ auto sign(T x) -> double {              /// TODO: Which implementation is more e
 }
 
 double sgn(double x);
+int integer_division_ceil(int a, int b);
+int integer_division_floor(int a, int b);
 
 // Heaviside-Theta function for sharp regulator
 auto heaviside (const double x) -> double;
@@ -36,7 +38,13 @@ auto heaviside (const double x) -> double;
  * @return
  */
 template<typename Q> auto sign_index(Q freq) -> int {
-    return (freq > 0);
+    if constexpr (std::is_same_v<Q,int>) {
+        return (freq > 0);
+    }
+    else {
+        const double safety = 1e-10;
+        return (freq > safety); // safety to ensure that w=0 gets sign_w=-1
+    }
 }
 
 
@@ -51,20 +59,20 @@ auto round2Infty(double x) -> double;
 auto myround(double x) -> double;
 
 // round (frequency/(pi*T)) to an even number
+auto floor2bfreq(int w) -> int;
+auto ceil2bfreq(int w) -> int;
+
 auto floor2bfreq(double w) -> double;
 auto ceil2bfreq(double w) -> double;
 auto round2bfreq(double w) -> double;
-// round (frequency/(pi*T)) to an uneven number
-auto floor2ffreq(double w) -> double;
-auto ceil2ffreq(double w) -> double;
 auto round2ffreq(double w) -> double;
 
-auto signFlipCorrection_MF(const double w) -> double;
-int signFlipCorrection_MF_int(const double w);
+auto signFlipCorrection_MF(freqType w) -> freqType;
+int signFlipCorrection_MF_int(freqType w);
 
 
 // Check whether there are doubly occuring frequencies
-auto is_doubleOccurencies(const rvec& freqs) -> int;
+auto is_doubleOccurencies(const vec<freqType>& freqs) -> int;
 
 // Check whether the frequency grid is symmetric_full
 auto is_symmetric(const rvec& freqs) -> double;
@@ -240,26 +248,27 @@ inline void getMultIndexSkippingOneDimension(std::array<size_t,rank>&  indx, con
     static_assert(idim < rank, "idim must be smaller than rank.");
     size_t temp = iflat;
     size_t dimtemp = 1;
-    for (int it = 1; it < idim; it++) {
+    for (unsigned int it = 1; it < idim; it++) {
         dimtemp *= dims[it];
     }
-    for (int it = idim+1; it < rank; it++) {
+    for (unsigned int it = idim+1; it < rank; it++) {
         dimtemp *= dims[it];
     }
     if constexpr (idim != 0) {
         indx[0] = temp / dimtemp;
         temp -= indx[0] * dimtemp;
     }
-    for (int it = 1; it < idim; it++) {
+    for (unsigned int it = 1; it < idim; it++) {
         dimtemp = dimtemp / dims[it];
         indx[it] = temp / dimtemp;
         temp -= indx[it] * dimtemp;
     }
-    for (int it = idim+1; it < rank; it++) {
+    for (unsigned int it = idim+1; it < rank; it++) {
         dimtemp = dimtemp / dims[it];
         indx[it] = temp / dimtemp;
         temp -= indx[it] * dimtemp;
     }
+    indx[idim] = 0;
 }
 
 /**
@@ -375,7 +384,7 @@ namespace { // hide the following to the outside world
      * @return
      */
     template<typename T, size_t rank>
-    vec<T> get_finite_differences(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+    vec<T> get_finite_differences(const vec<T>& data, const vec<freqType>& xs, const std::array<size_t,rank>& dims,
                                   const std::array<size_t,rank>& permutation,
                                   const bd_type left=third_deriv, const bd_type right=third_deriv, const T left_value=0.0, const T right_value=0.0){
         const size_t flatdim = data.size();
@@ -493,7 +502,7 @@ namespace { // hide the following to the outside world
         return result;
     }
     template <typename T, size_t rank>
-    T get_finite_differences_helper(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+    T get_finite_differences_helper(const vec<T>& data, const vec<freqType>& xs, const std::array<size_t,rank>& dims,
                                     const std::array<size_t,rank>& permutation, size_t it_dimsum, size_t jt, vec<int>& no_i, int lower, int upper) {
         T result = 0;
         double prefactor_data0 = 0.;
@@ -520,7 +529,7 @@ namespace { // hide the following to the outside world
     }
 
     template <typename T, size_t rank>
-    T get_finite_differences_helper_v2(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+    T get_finite_differences_helper_v2(const vec<T>& data, const vec<freqType>& xs, const std::array<size_t,rank>& dims,
                                     const std::array<size_t,rank>& permutation, size_t it_dimsum, size_t jt, vec<int>& no_i, int lower, int upper) {
         T result = 0;
         double prefactor_data0 = 0.;
@@ -563,7 +572,7 @@ namespace { // hide the following to the outside world
      * @return
      */
     template<typename T, size_t rank>
-    vec<T> get_finite_differences_v2(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+    vec<T> get_finite_differences_v2(const vec<T>& data, const vec<freqType>& xs, const std::array<size_t,rank>& dims,
                                      const std::array<size_t,rank>& permutation){
         const size_t flatdim = data.size();
         const size_t dimsum = dims[rank-1];//
@@ -605,7 +614,7 @@ namespace { // hide the following to the outside world
 
 
     template<typename T, size_t rank>
-    vec<T> get_finite_differences_v3(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+    vec<T> get_finite_differences_v3(const vec<T>& data, const vec<freqType>& xs, const std::array<size_t,rank>& dims,
                                      const std::array<size_t,rank>& permutation, const int order)
     {
         //const int order = 5;
@@ -663,7 +672,7 @@ namespace { // hide the following to the outside world
     }
 
     template<typename T, size_t rank>
-    vec<T> get_finite_differences_v4(const vec<T>& data, const vec<double>& xs, const std::array<size_t,rank>& dims,
+    vec<T> get_finite_differences_v4(const vec<T>& data, const vec<freqType>& xs, const std::array<size_t,rank>& dims,
                                      const std::array<size_t,rank>& permutation, const int order)
     {
         //const int order = 5;
@@ -734,7 +743,7 @@ namespace { // hide the following to the outside world
  * @return
  */
 template<typename T, size_t rank>
-vec<T> partial_deriv(const vec<T>& data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
+vec<T> partial_deriv(const vec<T>& data, const  vec<freqType>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
     if (i_dim >= rank) assert(false);
     std::array<size_t,rank> dims_permuted;
     vec<size_t> dims_temp = permuteCyclic<rank>(dims, rank - i_dim - 1);
@@ -749,7 +758,7 @@ vec<T> partial_deriv(const vec<T>& data, const  vec<double>& xs, const std::arra
  * Compute the partial derivative on a uniform grid with grid spacing 1
  */
 template<typename T, size_t rank>
-vec<T> partial_deriv_v2(const vec<T>& data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
+vec<T> partial_deriv_v2(const vec<T>& data, const  vec<freqType>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
     if (i_dim >= rank) assert(false);
     std::array<size_t,rank> dims_permuted;
     vec<size_t> dims_temp = permuteCyclic<rank>(dims, rank - i_dim - 1);
@@ -762,7 +771,7 @@ vec<T> partial_deriv_v2(const vec<T>& data, const  vec<double>& xs, const std::a
 }
 
 template<typename T, size_t rank>
-multidimensional::multiarray<T,rank> partial_deriv(const multidimensional::multiarray<T,rank>& data, const  vec<double>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
+multidimensional::multiarray<T,rank> partial_deriv(const multidimensional::multiarray<T,rank>& data, const  vec<freqType>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
     return multidimensional::multiarray<T,rank>(data.length(), partial_deriv<T,rank>(vec<T>(data.begin(), data.end()), xs, data.length(), i_dim, order));
 }
 
@@ -972,10 +981,10 @@ template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t)
 
 
 /// converts the frequencies to the parametrization that is used internally, e.g. rotate frequency plane
-void K2_convert2internalFreqs(double &w, double &v);
-void K2_convert2naturalFreqs(double &w, double &v);
-void K3_convert2internalFreqs(double &w, double &v, double &vp);
-void K3_convert2naturalFreqs(double &w, double &v, double &vp);
+void K2_convert2internalFreqs(freqType &w, freqType &v);
+void K2_convert2naturalFreqs(freqType &w, freqType &v);
+void K3_convert2internalFreqs(freqType &w, freqType &v, freqType &vp);
+void K3_convert2naturalFreqs(freqType &w, freqType &v, freqType &vp);
 
 
 /// Given an array xx[0..n-1], and given a value x, returns a value j such that x is between xx[j] and xx[j+1].

@@ -56,8 +56,8 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
 
 TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
 
-        double Lambda_i = 10.;
-    double Lambda_f = 1e-2;
+        double Lambda_i = 0.;
+    double Lambda_f = 1e1;
 
     double y_ini = exp(Lambda_i);
     double result;
@@ -66,7 +66,7 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
     config.maximal_number_of_ODE_steps = 500;
     config.relative_error = 1e-9;
     config.absolute_error = 1e-8;
-    ode_solver<double, flowgrid::exp_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(),  config, false);
+    ode_solver<double, flowgrid::linear_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(),  config, false);
 
 
     double result_exact = exp(Lambda_f);

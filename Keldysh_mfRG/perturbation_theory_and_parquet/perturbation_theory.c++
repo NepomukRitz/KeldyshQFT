@@ -1,7 +1,7 @@
 #include "perturbation_theory.hpp"
 
 void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,
-                              const State<comp>& bareState, const Vertex<comp>& vertex_in_SOPT,
+                              const State<comp>& bareState, const Vertex<comp,false>& vertex_in_SOPT,
                               const double Lambda){
     assert(HUBBARD_MODEL);
     assert(KELDYSH);         // TODO: Matsubara version?

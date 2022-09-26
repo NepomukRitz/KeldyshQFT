@@ -82,7 +82,7 @@ void check_SE_causality(const Q& selfEnergy) {}
  * Function that checks FDTs for self-energy and K1 in all channels for given input state:
  */
 template <typename Q>
-void check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const bool verbose) {
+void check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const double T, const bool verbose) {
     std::array<size_t,SE_config.rank> dims_K = SE_config.dims;
     dims_K[my_defs::SE::keldysh] = 1;
     using buffer_t = multidimensional::multiarray<Q,SE_config.rank>;
@@ -105,7 +105,7 @@ void check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const bool verbose) 
         double v;
         selfenergy.Sigma.frequencies.get_freqs_w(v, iv);
 
-        const Q val_K_from_FDTs = glb_i * 2. * Eff_fac(v) * myimag(val_R_from_data);
+        const Q val_K_from_FDTs = glb_i * 2. * Eff_fac(v,T) * myimag(val_R_from_data);
 
         SE_K_from_data.at(idx_R) = val_K_from_data;
         SE_K_from_FDTs.at(idx_R) = val_K_from_FDTs;
@@ -123,7 +123,7 @@ void check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const bool verbose) 
 
 
 template <typename Q>
-void check_FDTs_K1(const rvert<Q>& rvert4K1, const bool verbose) {
+void check_FDTs_K1(const rvert<Q>& rvert4K1, const double T, const bool verbose) {
     if constexpr(!CONTOUR_BASIS) {
         std::array<size_t, K1at_config.rank> dims_K = rvert4K1.K1.get_dims();
         dims_K[my_defs::K1::keldysh] = 1;
@@ -147,7 +147,7 @@ void check_FDTs_K1(const rvert<Q>& rvert4K1, const bool verbose) {
             double v;
             rvert4K1.K1.frequencies.get_freqs_w(v, iv);
 
-            const Q val_Im_R_from_FDTs = glb_i * 0.5 * Eff_fac(v) * val_K_from_data;
+            const Q val_Im_R_from_FDTs = glb_i * 0.5 * Eff_fac(v,T) * val_K_from_data;
 
             Im_K1_R_from_data.at(idx_R) = val_Im_R_from_data;
             Im_K1_R_from_FDTs.at(idx_R) = val_Im_R_from_FDTs;
@@ -167,9 +167,9 @@ void check_FDTs_K1(const rvert<Q>& rvert4K1, const bool verbose) {
 
 template <typename Q>
 void check_FDTs(const State<Q>& state, bool verbose) {
-    check_FDTs_selfenergy(state.selfenergy, verbose);
+    check_FDTs_selfenergy(state.selfenergy, state.config.T, verbose);
     for (char ch : {'a', 'p', 't'}) {
-        check_FDTs_K1(state.vertex.get_rvertex(ch), verbose);
+        check_FDTs_K1(state.vertex.get_rvertex(ch), state.config.T, verbose);
     }
 }
 
@@ -188,7 +188,7 @@ void check_FDTs(const State<Q>& state, bool verbose) {
  * CAUTION: For the K2-class the FDTs involve numerically diverging prefactors for zero bosonic frequency
  */
 template <typename Q, char channel>
-void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>& vertex_in, const fullvert<Q>& vertex_half2_in) {
+void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>& vertex_in, const fullvert<Q>& vertex_half2_in, const double T) {
     if constexpr(CONTOUR_BASIS) {
         vertex_out = vertex_in;
     } else {
@@ -203,13 +203,13 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         idx[my_defs::K1::spin] = itspin;
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
-
-                        double w, N1;
+                        freqType w;
+                        double N1;
                         Q G1, G2;
 
                         vertex_in.avertex.K1.frequencies.get_freqs_w(w, itw);
-                        if (std::abs(w) > glb_T * 25.) {
-                            N1 = 1. / Fermi_fac(w, glb_mu);
+                        if (std::abs(w) > T * 25.) { // spare the region around zero
+                            N1 = 1. / Fermi_fac(w, glb_mu, T);
                             VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
                             G1 = vertex_in.avertex.template valsmooth<k1>(inputG1, vertex_in.tvertex,
                                                                           vertex_half2_in.avertex,
@@ -231,13 +231,13 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         idx[my_defs::K1::spin] = itspin;
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
-
-                        double w, N1;
+                        freqType w;
+                        double N1;
                         Q G1, G2;
 
                         vertex_in.pvertex.K1.frequencies.get_freqs_w(w, itw);
-                        if (std::abs(w) > glb_T * 25.) {
-                            N1 = 1. / Fermi_fac(w, glb_mu);
+                        if (std::abs(w) > T * 25.) {
+                            N1 = 1. / Fermi_fac(w, glb_mu, T);
                             VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
                             G1 = vertex_in.pvertex.template valsmooth<k1>(inputG1, vertex_in.pvertex,
                                                                           vertex_half2_in.pvertex,
@@ -261,13 +261,13 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                         idx[my_defs::K1::spin] = itspin;
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
-
-                        double w, N1;
+                        freqType w;
+                        double N1;
                         Q G1, G2;
 
                         vertex_in.tvertex.K1.frequencies.get_freqs_w(w, itw);
-                        if (std::abs(w) > glb_T * 25.) {
-                            N1 = 1. / Fermi_fac(w, glb_mu);
+                        if (std::abs(w) > T * 25.) {
+                            N1 = 1. / Fermi_fac(w, glb_mu, T);
                             VertexInput inputG1(1, itspin, w, 0, 0, itin, 'a');  // advanced component
                             G1 = vertex_in.tvertex.template valsmooth<k1>(inputG1, vertex_in.avertex,
                                                                           vertex_half2_in.tvertex,
@@ -298,14 +298,15 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::nu] = itv;
                             idx[my_defs::K2::internal] = itin;
 
-                            double w, v, N1, N2, N3;
+                            freqType w, v;
+                            double N1, N2, N3;
                             Q G1, G2, G3, G12, G23, G123;
 
                             vertex_in.avertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
-                            if (std::abs(w) > glb_T) {
-                                N1 = Fermi_fac(-v - w / 2, glb_mu);
-                                N2 = Fermi_fac(v - w / 2, glb_mu);
-                                N3 = 1. / Fermi_fac(w, glb_mu);
+                            if (std::abs(w) > T) {
+                                N1 = Fermi_fac(-v - w / 2, glb_mu, T);
+                                N2 = Fermi_fac(v - w / 2, glb_mu, T);
+                                N3 = 1. / Fermi_fac(w, glb_mu, T);
                                 VertexInput inputG1(8, itspin, w, v, 0, itin, 'a');
                                 VertexInput inputG2(1, itspin, w, v, 0, itin, 'a');
                                 VertexInput inputG3(11, itspin, w, v, 0, itin, 'a');
@@ -353,14 +354,15 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::nu] = itv;
                             idx[my_defs::K2::internal] = itin;
 
-                            double w, v, N1, N2, N3;
+                            freqType w, v;
+                            double N1, N2, N3;
                             Q G1, G2, G3, G12, G13, G123;
 
                             vertex_in.pvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
-                            if (std::abs(w) > glb_T * 1.) {//
-                                N1 = Fermi_fac(v + w / 2, glb_mu);
-                                N2 = Fermi_fac(-v + w / 2, glb_mu);
-                                N3 = 1. / Fermi_fac(-w, glb_mu);
+                            if (std::abs(w) > T * 1.) {//
+                                N1 = Fermi_fac(v + w / 2, glb_mu, T);
+                                N2 = Fermi_fac(-v + w / 2, glb_mu, T);
+                                N3 = 1. / Fermi_fac(-w, glb_mu, T);
                                 VertexInput inputG1(4, itspin, w, v, 0, itin, 'p');
                                 VertexInput inputG2(8, itspin, w, v, 0, itin, 'p');
                                 VertexInput inputG3(13, itspin, w, v, 0, itin, 'p');
@@ -408,14 +410,15 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                             idx[my_defs::K2::nu] = itv;
                             idx[my_defs::K2::internal] = itin;
 
-                            double w, v, N1, N2, N3;
+                            freqType w, v;
+                            double N1, N2, N3;
                             Q G1, G2, G3, G12, G23, G123;
 
                             vertex_in.tvertex.K2.frequencies.get_freqs_w(w, v, itw, itv);
-                            if (std::abs(w) > glb_T * 1.) {
-                                N1 = Fermi_fac(-v - w / 2, glb_mu);
-                                N2 = Fermi_fac(v - w / 2, glb_mu);
-                                N3 = 1. / Fermi_fac(w, glb_mu);
+                            if (std::abs(w) > T * 1.) {
+                                N1 = Fermi_fac(-v - w / 2, glb_mu, T);
+                                N2 = Fermi_fac(v - w / 2, glb_mu, T);
+                                N3 = 1. / Fermi_fac(w, glb_mu, T);
                                 VertexInput inputG1(4, itspin, w, v, 0, itin, 't');
                                 VertexInput inputG2(1, itspin, w, v, 0, itin, 't');
                                 VertexInput inputG3(7, itspin, w, v, 0, itin, 't');
@@ -471,10 +474,10 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                 Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
                                 vertex_in.avertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
-                                N1 = Fermi_fac(v - w / 2, glb_mu);
-                                N2 = Fermi_fac(vp + w / 2, glb_mu);
-                                N3 = Fermi_fac(-vp + w / 2, glb_mu);
-                                N4 = Fermi_fac(-v - w / 2, glb_mu);
+                                N1 = Fermi_fac(v - w / 2, glb_mu, T);
+                                N2 = Fermi_fac(vp + w / 2, glb_mu, T);
+                                N3 = Fermi_fac(-vp + w / 2, glb_mu, T);
+                                N4 = Fermi_fac(-v - w / 2, glb_mu, T);
                                 VertexInput inputG1(7, itspin, w, v, vp, itin, 'a');
                                 VertexInput inputG2(11, itspin, w, v, vp, itin, 'a');
                                 VertexInput inputG3(13, itspin, w, v, vp, itin, 'a');
@@ -564,10 +567,10 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                 Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
                                 vertex_in.pvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
-                                N1 = Fermi_fac(v + w / 2, glb_mu);
-                                N2 = Fermi_fac(-v + w / 2, glb_mu);
-                                N3 = Fermi_fac(-vp - w / 2, glb_mu);
-                                N4 = Fermi_fac(vp - w / 2, glb_mu);
+                                N1 = Fermi_fac(v + w / 2, glb_mu, T);
+                                N2 = Fermi_fac(-v + w / 2, glb_mu, T);
+                                N3 = Fermi_fac(-vp - w / 2, glb_mu, T);
+                                N4 = Fermi_fac(vp - w / 2, glb_mu, T);
                                 VertexInput inputG1(7, itspin, w, v, vp, itin, 'p');
                                 VertexInput inputG2(11, itspin, w, v, vp, itin, 'p');
                                 VertexInput inputG3(13, itspin, w, v, vp, itin, 'p');
@@ -661,10 +664,10 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                 Q G1, G2, G3, G4, G12, G13, G14, G23, G24, G34, G1234, G123;
 
                                 vertex_in.tvertex.K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
-                                N1 = Fermi_fac(vp + w / 2, glb_mu);
-                                N2 = Fermi_fac(v - w / 2, glb_mu);
-                                N3 = Fermi_fac(-vp + w / 2, glb_mu);
-                                N4 = Fermi_fac(-v - w / 2, glb_mu);
+                                N1 = Fermi_fac(vp + w / 2, glb_mu, T);
+                                N2 = Fermi_fac(v - w / 2, glb_mu, T);
+                                N3 = Fermi_fac(-vp + w / 2, glb_mu, T);
+                                N4 = Fermi_fac(-v - w / 2, glb_mu, T);
 
                                 VertexInput inputG1(7, itspin, w, v, vp, itin, 't');
                                 VertexInput inputG2(11, itspin, w, v, vp, itin, 't');
@@ -746,36 +749,38 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
 /*
  * Wrapper for above function (here defined for GeneralVertex)
  */
-template <typename Q, vertexType symmetry_type>
-void compute_components_through_FDTs(GeneralVertex<Q,symmetry_type>& vertex_out, const GeneralVertex<Q,symmetry_type>& vertex_in) {
+template <typename Q, typename vertexType>
+void compute_components_through_FDTs(vertexType& vertex_out, const vertexType& vertex_in, const double T) {
     vertex_in.initializeInterpol();
-    compute_components_through_FDTs<Q,'a'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1());
-    compute_components_through_FDTs<Q,'p'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1());
-    compute_components_through_FDTs<Q,'t'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1());
+    compute_components_through_FDTs<Q,'a'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1(), T);
+    compute_components_through_FDTs<Q,'p'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1(), T);
+    compute_components_through_FDTs<Q,'t'>(vertex_out.half1(), vertex_in.half1(), vertex_in.half1(), T);
     vertex_in.set_initializedInterpol(false);
 }
 
 /*
  *
  */
-template <typename Q, vertexType symmetry_type>
-void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, bool write_flag = false, int nLambda = 1) {
+template <typename vertexType>
+void compare_with_FDTs(const vertexType& vertex_in, double Lambda, int Lambda_it, std::string filename_prefix, const double T, bool write_flag = false, int nLambda = 1) {
+    using Q = typename vertexType::base_type;
+    fRG_config stdconfig;
     if(KELDYSH) {
         if (CONTOUR_BASIS and not ZERO_T) {} //assert(false);
         if (CONTOUR_BASIS and ZERO_T) {
             utils::print("Checking the FDTs for Lambda_it", Lambda_it, true);
 
-            State<Q> state_diff(Lambda);
+            State<Q> state_diff(Lambda, stdconfig);
 
             double max_deviation_K1 = 0, max_deviation_K2 = 0, max_deviation_K3 = 0;
             for (char r: {'a', 'p', 't'}) {
                 auto K1 = vertex_in.get_rvertex(r).K1;
-                for (int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
+                for (unsigned int iflat = 0; iflat < getFlatSize(K1.get_dims()); iflat++) {
                     my_defs::K1::index_type idx;
                     getMultIndex<rank_K1>(idx, iflat, K1.get_dims());
                     int itK = (int) idx[my_defs::K1::keldysh];
                     my_index_t itw = idx[my_defs::K1::omega];
-                    double w;
+                    freqType w;
                     K1.frequencies.get_freqs_w(w, itw);
 
                     if (is_zero_due_to_FDTs<k1>(itK, w, 0., 0., r)) {
@@ -790,13 +795,13 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             if (MAX_DIAG_CLASS > 1) {
                 for (char r: {'a', 'p', 't'}) {
                     auto K2 = vertex_in.get_rvertex(r).K2;
-                    for (int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
+                    for (unsigned int iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
                         my_defs::K2::index_type idx;
                         getMultIndex<rank_K2>(idx, iflat, K2.get_dims());
                         int itK = (int) idx[my_defs::K2::keldysh];
                         my_index_t itw = idx[my_defs::K2::omega];
                         my_index_t itv = idx[my_defs::K2::nu];
-                        double w, v;
+                        freqType w, v;
                         K2.frequencies.get_freqs_w(w, v, itw, itv);
 
                         if (is_zero_due_to_FDTs<k2>(itK, w, v, 0., r)) {
@@ -811,14 +816,14 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             if (MAX_DIAG_CLASS > 2) {
                 for (char r: {'a', 'p', 't'}) {
                     auto K3 = vertex_in.get_rvertex(r).K3;
-                    for (int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
+                    for (unsigned int iflat = 0; iflat < getFlatSize(K3.get_dims()); iflat++) {
                         my_defs::K3::index_type idx;
                         getMultIndex<rank_K3>(idx, iflat, K3.get_dims());
                         int itK = (int) idx[my_defs::K3::keldysh];
                         my_index_t itw = idx[my_defs::K3::omega];
                         my_index_t itv = idx[my_defs::K3::nu];
                         my_index_t itvp= idx[my_defs::K3::nup];
-                        double w, v, vp;
+                        freqType w, v, vp;
                         K3.frequencies.get_freqs_w(w, v, vp, itw, itv, itvp);
 
                         if (is_zero_due_to_FDTs<k3>(itK, w, v, vp, r)) {
@@ -857,11 +862,11 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
 
         }
         else {
-            GeneralVertex<Q, symmetry_type> vertex_out = vertex_in;
-            compute_components_through_FDTs(vertex_out, vertex_in);
+            vertexType vertex_out = vertex_in;
+            compute_components_through_FDTs<Q>(vertex_out, vertex_in, T);
 
             utils::print("Checking the FDTs for Lambda_it", Lambda_it, true);
-            GeneralVertex<Q, symmetry_type> vertex_diff = vertex_in - vertex_out;
+            vertexType vertex_diff = vertex_in - vertex_out;
             utils::print("K2: max-norm of deviation = ", false);
             if (mpi_world_rank() == 0 and MAX_DIAG_CLASS > 1)
                 std::cout << vertex_diff.half1().norm_K2(0) << std::scientific << '\n';
@@ -883,13 +888,14 @@ void compare_with_FDTs(const GeneralVertex<Q,symmetry_type>& vertex_in, double L
             //
 
             if (write_flag) {
-                SelfEnergy<Q> SE_empty(Lambda);
-                Vertex<Q> temp_diff(Lambda);
+                fRG_config std_config;
+                SelfEnergy<Q> SE_empty(Lambda, fRG_config());
+                Vertex<Q,false> temp_diff(Lambda, fRG_config());
                 temp_diff.half1() = vertex_diff.half1();
-                Vertex<Q> temp_out(Lambda);
+                Vertex<Q,false> temp_out(Lambda, fRG_config());
                 temp_out.half1() = vertex_out.half1();
-                State<Q> state_out(temp_out, SE_empty, Lambda);
-                State<Q> state_diff(temp_diff, SE_empty, Lambda);
+                State<Q> state_out(temp_out, SE_empty, std_config, Lambda);
+                State<Q> state_diff(temp_diff, SE_empty, std_config, Lambda);
                 if (Lambda_it == 0) {
                     write_state_to_hdf(data_dir + filename_prefix + "_FDTresult", Lambda, nLambda, state_out);
                     write_state_to_hdf(data_dir + filename_prefix + "_FDTdiff", Lambda, nLambda, state_diff);
