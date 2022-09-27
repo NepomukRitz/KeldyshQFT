@@ -88,8 +88,9 @@ TEST_CASE("FFT Machine", "Test that the backward FFT followed by the forward FFT
 
 TEST_CASE("K1 BZ Average", "Test that the q-sum over the reduced BZ is normalized properly for K1."){
     if (HUBBARD_MODEL) {
-        rvert<comp> test_vertex_comp('a', Lambda_ini, true);
-        rvert<double> test_vertex_double('a', Lambda_ini, true);
+        fRG_config Hubbard_config = fRG_config();
+        rvert<comp> test_vertex_comp('a', Lambda_ini, Hubbard_config, true);
+        rvert<double> test_vertex_double('a', Lambda_ini, Hubbard_config, true);
         int i_spin = 0;
 
         for (int i_in = 0; i_in < n_in; ++i_in) {

@@ -681,7 +681,7 @@ public:
 /*******************************************    FREQUENCY GRID    *****************************************************/
 
 double grid_transf_lin(double w, double W_scale);
-int grid_transf_lin(int w, int W_scale);
+//int    grid_transf_lin(int w, int W_scale);
 double grid_transf_v1(double w, double W_scale);
 double grid_transf_v2(double w, double W_scale);
 double grid_transf_v3(double w, double W_scale);

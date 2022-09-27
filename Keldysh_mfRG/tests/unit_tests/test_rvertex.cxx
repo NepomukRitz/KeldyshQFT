@@ -9,8 +9,10 @@
 
 TEST_CASE( "Do arithmetic operations work?", "[arithmetic]" ) {
 
-    rvert<state_datatype> testvertex1('a', Lambda_ini, true);
-    rvert<state_datatype> testvertex2('a', Lambda_ini, true);
+    fRG_config test_config;
+
+    rvert<state_datatype> testvertex1('a', Lambda_ini, test_config, true);
+    rvert<state_datatype> testvertex2('a', Lambda_ini, test_config, true);
 
 
 
@@ -75,7 +77,9 @@ namespace {
 }
 
 TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "[update grid]") {
-    rvert<state_datatype> testvertex1('a', Lambda_ini, true);
+    fRG_config test_config;
+
+    rvert<state_datatype> testvertex1('a', Lambda_ini, test_config, true);
 
     multidimensional::multiarray<state_datatype,4> v1(K1at_config.dims);
     for (int iw = 0; iw < nBOS; iw++) {

@@ -10,7 +10,8 @@ TEST_CASE( "bosonic frequency grid correctly initialized and accessed?", "[boson
     double issymmetric = 0.;
     double issymmetric_aux = 0.;
     double symmetry_tolerance = 1e-9;
-    FrequencyGrid<eliasGrid> Bosfreqs('b', 1, 0.);
+    fRG_config test_config;
+    FrequencyGrid<eliasGrid> Bosfreqs('b', 1, 0., test_config);
     bool existNoDoubleOccurencies = not is_doubleOccurencies(Bosfreqs.get_all_frequencies());
     for (int i = 0; i < nBOS; i++) {
 
@@ -51,7 +52,8 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
     bool isright = true;
     double issymmetric = 0.;
     double symmetry_tolerance = 1e-9;
-    FrequencyGrid<eliasGrid> Ferfreqs('f', 1, 0.);
+    fRG_config test_config;
+    FrequencyGrid<eliasGrid> Ferfreqs('f', 1, 0., test_config);
     bool existNoDoubleOccurencies = not is_doubleOccurencies(Ferfreqs.get_all_frequencies());
     for (int i = 0; i < nFER; i++) {
 
@@ -82,8 +84,8 @@ TEST_CASE( "fermionic frequency grid correctly initialized and accessed?", "[fer
 
 #ifndef DENSEGRID
 TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[grid functions]") {
-
-    FrequencyGrid<hybridGrid> hybrid('b', 1, Lambda_ini);
+    fRG_config test_config;
+    FrequencyGrid<hybridGrid> hybrid('b', 1, Lambda_ini, test_config);
 
     auto hybrid_func = [&hybrid](double x, double W) -> double {return hybrid.t_from_frequency(x);};
     auto hybrid_inver = [&hybrid](double x, double W) -> double {return hybrid.frequency_from_t(x);};
@@ -111,9 +113,8 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
 
     REQUIRE(tdeviations.max_norm() < tolerance);
 
-
-    FrequencyGrid<angularGrid> angular_phi('f', 3, Lambda_ini, false);
-    FrequencyGrid<angularGrid> angular_theta('f', 3, Lambda_ini, true);
+    FrequencyGrid<angularGrid> angular_phi('f', 3, Lambda_ini, test_config, false);
+    FrequencyGrid<angularGrid> angular_theta('f', 3, Lambda_ini, test_config, true);
     std::vector<double> phi_values = {-M_PI, -1., -1e-5, 0., 1e-5, 1, M_PI};
     std::vector<double> theta_values = { 0., 1e-5, 1, M_PI};
 
@@ -146,7 +147,8 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
 TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") {
 
     SECTION("K2:") {
-        bufferFrequencyGrid<k2> gridK2(Lambda_ini);
+        fRG_config test_config;
+        bufferFrequencyGrid<k2> gridK2(Lambda_ini, test_config);
         vec<double> errors_K2(nBOS2 * nFER2);
         /// for K2:
         for (int iw = 1; iw < nBOS2-1; iw++) {
@@ -172,7 +174,8 @@ TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") 
 
     SECTION("K3: ") {
         /// for K3:
-        bufferFrequencyGrid<k3> gridK3(Lambda_ini);
+        fRG_config test_config;
+        bufferFrequencyGrid<k3> gridK3(Lambda_ini, test_config);
         int nFER3_p = (GRID == 2 ? (nFER3 - 1) / 2 + 1 : nFER3);
         vec<double> errors_K3(nBOS3 * nFER3 * nFER3_p);
         vec<double> remainders_in_dw_normalized_K3(nBOS3 * nFER3 * nFER3_p);

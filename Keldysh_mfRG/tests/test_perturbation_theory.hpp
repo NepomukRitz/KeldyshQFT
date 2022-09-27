@@ -20,7 +20,7 @@
 
 
 namespace {
-    fRG_config stdConfig = {0, 1e-8, 1e-5, 1., 0.1, 1., -0.5, false, 1, 1};
+    fRG_config stdConfig = {0, 1e-8, 1e-5, 1., 0.0, 1., PARTICLE_HOLE_SYMMETRY ? -0.5 : 0.0, false, 1, 1};
 }
 
 
@@ -2626,10 +2626,9 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 }
 #else
 template <typename Q, int type = 2>
-auto SOPT_K1a(double w, double Lambda) -> Q {
+auto SOPT_K1a(double w, double Lambda, const double hartree_term) -> Q {
 
     double Delta = REG == 2 ? (stdConfig.Gamma + Lambda) / 2. : stdConfig.Gamma * 0.5;
-    const double hartree_term = PARTICLE_HOLE_SYMMETRY ? 0.5*stdConfig.U : Hartree_Solver(Lambda).compute_Hartree_term_bracketing();
     const double HF_corr = stdConfig.epsilon + hartree_term;
 
     auto advanced = [Delta,HF_corr,Lambda](const double w_) -> Q {
@@ -2661,9 +2660,8 @@ auto SOPT_K1a(double w, double Lambda) -> Q {
 
 }
 template <typename Q, int type = 2>
-auto SOPT_K1a_diff(double w, double Lambda) -> Q {
+auto SOPT_K1a_diff(double w, double Lambda, const double hartree_term) -> Q {
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
-    const double hartree_term = Hartree_Solver(Lambda, stdConfig).compute_Hartree_term_bracketing();
     const double HF_corr = (stdConfig.epsilon+stdConfig.U*0.5) + hartree_term - 0.5 * stdConfig.U;
 
     auto advanced = [Delta,HF_corr](const double w_) -> Q {
@@ -2709,16 +2707,17 @@ class Integrand_SOPT_SE {
     const double v;
     const double Lambda;
     const double Delta;
+    const double Hartree_value;
     const Propagator<Q>& barePropagator;
 
 public:
-    Integrand_SOPT_SE(const double v, const double Lambda, const Propagator<Q>& propagator) :
-    v(v), Lambda(Lambda), Delta(REG == 2 ? (Lambda + stdConfig.Gamma) * 0.5 : stdConfig.Gamma * 0.5), barePropagator(propagator) {};
+    Integrand_SOPT_SE(const double v, const double Lambda, const double Hartree_value, const Propagator<Q>& propagator) :
+    v(v), Lambda(Lambda), Delta(REG == 2 ? (Lambda + stdConfig.Gamma) * 0.5 : stdConfig.Gamma * 0.5), Hartree_value(Hartree_value), barePropagator(propagator) {};
 
     auto value(const double vp) const -> Q {
-        const Q KR = SOPT_K1a<Q,2>(vp - v, Lambda);
+        const Q KR = SOPT_K1a<Q,2>(vp - v, Lambda, Hartree_value);
         const Q KA = conj(KR);
-        const Q KK = SOPT_K1a<Q,0>(vp - v, Lambda);
+        const Q KK = SOPT_K1a<Q,0>(vp - v, Lambda, Hartree_value);
         const Q K00 = ( KR + KA + KK);// * 0.5;
         const Q K01 = ( KR - KA - KK);// * 0.5;
         const Q K10 = (-KR + KA - KK);// * 0.5;
@@ -2785,14 +2784,14 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
 #if REG==2
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
 #else
-    double Delta = (stdConfig.Gamma) / 2.;
+    double Delta = (config.Gamma) / 2.;
 #endif
-    State<Q> bareState (Lambda);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    State<Q> bareState (Lambda, stdConfig);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g', stdConfig);    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
 
     const int N_iterations = 0;
-    State<Q> state_cpp (Lambda);   // create final and initial state
+    State<Q> state_cpp (Lambda, stdConfig);   // create final and initial state
     state_cpp.initialize();             // initialize state
     //write_state_to_hdf("PTstate_preOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
     //write_state_to_hdf("PTstate_postOpt", Lambda_ini,  N_iterations+1, state_cpp);  // save the initial state to hdf5 file
@@ -2804,14 +2803,16 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
 
     State<state_datatype> PT_state(state_cpp, Lambda);
 
+    const double Hartree_value = PARTICLE_HOLE_SYMMETRY ? stdConfig.U*0.5 : Hartree_Solver(Lambda, stdConfig).compute_Hartree_term_bracketing(1e-12, false, false);
+
     // compute SOPT self-energy (numerically exact)
     for (int i = 0; i<nFER; i++) {
         double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
-        Integrand_SOPT_SE<Q,1> IntegrandSE_R(v, Lambda, barePropagator);
+        Integrand_SOPT_SE<Q,1> IntegrandSE_R(v, Lambda, Hartree_value, barePropagator);
         Q val_SE_R = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandSE_R, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(0, i, 0, val_SE_R);
 
-        Integrand_SOPT_SE<Q,0> IntegrandSE_K(v, Lambda, barePropagator);
+        Integrand_SOPT_SE<Q,0> IntegrandSE_K(v, Lambda, Hartree_value, barePropagator);
         Q val_SE_K = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandSE_K, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(1, i, 0, val_SE_K);
     }
@@ -2822,37 +2823,37 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
     for (int i = 0; i<nBOS; i++) {
         double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
 
-        Q KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        Q KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1a<Q,1>(w, Lambda, Hartree_value);
         Q KA = myconj(KR);
-        Q KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
+        Q KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1a<Q,0>(w, Lambda, Hartree_value);
         Q K00 = ( KR + KA + KK);// * 0.5;
         Q K01 = ( KR - KA - KK);// * 0.5;
         Q K10 = (-KR + KA - KK);// * 0.5;
         Q K11 = (-KR - KA + KK);// * 0.5;
         Q val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
         Q val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
-        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/stdConfig.U, 0, i, 0);
+        //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/config.U, 0, i, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1  , it_spin,  i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);
 
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1a<Q,1>(w, Lambda, Hartree_value);
         KA = myconj(KR);
-        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
+        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1a<Q,0>(w, Lambda, Hartree_value);
         K00 = ( KR + KA + KK);// * 0.5;
         K01 = ( KR - KA - KK);// * 0.5;
         K10 = (-KR + KA - KK);// * 0.5;
         K11 = (-KR - KA + KK);// * 0.5;
         val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
         val_K1_K = CONTOUR_BASIS != 1 ? KK : K01;
-        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/stdConfig.U, 0, i, 0);
+        //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/config.U, 0, i, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1  , it_spin, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( -val_K1_K, it_spin, i, 1, 0);
 
         w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda) : SOPT_K1a<Q,1>(w, Lambda);
+        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1a<Q,1>(w, Lambda, Hartree_value);
         KA = myconj(KR);
-        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda) : SOPT_K1a<Q,0>(w, Lambda);
+        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1a<Q,0>(w, Lambda, Hartree_value);
         K00 = ( KR + KA + KK);// * 0.5;
         K01 = ( KR - KA - KK);// * 0.5;
         K10 = (-KR + KA - KK);// * 0.5;

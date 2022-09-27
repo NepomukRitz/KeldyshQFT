@@ -100,6 +100,8 @@ auto Hartree_Solver::operator()(const double nu) const -> double {
             default: assert(false); return 0.;
         }
     }
+    assert (false);
+    return 0;
 }
 
 void Hartree_Solver::friedel_sum_rule_check() const {
@@ -151,6 +153,8 @@ double Hartree_Solver::fermi_distribution(const double nu) const {
         else if (nu < 0.) return 1.;
         else assert(false);
     }
+    assert (false);
+    return 0.0;
 }
 
 

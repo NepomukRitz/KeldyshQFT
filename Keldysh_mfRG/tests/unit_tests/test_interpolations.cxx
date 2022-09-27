@@ -7,9 +7,9 @@
 
 
 TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[interpolations]" ) {
+    fRG_config test_config;
 
-
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
     int iK = 0;
     int i_spin = 0;
     int i_in = 0;
@@ -56,9 +56,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K1?", "[i
 #if MAX_DIAG_CLASS >1
 
 TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[interpolations]" ) {
+    fRG_config test_config;
 
-
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
     int iK = 0;
     int i_spin = 0;
     int i_in = 0;
@@ -112,9 +112,9 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
 
 #if MAX_DIAG_CLASS == 3
 TEST_CASE( "Do the interpolations return the right values reliably for K3?", "[interpolations]" ) {
+    fRG_config test_config;
 
-
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
     const size_t nFER3_p = (GRID != 2 ? nFER3 : (nFER3-1)/2+1);
     int iK = 0;
     int i_spin = 0;
@@ -186,7 +186,8 @@ TEST_CASE( "Does linear interpolation work reliably for K1?", "[interpolations]"
     bool geq_interpolation_tolerance = false;
     double cumul_interpolation_tolerance = interpolation_tolerance * nBOS;
 
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    fRG_config test_config;
+    rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
     int iK = 0;
     int i_spin = 0;
     int i_in = 0;
@@ -250,7 +251,8 @@ if (INTERPOLATION == cubic) {
     bool geq_interpolation_tolerance = false;
     double cumul_interpolation_tolerance = 1e-12 * nBOS;
 
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    fRG_config test_config;
+    rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
     int iK;
     if (KELDYSH) iK = 1;
     else iK = 0;
@@ -318,8 +320,8 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     bool geq_interpolation_tolerance = false;
     double cumul_interpolation_tolerance = 1e-11 * nBOS2*nFER2;
 
-
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    fRG_config test_config;
+    rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
     int iK;
     if (KELDYSH) iK = 1;
     else iK = 0;
@@ -416,8 +418,8 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
         bool geq_interpolation_tolerance = false;
         double cumul_interpolation_tolerance = 1e-11 * nBOS2 * nFER2;
 
-
-        rvert<state_datatype> avertex('a', Lambda_ini, true);
+        fRG_config test_config;
+        rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
         int iK;
         if (KELDYSH) iK = 4;
         else iK = 0;
@@ -506,8 +508,8 @@ TEST_CASE( "Does linear interpolation work reliably for K3?", "[interpolations]"
     bool geq_interpolation_tolerance = false;
     double cumul_interpolation_tolerance = 1e-10 * nBOS3*nFER3*nFER3;
 
-
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    fRG_config test_config;
+    rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
     int iK;
     int i_spin = 0;
     if (KELDYSH) iK = 1;
@@ -607,8 +609,8 @@ TEST_CASE( "Does tricubic interpolation work reliably for K3?", "[interpolations
         bool geq_interpolation_tolerance = false;
         double cumul_interpolation_tolerance = 1e-10 * nBOS3 * nFER3 * nFER3;
 
-
-        rvert<state_datatype> avertex('a', Lambda_ini, true);
+        fRG_config test_config;
+        rvert<state_datatype> avertex('a', Lambda_ini, test_config, true);
         int iK;
         int i_spin = 0;
         if (KELDYSH) iK = 5;
@@ -695,9 +697,10 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
         const char channel = 'a';
         double Lambda = 1.8;
-        rvert<state_datatype> rvertex(channel, Lambda, true);
-        rvertex.K1 = rvert<state_datatype>::buffer_type_K1(Lambda, K1_expanded_config.dims);
-        rvertex.K2 = rvert<state_datatype>::buffer_type_K2(Lambda, K2_expanded_config.dims);
+        fRG_config test_config;
+        rvert<state_datatype> rvertex(channel, Lambda, test_config, true);
+        rvertex.K1 = rvert<state_datatype>::buffer_type_K1(Lambda, K1_expanded_config.dims, test_config);
+        rvertex.K2 = rvert<state_datatype>::buffer_type_K2(Lambda, K2_expanded_config.dims, test_config);
 
         SECTION("K1") {
             using result_type_full = Eigen::Matrix<state_datatype, 4, K1_expanded_config.dims_flat/4>;

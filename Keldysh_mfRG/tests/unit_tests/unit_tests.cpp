@@ -14,6 +14,7 @@
 #include "../../parameters/master_parameters.hpp"  // define system parameters
 #include "../../utilities/hdf5_routines.hpp"
 #include "../test_perturbation_theory.hpp"
+#include "../test_symmetries.hpp"
 #include "../../perturbation_theory_and_parquet/perturbation_theory.hpp"
 #include "../test_Hartree.hpp"
 #include "../test_Hubbard_SOPT.hpp"
@@ -79,6 +80,9 @@ int main(int argc, char* argv[]) {
     /// run unit tests
 
     utils::print("   -----   Performing unit tests   -----", true);
+
+    //test_symmetries(1., fRG_config());
+
 
     //utils::check_input();
 

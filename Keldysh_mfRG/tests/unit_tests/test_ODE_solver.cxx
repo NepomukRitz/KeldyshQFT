@@ -44,7 +44,7 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
     config.relative_error = 1e-5;
     config.absolute_error = 1e-8;
     rhs_quartic_t rhs;
-    ode_solver<double, flowgrid::linear_parametrization, rhs_quartic_t>(result, Lambda_f, y_ini, Lambda_i, rhs,  config, false);
+    ode_solver<double, flowgrid::linear_parametrization, rhs_quartic_t>(result, y_ini, rhs, config, true);
 
     double result_exact = pow(Lambda_f,4);
     SECTION( "Is the correct value retrieved from ODE solver?" ) {
@@ -66,7 +66,10 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
     config.maximal_number_of_ODE_steps = 500;
     config.relative_error = 1e-9;
     config.absolute_error = 1e-8;
-    ode_solver<double, flowgrid::linear_parametrization, rhs_exp_t>(result, Lambda_f, y_ini, Lambda_i, rhs_exp_t(),  config, false);
+    config.Lambda_i = Lambda_i;
+    config.Lambda_now = Lambda_i;
+    config.Lambda_f = Lambda_f;
+    ode_solver<double, flowgrid::linear_parametrization, rhs_exp_t>(result, y_ini, rhs_exp_t(),  config, true);
 
 
     double result_exact = exp(Lambda_f);

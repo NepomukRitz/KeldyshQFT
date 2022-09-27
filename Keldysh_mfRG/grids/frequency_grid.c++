@@ -150,7 +150,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
     }
     freqType wmax_guess = scale * 15.;
 
-#if not KELDYSH_FORMALISM and not ZERO_TEMP
+#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
     scale = 2;
     wmax_guess = (number_of_gridpoints-1);
 #endif
@@ -380,9 +380,9 @@ double integration_measure_v4(const double t, const double W_scale) {
 double grid_transf_lin(double w, double W_scale) {
     return w / W_scale;
 }
-int grid_transf_lin(int w, int W_scale) {
-    return integer_division_floor(w , W_scale);
-}
+//int grid_transf_lin(int w, int W_scale) {
+//    return integer_division_floor(w , W_scale);
+//}
 freqType grid_transf_inv_lin(freqType W, freqType W_scale) {
     return W * W_scale;
 }

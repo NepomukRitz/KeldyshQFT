@@ -455,7 +455,7 @@ template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, int version) {
     /// Compute the Hartree term
     if constexpr (not PARTICLE_HOLE_SYMMETRY){    // In this case, we have to update the Hartree term as well.
-        Hartree_Solver hartree_term (state_in.Lambda, state_in.selfenergy);
+        Hartree_Solver hartree_term (state_in.Lambda, state_in.selfenergy, state_in.config);
         double hartree = hartree_term.compute_Hartree_term_oneshot();
         Sigma_SDE.initialize(hartree, 0.);
     }

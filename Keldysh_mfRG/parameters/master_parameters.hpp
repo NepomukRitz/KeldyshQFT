@@ -9,7 +9,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 #define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
@@ -32,7 +32,7 @@ constexpr bool VERBOSE = false;
 
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM
+//#define PARTICLE_HOLE_SYMM
 
 /// Production runs parameters ///
 

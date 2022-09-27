@@ -147,7 +147,7 @@ namespace utils {
     #if DEBUG_SYMMETRIES
         std::string data_directory = "../Data_KF_debug";
     #else
-        std::string data_directory = "../Data_KF" + job + "_REG=" + std::to_string(REG) + "/";
+        std::string data_directory = "../Data_KF" + job + "_REG=" + std::to_string(REG);
     #endif
     #else
         #if DEBUG_SYMMETRIES

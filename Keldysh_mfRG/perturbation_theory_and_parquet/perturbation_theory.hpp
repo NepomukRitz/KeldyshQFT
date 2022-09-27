@@ -78,19 +78,19 @@ void vertexInTOPT(Vertex<Q,false>& PsiVertex, const State<Q>& bareState, const S
     bubble_function(bubblevertex_p, bareState.vertex, bareState.vertex, Pi, 'p', bareState.config);
 
 #if DEBUG_SYMMETRIES
-    Vertex<Q,false> bubblevertex_t(Lambda);
+    Vertex<Q,false> bubblevertex_t(Lambda, SoptPsi.config);
     bubblevertex_t.set_frequency_grid(PsiVertex);
     bubblevertex_p.initialize(0.);
-    bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't');
-    bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'a'); // TOPT diagram for K1a
-    bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'p'); // TOPT diagram for K1p
-    bubble_function(PsiVertex, bubblevertex_t, bareState.vertex, Pi, 't'); // TOPT diagram for K1t
-    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bareState.vertex, Pi, 'a'); // Eye diagram for K2a
-    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bareState.vertex, Pi, 'p'); // Eye diagram for K2p
-    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bareState.vertex, Pi, 't'); // Eye diagram for K2t
-    bubble_function(PsiVertex, bareState.vertex, bubblevertex_p + bubblevertex_t, Pi, 'a'); // Eye diagram for K2a'
-    bubble_function(PsiVertex, bareState.vertex, bubblevertex_a + bubblevertex_t, Pi, 'p'); // Eye diagram for K2p'
-    bubble_function(PsiVertex, bareState.vertex, bubblevertex_a + bubblevertex_p, Pi, 't'); // Eye diagram for K2t'
+    bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't', SoptPsi.config);
+    bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'a', SoptPsi.config); // TOPT diagram for K1a
+    bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'p', SoptPsi.config); // TOPT diagram for K1p
+    bubble_function(PsiVertex, bubblevertex_t, bareState.vertex, Pi, 't', SoptPsi.config); // TOPT diagram for K1t
+    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bareState.vertex, Pi, 'a', SoptPsi.config); // Eye diagram for K2a
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bareState.vertex, Pi, 'p', SoptPsi.config); // Eye diagram for K2p
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_p, bareState.vertex, Pi, 't', SoptPsi.config); // Eye diagram for K2t
+    bubble_function(PsiVertex, bareState.vertex, bubblevertex_p + bubblevertex_t, Pi, 'a', SoptPsi.config); // Eye diagram for K2a'
+    bubble_function(PsiVertex, bareState.vertex, bubblevertex_a + bubblevertex_t, Pi, 'p', SoptPsi.config); // Eye diagram for K2p'
+    bubble_function(PsiVertex, bareState.vertex, bubblevertex_a + bubblevertex_p, Pi, 't', SoptPsi.config); // Eye diagram for K2t'
 #else
     //bubble_function(PsiVertex, bubblevertex_a, bareState.vertex, Pi, 'a'); // TOPT diagram for K1a // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
     //bubble_function(PsiVertex, bubblevertex_p, bareState.vertex, Pi, 'p'); // TOPT diagram for K1p // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
@@ -118,8 +118,8 @@ void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_
     bubble_function(bubblevertex_t, bareState.vertex, bareState.vertex, Pi, 't', bareState.config);
 
 #if DEBUG_SYMMETRIES
-    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bubblevertex_p + bubblevertex_t, Pi, 'a'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
-    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bubblevertex_a + bubblevertex_t, Pi, 'p'); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
+    bubble_function(PsiVertex, bubblevertex_p + bubblevertex_t, bubblevertex_p + bubblevertex_t, Pi, 'a', bareState.config); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
+    bubble_function(PsiVertex, bubblevertex_a + bubblevertex_t, bubblevertex_a + bubblevertex_t, Pi, 'p', bareState.config); // This version is needed if DEBUG_SYMMETRIES is defined and a symmetric_full solution should be constructed
 #else
     bubble_function(PsiVertex, bubblevertex_p, bubblevertex_p, Pi, 'a', bareState.config);
     bubble_function(PsiVertex, bubblevertex_a, bubblevertex_a, Pi, 'p', bareState.config);

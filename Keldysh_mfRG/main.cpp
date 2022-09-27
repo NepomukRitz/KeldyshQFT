@@ -57,9 +57,9 @@ auto main(int argc, char * argv[]) -> int {
     config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
     config.U = 1.0;
-    config.T = 0.1;
+    config.T = 0.01;
     config.Gamma = 0.2;
-    config.epsilon = - config.U * 0.5;
+    config.epsilon = 0.5 - config.U * 0.5;
     config.save_intermediateResults = false;
     config.number_of_nodes = n_nodes;
 
@@ -71,19 +71,18 @@ auto main(int argc, char * argv[]) -> int {
     std::string job = "T=" + std::to_string(config.T);
     job += "_U=" + std::to_string(config.U);
 #ifndef PARTICLE_HOLE_SYMM
-    job += "_eVg=" + std::to_string(config.Vg);
+    job += "_eVg=" + std::to_string(config.epsilon + config.U*0.5);
 #endif
     data_dir = utils::generate_data_directory(job);
 
     n_loop_flow(data_dir+filename, config);
-    test_symmetries(1., config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
     //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
 
 
     ///parquet runs:
-    const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
-    run_parquet(config, myU_NRG, 1, true);
+    //const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
+    //run_parquet(config, myU_NRG, 1, true);
     //run_parquet(config, myU_NRG, 2, true);
     //run_parquet(config, myU_NRG, 3, true);
 
