@@ -2776,6 +2776,7 @@ public:
 
 template <typename Q>
 void test_PT_state(std::string outputFileName, const double Lambda, const bool diff) {
+    assert(!DEBUG_SYMMETRIES); // below we compare retarded components (stored at index 0 in Keldysh space for non-DEBUGSYMMETRIES)
 #ifndef ZERO_TEMP
     assert(false);
 #endif

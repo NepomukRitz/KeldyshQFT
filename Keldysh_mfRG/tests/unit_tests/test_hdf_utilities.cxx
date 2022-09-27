@@ -3,7 +3,7 @@
 
 TEST_CASE( "Does it work to read and write vectors and multiarrays to HDF files?", "[hdf for vectors/multiarrays]" ) {
 
-    bool passed = test_read_write_data_hdf(false);
+    bool passed = test_read_write_data_hdf(true);
 
     SECTION( "Are vectors/multiarrays correctly saved and loaded?" ) {
         REQUIRE( passed );

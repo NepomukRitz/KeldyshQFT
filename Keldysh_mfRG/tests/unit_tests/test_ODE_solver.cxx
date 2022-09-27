@@ -8,7 +8,7 @@ double max_rel_err(const double& x, const double& scale) {
 
 
 
-template<> void postRKstep_stuff<double>(double& y, double x, vec<double> x_vals, int iteration, std::string filename, const bool verbose) {
+template<> void postRKstep_stuff<double>(double& y, double x, const vec<double>& x_vals, int iteration, const std::string& filename, const ODE_solver_config& config, const bool verbose) {
     if (verbose) std::cout <<"Intermediate result of ODE solver: " << y << std::endl;
 }
 
@@ -43,6 +43,9 @@ TEST_CASE( "Does the ODE solver work for a simple ODE?", "[ODEsolver]" ) {
     config.maximal_number_of_ODE_steps = 300;
     config.relative_error = 1e-5;
     config.absolute_error = 1e-8;
+    config.Lambda_i = Lambda_i;
+    config.Lambda_now = Lambda_i;
+    config.Lambda_f = Lambda_f;
     rhs_quartic_t rhs;
     ode_solver<double, flowgrid::linear_parametrization, rhs_quartic_t>(result, y_ini, rhs, config, true);
 
@@ -63,7 +66,7 @@ TEST_CASE( "Does the ODE solver work for a medium ODE?", "[ODEsolver]" ) {
     double result;
     //ode_solver<double, flowgrid::linear_parametrization>(result, Lambda_f, y_ini, Lambda_i, rhs_exp, lambda_checkpoints, "", 0, 2000, true);
     ODE_solver_config config;
-    config.maximal_number_of_ODE_steps = 500;
+    config.maximal_number_of_ODE_steps = 800;
     config.relative_error = 1e-9;
     config.absolute_error = 1e-8;
     config.Lambda_i = Lambda_i;
