@@ -1,4 +1,6 @@
 #include "hartree_term.hpp"
+#include "../utilities/hdf5_routines.hpp"
+
 
 
 double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) {
