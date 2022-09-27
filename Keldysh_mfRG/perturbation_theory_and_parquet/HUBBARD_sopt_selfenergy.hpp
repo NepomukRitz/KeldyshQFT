@@ -4,6 +4,7 @@
 #include <cassert>
 #include <omp.h>
 #include "../utilities/util.hpp"
+#include "../utilities/hdf5_routines.hpp"
 #include "../grids/frequency_grid.hpp"
 #include "../correlation_functions/two_point/selfenergy.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
