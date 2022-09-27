@@ -143,7 +143,7 @@ constexpr int n_in = 1;
 // 2 -> Bogacki–Shampine
 // 3 -> Cash-Carp
 // 4 -> Dormand-Prince
-#define ODEsolver 1
+#define ODEsolver 3
 
 // Limits of the fRG flow
 #if REG == 4

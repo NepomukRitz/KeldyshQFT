@@ -37,7 +37,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     sopt_state(state_ini);
 
     const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-    parquet_solver(parquet_filename, state_ini, Lambda_ini, 1,1e-6, 5);
+    parquet_solver(parquet_filename, state_ini, Lambda_ini, 2, 1e-6, 5);
 
 
     //// better: read state from converged parquet solution

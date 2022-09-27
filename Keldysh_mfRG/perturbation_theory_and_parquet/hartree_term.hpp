@@ -6,7 +6,7 @@
 #include "../correlation_functions/two_point/selfenergy.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
 #include "../integrator/integrator.hpp"
-#include "../utilities/hdf5_routines.hpp"
+//#include "../utilities/hdf5_routines.hpp"
 #include "../utilities/write_data2file.hpp"
 #include "../utilities/util.hpp"
 #include <cassert>
@@ -34,7 +34,7 @@ class Hartree_Solver {
     double fermi_distribution (double nu) const;
 public:
     /// constructor used for obtaining the self-consistent solution of the Hartree-term
-    explicit Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
+    Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
         assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs

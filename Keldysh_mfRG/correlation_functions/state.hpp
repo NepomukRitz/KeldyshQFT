@@ -132,7 +132,7 @@ template <typename Q, bool differentiated> void State<Q,differentiated>::initial
         this->selfenergy.initialize(config.U / 2., 0.);
         if (std::abs(config.epsilon + config.U * 0.5) > 1e-15){ // SIAM in Keldysh WITHOUT particle-hole symmetry
             assert (not PARTICLE_HOLE_SYMMETRY);
-            Hartree_Solver Hartree_Term = Hartree_Solver (Lambda, config);
+            Hartree_Solver Hartree_Term(Lambda, config);
             const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing(1e-12, checks, checks);
             this->selfenergy.initialize(hartree_value, 0.);
         }
