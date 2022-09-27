@@ -6,6 +6,7 @@
 #include "../correlation_functions/two_point/selfenergy.hpp"
 #include "../correlation_functions/two_point/propagator.hpp"
 #include "../integrator/integrator.hpp"
+#include "../utilities/hdf5_routines.hpp"
 #include "../utilities/write_data2file.hpp"
 #include "../utilities/util.hpp"
 #include <cassert>
