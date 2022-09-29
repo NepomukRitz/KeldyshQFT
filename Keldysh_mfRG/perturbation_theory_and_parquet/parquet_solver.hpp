@@ -453,16 +453,6 @@ void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
 
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, int version) {
-    /// Compute the Hartree term
-    if constexpr (not PARTICLE_HOLE_SYMMETRY){    // In this case, we have to update the Hartree term as well.
-        Hartree_Solver hartree_term (state_in.Lambda, state_in.selfenergy, state_in.config);
-        double hartree = hartree_term.compute_Hartree_term_oneshot();
-        Sigma_SDE.initialize(hartree, 0.);
-    }
-    else{
-        Sigma_SDE.initialize(state_in.config.U / 2., 0.);
-    }
-
     /// Pick your favorite version:
     if (version == 1) {
         compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda, state_in.config);
@@ -476,6 +466,17 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const doubl
     else {
         compute_SDE_v3<Q>(Sigma_SDE, state_in, Lambda, state_in.config);
     }
+
+    /// Compute the Hartree term
+    if constexpr (not PARTICLE_HOLE_SYMMETRY){    // In this case, we have to update the Hartree term as well.
+        Hartree_Solver hartree_term (state_in.Lambda, state_in.selfenergy, state_in.config);
+        double hartree = hartree_term.compute_Hartree_term_oneshot();
+        Sigma_SDE.initialize(hartree, 0.);
+    }
+    else{
+        Sigma_SDE.initialize(state_in.config.U / 2., 0.);
+    }
+
     SDE_counter ++;
 
 
