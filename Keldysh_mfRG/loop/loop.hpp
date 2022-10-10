@@ -519,8 +519,8 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() 
  * @param all_spins : Whether the calculation of the loop should include all spin components of the vertex
  */
 template <bool all_spins, bool version=0, typename Q, typename vertType>
-void loop(SelfEnergy<state_datatype>& self, const vertType& fullvertex, const Propagator<Q>& prop){
-    SelfEnergy<state_datatype> self_temp = self; /// problem with aliasing if self is identical to a member of prop
+void loop(SelfEnergy<Q>& self, const vertType& fullvertex, const Propagator<Q>& prop){
+    SelfEnergy<Q> self_temp = self; /// problem with aliasing if self is identical to a member of prop
     fullvertex.initializeInterpol();
 #if SWITCH_SUM_N_INTEGRAL
     fullvertex.template symmetry_expand<version == 0 ? 't' : 'a',false,true>();

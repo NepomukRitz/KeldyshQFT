@@ -653,7 +653,7 @@ struct fRG_config {
     double Gamma = 1.;       // hybridization strength
     double epsilon = -0.5;     // Impurity on-site energy
     bool save_intermediateResults = false;
-    int nloops;
+    int nloops=1;
     int number_of_nodes=1;
 };
 

@@ -274,7 +274,7 @@ TEST_CASE("Does the update of the frequency grid work (for shrinking grids)?", "
 
 #if not KELDYSH_FORMALISM
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for K1a?", "[frequency_symmetries]" ) {
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    rvert<state_datatype> avertex('a', Lambda_ini, fRG_config(), true);
     int iK = 0;
     int i_spin = 0;
     int i_in = 0;
@@ -311,7 +311,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
 
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for K2a?", "[frequency_symmetries]" ) {
 
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    rvert<state_datatype> avertex('a', Lambda_ini, fRG_config(), true);
     int iK = 0;
     int i_spin = 0;
     int i_in = 0;
@@ -368,7 +368,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
 
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for K3a?", "[frequency_symmetries]" ) {
 
-    rvert<state_datatype> avertex('a', Lambda_ini, true);
+    rvert<state_datatype> avertex('a', Lambda_ini, fRG_config(), true);
     int iK = 0;
     int i_spin = 0;
     int i_in = 0;

@@ -6,7 +6,7 @@ void Hubbard_SOPT_test(){
 
     fRG_config Hubbard_SOPT_config;
     double lambda = 1;
-    State<state_datatype> state_ini (lambda, Hubbard_SOPT_config);
+    State<comp> state_ini (lambda, Hubbard_SOPT_config);
     state_ini.initialize();
     sopt_state(state_ini);
 

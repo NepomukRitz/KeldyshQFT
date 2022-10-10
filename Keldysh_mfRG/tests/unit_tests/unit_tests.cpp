@@ -81,7 +81,9 @@ int main(int argc, char* argv[]) {
 
     utils::print("   -----   Performing unit tests   -----", true);
 
-    //test_symmetries(1., fRG_config());
+    fRG_config config;
+    config.nloops = 3;
+    test_symmetries(1., config);
 
 
     //utils::check_input();
