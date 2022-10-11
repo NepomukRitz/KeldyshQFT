@@ -8,40 +8,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
 
     State<state_datatype> state_fin (Lambda_fin, frgConfig), state_ini(Lambda_ini, frgConfig);   // create final and initial state
 
-#ifdef ADAPTIVE_GRID
-    /// Iterate:
-    /// 1. compute parquet solution
-    /// 2. optimize grid
-    /// 3. restart with optimized grid
-    for (int i = 0; i < 1; i++) {
 
-        State<state_datatype> state_temp = state_ini;
-        state_temp.initialize();             // initialize state with bare vertex and Hartree term in selfenergy
-        // initialize the flow with SOPT at Lambda_ini (important!)
-        sopt_state(state_temp);
-        // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
-
-        const std::string parquet_temp_filename = data_dir + "parquetInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) : "" ) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
-        parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1, 1e-4, 1);
-
-        state_temp.vertex.half1().check_vertex_resolution();
-        state_temp.findBestFreqGrid(true);
-        state_temp.vertex.half1().check_vertex_resolution();
-
-        state_ini.set_frequency_grid(state_temp); // copy frequency grid
-    }
-#endif
-
-    state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
-    // initialize the flow with SOPT at Lambda_ini (important!)
-    sopt_state(state_ini);
-
-    const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-    parquet_solver(parquet_filename, state_ini, Lambda_ini, 2, 1e-6, 5);
-
-
-    //// better: read state from converged parquet solution
-    //state_ini = read_state_from_hdf(parquet_filename, 4);
     int Lambda_it = -1;
     double Lambda_now;
     bool is_converged = check_convergence_hdf(outputFileName, Lambda_it);
@@ -57,7 +24,38 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
         Lambda_now = state_ini.Lambda;
     }
     else {
-        // start new file if it does not exist yet
+        // start new run
+        utils::print("Start new mfRG run.");
+#ifdef ADAPTIVE_GRID
+        /// Iterate:
+        /// 1. compute parquet solution
+        /// 2. optimize grid
+        /// 3. restart with optimized grid
+        for (int i = 0; i < 1; i++) {
+
+            State<state_datatype> state_temp = state_ini;
+            state_temp.initialize();             // initialize state with bare vertex and Hartree term in selfenergy
+            // initialize the flow with SOPT at Lambda_ini (important!)
+            sopt_state(state_temp);
+            // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
+
+            const std::string parquet_temp_filename = data_dir + "parquetInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) : "" ) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
+            parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1, 1e-4, 1);
+
+            state_temp.vertex.half1().check_vertex_resolution();
+            state_temp.findBestFreqGrid(true);
+            state_temp.vertex.half1().check_vertex_resolution();
+
+            state_ini.set_frequency_grid(state_temp); // copy frequency grid
+        }
+#endif
+        state_ini.initialize();     // initialize state with bare vertex and Hartree term in selfenergy
+        // initialize the flow with SOPT at Lambda_ini (important!)
+        sopt_state(state_ini);
+
+        const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+        parquet_solver(parquet_filename, state_ini, Lambda_ini, 2, 1e-6, 5, true);
+
         write_state_to_hdf(outputFileName, Lambda_ini,  frgConfig.nODE_ + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
         Lambda_it = 0;
         Lambda_now = Lambda_ini;
@@ -71,7 +69,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     write_state_to_hdf(outputFileName+"_postOpt", Lambda_ini,  frgConfig.nODE_ + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 #endif
 
-    compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, false, frgConfig.nODE_ + U_NRG.size() + 1);
+    compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, frgConfig.T, false, frgConfig.nODE_ + U_NRG.size() + 1);
 
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG, frgConfig);
 

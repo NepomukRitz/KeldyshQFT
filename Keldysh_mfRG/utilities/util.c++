@@ -181,6 +181,7 @@ namespace utils {
         std::string temp = "T=" + std::to_string(config.T) + "_";
         std::string lambda = "L_ini=" + std::to_string((int)Lambda_ini)+"_";
         std::string ode = "nODE=" + std::to_string(config.nODE_);
+        std::string withSEcorrections = SELF_ENERGY_FLOW_CORRECTIONS == 0 ? "" : "_wSEcorr" + std::to_string(SELF_ENERGY_FLOW_CORRECTIONS);
         std::string extension = ".h5";
 
         std::string filename = klass + loops + n1;
