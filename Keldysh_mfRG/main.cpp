@@ -75,23 +75,26 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     data_dir = utils::generate_data_directory(job);
 
-    //n_loop_flow(data_dir+filename, config);
-    //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
-    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
+    if (n_loops > 0){ /// fRG runs:
+        n_loop_flow(data_dir+filename, config);
+        //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
+        //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
+    }
+    if (n_loops == 0){ /// parquet runs:
+        const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
+        //run_parquet(config, myU_NRG, 1, true);
+        run_parquet(config, myU_NRG, 2, true);
+        //run_parquet(config, myU_NRG, 3, true);
+    }
+    if (n_loops < 0){ /// perturbation theory:
+        const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
+        for (double U_over_Delta: U_over_Delta_list) {
+            PT_Machine<state_datatype> PT_Calculator (4, config, U_over_Delta, false, true);
+        }
+    }
 
 
-    ///parquet runs:
-    //const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
-    //run_parquet(config, myU_NRG, 1, true);
-    //run_parquet(config, myU_NRG, 2, true);
-    //run_parquet(config, myU_NRG, 3, true);
 
-
-    /// Perturbation Theory
-    //const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
-    //for (double U_over_Delta: U_over_Delta_list) {
-    //    PT_Machine<state_datatype> PT_Calculator (4, U_over_Delta, false, true);
-    //}
     //full_PT4(U_over_Delta_list);
     /// Hartree test
     //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
