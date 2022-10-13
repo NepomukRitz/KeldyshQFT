@@ -14,14 +14,9 @@ H5::H5File create_hdf_file(const std::string & filename) {
     }
 }
 H5::H5File open_hdf_file_readOnly(const std::string & filename) {
-    if (mpi_world_rank() == 0) {
-        H5::H5File outfile(filename, H5F_ACC_RDONLY);
-        return outfile;
-    }
-    else {
-        H5::H5File file;
-        return file;
-    }
+    // no problem with reading same file from different nodes
+    H5::H5File outfile(filename, H5F_ACC_RDONLY);
+    return outfile;
 }
 H5::H5File open_hdf_file_readWrite(const std::string & filename) {
     if (mpi_world_rank() == 0) {

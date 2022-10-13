@@ -591,11 +591,11 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 }
             }
         }
-        else { // Matsubara finite_T
-            assert(!ZERO_T);
-
-
-        }
+        //else { // Matsubara finite_T
+        //    assert(!ZERO_T);
+        //
+        //
+        //}
 
 
     } else {
@@ -892,7 +892,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             int sign_v = sign_index<freqType>(v ); // safety to ensure that w=0 gets sign_w=-1
             trafo = dgamma.get_rvertex(channel).freq_transformations.K2[i0][sign_w*2 + sign_v];
 
-        if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w,Pi.g.T)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
+        if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
             trafo = 0;
         }
     #if USE_FDT

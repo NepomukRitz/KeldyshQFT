@@ -210,8 +210,8 @@ TEST_CASE("Do I return the correct in frequency indices?", "[frequency index]") 
 
         double total_dev_K3 = std::abs(errors_K3.sum());
         double total_remainders_K3 = std::abs(remainders_in_dw_normalized_K3.sum());
-        REQUIRE(total_dev_K3 < 1.e-15);
-        REQUIRE(total_remainders_K3 < 1.e-15);
+        REQUIRE(total_dev_K3 < 1.e-13);
+        REQUIRE(total_remainders_K3 < 1.e-10);
     }
 
 #if GRID == 2

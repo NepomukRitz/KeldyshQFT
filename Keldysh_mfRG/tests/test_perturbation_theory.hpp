@@ -1623,11 +1623,11 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     const int it_spin = 0;
     double vmax = 100;
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
-    State<Q> bareState (Lambda);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
-    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g');    //Bare propagator
+    State<Q> bareState (Lambda, stdConfig);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
+    Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g', stdConfig);    //Bare propagator
     Bubble<Q> Pi(barePropagator, barePropagator, diff);
 
-    State<Q> state_cpp (Lambda);   // create final and initial state
+    State<Q> state_cpp (Lambda, stdConfig);   // create final and initial state
     state_cpp.initialize();             // initialize state
 #ifdef ADAPTIVE_GRID
     const int N_iterations = 1;
@@ -1653,7 +1653,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     }
 #endif
 
-    fopt_state(state_cpp, Lambda);
+    fopt_state(state_cpp);
     //state_cpp.vertex.half1().check_vertex_resolution();
     //state_cpp.analyze_tails();
 
@@ -2366,24 +2366,24 @@ public:
 // compute diagrams with non-symmetric_full intermediate results
 void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, int version=1, bool compute_exact=false) {
     const int it_spin = 0;
-    State<state_datatype> bare (Lambda); // bare state
+    State<state_datatype> bare (Lambda, stdConfig); // bare state
     bare.initialize();         // initialize bare state
 
-    Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g'); // bare propagator
-    Propagator<state_datatype> S (Lambda, bare.selfenergy, 's'); // bare differentiated propagator = single scale propagator
+    Propagator<state_datatype> G (Lambda, bare.selfenergy, 'g', stdConfig); // bare propagator
+    Propagator<state_datatype> S (Lambda, bare.selfenergy, 's', stdConfig); // bare differentiated propagator = single scale propagator
     const Bubble<state_datatype> Pi(G, S, false);
     double Delta = (stdConfig.Gamma + Lambda)/2;
 
     // Psi := K1p in PT2 + bare vertex
-    State<state_datatype> Psi (Lambda);
+    State<state_datatype> Psi (Lambda, stdConfig);
     Psi.initialize();         // initialize bare state
     bubble_function(Psi.vertex, bare.vertex, bare.vertex, G, G, 'p', false, stdConfig); // Psi = Gamma_0 + K1p
 
     // K1a_dot in PT2
-    State<state_datatype> PT2_K1adot (Lambda);
+    State<state_datatype> PT2_K1adot (Lambda, stdConfig);
     bubble_function(PT2_K1adot.vertex, bare.vertex, bare.vertex, G, S, 'a', true, stdConfig);
     // K1p_dot in PT2
-    State<state_datatype> PT2_K1pdot (Lambda);
+    State<state_datatype> PT2_K1pdot (Lambda, stdConfig);
     bubble_function(PT2_K1pdot.vertex, bare.vertex, bare.vertex, G, S, 'p', true, stdConfig);
 
     if (write_flag) {
@@ -2399,11 +2399,11 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> centralstate_dot = central_bubblestates[i];
 
         // intermediate results
-        State<state_datatype,false> K1rdot_PIa_K1p (Lambda);
+        State<state_datatype,false> K1rdot_PIa_K1p (Lambda, stdConfig);
         bubble_function(K1rdot_PIa_K1p.vertex, centralstate_dot.vertex, Psi.vertex, G, G, 'a', false, stdConfig);
 
 
-        State<state_datatype> K1p_PIa_K1rdot (Lambda);
+        State<state_datatype> K1p_PIa_K1rdot (Lambda, stdConfig);
         bubble_function(K1p_PIa_K1rdot.vertex, Psi.vertex, centralstate_dot.vertex, G, G, 'a', false, stdConfig);
 
 
@@ -2421,26 +2421,26 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         K1p_PIa_K1rdot.vertex = dGammaR_half1;
 
         // create non-symmetric_full vertex with differentiated vertex on the left
-        GeneralVertex<state_datatype , non_symmetric_diffleft, false> dGammaL(Lambda);
+        GeneralVertex<state_datatype , non_symmetric_diffleft, false> dGammaL(Lambda, stdConfig);
         dGammaL.half1()  = dGammaL_half1.half1();  // assign half 1 to dGammaL
         dGammaL.half2() = dGammaR_half1.half1();  // assign half 2 as half 1 to dGammaR [symmetric_full -> left()=right()]
 
 
         // insert this non-symmetric_full vertex on the right of the bubble
-        State<state_datatype> dGammaC_r(Lambda);
+        State<state_datatype> dGammaC_r(Lambda, stdConfig);
 
         dGammaL.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
         bubble_function(dGammaC_r.vertex, Psi.vertex, dGammaL, G, G, 'a', false, stdConfig);
 
 
         // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
-        GeneralVertex<state_datatype , non_symmetric_diffright,false> dGammaR (Lambda);
+        GeneralVertex<state_datatype , non_symmetric_diffright,false> dGammaR (Lambda, stdConfig);
         dGammaR.half1() = dGammaR_half1.half1();  // assign half 1
         dGammaR.half2() = dGammaL_half1.half1();  // assign half 2 as half 1 of dGammaL
 
 
         // insert this non-symmetric_full vertex on the left of the bubble
-        State<state_datatype> dGammaC_l(Lambda);
+        State<state_datatype> dGammaC_l(Lambda, stdConfig);
         dGammaR.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
         bubble_function(dGammaC_l.vertex, dGammaR, Psi.vertex, G, G, 'a', false, stdConfig);
@@ -2457,7 +2457,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     if (compute_exact) {
         /// Now computing vertex for version 1 (K1rdot = K1pdot):
         double vmax = 1e3;
-        State<state_datatype> K1pdot_exact(Lambda);        // intermediate result: contains K2 and K3
+        State<state_datatype> K1pdot_exact(Lambda, stdConfig);        // intermediate result: contains K2 and K3
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (size_t iflat = 0; iflat < (nBOS ); iflat++) {
@@ -2478,7 +2478,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
                   K1rdot_diff);
 
 
-        State<state_datatype> K1rdot_PIa_K1p_exact(Lambda);        // intermediate result: contains K2 and K3
+        State<state_datatype> K1rdot_PIa_K1p_exact(Lambda, stdConfig);        // intermediate result: contains K2 and K3
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int iflat = 0; iflat < (nBOS2 ) * (nFER2 ); iflat++) {
@@ -2527,7 +2527,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         if (MAX_DIAG_CLASS > 2) utils::print("Relative maxabs difference in K1rdot_PIa_K1p --> K3: ", K1rdot_PIa_K1p_diff.vertex.half1().norm_K3(0) / K1rdot_PIa_K1p.vertex.half1().norm_K3(0) , true );
 
 
-        State<state_datatype> K1p_PIa_K1rdot_exact(Lambda);        // intermediate result: contains K2 and K3
+        State<state_datatype> K1p_PIa_K1rdot_exact(Lambda, stdConfig);        // intermediate result: contains K2 and K3
 
 #if MAX_DIAG_CLASS>2
 #pragma omp parallel for schedule(dynamic) default(none) shared(K1p_PIa_K1rdot_exact, vmax, Delta, Lambda, it_spin, Pi)
@@ -2560,7 +2560,7 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         if (MAX_DIAG_CLASS > 1) utils::print("Relative maxabs difference in K1p_PIa_K1rdot --> K2: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K2(0) / K1p_PIa_K1rdot.vertex.half1().norm_K2(0) , true );
         if (MAX_DIAG_CLASS > 2) utils::print("Relative maxabs difference in K1p_PIa_K1rdot --> K3: ", K1p_PIa_K1rdot_diff.vertex.half1().norm_K3(0) / K1p_PIa_K1rdot.vertex.half1().norm_K3(0) , true );
 
-        State<state_datatype> dGammaC_exact(Lambda);        // final state: contains K1, K2 and K3
+        State<state_datatype> dGammaC_exact(Lambda, stdConfig);        // final state: contains K1, K2 and K3
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi)
         for (int i = 0; i < nBOS; i++) {
