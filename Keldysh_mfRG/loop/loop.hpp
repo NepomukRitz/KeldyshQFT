@@ -532,9 +532,20 @@ void loop(SelfEnergy<Q>& self, const vertType& fullvertex, const Propagator<Q>& 
         LoopIntegrationMachine.perform_computation();
     }
 
-
     self = self_temp * (version == 0 ? 1. : -1.);
     fullvertex.set_initializedInterpol(false);
+
+    if (not PARTICLE_HOLE_SYMMETRY){
+        // extract the renormalization of the asymptotic value from the Hartree- and the K1_t and K2'_t terms:
+        const Q asymp_val = (self.val(0, 0, 0) + self.val(0, nFER-1, 0)) / 2.;
+        self.asymp_val_R = std::real(asymp_val);
+        // we do not want to add the asymptotic value twice:
+        for (int iv = 0; iv < nFER; ++iv) {
+            for (int i_in = 0; i_in < n_in; ++i_in) {
+                self.addself(0, iv, i_in, -std::real(asymp_val));
+            }
+        }
+    }
 }
 
 

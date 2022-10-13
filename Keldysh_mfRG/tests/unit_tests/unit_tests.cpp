@@ -82,7 +82,8 @@ int main(int argc, char* argv[]) {
     utils::print("   -----   Performing unit tests   -----", true);
 
     fRG_config config;
-    config.nloops = 3;
+    //config.nloops = 3;
+    if constexpr (not PARTICLE_HOLE_SYMMETRY) config.epsilon = 0.0;
     test_symmetries(1., config);
 
 
@@ -98,7 +99,7 @@ int main(int argc, char* argv[]) {
         //data_dir = "../Data_MFU=1.000000/";
         //utils::makedir(data_dir);
         //std::string filename = "test_PTstate.h5";
-        test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
+        //test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
     //}
 
     //compute_non_symmetric_diags(0.8, true, 1, true);
@@ -117,7 +118,7 @@ int main(int argc, char* argv[]) {
     //PT_Calculator.debug_TOPT();
 
 
-    return Catch::Session().run(argc, argv);
+    //return Catch::Session().run(argc, argv);
 #if defined(USE_MPI)
     MPI_Finalize();
 #endif

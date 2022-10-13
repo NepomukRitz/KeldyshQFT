@@ -580,22 +580,6 @@ template <typename Q>
 void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q,false>& PsiVertex, const Propagator<Q>& S){
     // Self-energy flow
     loop<true,0>(dPsiSelfEnergy, PsiVertex, S); // Loop for the Self-Energy calculation
-    if (not PARTICLE_HOLE_SYMMETRY){
-
-        // need to compute the Hartree contribution as well.
-        //dPsiSelfEnergy.asymp_val_R += Hartree_Solver(S.Lambda, S.selfenergy, true).compute_Hartree_term_oneshot();
-        // not needed; the loop closes the bare vertex too.
-
-        // extract the renormalization of the asymptotic value from the Hartree- and the K1_t and K2'_t terms:
-        const Q d_asymp_val = (dPsiSelfEnergy.val(0, 0, 0) + dPsiSelfEnergy.val(0, nFER-1, 0)) / 2.;
-        dPsiSelfEnergy.asymp_val_R = std::real(d_asymp_val);
-        // we do not want to add the asymptotic value twice.:
-        for (int iv = 0; iv < nFER; ++iv) {
-            for (int i_in = 0; i_in < n_in; ++i_in) {
-                dPsiSelfEnergy.addself(0, iv, i_in, -d_asymp_val);
-            }
-        }
-    }
 }
 
 template <typename Q, class Bubble_Object>

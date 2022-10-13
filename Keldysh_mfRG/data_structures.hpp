@@ -651,7 +651,7 @@ struct fRG_config {
     double U = 1.;           // Impurity on-site interaction strength
     double T = 1.;           // temperature
     double Gamma = 1.;       // hybridization strength
-    double epsilon = -0.5;     // Impurity on-site energy
+    double epsilon = -0.5 * U;     // Impurity on-site energy
     bool save_intermediateResults = false;
     int nloops=1;
     int number_of_nodes=1;

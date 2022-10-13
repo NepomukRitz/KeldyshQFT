@@ -57,9 +57,9 @@ auto main(int argc, char * argv[]) -> int {
     config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
     config.U = 1.0;
-    config.T = 0.01;
+    config.T = (ZERO_T ? 0.0 : 0.01);
     config.Gamma = 0.2;
-    config.epsilon = 0.5 - config.U * 0.5;
+    config.epsilon = (PARTICLE_HOLE_SYMMETRY ? 0.0 : 0.5) - config.U * 0.5;
     config.save_intermediateResults = false;
     config.number_of_nodes = n_nodes;
 
@@ -75,7 +75,7 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     data_dir = utils::generate_data_directory(job);
 
-    n_loop_flow(data_dir+filename, config);
+    //n_loop_flow(data_dir+filename, config);
     //get_integrand_dGamma_1Loop<state_datatype>(data_dir, 1, 0);
     //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
 
@@ -112,7 +112,7 @@ auto main(int argc, char * argv[]) -> int {
     //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
 
 */
-    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
+    test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
 
     utils::hello_world();
 
