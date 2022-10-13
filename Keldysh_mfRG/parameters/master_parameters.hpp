@@ -29,7 +29,7 @@ constexpr bool VERBOSE = false;
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
                                  // Keldysh: vectorizes over Keldysh indices
                                  // Matsubara finite T: vectorizes Matsubara sum
-#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 // Determines whether particle-hole symmetry is assumed
