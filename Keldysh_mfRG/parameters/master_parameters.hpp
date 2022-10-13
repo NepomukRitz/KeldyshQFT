@@ -3,6 +3,7 @@
 
 #include "frequency_parameters.hpp"
 #include "technical_parameters.hpp"
+#include "momentum_parameters.hpp"
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include <string>
@@ -28,7 +29,7 @@ constexpr bool VERBOSE = false;
 #define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
                                  // Keldysh: vectorizes over Keldysh indices
                                  // Matsubara finite T: vectorizes Matsubara sum
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
 
 
 // Determines whether particle-hole symmetry is assumed
@@ -48,7 +49,7 @@ constexpr bool VERBOSE = false;
 #define SELF_ENERGY_FLOW_CORRECTIONS 1
 const int nmax_Selfenergy_iterations = 10;
 const double tol_selfenergy_correction_abs = 1e-9;
-const double tol_selfenergy_correction_rel = 1e-5;;
+const double tol_selfenergy_correction_rel = 1e-5;
 const double loop_tol_abs = 1e-9;
 const double loop_tol_rel = 1e-5;
 
@@ -84,33 +85,6 @@ extern double glb_md;
 extern double glb_ainv;
 
 /// Parameters for internal structure ///
-
-// Dimension of the space defining the internal structure for the Hubbard model
-constexpr int glb_N_q = 11; // 51;                                 // Number of transfer momentum points in one dimension.
-constexpr int glb_N_ff = 1;                                 // Number of form factors. Should be {1, 5, 9, 13, 19, ...} for the n-nearest neighbor interpretation
-
-/** Parities of form factors under the three symmetry operations of the Hubbard model dispersion:
- * ff_swap:      Swap k_x and k_x
- * ff_mirror_kx: Let k_x -> - k_x
- * ff_mirror_ky: Let k_y -> - k_y
- *
- * Ordered w.r.t. the form factor index. Currently at most 9 form factors are supported.
- *
- * The entries mean the following:
- * 1 : Multiply by one (nothing happens; form factor is symmetric
- * -1: Multiply by minus one (form factor is antisymmetric)
- * i > 1: Need to access the i'th form factor component instead
- * i < 1: Need to access the |i|'th form factor component instead AND multiply by -1.*/
-const std::vector<int> ff_swap     {1, 1, -1,  4,  3, 1,  1,  1, -1};
-const std::vector<int> ff_mirror_kx{1, 1,  1, -1,  1, 1, -1,  8,  7};
-const std::vector<int> ff_mirror_ky{1, 1,  1,  1, -1, 1, -1, -8, -7};
-
-
-// The remaining part for the internal structure should NOT be changed, as it is derived from the choices on makes above!
-constexpr int glb_N_transfer = glb_N_q * (glb_N_q + 1) / 2; // Total number of transfer momentum points considered inside the reduced BZ.
-                                                            // Integer division fine, as glb_N_q * (glb_N_q + 1) is always even.
-constexpr int glb_N_FFT_1D = 2 * (glb_N_q - 1);             // number of momentum grid points along one axis of the full BZ, used for FFTs.
-constexpr int glb_N_FFT_2D = glb_N_FFT_1D * glb_N_FFT_1D;   // number of momentum grid points inside the full BZ, used for FFTs.
 
 #ifdef HUBBARD
 constexpr int n_in_K1 = glb_N_transfer;                         // Number of internal indices needed for K1-objects
