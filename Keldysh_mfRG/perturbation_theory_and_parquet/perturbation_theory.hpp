@@ -136,9 +136,7 @@ void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_
  * @param state        : State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
-void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi) {
-    State<Q> bareState = State<Q> (Psi.Lambda, Psi.config);
-    bareState.initialize(false);  //a state with a bare vertex and a self-energy initialized at the Hartree value
+void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const State<Q>& bareState) {
 
 #if not defined(NDEBUG)
     utils::print("Computing the self energy in SOPT ... ", false);
@@ -158,13 +156,16 @@ template<typename Q>
 void sopt_state(State<Q>& Psi, const bool diff = false) {
     assert(Psi.initialized);
 
+    State<Q> bareState = State<Q> (Psi.Lambda, Psi.config); // shall and forever will be a bare state.
+    bareState.initialize(false);  // a state with a bare vertex and a self-energy initialized at the Hartree value
+
 #if not defined(NDEBUG)
     utils::print("Start initializing bubble object ... ", false);
 #endif
 
     // Initialize bubble objects
-    Propagator<Q> barePropagator(Psi.Lambda, Psi.selfenergy, 'g', Psi.config);    //Bare propagator
-    Propagator<Q> bareSingleScalePropagator(Psi.Lambda, Psi.selfenergy, diff ? 's' : 'g', Psi.config);    //Bare propagator
+    Propagator<Q> barePropagator(bareState.Lambda, bareState.selfenergy, 'g', bareState.config);    //Bare propagator
+    Propagator<Q> bareSingleScalePropagator(bareState.Lambda, bareState.selfenergy, diff ? 's' : 'g', bareState.config);    //Bare propagator
     //auto Pi = PT_initialize_Bubble(barePropagator);
     Bubble<Q> Pi (barePropagator, bareSingleScalePropagator, diff);
 
@@ -172,7 +173,7 @@ void sopt_state(State<Q>& Psi, const bool diff = false) {
     utils::print_add("done.", true);
 #endif
 
-    sopt_state_impl(Psi, Pi);
+    sopt_state_impl(Psi, Pi, bareState);
 }
 
 template <typename Q>
@@ -192,7 +193,7 @@ void topt_state(State<Q>& Psi) {
 
     State<Q> SoptPsi (Psi, Psi.Lambda);
     //SoptPsi.initialize();
-    sopt_state_impl(SoptPsi, Pi);
+    sopt_state_impl(SoptPsi, Pi, bareState);
 
 #if not defined(NDEBUG)
     utils::print("Computing the vertex in TOPT ... ", false);
@@ -221,7 +222,7 @@ void fopt_state(State<Q>& Psi) {
 
     State<Q> SoptPsi (Psi, Psi.Lambda);
     //SoptPsi.initialize();
-    sopt_state_impl(SoptPsi, Pi);
+    sopt_state_impl(SoptPsi, Pi, bareState);
 
 
     //SoptPsi.findBestFreqGrid(Lambda);
