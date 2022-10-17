@@ -34,7 +34,7 @@ class Hartree_Solver {
 public:
     /// constructor used for obtaining the self-consistent solution of the Hartree-term
     Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
-        assert(KELDYSH);
+        //assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 

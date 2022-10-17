@@ -1319,44 +1319,44 @@ void test_integrate_over_K1(double Lambda) {
 }
 
 #if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
-auto SOPT_K1a(double w, double Lambda) -> double {
+auto SOPT_K1a(double w, double Lambda, const double hartree_term) -> double {
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
     double result;
     if (w == 0.)
-        result = - stdConfig.U*stdConfig.U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu);
+        result = - stdConfig.U*stdConfig.U * Delta / M_PI / (Delta*Delta + hartree_term*hartree_term);
     else
-        result = - stdConfig.U*stdConfig.U * Delta/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
+        result = - stdConfig.U*stdConfig.U * Delta/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + hartree_term*hartree_term));
     return result;
 }
-auto SOPT_K1a_diff(double w, double Lambda) -> double {
+auto SOPT_K1a_diff(double w, double Lambda, const double hartree_term) -> double {
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
-    if (abs(w) < inter_tol) return - stdConfig.U*stdConfig.U      /2 / M_PI / (Delta*Delta + glb_mu*glb_mu)
-                        + stdConfig.U*stdConfig.U * Delta / M_PI / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta ;
-    double term1 =  - stdConfig.U*stdConfig.U      / 2/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu));
-    double term2 =  + stdConfig.U*stdConfig.U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu)) / (2*Delta + std::abs(w));
-    double term3 =  - stdConfig.U*stdConfig.U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w)))     /(   1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + glb_mu*glb_mu))
+    if (abs(w) < inter_tol) return - stdConfig.U*stdConfig.U      /2 / M_PI / (Delta*Delta + hartree_term*hartree_term)
+                        + stdConfig.U*stdConfig.U * Delta / M_PI / (Delta*Delta + hartree_term*hartree_term) / (Delta*Delta + hartree_term*hartree_term) * Delta ;
+    double term1 =  - stdConfig.U*stdConfig.U      / 2/M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + hartree_term*hartree_term));
+    double term2 =  + stdConfig.U*stdConfig.U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w))) * log(1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + hartree_term*hartree_term)) / (2*Delta + std::abs(w));
+    double term3 =  - stdConfig.U*stdConfig.U * Delta /M_PI / (std::abs(w)*(2*Delta + std::abs(w)))     /(   1 + (std::abs(w)*(2*Delta + std::abs(w)))/(Delta*Delta + hartree_term*hartree_term))
             *(
-                    std::abs(w)                      / (Delta*Delta + glb_mu*glb_mu)
-                   -std::abs(w) * (2*Delta + std::abs(w)) / (Delta*Delta + glb_mu*glb_mu) / (Delta*Delta + glb_mu*glb_mu) * Delta
+                    std::abs(w)                      / (Delta*Delta + hartree_term*hartree_term)
+                   -std::abs(w) * (2*Delta + std::abs(w)) / (Delta*Delta + hartree_term*hartree_term) / (Delta*Delta + hartree_term*hartree_term) * Delta
                     );
     return term1 + term2 + term3;
 }
 
-auto SOPT_K1p(double w, double Lambda) -> comp {
+auto SOPT_K1p(double w, double Lambda, const double hartree_term) -> comp {
     /// SOPT solution for K1p
     if (std::abs(stdConfig.epsilon + stdConfig.U * 0.5) < 1.e-10) {
         /// in PHS: reuse formula for K1a
-        return -SOPT_K1a(w, Lambda);
+        return -SOPT_K1a(w, Lambda, hartree_term);
     }
     else {
         /// nonPHS formala
         const double Delta = REG == 2 ? 0.5*(stdConfig.Gamma+Lambda) : 0.5*stdConfig.Gamma;
-        const double eps = stdConfig.epsilon;
+        const double eps = hartree_term;
         const double wabs = std::abs(w);
         const double sgnw = sgn(w);
         comp result = - 2. / (wabs            + 2.*glb_i*sgnw*eps) * log((Delta-glb_i*sgnw*eps)/(wabs + Delta + glb_i*sgnw*eps))
                       + 2. / (wabs + 2.*Delta + 2.*glb_i*sgnw*eps) * log((Delta+glb_i*sgnw*eps)/(wabs + Delta + glb_i*sgnw*eps));
-        return result;
+        return stdConfig.U*stdConfig.U * 0.5 / M_PI * result;
     }
 
 
@@ -1372,11 +1372,12 @@ public:
     const double w, v;
     const double vp = 0.;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     Propagator<Q>& barePropagator;
-    Integrand_TOPT_SE(double Lambda_in, double w, double v, bool diff, Propagator<Q>& barePropagator)
-            : Lambda(Lambda_in), w(w), v(v), diff(diff), barePropagator(barePropagator) { }
+    Integrand_TOPT_SE(double Lambda_in, double w, double v, double hartree_term, bool diff, Propagator<Q>& barePropagator)
+            : Lambda(Lambda_in), w(w), v(v), hartree_term(hartree_term), diff(diff), barePropagator(barePropagator) { }
 
 
     void save_integrand(double vmax) {
@@ -1450,7 +1451,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return SOPT_K1a(- v + vpp, Lambda) * barePropagator.valsmooth(0, vpp, 0) ;
+        return SOPT_K1a(- v + vpp, Lambda, hartree_term) * barePropagator.valsmooth(0, vpp, 0) * (PARTICLE_HOLE_SYMMETRY ? 1. : -1.);
         //return vpp*vpp;
     }
 };
@@ -1465,11 +1466,12 @@ public:
     const double w, v;
     const double vp = 0.;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     Bubble<Q> Pi;
-    Integrand_TOPTK2a(double Lambda_in, double w, double v, bool diff, Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) { }
+    Integrand_TOPTK2a(double Lambda_in, double w, double v, double hartree_term, bool diff, Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), hartree_term(hartree_term), diff(diff), Pi(Pi) { }
 
 
     void save_integrand(double vmax) {
@@ -1543,7 +1545,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * stdConfig.U ;
+        return SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * stdConfig.U ;
         //return vpp*vpp;
     }
 };
@@ -1558,9 +1560,10 @@ public:
     const double w, v, vp;
     const bool diff;
     const char channel = 'a';
+    const double hartree_term;
     Bubble<Q> Pi;
-    Integrand_FOPTK3a(double Lambda_in, double w, double v, double vp, bool diff, Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) { }
+    Integrand_FOPTK3a(double Lambda_in, double w, double v, double vp, double hartree_term, bool diff, Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), hartree_term(hartree_term), diff(diff), Pi(Pi) { }
 
     void save_integrand(double vmax) {
         int npoints = 1e5;
@@ -1633,7 +1636,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda) ;
+        return SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a(vp + vpp, Lambda, hartree_term) ;
         //return vpp*vpp;
     }
 };
@@ -1673,13 +1676,15 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     }
 #endif
 
-    fopt_state(state_cpp);
+    sopt_state(state_cpp);
     //state_cpp.vertex.half1().check_vertex_resolution();
     //state_cpp.analyze_tails();
 
     write_state_to_hdf(outputFileName + "_cpp", Lambda, 1, state_cpp);
 
     State<state_datatype> PT_state(state_cpp, Lambda);
+
+    const double Hartree_value = PARTICLE_HOLE_SYMMETRY ? stdConfig.U*0.5 : Hartree_Solver(Lambda, stdConfig).compute_Hartree_term_bracketing(1e-12, false, false);
 
     // compute SOPT self-energy (numerically exact)
     my_defs::SE::index_type idx_SE;
@@ -1688,7 +1693,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
     for (int i = 0; i<nFER; i++) {
         idx_SE[my_defs::SE::nu] = i;
         double v = PT_state.selfenergy.Sigma.frequencies.  primary_grid.get_frequency(i);
-        Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, diff, barePropagator);
+        Integrand_TOPT_SE<Q> IntegrandSE(Lambda, 0, v, Hartree_value, diff, barePropagator);
         Q val_SE = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandSE, -vmax, vmax, std::abs(0.), {v}, Delta, true);
         PT_state.selfenergy.setself(0, i, 0, val_SE);
     }
@@ -1702,18 +1707,21 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         idx_K1[my_defs::K1::omega] = i;
         double w = PT_state.vertex.avertex().K1.frequencies.  primary_grid.get_frequency(i);
         Q val_K1;
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda, Hartree_value);
+        else val_K1 = SOPT_K1a(w, Lambda, Hartree_value);
         //PT_state.vertex.avertex().K1.setvert( val_K1 - val_K1*val_K1/stdConfig.U, i, 0, 0);
         PT_state.vertex.avertex().K1.setvert( val_K1, idx_K1);
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1p(w, Lambda);
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda, Hartree_value);
+        else {
+            if constexpr (PARTICLE_HOLE_SYMMETRY) val_K1 =  - SOPT_K1a(w, Lambda, Hartree_value);
+            else val_K1 = SOPT_K1p(w, Lambda, Hartree_value);
+        };
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/stdConfig.U, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( val_K1, idx_K1);
         w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
+        if (diff) val_K1 = SOPT_K1a_diff(w, Lambda, Hartree_value);
+        else val_K1 = SOPT_K1a(w, Lambda, Hartree_value);
         PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1/stdConfig.U, idx_K1);
     }
 
@@ -1729,7 +1737,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
             idx_K2[my_defs::K2::nu] = j;
             double w, v;
             PT_state.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
-            Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, diff, Pi);
+            Integrand_TOPTK2a<Q> IntegrandK2(Lambda, w, v, Hartree_value, diff, Pi);
             Q val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {v, w+v, w-v}, Delta, true);
             PT_state.vertex.avertex().K2.setvert(val_K2, idx_K2);
             PT_state.vertex.pvertex().K2.setvert(val_K2, idx_K2);
@@ -1751,17 +1759,17 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 idx_K3[my_defs::K3::nup] = k;
                 double w, v, vp;
                 PT_state.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
-                Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, diff, Pi);
+                Integrand_FOPTK3a<Q> IntegrandK3(Lambda, w, v, vp, Hartree_value, diff, Pi);
                 Q val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.avertex().K3.setvert(val_K3, idx_K3);
 
                 PT_state.vertex.pvertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
-                Integrand_FOPTK3a<Q> IntegrandK3_2(Lambda, w, v, vp, diff, Pi);
+                Integrand_FOPTK3a<Q> IntegrandK3_2(Lambda, w, v, vp, Hartree_value, diff, Pi);
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_2, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.pvertex().K3.setvert(-val_K3, idx_K3);
 
                 PT_state.vertex.tvertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
-                Integrand_FOPTK3a<Q> IntegrandK3_3(Lambda, w, v, vp, diff, Pi);
+                Integrand_FOPTK3a<Q> IntegrandK3_3(Lambda, w, v, vp, Hartree_value, diff, Pi);
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
                 Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
@@ -1810,11 +1818,12 @@ public:
     const double w, v;
     const double vp = 0.;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     const Bubble<Q> Pi;
-    K1rdot_PIa_K1p_exact_K2(double Lambda_in, double w, double v, bool diff, const Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) { }
+    K1rdot_PIa_K1p_exact_K2(double Lambda_in, double w, double v, double hartree_term, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), hartree_term(hartree_term), diff(diff), Pi(Pi) { }
 
 
     void save_integrand(double vmax) {
@@ -1892,7 +1901,7 @@ public:
         //    return 0.;
         //}
         //else {
-            return SOPT_K1a_diff(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * stdConfig.U ;
+            return SOPT_K1a_diff(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * stdConfig.U ;
         //}
         //return vpp*vpp;
     }
@@ -1907,11 +1916,12 @@ public:
     const double Lambda;
     const double w, v, vp;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     Bubble<Q> Pi;
-    K1rdot_PIa_K1p_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) { }
+    K1rdot_PIa_K1p_exact_K3(double Lambda_in, double w, double v, double vp, double hartree_term, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), hartree_term(hartree_term), diff(diff), Pi(Pi) { }
 
 
     void save_integrand(double vmax) {
@@ -1985,7 +1995,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        if (isfinite(vpp)) return SOPT_K1a(vp+ vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(v + vpp, Lambda) ;
+        if (isfinite(vpp)) return SOPT_K1a(vp+ vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(v + vpp, Lambda, hartree_term) ;
         else return 0.;
         //return vpp*vpp;
     }
@@ -2000,11 +2010,12 @@ public:
     const double Lambda;
     const double w, v, vp;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     Bubble<Q> Pi;
     K1p_PIa_K1rdot_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) { }
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), hartree_term(hartree_term), diff(diff), Pi(Pi) { }
 
 
     void save_integrand(double vmax) {
@@ -2078,7 +2089,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        if (isfinite(vpp)) return SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(vp + vpp, Lambda);
+        if (isfinite(vpp)) return SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(vp + vpp, Lambda, hartree_term);
         else return 0.;
         //return vpp*vpp;
     }
@@ -2098,11 +2109,12 @@ public:
     double vmax = 1e3;
     const double Delta = (Lambda * stdConfig.Gamma)/2;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     const Bubble<Q> Pi;
-    IntegranddGammaC_exact_K1(double Lambda_in, double w, bool diff, const Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), diff(diff), Pi(Pi) {}
+    IntegranddGammaC_exact_K1(double Lambda_in, double w, double hartree_term, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), hartree_term(hartree_term), diff(diff), Pi(Pi) {}
 
 
     void save_integrand(double vmax) {
@@ -2177,7 +2189,7 @@ public:
 
     auto operator() (double vpp) const -> Q {
 
-        K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
+        K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, hartree_term, false, Pi);
         state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp, vp}, Delta);
         return -stdConfig.U * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
@@ -2196,11 +2208,12 @@ public:
     double vmax = 1e3;
     const double Delta = (Lambda * stdConfig.Gamma)/2;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     Bubble<Q> Pi;
-    IntegranddGammaC_exact_K2(double Lambda_in, double w, double v, bool diff, const Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), v(v), diff(diff), Pi(Pi) {}
+    IntegranddGammaC_exact_K2(double Lambda_in, double w, double v, double hartree_term, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), hartree_term(hartree_term), diff(diff), Pi(Pi) {}
 
 
     void save_integrand(double vmax) {
@@ -2275,9 +2288,9 @@ public:
 
     auto operator() (double vpp) const -> Q {
 
-        K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, false, Pi);
+        K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, vpp, hartree_term, false, Pi);
         state_datatype val_K2 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w/2), {vpp}, Delta);
-        return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K2;
+        return -SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * val_K2;
         //return vpp*vpp;
     }
 };
@@ -2294,11 +2307,12 @@ public:
     double vmax = 1e3;
     const double Delta = (Lambda * stdConfig.Gamma)/2;
     const char channel = 'a';
+    const double hartree_term;
     const bool diff;
 
     Bubble<Q> Pi;
-    IntegranddGammaC_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
-            : Lambda(Lambda_in), w(w), v(v), vp(vp), diff(diff), Pi(Pi) {}
+    IntegranddGammaC_exact_K3(double Lambda_in, double w, double v, double vp, double hartree_term, bool diff, const Bubble<Q>& Pi)
+            : Lambda(Lambda_in), w(w), v(v), vp(vp), hartree_term(hartree_term), diff(diff), Pi(Pi) {}
 
 
     void save_integrand(double vmax) {
@@ -2375,7 +2389,7 @@ public:
 
         K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, vpp, vp, false, Pi);
         state_datatype val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w/2), {vpp, vp, std::abs(vpp)-std::abs(vp)}, Delta);
-        return -SOPT_K1a(v + vpp, Lambda) * Pi.value(0, w, vpp, 0, 'a') * val_K3;
+        return -SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * val_K3;
         //return vpp*vpp;
     }
 };
@@ -2413,6 +2427,8 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
     }
 
     std::vector<State<state_datatype>> central_bubblestates = {PT2_K1adot, PT2_K1pdot};
+    const double Hartree_value = PARTICLE_HOLE_SYMMETRY ? stdConfig.U*0.5 : Hartree_Solver(Lambda, stdConfig).compute_Hartree_term_bracketing(1e-12, false, false);
+
 
     //for (int i = 0; i < 2; i++){
     int i = version;
@@ -2479,14 +2495,14 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         double vmax = 1e3;
         State<state_datatype> K1pdot_exact(Lambda, stdConfig);        // intermediate result: contains K2 and K3
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta, Lambda, it_spin, Pi)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1pdot_exact, vmax, Delta, Lambda, it_spin, Pi, Hartree_value)
         for (size_t iflat = 0; iflat < (nBOS ); iflat++) {
             size_t it = iflat;
             //for (int it = 1; it<nBOS2-1; it++) {
             //    for (int j = 1; j<nFER2-1; j++) {
             double w;
             K1pdot_exact.vertex.avertex().K1.frequencies.get_freqs_w(w, it);
-            state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda);
+            state_datatype val_K1 = -SOPT_K1a_diff(w, Lambda, Hartree_value);
             K1pdot_exact.vertex.pvertex().K1.setvert(val_K1, it_spin, it, 0, 0);
             //    }
         }
@@ -2500,13 +2516,13 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         State<state_datatype> K1rdot_PIa_K1p_exact(Lambda, stdConfig);        // intermediate result: contains K2 and K3
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta, Lambda, it_spin, Pi)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta, Lambda, it_spin, Pi, Hartree_value)
         for (int iflat = 0; iflat < (nBOS2 ) * (nFER2 ); iflat++) {
             int i = iflat / (nFER2 );
             int j = iflat - (i ) * (nFER2 );
             double w, v;
             K1rdot_PIa_K1p_exact.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
-            K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
+            K1rdot_PIa_K1p_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, Hartree_value, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
             K1rdot_PIa_K1p_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
@@ -2550,14 +2566,14 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         State<state_datatype> K1p_PIa_K1rdot_exact(Lambda, stdConfig);        // intermediate result: contains K2 and K3
 
 #if MAX_DIAG_CLASS>2
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1p_PIa_K1rdot_exact, vmax, Delta, Lambda, it_spin, Pi)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1p_PIa_K1rdot_exact, vmax, Delta, Lambda, it_spin, Pi, Hartree_value)
         for (int iflat = 0; iflat < (nBOS3 ) * (nFER3 ) * (nFER3 ); iflat++) {
             int i = iflat / (nFER3 ) / (nFER3 );
             int j = iflat / (nFER3 ) - (i) * (nFER3 );
             int k = iflat - (i ) * (nFER3 ) * (nFER3) - j * (nFER3 );
             double w , v, vp;
             K1p_PIa_K1rdot_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
-            K1p_PIa_K1rdot_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            K1p_PIa_K1rdot_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, Hartree_value, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
@@ -2582,25 +2598,25 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
 
         State<state_datatype> dGammaC_exact(Lambda, stdConfig);        // final state: contains K1, K2 and K3
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi)
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi, Hartree_value)
         for (int i = 0; i < nBOS; i++) {
             double w;
             dGammaC_exact.vertex.avertex().K1.frequencies.get_freqs_w(w, i);
-            IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, false, Pi);
+            IntegranddGammaC_exact_K1<state_datatype> IntegrandK1(Lambda, w, Hartree_value, false, Pi);
             state_datatype val_K1 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0(IntegrandK1, -vmax, vmax, std::abs(w / 2), {}, Delta, true);
             dGammaC_exact.vertex.avertex().K1.setvert(val_K1, it_spin, i, 0, 0);
         }
 
 
-#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi)
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi, Hartree_value)
         for (int iflat = 0; iflat < (nBOS2) * (nFER2 ); iflat++) {
             int i = iflat / (nFER2 );
             int j = iflat - (i ) * (nFER2 );
             double w;
             double v;
             dGammaC_exact.vertex.avertex().K2.frequencies.get_freqs_w(w, v, i, j);
-            IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, false, Pi);
+            IntegranddGammaC_exact_K2<state_datatype> IntegrandK2(Lambda, w, v, Hartree_value, false, Pi);
             state_datatype val_K2 =
                     1. / (2 * M_PI) * integrator_Matsubara_T0(IntegrandK2, -vmax, vmax, std::abs(w / 2), {v}, Delta, true);
             dGammaC_exact.vertex.avertex().K2.setvert(val_K2, it_spin, i, j, 0, 0);
