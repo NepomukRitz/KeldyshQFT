@@ -1342,6 +1342,26 @@ auto SOPT_K1a_diff(double w, double Lambda) -> double {
     return term1 + term2 + term3;
 }
 
+auto SOPT_K1p(double w, double Lambda) -> comp {
+    /// SOPT solution for K1p
+    if (std::abs(stdConfig.epsilon + stdConfig.U * 0.5) < 1.e-10) {
+        /// in PHS: reuse formula for K1a
+        return -SOPT_K1a(w, Lambda);
+    }
+    else {
+        /// nonPHS formala
+        const double Delta = REG == 2 ? 0.5*(stdConfig.Gamma+Lambda) : 0.5*stdConfig.Gamma;
+        const double eps = stdConfig.epsilon;
+        const double wabs = std::abs(w);
+        const double sgnw = sgn(w);
+        comp result = - 2. / (wabs            + 2.*glb_i*sgnw*eps) * log((Delta-glb_i*sgnw*eps)/(wabs + Delta + glb_i*sgnw*eps))
+                      + 2. / (wabs + 2.*Delta + 2.*glb_i*sgnw*eps) * log((Delta+glb_i*sgnw*eps)/(wabs + Delta + glb_i*sgnw*eps));
+        return result;
+    }
+
+
+}
+
 /**
  * integrand for selfenergy in TOPT (SIAM)
  */
@@ -1688,9 +1708,9 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
         PT_state.vertex.avertex().K1.setvert( val_K1, idx_K1);
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
-        else val_K1 = SOPT_K1a(w, Lambda);
+        else val_K1 = SOPT_K1p(w, Lambda);
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/stdConfig.U, i, 0, 0);
-        PT_state.vertex.pvertex().K1.setvert( -val_K1, idx_K1);
+        PT_state.vertex.pvertex().K1.setvert( val_K1, idx_K1);
         w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
         if (diff) val_K1 = SOPT_K1a_diff(w, Lambda);
         else val_K1 = SOPT_K1a(w, Lambda);
@@ -2702,6 +2722,80 @@ auto SOPT_K1a_diff(double w, double Lambda, const double hartree_term) -> Q {
     }
 }
 
+template <typename Q, int type = 2>
+auto SOPT_K1p(double w, double Lambda, const double hartree_term) -> Q {
+    assert(REG == 2);
+
+    if (PARTICLE_HOLE_SYMMETRY and std::abs(stdConfig.epsilon + stdConfig.U*0.5) < 1.e-10) return -SOPT_K1a<Q,type>(w, Lambda, hartree_term);
+
+    double Delta = REG == 2 ? (stdConfig.Gamma + Lambda) / 2. : stdConfig.Gamma * 0.5;
+    const double HF_corr = stdConfig.epsilon + hartree_term;
+
+    auto advanced = [Delta,HF_corr,Lambda](const double w_) -> Q {
+        const Q factor = REG == 4 ? Lambda*Lambda : 1.;
+        return  factor * stdConfig.U*stdConfig.U * 0.5 /M_PI  * (
+                  - 1. / (glb_i*w_           - glb_i*2.*HF_corr) * log((Delta + glb_i * HF_corr) / (glb_i*w_ + Delta - glb_i*HF_corr))
+                  + 1. / (glb_i*w_ + 2*Delta - glb_i*2.*HF_corr) * log((Delta - glb_i * HF_corr) / (glb_i*w_ + Delta - glb_i*HF_corr))
+                );
+    };
+
+    if (type == 2) {
+        /// advanced component of K1a in SOPT:
+        Q result = advanced(w);
+        return result;
+    }
+    else if (type == 1) {
+        /// retarded component of K1a in SOPT:
+        Q result = conj(advanced(w));
+        return result;
+    }
+    else {
+        assert(type == 0);
+        /// Keldysh component of K1a in SOPT:
+        const Q adv = advanced(w);
+        const Q ret = conj(adv);
+        const Q result = sgn(w) * (ret - adv);
+        return result;
+    }
+}
+template <typename Q, int type = 2>
+auto SOPT_K1p_diff(double w, double Lambda, const double hartree_term) -> Q {
+    assert(REG == 2);
+    if (PARTICLE_HOLE_SYMMETRY and std::abs(stdConfig.epsilon + stdConfig.U*0.5) < 1.e-10) return -SOPT_K1a_diff<Q,type>(w, Lambda, hartree_term);
+
+    double Delta = (stdConfig.Gamma + Lambda) / 2.;
+    const double HF_corr = (stdConfig.epsilon+stdConfig.U*0.5) + hartree_term - 0.5 * stdConfig.U;
+
+    auto advanced = [Delta,HF_corr](const double w_) -> Q {
+        Q term1 = -1. / (glb_i * w_ - glb_i*2.*HF_corr) *(1. / (Delta + glb_i*HF_corr) - 1. / (glb_i*w_ + Delta - glb_i*HF_corr));
+        Q term2 = -2. / (pow(glb_i * w_ + 2*Delta - glb_i*2.*HF_corr,2)) * log((Delta - glb_i * HF_corr) / (glb_i*w_ + Delta - glb_i*HF_corr));
+        Q term3 = +1. / (glb_i*w_ + 2*Delta - glb_i*2.*HF_corr) * (1./(Delta - glb_i*HF_corr) - 1./(glb_i*w_ + Delta - glb_i*HF_corr));
+        return stdConfig.U*stdConfig.U * 0.5 /M_PI  * (term1 + term2 + term3) * 0.5;
+
+    };
+
+
+    if (type == 2) {
+        /// advanced component of K1a in SOPT:
+        Q result = advanced(w);
+        return result;
+    }
+    else if (type == 1) {
+        /// retarded component of K1a in SOPT:
+        Q result = conj(advanced(w));
+        return result;
+    }
+    else {
+        assert(type == 0);
+        /// Keldysh component of K1a in SOPT:
+        const Q adv = advanced(w);
+        const Q ret = conj(adv);
+        const Q result = sgn(w) * (ret - adv);
+        return result;
+    }
+}
+
+
 template <typename Q, int type>
 class Integrand_SOPT_SE {
     const double v;
@@ -2838,9 +2932,9 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
         PT_state.vertex.avertex().K1.setvert( val_K1_K, it_spin,  i, 1, 0);
 
         w = PT_state.vertex.pvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1a<Q,1>(w, Lambda, Hartree_value);
+        KR = diff ? SOPT_K1p_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1p<Q,1>(w, Lambda, Hartree_value);
         KA = myconj(KR);
-        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1a<Q,0>(w, Lambda, Hartree_value);
+        KK = diff ? SOPT_K1p_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1p<Q,0>(w, Lambda, Hartree_value);
         K00 = ( KR + KA + KK);// * 0.5;
         K01 = ( KR - KA - KK);// * 0.5;
         K10 = (-KR + KA - KK);// * 0.5;
@@ -2848,23 +2942,23 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
         val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
         val_K1_K = CONTOUR_BASIS != 1 ? KK : K01;
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/config.U, 0, i, 0);
-        PT_state.vertex.pvertex().K1.setvert( -val_K1  , it_spin, i, 0, 0);
-        PT_state.vertex.pvertex().K1.setvert( -val_K1_K, it_spin, i, 1, 0);
+        PT_state.vertex.pvertex().K1.setvert( val_K1  , it_spin, i, 0, 0);
+        PT_state.vertex.pvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);
 
-        w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1a<Q,1>(w, Lambda, Hartree_value);
-        KA = myconj(KR);
-        KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1a<Q,0>(w, Lambda, Hartree_value);
-        K00 = ( KR + KA + KK);// * 0.5;
-        K01 = ( KR - KA - KK);// * 0.5;
-        K10 = (-KR + KA - KK);// * 0.5;
-        K11 = (-KR - KA + KK);// * 0.5;
-        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
-        val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
-        val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
-        val_K1_K = state_cpp.vertex.tvertex().K1.val(it_spin, i, 1, 0);
-        PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./stdConfig.U    , it_spin, i, 0, 0);
-        PT_state.vertex.tvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);
+        //w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
+        //KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1a<Q,1>(w, Lambda, Hartree_value);
+        //KA = myconj(KR);
+        //KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1a<Q,0>(w, Lambda, Hartree_value);
+        //K00 = ( KR + KA + KK);// * 0.5;
+        //K01 = ( KR - KA - KK);// * 0.5;
+        //K10 = (-KR + KA - KK);// * 0.5;
+        //K11 = (-KR - KA + KK);// * 0.5;
+        //val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        //val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
+        //val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
+        //val_K1_K = state_cpp.vertex.tvertex().K1.val(it_spin, i, 1, 0);
+        //PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./stdConfig.U    , it_spin, i, 0, 0);
+        //PT_state.vertex.tvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);
     }
     write_state_to_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
 
