@@ -213,9 +213,9 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         index_type idx;
         idx[my_defs::SE::keldysh]= iK;
         idx[my_defs::SE::internal]= i_in;
-    result = Sigma.interpolate_impl(freqs, idx) + (1.-(double)iK)*(this->asymp_val_R);
+    result = Sigma.interpolate_impl(freqs, idx);
 #endif
-    return result;
+    return result + (1.-(double)iK)*(this->asymp_val_R);
     }
 
 }

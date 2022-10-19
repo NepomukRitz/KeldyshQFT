@@ -26,7 +26,7 @@ namespace selfenergy_loop {
  */
 template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 class IntegrandSE {
-#if VECTORIZED_INTEGRATION and KELDYSH_FORMALISM
+#if KELDYSH_FORMALISM
     using buffertype_propagator = Eigen::Matrix<Q,1,4>;
     using buffertype_vertex = Eigen::Matrix<Q,4,myColsAtCompileTime<return_type>()>;
 #else

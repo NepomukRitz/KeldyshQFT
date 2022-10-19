@@ -616,8 +616,9 @@ auto Propagator<Q>::G0M_inv_SIAM(const freqType v, const int i_in) const -> Q {
         return G0inv;
     }
     else {
-        const Q G0inv_R = v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) * glb_i - epsilon + glb_i * Gamma * 0.5 * sign(v);
-        return G0inv_R;
+        const Q G0inv =(v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) + Gamma * 0.5 * sign(v)) * glb_i - epsilon ;
+        assert(isfinite(G0inv));
+        return G0inv;
     }
 }
 template <typename Q>

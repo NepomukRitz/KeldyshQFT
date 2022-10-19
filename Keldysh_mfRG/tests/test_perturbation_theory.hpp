@@ -1771,7 +1771,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
                 PT_state.vertex.tvertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
                 Integrand_FOPTK3a<Q> IntegrandK3_3(Lambda, w, v, vp, Hartree_value, diff, Pi);
                 val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_3, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
-                Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, diff, Pi);
+                Integrand_FOPTK3a<Q> IntegrandK3_ap(Lambda, w, -v, vp, Hartree_value, diff, Pi);
                 Q val_K3_ap = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3_ap, -vmax, vmax, std::abs(w/2), {v, vp, w+v, w-v, w+vp, w-vp}, Delta, true);
                 PT_state.vertex.tvertex().K3.setvert(-2.*(val_K3-val_K3_ap), idx_K3);
             }
@@ -2014,7 +2014,7 @@ public:
     const bool diff;
 
     Bubble<Q> Pi;
-    K1p_PIa_K1rdot_exact_K3(double Lambda_in, double w, double v, double vp, bool diff, const Bubble<Q>& Pi)
+    K1p_PIa_K1rdot_exact_K3(double Lambda_in, double w, double v, double vp, double hartree_term, bool diff, const Bubble<Q>& Pi)
             : Lambda(Lambda_in), w(w), v(v), vp(vp), hartree_term(hartree_term), diff(diff), Pi(Pi) { }
 
 
@@ -2387,7 +2387,7 @@ public:
 
     auto operator() (double vpp) const -> Q {
 
-        K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, vpp, vp, false, Pi);
+        K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, vpp, vp, hartree_term, false, Pi);
         state_datatype val_K3 = 1./(2*M_PI) * integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w/2), {vpp, vp, std::abs(vpp)-std::abs(vp)}, Delta);
         return -SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * val_K3;
         //return vpp*vpp;
@@ -2530,14 +2530,14 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         }
 
 #if MAX_DIAG_CLASS>2
-#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta, Lambda, it_spin, Pi)
+#pragma omp parallel for schedule(dynamic) default(none) shared(K1rdot_PIa_K1p_exact, vmax, Delta, Lambda, it_spin, Pi, Hartree_value)
         for (int iflat = 0; iflat < (nBOS3 ) * (nFER3 ) * (nFER3); iflat++) {
             int i = iflat / (nFER3) / (nFER3);
             int j = iflat / (nFER3) - (i) * (nFER3);
             int k = iflat - (i ) * (nFER3 ) * (nFER3 ) - (j ) * (nFER3 );
             double w, v, vp;
             K1rdot_PIa_K1p_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
-            K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            K1rdot_PIa_K1p_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, Hartree_value, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                                {v, vp, std::abs(w) - std::abs(vp), std::abs(w) + std::abs(vp),
@@ -2624,14 +2624,14 @@ void compute_non_symmetric_diags(const double Lambda, bool write_flag = false, i
         }
 
 #if MAX_DIAG_CLASS>2
-#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi)
+#pragma omp parallel for schedule(dynamic) default(none) shared(dGammaC_exact, vmax, Delta, Lambda, it_spin, Pi, Hartree_value)
         for (int iflat = 0; iflat < (nBOS3 ) * (nFER3 ) * (nFER3 ); iflat++) {
             int i = iflat / (nFER3 ) / (nFER3 );
             int j = iflat / (nFER3 ) - (i ) * (nFER3 );
             int k = iflat - (i) * (nFER3 ) * (nFER3 ) - (j ) * (nFER3 );
             double w, v, vp;
             dGammaC_exact.vertex.avertex().K3.frequencies.get_freqs_w(w, v, vp, i, j, k);
-            IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, false, Pi);
+            IntegranddGammaC_exact_K3<state_datatype> IntegrandK3(Lambda, w, v, vp, Hartree_value, false, Pi);
             state_datatype val_K3 = 1. / (2 * M_PI) *
                                     integrator_Matsubara_T0(IntegrandK3, -vmax, vmax, std::abs(w / 2),
                                                                   {v, vp, std::abs(v) - std::abs(vp)}, Delta, true);

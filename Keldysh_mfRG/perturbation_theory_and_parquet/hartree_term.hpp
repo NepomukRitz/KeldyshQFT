@@ -43,7 +43,6 @@ public:
     };
     /// constructor used for a one-shot calculation of the Hartree-term with a given selfenergy, e.g. in parquet iterations or in the 1l flow equation.
     Hartree_Solver(const double Lambda_in, const SelfEnergy<comp>& Sigma_in, const fRG_config& config_in, const bool diff=false): Lambda(Lambda_in), config(config_in){
-        assert(KELDYSH);
         assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
@@ -85,6 +84,7 @@ public:
         std::cout << "Relative difference between closing with S^K or 2S^lesser " << rel_diff << "\n";
     }
 
+    double compute_filling_oneshot();
     double compute_Hartree_term(double convergence_threshold = 1e-12);
     double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12, bool Friedel_check = true,
                                            bool verbose = true);

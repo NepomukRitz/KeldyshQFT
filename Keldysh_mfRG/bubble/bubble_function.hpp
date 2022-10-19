@@ -536,14 +536,14 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                                      matsubarasum<Q>(integrand, Nmin_sum, Nmax_sum);
 #if ANALYTIC_TAILS
 
-                /// determine integral of the integrand's tails via quadrature:
+                /// determine integral of the integrand's tails via formula:
                 integration_result +=
                         bubble_value_prefactor() * asymp_corrections_bubble<channel,spin>(k, vertex1, vertex2, Pi.g,
                                                                                      vmin_temp, vmax_temp, w, v, vp, i0, i2,
                                                                                      i_in, diff);
 #else
                 /// Compute high-frequency contributions via quadrature:
-                integration_result += bubble_value_prefactor() * M_PI * Pi.g.T *
+                integration_result += bubble_value_prefactor() * (2 * M_PI) * Pi.g.T *
                                       asymp_corrections_bubble_via_quadrature<Q>(integrand, vmin_temp, vmax_temp);
 #endif
             }
@@ -893,7 +893,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             trafo = dgamma.get_rvertex(channel).freq_transformations.K2[i0][sign_w*2 + sign_v];
 
         if (!KELDYSH and !ZERO_T and -v + signFlipCorrection_MF(w)*0.5 < vertex1.avertex().K2.frequencies.get_wlower_f()) {
-            trafo = 0;
+            trafo = -1;
         }
     #if USE_FDT
         if (EQUILIBRIUM and ! HUBBARD_MODEL) {

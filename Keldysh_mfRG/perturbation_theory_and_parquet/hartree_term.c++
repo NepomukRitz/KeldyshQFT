@@ -1,15 +1,33 @@
 #include "hartree_term.hpp"
 #include "../utilities/hdf5_routines.hpp"
+#include "../asymptotic_corrections/correction_functions.hpp"
 
+double Hartree_Solver::compute_filling_oneshot() {
+    if constexpr (KELDYSH) {
+        return integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
+    }
+    else if constexpr (ZERO_T) { // Matsubara T=0
+        return integrator_Matsubara_T0(*this, v_lower, v_upper, 0., {0}, 0, true) / (2.*M_PI)
+               + (prop_type == 'g' ? 0.5 : 0.);
+    }
+    else { // Matsubara T>0
+        const int Nmin = -POSINTRANGE;
+        const int Nmax =  POSINTRANGE;
+        const double vmin_temp = (2.*Nmin + 1);
+        const double vmax_temp = (2.*Nmax + 1);
+        const double filling_oneshot = matsubarasum<double>(*this, Nmin, Nmax) * config.T + (prop_type == 'g' ? 0.5 : 0.)
+                                       + asymp_corrections_bubble_via_quadrature<double>(*this, vmin_temp, vmax_temp) * config.T;
+        return filling_oneshot;
+    }
 
+}
 
 double Hartree_Solver::compute_Hartree_term(const double convergence_threshold) {
     double diff = 1.;
     int n_iter = 0;
     while (std::abs(diff) > convergence_threshold) {
         n_iter++;
-        //double filling_new = integrator<double>(*this, v_lower, v_upper, 0., 0., glb_T);
-        double filling_new = integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
+        double filling_new = compute_filling_oneshot();
         diff = filling_new - filling;
         filling = filling_new;
         SelfEnergy<comp> Sigma_new (Lambda, config);
@@ -37,7 +55,9 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
         Sigma_new.initialize(config.U * filling, 0);
         Sigma_new.Sigma.initInterpolator();
         selfEnergy = Sigma_new;
-        LHS = integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true) - filling;
+        const double filling_tmp = compute_filling_oneshot();
+        LHS = filling_tmp - filling;
+        utils::print("i: ", n_iter, "  fillings: \t", filling_tmp, ";   [", filling_min, ", ", filling_max, "]\n" );
         if (LHS > 0.) {
             filling_min = filling;
         }
@@ -76,34 +96,49 @@ double Hartree_Solver::compute_Hartree_term_Friedel(const double convergence_thr
     return config.U * n;
 }
 
+
+
 double Hartree_Solver::compute_Hartree_term_oneshot() {
-    return config.U * integrator_Matsubara_T0(*this, v_lower, v_upper, 10, {0}, 0, true);
+    return config.U * compute_filling_oneshot();
 }
 
 auto Hartree_Solver::operator()(const double nu) const -> double {
-    // integrand for the filling (not the Hartree value!) given according to the formula
-    // 1/pi * n_F(nu) Im G^R(nu)
     Propagator<comp> G (Lambda, selfEnergy, prop_type, config);
-    double val = - 1. / M_PI * fermi_distribution(nu);
+    if constexpr (KELDYSH) {
+        // integrand for the filling (not the Hartree value!) given according to the formula
+        // 1/pi * n_F(nu) Im G^R(nu)
+        double val = - 1. / M_PI * fermi_distribution(nu);
 
-    if (test_different_Keldysh_component){
-        if      (test_Keldysh_component == "A_real") return std::conj(G.SR(nu, 0)).real();
-        else if (test_Keldysh_component == "A_imag") return std::conj(G.SR(nu, 0)).imag();
-        else if (test_Keldysh_component == "R_real") return G.SR(nu, 0).real();
-        else if (test_Keldysh_component == "R_imag") return G.SR(nu, 0).imag();
-        else if (test_Keldysh_component == "K_real") return G.SK(nu, 0).real();
-        else if (test_Keldysh_component == "K_imag") return G.SK(nu, 0).imag();
-        else if (test_Keldysh_component == "lesser") return - 4 * fermi_distribution(nu) * G.SR(nu, 0).imag();
+        if (test_different_Keldysh_component){
+            if      (test_Keldysh_component == "A_real") return std::conj(G.SR(nu, 0)).real();
+            else if (test_Keldysh_component == "A_imag") return std::conj(G.SR(nu, 0)).imag();
+            else if (test_Keldysh_component == "R_real") return G.SR(nu, 0).real();
+            else if (test_Keldysh_component == "R_imag") return G.SR(nu, 0).imag();
+            else if (test_Keldysh_component == "K_real") return G.SK(nu, 0).real();
+            else if (test_Keldysh_component == "K_imag") return G.SK(nu, 0).imag();
+            else if (test_Keldysh_component == "lesser") return - 4 * fermi_distribution(nu) * G.SR(nu, 0).imag();
+        }
+        else {
+            switch (prop_type) {
+                case 'g': return val * G.GR(nu, 0).imag();
+                case 's': return val * G.SR(nu, 0).imag(); // TODO: sign and prefactor??
+                default: assert(false); return 0.;
+            }
+        }
+        assert (false);
+        return 0;
     }
-    else {
+    else { // Matsubara
+        /// in Matsubara formalism the integrand for the filling is
+        /// 1/(2 pi) * G(nu)
+        /// to make the integral converge for large nu one needs to subtract the asymptotic part,
+        /// set the integrand to 1/(2 pi) [G(nu) - 1/(i nu)] and add 1/2 for the asymptotic part later on
         switch (prop_type) {
-            case 'g': return val * G.GR(nu, 0).imag();
-            case 's': return val * G.SR(nu, 0).imag(); // TODO: sign and prefactor??
+            case 'g': return (G.GM(nu, 0) - 1./(glb_i * nu * ((!KELDYSH and !ZERO_T) ? M_PI*config.T : 1.))).real();
+            case 's': return G.SM(nu, 0).real(); // TODO: sign and prefactor??
             default: assert(false); return 0.;
         }
     }
-    assert (false);
-    return 0;
 }
 
 void Hartree_Solver::friedel_sum_rule_check() const {
