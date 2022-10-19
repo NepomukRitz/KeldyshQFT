@@ -98,6 +98,7 @@ namespace utils {
     }
 
     void check_input(const fRG_config& config) {
+        static_assert(!(VECTORIZED_INTEGRATION and !KELDYSH and ZERO_T), "No vectorized integration for zero-T MF (for now).");
     #ifdef STATIC_FEEDBACK
         assert(MAX_DIAG_CLASS == 1);
     #endif

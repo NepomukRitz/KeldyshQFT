@@ -346,12 +346,12 @@ template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) co
  */
 template <typename Q> auto SelfEnergy<Q>::norm(const int p) const -> double {
     if(p==0){ //max norm
-        double max = Sigma.get_vec().max_norm();
+        double max = std::max(Sigma.get_vec().max_norm(), std::abs(asymp_val_R));
         return max;
     }
 
     else{ //p-norm
-        double result = std::abs(Sigma.get_vec().get_elements().pow(p).sum());
+        double result = Sigma.get_vec().get_elements().abs().pow(p).sum() + pow(std::abs(asymp_val_R), p);
         return pow(result, 1/(double)p);
     }
 }

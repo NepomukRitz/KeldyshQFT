@@ -981,6 +981,7 @@ public:
         vertex.set_initializedInterpol(false);
     }
 
+    mutable bool vanishing_component_gamma0 = false;
     mutable vec<bool> vanishing_component_channel_a = {false, false, false, false, false};
     mutable vec<bool> vanishing_component_channel_p = {false, false, false, false, false};
     mutable vec<bool> vanishing_component_channel_t = {false, false, false, false, false};
@@ -1020,6 +1021,7 @@ public:
         }
 
         for (int ispin = 0; ispin < 3; ispin++) {
+            if (vanishing_component_gamma0) vertices_bubbleintegrand[ispin].irred *= 0.;
             for (char r : {'a', 'p', 't'}) {
                 for (K_class k : {k1, k2, k2b, k3, k3_sbe}) {
                     if (get_vanishing_component_channel_r(r)[k]) vertices_bubbleintegrand[ispin].get_rvertex(r).set_K_symmetryexpanded_to_zero(k);

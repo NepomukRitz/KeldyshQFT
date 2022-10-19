@@ -139,13 +139,15 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
 
     GeneralVertex<Q,symmetric_full,false> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the a bubble
 
+    /// make sure that integrand only contains K1r + K2r + K2br
+    bubble.vanishing_component_gamma0 = true;
     for (char r: {'a', 'p', 't'}) {
         bubble.set_to_zero_in_integrand(r, k3_sbe);
+        bubble.set_to_zero_in_integrand(r, k3);     // I know, this is zero anyway.
         if (channel != r) {
             bubble.set_to_zero_in_integrand(r, k1);
             bubble.set_to_zero_in_integrand(r, k2);
             bubble.set_to_zero_in_integrand(r, k2b);
-            bubble.set_to_zero_in_integrand(r, k3);
         }
     }
 
