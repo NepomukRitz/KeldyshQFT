@@ -2742,7 +2742,7 @@ template <typename Q, int type = 2>
 auto SOPT_K1p(double w, double Lambda, const double hartree_term) -> Q {
     assert(REG == 2);
 
-    if (PARTICLE_HOLE_SYMMETRY and std::abs(stdConfig.epsilon + stdConfig.U*0.5) < 1.e-10) return -SOPT_K1a<Q,type>(w, Lambda, hartree_term);
+    if (std::abs(stdConfig.epsilon + stdConfig.U*0.5) < 1.e-10) return -SOPT_K1a<Q,type>(w, Lambda, hartree_term);
 
     double Delta = REG == 2 ? (stdConfig.Gamma + Lambda) / 2. : stdConfig.Gamma * 0.5;
     const double HF_corr = stdConfig.epsilon + hartree_term;
@@ -2777,7 +2777,7 @@ auto SOPT_K1p(double w, double Lambda, const double hartree_term) -> Q {
 template <typename Q, int type = 2>
 auto SOPT_K1p_diff(double w, double Lambda, const double hartree_term) -> Q {
     assert(REG == 2);
-    if (PARTICLE_HOLE_SYMMETRY and std::abs(stdConfig.epsilon + stdConfig.U*0.5) < 1.e-10) return -SOPT_K1a_diff<Q,type>(w, Lambda, hartree_term);
+    if (std::abs(stdConfig.epsilon + stdConfig.U*0.5) < 1.e-10) return -SOPT_K1a_diff<Q,type>(w, Lambda, hartree_term);
 
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
     const double HF_corr = (stdConfig.epsilon+stdConfig.U*0.5) + hartree_term - 0.5 * stdConfig.U;

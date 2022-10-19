@@ -11,8 +11,8 @@ double Hartree_Solver::compute_filling_oneshot() {
                + (prop_type == 'g' ? 0.5 : 0.);
     }
     else { // Matsubara T>0
-        const int Nmin = -POSINTRANGE;
-        const int Nmax =  POSINTRANGE;
+        const int Nmin = -POSINTRANGE*100;
+        const int Nmax =  POSINTRANGE*100;
         const double vmin_temp = (2.*Nmin + 1);
         const double vmax_temp = (2.*Nmax + 1);
         const double filling_oneshot = matsubarasum<double>(*this, Nmin, Nmax) * config.T + (prop_type == 'g' ? 0.5 : 0.)
@@ -57,7 +57,6 @@ double Hartree_Solver::compute_Hartree_term_bracketing(const double convergence_
         selfEnergy = Sigma_new;
         const double filling_tmp = compute_filling_oneshot();
         LHS = filling_tmp - filling;
-        utils::print("i: ", n_iter, "  fillings: \t", filling_tmp, ";   [", filling_min, ", ", filling_max, "]\n" );
         if (LHS > 0.) {
             filling_min = filling;
         }

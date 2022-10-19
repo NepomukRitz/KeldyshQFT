@@ -60,6 +60,9 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, c
     //Calculate the Self-Energy
     loop<false,0>(PsiSelfEnergy, bubble_a, barePropagator);
 
+    // copy hartree term from bare input state
+    PsiSelfEnergy.asymp_val_R = bareState.selfenergy.asymp_val_R;
+
 }
 
 void selfEnergyInSOPT_HUBBARD(SelfEnergy<comp>& PsiSelfEnergy,

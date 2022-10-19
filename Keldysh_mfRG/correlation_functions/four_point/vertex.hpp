@@ -849,6 +849,12 @@ public:
         return vertices_bubbleintegrand[spin].template value_expanded<ch_bubble,result_type,symmtype==symmetric_r_irred>(input);
     }
 
+    template <int spin, char ch_bubble, typename result_type> auto value_symmetry_expanded(const VertexInput& input)  const -> result_type {
+        static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
+        assert(input.spin == 0);
+        assert(spin < vertices_bubbleintegrand.size());
+        return vertices_bubbleintegrand[spin].template value_symmetry_expanded<ch_bubble,result_type,symmtype!=symmetric_full>(input);
+    }
     template <int spin, char ch_bubble, typename result_type> auto value_minus_gamma0_symmetry_expanded(const VertexInput& input)  const -> result_type {
         static_assert(spin == 0 or spin == 1 or spin == 2, "Used unsupported spin index");
         assert(input.spin == 0);
