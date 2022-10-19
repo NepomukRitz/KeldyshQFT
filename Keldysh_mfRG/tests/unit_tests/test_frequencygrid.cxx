@@ -112,7 +112,7 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
     const double tolerance = 1e-10;
 
     REQUIRE(tdeviations.max_norm() < tolerance);
-
+    /*
     FrequencyGrid<angularGrid> angular_phi('f', 3, Lambda_ini, test_config, false);
     FrequencyGrid<angularGrid> angular_theta('f', 3, Lambda_ini, test_config, true);
     std::vector<double> phi_values = {-M_PI, -1., -1e-5, 0., 1e-5, 1, M_PI};
@@ -139,7 +139,7 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
     }
 
     REQUIRE(tdeviations.max_norm() < tolerance);
-
+    */
 
 }
 #endif

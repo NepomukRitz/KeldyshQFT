@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
     fRG_config config;
     //config.nloops = 3;
     if constexpr (not PARTICLE_HOLE_SYMMETRY) config.epsilon = 0.0;
-    test_symmetries(1., config);
+    //test_symmetries(1., config);
 
 
     //utils::check_input();
