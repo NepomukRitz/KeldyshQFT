@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
     //PT_Calculator.debug_TOPT();
 
 
-    //return Catch::Session().run(argc, argv);
+    return Catch::Session().run(argc, argv);
 #if defined(USE_MPI)
     MPI_Finalize();
 #endif
