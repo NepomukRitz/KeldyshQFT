@@ -44,11 +44,11 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
                     number_of_gridpoints = nBOS;
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
-                        Delta_factor = 5.;
+                        Delta_factor = 10.;
                     }
                     else {
-                        U_factor = 10./3.;
-                        Delta_factor = 10.;
+                        U_factor = 40./3.;
+                        Delta_factor = 40.;
                     }
                     break;
                 case 'f':
@@ -86,7 +86,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
                     #else
                     if (KELDYSH){
                         U_factor = 0./3.;
-                        Delta_factor = 15.;
+                        Delta_factor = 20.;
                     }
                     else{
                         U_factor = 10./3.;
@@ -109,7 +109,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
                     #else
                     if (KELDYSH) {
                         U_factor = 0. / 3.;
-                        Delta_factor = 20.;
+                        Delta_factor = 10.;
                     }
                     else {
                         U_factor = 4./3.;

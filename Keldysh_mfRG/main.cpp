@@ -54,7 +54,7 @@ auto main(int argc, char * argv[]) -> int {
     fRG_config config;
     config.nODE_ = 50;
     config.epsODE_abs_ = 1e-8;
-    config.epsODE_rel_ = 1e-6;
+    config.epsODE_rel_ = 1e-5;
     config.nloops = n_loops;
     config.U = 1.0;
     config.T = (ZERO_T ? 0.0 : 0.01);
