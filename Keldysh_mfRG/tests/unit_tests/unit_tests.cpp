@@ -82,9 +82,15 @@ int main(int argc, char* argv[]) {
     utils::print("   -----   Performing unit tests   -----", true);
 
     fRG_config config;
-    //config.nloops = 3;
-    if constexpr (not PARTICLE_HOLE_SYMMETRY) config.epsilon = 0.0;
-    test_symmetries(1., config);
+    config.epsODE_abs_ = 1e-8;
+    config.epsODE_rel_ = 1e-6;
+    config.nloops = 1;
+    config.U = 1.0;
+    config.T = (ZERO_T ? 0.0 : 0.1);
+    config.Gamma = 0.2;
+    config.epsilon = (PARTICLE_HOLE_SYMMETRY ? 0.0 : 0.5) - config.U * 0.5;
+    config.save_intermediateResults = true;
+    //test_symmetries(1.8, config);
 
 
     //utils::check_input();

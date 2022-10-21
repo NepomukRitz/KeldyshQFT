@@ -47,7 +47,7 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
 
 
     std::string parquet_filename_withK3 = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 or true? "_n2=" + std::to_string(nBOS2) + (MAX_DIAG_CLASS > 2 or true? "_n3=" + std::to_string(nBOS3) : "") : "") + ".h5";
-    parquet_solver(parquet_filename_withK3, state_ini, Lambda, 3, 1e-4, 1  );
+    parquet_solver(parquet_filename_withK3, state_ini, Lambda, 2, 1e-4, 2  );
     //state_ini = read_state_from_hdf(parquet_filename_withK3, 1);
 
     //state_ini.vertex.get_rvertex('a').K2 += 1.;
