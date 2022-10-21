@@ -54,7 +54,7 @@ auto main(int argc, char * argv[]) -> int {
     fRG_config config;
     config.nODE_ = 50;
     config.epsODE_abs_ = 1e-8;
-    config.epsODE_rel_ = 1e-6;
+    config.epsODE_rel_ = 1e-5;
     config.nloops = n_loops;
     config.U = 1.0;
     config.T = (ZERO_T ? 0.0 : 0.01);
@@ -115,7 +115,7 @@ auto main(int argc, char * argv[]) -> int {
     //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
 
 */
-    test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
+    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
 
     utils::hello_world();
 
