@@ -105,7 +105,7 @@ auto round2ffreq(const double w) -> double {
 }
 
 auto signFlipCorrection_MF(const freqType w) -> freqType {
-#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not ZERO_TEMP
     const freqType correction = signFlipCorrection_MF_int(w) * 2;
     return correction;
 #else
@@ -115,7 +115,7 @@ auto signFlipCorrection_MF(const freqType w) -> freqType {
 }
 
 int signFlipCorrection_MF_int(const freqType w) {
-#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not ZERO_TEMP
     const int correction = -((int) (std::abs(w / 2) ) ) % 2;
     assert(correction==0 or correction == -1);
     return correction;

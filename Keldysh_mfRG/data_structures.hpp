@@ -85,7 +85,7 @@ template <typename T> constexpr int myColsAtCompileTime() {
     }
 }
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM and not defined(HUBBARD)
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM and not defined(HUBBARD)
 using state_datatype = double;
 #else
 using state_datatype = comp;

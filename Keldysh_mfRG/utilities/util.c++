@@ -98,7 +98,7 @@ namespace utils {
     }
 
     void check_input(const fRG_config& config) {
-        static_assert(!(VECTORIZED_INTEGRATION and !KELDYSH and ZERO_T), "No vectorized integration for zero-T MF (for now).");
+        static_assert(!(VECTORIZED_INTEGRATION and !KELDYSH and ZERO_TEMP), "No vectorized integration for zero-T MF (for now).");
     #ifdef STATIC_FEEDBACK
         assert(MAX_DIAG_CLASS == 1);
     #endif
@@ -119,7 +119,7 @@ namespace utils {
             assert(nBOS3 == nFER3); // Frequency grids must be equal in all three dimensions
         }
 
-    #if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
+    #if not KELDYSH_FORMALISM and not ZERO_TEMP
         static_assert(nBOS %2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
         static_assert(nBOS2%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
         static_assert(nBOS3%2 == 1, "Number of frequency points inconsistent for Matsubara T>0");
@@ -132,10 +132,10 @@ namespace utils {
     static_assert(SWITCH_SUM_N_INTEGRAL, "SBE requires preprocessing of vertex data.");
     #endif
 
-        #ifdef ZERO_TEMP
+        #if ZERO_TEMP
             assert(config.T < 1e-10);
         #endif
-        #ifdef PARTICLE_HOLE_SYMM
+        #if PARTICLE_HOLE_SYMM
             assert(std::abs(config.epsilon + config.U * 0.5) < 1e-10);
         #endif
         if (EQUILIBRIUM) {

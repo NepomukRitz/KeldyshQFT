@@ -4,7 +4,7 @@
 #include "../correlation_functions/state.hpp"
 #include "test_perturbation_theory.hpp"
 
-#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and ZERO_TEMP
 /**
  * test-integrand for below function test_integrate_over_K1()
  */
@@ -50,7 +50,7 @@ public:
             Q integrand_value = FOPTstate.vertex.half1().avertex.K1.interpolate(indices);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
             integrand_diff_re[i] = integrand_value - SOPT_K1a(vpp, Lambda);
@@ -98,7 +98,7 @@ public:
                     bfreqsK2[i] = w;
                     ffreqsK2[i] = v;
 
-    #if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+    #if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
                     K2_re[i*npoints + j] = integrand_value;
                     K2_im[i*npoints + j] = 0.;
     #else
@@ -129,7 +129,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -141,7 +141,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else

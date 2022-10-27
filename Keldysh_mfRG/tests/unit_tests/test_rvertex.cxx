@@ -307,7 +307,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK1() for 
 
 }
 
-#if defined(PARTICLE_HOLE_SYMM) and MAX_DIAG_CLASS > 1
+#if PARTICLE_HOLE_SYMM and MAX_DIAG_CLASS > 1
 
 TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for K2a?", "[frequency_symmetries]" ) {
 
@@ -334,7 +334,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK2() for 
         for (int iv = 0; iv<(nFER2)/2; iv++) {
             avertex.K2.frequencies.get_freqs_w(indices.w, indices.v1, iw, iv);
             double correction = (!KELDYSH and !ZERO_T) ? signFlipCorrection_MF(indices.w) : 0;
-            #ifndef ZERO_TEMP   // Matsubara T>0
+            #if not ZERO_TEMP   // Matsubara T>0
             indices.v1 += correction;
             #endif
                                  ;
@@ -396,7 +396,7 @@ TEST_CASE( "Are frequency symmetries enforced by enforce_freqsymmetriesK3() for 
         for (int iv = 0; iv<nFER3; iv++) {
             for (int ivp = 0; ivp<nFER3; ivp++) {
                 avertex.K3.frequencies.get_freqs_w(indices.w, indices.v1, indices.v2, iw, iv, ivp);
-#ifndef ZERO_TEMP   // Matsubara T>0
+#if not ZERO_TEMP   // Matsubara T>0
                 //indices.v1 += correction;
                 //indices.v2 += correction;
 #endif

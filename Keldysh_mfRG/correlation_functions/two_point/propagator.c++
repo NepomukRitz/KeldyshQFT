@@ -29,7 +29,7 @@ double Fermi_distribution(const double nu, const double T) {
         if (nu > 0.) return 0.;
         else if (nu == 0.) return 1/2.;
         else if (nu < 0.) return 1.;
-        else assert(false);
+        else assert(false); return 0.;
     }
 }
 

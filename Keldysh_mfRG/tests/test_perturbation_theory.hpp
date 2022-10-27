@@ -622,7 +622,7 @@ void test_PT4(double Lambda, bool write_flag = false) {
     state_datatype PT2_K1_exact = -(1./2.) * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 1);
     state_datatype PT3_K1_exact = -(1./2.) * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 2);
 #else
-#ifdef ZERO_TEMP
+#if ZERO_TEMP
     state_datatype PT2_K1_exact = - stdConfig.U * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 1);
     state_datatype PT3_K1_exact = - stdConfig.U * pow(stdConfig.U / (M_PI * (stdConfig.Gamma + Lambda) / 2.), 2);
 #else
@@ -1209,7 +1209,7 @@ class TestIntegrandK1a{
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1237,7 +1237,7 @@ class TestIntegrandK1a{
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1249,7 +1249,7 @@ class TestIntegrandK1a{
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1318,7 +1318,7 @@ void test_integrate_over_K1(double Lambda) {
     IntegrandK1a.save_state();
 }
 
-#if not KELDYSH_FORMALISM and defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and ZERO_TEMP
 auto SOPT_K1a(double w, double Lambda, const double hartree_term) -> double {
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
     double result;
@@ -1393,7 +1393,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1421,7 +1421,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1433,7 +1433,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1487,7 +1487,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1515,7 +1515,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1527,7 +1527,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1578,7 +1578,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1606,7 +1606,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1618,7 +1618,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1839,7 +1839,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1867,7 +1867,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1879,7 +1879,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -1937,7 +1937,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -1965,7 +1965,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -1977,7 +1977,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2031,7 +2031,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2059,7 +2059,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2071,7 +2071,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2130,7 +2130,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2158,7 +2158,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2170,7 +2170,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2229,7 +2229,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2257,7 +2257,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2269,7 +2269,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2328,7 +2328,7 @@ public:
             Q integrand_value = (*this)(vpp);
             freqs[i] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i] = integrand_value;
             integrand_im[i] = 0.;
 #else
@@ -2356,7 +2356,7 @@ public:
             freqs[i*2] = vpp;
 
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2] = integrand_value;
             integrand_im[i*2] = 0.;
 #else
@@ -2368,7 +2368,7 @@ public:
             integrand_value = (*this)(vpp);
             freqs[i*2+1] = vpp;
 
-#if defined(PARTICLE_HOLE_SYMM) and not KELDYSH_FORMALISM
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
             integrand_re[i*2+1] = integrand_value;
             integrand_im[i*2+1] = 0.;
 #else
@@ -2887,7 +2887,7 @@ public:
 template <typename Q>
 void test_PT_state(std::string outputFileName, const double Lambda, const bool diff) {
     assert(!DEBUG_SYMMETRIES); // below we compare retarded components (stored at index 0 in Keldysh space for non-DEBUGSYMMETRIES)
-#ifndef ZERO_TEMP
+#if not ZERO_TEMP
     assert(false);
 #endif
     const int it_spin = 0;

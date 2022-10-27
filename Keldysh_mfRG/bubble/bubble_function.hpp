@@ -848,7 +848,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
             trafo = dgamma.get_rvertex(channel).freq_transformations.K1[i0][sign_w];
 
-#if CONTOUR_BASIS == 1 and defined(ZERO_TEMP) and USE_FDT
+#if CONTOUR_BASIS == 1 and ZERO_TEMP and USE_FDT
             if (is_zero_due_to_FDTs<k1>(i0, w, 0, 0, channel)) trafo = -1; // components zero according to FDTs
 #endif // CONTOUR_BASIS
         } // VECTORIZED_INTEGRATION
@@ -912,7 +912,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 break;
         }
     #else
-    #if defined(ZERO_TEMP) and USE_FDT
+    #if ZERO_TEMP and USE_FDT
         if (is_zero_due_to_FDTs<k2>(i0, w, v, 0, channel)) trafo = -1; // components zero according to FDTs
     #endif //ZERO_TEMP
     #endif // CONTOUR_BASIS
@@ -979,7 +979,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 #if CONTOUR_BASIS != 1
                 if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
 #else
-#ifdef ZERO_TEMP
+#if ZERO_TEMP
                 if (is_zero_due_to_FDTs<k3>(i0, w, v, vp, channel)) trafo = -1; // components zero according to FDTs
 #endif //ZERO_TEMP
 #endif // CONTOUR_BASIS

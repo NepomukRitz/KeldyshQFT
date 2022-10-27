@@ -83,7 +83,7 @@ constexpr buffer_config<6> K3_config{
     , 3  // number of frequency dimensions
     , 1};// position of first frequency index
 #else
-#ifndef PARTICLE_HOLE_SYMM
+#if not PARTICLE_HOLE_SYMM
 constexpr buffer_config<3> SE_config{
     std::array<size_t,3>({ 3, nFER, n_in_K1})
     , 1  // number of frequency dimensions
@@ -181,7 +181,7 @@ const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
 #endif
 const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
 #else
-#ifndef PARTICLE_HOLE_SYMM
+#if not PARTICLE_HOLE_SYMM
 const std::vector<int> non_zero_Keldysh_K1a({0,6});
 const std::vector<int> non_zero_Keldysh_K2a({0,1,6,8});
 const std::vector<int> non_zero_Keldysh_K1p({0,3,12});

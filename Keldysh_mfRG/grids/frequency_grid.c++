@@ -37,30 +37,17 @@ void FrequencyGrid<eliasGrid>::derive_auxiliary_parameters() {
 }
 void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const fRG_config& config) {
 
+    U_factor = 0.;
     switch (diag_class) {
         case 1:
             switch (type) {
                 case 'b':
                     number_of_gridpoints = nBOS;
-                    if (KELDYSH) {
-                        U_factor = 0. / 3.;
-                        Delta_factor = 10.;
-                    }
-                    else {
-                        U_factor = 40./3.;
-                        Delta_factor = 40.;
-                    }
+                    Delta_factor = Delta_factor_K1;
                     break;
                 case 'f':
                     number_of_gridpoints = nFER;
-                    if (KELDYSH) {
-                        U_factor = 0. / 3.;
-                        Delta_factor = 10.;
-                    }
-                    else {
-                        U_factor = 2./3.;
-                        Delta_factor = 2.;
-                    }
+                    Delta_factor = Delta_factor_SE;
                     if (HUBBARD_MODEL){ //TODO(medium): Just a hotfix for the Hubbard model. Avoids that one runs out of the frequency box when integrating for the bubble.
                         U_factor *= 1.5;
                         Delta_factor *= 1.5;
@@ -74,6 +61,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
             switch (type) {
                 case 'b':
                     number_of_gridpoints = nBOS2;
+                    Delta_factor = Delta_factor_K2_w;
                     #ifdef ROTATEK2
                     if (KELDYSH){
                             U_factor = 0.;
@@ -83,19 +71,11 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
                             U_factor = 10./3.;
                             Delta_factor = 10.;
                         }
-                    #else
-                    if (KELDYSH){
-                        U_factor = 0./3.;
-                        Delta_factor = 20.;
-                    }
-                    else{
-                        U_factor = 10./3.;
-                        Delta_factor = 10.;
-                    }
                     #endif
                     break;
                 case 'f':
                     number_of_gridpoints = nFER2;
+                    Delta_factor = Delta_factor_K2_v;
                     #ifdef ROTATEK2
                     /// Needs to be the same as for 'b'!!!
                     if (KELDYSH) {
@@ -105,15 +85,6 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
                     else {
                         U_factor = 10./3.;
                         Delta_factor = 10.;
-                    }
-                    #else
-                    if (KELDYSH) {
-                        U_factor = 0. / 3.;
-                        Delta_factor = 10.;
-                    }
-                    else {
-                        U_factor = 4./3.;
-                        Delta_factor = 4.;
                     }
                     #endif
                     break;
@@ -125,9 +96,11 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
             switch (type) {
                 case 'b':
                     number_of_gridpoints = nBOS3;
+                    Delta_factor = Delta_factor_K3_w;
                     break;
                 case 'f':
                     number_of_gridpoints = nFER3;
+                    Delta_factor = Delta_factor_K3_v;
                     break;
                 default:;
                 }
@@ -150,7 +123,7 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
     }
     freqType wmax_guess = scale * 100.;
 
-#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not ZERO_TEMP
     scale = 2;
     wmax_guess = (number_of_gridpoints-1);
 #endif

@@ -207,7 +207,7 @@ const inline std::vector<int> Components_Keldysh_t_channel = {// K1:
                                                 1,  3,  4,  5,
                                                 2,  5,  5, -1};
 #else
-#ifndef PARTICLE_HOLE_SYMM
+#if not PARTICLE_HOLE_SYMM
 const inline std::vector<int> Components_Keldysh_a_channel = {// K1:
         0, -1, -1, -2,
         -3, -4, 1, -1,
@@ -670,7 +670,7 @@ const inline std::vector<int> Transformations_Keldysh_t_channel = {// K1:
                                                     14,41, 14,  0}; // spin comp. Vhat
 
 #else
-#ifndef PARTICLE_HOLE_SYMM
+#if not PARTICLE_HOLE_SYMM
 const inline std::vector<int> Transformations_Keldysh_a_channel = {// K1:
         0, 0, 0, 0,
         0, 0, 0, 0,
@@ -946,7 +946,7 @@ struct Transformations {
 
 #if KELDYSH_FORMALISM
 #if CONTOUR_BASIS != 1
-#ifndef PARTICLE_HOLE_SYMM
+#if not PARTICLE_HOLE_SYMM
 const std::vector<std::vector<int>> ComponentsK1a {{0, 0}, {0, 0}};
 const std::vector<std::vector<int>> ComponentsK1p {{0, 1}, {0, 1}};
 const std::vector<std::vector<int>> ComponentsK1t {{0, 0}, {0, 0}};
@@ -992,7 +992,7 @@ const std::vector<std::vector<int>> TransformaK3p {{0, 4, 34, 3, 36, 346, 46, 6}
 const std::vector<std::vector<int>> TransformaK3t {{0, 34, 36, 46, 4, 3, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 0, 46, 46, 4, 4, 6, 6}, {0, 34, 0, 34, 346, 6, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
 #endif
 #else   // CONTOUR_BASIS
-#ifndef PARTICLE_HOLE_SYMM
+#if not PARTICLE_HOLE_SYMM
 const std::vector<std::vector<int>> TransformaK1a {{0, 3}, {0, 0}};
 const std::vector<std::vector<int>> TransformaK1p {{0, 0}, {0, 0}, {0, 0}};
 const std::vector<std::vector<int>> TransformaK1t {{0, 3}, {0, 0}};

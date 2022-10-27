@@ -38,23 +38,11 @@ auto main(int argc, char * argv[]) -> int {
 
 
 
-    //
-    //test_PT4(0.5, true);
-    //test_interpolate_K12<state_datatype>(1.8);
-    //test_compare_with_Vienna_code();
-    //findBestWscale4K1<state_datatype>(1.8);
-    //compute_non_symmetric_diags(0.8, true, 1, true);
-    //test_integrate_over_K1<state_datatype>(1.8);
-
-
-
-
-
     ///fRG runs:
     fRG_config config;
     config.nODE_ = 50;
     config.epsODE_abs_ = 1e-8;
-    config.epsODE_rel_ = 1e-5;
+    config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
     config.U = 1.0;
     config.T = (ZERO_T ? 0.0 : 0.01);
@@ -115,7 +103,6 @@ auto main(int argc, char * argv[]) -> int {
     //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
 
 */
-    //test_PT_state<state_datatype>(data_dir+"sopt.h5", 9., false);
 
     utils::hello_world();
 

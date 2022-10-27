@@ -444,10 +444,10 @@ void PT_Machine<Q>::write_out_results_zero_freq() const {
     assert(KELDYSH);
     std::string filename = data_dir + "PT_up_to_order_" + std::to_string(order) + "_with_U_over_Delta_" \
     + std::to_string(U_over_Delta);
-#ifndef PARTICLE_HOLE_SYMM
+#if not PARTICLE_HOLE_SYMM
     filename += "_and_eVg_over_U_" + std::to_string((config.epsilon+config.U*0.5) / config.U);
 #endif
-#ifndef ZERO_TEMP
+#if not ZERO_TEMP
     filename += "_and_T_over_Delta_" + std::to_string(config.T / Delta);
 #endif
     filename += ".h5";

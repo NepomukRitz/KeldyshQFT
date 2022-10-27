@@ -1,9 +1,6 @@
 #ifndef KELDYSH_MFRG_PARAMETERS_H
 #define KELDYSH_MFRG_PARAMETERS_H
 
-#include "frequency_parameters.hpp"
-#include "technical_parameters.hpp"
-#include "momentum_parameters.hpp"
 #include <cmath>             // log function
 #include <vector>            // standard vector for Keldysh indices
 #include <string>
@@ -22,18 +19,22 @@ constexpr bool VERBOSE = false;
 // Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
 //#define FERMI_POLARON_PROBLEM
 
+#define ZERO_TEMP 0  // Determines whether to work in the T = 0 limit
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
+#define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
-#define VECTORIZED_INTEGRATION 1 // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
+#if KELDYSH_FORMALISM or not ZERO_TEMP
+#define VECTORIZED_INTEGRATION 1  // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
                                  // Keldysh: vectorizes over Keldysh indices
                                  // Matsubara finite T: vectorizes Matsubara sum
-//#define ZERO_TEMP   // Determines whether to work in the T = 0 limit
+#else
+#define VECTORIZED_INTEGRATION 0
+#endif
 
 
 // Determines whether particle-hole symmetry is assumed
-//#define PARTICLE_HOLE_SYMM
+#define PARTICLE_HOLE_SYMM 0
 
 /// Production runs parameters ///
 
@@ -162,19 +163,19 @@ constexpr bool KELDYSH = true;
 #else
 constexpr bool KELDYSH = false;
 #endif // KELDYSH_FORMALISM
-#ifdef ZERO_TEMP
+#if ZERO_TEMP
 constexpr bool ZERO_T = true;
 #else
 constexpr bool ZERO_T = false;
 #endif // ZERO_TEMP
 
-#ifdef PARTICLE_HOLE_SYMM
+#if PARTICLE_HOLE_SYMM
 constexpr bool PARTICLE_HOLE_SYMMETRY = true;
 #else
 constexpr bool PARTICLE_HOLE_SYMMETRY = false;
 #endif
 
-#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not ZERO_TEMP
     using freqType = double;
 #else
     using freqType = double;
@@ -182,5 +183,9 @@ constexpr bool PARTICLE_HOLE_SYMMETRY = false;
 
 inline std::string data_dir;
 
+
+#include "frequency_parameters.hpp"
+#include "technical_parameters.hpp"
+#include "momentum_parameters.hpp"
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

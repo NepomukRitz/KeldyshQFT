@@ -44,7 +44,7 @@ template<K_class k, typename Q> class vertexDataContainer; // forward declaratio
 template<typename Q, bool differentiated> class State; // forward declaration
 
 #define PARAMETRIZED_GRID
-#if not KELDYSH_FORMALISM and not defined(ZERO_TEMP)
+#if not KELDYSH_FORMALISM and not ZERO_TEMP
 #define DENSEGRID
 #endif
 #ifdef DENSEGRID
