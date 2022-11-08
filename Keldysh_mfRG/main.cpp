@@ -8,6 +8,7 @@
 #include "mfRG_flow/flow.hpp"
 #include "tests/test_perturbation_theory.hpp"
 //#include "tests/test_interpolation.hpp"
+#include "tests/reproduce_benchmark_data.hpp"
 #include "utilities/util.hpp"
 #include "utilities/hdf5_routines.hpp"
 #include "tests/integrand_tests/saveIntegrand.hpp"
@@ -61,6 +62,9 @@ auto main(int argc, char * argv[]) -> int {
 #ifndef PARTICLE_HOLE_SYMM
     job += "_eVg=" + std::to_string(config.epsilon + config.U*0.5);
 #endif
+#if SBE_DECOMPOSITION
+    job += "_SBE" ;
+#endif
     data_dir = utils::generate_data_directory(job);
 
     if (n_loops > 0){ /// fRG runs:
@@ -69,6 +73,8 @@ auto main(int argc, char * argv[]) -> int {
         //test_PT_state<state_datatype>(data_dir+"sopt.h5", 1.8, false);
     }
     if (n_loops == 0){ /// parquet runs:
+        // {5./M_PI*0.5};
+
         const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
         //run_parquet(config, myU_NRG, 1, true);
         run_parquet(config, myU_NRG, 2, true);
@@ -81,6 +87,7 @@ auto main(int argc, char * argv[]) -> int {
         }
     }
 
+    //reproduce_benchmark_data();
 
 
     //full_PT4(U_over_Delta_list);

@@ -24,26 +24,26 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 constexpr int nBOS = 401;
 constexpr int nFER = 401 - (KELDYSH_FORMALISM ? 0 : 1);
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 51;//nBOS;
-constexpr int nFER2 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
-constexpr int nBOS3 = 21; //nBOS;
-constexpr int nFER3 = 21 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
+constexpr int nBOS2 = 101;//nBOS;
+constexpr int nFER2 = 101 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
+constexpr int nBOS3 = 51; //nBOS;
+constexpr int nFER3 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
 //#else
-const int COUNT = 4;
-//constexpr int nBOS = COUNT * 64 * 2 + 1;
+const int COUNT = 32;
+//constexpr int nBOS = COUNT *  4 * 2 + 1;
 //constexpr int nFER = COUNT * 32 * 2;
-//constexpr int nBOS2 = COUNT * 8 * 2 + 1;//nBOS;
-//constexpr int nFER2 = COUNT * 4 * 2;//nFER;
+//constexpr int nBOS2 = COUNT * 4 * 2 + 1;//nBOS;
+//constexpr int nFER2 = COUNT * 2 * 2;//nFER;
 //constexpr int nBOS3 = COUNT * 4 * 2 + 1; //nBOS;
 //constexpr int nFER3 = COUNT * 2 * 2; //nFER;
 const int POSINTRANGE = 64  * COUNT;
 //#endif
 
 
-const double Delta_factor_K1 = 10.;
+const double Delta_factor_K1 = 5.;
 const double Delta_factor_SE = 10.;
-const double Delta_factor_K2_w = 20.;
-const double Delta_factor_K2_v = 10.;
+const double Delta_factor_K2_w = 15.;
+const double Delta_factor_K2_v = 20.;
 const double Delta_factor_K3_w = 10.;
 const double Delta_factor_K3_v = 10.;
 

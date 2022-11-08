@@ -1684,7 +1684,7 @@ void test_PT_state(std::string outputFileName, double Lambda, bool diff) {
 
     State<state_datatype> PT_state(state_cpp, Lambda);
 
-    const double Hartree_value = PARTICLE_HOLE_SYMMETRY ? stdConfig.U*0.5 : Hartree_Solver(Lambda, stdConfig).compute_Hartree_term_bracketing(1e-12, false, false);
+    const double Hartree_value = PARTICLE_HOLE_SYMMETRY ? 0.: stdConfig.epsilon + Hartree_Solver(Lambda, stdConfig).compute_Hartree_term_bracketing(1e-12, false, false);
 
     // compute SOPT self-energy (numerically exact)
     my_defs::SE::index_type idx_SE;

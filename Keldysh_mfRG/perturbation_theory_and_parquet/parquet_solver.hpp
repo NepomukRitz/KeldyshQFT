@@ -486,27 +486,27 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const doubl
 
 
 template <typename Q>
-SelfEnergy<Q> compute_diff_SDE(const State<Q>& state_in, const Vertex<Q,true>& dGamma, const SelfEnergy<Q>& dSigma, const fRG_config& config) {
+SelfEnergy<Q> compute_diff_SDE(const State<Q>& state_in, const Vertex<Q,true>& dGamma, const SelfEnergy<Q>& dSigma) {
     const double Lambda = state_in.Lambda;
-    Propagator<Q> G(Lambda, state_in.selfenergy, 'g');
-    Propagator<Q>dG(Lambda, state_in.selfenergy, dSigma, 'k');
+    Propagator<Q> G(Lambda, state_in.selfenergy, 'g', state_in.config);
+    Propagator<Q>dG(Lambda, state_in.selfenergy, dSigma, 'k', state_in.config);
 
-    SelfEnergy<Q> Sigma_SDE_a_1 = compute_SDE_impl_v3<0, false, true>('a', Lambda, state_in.vertex,dG, config);
-    SelfEnergy<Q> Sigma_SDE_p_1 = compute_SDE_impl_v3<0, false, true>('p', Lambda, state_in.vertex,dG, config);
+    SelfEnergy<Q> Sigma_SDE_a_1 = compute_SDE_impl_v3<0, false, true>('a', Lambda, state_in.vertex,dG, state_in.config);
+    SelfEnergy<Q> Sigma_SDE_p_1 = compute_SDE_impl_v3<0, false, true>('p', Lambda, state_in.vertex,dG, state_in.config);
 
-    SelfEnergy<Q> Sigma_SDE_a_2 = compute_SDE_impl_v3<0, true, true>('a', Lambda,          dGamma, G, config);
-    SelfEnergy<Q> Sigma_SDE_p_2 = compute_SDE_impl_v3<0, true, true>('p', Lambda,          dGamma, G, config);
+    SelfEnergy<Q> Sigma_SDE_a_2 = compute_SDE_impl_v3<0, true, true>('a', Lambda,          dGamma, G, state_in.config);
+    SelfEnergy<Q> Sigma_SDE_p_2 = compute_SDE_impl_v3<0, true, true>('p', Lambda,          dGamma, G, state_in.config);
 
     SelfEnergy<Q> dSigma_SDE = (Sigma_SDE_a_1 + Sigma_SDE_p_1
                               + Sigma_SDE_a_2 + Sigma_SDE_p_2
                               ) * 0.5;
 
     if (false) {
-        SelfEnergy<Q> Sigma_SDE_p_1_v2 = compute_SDE_impl_v3<1, false, true>('p', Lambda, state_in.vertex,dG);
-        SelfEnergy<Q> Sigma_SDE_t_1    = compute_SDE_impl_v3<1, false, true>('t', Lambda, state_in.vertex,dG);
+        SelfEnergy<Q> Sigma_SDE_p_1_v2 = compute_SDE_impl_v3<1, false, true>('p', Lambda, state_in.vertex,dG, state_in.config);
+        SelfEnergy<Q> Sigma_SDE_t_1    = compute_SDE_impl_v3<1, false, true>('t', Lambda, state_in.vertex,dG, state_in.config);
 
-        SelfEnergy<Q> Sigma_SDE_p_2_v2 = compute_SDE_impl_v3<1, true, true>('p', Lambda,          dGamma, G);
-        SelfEnergy<Q> Sigma_SDE_t_2    = compute_SDE_impl_v3<1, true, true>('t', Lambda,          dGamma, G);
+        SelfEnergy<Q> Sigma_SDE_p_2_v2 = compute_SDE_impl_v3<1, true, true>('p', Lambda,          dGamma, G, state_in.config);
+        SelfEnergy<Q> Sigma_SDE_t_2    = compute_SDE_impl_v3<1, true, true>('t', Lambda,          dGamma, G, state_in.config);
 
 
         std::string filename = data_dir + "diffSDE_in_different_channels.h5";

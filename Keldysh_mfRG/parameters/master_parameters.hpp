@@ -21,7 +21,7 @@ constexpr bool VERBOSE = false;
 
 #define ZERO_TEMP 0  // Determines whether to work in the T = 0 limit
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM 0 // 0 for Matsubara; 1 for Keldysh formalism
+#define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
 #if KELDYSH_FORMALISM or not ZERO_TEMP
@@ -34,7 +34,7 @@ constexpr bool VERBOSE = false;
 
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM 0
+#define PARTICLE_HOLE_SYMM 1
 
 /// Production runs parameters ///
 
@@ -125,8 +125,8 @@ constexpr int n_in = 1;
 constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 1;// 1e-4;
 #else
-const double Lambda_ini = 19.8;//pow(10,  1) ;// 1e4;
-const double Lambda_fin = 0.2 ;// 1e-4;
+const double Lambda_ini = 20.0;//pow(10,  1) ;// 1e4;
+const double Lambda_fin = 0. ;// 1e-4;
 #endif
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
