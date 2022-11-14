@@ -137,24 +137,24 @@ struct mfRG_stats {
     int RKattempts = 0;
 
     void write_to_hdf(const std::string& filename, const fRG_config& config, const int Lambda_it) const {
+        if (mpi_world_rank() == 0) {
+            const std::size_t numberLambda_layers = config.nODE_ + U_NRG.size() + 1;
+            H5::H5File file = open_hdf_file_readWrite(filename);
 
-        const std::size_t numberLambda_layers = config.nODE_ + U_NRG.size() + 1;
-        H5::H5File file = open_hdf_file_readWrite(filename);
+            const bool data_set_exists = Lambda_it > 1; // Lambda_it == 0 contains initial state => first mfRG stats are in Lambda_it == 1
+            H5::Group group_stats;
+            if (data_set_exists) {
+                group_stats = file.openGroup("mfRG_stats");
+            } else {
+                group_stats = file.createGroup("mfRG_stats");
+            }
 
+            write_to_hdf_LambdaLayer(group_stats, "SE_iterations", vec<int>({number_of_SE_iterations}), Lambda_it, numberLambda_layers, data_set_exists);
+            write_to_hdf_LambdaLayer(group_stats, "time_for_mfRG_Eqs", vec<double>({time}), Lambda_it, numberLambda_layers, data_set_exists);
+            write_to_hdf_LambdaLayer(group_stats, "RK_attempts", vec<double>({time}), Lambda_it, numberLambda_layers, data_set_exists);
 
-        const bool data_set_exists = Lambda_it > 1; // Lambda_it == 0 contains initial state => first mfRG stats are in Lambda_it == 1
-        H5::Group group_stats;
-        if (data_set_exists) {
-            group_stats = file.openGroup("mfRG_stats");
+            file.close();
         }
-        else {
-            group_stats = file.createGroup("mfRG_stats");
-        }
-
-        write_to_hdf_LambdaLayer(group_stats, "SE_iterations", vec<int>({number_of_SE_iterations}), Lambda_it, numberLambda_layers, data_set_exists);
-        write_to_hdf_LambdaLayer(group_stats, "time", vec<double>({time}), Lambda_it, numberLambda_layers, data_set_exists);
-
-        file.close();
     }
 };
 
