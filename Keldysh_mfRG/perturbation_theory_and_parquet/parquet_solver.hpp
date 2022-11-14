@@ -735,7 +735,7 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
         //    }
         //}
         /// mixing of old and new state:
-#if NEW_FEATURE
+#if USE_ANDERSON_ACCELERATION
         rhs_evals.push_back(state_out);
         iteration_steps.push_back(state_in);
         if (rhs_evals.size() > n_States_for_AndersonAcceleration) {

@@ -16,6 +16,7 @@
 #include "../utilities/util.hpp"
 #include "../bubble/precalculated_bubble.hpp"
 #include "../perturbation_theory_and_parquet/parquet_solver.hpp"
+#include "../utilities/anderson_acceleration.hpp"
 
 
 template <typename Q> auto rhs_n_loop_flow(const State<Q>& Psi, double Lambda, const fRG_config& config) -> State<Q>;
@@ -115,6 +116,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     int counter_Selfenergy_iterations = 0;
     double selfenergy_correction_abs = 1e10;
     double selfenergy_correction_rel = 1.;
+    /// for Anderson acceleration:
+    std::deque<State<Q,true>> rhs_evals;             // dSigma according to evaluation of mfRG equations
+    std::deque<State<Q,true>> iteration_steps;       // accepted dPsi.selfenergy's
 #if SELF_ENERGY_FLOW_CORRECTIONS != 0
     do {
 #endif
@@ -454,7 +458,20 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             State<Q,true> Psi_SEcorrection(dPsi.vertex, dPsi.selfenergy, Psi.config, Lambda);
             selfEnergyFlowCorrections(Psi_SEcorrection.selfenergy, dGammaC_tbar, Psi, G); // isolated SE correction
             SelfEnergy<Q> selfEnergy_old = dPsi.selfenergy;
-            dPsi.selfenergy = selfenergy_1loop + Psi_SEcorrection.selfenergy;
+            SelfEnergy<Q> selfEnergy_new = selfenergy_1loop + Psi_SEcorrection.selfenergy;
+#if USE_ANDERSON_ACCELERATION
+            State<Q,true> dPsi_new(dPsi.vertex, selfEnergy_new, Psi.config, Lambda); // vertex in dPsi and dPsi_new are identical --> only find dSigma by Anderson Acceleration
+            rhs_evals.push_back(dPsi_new);
+            iteration_steps.push_back(dPsi);
+            /// limit number of states in history?
+            //if (rhs_evals.size() > n_States_for_AndersonAcceleration) {
+            //    rhs_evals.pop_front();
+            //    iteration_steps.pop_front();
+            //}
+            dPsi.selfenergy = anderson_update(rhs_evals, iteration_steps, 1.0).selfenergy;
+#else
+            dPsi.selfenergy = selfEnergy_new;
+#endif
             SelfEnergy<Q> selfEnergy_err = dPsi.selfenergy - selfEnergy_old;
 
             selfenergy_correction_abs = selfEnergy_err.norm();
@@ -496,12 +513,26 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             double tol = 1.e-3;
             double diff = 1;
             int iteration_SDE = 0;
+            /// for Anderson acceleration:
+            std::deque<State<Q,true>> rhs_evals_SDE_iteration;             // dSigma according to evaluation of mfRG equations
+            std::deque<State<Q,true>> iteration_steps_SDE_iteration;       // accepted dPsi.selfenergy's
             do {
                 const SelfEnergy<Q> dSigma_SDE = compute_diff_SDE<Q>(Psi, dPsi.vertex, dPsi.selfenergy)   ;
-
+                #if USE_ANDERSON_ACCELERATION
+                    State<Q,true> dPsi_new(dPsi.vertex, dSigma_SDE, Psi.config, Lambda); // vertex in dPsi and dPsi_new are identical --> only find dSigma by Anderson Acceleration
+                    rhs_evals_SDE_iteration.push_back(dPsi_new);
+                    iteration_steps_SDE_iteration.push_back(dPsi);
+                    /// limit number of states in history?
+                    //if (rhs_evals.size() > n_States_for_AndersonAcceleration) {
+                    //    rhs_evals.pop_front();
+                    //    iteration_steps.pop_front();
+                    //}
+                    dPsi.selfenergy = anderson_update(rhs_evals_SDE_iteration, iteration_steps_SDE_iteration, 1.0).selfenergy;
+                #else
+                    dPsi.selfenergy = dSigma_SDE;
+                #endif
                 const SelfEnergy<Q> selfenergy_diff = dPsi.selfenergy - dSigma_SDE;
 
-                dPsi.selfenergy = dSigma_SDE;
                 const double norm_compare =  dPsi.selfenergy.norm(0);
                 diff = selfenergy_diff.norm(0) / (norm_compare < 1e-10 ? 1 : norm_compare);
 
@@ -510,6 +541,17 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             }
             while (diff > tol and iteration_SDE < 4);
 
+#if USE_ANDERSON_ACCELERATION
+            rhs_evals.push_back(dPsi);
+            iteration_steps.push_back(Psi_SDE_diff_documentation);
+            /// limit number of states in history?
+            //if (rhs_evals.size() > n_States_for_AndersonAcceleration) {
+            //    rhs_evals.pop_front();
+            //    iteration_steps.pop_front();
+            //}
+            dPsi.selfenergy = anderson_update(rhs_evals, iteration_steps, 1.0);
+
+#endif
             // Compute difference of old dSigma and new dSigma
             Psi_SDE_diff_documentation.selfenergy -= dPsi.selfenergy;
 
