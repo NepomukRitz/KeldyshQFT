@@ -105,7 +105,7 @@ struct mfRG_record {
             const State<Q,true> dPsi_Cl(dGamma_Cl_nloop[i-2], dPsi_1loop.selfenergy, dPsi_1loop.config, dPsi_1loop.Lambda);
             const State<Q,true> dPsi_Cr(dGamma_Cr_nloop[i-2], dPsi_1loop.selfenergy, dPsi_1loop.config, dPsi_1loop.Lambda);
             const std::string filename_dGamma_Cl = dir_str + "dPsi_Cl" + "_RKstep" + std::to_string(rkStep) + "_SEIter"+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i+1) + ".h5";
-            const std::string filename_dGamma_Cr = dir_str + "dPsi_Cl" + "_RKstep" + std::to_string(rkStep) + "_SEIter"+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i+1) + ".h5";
+            const std::string filename_dGamma_Cr = dir_str + "dPsi_Cr" + "_RKstep" + std::to_string(rkStep) + "_SEIter"+std::to_string(counter_Selfenergy_iterations) + "_forLoop" + std::to_string(i+1) + ".h5";
             if (Lambda_iteration == 0) {
                 write_state_to_hdf<Q>(filename_dGamma_Cl, dPsi_1loop.Lambda, dPsi_1loop.config.nODE_ + U_NRG.size() + 1, dPsi_Cl);
                 write_state_to_hdf<Q>(filename_dGamma_Cr, dPsi_1loop.Lambda, dPsi_1loop.config.nODE_ + U_NRG.size() + 1, dPsi_Cr);
@@ -131,6 +131,33 @@ struct mfRG_record {
 
 };
 
+struct mfRG_stats {
+    int number_of_SE_iterations = 0;
+    double time = 0.;
+    int RKattempts = 0;
+
+    void write_to_hdf(const std::string& filename, const fRG_config& config, const int Lambda_it) const {
+
+        const std::size_t numberLambda_layers = config.nODE_ + U_NRG.size() + 1;
+        H5::H5File file = open_hdf_file_readWrite(filename);
+
+
+        const bool data_set_exists = Lambda_it > 1; // Lambda_it == 0 contains initial state => first mfRG stats are in Lambda_it == 1
+        H5::Group group_stats;
+        if (data_set_exists) {
+            group_stats = file.openGroup("mfRG_stats");
+        }
+        else {
+            group_stats = file.createGroup("mfRG_stats");
+        }
+
+        write_to_hdf_LambdaLayer(group_stats, "SE_iterations", vec<int>({number_of_SE_iterations}), Lambda_it, numberLambda_layers, data_set_exists);
+        write_to_hdf_LambdaLayer(group_stats, "time", vec<double>({time}), Lambda_it, numberLambda_layers, data_set_exists);
+
+        file.close();
+    }
+};
+
 /**
  * Function to implement an n-loop flow (without Katanin substitution).
  * @param Psi   : Known state of the State at Lambda
@@ -138,7 +165,7 @@ struct mfRG_record {
  * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
  */
 template <typename Q>
-auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_max, const vec<size_t> opt, const fRG_config& config) -> State<Q>{  //, const bool save_intermediate=false
+auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_max, const vec<size_t> opt, const fRG_config& config, mfRG_stats& stats) -> State<Q>{  //, const bool save_intermediate=false
 
     Psi.vertex.check_symmetries("Psi");
     assert(nloops_max>=1);
@@ -516,6 +543,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         utils::get_time(t0); // measure time for one iteration
     }
 
+    stats.number_of_SE_iterations += counter_Selfenergy_iterations;
+    stats.time += utils::get_time() - t0;
 
     State<Q,false> dPsi_return(Vertex<Q,false>(dPsi.vertex.half1()), dPsi.selfenergy, Psi.config, Lambda);
     return dPsi_return;
@@ -527,13 +556,14 @@ class rhs_n_loop_flow_t {
 public:
     mutable std::size_t rk_step = 0;
     mutable std::size_t iteration = 0;
+    mutable mfRG_stats stats;
     const fRG_config& frgConfig;
     const int nloops = frgConfig.nloops;
 
     rhs_n_loop_flow_t(const fRG_config& config) : frgConfig(config) {};
 
     void operator() (const State<Q>& Psi, State<Q>& dState_dLambda,  const double Lambda) const {
-        dState_dLambda = rhs_n_loop_flow(Psi, Lambda, nloops, vec<size_t>({iteration, rk_step}), frgConfig);
+        dState_dLambda = rhs_n_loop_flow(Psi, Lambda, nloops, vec<size_t>({iteration, rk_step}), frgConfig, stats);
         rk_step++;
     }
 };
