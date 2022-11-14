@@ -2,6 +2,7 @@
 #define KELDYSH_MFRG_TESTING_PARQUET_CHECKS_H
 
 #include <string>
+#include <deque>
 #include "../parameters/master_parameters.hpp"     // system parameters
 #include "../grids/flow_grid.hpp"// flow grid
 #include "../correlation_functions/state.hpp"          // use State class
@@ -12,6 +13,7 @@
 #include "../loop/loop.hpp"           // compute loop function
 #include "../postprocessing/causality_FDT_checks.hpp"
 #include "perturbation_theory.hpp"
+#include "../utilities/anderson_acceleration.hpp"
 
 /**
  * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
@@ -653,6 +655,9 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
     SDE_counter = 0;
     utils::print("\t --- Start parquet solver ---\n");
     utils::print("Results get stored in ", filename, "\n");
+    std::deque<State<Q>> rhs_evals;
+    std::deque<State<Q>> iteration_steps;
+    const int n_States_for_AndersonAcceleration = 4;
 
     if (overwrite_old_results) {
         utils::print("Start from scratch.\n");
@@ -721,6 +726,7 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
 
         double t_start = utils::get_time();
         utils::print("iteration ", iteration, true);
+
         parquet_iteration(state_out, state_in, Lambda, iteration, version);  // compute lhs of parquet equations
         /// for testing:
         //if (iteration == 1) {
@@ -729,7 +735,17 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
         //    }
         //}
         /// mixing of old and new state:
+#if NEW_FEATURE
+        rhs_evals.push_back(state_out);
+        iteration_steps.push_back(state_in);
+        if (rhs_evals.size() > n_States_for_AndersonAcceleration) {
+            rhs_evals.pop_front();
+            iteration_steps.pop_front();
+        }
+        state_out = anderson_update(rhs_evals, iteration_steps, mixing_ratio);
+#else
         state_out = mixing_ratio * state_out + (1-mixing_ratio) * state_in;
+#endif
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
 
         // compute relative differences between input and output w.r.t. output

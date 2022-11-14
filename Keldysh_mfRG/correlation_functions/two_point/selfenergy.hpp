@@ -44,6 +44,12 @@ public:
     void set_frequency_grid(const SelfEnergy<Q> selfEnergy);
     auto norm(int p) const -> double;
     auto norm() const -> double;
+    auto get_selfenergy_vector_incl_hartree() const ->  Eigen::Array<Q, Eigen::Dynamic, 1> {
+        Eigen::Array<Q, Eigen::Dynamic, 1> result = Sigma.get_vec().elements;
+        result.head(nFER) += asymp_val_R;
+
+        return result;
+    }
 
     /// Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2
     void update_grid(double Lambda, const fRG_config& config);
