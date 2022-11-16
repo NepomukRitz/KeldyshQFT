@@ -252,6 +252,8 @@ def write_master_parameters(isKELDYSH, isZEROTEMP, isPHS, isSBE, REG):
 
 constexpr bool VERBOSE = false;
 
+#define USE_ANDERSON_ACCELERATION 0
+
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD
 
