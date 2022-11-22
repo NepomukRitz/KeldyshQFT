@@ -24,8 +24,8 @@ constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 constexpr int nBOS = 401;
 constexpr int nFER = 401 - (KELDYSH_FORMALISM ? 0 : 1);
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 101;//nBOS;
-constexpr int nFER2 = 101 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
+constexpr int nBOS2 = 201;//nBOS;
+constexpr int nFER2 = 201 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
 constexpr int nBOS3 = 51; //nBOS;
 constexpr int nFER3 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
 //#else

@@ -33,7 +33,7 @@ auto main(int argc, char * argv[]) -> int {
     const int n_loops = atoi(argv[1]);
     const int n_nodes = atoi(argv[2]);
     //const double U_in = atof(argv[3]);
-    //const double T_in = atof(argv[4]);
+    const double T_in = atof(argv[3]);
     //const double Gamma_in = atof(argv[5]);
     //const double Vg_in = atof(argv[6]);
 
@@ -46,7 +46,7 @@ auto main(int argc, char * argv[]) -> int {
     config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
     config.U = 1.0;
-    config.T = (ZERO_T ? 0.0 : 0.01);
+    config.T = (ZERO_T ? 0.0 : T_in);
     config.Gamma = 0.2;
     config.epsilon = (PARTICLE_HOLE_SYMMETRY ? 0.0 : 0.5) - config.U * 0.5;
     config.save_intermediateResults = false;
@@ -75,7 +75,7 @@ auto main(int argc, char * argv[]) -> int {
     if (n_loops == 0){ /// parquet runs:
         // {5./M_PI*0.5};
 
-        const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1.}; // {0.75, 1.25, 1.5};
+        const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1., 1.25}; // {0.75, 1.25, 1.5};
         //run_parquet(config, myU_NRG, 1, true);
         run_parquet(config, myU_NRG, 2, true);
         //run_parquet(config, myU_NRG, 3, true);
