@@ -3,7 +3,7 @@
 
 
 #include <deque>
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #include "../correlation_functions/two_point/selfenergy.hpp"
 #include "../correlation_functions/state.hpp"
