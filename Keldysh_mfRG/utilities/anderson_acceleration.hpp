@@ -10,19 +10,36 @@
 
 namespace anderson_impl
 {
-    Eigen::MatrixXd colwise_difference(Eigen::MatrixXd m);
+
+    template<typename Q>
+    Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> colwise_difference(Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> m)
+    {
+        const auto cols = m.cols();
+        return m.rightCols(cols - 1) - m.leftCols(cols - 1);
+    }
+
 
     /**
      * @brief Solves an ordinary least-squares problem.
      *
      * Return an $\vec x$ that minimizes the square norm of the
      * error $\vec y - A\vec x$.
+     * assume that A consists out of two parts A = (a, a^*)^T and same for y = (b, b^*)^T.
+     * Hence we have A^dagger.A = a^\dagger.a + (a^\dagger.a)^*
+     *           and A^dagger.y = a^\dagger.b + (a^\dagger.b)^*
+     * in the Keldysh formalism we don't store \Sigma^A => Take real part (see above).
      *
      * @param y Vector
      * @param A Matrix
      * @return auto Vector
      */
-    Eigen::VectorXd ordinary_least_squares(Eigen::VectorXd y, Eigen::MatrixXd A);
+     template<typename Q>
+    Eigen::MatrixXd ordinary_least_squares(const Eigen::Matrix< Q, Eigen::Dynamic, 1> y, const Eigen::Matrix<Q,Eigen::Dynamic,Eigen::Dynamic> A)
+    {
+
+        Eigen::MatrixXd ATA = (A.transpose().conjugate() * A).real(); // A^dagger A
+        return Eigen::Inverse(ATA) * (A.transpose().conjugate()* y).real();
+    }
 
 } // namespace anderson_impl
 
@@ -43,6 +60,8 @@ State<Q, diff> anderson_update(
         double zeta = 1.0)
 {
     using namespace anderson_impl;
+    using myMatrixXQ = Eigen::Matrix< Q, Eigen::Dynamic, Eigen::Dynamic>;
+    using myVectorXQ = Eigen::Matrix< Q, Eigen::Dynamic, 1>;
 
     int m = rhs_evals.size();
     Eigen::VectorXd alpha(m);
@@ -60,7 +79,7 @@ State<Q, diff> anderson_update(
     {
         size_t sigma_size = getFlatSize(rhs_evals[0].selfenergy.Sigma.get_dims());
 
-    Eigen::MatrixXd error_matrix(sigma_size, m);
+    myMatrixXQ error_matrix(sigma_size, m);
     for (int i = 0; i < m; ++i)
     {
         error_matrix.col(i) =
@@ -68,14 +87,16 @@ State<Q, diff> anderson_update(
                 iteration_steps[i].selfenergy.get_selfenergy_vector_incl_hartree();
     }
 
-    Eigen::MatrixXd error_differences = colwise_difference(error_matrix);
+
+        myMatrixXQ error_differences = colwise_difference(error_matrix);
 
     // Parametrization of alpha, to achieve $\sum_i \alpha_i = 1$.
+    myVectorXQ y = -error_matrix.col(0);
     Eigen::VectorXd gamma = ordinary_least_squares(
-            -error_matrix.col(0),
+            y,
             error_differences);
 
-    alpha(0) = 1 - gamma(0);
+    alpha(0) = 1. - gamma(0);
     for (int i = 1; i < m - 1; ++i)
     {
     alpha(i) = gamma(i - 1) - gamma(i);
@@ -86,7 +107,7 @@ State<Q, diff> anderson_update(
     // const Eigen::IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
     // logging::log_message_single("Anderson iteration mixing vector: ", alpha.transpose().format(CleanFmt));
     if (mpi_world_rank() == 0){
-        utils::print("Anderson acceleration gives: \t [");
+        utils::print("Anderson acceleration gives the coefficients: \t [");
         for (int j = 0; j < alpha.size(); j++) {std::cout << alpha[j] << ", ";}
         std::cout << "]\n";
 

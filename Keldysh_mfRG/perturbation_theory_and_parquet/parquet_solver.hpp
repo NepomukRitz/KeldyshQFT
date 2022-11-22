@@ -650,7 +650,7 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
  */
 template <typename Q>
 int parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
-                    const double accuracy=1e-6, const int Nmax=6, const bool overwrite_old_results=true, const double mixing_ratio=1.0, const bool use_last_state_anyway=true) {
+                    const double accuracy=1e-6, const int Nmax=6, const bool overwrite_old_results=true, const double mixing_ratio=1.0, const bool use_last_state_anyway=false) {
     assert((mixing_ratio >= 0.1 and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
     SDE_counter = 0;
     utils::print("\t --- Start parquet solver ---\n");
