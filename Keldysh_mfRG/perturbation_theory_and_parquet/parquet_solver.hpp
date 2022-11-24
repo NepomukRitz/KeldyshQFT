@@ -649,7 +649,7 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
  * @param mixing_ratio: mixing ratio in [0.1 - 0.5] for stabilizing the parquet iteration
  */
 template <typename Q>
-int parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
+bool parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
                     const double accuracy=1e-6, const int Nmax=6, const bool overwrite_old_results=true, const double mixing_ratio=1.0, const bool use_last_state_anyway=false) {
     assert((mixing_ratio >= 0.1 and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
     SDE_counter = 0;
@@ -701,6 +701,7 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
 
     int iteration = 1;
     // first check if converged, and also stop if maximal number of iterations is reached
+    bool is_converged = false;
     bool unfinished = true;
     while (unfinished) {
 
@@ -753,7 +754,7 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
         const double relative_difference_selfenergy = state_diff.selfenergy.norm    () / state_out.selfenergy.norm();
         utils::print("relative difference vertex:     ", relative_difference_vertex, true);
         utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
-        const bool is_converged = !(relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy);
+        is_converged = !(relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy);
         unfinished = !is_converged && iteration < Nmax;
 
         add_state_to_hdf(filename, iteration, state_out, is_converged);  // store result into file
@@ -766,7 +767,7 @@ int parquet_solver(const std::string filename, State<Q>& state_in, const double 
 
         ++iteration;
     }
-    return 0;
+    return is_converged;
 }
 
 
