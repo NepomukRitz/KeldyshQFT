@@ -127,8 +127,8 @@ constexpr int n_in = 1;
 constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 1;// 1e-4;
 #else
-const double Lambda_ini = 20.0;//pow(10,  1) ;// 1e4;
-const double Lambda_fin = 0. ;// 1e-4;
+const double Lambda_ini = 19.8;//pow(10,  1) ;// 1e4;
+const double Lambda_fin = 0.2 ;// 1e-4;
 #endif
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
