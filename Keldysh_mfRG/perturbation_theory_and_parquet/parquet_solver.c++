@@ -107,7 +107,7 @@ void run_parquet(const fRG_config& config, const std::vector<double>& U_NRG_list
         double U_over_Delta = config.U / Delta;
         const std::string parquet_filename = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_T=" + std::to_string(config.T) + "_eVg=" + std::to_string(config.epsilon+config.U*0.5) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
 //state = read_state_from_hdf(parquet_filename, 30);
-        parquet_solver(parquet_filename, state, Lambda, version, 1e-6, 50, overwrite_old_results);
+        parquet_solver(parquet_filename, state, Lambda, version, 1e-6, 100, overwrite_old_results, 0.5);
 
         //state.vertex.template symmetry_expand<'a',true,true>();
         //state.vertex.save_expanded(data_dir + "ParquetSolution_U_over_Delta=" + std::to_string(U_over_Delta) + "_symmetry_expanded_for_a_left_");

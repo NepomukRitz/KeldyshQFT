@@ -33,7 +33,7 @@ void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_
         const double Delta = (y_run.config.Gamma + x_run) * 0.5;
         double U_over_Delta = y_run.config.U / Delta;
         std::string parquet_filename = data_dir + "parquet4fRG_U_over_Delta=" + std::to_string(U_over_Delta) + "_T=" + std::to_string(y_run.config.T) + "_eVg=" + std::to_string(y_run.config.epsilon+y_run.config.U*0.5) + ".h5";;
-        const bool converged = parquet_solver(parquet_filename, y_run, x_run, 2, 1e-6, 20, true);
+        const bool converged = parquet_solver(parquet_filename, y_run, x_run, 2, 1e-6, 100, true, 0.5);
         if (not converged) utils::print("WARNING! THE PARQUET SOLVER DID NOT CONVERGE!!", true);
 
         if (filename != "") {
