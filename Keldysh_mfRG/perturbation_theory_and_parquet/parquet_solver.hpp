@@ -651,12 +651,15 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
 template <typename Q>
 bool parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
                     const double accuracy=1e-6, const int Nmax=6, const bool overwrite_old_results=true, const double mixing_ratio=1.0, const bool use_last_state_anyway=false) {
-    assert((mixing_ratio >= 0.1 and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
+    const double mixing_minimum = 0.01; // minimal mixing factor; tiny mixing factors guarantee "convergence" for anything and make the result totally useless.
+    assert((mixing_ratio >= mixing_minimum and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
     SDE_counter = 0;
     utils::print("\t --- Start parquet solver ---\n");
     utils::print("Results get stored in ", filename, "\n");
     std::deque<State<Q>> rhs_evals;
     std::deque<State<Q>> iteration_steps;
+    std::deque<double> relative_deviation_history;
+    const int Nmax_history = 5;
     const int n_States_for_AndersonAcceleration = 4;
 
     if (overwrite_old_results) {
@@ -698,7 +701,8 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
     State<Q> state_out (state_in, Lambda);   // lhs of the parquet equations
     State<Q> state_diff (state_in, Lambda);  // difference between input and output of the parquet equations
 
-
+    double mixing_adaptive = mixing_ratio;
+    const int trigger_adaptation = 5;
     int iteration = 1;
     // first check if converged, and also stop if maximal number of iterations is reached
     bool is_converged = false;
@@ -743,7 +747,7 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
             rhs_evals.pop_front();
             iteration_steps.pop_front();
         }
-        state_out = anderson_update(rhs_evals, iteration_steps, mixing_ratio);
+        state_out = anderson_update(rhs_evals, iteration_steps, mixing_adaptive);
 #else
         state_out = mixing_ratio * state_out + (1-mixing_ratio) * state_in;
 #endif
@@ -752,6 +756,19 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
         // compute relative differences between input and output w.r.t. output
         const double relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();
         const double relative_difference_selfenergy = state_diff.selfenergy.norm    () / state_out.selfenergy.norm();
+        const double relative_difference = std::max(relative_difference_selfenergy, relative_difference_vertex);
+        relative_deviation_history.push_back(relative_difference);
+        if (std::size(relative_deviation_history) > Nmax_history) {relative_deviation_history.pop_front();}
+
+        // check whether there is a tendency to convergence. If not: shrink mixing factor
+        if (iteration % trigger_adaptation == 0 && mixing_adaptive > mixing_minimum && relative_deviation_history[0] < relative_deviation_history.back()) {
+            utils::print("MIXING NOT CAREFUL ENOUGH!\n");
+            utils::print(relative_deviation_history[0], "\t < \t", relative_deviation_history.back(), "\n");
+            mixing_adaptive = std::max(0.6*mixing_adaptive, mixing_minimum);
+            utils::print("New mixing parameter:\t", mixing_adaptive, "\n\n");
+
+        }
+
         utils::print("relative difference vertex:     ", relative_difference_vertex, true);
         utils::print("relative difference selfenergy: ", relative_difference_selfenergy, true);
         is_converged = !(relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy);
