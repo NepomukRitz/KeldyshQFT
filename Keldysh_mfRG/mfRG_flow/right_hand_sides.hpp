@@ -527,13 +527,13 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 utils::print("Self-energy correction (rel.): ", selfenergy_correction_rel*100, " %\n");
             }
             counter_Selfenergy_iterations++;
-            /// save intermediate results:
-            if (save) {record_of_intermediate_results.save_states(dir_str, iteration, rkStep, counter_Selfenergy_iterations);}
         }
 //#endif
 
         }
 
+        /// save intermediate results:
+        if (save) {record_of_intermediate_results.save_states(dir_str, iteration, rkStep, counter_Selfenergy_iterations);}
 #if SELF_ENERGY_FLOW_CORRECTIONS != 0
     } while (nloops_max > 2 and counter_Selfenergy_iterations < nmax_Selfenergy_iterations and selfenergy_correction_abs > tol_selfenergy_correction_abs and selfenergy_correction_rel > tol_selfenergy_correction_rel);
 #endif

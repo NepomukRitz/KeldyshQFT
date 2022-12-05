@@ -682,6 +682,7 @@ namespace hdf5_impl {
             /// Write used parameters for documentation purpose
             H5::Group group_params(file_out.createGroup(PARAM_LIST));
             write_to_hdf(group_params, "REG", REG, is_dataset_existent);
+            write_to_hdf(group_params, "nODE", state.config.nODE_, is_dataset_existent);
             write_to_hdf(group_params, "Gamma", state.config.Gamma, is_dataset_existent);
             write_to_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS, is_dataset_existent);
             write_to_hdf(group_params, "N_LOOPS", state.config.nloops, is_dataset_existent);

@@ -241,22 +241,14 @@ State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, co
 
     H5::Group group_params(file_out.openGroup(PARAM_LIST));
     read_from_hdf(group_params, "REG", REG_loaded);
-    read_from_hdf(group_params, "Gamma", glb_Gamma_loaded);
     read_from_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS_loaded);
-    read_from_hdf(group_params, "N_LOOPS", N_LOOPS_loaded);
-    read_from_hdf(group_params, "T", glb_T_loaded);
     read_from_hdf(group_params, "mu", glb_mu_loaded);
-    read_from_hdf(group_params, "U", glb_U_loaded);
-    read_from_hdf(group_params, "epsilon", glb_epsilon_loaded);
     read_from_hdf(group_params, "V", glb_V_loaded);
     //read_from_hdf(group_params, "ODEsolver", ODEsolver_loaded);
     read_from_hdf(group_params, "GRID", GRID_loaded);
     bool are_parameters_identical = REG == REG_loaded and
             MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded and
-            //glb_T == glb_T_loaded and
             glb_mu == glb_mu_loaded and
-            //glb_U == glb_U_loaded and
-            //glb_epsilon == glb_epsilon_loaded and
             glb_V == glb_V_loaded and
             GRID == GRID_loaded;
     if (!are_parameters_identical) {
@@ -264,19 +256,13 @@ State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, co
         utils::print("\t Warning!: \t Parameters of executable do not agree with those in HDF file ", filename, "\n");
         const vec<bool> is_identical_parameter = {
                 MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded
-                //,glb_T == glb_T_loaded
                 ,glb_mu == glb_mu_loaded
-                //,glb_U == glb_U_loaded
-                //,glb_epsilon == glb_epsilon_loaded
                 ,glb_V == glb_V_loaded
                 ,GRID == GRID_loaded
         };
         const vec<std::string> parameter_names = {
                 "MAX_DIAG_CLASS"
-                //,"glb_T"
                 ,"glb_mu"
-                //,"glb_U"
-                //,"glb_epsilon"
                 ,"glb_V"
                 ,"GRID"
         };
@@ -495,10 +481,11 @@ fRG_config read_config_from_hdf(const H5std_string FILE_NAME) {
 
     fRG_config config;
     int REG_loaded, MAX_DIAG_CLASS_loaded, N_LOOPS_loaded, GRID_loaded;
-    double glb_Gamma_loaded, glb_T_loaded, glb_mu_loaded, glb_U_loaded, glb_epsilon_loaded, glb_V_loaded;
+    double glb_Gamma_loaded, glb_T_loaded, glb_mu_loaded, glb_U_loaded, glb_epsilon_loaded, glb_V_loaded, nODE_loaded;
 
     H5::Group group_params(file_out.openGroup(PARAM_LIST));
     read_from_hdf(group_params, "REG", REG_loaded);
+    read_from_hdf(group_params, "nODE", nODE_loaded);
     read_from_hdf(group_params, "Gamma", glb_Gamma_loaded);
     read_from_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS_loaded);
     read_from_hdf(group_params, "N_LOOPS", N_LOOPS_loaded);
@@ -514,6 +501,7 @@ fRG_config read_config_from_hdf(const H5std_string FILE_NAME) {
     config.Gamma = glb_Gamma_loaded;
     config.T = glb_T_loaded;
     config.epsilon = glb_epsilon_loaded;
+    config.nODE_ = nODE_loaded;
 
     return config;
 
