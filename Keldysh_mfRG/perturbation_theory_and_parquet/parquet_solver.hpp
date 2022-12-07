@@ -680,6 +680,11 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
     }
 
     write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    if (mpi_world_rank() == 0) {
+        H5::H5File file_out = open_hdf_file_readWrite(filename);
+        write_to_hdf_LambdaLayer<double>(file_out, "mixing_parameter", std::vector<double>({mixing_ratio}), 0, Nmax + 1, false);
+        file_out.close();
+    }
     rvec Lambdas (Nmax + 1);  // auxiliary vector needed for hdf5 routines (empty since Lambda is constant)
 
 #ifndef NDEBUG
@@ -775,7 +780,11 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
         unfinished = !is_converged && iteration < Nmax;
 
         add_state_to_hdf(filename, iteration, state_out, is_converged);  // store result into file
-
+        if (mpi_world_rank() == 0) {
+            H5::H5File file_out = open_hdf_file_readWrite(filename);
+            write_to_hdf_LambdaLayer<double>(file_out, "mixing_parameter", std::vector<double>({mixing_adaptive}), iteration, Nmax + 1, true);
+            file_out.close();
+        }
 
         state_in = state_out;  // use output as input for next iteration
 
