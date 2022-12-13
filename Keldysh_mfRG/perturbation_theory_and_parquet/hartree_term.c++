@@ -11,8 +11,8 @@ double Hartree_Solver::compute_filling_oneshot() {
                + (prop_type == 'g' ? 0.5 : 0.);
     }
     else { // Matsubara T>0
-        const int Nmin = -POSINTRANGE*100;
-        const int Nmax =  POSINTRANGE*100;
+        const int Nmin = -POSINTRANGE*10;
+        const int Nmax =  POSINTRANGE*10;
         const double vmin_temp = (2.*Nmin + 1);
         const double vmax_temp = (2.*Nmax + 1);
         const double filling_oneshot = matsubarasum<double>(*this, Nmin, Nmax) * config.T + (prop_type == 'g' ? 0.5 : 0.)
