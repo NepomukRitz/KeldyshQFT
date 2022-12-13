@@ -81,9 +81,9 @@ auto main(int argc, char * argv[]) -> int {
         //run_parquet(config, myU_NRG, 3, true);
     }
     if (n_loops == -1){ /// perturbation theory:
-        const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 3.0, 4.0};
+        const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
         for (double U_over_Delta: U_over_Delta_list) {
-            PT_Machine<state_datatype> PT_Calculator (4, config, U_over_Delta, false, true);
+            PT_Machine<state_datatype> PT_Calculator (2, config, U_over_Delta, false, true);
         }
     }
 
