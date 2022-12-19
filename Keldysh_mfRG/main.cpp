@@ -80,10 +80,23 @@ auto main(int argc, char * argv[]) -> int {
         run_parquet(config, myU_NRG, 2, true);
         //run_parquet(config, myU_NRG, 3, true);
     }
-    if (n_loops == -1){ /// perturbation theory:
+    if (n_loops == -1){ /// perturbation theory to fourth order:
         const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
         for (double U_over_Delta: U_over_Delta_list) {
-            PT_Machine<state_datatype> PT_Calculator (2, config, U_over_Delta, false, true);
+            PT_Machine<state_datatype> PT_Calculator (4, config, U_over_Delta, false, true);
+        }
+    }
+    if (n_loops == -2){ /// plain and simple second order perturbation theory
+        const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
+        for (double U_over_Delta: U_over_Delta_list) {
+            const double Lambda = 2. / U_over_Delta * config.U - config.Gamma;
+            State<state_datatype> state (Lambda, config);   // create final and initial state
+            state.initialize();
+            sopt_state(state);
+            const std::string PT2_filename = data_dir + "PT2_U_over_Delta=" + std::to_string(U_over_Delta) +
+                    "_T=" + std::to_string(config.T) + "_eVg=" + std::to_string(config.epsilon + config.U*0.5) +
+                    "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
+            write_state_to_hdf(PT2_filename, 0, 1, state);
         }
     }
 
