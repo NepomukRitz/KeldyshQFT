@@ -33,6 +33,7 @@ auto main(int argc, char * argv[]) -> int {
     /// functions that do postprocessing on a single state:
     const int Lambda_it = 0;    // pick Lambda layer
     State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
+    save_slices_through_fullvertex(filename, 0, 0);
 
 
 #ifdef USE_MPI

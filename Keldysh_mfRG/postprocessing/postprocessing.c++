@@ -161,4 +161,31 @@ void check_Kramers_Kronig(const std::string filename) {
 
     }
 }
+
+void save_slices_through_fullvertex(const std::string& filename, const int iK, const int ispin) {
+    int Lambda_it_max = -1;
+    check_convergence_hdf(filename, Lambda_it_max);
+    State<state_datatype> state = read_state_from_hdf(filename, 0);
+    const rvec freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
+    const size_t N_freqs = freqs.size();
+    std::array<size_t,3> dims = {(size_t)Lambda_it_max, N_freqs, N_freqs};
+    multidimensional::multiarray<state_datatype,3> slices(dims);
+
+    for (int iLambda = 0; iLambda < Lambda_it_max; iLambda++) {
+        state = read_state_from_hdf(filename, iLambda);
+        for (int iv = 0; iv < N_freqs; iv++) {
+            for (int ivp = 0; ivp < N_freqs; ivp++) {
+                VertexInput input(iK, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                state_datatype value = state.vertex.value<'t'>(input);
+                slices(iLambda, iv, ivp) = value;
+            }
+        }
+    }
+
+    H5::H5File file(filename + "_slices", H5F_ACC_TRUNC);
+    write_to_hdf(file, "slices", slices, false);
+    write_to_hdf(file, "freqs", freqs, false);
+    file.close();
+}
+
 #endif

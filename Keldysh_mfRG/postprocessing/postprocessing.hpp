@@ -106,4 +106,6 @@ void sum_rule_K1tK(std::string filename);
  */
 void check_Kramers_Kronig(std::string filename);
 
+void save_slices_through_fullvertex(const std::string& filename, const int iK, const int ispin);
+
 #endif //KELDYSH_MFRG_TESTING_POSTPROCESSING_H
