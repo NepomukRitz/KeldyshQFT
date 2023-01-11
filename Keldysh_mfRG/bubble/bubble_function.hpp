@@ -476,8 +476,8 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             const int W = (int) (w / 2);
             const int Nmin_sum = -POSINTRANGE - std::abs(W / 2) + interval_correction;
             const int Nmax_sum = POSINTRANGE - 1 + std::abs(W / 2);
-            const freqType vmin_temp = (2 * Nmin_sum);
-            const freqType vmax_temp = (2 * Nmax_sum + 2.);
+            const freqType vmin_temp = (2 * Nmin_sum + 1.);
+            const freqType vmax_temp = (2 * Nmax_sum + 1.);
 
 
             if constexpr (VECTORIZED_INTEGRATION) // (VECTORIZED_INTEGRATION and k == k3)

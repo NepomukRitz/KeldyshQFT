@@ -123,18 +123,7 @@ template <typename Q>
 auto correctionFunctionBubbleP_REG2_Matsubara_PHS(double w, double vmin, double vmax,
                                                   Q eps_p, double Delta, double Lambda,
                                                   double eta_1, double eta_2, bool diff) -> Q {
-    if (diff){
-        return -1. / 2. * (1. / (pow(-vmin + Delta, 2) - pow(w / 2., 2))
-                           + 1. / (pow(vmax + Delta, 2) - pow(w / 2., 2)));
-    }
-    else{
-        if (w == 0.) {
-            return +1. / (vmax + Delta) - 1. / (vmin - Delta);
-        } else {
-            return 1. / w * log(((-vmin + w / 2. + Delta) * (vmax + w / 2. + Delta))
-                                / ((-vmin - w / 2. + Delta) * (vmax - w / 2. + Delta)));
-        }
-    }
+    return -correctionFunctionBubbleAT_REG2_Matsubara_PHS(w, vmin, vmax, eps_p, Delta, Lambda, eta_1, eta_2, diff);
 }
 
 template <typename Q>

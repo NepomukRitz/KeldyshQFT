@@ -305,7 +305,7 @@ public:
                         const double wmax = base_class::frequencies.primary_grid.w_upper;
                         const double w = frequencies[0];
                         const double wabs = std::abs(w);
-                        if (w <= -wmax) {
+                        if (w <= 0.) {
                             indices[pos_first_freqpoint] = 0;
                         }
                         else {

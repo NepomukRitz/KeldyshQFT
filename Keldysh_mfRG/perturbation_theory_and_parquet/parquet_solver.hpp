@@ -630,10 +630,13 @@ void parquet_checks(const std::string filename);
  */
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda, const int version) {
+
+    utils::print("Compute BSE:\n");
     compute_BSE(state_out.vertex, state_in, Lambda, it_Lambda);                    // compute the gamma_r's via the BSE
     if (KELDYSH and not CONTOUR_BASIS) state_out.vertex.initialize(-state_in.config.U/2.);     // add the irreducible vertex
     else         state_out.vertex.initialize(-state_in.config.U);        // add the irreducible vertex
 
+    utils::print("Compute SDE:\n");
     compute_SDE(state_out.selfenergy, state_in, Lambda, version);  // compute the self-energy via the SDE
 }
 

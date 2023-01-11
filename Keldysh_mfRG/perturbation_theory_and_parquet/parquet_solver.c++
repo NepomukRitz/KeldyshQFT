@@ -109,7 +109,7 @@ void run_parquet(const fRG_config& config, const std::vector<double>& U_NRG_list
         const std::string parquet_filename_all = parquet_filename_pre + ".h5";
         const std::string parquet_filename_fin = parquet_filename_pre + "_final.h5";
 //state = read_state_from_hdf(parquet_filename, 30);
-        parquet_solver(parquet_filename_all, state, Lambda, version, 1e-6, 100, overwrite_old_results, 1.);
+        parquet_solver(parquet_filename_all, state, Lambda, version, 1e-6, 10, overwrite_old_results, 1.);
 
         write_state_to_hdf(parquet_filename_fin, Lambda, 1, state); // save input into 0-th layer of hdf5 file
         //state.vertex.template symmetry_expand<'a',true,true>();

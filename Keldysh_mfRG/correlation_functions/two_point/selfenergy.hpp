@@ -212,15 +212,11 @@ template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) 
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
     Q result;
-#ifdef DENSEGRID
-    result = interpolate_nearest1D<Q>(v, Sigma.frequencies.primary_grid, [&](int i) -> Q {return val(iK, i, i_in);});
-#else
     frequencies_type freqs = {v};
         index_type idx;
         idx[my_defs::SE::keldysh]= iK;
         idx[my_defs::SE::internal]= i_in;
     result = Sigma.interpolate_impl(freqs, idx);
-#endif
     return result + (1.-(double)iK)*(this->asymp_val_R);
     }
 
