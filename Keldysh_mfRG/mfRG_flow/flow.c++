@@ -69,7 +69,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     write_state_to_hdf(outputFileName+"_postOpt", Lambda_ini,  frgConfig.nODE_ + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
 #endif
 
-    compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, frgConfig.T, false, frgConfig.nODE_ + U_NRG.size() + 1);
+    compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, frgConfig, false, frgConfig.nODE_ + U_NRG.size() + 1);
 
     std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG, frgConfig);
 

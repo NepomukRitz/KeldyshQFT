@@ -6,13 +6,15 @@ void compute_Phi_tilde(const std::string filename) {
     else{
         //rvec Lambdas = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE);
         rvec Lambdas = read_Lambdas_from_hdf(filename);
+        int Lambda_it_max = -1;
+        check_convergence_hdf(filename, Lambda_it_max);
 
         rvec vs (Lambdas.size() * nFER * n_in);
         rvec ImSigma (Lambdas.size() * nFER * n_in);
         rvec Phi (Lambdas.size() * nFER * n_in);
         rvec Phi_integrated (Lambdas.size() * n_in);
 
-        for (unsigned int iLambda=0; iLambda<Lambdas.size(); ++iLambda) {
+        for (unsigned int iLambda=0; iLambda<Lambda_it_max; ++iLambda) {
             State<state_datatype> state = read_state_from_hdf(filename, iLambda);
             state.selfenergy.asymp_val_R = state.config.U / 2.;
 
@@ -63,11 +65,12 @@ void sum_rule_K1tK(const std::string filename) {
     utils::print("Checking fullfilment of the sum rule for K1t", true);
 
     rvec Lambdas = read_Lambdas_from_hdf(filename);
-    const int nLambda = Lambdas.size();
+    int Lambda_it_max = -1;
+    check_convergence_hdf(filename, Lambda_it_max);
 
-    rvec sum_rule (nLambda);
+    rvec sum_rule (Lambda_it_max);
 
-    for (int iLambda=0; iLambda<nLambda; ++iLambda) {
+    for (int iLambda=0; iLambda<Lambda_it_max; ++iLambda) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambda);           // read state
         Integrand_sum_rule_K1tK integrand (state.vertex);                   // initialize integrand object
         double wmax = state.vertex.tvertex().K1.frequencies.get_wupper_b();   // upper integration boundary
@@ -85,11 +88,22 @@ void sum_rule_K1tK(const std::string filename) {
 }
 #if KELDYSH_FORMALISM
 void check_Kramers_Kronig(const std::string filename) {
+
+    int Lambda_it_max = -1;
+    check_convergence_hdf(filename, Lambda_it_max);
+
     vec<int> iLambdas {}; // Lambda iterations at which to check Kramers-Kronig (KK) relations
     rvec Lambdas = read_Lambdas_from_hdf(filename);
     const int nLambda = Lambdas.size();
     if (nLambda == 50) iLambdas = {1,5,13,16,26,32,37,41,44,47,49,51,53,56,65};
     else if (nLambda == 100) iLambdas = {1,8,23,29,48,59,67,74,79,83,87,90,93,98,115};
+    else {
+        iLambdas = vec<int>(Lambda_it_max);
+        for (int i = 0; i < Lambda_it_max; i++) {
+            iLambdas[i] = i;
+        }
+    };
+
 
     for (unsigned int i=0; i<iLambdas.size(); ++i) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
@@ -129,7 +143,8 @@ void check_Kramers_Kronig(const std::string filename) {
         rvec K1tR_re_KK = KKi2r(wK1, K1tR_im, 0);  // compute real part from imaginary part via KK
 
         // save data to file
-        write_h5_rvecs(filename + "_KKi2r_i" + std::to_string(iLambdas[i]),
+        const std::string filename_KKi2 = filename + "_KKi2r_i" + std::to_string(iLambdas[i]);
+        write_h5_rvecs(filename_KKi2,
                        {"v",
                         "SigmaR_im", "SigmaR_re", "SigmaR_re_KK",
                         "w",
@@ -143,9 +158,7 @@ void check_Kramers_Kronig(const std::string filename) {
                         K1pR_im, K1pR_re, K1pR_re_KK,
                         K1tR_im, K1tR_re, K1tR_re_KK});
 
-        H5::H5File file_out(filename, H5F_ACC_RDWR);
-        write_to_hdf(file_out, "v", vSigma, false);
-        file_out.close();
+
     }
 }
 #endif

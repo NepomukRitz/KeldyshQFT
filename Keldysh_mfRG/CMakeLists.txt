@@ -14,11 +14,11 @@ set(CMAKE_CXX_COMPILER mpicxx)
 
 if(WORKSTATION)
     # for DEBUG build:
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O3 -flto -march=native  -fopenmp ")
-    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -D_DEBUG -O3 -flto -march=native  ")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG   -fopenmp ")
+    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -D_DEBUG   ")
     # for RELEASE build:
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto -fopenmp")
-    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}  ")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -march=native -flto")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
@@ -48,6 +48,9 @@ file(GLOB_RECURSE keldysh_H *.hpp *.h)                                  # collec
 ## standard executable for production runs
 add_executable(Keldysh_mfRG main.cpp ${keldysh_H} ${keldysh_SRC})
 
+## executable for post-processing
+add_executable(Keldysh_postproc postprocessing/main_postproc.cpp ${keldysh_H} ${keldysh_SRC})
+
 ## executable for (unit) tests (using Catch)
 add_executable(Keldysh_mfRG_testing tests/unit_tests/unit_tests.cpp ${keldysh_H} ${keldysh_SRC} ${test_SRC})
 
@@ -71,6 +74,10 @@ if(WORKSTATION OR ASC)
     target_link_libraries(Keldysh_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG -lgsl -lgslcblas)
     target_link_libraries(Keldysh_mfRG fftw3)
+
+    target_link_libraries(Keldysh_postproc -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(Keldysh_postproc -lgsl -lgslcblas)
+    target_link_libraries(Keldysh_postproc fftw3)
 
     target_link_libraries(Keldysh_mfRG_testing -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG_testing -lgsl -lgslcblas)
