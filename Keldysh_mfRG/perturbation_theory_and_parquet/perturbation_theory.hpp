@@ -558,7 +558,7 @@ void PT_Machine<Q>::write_out_results_zero_freq() const {
 
 template<typename Q>
 void PT_Machine<Q>::write_out_results_full() const {
-    const std::string PT_filename = data_dir + "PT4_U_over_Delta=" + std::to_string(U_over_Delta)
+    const std::string PT_filename = data_dir + "PT" + std::to_string(order) + "_U_over_Delta=" + std::to_string(U_over_Delta)
                                     + "_T=" + std::to_string(config.T) + "_eVg=" + std::to_string(config.epsilon+config.U*0.5)
                                     + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2)
                                     + "_n3=" + std::to_string(nBOS3) + ".h5";
