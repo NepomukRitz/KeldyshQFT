@@ -258,8 +258,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         if(VERBOSE) {
         dPsi.vertex.half1().check_vertex_resolution();
         dPsi.analyze_tails();
-        compare_with_FDTs(Psi.vertex, Lambda, iteration, "Psi_RKstep"+std::to_string(rkStep), Psi.config.T, false, config.nODE_ + U_NRG.size() + 1);
-        compare_with_FDTs(dPsi.vertex, Lambda, iteration, "dPsi_RKstep"+std::to_string(rkStep), Psi.config.T, false, config.nODE_ + U_NRG.size() + 1);
+        compare_with_FDTs(Psi.vertex, Lambda, iteration, "Psi_RKstep"+std::to_string(rkStep), Psi.config, false, config.nODE_ + U_NRG.size() + 1);
+        compare_with_FDTs(dPsi.vertex, Lambda, iteration, "dPsi_RKstep"+std::to_string(rkStep), Psi.config, false, config.nODE_ + U_NRG.size() + 1);
     }
 
 
@@ -283,7 +283,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
         Vertex<Q,true> dGammaL_half1 = calculate_dGammaL(dGamma_1loop, Psi.vertex, Pi, config);
         if(VERBOSE) {
             dGammaL_half1.half1().check_vertex_resolution();
-            compare_with_FDTs(dGammaL_half1, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), Psi.config.T, false, config.nODE_ + U_NRG.size() + 1);
+            compare_with_FDTs(dGammaL_half1, Lambda, iteration, "dGammaL_RKstep"+std::to_string(rkStep)+"_forLoop"+std::to_string(2), Psi.config, false, config.nODE_ + U_NRG.size() + 1);
         }
 
         if (VERBOSE) utils::print("Compute dGammaR (2-loop):", true);
@@ -328,7 +328,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 GeneralVertex<Q, non_symmetric_diffleft,true> dGammaL(dGammaL_half1.half1(), dGammaR_half1.half1(), Psi.vertex);
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaL, Lambda, iteration,
-                                      "dGammaL_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2), Psi.config.T, false,
+                                      "dGammaL_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2), Psi.config, false,
                                       config.nODE_ + U_NRG.size() + 1);
                 }
 
@@ -352,7 +352,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaC_r, Lambda, iteration,
                                       "dGammaC_r_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
-                                      Psi.config.T,false, config.nODE_ + U_NRG.size() + 1);
+                                      Psi.config,false, config.nODE_ + U_NRG.size() + 1);
                 }
 
                 // create non-symmetric_full vertex with differentiated vertex on the right (full dGammaR, containing half 1 and 2)
@@ -362,7 +362,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaR, Lambda, iteration,
                                       "dGammaR_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
-                                      Psi.config.T, false,config.nODE_ + U_NRG.size() + 1);
+                                      Psi.config, false,config.nODE_ + U_NRG.size() + 1);
                 }
 
                 // insert this non-symmetric_full vertex on the left of the bubble
@@ -372,7 +372,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 if (VERBOSE) {
                     compare_with_FDTs(dGammaC_l, Lambda, iteration,
                                       "dGammaC_l_RKstep" + std::to_string(rkStep) + "_forLoop" + std::to_string(2),
-                                      false, config.nODE_ + U_NRG.size() + 1);
+                                      Psi.config, false, config.nODE_ + U_NRG.size() + 1);
                 }
 
                 // symmetrize by averaging left and right insertion
