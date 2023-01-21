@@ -8,6 +8,7 @@
 #include "../correlation_functions/two_point/propagator.hpp"
 #include "../integrator/integrator.hpp"
 #include "KramersKronig.hpp"   // perform check of Kramers-Kronig relation
+#include "../bubble/bubble_function.hpp"
 
 template <typename Q>
 class Integrand_Phi_tilde {
@@ -105,6 +106,14 @@ void sum_rule_K1tK(std::string filename);
  * the imaginary part via Kramers-Kronig. The result can be compared to the real part obtained from the flow.
  */
 void check_Kramers_Kronig(std::string filename);
+
+/**
+ * Take hdf5 file, compute the susceptibilities from it and save them to the hdf5 file.
+ * Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0)
+ *     This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0   (zero K2' or K3)
+ * @param filename
+ */
+void compute_proprocessed_susceptibilities(const std::string& filename);
 
 void save_slices_through_fullvertex(const std::string& filename, const int iK, const int ispin);
 

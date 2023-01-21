@@ -61,6 +61,7 @@ void compute_Phi_tilde(const std::string filename) {
     }
 }
 
+#if KELDYSH_FORMALISM
 void sum_rule_K1tK(const std::string filename) {
     utils::print("Checking fullfilment of the sum rule for K1t", true);
 
@@ -86,7 +87,7 @@ void sum_rule_K1tK(const std::string filename) {
 
     write_h5_rvecs(filename + "_sum_rule_K1tK", {"Lambdas", "sum_rule"}, {Lambdas, sum_rule});
 }
-#if KELDYSH_FORMALISM
+
 void check_Kramers_Kronig(const std::string filename) {
 
     int Lambda_it_max = -1;
@@ -161,6 +162,51 @@ void check_Kramers_Kronig(const std::string filename) {
 
     }
 }
+#endif
+
+void compute_proprocessed_susceptibilities(const std::string& filename) {
+    int Lambda_it_max = -1;
+    check_convergence_hdf(filename, Lambda_it_max);
+
+
+    H5::H5File file(filename+"_postproc", H5F_ACC_TRUNC);
+
+    for (int iLambda = 0; iLambda <= Lambda_it_max; iLambda++) {
+        const State<state_datatype> state_preproc = read_state_from_hdf(filename, iLambda);
+        const Propagator<state_datatype> G(state_preproc.Lambda, state_preproc.selfenergy, 'g', state_preproc.config);
+        const Bubble<state_datatype> Pi(G,G,false);
+        State<state_datatype> state_bare(state_preproc, state_preproc.Lambda);      // for bare vertex
+        state_bare.initialize();
+
+        State<state_datatype> intermediate_res = state_bare;    // for storing (Γ0 + Γ∘Π_r∘Γ_0)
+        for (char r : {'a', 'p', 't'}) {
+            bubble_function(intermediate_res.vertex, state_preproc.vertex, state_bare.vertex, Pi, r, state_preproc.config, {true,true,false});
+        }
+        std::string fn_intermediate = filename + "_intermediate";
+        if (iLambda == 0) write_state_to_hdf(fn_intermediate, state_preproc.Lambda, Lambda_it_max+1, intermediate_res);
+        else add_state_to_hdf(fn_intermediate, iLambda, intermediate_res);
+
+        State<state_datatype> result = state_bare;
+        for (char r : {'a', 'p', 't'}) {
+            bubble_function(result.vertex,  state_bare.vertex, intermediate_res.vertex, Pi, r, state_preproc.config, {true,false,false});
+        }
+
+
+        std::string fn_result= filename + "_result";
+        if (iLambda == 0) write_state_to_hdf(fn_result, state_preproc.Lambda, Lambda_it_max+1, result);
+        else add_state_to_hdf(fn_result, iLambda, result);
+
+        //if (iLambda == 0) file = H5::H5File(filename+"_postproc", H5F_ACC_TRUNC);
+        //else file = H5::H5File(filename+"_postproc", H5F_ACC_RDWR);
+        std::array<char,3> channels = {'a', 'p', 't'};
+        for (int i = 0; i < 3; i++) {
+            const char r = channels[i];
+            const H5std_string& datasetname = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
+            write_to_hdf_LambdaLayer<state_datatype>(file, datasetname, result.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
+        }
+        //file.close();
+    }
+}
 
 void save_slices_through_fullvertex(const std::string& filename, const int iK, const int ispin) {
     int Lambda_it_max = -1;
@@ -188,4 +234,3 @@ void save_slices_through_fullvertex(const std::string& filename, const int iK, c
     file.close();
 }
 
-#endif

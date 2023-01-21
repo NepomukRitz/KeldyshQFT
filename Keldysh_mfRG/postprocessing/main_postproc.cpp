@@ -29,6 +29,7 @@ auto main(int argc, char * argv[]) -> int {
     sum_rule_K1tK(filename);
     check_Kramers_Kronig(filename);
     compare_flow_with_FDTs(filename, true);
+    compute_proprocessed_susceptibilities(filename);
 
     /// functions that do postprocessing on a single state:
     const int Lambda_it = 0;    // pick Lambda layer

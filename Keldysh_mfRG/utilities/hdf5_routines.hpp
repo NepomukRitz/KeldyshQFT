@@ -49,6 +49,9 @@ const H5std_string	DATASET_irred("irred");
 const H5std_string	DATASET_K1_a("K1_a");
 const H5std_string	DATASET_K1_p("K1_p");
 const H5std_string	DATASET_K1_t("K1_t");
+const H5std_string	DATASET_K1_a_postproc("K1_a_postproc");
+const H5std_string	DATASET_K1_p_postproc("K1_p_postproc");
+const H5std_string	DATASET_K1_t_postproc("K1_t_postproc");
 
 const H5std_string	DATASET_K2_a("K2_a");
 const H5std_string	DATASET_K2_p("K2_p");
@@ -129,24 +132,25 @@ namespace hdf5_impl {
                     std::is_same_v<Q, char>,
                             bool> = true>
     H5::DataSet create_Dataset(H5Object& group, const H5std_string& dataset_name, H5::DataSpace& file_space) {
-    if constexpr(std::is_same_v<Q, double>) {
+        if constexpr(std::is_same_v<Q, double>) {
             H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_DOUBLE, file_space);
             return mydataset;
-    }
-    else if constexpr(std::is_same_v<Q, comp>) {
-        H5::DSetCreatPropList plist_vert = def_proplist_comp();
-        H5::CompType mtype_comp = def_mtype_comp();
-        H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, file_space, plist_vert);
-        return mydataset;
-    }
-    else if constexpr(std::is_same_v<Q, int>) {
-        H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_INT, file_space);
-        return mydataset;
-    }
-    else if constexpr(std::is_same_v<Q, char>) {
-        H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_CHAR, file_space);
-        return mydataset;
-    }
+        }
+        else if constexpr(std::is_same_v<Q, comp>) {
+            H5::DSetCreatPropList plist_vert = def_proplist_comp();
+            H5::CompType mtype_comp = def_mtype_comp();
+            H5::DataSet mydataset = group.createDataSet(dataset_name, mtype_comp, file_space, plist_vert);
+            return mydataset;
+        }
+        else if constexpr(std::is_same_v<Q, int>) {
+            H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_INT, file_space);
+            return mydataset;
+        }
+        else if constexpr(std::is_same_v<Q, char>) {
+            H5::DataSet mydataset = group.createDataSet(dataset_name, H5::PredType::NATIVE_CHAR, file_space);
+            return mydataset;
+        }
+
     }
 
     /// Open existing dataset of suitable datatype
@@ -227,7 +231,7 @@ namespace hdf5_impl {
         // create or open dataset in HDF5group/file
         H5::DataSet mydataset;
         if (!data_set_exists) mydataset = hdf5_impl::create_Dataset<Q,H5object>(group, dataset_name, file_space);
-        else mydataset = group.openDataSet(dataset_name);//= hdf5_impl::open_Dataset<H5object>(group, dataset_name);
+        else mydataset = hdf5_impl::open_Dataset(group, dataset_name);//= hdf5_impl::open_Dataset<H5object>(group, dataset_name);
 
         //write data to dataset
         hdf5_impl::write_data_to_Dataset(data, mydataset, mem_space, file_space);

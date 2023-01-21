@@ -89,6 +89,7 @@ SelfEnergy<Q> check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const doubl
     buffer_t SE_K_from_data(dims_K);
 
     SelfEnergy<Q> selfenergy_out = selfenergy;
+    #if KELDYSH_FORMALISM
     const size_t size_flat = getFlatSize<SE_config.rank>(dims_K);
     for (unsigned int i = 0; i < size_flat; i++) {
         std::array<my_index_t,SE_config.rank> idx_R;
@@ -119,6 +120,7 @@ SelfEnergy<Q> check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const doubl
         utils::print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
         utils::print("Maximal absolute value of Sigma^K: \t", max_norm_Kdat, "\n");
     }
+    #endif
     return selfenergy_out;
 }
 

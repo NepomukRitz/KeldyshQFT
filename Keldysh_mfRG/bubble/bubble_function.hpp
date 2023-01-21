@@ -57,6 +57,8 @@ class BubbleFunctionCalculator{
 
     double tK1 = 0, tK2 = 0, tK3 = 0;
 
+    std::array<bool,3> tobecomputed; // indicates whether classes K1, K2 and K3 are to be computed
+
     void check_presence_of_symmetry_related_contributions();
     void set_channel_specific_freq_ranges_and_prefactor();
     void find_vmin_and_vmax();
@@ -104,7 +106,9 @@ class BubbleFunctionCalculator{
                              const vertexType_left& vertex1_in,
                              const vertexType_right& vertex2_in,
                              const Bubble_Object& Pi_in,
-                             const int number_of_nodes_in)
+                             const int number_of_nodes_in,
+                             const std::array<bool,3> tobecomputed
+                             )
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
                              Pi(Pi_in), number_of_nodes(number_of_nodes_in){
 #if not  DEBUG_SYMMETRIES
@@ -270,32 +274,38 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
     double t_start = utils::get_time();
     if constexpr(MAX_DIAG_CLASS >= 0) {
-        calculate_bubble_function<k1>();
-        tK1 = utils::get_time() - t_start;
-        //utils::print("K1", channel, " done, ");
-        //utils::get_time(t_start);
+        if (tobecomputed[0]) {
+            calculate_bubble_function<k1>();
+            tK1 = utils::get_time() - t_start;
+            //utils::print("K1", channel, " done, ");
+            //utils::get_time(t_start);
+        }
     }
     if constexpr(MAX_DIAG_CLASS >= 2) {
-        t_start = utils::get_time();
-        calculate_bubble_function<k2>();
-        tK2 = utils::get_time() - t_start;
-        //utils::print("K2", channel, " done, ");
-        //utils::get_time(t_start);
+        if (tobecomputed[1]) {
+            t_start = utils::get_time();
+            calculate_bubble_function<k2>();
+            tK2 = utils::get_time() - t_start;
+            //utils::print("K2", channel, " done, ");
+            //utils::get_time(t_start);
 
 #if DEBUG_SYMMETRIES
-        t_start = utils::get_time();
-        calculate_bubble_function<k2b>();
-        tK2 = utils::get_time() - t_start;
-        //utils::print("K2b", channel, " done, ");
-        //utils::get_time(t_start);
+            t_start = utils::get_time();
+            calculate_bubble_function<k2b>();
+            tK2 = utils::get_time() - t_start;
+            //utils::print("K2b", channel, " done, ");
+            //utils::get_time(t_start);
 #endif
+        }
     }
     if constexpr(MAX_DIAG_CLASS >= 3) {
-        t_start = utils::get_time();
-        calculate_bubble_function<k3>();
-        tK3 = utils::get_time() - t_start;
-        //utils::print("K3", channel, " done, ");
-        //utils::get_time(t_start);
+        if (tobecomputed[2]) {
+            t_start = utils::get_time();
+            calculate_bubble_function<k3>();
+            tK3 = utils::get_time() - t_start;
+            //utils::print("K3", channel, " done, ");
+            //utils::get_time(t_start);
+        }
     }
 
 }
@@ -1054,21 +1064,22 @@ void bubble_function(vertexType_result& dgamma,
                                  const vertexType_right& vertex2,
                                  const Bubble_Object& Pi,
                                  const char channel,
-                                 const fRG_config& config){
+                                 const fRG_config& config,
+                                 const std::array<bool,3> tobecomputed = {true,true,true}){
     using Q = typename vertexType_result::base_type;
     if (channel == 'a') {
         BubbleFunctionCalculator<'a', Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>
-                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes);
+                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes,tobecomputed);
         BubbleComputer.perform_computation();
     }
     else if (channel == 'p') {
         BubbleFunctionCalculator<'p', Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>
-                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes);
+                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes,tobecomputed);
         BubbleComputer.perform_computation();
     }
     else if (channel == 't') {
         BubbleFunctionCalculator<'t', Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>
-                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes);
+                BubbleComputer (dgamma, vertex1, vertex2, Pi, config.number_of_nodes,tobecomputed);
         BubbleComputer.perform_computation();
     }
     //else {utils::print("Error! Incompatible channel given to bubble_function. Abort"); }
@@ -1083,9 +1094,9 @@ template <typename Q,
 void bubble_function(vertexType_result& dgamma,
                      const vertexType_left& vertex1,
                      const vertexType_right& vertex2,
-                     const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff, const fRG_config& config){
+                     const Propagator<Q>& G, const Propagator<Q>& S, const char channel, const bool diff, const fRG_config& config, const std::array<bool,3> tobecomputed = {true,true,true}){
     Bubble<Q> Pi(G, S, diff);
-    bubble_function(dgamma, vertex1, vertex2, Pi, channel, config);
+    bubble_function(dgamma, vertex1, vertex2, Pi, channel, config, tobecomputed);
 }
 
 #endif //KELDYSH_MFRG_BUBBLE_FUNCTION_HPP
