@@ -110,7 +110,7 @@ class BubbleFunctionCalculator{
                              const std::array<bool,3> tobecomputed
                              )
                              :dgamma(dgamma_in), vertex1(vertex1_in), vertex2(vertex2_in),
-                             Pi(Pi_in), number_of_nodes(number_of_nodes_in){
+                             Pi(Pi_in), number_of_nodes(number_of_nodes_in), tobecomputed(tobecomputed){
 #if not  DEBUG_SYMMETRIES
         //check_presence_of_symmetry_related_contributions();
 #endif
