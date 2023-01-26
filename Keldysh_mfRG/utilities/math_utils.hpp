@@ -770,11 +770,56 @@ vec<T> partial_deriv_v2(const vec<T>& data, const  vec<freqType>& xs, const std:
     return get_finite_differences_v4<T,rank>(data, xs, dims_permuted, permutation, order);
 }
 
+
 template<typename T, size_t rank>
-multidimensional::multiarray<T,rank> partial_deriv(const multidimensional::multiarray<T,rank>& data, const  vec<freqType>& xs, const std::array<size_t,rank>& dims, const size_t i_dim, const double order=5) {
-    return multidimensional::multiarray<T,rank>(data.length(), partial_deriv<T,rank>(vec<T>(data.begin(), data.end()), xs, data.length(), i_dim, order));
+Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic> get_slice(const multidimensional::multiarray<T,rank>& data, const size_t idim, const size_t i, const size_t j)
+{
+    //const int idim = 0;
+    //const int i = 1;
+    //const int j = 0;
+    const size_t flatsize = getFlatSize(data.length());
+    const size_t dimsL = data.length_cumul()[idim];
+    const size_t dimsR = flatsize / dimsL;
+    const size_t blockCols = dimsR-i-j;
+    const size_t blockRows = dimsL;
+    Eigen::MatrixXd m_temp = data.get_elements();
+    m_temp.resize(dimsL,dimsR);
+    return m_temp.block(0,i, blockRows, blockCols);
 }
 
+
+/// partial derivative with finite differences method (accuracy: 2nd order)
+template<typename T, size_t rank>
+multidimensional::multiarray<T,rank> partial_deriv(const multidimensional::multiarray<T,rank>& data, const size_t i_dim) {
+    assert(i_dim < rank);
+    assert(data.length()[i_dim] > 2); // data must have at least 3 indices in dimension i_dim.
+    //utils::print("Computing partial derivative in direction ", i_dim);
+    const size_t flatsize = getFlatSize(data.length());
+    const size_t dimsL = data.length_cumul()[i_dim];
+    const size_t dimsR = flatsize / dimsL;
+    Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic>  m_temp = data.get_elements();
+    m_temp.resize(dimsL,dimsR);
+
+    const size_t blockCols = dimsR-2;
+    const size_t blockRows = dimsL;
+    // derivative for central indices
+
+    Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic> m_result(dimsL, dimsR);
+    m_result.block(0,1, blockRows, blockCols) = m_temp.block(0,0, blockRows, blockCols) * (-0.5)
+                                                            + m_temp.block(0,2, blockRows, blockCols) * ( 0.5);
+    // derivative for smallest indices
+    m_result.block(0,0, blockRows, 1) = m_temp.block(0,0, blockRows, 1) * (-3./2.)
+                                                             + m_temp.block(0,1, blockRows, 1) * ( 2.)
+                                                             + m_temp.block(0,2, blockRows, 1) * (-0.5);
+
+    // derivative for highest indices
+
+    m_result.block(0,dimsR-1, blockRows, 1) = m_temp.block(0,dimsR-3, blockRows, 1) * ( 1./2.)
+                                                                   + m_temp.block(0,dimsR-2, blockRows, 1) * (-2.)
+                                                                   + m_temp.block(0,dimsR-1, blockRows, 1) * ( 3./2.);
+    return multidimensional::multiarray<T,rank>(data.length(), m_result);
+
+}
 
 
 /**

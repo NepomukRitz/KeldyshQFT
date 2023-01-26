@@ -1278,19 +1278,19 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
 #endif
                 ) {
 
-            buffer_type_vertex_l values_vertex_l_upup;
-            buffer_type_vertex_r values_vertex_r_upup;
+            buffer_type_vertex_l values_vertex_l_updnBar;
+            buffer_type_vertex_r values_vertex_r_updnBar;
 
-            load_vertex_keldyshComponents_left_vectorized<2>(values_vertex_l_upup, input_l);
-            load_vertex_keldyshComponents_right_vectorized<2>(values_vertex_r_upup, input_r);
+            load_vertex_keldyshComponents_left_vectorized<1>(values_vertex_l_updnBar, input_l);
+            load_vertex_keldyshComponents_right_vectorized<1>(values_vertex_r_updnBar, input_r);
             if constexpr(VECTORIZED_INTEGRATION) {
                 assert(input_external.iK == 0);
-                const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r +
-                                            values_vertex_l * Pi_matrix * values_vertex_r_upup);
+                const return_type result = ((values_vertex_l + values_vertex_l_updnBar) * Pi_matrix * values_vertex_r +
+                                            values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_updnBar));
                 return result;
             } else {
-                const return_type result = (values_vertex_l_upup * Pi_matrix * values_vertex_r +
-                                            values_vertex_l * Pi_matrix * values_vertex_r_upup).eval()[0];
+                const return_type result = ((values_vertex_l + values_vertex_l_updnBar) * Pi_matrix * values_vertex_r +
+                                            values_vertex_l * Pi_matrix * (values_vertex_r + values_vertex_r_updnBar)).eval()[0];
                 return result;
             }
         }

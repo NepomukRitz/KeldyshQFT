@@ -566,6 +566,11 @@ namespace multidimensional
             return m_length;
         }
 
+        constexpr const dimensions_type &length_cumul() const noexcept
+        {
+            return m_length_cumulative;
+        }
+
         static constexpr size_type get_depth() noexcept
         {
             return depth;

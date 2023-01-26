@@ -215,83 +215,78 @@ class Buffer;
         };
 
 
-        buffer_type get_deriv_x () const {
-            buffer_type result = ::partial_deriv<Q,rank>(base_class::data, frequencies.  primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(),  pos_first_freqpoint);
+        buffer_type get_deriv_x (const buffer_type& dat) const {
+            buffer_type result = ::partial_deriv<Q,rank>(dat, pos_first_freqpoint);
             return result;
         };
-        buffer_type get_deriv_y () const {
-            buffer_type result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(),  pos_first_freqpoint+1);
+        buffer_type get_deriv_y (const buffer_type& dat) const {
+            buffer_type result = ::partial_deriv<Q,rank>(dat, pos_first_freqpoint+1);
             return result;
         };
-        buffer_type get_deriv_z () const {
-            buffer_type result = ::partial_deriv<Q,rank>(base_class::data, frequencies. tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(),  pos_first_freqpoint+2);
+        buffer_type get_deriv_z (const buffer_type& dat) const {
+            buffer_type result = ::partial_deriv<Q,rank>(dat, pos_first_freqpoint+2);
             return result;
         };
 
         buffer_type get_deriv_xx() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.  primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.  primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, pos_first_freqpoint  );
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , pos_first_freqpoint  );
             return result;
         }
         buffer_type get_deriv_yy() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+1);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+1);
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, pos_first_freqpoint+1);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , pos_first_freqpoint+1);
             return result;
         }
         buffer_type get_deriv_zz() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, pos_first_freqpoint+2);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , pos_first_freqpoint+2);
             return result;
         }
         buffer_type get_deriv_xy() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+1);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies.  primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, pos_first_freqpoint+1);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , pos_first_freqpoint  );
             return result;
         }
         buffer_type get_deriv_xz() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies. primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, pos_first_freqpoint+2);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , pos_first_freqpoint  );
             return result;
         }
         buffer_type get_deriv_yz() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+1);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , frequencies. tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, pos_first_freqpoint+1);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result    , pos_first_freqpoint+2);
             return result;
         }
 
         buffer_type get_deriv_xyz() const {
-            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, frequencies. tertiary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+2);
-            buffer_type inter_result2= ::partial_deriv<Q,rank>(inter_result,     frequencies.secondary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint+1);
-            buffer_type result       = ::partial_deriv<Q,rank>(inter_result2,    frequencies.  primary_grid.get_all_auxiliary_gridpoints(), base_class::data.length(), pos_first_freqpoint  );
+            buffer_type inter_result = ::partial_deriv<Q,rank>(base_class::data, pos_first_freqpoint+2);
+            buffer_type inter_result2= ::partial_deriv<Q,rank>(inter_result    , pos_first_freqpoint+1);
+            buffer_type result       = ::partial_deriv<Q,rank>(inter_result2   , pos_first_freqpoint  );
             return result;
         }
 
         auto get_deriv_max() const -> double {
             if constexpr (numberFrequencyDims == 1) {
                 double Kmax = base_class::get_vec().max_norm();
-                double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
-                const buffer_type deriv = get_deriv_x();
+                const buffer_type deriv = get_deriv_x(base_class::data);
                 const vec<Q> deriv_vec = vec<Q>(deriv.begin(), deriv.end());
-                double max = (::power2(deriv_vec * dtb * (1/Kmax))
+                double max = (::power2(deriv_vec * (1/Kmax))
                 ).max_norm();
                 return max;
             }
             else if constexpr (numberFrequencyDims == 2) {
                 double Kmax = base_class::get_vec().max_norm();
-                double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
-                double dtf = frequencies.get_freqGrid_f().get_spacing_auxiliary_gridpoints();
-                double max_K2 = (  ::power2(get_deriv_y() * dtf * (1/Kmax))
-                                 + ::power2(get_deriv_x() * dtb * (1/Kmax))
+                double max_K2 = (  ::power2(get_deriv_y(base_class::data) * (1/Kmax))
+                                 + ::power2(get_deriv_x(base_class::data) * (1/Kmax))
                 ).max_norm();
                 return max_K2;
             }
             else if constexpr (numberFrequencyDims == 3) {
                 double Kmax = base_class::get_vec().max_norm();
-                double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
-                double dtf = frequencies.get_freqGrid_f().get_spacing_auxiliary_gridpoints();
-                double max_K3 = (  ::power2(get_deriv_z() * dtf * (1/Kmax))
-                                 + ::power2(get_deriv_y() * dtf * (1/Kmax))
-                                 + ::power2(get_deriv_x() * dtb * (1/Kmax))
+                double max_K3 = (  ::power2(get_deriv_z(base_class::data) * (1/Kmax))
+                                 + ::power2(get_deriv_y(base_class::data) * (1/Kmax))
+                                 + ::power2(get_deriv_x(base_class::data) * (1/Kmax))
                 ).max_norm();
                 return max_K3;
             }
@@ -301,33 +296,41 @@ class Buffer;
         auto get_curvature_max() const -> double {
             if constexpr (numberFrequencyDims == 1) {
                 double Kmax = base_class::get_vec().max_norm();
-                double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
                 buffer_type curvature = get_deriv_xx();
-                double max = (     ::power2(curvature*dtb*dtb*(1/Kmax))
+                double max = (     ::power2(curvature*(1/Kmax))
                 ).max_norm();
                 return max;
             }
             else if constexpr (numberFrequencyDims == 2) {
-                double Kmax = base_class::get_vec().max_norm();
-                double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
-                double dtf = frequencies.get_freqGrid_f().get_spacing_auxiliary_gridpoints();
-                double max_K2 = (     ::power2(get_deriv_xx()*dtb*dtb*(1/Kmax))
-                                    + ::power2(get_deriv_yy()*dtf*dtf*(1/Kmax))
-                                    +(::power2(get_deriv_xy()*dtb*dtf*(1/Kmax)) )*2.
-                ).max_norm();
+                const double Kmax = base_class::get_vec().max_norm();
+                const buffer_type curvature_xx = get_deriv_xx();
+                const buffer_type deriv_y = get_deriv_y(base_class::data);
+                const buffer_type curvature_yy = get_deriv_y(deriv_y);
+                const buffer_type curvature_xy = get_deriv_x(deriv_y);
+
+                double max_K2 = (     ::power2(curvature_xx)
+                                    + ::power2(curvature_yy)
+                                    + ::power2(curvature_xy) * 2.
+                ).max_norm() / (Kmax*Kmax);
                 return max_K2;
             }
             else if constexpr (numberFrequencyDims == 3) {
                 double Kmax = base_class::get_vec().max_norm();
-                double dtb = frequencies.get_freqGrid_b().get_spacing_auxiliary_gridpoints();
-                double dtf = frequencies.get_freqGrid_f().get_spacing_auxiliary_gridpoints();
-                double max_K3 = (     ::power2(get_deriv_xx()*dtb*dtb*(1/Kmax))
-                                    + ::power2(get_deriv_yy()*dtf*dtf*(1/Kmax))
-                                    + ::power2(get_deriv_zz()*dtf*dtf*(1/Kmax))
-                                    +(::power2(get_deriv_xy()*dtb*dtf*(1/Kmax))
-                                    + ::power2(get_deriv_xz()*dtb*dtf*(1/Kmax))
-                                    + ::power2(get_deriv_yz()*dtf*dtf*(1/Kmax)) )*2.
-                ).max_norm();
+                const buffer_type curvature_xx = get_deriv_xx();
+                const buffer_type deriv_y = get_deriv_y(base_class::data);
+                const buffer_type curvature_yy = get_deriv_y(deriv_y);
+                const buffer_type curvature_xy = get_deriv_x(deriv_y);
+                const buffer_type deriv_z = get_deriv_z(base_class::data);
+                const buffer_type curvature_zz = get_deriv_z(deriv_z);
+                const buffer_type curvature_xz = get_deriv_x(deriv_z);
+                const buffer_type curvature_yz = get_deriv_y(deriv_z);
+                double max_K3 = (     ::power2(curvature_xx)
+                                    + ::power2(curvature_yy)
+                                    + ::power2(curvature_zz)
+                                    +(::power2(curvature_xy)
+                                    + ::power2(curvature_xz)
+                                    + ::power2(curvature_yz) )*2.
+                ).max_norm() / (Kmax*Kmax);
                 return max_K3;
             }
             else assert(false);
@@ -401,7 +404,7 @@ class Buffer;
             vec<double> maxabs_along_w = maxabs(base_class::data, base_class::data.length(), pos_first_freqpoint) * (1 / maxmax);
 
             const double wmax_old = frequencies_new.  primary_grid.w_upper;
-            frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
+            //frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
         if (verbose and mpi_world_rank() == 0)
             std::cout << "Shrinking frequency box in direction w from " << wmax_old << " to " << frequencies_new.  primary_grid.w_upper << std::endl;
 
@@ -416,11 +419,11 @@ class Buffer;
 
             const double wmax_old = frequencies_new.  primary_grid.w_upper;
             const double vmax_old = frequencies_new.secondary_grid.w_upper;
-            frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
+            //frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
             if (verbose and mpi_world_rank() == 0)
                 std::cout << "Shrinking frequency box in direction w from " << wmax_old << " to " << frequencies_new.  primary_grid.w_upper << std::endl;
             if (GRID != 2) {
-                frequencies_new.secondary_grid = shrink_freq_box_impl(frequencies.secondary_grid, rel_tail_threshold, maxabs_along_v, verbose);
+                //frequencies_new.secondary_grid = shrink_freq_box_impl(frequencies.secondary_grid, rel_tail_threshold, maxabs_along_v, verbose);
                 if (verbose and mpi_world_rank() == 0)
                     std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.secondary_grid.w_upper << std::endl;
             }
@@ -438,14 +441,14 @@ class Buffer;
             const double wmax_old = frequencies_new.  primary_grid.w_upper;
             const double vmax_old = frequencies_new.secondary_grid.w_upper;
             const double vpmax_old= frequencies_new. tertiary_grid.w_upper;
-            frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
+            //frequencies_new.  primary_grid = shrink_freq_box_impl(frequencies.  primary_grid, rel_tail_threshold, maxabs_along_w, verbose);
             if (verbose and mpi_world_rank() == 0)
                 std::cout << "Shrinking frequency box in direction w from " << wmax_old << " to " << frequencies_new.  primary_grid.w_upper << std::endl;
             if (GRID != 2) {
-                frequencies_new.secondary_grid = shrink_freq_box_impl(frequencies.secondary_grid, rel_tail_threshold, maxabs_along_v, verbose);
+                //frequencies_new.secondary_grid = shrink_freq_box_impl(frequencies.secondary_grid, rel_tail_threshold, maxabs_along_v, verbose);
                 if (verbose and mpi_world_rank() == 0)
                     std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.secondary_grid.w_upper << std::endl;
-                frequencies_new.tertiary_grid = shrink_freq_box_impl(frequencies.tertiary_grid, rel_tail_threshold, maxabs_along_vp, verbose);
+                //frequencies_new.tertiary_grid = shrink_freq_box_impl(frequencies.tertiary_grid, rel_tail_threshold, maxabs_along_vp, verbose);
                 if (verbose and mpi_world_rank() == 0)
                     std::cout << "Shrinking frequency box in direction v from " << vmax_old << " to " << frequencies_new.tertiary_grid.w_upper << std::endl;
             }

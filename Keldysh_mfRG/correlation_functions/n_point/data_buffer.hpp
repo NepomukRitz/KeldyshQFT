@@ -571,31 +571,28 @@ namespace {
         auto operator()(double wscale_test) -> double {
             // cost function for resolution  =  curvature + magnitude in the tails
 
-            if constexpr(std::is_same_v<freqGrid_type,FrequencyGrid<eliasGrid>>) {
-                //double tail_height;
-                if constexpr(direction == 'b')
-                {
+            if constexpr(direction == 'b') {
+                if constexpr(std::is_same_v<typename freqGrid_type::grid_type1,FrequencyGrid<eliasGrid>>) {
                     frequencies.primary_grid.update_Wscale(wscale_test);
-                    //tail_height = buffer.template analyze_tails<0>(1);
                 }
-                else {
-                    frequencies.secondary_grid.update_Wscale(wscale_test);
-                    frequencies.tertiary_grid.update_Wscale(wscale_test);
-                    //tail_height = buffer.template analyze_tails<1>(1);
+                else if constexpr(std::is_same_v<typename freqGrid_type::grid_type2,FrequencyGrid<angularGrid>>) {
+                        frequencies.primary_grid.update_power(wscale_test);
+
                 }
             }
-            else if constexpr(std::is_same_v<freqGrid_type,FrequencyGrid<angularGrid>>) {
-                if constexpr(direction == 'b')
-                {
-                    frequencies.primary_grid.update_power(wscale_test);
-                    //tail_height = buffer.template analyze_tails<0>(1);
+            else { // direction == 'f':
+                if constexpr(std::is_same_v<typename freqGrid_type::grid_type2,FrequencyGrid<eliasGrid>>) {
+                        frequencies.secondary_grid.update_Wscale(wscale_test);
+                        frequencies.tertiary_grid.update_Wscale(wscale_test);
                 }
-                else {
-                    frequencies.secondary_grid.update_power(wscale_test);
-                    frequencies.tertiary_grid.update_power(wscale_test);
-                    //tail_height = buffer.template analyze_tails<1>(1);
+                else if constexpr(std::is_same_v<typename freqGrid_type::grid_type2,FrequencyGrid<angularGrid>>) {
+                        frequencies.secondary_grid.update_power(wscale_test);
+                        frequencies.tertiary_grid.update_power(wscale_test);
                 }
             }
+
+
+
 
             //assert(false);
             buffer.update_grid(frequencies, buffer_backup);
@@ -690,6 +687,7 @@ public:
         const dimensions_type dims = base_class::get_dims();
         const size_t flatsize = getFlatSize<rank>(dims);
         buffer_type data_new (dims);  // temporary data vector
+#pragma omp parallel
         for (my_index_t iflat=0; iflat < flatsize; ++iflat) {
             index_type idx;
             std::array<my_index_t, numberFrequencyDims> i_freqs;
@@ -797,10 +795,17 @@ public:
     }
 
     void check_if_frequencyGrid_identical(const this_class &rhs) const {
-        assert((base_class::frequencies.primary_grid.get_all_frequencies() - rhs.frequencies.primary_grid.get_all_frequencies()).max_norm() < 1e-10);
-        if constexpr (numberFrequencyDims > 1) {
-            assert((base_class::frequencies.secondary_grid.get_all_frequencies() - rhs.frequencies.secondary_grid.get_all_frequencies()).max_norm() < 1e-10);
+#if not NDEBUG
+        if ((base_class::frequencies.primary_grid.get_all_frequencies() - rhs.frequencies.primary_grid.get_all_frequencies()).max_norm() > 1e-10) {
+            throw std::runtime_error("Arithmetic operations involving databuffers with different frequency grids are forbidden.");
         }
+        if constexpr (numberFrequencyDims > 1) {
+
+            if((base_class::frequencies.secondary_grid.get_all_frequencies() - rhs.frequencies.secondary_grid.get_all_frequencies()).max_norm() > 1e-10) {
+                throw std::runtime_error("Arithmetic operations involving databuffers with different frequency grids are forbidden.");
+            }
+        }
+#endif
     }
 
     auto operator+= (const this_class& rhs) -> this_class {check_if_frequencyGrid_identical(rhs); base_class::data += rhs.data; return *this;}
