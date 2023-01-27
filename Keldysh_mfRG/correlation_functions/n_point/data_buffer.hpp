@@ -795,7 +795,7 @@ public:
     }
 
     void check_if_frequencyGrid_identical(const this_class &rhs) const {
-#if not NDEBUG
+#if not defined(NDEBUG)
         if ((base_class::frequencies.primary_grid.get_all_frequencies() - rhs.frequencies.primary_grid.get_all_frequencies()).max_norm() > 1e-10) {
             throw std::runtime_error("Arithmetic operations involving databuffers with different frequency grids are forbidden.");
         }

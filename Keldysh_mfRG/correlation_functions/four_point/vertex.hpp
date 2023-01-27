@@ -726,7 +726,7 @@ private:
             //utils::print("expanded spin component ", ispin, "\n");
         }
 
-#if SBE_DECOMPOSITION or not KELDYSH_FORMALISM  // for Keldysh runs in non-SBE decomposition we want to have adaptive frequency grids => adding up buffers with different grids is bogus.
+//#if SBE_DECOMPOSITION or not KELDYSH_FORMALISM  // for Keldysh runs in non-SBE decomposition we want to have adaptive frequency grids => adding up buffers with different grids is bogus.
         ///construct up-up spin component:
         vertices_expanded_target[2] = vertices_expanded_target[0];
         vertices_expanded_target[2].irred *= 0. ;
@@ -744,7 +744,7 @@ private:
                 vertices_expanded_target[2].get_rvertex(r).K3_symmetry_expanded += vertices_expanded_target[1].get_rvertex(r).K3_symmetry_expanded;
             }
         }
-#endif
+//#endif
     }
 
 
