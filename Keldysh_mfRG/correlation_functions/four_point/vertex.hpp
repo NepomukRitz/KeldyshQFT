@@ -1272,7 +1272,7 @@ template <typename Q> template<char ch_bubble, bool r_irred>auto fullvert<Q>::le
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (input.channel) {
+        switch (ch_bubble) {
             case 'a':
                 K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
                           + tvertex.template valsmooth<k1>(input_at, avertex);
@@ -1310,7 +1310,7 @@ template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::l
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (input.channel) {
+        switch (ch_bubble) {
             case 'a':
                 K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
                           + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
@@ -1344,12 +1344,12 @@ template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::r
 
 #ifdef STATIC_FEEDBACK
     if (MAX_DIAG_CLASS <= 1) {
-        VertexInput& input_p = input;
-        VertexInput& input_at = input;
+        VertexInput input_p = input;
+        VertexInput input_at = input;
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (input.channel) {
+        switch (ch_bubble) {
             case 'a':
                 K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
                          + tvertex.template valsmooth<k1>(input_at, avertex);
@@ -1387,7 +1387,7 @@ template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::r
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (input.channel) {
+        switch (ch_bubble) {
             case 'a':
                 K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex, right_vertex)
                          + tvertex.template valsmooth<k1>(input_at, avertex, right_vertex);
@@ -1540,6 +1540,39 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
     }
 }
 template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::left_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
+#ifdef STATIC_FEEDBACK
+    if (MAX_DIAG_CLASS <= 1) {
+        VertexInput input_p = input;
+        VertexInput input_at = input;
+        input_p.w = 2 * glb_mu;
+        input_at.w = 0.;
+
+        const result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
+        if constexpr(r_irred)
+            return gamma0;
+
+        result_type K1_K2b;
+        switch (ch_bubble) {
+            case 'a':
+                K1_K2b = pvertex.template left_same_bare_symmetry_expanded<result_type>(input_p)
+                          + tvertex.template left_same_bare_symmetry_expanded<result_type>(input_at);
+                K1_K2b += avertex.template left_same_bare_symmetry_expanded<result_type>(input);
+                break;
+            case 'p':
+                K1_K2b = avertex.template left_same_bare_symmetry_expanded<result_type>(input_at)
+                          + tvertex.template left_same_bare_symmetry_expanded<result_type>(input_at);
+                K1_K2b += pvertex.template left_same_bare_symmetry_expanded<result_type>(input);
+                break;
+            case 't':
+                K1_K2b = avertex.template left_same_bare_symmetry_expanded<result_type>(input_at)
+                          + pvertex.template left_same_bare_symmetry_expanded<result_type>(input_p);
+                K1_K2b += tvertex.template left_same_bare_symmetry_expanded<result_type>(input);
+                break;
+            default: assert(false);
+        }
+        return gamma0 + K1_K2b;
+    }
+#else
     if (SBE_DECOMPOSITION) {
         if constexpr (r_irred) {return myzero<result_type>();}
 
@@ -1558,33 +1591,42 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
         else
             assert(false);
     }
+#endif
+}
+template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
 #ifdef STATIC_FEEDBACK
-    assert(false): /// Needs to be checked
     if (MAX_DIAG_CLASS <= 1) {
         VertexInput input_p = input;
         VertexInput input_at = input;
         input_p.w = 2 * glb_mu;
         input_at.w = 0.;
 
-        switch (input.channel) {
+        const result_type gamma0 = irred.template val<result_type>(input.iK, input.i_in, input.spin);
+        if constexpr(r_irred)
+            return gamma0;
+
+        result_type K1_K2b;
+        switch (ch_bubble) {
             case 'a':
-                K1_K2b += pvertex.template valsmooth<k1>(input_p, pvertex)
-                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                K1_K2b = pvertex.template right_same_bare_symmetry_expanded<result_type>(input_p)
+                         + tvertex.template right_same_bare_symmetry_expanded<result_type>(input_at);
+                K1_K2b += avertex.template right_same_bare_symmetry_expanded<result_type>(input);
                 break;
             case 'p':
-                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
-                          + tvertex.template valsmooth<k1>(input_at, avertex);
+                K1_K2b = avertex.template right_same_bare_symmetry_expanded<result_type>(input_at)
+                         + tvertex.template right_same_bare_symmetry_expanded<result_type>(input_at);
+                K1_K2b += pvertex.template right_same_bare_symmetry_expanded<result_type>(input);
                 break;
             case 't':
-                K1_K2b += avertex.template valsmooth<k1>(input_at, tvertex)
-                          + pvertex.template valsmooth<k1>(input_p, pvertex);
+                K1_K2b = avertex.template right_same_bare_symmetry_expanded<result_type>(input_at)
+                         + pvertex.template right_same_bare_symmetry_expanded<result_type>(input_p);
+                K1_K2b += tvertex.template right_same_bare_symmetry_expanded<result_type>(input);
                 break;
-            default:;
+            default: assert(false);
         }
+        return gamma0 + K1_K2b;
     }
-#endif
-}
-template <typename Q> template<char ch_bubble, typename result_type, bool r_irred> auto fullvert<Q>::right_same_bare_symmetry_expanded(const VertexInput& input) const  -> result_type{
+#else
     if constexpr (SBE_DECOMPOSITION) {
         if constexpr (r_irred) {return myzero<result_type>();}
 
@@ -1601,30 +1643,6 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
         if constexpr     (ch_bubble == 'a') { result_type K1_K2 = avertex.template right_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2;}
         else if constexpr(ch_bubble == 'p') { result_type K1_K2 = pvertex.template right_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2;}
         else {static_assert(ch_bubble == 't', "Has to be t channel."); result_type K1_K2 = tvertex.template right_same_bare_symmetry_expanded<result_type>(input); return gamma0 + K1_K2;}
-    }
-#ifdef STATIC_FEEDBACK
-    assert(false); // Check this!
-    if (MAX_DIAG_CLASS <= 1) {
-        VertexInput& input_p = input;
-        VertexInput& input_at = input;
-        input_p.w = 2 * glb_mu;
-        input_at.w = 0.;
-
-        switch (input.channel) {
-            case 'a':
-                K1_K2 += pvertex.template valsmooth<k1>(input_p, pvertex)
-                         + tvertex.template valsmooth<k1>(input_at, avertex);
-                break;
-            case 'p':
-                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
-                         + tvertex.template valsmooth<k1>(input_at, avertex);
-                break;
-            case 't':
-                K1_K2 += avertex.template valsmooth<k1>(input_at, tvertex)
-                         + pvertex.template valsmooth<k1>(input_p, pvertex);
-                break;
-            default:;
-        }
     }
 #endif
 

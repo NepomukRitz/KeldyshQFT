@@ -71,7 +71,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
 
     compare_with_FDTs(state_ini.vertex, Lambda_ini, 0, outputFileName, frgConfig, false, frgConfig.nODE_ + U_NRG.size() + 1);
 
-    std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG, frgConfig);
+    std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_over_pi_NRG, frgConfig);
 
     rhs_n_loop_flow_t<state_datatype> rhs_mfrg(frgConfig);
     ODE_solver_config config;// = ODE_solver_config_standard;
@@ -133,7 +133,7 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         //state_ini.findBestFreqGrid(true);
         //state_ini.vertex.half1().check_vertex_resolution();
 
-        std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG, frgConfig);
+        std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_over_pi_NRG, frgConfig);
 
 
 //        compare_with_FDTs(state_ini.vertex, Lambda_now, 0, inputFileName, true, frgConfig.nODE_ + U_NRG.size() + 1);

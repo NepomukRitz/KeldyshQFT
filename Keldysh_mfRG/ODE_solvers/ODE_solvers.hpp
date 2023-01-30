@@ -30,6 +30,7 @@ void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_
         if constexpr(KELDYSH) check_FDTs(y_run, verbose); // check FDTs for Sigma and K1r at each step of the flow
 
         /// Try to converge the parquet equations at this point.
+        /**
         const double Delta = (y_run.config.Gamma + x_run) * 0.5;
         double U_over_Delta = y_run.config.U / Delta;
         std::string parquet_filename = data_dir + "parquet4fRG_U_over_Delta=" + std::to_string(U_over_Delta) + "_T=" + std::to_string(y_run.config.T) + "_eVg=" + std::to_string(y_run.config.epsilon+y_run.config.U*0.5) + ".h5";;
@@ -39,7 +40,7 @@ void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_
         if (filename != "") {
             const bool is_converged = std::abs(x_run - config.Lambda_f) <= 1e-10 * (1 + std::abs(config.Lambda_f));
             add_state_to_hdf(filename, iteration + 1, y_run, is_converged); // save result to hdf5 file
-        }
+        }*/
         #ifdef ADAPTIVE_GRID
                 y_run.findBestFreqGrid(true);
             y_run.analyze_tails();

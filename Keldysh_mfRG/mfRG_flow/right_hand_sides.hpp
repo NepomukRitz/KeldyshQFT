@@ -195,8 +195,8 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     SelfEnergy<Q> bareSelfEnergy (Psi.selfenergy.Sigma.frequencies);
     bareSelfEnergy.initialize(config.U/2., 0.);
 
-    Propagator<Q> S (Lambda, bareSelfEnergy, 's');
-    Propagator<Q> G (Lambda, bareSelfEnergy, 'g');
+    Propagator<Q> S (Lambda, bareSelfEnergy, 's', Psi.config);
+    Propagator<Q> G (Lambda, bareSelfEnergy, 'g', Psi.config);
 #endif
 
     ///For flow without self-energy, comment out this line
@@ -216,17 +216,17 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     do {
 #endif
 
-#ifndef STATIC_FEEDBACK
+#ifndef BARE_SE_FEEDBACK
 #ifdef KATANIN
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k', Psi.config);
 #else
-    Propagator<Q> dG (Lambda, Psi.selfenergy, 's');
+    Propagator<Q> dG (Lambda, Psi.selfenergy, 's', Psi.config);
 #endif // KATANIN
     //Run alternatively, for no self-energy feedback
 //    Propagator<Q> dG (Lambda, Psi.selfenergy, 's');
 #else
-    Propagator<Q> dG (Lambda, bareSelfEnergy, 's');
-#endif // STATIC_FEEDBACK
+    Propagator<Q> dG (Lambda, bareSelfEnergy, 's', Psi.config);
+#endif // BARE_SE_FEEDBACK
 
     // Initialize bubble objects;
 #ifdef HUBBARD // Use precalculated bubble in this case

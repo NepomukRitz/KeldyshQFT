@@ -1196,7 +1196,7 @@ class TestIntegrandK1a{
 
     void save_integrand(double vmax) {
         int npoints = 1e5;
-        FrequencyGrid bfreqs('b', 1, Lambda, stdConfig);
+        FrequencyGrid<eliasGrid> bfreqs('b', 1, Lambda, stdConfig);
         rvec freqs (npoints);
 
         rvec integrand_re (npoints);
@@ -3028,7 +3028,7 @@ auto rhs_channel_decomposition(const State<Q>& Psi, const double Lambda) -> Stat
  * and modified self-energy feedback (only static level shift to avoid overbroadening of spectral features).
  * Only correct if parameter STATIC_FEEDBACK is defined.
  * @param N_ODE : number of Runge-Kutta ODE iterations
- */
+
 template <typename Q>
 void test_channel_decomposition(int N_ODE) {
     State<Q> state_ini, state_fin;   // create initial and final state
@@ -3046,7 +3046,7 @@ void test_channel_decomposition(int N_ODE) {
                           state_ini.selfenergy.Sigma.real(), state_ini.selfenergy.Sigma.imag()});
 
     write_state_to_hdf("channel_decomposition.h5", 0, 1, state_fin);
-}
+}*/
 #endif
 
 #endif //KELDYSH_MFRG_TESTFUNCTIONS_H
