@@ -957,9 +957,6 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
     /// TODO: Currently copies frequency_grid of same rvertex; but might actually need the frequency grid of conjugate channel
     assert(0 <= spin and spin < 2);
     K1_symmetry_expanded = buffer_type_K1(0., K1_expanded_config.dims, fRG_config());
-    K2_symmetry_expanded = buffer_type_K2(0., K2_expanded_config.dims, fRG_config());
-    K2b_symmetry_expanded = buffer_type_K2b (0., K2_expanded_config.dims, fRG_config());
-    K3_symmetry_expanded = buffer_type_K3(0., K3_expanded_config.dims, fRG_config());
     if (spin == 0) {
         K1_symmetry_expanded.set_VertexFreqGrid(rvert_this.K1.get_VertexFreqGrid());
         K2_symmetry_expanded.set_VertexFreqGrid(rvert_this.K2.get_VertexFreqGrid());
@@ -1006,6 +1003,8 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
 
 
     if (MAX_DIAG_CLASS > 1) {
+        K2_symmetry_expanded = buffer_type_K2(0., K2_expanded_config.dims, fRG_config());
+        K2b_symmetry_expanded = buffer_type_K2b (0., K2_expanded_config.dims, fRG_config());
         // K2:
 #pragma omp parallel for schedule(dynamic, 50)
         for (my_index_t iflat = 0; iflat < getFlatSize(K2_symmetry_expanded.get_dims()); iflat++) {
@@ -1061,6 +1060,7 @@ template<typename Q> template<char channel_bubble, bool is_left_vertex> void rve
     }
 
     if (MAX_DIAG_CLASS > 2) {
+        K3_symmetry_expanded = buffer_type_K3(0., K3_expanded_config.dims, fRG_config());
         // K3:
 #pragma omp parallel for schedule(dynamic, 50)
         for (my_index_t iflat = 0; iflat < getFlatSize(K3_symmetry_expanded.get_dims()); iflat++) {
