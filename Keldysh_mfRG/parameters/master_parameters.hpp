@@ -42,7 +42,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 1
+#define MAX_DIAG_CLASS 3
 #define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1      // mfRG equations for SBE approximation. Only relevant when SBE_DECOMOSITION == 1.
 
@@ -58,7 +58,7 @@ const double loop_tol_rel = 1e-5;
 
 // If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
 // Only makes sense for pure K1 calculations.
-#define STATIC_FEEDBACK
+//#define STATIC_FEEDBACK
 #ifdef STATIC_FEEDBACK
 //#define BARE_SE_FEEDBACK // use only bare selfenergy. Only makes sense if STATIC_FEEDBACK is defined!
 #endif
@@ -140,8 +140,8 @@ constexpr double dLambda_initial = 0.5;             //Initial step size for ODE 
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
 // Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
 const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};
-const std::vector<double> U_over_pi_NRG {0.05*M_PI, 0.1*M_PI, 0.2*M_PI, 0.25*M_PI, 0.5*M_PI, 0.75*M_PI, 1.*M_PI,
-                                         1.2*M_PI, 1.25*M_PI, 1.5*M_PI, 1.75*M_PI, 2.*M_PI, 2.25*M_PI, 2.5*M_PI};
+const std::vector<double> U_over_pi_NRG {0.05*M_PI, 0.1*M_PI, 0.2*M_PI, 0.25*M_PI, 1.0, 1.5, 0.5*M_PI, 0.75*M_PI, 2.5,
+                                         1.*M_PI, 1.2*M_PI, 1.25*M_PI, 1.5*M_PI, 1.75*M_PI, 2.*M_PI, 2.25*M_PI, 2.5*M_PI};
 
 #else
 const std::vector<double> U_NRG {};

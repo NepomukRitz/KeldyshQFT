@@ -75,7 +75,8 @@ auto main(int argc, char * argv[]) -> int {
     if (n_loops == 0){ /// parquet runs:
         // {5./M_PI*0.5};
 
-        const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1., 1.25, 1.50, 1.75, 2.0, 2.25, 2.5};
+        //const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1., 1.25, 1.50, 1.75, 2.0, 2.25, 2.5};
+        const std::vector<double> myU_NRG {0.375*M_PI, 0.5*M_PI, 0.75*M_PI};
         //run_parquet(config, myU_NRG, 1, true);
         run_parquet(config, myU_NRG, 2, true);
         //run_parquet(config, myU_NRG, 3, true);

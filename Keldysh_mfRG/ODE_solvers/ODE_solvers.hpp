@@ -37,10 +37,11 @@ void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_
         const bool converged = parquet_solver(parquet_filename, y_run, x_run, 2, 1e-6, 100, true, 0.5);
         if (not converged) utils::print("WARNING! THE PARQUET SOLVER DID NOT CONVERGE!!", true);
 
+        */
         if (filename != "") {
             const bool is_converged = std::abs(x_run - config.Lambda_f) <= 1e-10 * (1 + std::abs(config.Lambda_f));
             add_state_to_hdf(filename, iteration + 1, y_run, is_converged); // save result to hdf5 file
-        }*/
+        }
         #ifdef ADAPTIVE_GRID
                 y_run.findBestFreqGrid(true);
             y_run.analyze_tails();
