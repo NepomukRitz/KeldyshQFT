@@ -138,10 +138,12 @@ constexpr double dLambda_initial = 0.5;             //Initial step size for ODE 
 
 #if REG == 2
 // Vector with the values of U for which we have NRG data to compare with (exclude zero!)
-// Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large!
-const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};
-const std::vector<double> U_over_pi_NRG {0.05*M_PI, 0.1*M_PI, 0.2*M_PI, 0.25*M_PI, 1.0, 1.5, 0.5*M_PI, 0.75*M_PI, 2.5,
-                                         1.*M_PI, 1.2*M_PI, 1.25*M_PI, 1.5*M_PI, 1.75*M_PI, 2.*M_PI, 2.25*M_PI, 2.5*M_PI};
+// Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large! /// Not anymore!
+//const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};
+const std::vector<double> U_NRG {0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0, 0.4*M_PI, 1.5,
+                                 0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5, 0.8*M_PI, 0.9*M_PI, 3.0,
+                                 1.0*M_PI, 1.1*M_PI, 3.5, 1.2*M_PI, 1.25*M_PI, 4.0, 1.3*M_PI, 1.4*M_PI, 4.5,
+                                 1.5*M_PI, 5.0};
 
 #else
 const std::vector<double> U_NRG {};

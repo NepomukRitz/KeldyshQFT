@@ -26,8 +26,8 @@ constexpr int nFER = 401 - (KELDYSH_FORMALISM ? 0 : 1);
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 201;//nBOS;
 constexpr int nFER2 = 201 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
-constexpr int nBOS3 = 101; //nBOS;
-constexpr int nFER3 = 101 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
+constexpr int nBOS3 = 51; //nBOS;
+constexpr int nFER3 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
 //#else
 const int COUNT = 32;
 //constexpr int nBOS = COUNT *  4 * 2 + 1;

@@ -16,7 +16,7 @@ rvec flowgrid::get_Lambda_checkpoints(const std::vector<double>& Us, const fRG_c
 #if REG == 2
     size_t n = Us.size();
     for (unsigned int i = 0; i < n; i++){
-        double y = config.U / Us[i] - config.Gamma;   //Value of Lambda for given Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
+        double y = 2.0 * config.U / Us[i] - config.Gamma;   //Value of Lambda for given Gamma, that ensures that energy scale U/Delta corresponds with available NRG data
 
         if(y<0){
             break;
