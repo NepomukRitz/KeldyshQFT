@@ -44,6 +44,8 @@ public:
     void set_frequency_grid(const SelfEnergy<Q> selfEnergy);
     auto norm(int p) const -> double;
     auto norm() const -> double;
+    auto rel_deviation_to(const SelfEnergy<Q>& base) const -> double;
+
     auto get_selfenergy_vector_incl_hartree() const ->  Eigen::Array<Q, Eigen::Dynamic, 1> {
         Eigen::Array<Q, Eigen::Dynamic, 1> result = Sigma.get_vec().elements;
         result.head(nFER) += asymp_val_R;
@@ -362,6 +364,10 @@ template <typename Q> auto SelfEnergy<Q>::norm(const int p) const -> double {
 template <typename Q> auto SelfEnergy<Q>::norm() const -> double {
     return this->norm(0);
 }
+template <typename Q> auto SelfEnergy<Q>::rel_deviation_to(const SelfEnergy<Q>& base) const -> double {
+    return std::max(Sigma.get_vec().max_norm() / base.Sigma.get_vec().max_norm(), std::abs(asymp_val_R / base.asymp_val_R));
+}
+
 
 template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) const -> double {
     //vec<Q> Sigma_temp = Sigma;

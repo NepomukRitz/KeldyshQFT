@@ -105,7 +105,7 @@ void run_parquet(const fRG_config& config, const std::vector<double>& U_NRG_list
         sopt_state(state);
         const double Delta = (config.Gamma + Lambda) * 0.5;
         double U_over_Delta = config.U / Delta;
-        const std::string parquet_filename_pre = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_T=" + std::to_string(config.T) + "_eVg=" + std::to_string(config.epsilon+config.U*0.5) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3);
+        const std::string parquet_filename_pre = data_dir + "parquetInit4_U_over_Delta=" + std::to_string(U_over_Delta) + "_T=" + std::to_string(config.T) + "_eVg=" + std::to_string(config.epsilon+config.U*0.5) + "_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + "_version" + std::to_string(version);
         const std::string parquet_filename_all = parquet_filename_pre + ".h5";
         const std::string parquet_filename_fin = parquet_filename_pre + "_final.h5";
 //state = read_state_from_hdf(parquet_filename, 30);

@@ -205,7 +205,6 @@ void compute_SDE_impl_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, con
 template <typename Q>
 void compute_SDE_v1(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, const fRG_config& config) {
 
-    assert(!KELDYSH_FORMALISM); /// TODO: There are still issues with the symmetries in Keldysh
                                 /// Problem: To read out certain Keldysh components we use the transformations T1 and T2 (exchange symmetry)
                                 /// This switches between the channels a and t ==> We cannot split up the a- and the t-channel
                                 /// Rather, we would need to compute the intermediate bubble both in the a- and the t-channel
@@ -424,10 +423,13 @@ void compute_SDE_v3(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     /// Save results via a- and p-channel separately:
     //State<Q,false> Psi_a = state_in;
     //State<Q,false> Psi_p = state_in;
+    //State<Q,false> Psi_t = state_in;
     //Psi_a.selfenergy = Sigma_SDE_a;
     //Psi_p.selfenergy = Sigma_SDE_p;
+    //Psi_t.selfenergy = Sigma_SDE_t;
     //add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
     //add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
+    //add_state_to_hdf(data_dir + "Psi_SDE_t.h5", SDE_counter + 1, Psi_t, true);
 }
 
 
@@ -638,6 +640,7 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
 
     utils::print("Compute SDE:\n");
     compute_SDE(state_out.selfenergy, state_in, Lambda, version);  // compute the self-energy via the SDE
+    //state_out.selfenergy = state_in.selfenergy; // uncomment if you don't wanna update selfenergy
 }
 
 /**
@@ -719,8 +722,8 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
 
         /// for testing:
         if (false) {
-            GeneralVertex<Q,symmetric_r_irred,false> Ir(state_in.vertex.half1());     // irreducible vertex
-
+            GeneralVertex<Q,symmetric_r_irred,false> Ir(state_in.vertex.half1(), state_in.config);     // irreducible vertex
+            /*
             state_in.vertex.template symmetry_expand<'a',false,true>();
             state_in.vertex.save_expanded(data_dir + "Psi_"+ std::to_string(iteration) +"_symmetry_expanded_for_a_left_");
             Ir.template symmetry_expand<'a',true,true>();
@@ -730,7 +733,7 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
             state_in.vertex.save_expanded(data_dir + "Psi_" + std::to_string(iteration) + "_symmetry_expanded_for_p_left_");
             Ir.template symmetry_expand<'p',true,true>();
             Ir.save_expanded(data_dir + "Ir_" + std::to_string(iteration) + "_symmetry_expanded_for_p_left_");
-
+            */
             state_in.vertex.template symmetry_expand<'t',false,true>();
             state_in.vertex.save_expanded(data_dir + "Psi_" + std::to_string(iteration) + "_symmetry_expanded_for_t_left_");
             Ir.template symmetry_expand<'t',true,true>();
@@ -763,7 +766,7 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
 
         // compute relative differences between input and output w.r.t. output
         const double relative_difference_vertex = state_diff.vertex.norm() / state_out.vertex.norm();
-        const double relative_difference_selfenergy = state_diff.selfenergy.norm    () / state_out.selfenergy.norm();
+        const double relative_difference_selfenergy = state_diff.selfenergy.rel_deviation_to(state_out.selfenergy);
         const double relative_difference = std::max(relative_difference_selfenergy, relative_difference_vertex);
         relative_deviation_history.push_back(relative_difference);
         if (std::size(relative_deviation_history) > Nmax_history) {relative_deviation_history.pop_front();}

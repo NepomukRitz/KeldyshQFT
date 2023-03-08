@@ -456,7 +456,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             record_of_intermediate_results.dSigma_correction = Psi_SEcorrection;
 
             selfenergy_correction_abs = selfEnergy_err.norm();
-            selfenergy_correction_rel = selfEnergy_err.norm() / dPsi.selfenergy.norm();
+            selfenergy_correction_rel = selfEnergy_err.rel_deviation_to(dPsi.selfenergy);
             State<Q> state_self_diffrel(Lambda, Psi.config);
             state_self_diffrel.selfenergy = selfEnergy_err * (1./ dPsi.selfenergy.norm());
 
@@ -490,7 +490,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
                 const SelfEnergy<Q> selfenergy_diff = dPsi.selfenergy - dSigma_SDE;
 
                 const double norm_compare =  dPsi.selfenergy.norm(0);
-                diff = selfenergy_diff.norm(0) / (norm_compare < 1e-10 ? 1 : norm_compare);
+                diff = norm_compare < 1e-10 ? 1 : selfenergy_diff.rel_deviation_to(dPsi.selfenergy);
 
                 utils::print("SDE iteration ", iteration_SDE ," \t relative change : ", diff, "\n");
                 iteration_SDE++;
@@ -513,7 +513,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
             record_of_intermediate_results.dSigma_correction = Psi_SDE_diff_documentation;
 
             selfenergy_correction_abs = Psi_SDE_diff_documentation.selfenergy.norm();
-            selfenergy_correction_rel = Psi_SDE_diff_documentation.selfenergy.norm() / dPsi.selfenergy.norm();
+            selfenergy_correction_rel = Psi_SDE_diff_documentation.selfenergy.rel_deviation_to(dPsi.selfenergy);
 
 
             //TODO(low): Implement self-energy iterations (see lines 37-39 of pseudo-code).
