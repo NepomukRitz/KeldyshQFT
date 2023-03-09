@@ -722,7 +722,7 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
     while (unfinished) {
 
         /// for testing:
-        if (false) {
+        if constexpr (false) {
             GeneralVertex<Q,symmetric_r_irred,false> Ir(state_in.vertex.half1());     // irreducible vertex
 
             state_in.vertex.template symmetry_expand<'a',false,true>();

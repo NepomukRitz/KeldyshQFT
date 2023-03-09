@@ -42,7 +42,7 @@ auto main(int argc, char * argv[]) -> int {
 
     ///fRG runs:
     fRG_config config;
-    config.nODE_ = 50;
+    config.nODE_ = 81;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
@@ -77,9 +77,9 @@ auto main(int argc, char * argv[]) -> int {
         // {5./M_PI*0.5};
 
         //const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1., 1.25, 1.50, 1.75, 2.0, 2.25, 2.5};
-        const std::vector<double> myU_NRG {0.375*M_PI, 0.5*M_PI, 0.75*M_PI};
-        //run_parquet(config, myU_NRG, 1, true);
-        run_parquet(config, myU_NRG, 2, true);
+        const std::vector<double> myU_NRG {0.1, 0.2, 0.3, 0.4, 0.5};
+        run_parquet(config, myU_NRG, 1, true);
+        //run_parquet(config, myU_NRG, 2, true);
         //run_parquet(config, myU_NRG, 3, true);
     }
     if (n_loops == -1){ /// perturbation theory to fourth order:
@@ -89,10 +89,11 @@ auto main(int argc, char * argv[]) -> int {
         }
     }
     if (n_loops == -2){ /// plain and simple second order perturbation theory
-        const std::vector<double> U_over_Delta_list {0.1, 0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0,
-                                                     0.4*M_PI, 1.5, 0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5,
-                                                     0.8*M_PI, 0.9*M_PI, 3.0, 1.0*M_PI, 1.1*M_PI, 3.5, 1.2*M_PI,
-                                                     1.25*M_PI, 4.0, 1.3*M_PI, 1.4*M_PI, 4.5, 1.5*M_PI, 5.0};
+        //const std::vector<double> U_over_Delta_list {0.1, 0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0,
+        //                                             0.4*M_PI, 1.5, 0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5,
+        //                                             0.8*M_PI, 0.9*M_PI, 3.0, 1.0*M_PI, 1.1*M_PI, 3.5, 1.2*M_PI,
+        //                                             1.25*M_PI, 4.0, 1.3*M_PI, 1.4*M_PI, 4.5, 1.5*M_PI, 5.0};
+        const std::vector<double> U_over_Delta_list {0.1, 0.2, 0.3, 0.4, 0.5};
         for (double U_over_Delta: U_over_Delta_list) {
             const double Lambda = 2. / U_over_Delta * config.U - config.Gamma;
             State<state_datatype> state (Lambda, config);   // create final and initial state
