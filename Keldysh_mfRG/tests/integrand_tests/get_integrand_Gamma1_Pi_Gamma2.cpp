@@ -11,7 +11,7 @@ auto main(int argc, char * argv[]) -> int {
 #else
     std::string job = "_unrotK2";
 #endif
-    data_dir = "../Data_KF" + job + (USE_FDT ? "useFDT" : "noFDT") + "/";
+    //data_dir = "../Data_KF" + job + (USE_FDT ? "useFDT" : "noFDT") + "/";
     std::string dir_str;
     char channel;
     int it_Lambda, k_class_int, rkStep, i0, i2, i_in;
@@ -56,7 +56,8 @@ auto main(int argc, char * argv[]) -> int {
 
 
     std::string dir_integrand_str = "integrands/";
-    makedir(data_dir + dir_integrand_str);
+    data_dir = dir_str;
+    utils::makedir(data_dir + dir_integrand_str);
     const std::string filename_prefix = dir_integrand_str + "Gamma1_Pi_Gamma2_Gamma0left" + std::to_string(Gamma0_is_left);
 
 

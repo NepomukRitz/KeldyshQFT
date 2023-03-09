@@ -51,20 +51,20 @@ namespace saveIntegrand {
         switch (k_class) {
             case k1: {
                 if (channel == 'a') {
-                    vertex1.template symmetry_expand<'a',true>();
-                    vertex2.template symmetry_expand<'a',false>();
+                    vertex1.template symmetry_expand<'a',true,true>();
+                    vertex2.template symmetry_expand<'a',false,true>();
                     Integrand<k1, 'a', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, spin, diff);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 'p') {
-                    vertex1.template symmetry_expand<'p',true>();
-                    vertex2.template symmetry_expand<'p',false>();
+                    vertex1.template symmetry_expand<'p',true,true>();
+                    vertex2.template symmetry_expand<'p',false,true>();
                     Integrand<k1, 'p', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, spin, diff);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 't') {
-                    vertex1.template symmetry_expand<'t',true>();
-                    vertex2.template symmetry_expand<'t',false>();
+                    vertex1.template symmetry_expand<'t',true,true>();
+                    vertex2.template symmetry_expand<'t',false,true>();
                     Integrand<k1, 't', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK1(vertex1, vertex2, Pi, i0, i2, 0, w, 0., 0., i_in, spin, diff);
                     integrandK1.save_integrand(freqs, filename_prefix);
                 }
@@ -72,22 +72,22 @@ namespace saveIntegrand {
             }
             case k2: {
                 if (channel == 'a') {
-                    vertex1.template symmetry_expand<'a',true>();
-                    vertex2.template symmetry_expand<'a',false>();
+                    vertex1.template symmetry_expand<'a',true,true>();
+                    vertex2.template symmetry_expand<'a',false,true>();
                     Integrand<k2, 'a', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK2(vertex1, vertex2, Pi, i0, i2, 0, w, v, 0., i_in, spin, diff);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 'p') {
-                    vertex1.template symmetry_expand<'p',true>();
-                    vertex2.template symmetry_expand<'p',false>();
+                    vertex1.template symmetry_expand<'p',true,true>();
+                    vertex2.template symmetry_expand<'p',false,true>();
                     Integrand<k2, 'p', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK2(vertex1, vertex2, Pi, i0, i2, 0, w, v, 0., i_in, spin, diff);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 't') {
-                    vertex1.template symmetry_expand<'t',true>();
-                    vertex2.template symmetry_expand<'t',false>();
+                    vertex1.template symmetry_expand<'t',true,true>();
+                    vertex2.template symmetry_expand<'t',false,true>();
                     Integrand<k2, 't', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK2(vertex1, vertex2, Pi, i0, i2, 0, w, v, 0., i_in, spin, diff);
                     integrandK2.save_integrand(freqs, filename_prefix);
 
@@ -96,21 +96,21 @@ namespace saveIntegrand {
             }
             case k3: {
                 if (channel == 'a') {
-                    vertex1.template symmetry_expand<'a',true>();
-                    vertex2.template symmetry_expand<'a',false>();
+                    vertex1.template symmetry_expand<'a',true,true>();
+                    vertex2.template symmetry_expand<'a',false,true>();
                     Integrand<k3, 'a', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK3(vertex1, vertex2, Pi, i0, i2, 0, w, v, vp, i_in, spin, diff);
                     integrandK3.save_integrand(freqs, filename_prefix);
 
                 }
                 else if (channel == 'p') {
-                    vertex1.template symmetry_expand<'p',true>();
-                    vertex2.template symmetry_expand<'p',false>();
+                    vertex1.template symmetry_expand<'p',true,true>();
+                    vertex2.template symmetry_expand<'p',false,true>();
                     Integrand<k3, 'p', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK3(vertex1, vertex2, Pi, i0, i2, 0, w, v, vp, i_in, spin, diff);
                     integrandK3.save_integrand(freqs, filename_prefix);
                 }
                 else if (channel == 't') {
-                    vertex1.template symmetry_expand<'t',true>();
-                    vertex2.template symmetry_expand<'t',false>();
+                    vertex1.template symmetry_expand<'t',true,true>();
+                    vertex2.template symmetry_expand<'t',false,true>();
                     Integrand<k3, 't', 0, Q, vertexType_left, vertexType_right, Bubble_Object,return_type> integrandK3(vertex1, vertex2, Pi, i0, i2, 0, w, v, vp, i_in, spin, diff);
                     integrandK3.save_integrand(freqs, filename_prefix);
                 }
@@ -168,7 +168,7 @@ namespace saveIntegrand {
         Psi0.initialize();
 
 
-        Propagator<Q> G (Lambda, Psi.selfenergy, 'g');
+        Propagator<Q> G (Lambda, Psi.selfenergy, 'g', Psi.config);
 
         Bubble<Q> Pi(G, G, false);
 
@@ -176,7 +176,7 @@ namespace saveIntegrand {
         const double wmax = grid.t_upper;
         const double wmin = -wmax;
         const rvec& freqs = get_freqs_equidistant_aux(nBOS*1e1, wmin, wmax, grid);
-        saveIntegrandBubble(filename_prefix, Gamma0_is_left ? Psi0.vertex : Psi.vertex, Gamma0_is_left ? Psi.vertex : Psi0.vertex, Pi, false, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
+        saveIntegrandBubble<Q>(filename_prefix, Gamma0_is_left ? Psi0.vertex : Psi.vertex, Gamma0_is_left ? Psi.vertex : Psi0.vertex, Pi, false, freqs, k_class, channel, i0, i2, spin, w, v, vp, i_in);
 
     }
 
