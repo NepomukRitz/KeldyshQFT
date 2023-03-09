@@ -722,22 +722,23 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
 
         /// for testing:
         if (false) {
-            GeneralVertex<Q,symmetric_r_irred,false> Ir(state_in.vertex.half1(), state_in.config);     // irreducible vertex
-            /*
+            GeneralVertex<Q,symmetric_r_irred,false> Ir(state_in.vertex.half1());     // irreducible vertex
+
             state_in.vertex.template symmetry_expand<'a',false,true>();
             state_in.vertex.save_expanded(data_dir + "Psi_"+ std::to_string(iteration) +"_symmetry_expanded_for_a_left_");
             Ir.template symmetry_expand<'a',true,true>();
             Ir.save_expanded(data_dir + "Ir_" + std::to_string(iteration) + "_symmetry_expanded_for_a_left_");
-
+            /*
             state_in.vertex.template symmetry_expand<'p',false,true>();
             state_in.vertex.save_expanded(data_dir + "Psi_" + std::to_string(iteration) + "_symmetry_expanded_for_p_left_");
             Ir.template symmetry_expand<'p',true,true>();
             Ir.save_expanded(data_dir + "Ir_" + std::to_string(iteration) + "_symmetry_expanded_for_p_left_");
-            */
+
             state_in.vertex.template symmetry_expand<'t',false,true>();
             state_in.vertex.save_expanded(data_dir + "Psi_" + std::to_string(iteration) + "_symmetry_expanded_for_t_left_");
             Ir.template symmetry_expand<'t',true,true>();
             Ir.save_expanded(data_dir + "Ir_" + std::to_string(iteration) + "_symmetry_expanded_for_t_left_");
+            */
         }
 
         double t_start = utils::get_time();
