@@ -101,6 +101,23 @@ public:
 
 void sum_rule_K1tK(std::string filename);
 
+
+class Integrand_sum_rule_spectrum {
+    int it_spin = 0;
+    const Propagator<state_datatype> prop;
+public:
+    Integrand_sum_rule_spectrum(const double Lambda, const SelfEnergy<state_datatype>& self_in, const fRG_config& config) : prop(Lambda, self_in, 'g', config) {}
+
+    auto operator() (const double w) const -> double {
+        const double result = prop.valsmooth(0, w, 0).imag() /(-M_PI);
+        return result;
+    }
+
+};
+
+double sum_rule_spectrum(const State<state_datatype>& state);
+
+
 /**
  * Check Kramers-Kronig relation for retarded self-energy and retarded component of K1r by computing the real part from
  * the imaginary part via Kramers-Kronig. The result can be compared to the real part obtained from the flow.

@@ -14,6 +14,7 @@
 #include "../postprocessing/causality_FDT_checks.hpp"
 #include "perturbation_theory.hpp"
 #include "../utilities/anderson_acceleration.hpp"
+#include "../postprocessing/sanity_check.hpp"
 
 /**
  * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
@@ -763,6 +764,7 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
 #else
         state_out = mixing_ratio * state_out + (1-mixing_ratio) * state_in;
 #endif
+        sanity_check(state_out);
         state_diff = state_in - state_out;               // compute the difference between lhs and input to rhs
 
         // compute relative differences between input and output w.r.t. output
