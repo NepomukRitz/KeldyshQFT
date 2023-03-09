@@ -100,6 +100,8 @@ void run_parquet(const fRG_config& config, const std::vector<double>& U_NRG_list
     const std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG_list, config);
 
     for (double Lambda : Lambda_checkpoints) {
+        double t_start = utils::get_time();
+
         State<state_datatype> state (Lambda, config);
         state.initialize();
         sopt_state(state);
@@ -117,6 +119,9 @@ void run_parquet(const fRG_config& config, const std::vector<double>& U_NRG_list
         //state.vertex.template symmetry_expand<'p',true,true>();
         //state.vertex.save_expanded(data_dir + "ParquetSolution_U_over_Delta=" + std::to_string(U_over_Delta) + "_symmetry_expanded_for_p_left_");
         //state.vertex.template symmetry_expand<'t',true,true>();
-        //state.vertex.save_expanded(data_dir + "ParquetSolution_U_over_Delta=" + std::to_string(U_over_Delta) + "_symmetry_expanded_for_t_left_");
+        //state.vertex.save_expanded(data_dir + "ParquetSolution_U_over_Delta=" + std::to_string(U_over_Delta) + "_symmetry_expanded_for_t_left_")
+        // ;
+        utils::print("CPU hours for parquet run: \t ");
+        utils::get_cpu_hours(t_start);
     }
 }

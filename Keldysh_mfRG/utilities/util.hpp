@@ -152,6 +152,7 @@ namespace utils {
 
     // display time difference in seconds w.r.t. reference time, with millisecond precision
     void get_time(double t0);
+    void get_cpu_hours(double t0);
 
     // display time difference in seconds w.r.t. reference time, with microsecond precision
     void get_time(double t0, std::string prec);
