@@ -149,9 +149,9 @@ void compute_proprocessed_susceptibilities(const std::string& filename) {
         for (char r : {'a', 'p', 't'}) {
             bubble_function(intermediate_res.vertex, state_preproc.vertex, state_bare.vertex, Pi, r, state_preproc.config, {true,true,false});
         }
-        std::string fn_intermediate = filename + "_intermediate";
-        if (iLambda == 0) write_state_to_hdf(fn_intermediate, state_preproc.Lambda, Lambda_it_max+1, intermediate_res);
-        else add_state_to_hdf(fn_intermediate, iLambda, intermediate_res);
+        //std::string fn_intermediate = filename + "_intermediate";
+        //if (iLambda == 0) write_state_to_hdf(fn_intermediate, state_preproc.Lambda, Lambda_it_max+1, intermediate_res);
+        //else add_state_to_hdf(fn_intermediate, iLambda, intermediate_res);
 
         State<state_datatype> result = state_bare;
         for (char r : {'a', 'p', 't'}) {
@@ -159,12 +159,13 @@ void compute_proprocessed_susceptibilities(const std::string& filename) {
         }
 
 
-        std::string fn_result= filename + "_result";
-        if (iLambda == 0) write_state_to_hdf(fn_result, state_preproc.Lambda, Lambda_it_max+1, result);
-        else add_state_to_hdf(fn_result, iLambda, result);
+        //std::string fn_result= filename + "_result";
+        //if (iLambda == 0) write_state_to_hdf(fn_result, state_preproc.Lambda, Lambda_it_max+1, result);
+        //else add_state_to_hdf(fn_result, iLambda, result);
 
         //if (iLambda == 0) file = H5::H5File(filename+"_postproc", H5F_ACC_TRUNC);
         //else file = H5::H5File(filename+"_postproc", H5F_ACC_RDWR);
+        utils::print("Writing post-processed result for Lambda layer " + std::to_string(iLambda) + " ...", true);
         std::array<char,3> channels = {'a', 'p', 't'};
         for (int i = 0; i < 3; i++) {
             const char r = channels[i];
