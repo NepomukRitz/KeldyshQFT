@@ -62,6 +62,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, c
 
     if ((not PARTICLE_HOLE_SYMMETRY) and KELDYSH){ // evaluate the Hartree diagram once with the SOPT SE in the propagator
         Hartree_Solver Hartree_Term(bareState.Lambda, bareState.config);
+        PsiSelfEnergy.asymp_val_R = bareState.selfenergy.asymp_val_R; // set the self-consistently determined Hartree value.
         Hartree_Term.selfEnergy = PsiSelfEnergy;
         const double hartree_value = Hartree_Term.compute_Hartree_term_oneshot();
         PsiSelfEnergy.asymp_val_R = hartree_value;
