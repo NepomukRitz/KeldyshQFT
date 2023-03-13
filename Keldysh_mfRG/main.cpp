@@ -27,6 +27,7 @@ auto main(int argc, char * argv[]) -> int {
         MPI_Init(nullptr, nullptr);
     }
 #endif
+    double t_start = utils::get_time();
 
     /// Parse and check command line arguments:
     utils::print("number of args: ", argc-1, ", expected: 2 \n");
@@ -129,6 +130,8 @@ auto main(int argc, char * argv[]) -> int {
 
 */
 
+    utils::print("CPU hours for whole run: \t ");
+    utils::get_cpu_hours(t_start);
     utils::hello_world();
 
 #ifdef USE_MPI

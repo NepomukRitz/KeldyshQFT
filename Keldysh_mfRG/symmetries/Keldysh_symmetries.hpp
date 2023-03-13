@@ -156,11 +156,11 @@ constexpr buffer_config<5> K2_expanded_config{
 constexpr buffer_config<6> K3_SBE_expanded_config{
 #if MAX_DIAG_CLASS >= 2
         std::array<size_t,6>({1, nBOS2, nFER2, GRID!=2 ? nFER2 : (nFER2-1)/2+1, KELDYSH ?  16 : 1, n_in_K3})
+#else
+        std::array<size_t,6>({1, 0, 0, 0, KELDYSH ? 16 : 1, n_in_K3})
+#endif
         , 3  // number of frequency dimensions
         , 1};// position of first frequency index
-#else
-std::array<size_t,6>({1, 0, 0, 0, KELDYSH ? 16 : 1, n_in_K3})
-#endif
 constexpr buffer_config<6> K3_expanded_config{
 #if MAX_DIAG_CLASS == 3
     std::array<size_t,6>({1, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH ?  16 : 1, n_in_K3})

@@ -93,7 +93,11 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
 #else
     using param = flowgrid::sqrt_parametrization;
 #endif
+
+    double t_start = utils::get_time();
     ode_solver<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
+    utils::print("CPU hours for fRG run: \t ");
+    utils::get_cpu_hours(t_start);
 
     //using namespace boost::numeric::odeint;
     //ode_solver_boost<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
