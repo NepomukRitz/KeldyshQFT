@@ -48,14 +48,14 @@ namespace utils {
     void get_cpu_hours(double t0) {
         struct timeval tp;
         gettimeofday(&tp, NULL);
-        long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
-        double t = ms / 1000.;
+        const long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+        const double t = ms / 1000.;
         const int nodes = mpi_world_size();
         const int threads = omp_get_num_threads();
 
         if (mpi_world_rank() == 0) {
             std::cout << "CPU hours elapsed: ";
-            printf("%.3f", (t - t0)*nodes*threads);
+            printf("%.3f", (t - t0)/3600.*nodes*threads);
             std::cout << "hours" << std::endl;
         }
     }
