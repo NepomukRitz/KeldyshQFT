@@ -3,6 +3,7 @@
 
 #include "../data_structures.hpp"
 #include "../correlation_functions/state.hpp"
+#include "../multidimensional/ranged_view.hpp"
 
 // element-wise log
 rvec log(const rvec& x);
@@ -27,7 +28,7 @@ rvec log(const rvec& x);
  *
  * Routine implemented by Seung-Sup Lee in MATLAB in the context of the QSpace library.
  */
-rvec KKi2r(rvec& xi, rvec& yi, int gflag);
+rvec KKi2r(const rvec& xi, const rvec& yi, int gflag);
 
 void check_Kramers_Kronig(const State<state_datatype>& state, bool verbose, std::string filename_KKi2="");
 

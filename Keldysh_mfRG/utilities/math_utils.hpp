@@ -1055,5 +1055,40 @@ inline void locate(const std::vector<T> xx, const size_t n, const T x, int &j, c
     j = jl;
 }
 
+/// math utilities for arrays
+template <typename T, size_t rank>
+auto multiply(const std::array<T,rank> & l, const std::array<T,rank> & r) -> std::array<T,rank> {
+    std::array<T,rank> res = l;
+    for (int i = 0; i < rank; i++) {
+        res[i] *= r[i];
+    }
+    return res;
+}
+
+template <typename T, size_t rank>
+auto add(const std::array<T,rank> & l, const std::array<T,rank> & r) -> std::array<T,rank> {
+    std::array<T,rank> res = l;
+    for (int i = 0; i < rank; i++) {
+        res[i] += r[i];
+    }
+    return res;
+}
+template <typename T, size_t rank>
+auto subtract(const std::array<T,rank> & l, const std::array<T,rank> & r) -> std::array<T,rank> {
+    std::array<T,rank> res = l;
+    for (int i = 0; i < rank; i++) {
+        res[i] -= r[i];
+    }
+    return res;
+}
+template <typename T, size_t rank>
+auto dot(const std::array<T,rank> & l, const std::array<T,rank> & r) -> T {
+    T res{};
+    for (int i = 0; i < rank; i++) {
+        res += l[i]*r[i];
+    }
+    return res;
+}
+
 
 #endif //FPP_MFRG_MATH_UTILS_H

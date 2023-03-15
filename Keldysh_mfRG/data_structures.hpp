@@ -126,8 +126,8 @@ public:
     vec(std::initializer_list<T> m) : std::vector<T> (m) {};   // constructor from initializer list
     vec(std::vector<T> vect) : std::vector<T> (vect) {};
 
-    T operator() (int i) {return (*this)[i]; }	     // operator for element access
-    vec<T> operator() (int i1, int i2);              // get a subvector {x[i1], ..., x[i2]}
+    T operator() (int i) const {return (*this)[i]; }	     // operator for element access
+    vec<T> operator() (int i1, int i2) const;              // get a subvector {x[i1], ..., x[i2]}
 
     vec<T> inv() const;   // element-wise inverse
     vec<double> real() const;   // element-wise real part
@@ -288,7 +288,7 @@ vec<T> & vec<T>::operator*= (const Q& c) {
 // get a subvector {x[i1], ..., x[i2]}
 // if indices are negative, count from the end
 template <typename T>
-vec<T> vec<T>::operator() (int i1, int i2) {
+vec<T> vec<T>::operator() (int i1, int i2) const {
     auto it1 = (i1 >= 0) ? this->begin() : this->end();
     auto it2 = (i2 >= 0) ? this->begin() : this->end();
     vec<T> subvector (it1 + i1, it2 + i2 + 1);
