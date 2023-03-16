@@ -22,19 +22,46 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     utils::print(" ---  Post-processing  ---");
 
-    std::string filename = "../Data_KFT=0.100000_U=1.000000_REG=2/parquetInit4_U_over_Delta=0.100000_T=0.100000_eVg=0.000000_n1=201_n2=51_n3=21.h5"; // hdf5 file with states to be postprocessed
+    const std::string directory = "/tmp/tmp.Keldysh_mfRG/Data_KFT=0.010000_U=1.000000_REG=2/";
+    //const std::string file = "K1_1LF_n1=401_static_Gamma=0.200000_T=0.010000_L_ini=19_nODE=81.h5";
+
+    //const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
     /// functions that do post-processing on several Lambda layers
-    compute_Phi_tilde(filename);
-    sum_rule_K1tK(filename);
-    check_Kramers_Kronig(filename);
-    compare_flow_with_FDTs(filename, true);
-    compute_proprocessed_susceptibilities(filename);
+    // compute_Phi_tilde(filename);
+    // sum_rule_K1tK(filename);
+    // check_Kramers_Kronig(filename);
+    // compare_flow_with_FDTs(filename, true);
+    // compute_proprocessed_susceptibilities(filename);
 
     /// functions that do postprocessing on a single state:
-    const int Lambda_it = 0;    // pick Lambda layer
-    State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
-    save_slices_through_fullvertex(filename, 7, 0); // save slice through full vertex (fully retarded Keldysh component 12|22)
+    // const int Lambda_it = 0;    // pick Lambda layer
+    // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
+    // save_slices_through_fullvertex(filename, 0, 0);
+
+    /// for PT2, where we have to get through multiple files:
+
+    std::string PT_Us[] = {"0.100000", "0.157080", "0.314159", "0.500000", "0.628319", "0.942478", "1.000000", "1.256637", "1.500000",
+                           "1.570796", "1.884956", "2.000000", "2.199115", "2.356194", "2.500000", "2.513274", "2.827433",
+                           "3.000000", "3.141593", "3.455752", "3.500000", "3.769911", "3.926991", "4.000000", "4.084070",
+                           "4.398230", "4.500000", "4.712389", "5.000000"};
+    for (const std::string& U : PT_Us) {
+        std::string file = "PT2_U_over_Delta=" + U + "_T=0.010000_eVg=0.500000_n1=401_n2=201_n3=51.h5";
+
+        const std::string filename = directory + file; // hdf5 file with states to be postprocessed
+
+        /// functions that do post-processing on several Lambda layers
+        // compute_Phi_tilde(filename);
+        // sum_rule_K1tK(filename);
+        // check_Kramers_Kronig(filename);
+        // compare_flow_with_FDTs(filename, true);
+        compute_proprocessed_susceptibilities(filename);
+
+        /// functions that do postprocessing on a single state:
+        // const int Lambda_it = 0;    // pick Lambda layer
+        // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
+        // save_slices_through_fullvertex(filename, 0, 0);
+    }
 
 
 #ifdef USE_MPI

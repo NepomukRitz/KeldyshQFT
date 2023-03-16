@@ -89,11 +89,11 @@ auto main(int argc, char * argv[]) -> int {
         }
     }
     if (n_loops == -2){ /// plain and simple second order perturbation theory
-        //const std::vector<double> U_over_Delta_list {0.1, 0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0,
-        //                                             0.4*M_PI, 1.5, 0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5,
-        //                                             0.8*M_PI, 0.9*M_PI, 3.0, 1.0*M_PI, 1.1*M_PI, 3.5, 1.2*M_PI,
-        //                                             1.25*M_PI, 4.0, 1.3*M_PI, 1.4*M_PI, 4.5, 1.5*M_PI, 5.0};
-        const std::vector<double> U_over_Delta_list {0.1, 0.2, 0.3, 0.4, 0.5};
+        const std::vector<double> U_over_Delta_list {0.1, 0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0,
+                                                     0.4*M_PI, 1.5, 0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5,
+                                                     0.8*M_PI, 0.9*M_PI, 3.0, 1.0*M_PI, 1.1*M_PI, 3.5, 1.2*M_PI,
+                                                     1.25*M_PI, 4.0, 1.3*M_PI, 1.4*M_PI, 4.5, 1.5*M_PI, 5.0};
+        //const std::vector<double> U_over_Delta_list {0.1, 0.2, 0.3, 0.4, 0.5};
         for (double U_over_Delta: U_over_Delta_list) {
             const double Lambda = 2. / U_over_Delta * config.U - config.Gamma;
             State<state_datatype> state (Lambda, config);   // create final and initial state

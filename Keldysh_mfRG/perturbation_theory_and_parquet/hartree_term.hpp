@@ -19,7 +19,6 @@ class Hartree_Solver {
     const fRG_config& config;
     const double Delta = (config.Gamma + Lambda) / 2.; // Hybridization
 
-    SelfEnergy<comp> selfEnergy = SelfEnergy<comp> (Lambda, config);
     double filling = 1./2.; // filling at the particle-hole symmetric point
 
     const double v_lower =  10 * Delta; // arbitrary choice. Needs to be checked.
@@ -32,6 +31,7 @@ class Hartree_Solver {
 
     double fermi_distribution (double nu) const;
 public:
+    SelfEnergy<comp> selfEnergy = SelfEnergy<comp> (Lambda, config);
     /// constructor used for obtaining the self-consistent solution of the Hartree-term
     Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
         //assert(KELDYSH);
