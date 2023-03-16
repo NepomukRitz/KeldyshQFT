@@ -686,7 +686,10 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
         }
     }
 
-    write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    double mixing_adaptive = mixing_ratio;
+    const int trigger_adaptation = 5;
+    //write_state_to_hdf(filename, Lambda, Nmax + 1, state_in); // save input into 0-th layer of hdf5 file
+    write_state_to_hdf(filename, Lambda, trigger_adaptation, state_in); // save input into 0-th layer of hdf5 file
     if (mpi_world_rank() == 0) {
         H5::H5File file_out = open_hdf_file_readWrite(filename);
         write_to_hdf_LambdaLayer<double>(file_out, "mixing_parameter", std::vector<double>({mixing_ratio}), 0, Nmax + 1, false);
@@ -713,8 +716,6 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
     State<Q> state_out (state_in, Lambda);   // lhs of the parquet equations
     State<Q> state_diff (state_in, Lambda);  // difference between input and output of the parquet equations
 
-    double mixing_adaptive = mixing_ratio;
-    const int trigger_adaptation = 5;
     int iteration = 1;
     // first check if converged, and also stop if maximal number of iterations is reached
     bool is_converged = false;
@@ -788,10 +789,11 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
         is_converged = !(relative_difference_vertex > accuracy || relative_difference_selfenergy > accuracy);
         unfinished = !is_converged && iteration < Nmax;
 
-        add_state_to_hdf(filename, iteration, state_out, is_converged);  // store result into file
+        add_state_to_hdf(filename, iteration%trigger_adaptation, state_out, is_converged);  // store result into file
+        //write_state_to_hdf(filename, Lambda, 1, state_in, false, is_converged); // save input into 0-th layer of hdf5 file
         if (mpi_world_rank() == 0) {
             H5::H5File file_out = open_hdf_file_readWrite(filename);
-            write_to_hdf_LambdaLayer<double>(file_out, "mixing_parameter", std::vector<double>({mixing_adaptive}), iteration, Nmax + 1, true);
+            write_to_hdf_LambdaLayer<double>(file_out, "mixing_parameter", std::vector<double>({mixing_adaptive}), iteration%trigger_adaptation, Nmax + 1, true);
             file_out.close();
         }
 

@@ -828,12 +828,12 @@ namespace hdf5_impl {
 
 /// Create file with fixed number of Lambda layers and save state to first Lambda layer
 template <typename Q, bool diff>
-void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State<Q,diff>& state_in, const bool verbose=true) {
+void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State<Q,diff>& state_in, const bool verbose=true, const bool is_converged=false) {
 #ifdef USE_MPI
     if (mpi_world_rank() == 0)  // only the process with ID 0 writes into file to avoid collisions
 #endif
     {
-        hdf5_impl::write_state_to_hdf_LambdaLayer(FILE_NAME, state_in, 0, Lambda_size, "w", false);
+        hdf5_impl::write_state_to_hdf_LambdaLayer(FILE_NAME, state_in, 0, Lambda_size, "w", is_converged);
         if (verbose) {
             utils::print("Successfully saved in hdf5 file: ", FILE_NAME);
             utils::print_add(" in Lambda-layer ", 0, false);

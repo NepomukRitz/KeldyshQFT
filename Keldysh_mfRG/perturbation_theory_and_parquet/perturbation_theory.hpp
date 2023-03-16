@@ -40,7 +40,7 @@ void vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const 
         utils::print_add(r, false);
         utils::print_add(" ... ", false);
 #endif
-        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r, bareState.config);
+        bubble_function(PsiVertex, bareState.vertex, bareState.vertex, Pi, r, bareState.config, {true, false, false});
 #if not defined(NDEBUG)
         utils::print_add("done.", true);
 #endif
@@ -55,12 +55,12 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, c
     bubble_a.set_Ir(true);
     bubble_a.set_frequency_grid(bareState.vertex);
     //Do an a-Bubble for the calculation of the self-energy
-    bubble_function(bubble_a, bareState.vertex, bareState.vertex, Pi, 'a', bareState.config);
+    bubble_function(bubble_a, bareState.vertex, bareState.vertex, Pi, 'a', bareState.config, {true, false, false});
 
     //Calculate the Self-Energy
     loop<false,0>(PsiSelfEnergy, bubble_a, barePropagator);
 
-    if ((not PARTICLE_HOLE_SYMMETRY) and KELDYSH){ // evaluate the Hartree diagram once with the SOPT SE in the propagator
+    if constexpr ((not PARTICLE_HOLE_SYMMETRY) and KELDYSH){ // evaluate the Hartree diagram once with the SOPT SE in the propagator
         Hartree_Solver Hartree_Term(bareState.Lambda, bareState.config);
         PsiSelfEnergy.asymp_val_R = bareState.selfenergy.asymp_val_R; // set the self-consistently determined Hartree value.
         Hartree_Term.selfEnergy = PsiSelfEnergy;
