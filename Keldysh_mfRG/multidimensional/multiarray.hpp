@@ -12,7 +12,6 @@
 
 #include "Eigen/Dense"
 
-#include "ranged_view.hpp"
 #include "../utilities/template_utils.hpp"
 
 #ifndef NDEBUG

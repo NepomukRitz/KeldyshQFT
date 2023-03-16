@@ -109,7 +109,7 @@ public:
     Integrand_sum_rule_spectrum(const double Lambda, const SelfEnergy<state_datatype>& self_in, const fRG_config& config) : prop(Lambda, self_in, 'g', config) {}
 
     auto operator() (const double w) const -> double {
-        const double result = prop.valsmooth(0, w, 0).imag() /(-M_PI);
+        const double result = myimag(prop.valsmooth(0, w, 0)) /(-M_PI);
         return result;
     }
 
