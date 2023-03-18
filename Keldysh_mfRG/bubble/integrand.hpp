@@ -217,55 +217,59 @@ private:
 
 };
 
+
 template<K_class diag_class, char channel, int spin, typename Q, typename vertexType_left, typename vertexType_right, class Bubble_Object,typename return_type>
 void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object,return_type>::set_Keldysh_index_i0(const int i0_in) {
-    if constexpr(KELDYSH){
-        if constexpr(not DEBUG_SYMMETRIES and not VECTORIZED_INTEGRATION) {
-            switch (diag_class) {
-                case k1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
-                    switch (channel) {
-                        case 'a':
-                            i0 = non_zero_Keldysh_K1a[i0_in];
-                            break;
-                        case 'p':
-                            i0 = non_zero_Keldysh_K1p[i0_in];
-                            break;
-                        case 't':
-                            i0 = non_zero_Keldysh_K1t[i0_in];
-                            break;
-                        default:;
-                    }
-                    break;
-                case k2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
-                    switch (channel) {
-                        case 'a':
-                            i0 = non_zero_Keldysh_K2a[i0_in];
-                            break;
-                        case 'p':
-                            i0 = non_zero_Keldysh_K2p[i0_in];
-                            break;
-                        case 't':
-                            i0 = non_zero_Keldysh_K2t[i0_in];
-                            break;
-                        default:;
-                    }
-                    break;
-                case k3:
-                    i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
-                    break;
-                default:;
-            }
+if constexpr(KELDYSH){
+   if constexpr(not DEBUG_SYMMETRIES and not VECTORIZED_INTEGRATION) {
+    /*
+        switch (diag_class) {
+            case k1: // converting index i0_in (0 or 1) into actual Keldysh index i0 (0,...,15)
+                switch (channel) {
+                    case 'a':
+                        i0 = non_zero_Keldysh_K1a[i0_in];
+                        break;
+                    case 'p':
+                        i0 = non_zero_Keldysh_K1p[i0_in];
+                        break;
+                    case 't':
+                        i0 = non_zero_Keldysh_K1t[i0_in];
+                        break;
+                    default:;
+                }
+                break;
+            case k2: // converting index i0_in (0,...,4) into actual Keldysh index i0 (0,...,15)
+                switch (channel) {
+                    case 'a':
+                        i0 = non_zero_Keldysh_K2a[i0_in];
+                        break;
+                    case 'p':
+                        i0 = non_zero_Keldysh_K2p[i0_in];
+                        break;
+                    case 't':
+                        i0 = non_zero_Keldysh_K2t[i0_in];
+                        break;
+                    default:;
+                }
+                break;
+            case k3:
+                i0 = non_zero_Keldysh_K3[i0_in]; // converting index i0_in (0,...,5) into actual Keldysh index i0 (0,...,15)
+                break;
+            default:;
         }
-        else {
-            i0 = i0_in;
-        }
-        set_Keldysh_index_i0_left_right(i0);
+*/
+       i0 = i0_in;
     }
-    else{
-        i0 = 0;
-        i0_left = 0;
-        i0_right= 0;
-    }
+   else {
+       i0 = i0_in;
+   }
+       set_Keldysh_index_i0_left_right(i0);
+   }
+   else{
+       i0 = 0;
+       i0_left = 0;
+       i0_right= 0;
+   }
 }
 
 // i0_in in {0,...,15}
@@ -554,7 +558,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
         //      in p-channel v_temp(i,j) = v_{1',2'|j,i}
         //      in t-channel v_temp(i,j) = v_{i ,2'|j,2}
         //multidimensional::multiarray<Q,2> v_temp(dims_vtemp);
-        std::vector<int> alpha = alphas(input.iK);
+        //std::array<int,4> alpha = iK_to_alphas(input.iK);
 
         // fill v_temp:
         const std::array<size_t,4> dims_K = {2,2, 2,2};
@@ -611,7 +615,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
         //      in p-channel v_temp(i,j) = v_{j ,i |1,2}
         //      in t-channel v_temp(i,j) = v_{1',i |1,j}
         //multidimensional::multiarray<Q, 2> v_temp(dims_vtemp);
-        std::vector<int> alpha = alphas(input.iK);
+        //std::array<int,4> alpha = iK_to_alphas(input.iK);
 
         // fill v_temp:
         const std::array<size_t, 4> dims_K = {2, 2, 2, 2};
@@ -1281,8 +1285,8 @@ return_type Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_r
             buffer_type_vertex_l values_vertex_l_updnBar;
             buffer_type_vertex_r values_vertex_r_updnBar;
 
-            load_vertex_keldyshComponents_left_vectorized<1>(values_vertex_l_updnBar, input_l);
-            load_vertex_keldyshComponents_right_vectorized<1>(values_vertex_r_updnBar, input_r);
+            load_vertex_keldyshComponents_left_vectorized<1-spin>(values_vertex_l_updnBar, input_l);
+            load_vertex_keldyshComponents_right_vectorized<1-spin>(values_vertex_r_updnBar, input_r);
             if constexpr(VECTORIZED_INTEGRATION) {
                 assert(input_external.iK == 0);
                 const return_type result = ((values_vertex_l + values_vertex_l_updnBar) * Pi_matrix * values_vertex_r +

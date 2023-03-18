@@ -98,6 +98,7 @@ auto asymp_corrections_bubble(K_class k,
 
 #if not DEBUG_SYMMETRIES
         // convert the input external Keldysh index from reduced set to [0,...,15]
+        /*
         switch (k) {
             case k1:
                 switch (channel) {
@@ -132,6 +133,8 @@ auto asymp_corrections_bubble(K_class k,
                 break;
             default:;
         }
+         */
+        i0 = i0_in;
 #else
     i0 = i0_in;
 #endif

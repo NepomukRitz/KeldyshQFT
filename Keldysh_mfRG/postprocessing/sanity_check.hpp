@@ -16,6 +16,10 @@ void sanity_check(const State<Q>& state) {
 
 #endif
 
+#if DEBUG_SYMMETRIES
+    state.vertex.check_symmetries("Psi_sanitycheck");
+#endif
+
 }
 
 #endif //KELDYSH_MFRG_TESTING_SANITY_CHECK_H

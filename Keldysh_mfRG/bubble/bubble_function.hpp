@@ -48,9 +48,9 @@ class BubbleFunctionCalculator{
     std::array<std::size_t,my_defs::K3::rank> dimsK3; // number of vertex components over which i_mpi and i_omp are looped
     int dims_flat_K1, dims_flat_K2, dims_flat_K3; // flat dimensions of above arrays;
     int n_vectorization_K1, n_vectorization_K2, n_vectorization_K3;
-    std::vector<int> indepKeldyshComponents_K1;
-    std::vector<int> indepKeldyshComponents_K2;
-    std::vector<int> indepKeldyshComponents_K3;
+    //std::vector<int> indepKeldyshComponents_K1;
+    //std::vector<int> indepKeldyshComponents_K2;
+    //std::vector<int> indepKeldyshComponents_K3;
 
     freqType vmin = 0, vmax = 0;
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
@@ -170,9 +170,9 @@ class BubbleFunctionCalculator{
         dims_flat_K2 = getFlatSize(dimsK2);
         dims_flat_K3 = getFlatSize(dimsK3);
 
-        indepKeldyshComponents_K1 = channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p'? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t);
-        indepKeldyshComponents_K2 = channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p'? non_zero_Keldysh_K2p : non_zero_Keldysh_K2t);
-        indepKeldyshComponents_K3 = non_zero_Keldysh_K3;
+        //indepKeldyshComponents_K1 = channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p'? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t);
+        //indepKeldyshComponents_K2 = channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p'? non_zero_Keldysh_K2p : non_zero_Keldysh_K2t);
+        //indepKeldyshComponents_K3 = non_zero_Keldysh_K3;
 
     }
 };
@@ -581,7 +581,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
         if constexpr (KELDYSH_FORMALISM) {
             // for vector-/matrix-valued result:
-            if constexpr(DEBUG_SYMMETRIES) {
+            if constexpr(DEBUG_SYMMETRIES or true) {
                 // if DEBUG_SYMMETRIES is true, we compute and store ALL components
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 4; j++) {
@@ -590,6 +590,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 }
             }
             else {
+                /*
                 // if DEBUG_SYMMETRIES is false, we compute and store symmetry-reduced components (given in indepKeldyshComponents_Ki)
                 std::vector<int> &indepKeldyshComponents = (k == k1 ? indepKeldyshComponents_K1 : (k == k3 ? indepKeldyshComponents_K3 : indepKeldyshComponents_K2));
                 const int size = indepKeldyshComponents.size();
@@ -599,6 +600,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                     const Q val_temp = integration_result(left, right);
                     value[i] = val_temp;
                 }
+                */
             }
         }
         //else { // Matsubara finite_T
@@ -845,9 +847,12 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 // otherwise we have to compute that point
                 int sign_w = sign_index<freqType>(w );
                 const int number_of_indep_Components = dgamma.get_rvertex(channel).K1.get_dims()[my_defs::K1::keldysh];
+                if (dgamma.get_rvertex(channel).freq_transformations.K1[sign_w] == 0) trafo = 0;
+                /*
                 for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
                     if (dgamma.get_rvertex(channel).freq_transformations.K1[i0_temp][sign_w] == 0) trafo = 0;
                 }
+                 */
             }
             else { // Matsubara finite T
                 int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
@@ -886,11 +891,13 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 // otherwise we have to compute that point via quadrature
                 int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
                 int sign_v = sign_index<freqType>(v ); // safety to ensure that w=0 gets sign_w=-1
+                if (dgamma.get_rvertex(channel).freq_transformations.K2[sign_w * 2 + sign_v] == 0) trafo = 0;
+                /*
                 const int number_of_indep_Components = dgamma.get_rvertex(channel).K2.get_dims()[my_defs::K2::keldysh];
-
                 for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
                     if (dgamma.get_rvertex(channel).freq_transformations.K2[i0_temp][sign_w * 2 + sign_v] == 0) trafo = 0;
                 }
+                 */
             }
             else {// Matsubara finite T
                 int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
@@ -957,6 +964,8 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1
                 int sign_f = sign_index<freqType>(v + vp );
                 int sign_fp = sign_index<freqType>(v - vp );
+                if (dgamma.get_rvertex(channel).freq_transformations.K3[sign_w * 4 + sign_f * 2 + sign_fp] == 0) trafo = 0;
+                /*
                 const int number_of_indep_Components = dgamma.get_rvertex(channel).K3.get_dims()[my_defs::K3::keldysh];
 
                 for (int i0_temp = 0; i0_temp < number_of_indep_Components; i0_temp++) {
@@ -964,6 +973,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                         0)
                         trafo = 0;
                 }
+                 */
             }
             else {// Matsubara finite T
                 int sign_w = sign_index<freqType>(w ); // safety to ensure that w=0 gets sign_w=-1

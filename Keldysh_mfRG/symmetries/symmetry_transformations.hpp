@@ -12,7 +12,14 @@
 
 
 void switch_channel(IndicesSymmetryTransformations& indices);
+
+/// exchange incoming legs
 template <bool is_SBE_lambda> void T1 (IndicesSymmetryTransformations& indices) {
+    if constexpr (KELDYSH_FORMALISM) {
+        std::array<int,4> alphas_tmp = iK_to_alphas(indices.iK);
+        std::swap(alphas_tmp[2],alphas_tmp[3]);
+        indices.iK = alphas_to_iK(alphas_tmp);
+    }
     if constexpr(!is_SBE_lambda)
     {
         indices.prefactor *= -1.;
@@ -55,7 +62,13 @@ template <bool is_SBE_lambda> void T1 (IndicesSymmetryTransformations& indices) 
     indices.spin = 1 - indices.spin;
 
 }
+/// exchange outgoing lines
 template <bool is_SBE_lambda> void T2 (IndicesSymmetryTransformations& indices) {
+    if constexpr (KELDYSH_FORMALISM) {
+        std::array<int,4> alphas_tmp = iK_to_alphas(indices.iK);
+        std::swap(alphas_tmp[0],alphas_tmp[1]);
+        indices.iK = alphas_to_iK(alphas_tmp);
+    }
     if constexpr(!is_SBE_lambda)
     {
         indices.prefactor *= -1.;
@@ -90,7 +103,12 @@ template <bool is_SBE_lambda> void T3 (IndicesSymmetryTransformations& indices) 
     T2<is_SBE_lambda>(indices);
 }
 template <bool is_SBE_lambda> void TC (IndicesSymmetryTransformations& indices) {
-
+    if constexpr (KELDYSH_FORMALISM) {
+        std::array<int,4> alphas_tmp = iK_to_alphas(indices.iK);
+        std::swap(alphas_tmp[0],alphas_tmp[2]);
+        std::swap(alphas_tmp[1],alphas_tmp[3]);
+        indices.iK = alphas_to_iK(alphas_tmp);
+    }
     indices.conjugate ^= true;
     //if constexpr(SBE_DECOMPOSITION) {
     //    if (indices.channel_rvert == 'p') {
@@ -229,7 +247,7 @@ template <bool is_SBE_lambda> void Ti (IndicesSymmetryTransformations& indices, 
             TC<is_SBE_lambda>(indices);
             T3<is_SBE_lambda>(indices);
             break;
-            if (KELDYSH and PARTICLE_HOLE_SYMMETRY) {
+#if KELDYSH_FORMALISM and PARTICLE_HOLE_SYMM
                 case 6:
                     Tph<is_SBE_lambda>(indices);
                 break;
@@ -264,7 +282,7 @@ template <bool is_SBE_lambda> void Ti (IndicesSymmetryTransformations& indices, 
                 TC<is_SBE_lambda>(indices);
                 T3<is_SBE_lambda>(indices);
                 break;
-            }
+#endif
             if (!KELDYSH) {
                 case 7:
                     TR<is_SBE_lambda>(indices);
