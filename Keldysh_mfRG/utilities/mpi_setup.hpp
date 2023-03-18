@@ -25,8 +25,8 @@ int mpi_world_size();
  *                  will compute
  */
 template <typename Q>
-vec<Q> mpi_initialize_buffer(int n_mpi, int n_omp) {
-    int world_size = mpi_world_size();
+vec<Q> mpi_initialize_buffer(size_t n_mpi, size_t n_omp) {
+    size_t world_size = mpi_world_size();
     vec<Q> buffer (n_omp*(n_mpi/world_size+1));
     return buffer;
 }

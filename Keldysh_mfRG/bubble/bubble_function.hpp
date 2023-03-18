@@ -40,14 +40,14 @@ class BubbleFunctionCalculator{
     int nw1_w = 0, nw2_w = 0, nw2_v = 0, nw3_w = 0, nw3_v = 0, nw3_v_p = 0;
     Q prefactor = 1.;
 
-    int number_of_nodes;
-    int mpi_size = mpi_world_size(); // number of mpi processes
-    int mpi_rank = mpi_world_rank(); // number of the current mpi process
+    size_t number_of_nodes;
+    size_t mpi_size = mpi_world_size(); // number of mpi processes
+    size_t mpi_rank = mpi_world_rank(); // number of the current mpi process
     std::array<std::size_t,my_defs::K1::rank> dimsK1; // number of vertex components over which i_mpi and i_omp are looped
     std::array<std::size_t,my_defs::K2::rank> dimsK2; // number of vertex components over which i_mpi and i_omp are looped
     std::array<std::size_t,my_defs::K3::rank> dimsK3; // number of vertex components over which i_mpi and i_omp are looped
-    int dims_flat_K1, dims_flat_K2, dims_flat_K3; // flat dimensions of above arrays;
-    int n_vectorization_K1, n_vectorization_K2, n_vectorization_K3;
+    size_t dims_flat_K1, dims_flat_K2, dims_flat_K3; // flat dimensions of above arrays;
+    size_t n_vectorization_K1, n_vectorization_K2, n_vectorization_K3;
     //std::vector<int> indepKeldyshComponents_K1;
     //std::vector<int> indepKeldyshComponents_K2;
     //std::vector<int> indepKeldyshComponents_K3;
@@ -75,7 +75,7 @@ class BubbleFunctionCalculator{
     void write_out_results_K2b(const vec<Q>& K2b_ordered_result);
     void write_out_results_K3(const vec<Q>& K3_ordered_result);
 
-    void set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, int& n_vectorization, K_class diag_class);
+    void set_external_arguments_for_parallelization(size_t& n_mpi, size_t& n_omp, size_t& n_vectorization, K_class diag_class);
 
     void convert_external_MPI_OMP_indices_to_physical_indices_K1(int& iK1, int& i0, int& ispin, int& iw, int& i_in, freqType & w,
                                                                  int i_mpi, int n_omp, int i_omp);
@@ -318,7 +318,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
         Bubble_Object>::calculate_bubble_function(){
     if (diag_class < k1 || diag_class > k3){utils::print("Incompatible diagrammatic class! Abort."); assert(false); return;}
 
-    int n_mpi, n_omp, n_vectorization;
+    std::size_t n_mpi, n_omp, n_vectorization;
     set_external_arguments_for_parallelization(n_mpi, n_omp, n_vectorization, diag_class);
 
 
@@ -701,7 +701,7 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
         typename vertexType_right, class Bubble_Object>
 void
 BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right,
-        Bubble_Object>::set_external_arguments_for_parallelization(int& n_mpi, int& n_omp, int& n_vectorization, const K_class diag_class){
+        Bubble_Object>::set_external_arguments_for_parallelization(size_t& n_mpi, size_t& n_omp, size_t& n_vectorization, const K_class diag_class){
 
     /// The computation of the vertex components of dgamma.Ki (i = 1, 2, 2', 3) can be parallelized
     /// parallelization is achieved via...
@@ -711,9 +711,9 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     ///                           If vectorization is used (*this)->get_value() returns a vector with the components over which we vectorize
     ///                           and in (*this)->calculate_bubble_function() we need to loop over the remaining dimensions (these are given in dimsK1, dimsK2 and dimsK3)
 
-    const int nK_K1 = dimsK1[my_defs::K1::keldysh];
-    const int nK_K2 = dimsK2[my_defs::K2::keldysh];
-    const int nK_K3 = dimsK3[my_defs::K3::keldysh];
+    const size_t nK_K1 = dimsK1[my_defs::K1::keldysh];
+    const size_t nK_K2 = dimsK2[my_defs::K2::keldysh];
+    const size_t nK_K3 = dimsK3[my_defs::K3::keldysh];
 
     switch (diag_class) {
         case k1:
