@@ -1057,15 +1057,15 @@ const std::vector<std::vector<int>> ComponentsK2t {{0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK3a {{0, 0, 0, 0, 0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK3p {{0, 0, 0, 0, 0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK3t {{0, 0, 0, 0, 0, 0, 0, 0}};
-const std::vector<std::vector<int>> TransformaK1a {{0, 3}};
-const std::vector<std::vector<int>> TransformaK1p {{0, 4}};
-const std::vector<std::vector<int>> TransformaK1t {{0, 3}};
-const std::vector<std::vector<int>> TransformaK2a {{0, 34, 347, 7}};
-const std::vector<std::vector<int>> TransformaK2p {{0, 3, 37, 7}};
-const std::vector<std::vector<int>> TransformaK2t {{0, 4, 47, 7}};
-const std::vector<std::vector<int>> TransformaK3a {{0, 47, 37, 34, 347, 3, 4, 7}};
-const std::vector<std::vector<int>> TransformaK3p {{0, 47, 347, 3, 37, 34, 4, 7}};
-const std::vector<std::vector<int>> TransformaK3t {{0, 347, 37, 4, 47, 3, 34, 7}};
+const std::vector<int> TransformaK1a {0, 3};
+const std::vector<int> TransformaK1p {0, 4};
+const std::vector<int> TransformaK1t {0, 3};
+const std::vector<int> TransformaK2a {0, 34, 347, 7};
+const std::vector<int> TransformaK2p {0, 3, 37, 7};
+const std::vector<int> TransformaK2t {0, 4, 47, 7};
+const std::vector<int> TransformaK3a {0, 47, 37, 34, 347, 3, 4, 7};
+const std::vector<int> TransformaK3p {0, 47, 347, 3, 37, 34, 4, 7};
+const std::vector<int> TransformaK3t {0, 347, 37, 4, 47, 3, 34, 7};
 #endif
 
 
