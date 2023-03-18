@@ -118,8 +118,8 @@ template <typename T>
 class vec : public std::vector<T> {
 public:
     vec() : std::vector<T> () {}; 						 // trivial constructor
-    explicit vec(int n) : std::vector<T> (n) {};				     // constructor with number of elements
-    vec(int n, T value) : std::vector<T> (n, value) {};   // constructor with number of elements and value
+    explicit vec(size_t n) : std::vector<T> (n) {};				     // constructor with number of elements
+    vec(size_t n, T value) : std::vector<T> (n, value) {};   // constructor with number of elements and value
     template <class InputIterator>
     vec (InputIterator first, InputIterator last)
      : std::vector<T> (first, last) {};                   // constructor from iterators to copy parts of existing vector

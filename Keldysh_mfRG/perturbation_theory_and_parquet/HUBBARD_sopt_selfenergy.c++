@@ -21,7 +21,7 @@ void Hubbard_SE_SOPT_Computer::compute_HUBBARD_SE_SOPT() {
 #if not defined(NDEBUG)
             utils::print("Now computing SOPT SE for iK = " + std::to_string(iK) + ", iK_internal = " + std::to_string(iK_internal),true);
 #endif
-            vec<comp> integrand (nFER * nBOS * glb_N_transfer);
+            vec<comp> integrand (static_cast<size_t>(nFER) * static_cast<size_t>(nBOS) * static_cast<size_t>(glb_N_transfer));
 
             const double t_integrand_start = utils::get_time();
 
