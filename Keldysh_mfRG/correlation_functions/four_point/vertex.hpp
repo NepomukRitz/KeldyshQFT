@@ -124,6 +124,13 @@ public:
                               avertex('a', Lambda, config, true),
                               pvertex('p', Lambda, config, true),
                               tvertex('t', Lambda, config, true) {}
+    void center_frequency_grids(const double hartree_plus_epsilon) {
+        if constexpr (KELDYSH_FORMALISM and !PARTICLE_HOLE_SYMM) {
+            avertex.center_frequency_grids({0., hartree_plus_epsilon, hartree_plus_epsilon});
+            tvertex.center_frequency_grids({0., hartree_plus_epsilon, hartree_plus_epsilon});
+            pvertex.center_frequency_grids({2. * hartree_plus_epsilon, 0., 0.});
+        }
+    }
 
 private:
     /// Returns \gamma_{\bar{r}} := the sum of the contributions of the diagrammatic classes r' =/= r
@@ -772,6 +779,10 @@ public:
     GeneralVertex(const fullvert<Q>& half1, const fullvert<Q>& half2, const vertex_nondiff_t& vertex_nondiff)
     : vertex(half1), vertex_half2(half2), vertex_nondifferentiated(vertex_nondiff) {
         static_assert(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright, "Only use two-argument constructor for non_symmetric vertex!");}
+
+    void center_frequency_grids(const double hartree_plus_epsilon) {
+        vertex.center_frequency_grids(hartree_plus_epsilon);
+    }
 
     // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
     fullvert<Q>& half1() { return vertex;}

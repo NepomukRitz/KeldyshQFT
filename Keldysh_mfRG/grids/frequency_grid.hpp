@@ -80,6 +80,7 @@ public:
     freqType w_upper;             // lower bound of frequency grid
     freqType w_lower;             // lower bound of frequency grid
     freqType W_scale;             // non-linearity of t_from_frequency()
+    freqType w_center = 0;        // symmetry point of frequency grid
 
     /// guess essential parameters from value of Lambda
     void guess_essential_parameters(double Lambda, const fRG_config& config);
@@ -167,6 +168,12 @@ public:
         }
     }
     void set_w_upper(freqType wmax) {double scale = W_scale; set_essential_parameters(wmax, scale);};
+    void set_w_center(freqType w_center_in) {
+        w_center = w_center_in;
+        w_upper += w_center_in;
+        w_lower += w_center_in;
+        initialize_grid();
+    }
     auto wscale_from_wmax(freqType & Wscale, freqType w1, freqType wmax, int N) -> double; // Not necessary if dense grid is chosen for Matsubara T>0
 
     void initialize_grid();
@@ -191,6 +198,7 @@ public:
     int number_of_gridpoints;                       // total number of gridpoints
     freqType w_upper;                                 // largest positive frequency
     freqType w_lower;                                 // largest positive frequency
+    freqType w_center = 0;        // symmetry point of frequency grid
     std::array<freqType,2> pos_section_boundaries;    // defines the sections [0, pos_section_boundaries[0]], [pos_section_boundaries[0], pos_section_boundaries[1]]... , [pos_section_boundaries[-1], w_upper]
 
     /// guess essential parameters from value of Lambda
@@ -277,6 +285,7 @@ public:
     int number_of_gridpoints;                       // total number of gridpoints
     double w_upper;                                 // largest  angle
     double w_lower;                                 // smallest angle
+    freqType w_center = 0;        // symmetry point of frequency grid
     int number_of_intervals;    // defines the number of intervals between w_lower and w_upper on which we have quadratic functions
     double lin_fac = 1.e-4;      // "ratio" between linear and quadratic contribution in the grid function
     double power;
@@ -417,7 +426,7 @@ public:
 
     /// Check whether frequencies are in the frequency box:
     bool is_in_box(std::array<freqType,1> freqs) const {
-        if constexpr(k == k1 or k == selfenergy) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol;
+        if constexpr(k == k1 or k == selfenergy) return std::abs(freqs[0] - primary_grid.w_center) <   primary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
     bool is_in_box(std::array<freqType,2> freqs) const {
@@ -428,7 +437,7 @@ public:
 
             }
             else {
-                return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol;
+                return std::abs(freqs[0] - primary_grid.w_center) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1] - secondary_grid.w_center) < secondary_grid.w_upper + inter_tol;
             }
 
         }
@@ -436,7 +445,7 @@ public:
     }
     bool is_in_box(std::array<freqType,3> freqs) const {
         K3_convert2internalFreqs(freqs[0], freqs[1], freqs[2]);
-        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION)) return std::abs(freqs[0]) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1]) < secondary_grid.w_upper + inter_tol and std::abs(freqs[2]) < tertiary_grid.w_upper + inter_tol;
+        if constexpr(k == k3 or (k == k2 and SBE_DECOMPOSITION)) return std::abs(freqs[0] - primary_grid.w_center) <   primary_grid.w_upper + inter_tol and std::abs(freqs[1] - secondary_grid.w_center) < secondary_grid.w_upper + inter_tol and std::abs(freqs[2] - tertiary_grid.w_center) < tertiary_grid.w_upper + inter_tol;
         else assert(false); // "Inconsistent number of frequency arguments.");
     }
 
@@ -682,16 +691,16 @@ public:
 
 double grid_transf_lin(double w, double W_scale);
 //int    grid_transf_lin(int w, int W_scale);
-double grid_transf_v1(double w, double W_scale);
-double grid_transf_v2(double w, double W_scale);
-double grid_transf_v3(double w, double W_scale);
-double grid_transf_v4(double w, double W_scale);
+double grid_transf_v1(double w, double W_scale, double w_center);
+double grid_transf_v2(double w, double W_scale, double w_center);
+double grid_transf_v3(double w, double W_scale, double w_center);
+double grid_transf_v4(double w, double W_scale, double w_center);
 double grid_transf_log(double w, double W_scale);
 freqType grid_transf_inv_lin(freqType W, freqType W_scale);
-double grid_transf_inv_v1(double t, double W_scale);
-double grid_transf_inv_v2(double t, double W_scale);
-double grid_transf_inv_v3(double t, double W_scale);
-double grid_transf_inv_v4(double t, double W_scale);
+double grid_transf_inv_v1(double t, double W_scale, double w_center);
+double grid_transf_inv_v2(double t, double W_scale, double w_center);
+double grid_transf_inv_v3(double t, double W_scale, double w_center);
+double grid_transf_inv_v4(double t, double W_scale, double w_center);
 double grid_transf_inv_log(double t, double W_scale);
 freqType wscale_from_wmax_v1(freqType & Wscale, freqType w1, freqType wmax, int N);
 freqType wscale_from_wmax_v2(freqType & Wscale, freqType w1, freqType wmax, int N);

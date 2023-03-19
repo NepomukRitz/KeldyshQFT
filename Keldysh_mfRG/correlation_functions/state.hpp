@@ -135,6 +135,7 @@ template <typename Q, bool differentiated> void State<Q,differentiated>::initial
             Hartree_Solver Hartree_Term(Lambda, config);
             const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing(1e-12, checks, checks);
             this->selfenergy.initialize(hartree_value, 0.);
+            vertex.center_frequency_grids(hartree_value + config.epsilon);
         }
     }
 

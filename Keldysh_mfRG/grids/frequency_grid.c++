@@ -21,10 +21,10 @@ void FrequencyGrid<eliasGrid>::initialize_grid() {
         all_frequencies[0] = 0.;
         auxiliary_grid[0] = 0.;
     }
-    if (number_of_gridpoints % 2 == 1 and not purely_positive) {
-        all_frequencies[(int) number_of_gridpoints / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
-        auxiliary_grid[(int) number_of_gridpoints / 2] = 0.;
-    }
+    //if (number_of_gridpoints % 2 == 1 and not purely_positive) {
+    //    all_frequencies[(int) number_of_gridpoints / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
+    //    auxiliary_grid[(int) number_of_gridpoints / 2] = 0.;
+    //}
     if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(all_frequencies) == 0);
 }
 
@@ -219,9 +219,9 @@ auto FrequencyGrid<eliasGrid>::get_grid_index(freqType& t, freqType w_in) const 
  * @return
  */
 auto FrequencyGrid<eliasGrid>::t_from_frequency(freqType w) const -> freqType {
-    if constexpr (KELDYSH) return grid_transf_v2(w, this->W_scale);
+    if constexpr (KELDYSH) return grid_transf_v2(w, this->W_scale, w_center);
     else if (this->type == 'f' and this->diag_class == 1) {
-        if constexpr (ZERO_T) return grid_transf_v3(w, this->W_scale);
+        if constexpr (ZERO_T) return grid_transf_v3(w, this->W_scale, w_center);
         else return grid_transf_lin(w, this->W_scale);
 
     }
@@ -229,7 +229,7 @@ auto FrequencyGrid<eliasGrid>::t_from_frequency(freqType w) const -> freqType {
         //    return grid_transf_v2(w, this->W_scale);
         //}
     else {
-        if constexpr (ZERO_T) return grid_transf_v4(w, this->W_scale);
+        if constexpr (ZERO_T) return grid_transf_v4(w, this->W_scale, w_center);
         else                   return grid_transf_lin(w, this->W_scale);
     }
 }
@@ -240,16 +240,16 @@ auto FrequencyGrid<eliasGrid>::t_from_frequency(freqType w) const -> freqType {
  * @return
  */
 auto FrequencyGrid<eliasGrid>::frequency_from_t(freqType t) const -> freqType {
-    if constexpr (KELDYSH) return grid_transf_inv_v2(t, this->W_scale);
+    if constexpr (KELDYSH) return grid_transf_inv_v2(t, this->W_scale, w_center);
     else if (this->type == 'f' and this->diag_class == 1) {
-        if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale);
+        if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale, w_center);
         else return grid_transf_inv_lin(t, this->W_scale) + (std::is_same_v<freqType,int> and type=='f' ? 1 : 0);
     }
         //else if (this->type == 'b' and this->diag_class == 1) {
         //    return grid_transf_inv_v2(w, this->W_scale);
         //}
     else { // TODO(medium): Remove commented part?
-        if constexpr (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale);
+        if constexpr (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale, w_center);
         else return grid_transf_inv_lin(t, this->W_scale) + (std::is_same_v<freqType,int> and type=='f' ? 1 : 0);
     }
 }
@@ -285,13 +285,14 @@ auto FrequencyGrid<eliasGrid>::wscale_from_wmax(freqType & Wscale, const freqTyp
  * W_scale: sets the scale separating small frequencies (containing interesting structures) and tails
  */
 
-double grid_transf_v1(const double w, const double W_scale) {
+double grid_transf_v1(const double w, const double W_scale, const double w_center) {
     // Version 1: linear around w=0, good for w^(-2) tails
-    return w/sqrt(W_scale*W_scale + w*w);
+    const double w_dev = w - w_center;
+    return w_dev/sqrt(W_scale*W_scale + w_dev*w_dev);
 }
-double grid_transf_inv_v1(const double t, const double W_scale) {
+double grid_transf_inv_v1(const double t, const double W_scale, const double w_center) {
     // Version 1: linear around w=0, good for w^(-2) tails
-    return W_scale*t/sqrt(1.-t*t);
+    return w_center + W_scale*t/sqrt(1.-t*t);
 }
 double integration_measure_v1(const double t, const double W_scale) {
     double temp = sqrt(1 - t*t);
@@ -299,14 +300,15 @@ double integration_measure_v1(const double t, const double W_scale) {
 }
 
 
-double grid_transf_v2(const double w, const double W_scale) {
+double grid_transf_v2(const double w, const double W_scale, const double w_center) {
     // Version 2: quadratic around w=0, good for w^(-2) tails
-    double w2 = w * w;
-    return sgn(w) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+    const double w_dev = w - w_center;
+    double w2 = w_dev * w_dev;
+    return sgn(w_dev) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
 }
-double grid_transf_inv_v2(double t, double W_scale) {
+double grid_transf_inv_v2(const double t, const double W_scale, const double w_center) {
     // Version 2: quadratic around w=0, good for w^(-2) tails
-    return W_scale * t * std::abs(t) / sqrt(1. - t * t);
+    return w_center + W_scale * t * std::abs(t) / sqrt(1. - t * t);
 }
 double integration_measure_v2(const double t, const double W_scale) {
     double temp = sqrt(1 - t*t);
@@ -319,28 +321,30 @@ double integration_measure_v2(const double t, const double W_scale) {
 //    return sgn(t) * w_a * (exp(log(1. + glb_w_upper/w_a) * std::abs(t)) - 1);
 //}
 
-double grid_transf_v3(const double w, const double W_scale) {
+double grid_transf_v3(const double w, const double W_scale, const double w_center) {
     // Version 3: linear around w=0, good for w^(-1) tails
     const double almost_zero = 1e-12;
-    return (std::abs(w) < almost_zero) ? 0. : (-W_scale + sqrt(4*w*w + W_scale*W_scale))/2/w;
+    const double w_dev = w - w_center;
+    return (std::abs(w_dev) < almost_zero) ? 0. : (-W_scale + sqrt(4*w_dev*w_dev + W_scale*W_scale))/2/w_dev;
 }
-double grid_transf_inv_v3(const double t, const double W_scale) {
+double grid_transf_inv_v3(const double t, const double W_scale, const double w_center) {
     // Version 3: linear around w=0, good for w^(-1) tails
-    return W_scale * t / (1.-t*t);
+    return w_center + W_scale * t / (1.-t*t);
 }
 double integration_measure_v3(const double t, const double W_scale) {
     double temp = t*t;
     return W_scale * (1 + temp) / (1 - temp) / (1 - temp);
 }
 
-double grid_transf_v4(const double w, const double W_scale) {
+double grid_transf_v4(const double w, const double W_scale, const double w_center) {
     // Version 4: quadratic around w=0, good for w^(-1) tails
-    const double abs_w = std::abs(w);
-    return sgn(w) * sqrt(abs_w/(abs_w + W_scale));
+    const double w_dev = w - w_center;
+    const double abs_w = std::abs(w_dev);
+    return sgn(w_dev) * sqrt(abs_w/(abs_w + W_scale));
 }
-double grid_transf_inv_v4(const double t, const double W_scale) {
+double grid_transf_inv_v4(const double t, const double W_scale, const double w_center) {
     // Version 4: quadratic around w=0, good for w^(-1) tails
-    return W_scale * sgn(t) * t*t /(1.-t*t);
+    return w_center + W_scale * sgn(t) * t*t /(1.-t*t);
 }
 double integration_measure_v4(const double t, const double W_scale) {
     double temp = 1 - t*t;

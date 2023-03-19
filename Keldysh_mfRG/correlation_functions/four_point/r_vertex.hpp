@@ -187,6 +187,9 @@ public:
         }
       };
     rvert() = delete;
+    void center_frequency_grids(const std::array<double,3> shifts) {
+        apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.center_frequency_grids(shifts); });
+    }
 
     mutable bool calculated_crossprojections = false;
     void cross_project();

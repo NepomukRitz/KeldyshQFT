@@ -668,6 +668,11 @@ public:
     dataBuffer() : base_class() {};
     explicit dataBuffer (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
     //void initInterpolator() const {initialized = true;};
+    void center_frequency_grids(const std::array<double,3> shifts) {
+        base_class::frequencies.  primary_grid.set_w_center(shifts[0]);
+        base_class::frequencies.secondary_grid.set_w_center(shifts[1]);
+        base_class::frequencies. tertiary_grid.set_w_center(shifts[2]);
+    }
 
     template<typename result_type=Q,
             typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
