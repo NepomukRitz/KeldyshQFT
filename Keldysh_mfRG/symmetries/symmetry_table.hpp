@@ -492,8 +492,23 @@ struct Components {
         }
     }
 };
-
+const inline std::vector<int> Transformations_Keldysh_a_channel = {
+        0,2, // K1
+        0,2, // K2
+        3,1, // K2b
+        0,2};
+const inline std::vector<int> Transformations_Keldysh_p_channel = {
+        0,1, // K1
+        0,1, // K2
+        4,41, // K2b
+        0,1};
+const inline std::vector<int> Transformations_Keldysh_t_channel = {
+        0,2, // K1
+        0,2, // K2
+        3,1, // K2b
+        0,2};
 #if CONTOUR_BASIS != 1
+/*
 const inline std::vector<int> Transformations_Keldysh_a_channel = {// K1:
                                                     0,  0,  3,  0,
                                                     3,  0,  0,  0,
@@ -668,7 +683,7 @@ const inline std::vector<int> Transformations_Keldysh_t_channel = {// K1:
                                                     14, 1,  1,  1,
                                                     41, 2,  2,  2,
                                                     14,41, 14,  0}; // spin comp. Vhat
-
+*/
 #else
 #if not PARTICLE_HOLE_SYMM
 const inline std::vector<int> Transformations_Keldysh_a_channel = {// K1:
@@ -905,10 +920,10 @@ const inline std::vector<int> Transformations_Matsubara_t_channel{0, 1, 0, 2, 3,
 * Convention for composite trafos: 43 = first apply 4, then 3 etc. Careful, some operations do not commute!
 */
 struct Transformations {
-    using buffer_type = multidimensional::multiarray<int,3>;
+    using buffer_type = multidimensional::multiarray<int,2>;
     using dimensions_type = buffer_type::dimensions_type;
 
-    constexpr static  dimensions_type K_dims = dimensions_type({4, 2, KELDYSH ? 16 : 1}) ;
+    constexpr static  dimensions_type K_dims = dimensions_type({4, 2}) ; //, KELDYSH ? 16 : 1
     buffer_type K;
 
     Transformations() = default;
@@ -956,15 +971,24 @@ const std::vector<std::vector<int>> ComponentsK2t {{0, 1, 0, 1}, {0, 1, 2, 3}, {
 const std::vector<std::vector<int>> ComponentsK3a {{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 1, 2, 3, 4, 5, 6, 7}};
 const std::vector<std::vector<int>> ComponentsK3p {{0, 0, 0, 0, 4, 4, 4, 4}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 1, 0, 4, 5, 5, 4}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 0, 1, 4, 5, 4, 5}, {0, 1, 2, 3, 4, 5, 6, 7}};
 const std::vector<std::vector<int>> ComponentsK3t {{0, 0, 2, 2, 0, 0, 2, 2}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 1, 0, 3, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {0, 0, 2, 2, 4, 4, 6, 6}, {0, 1, 2, 3, 4, 5, 6, 7}};
-const std::vector<std::vector<int>> TransformaK1a {{0, 34}, {0, 3}, {0, 0}};
-const std::vector<std::vector<int>> TransformaK1p {{0, 0}, {0, 0}, {0, 0}};
-const std::vector<std::vector<int>> TransformaK1t {{0, 4}, {0, 3}, {0, 0}};
-const std::vector<std::vector<int>> TransformaK2a {{0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}};
-const std::vector<std::vector<int>> TransformaK2p {{0, 3, 0, 3}, {0, 3, 0, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 3, 0, 3}};
-const std::vector<std::vector<int>> TransformaK2t {{0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}};
-const std::vector<std::vector<int>> TransformaK3a {{0, 4, 0, 4, 34, 3, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 0, 0, 34, 34, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
-const std::vector<std::vector<int>> TransformaK3p {{0, 4, 34, 3, 0, 4, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 3, 3, 0, 0, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 34, 34, 0, 0, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
-const std::vector<std::vector<int>> TransformaK3t {{0, 34, 0, 34, 4, 3, 4, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 0, 0, 0, 4, 4, 4, 4}, {0, 34, 0, 34, 0, 34, 0, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
+//const std::vector<std::vector<int>> TransformaK1a {{0, 34}, {0, 3}, {0, 0}};
+//const std::vector<std::vector<int>> TransformaK1p {{0, 0}, {0, 0}, {0, 0}};
+//const std::vector<std::vector<int>> TransformaK1t {{0, 4}, {0, 3}, {0, 0}};
+//const std::vector<std::vector<int>> TransformaK2a {{0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}, {0, 0, 0, 0}, {0, 0, 34, 34}};
+//const std::vector<std::vector<int>> TransformaK2p {{0, 3, 0, 3}, {0, 3, 0, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 3, 0, 3}};
+//const std::vector<std::vector<int>> TransformaK2t {{0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}, {0, 0, 0, 0}, {0, 0, 4, 4}};
+//const std::vector<std::vector<int>> TransformaK3a {{0, 4, 0, 4, 34, 3, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 0, 0, 34, 34, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
+//const std::vector<std::vector<int>> TransformaK3p {{0, 4, 34, 3, 0, 4, 34, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 3, 3, 0, 0, 3, 3}, {0, 4, 0, 4, 0, 4, 0, 4}, {0, 0, 34, 34, 0, 0, 34, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
+//const std::vector<std::vector<int>> TransformaK3t {{0, 34, 0, 34, 4, 3, 4, 3}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 3, 3, 3, 3}, {0, 0, 0, 0, 4, 4, 4, 4}, {0, 34, 0, 34, 0, 34, 0, 34}, {0, 0, 0, 0, 0, 0, 0, 0}};
+const std::vector<int> TransformaK1a {0,3};
+const std::vector<int> TransformaK1p {0,0};
+const std::vector<int> TransformaK1t {0,3};
+const std::vector<int> TransformaK2a {0,0,34,34};
+const std::vector<int> TransformaK2p {0,3,0,3};
+const std::vector<int> TransformaK2t {0,0,4,4};
+const std::vector<int> TransformaK3a {0,4,0,4,34,3,34,3};
+const std::vector<int> TransformaK3p {0,4,34,3,0,4,34,3};
+const std::vector<int> TransformaK3t {0,34,0,34,4,3,4,3};
 #else
 const std::vector<std::vector<int>> ComponentsK1a {{0, 0}, {0, 0}};
 const std::vector<std::vector<int>> ComponentsK1p {{0, 0}, {0, 0}};
@@ -972,24 +996,33 @@ const std::vector<std::vector<int>> ComponentsK1t {{0, 0}, {0, 0}};
 const std::vector<std::vector<int>> ComponentsK2a {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK2p {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK2t {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}};
-const std::vector<std::vector<int>> ComponentsK3a {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
+    const std::vector<std::vector<int>> ComponentsK3a {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
 const std::vector<std::vector<int>> ComponentsK3p {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
 const std::vector<std::vector<int>> ComponentsK3t {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}, {0, 1, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 0, 1, 1, 0}, {0, 0, 2, 2, 2, 2, 0, 0}, {0, 1, 2, 3, 3, 2, 1, 0}};
-const std::vector<std::vector<int>> TransformaK1a {{0, 6}, {0, 3}, {0, 0}};
-const std::vector<std::vector<int>> TransformaK1p {{0, 6}, {0, 6}, {0, 0}};
-const std::vector<std::vector<int>> TransformaK1t {{0, 6}, {0, 3}, {0, 0}};
+//const std::vector<std::vector<int>> TransformaK1a {{0, 6}, {0, 3}, {0, 0}};
+//const std::vector<std::vector<int>> TransformaK1p {{0, 6}, {0, 6}, {0, 0}};
+//const std::vector<std::vector<int>> TransformaK1t {{0, 6}, {0, 3}, {0, 0}};
+const std::vector<int> TransformaK1a {0, 3};
+const std::vector<int> TransformaK1p {0, 6};
+const std::vector<int> TransformaK1t {0, 3};
 #if SBE_DECOMPOSITION
 const std::vector<std::vector<int>> TransformaK2a {{0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}};
 const std::vector<std::vector<int>> TransformaK2p {{0, 3, 36, 6}, {0, 3, 36, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 3, 36, 6}};
 const std::vector<std::vector<int>> TransformaK2t {{0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}};
 #else
-const std::vector<std::vector<int>> TransformaK2a {{0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}};
-const std::vector<std::vector<int>> TransformaK2p {{0, 3, 36, 6}, {0, 3, 36, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 3, 36, 6}};
-const std::vector<std::vector<int>> TransformaK2t {{0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}};
+//const std::vector<std::vector<int>> TransformaK2a {{0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}, {0, 0, 6, 6}, {0, 346, 34, 6}};
+//const std::vector<std::vector<int>> TransformaK2p {{0, 3, 36, 6}, {0, 3, 36, 6}, {0, 0, 6, 6}, {0, 0, 6, 6}, {0, 3, 36, 6}};
+//const std::vector<std::vector<int>> TransformaK2t {{0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}, {0, 0, 6, 6}, {0, 46, 4, 6}};
+const std::vector<int> TransformaK2a {0,346,34,6};
+const std::vector<int> TransformaK2p {0,3,36,6};
+const std::vector<int> TransformaK2t {0,46,4,6};
 #endif
-const std::vector<std::vector<int>> TransformaK3a {{0, 4, 36, 346, 34, 3, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 346, 346, 34, 34, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
-const std::vector<std::vector<int>> TransformaK3p {{0, 4, 34, 3, 36, 346, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 3, 3, 36, 36, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 34, 34, 346, 346, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
-const std::vector<std::vector<int>> TransformaK3t {{0, 34, 36, 46, 4, 3, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 0, 46, 46, 4, 4, 6, 6}, {0, 34, 0, 34, 346, 6, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
+//const std::vector<std::vector<int>> TransformaK3a {{0, 4, 36, 346, 34, 3, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 346, 346, 34, 34, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
+//const std::vector<std::vector<int>> TransformaK3p {{0, 4, 34, 3, 36, 346, 46, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 3, 3, 36, 36, 6, 6}, {0, 4, 0, 4, 46, 6, 46, 6}, {0, 0, 34, 34, 346, 346, 6, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
+//const std::vector<std::vector<int>> TransformaK3t {{0, 34, 36, 46, 4, 3, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}, {0, 0, 36, 36, 3, 3, 6, 6}, {0, 0, 46, 46, 4, 4, 6, 6}, {0, 34, 0, 34, 346, 6, 346, 6}, {0, 0, 0, 0, 6, 6, 6, 6}};
+const std::vector<int> TransformaK3a {0,4,36,346,34,3,46,6};
+const std::vector<int> TransformaK3p {0,4,34,3,36,346,46,6};
+const std::vector<int> TransformaK3t {0,34,36,46,4,3,346,6};
 #endif
 #else   // CONTOUR_BASIS
 #if not PARTICLE_HOLE_SYMM
@@ -1024,15 +1057,15 @@ const std::vector<std::vector<int>> ComponentsK2t {{0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK3a {{0, 0, 0, 0, 0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK3p {{0, 0, 0, 0, 0, 0, 0, 0}};
 const std::vector<std::vector<int>> ComponentsK3t {{0, 0, 0, 0, 0, 0, 0, 0}};
-const std::vector<std::vector<int>> TransformaK1a {{0, 3}};
-const std::vector<std::vector<int>> TransformaK1p {{0, 4}};
-const std::vector<std::vector<int>> TransformaK1t {{0, 3}};
-const std::vector<std::vector<int>> TransformaK2a {{0, 34, 347, 7}};
-const std::vector<std::vector<int>> TransformaK2p {{0, 3, 37, 7}};
-const std::vector<std::vector<int>> TransformaK2t {{0, 4, 47, 7}};
-const std::vector<std::vector<int>> TransformaK3a {{0, 47, 37, 34, 347, 3, 4, 7}};
-const std::vector<std::vector<int>> TransformaK3p {{0, 47, 347, 3, 37, 34, 4, 7}};
-const std::vector<std::vector<int>> TransformaK3t {{0, 347, 37, 4, 47, 3, 34, 7}};
+const std::vector<int> TransformaK1a {0, 3};
+const std::vector<int> TransformaK1p {0, 4};
+const std::vector<int> TransformaK1t {0, 3};
+const std::vector<int> TransformaK2a {0, 34, 347, 7};
+const std::vector<int> TransformaK2p {0, 3, 37, 7};
+const std::vector<int> TransformaK2t {0, 4, 47, 7};
+const std::vector<int> TransformaK3a {0, 47, 37, 34, 347, 3, 4, 7};
+const std::vector<int> TransformaK3p {0, 47, 347, 3, 37, 34, 4, 7};
+const std::vector<int> TransformaK3t {0, 347, 37, 4, 47, 3, 34, 7};
 #endif
 
 
@@ -1040,7 +1073,7 @@ const std::vector<std::vector<int>> TransformaK3t {{0, 347, 37, 4, 47, 3, 34, 7}
 
 
 struct FrequencyTransformations {
-    std::vector<std::vector<int>> K1, K2, K3;
+    std::vector<int> K1, K2, K3;
 
     FrequencyTransformations() {};
     FrequencyTransformations(const char channel) {

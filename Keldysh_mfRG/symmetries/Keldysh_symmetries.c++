@@ -1,22 +1,8 @@
 # include "Keldysh_symmetries.hpp"
 
-auto convertToIndepIndex(int iK) -> int
-{
-    if(isInList(iK, non_zero_Keldysh_K3)) {
-        if (iK == 0 || iK == 1)                                             //  iK(indep)   Real index
-            return iK;                                                      //  0           0
-        else if (iK == 3)                                                   //  1           1
-            return 2;                                                       //  2           3
-        else                                                                //  3           5
-            return iK - 2;                                                  //  4           6
-    } else{                                                                 //  5           7
-        utils::print("convertToIndepIndex is throwing this error");
-        return -1;
-    }
-}
 
-auto alphas(int index) -> std::vector<int> {
-    std::vector<int> alphas (4);
+auto iK_to_alphas(int index) -> std::array<int,4> {
+    std::array<int,4> alphas;
     int base = 8;
     for (int i = 0; i < 4; i++) {
         alphas[i] = index / base;
@@ -31,11 +17,26 @@ auto alphas(int index) -> std::vector<int> {
     return alphas;
 }
 
+auto alphas_to_iK(const std::array<int,4>& alphas) -> int {
+    int base = 1;
+    int iK = 0;
+    for (int i = 0; i < 4; i++) {
+        iK += (alphas[3-i] - 1) * base;
+        base *= 2;
+    }
+    //alphas[0] = (index % 16)/8 + 1;
+    //alphas[1] = (index % 8)/4 + 1;
+    //alphas[2] = (index % 4)/2 + 1;
+    //alphas[3] = (index % 2) + 1;
+    assert(iK>=0);
+    return iK;
+}
+
 auto indices_sum(int i0, int i2, const char channel) -> std::vector<int> {
     std::vector<int> indices ({0, 0});           // Return std::vector, already correct for Matsubara
     if (KELDYSH){
-        std::vector<int> alphas_i0 = alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
-        std::vector<int> alphas_i2 = alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
+        std::array<int,4> alphas_i0 = iK_to_alphas(i0);   // Calculate the alphas of each input. Refer to these alphas as (1'2'|12)
+        std::array<int,4> alphas_i2 = iK_to_alphas(i2);   // Calculate the alphas of each input. Refer to these alphas as (34|3'4')
 
         //Distribute the alphas of indices i0 and i2 into i1 and i3
         switch (channel) {

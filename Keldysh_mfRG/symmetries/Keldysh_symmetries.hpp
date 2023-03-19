@@ -63,23 +63,23 @@ constexpr buffer_config<3> SE_config{
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<4> K1at_config{
-    std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 3 : 1, n_in_K1})
+    std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 16 : 1, n_in_K1})
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<4> K1p_config {
-    std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 3 : 1, n_in_K1})
+    std::array<size_t,4>({n_spin, nBOS, KELDYSH ? 16 : 1, n_in_K1})
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<5> K2at_config{
-    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 5 : 1, n_in_K2})
+    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 16 : 1, n_in_K2})
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<5> K2p_config {
-    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 5 : 1, n_in_K2})
+    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH ? 16 : 1, n_in_K2})
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<6> K3_config{
-    std::array<size_t,6>({n_spin, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH ? 6 : 1, n_in_K3})
+    std::array<size_t,6>({n_spin, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH ? 16 : 1, n_in_K3})
     , 3  // number of frequency dimensions
     , 1};// position of first frequency index
 #else
@@ -179,19 +179,19 @@ constexpr int glb_number_of_Keldysh_components_bubble = 9; // length of the prev
 
 // Vector of indices of independent components of the diagrammatic classes, density channel
 #if CONTOUR_BASIS != 1
-const std::vector<int> non_zero_Keldysh_K1a({1,3,15});
-const std::vector<int> non_zero_Keldysh_K1p({1,5,15});
-const std::vector<int> non_zero_Keldysh_K1t({1,3,15});
+//const std::vector<int> non_zero_Keldysh_K1a({1,3,15});
+//const std::vector<int> non_zero_Keldysh_K1p({1,5,15});
+//const std::vector<int> non_zero_Keldysh_K1t({1,3,15});
 #if SBE_DECOMPOSITION
 const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,9});
 const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,12});
 const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,5});
 #else
-const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
-const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
-const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
+//const std::vector<int> non_zero_Keldysh_K2a({0,1,2,3,11});
+//const std::vector<int> non_zero_Keldysh_K2p({0,1,4,5,13});
+//const std::vector<int> non_zero_Keldysh_K2t({0,1,2,3,7});
 #endif
-const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
+//const std::vector<int> non_zero_Keldysh_K3({0,1,3,5,6,7});
 #else
 #if not PARTICLE_HOLE_SYMM
 const std::vector<int> non_zero_Keldysh_K1a({0,6});
@@ -246,7 +246,8 @@ auto isInList (T val, const std::vector<T>& list) -> bool {
 auto convertToIndepIndex(int iK) -> int;
 
 // This function returns the values of the 4 alphas for a given index in the 0...15 set
-auto alphas(int index) -> std::vector<int>;
+auto iK_to_alphas(int index) -> std::array<int,4>;
+auto alphas_to_iK(const std::array<int,4>& alphas) -> int;
 
 
 
