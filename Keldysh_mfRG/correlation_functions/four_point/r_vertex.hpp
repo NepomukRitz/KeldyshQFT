@@ -408,7 +408,7 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
 
     Ti<(k==k2 or k==k2b) and SBE_DECOMPOSITION>(indices, transformations.K(k, input.spin));  // apply necessary symmetry transformations
     if constexpr(not DEBUG_SYMMETRIES) {
-        //indices.iK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
+        //if (components.K(k, input.spin, input.iK) < 0) indices.iK = -1;  // check which symmetry-transformed component should be read
         assert(k != k3_sbe);
     }
     else {
@@ -465,7 +465,7 @@ template <K_class k>
 const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const {
 
     Ti<(k==k2 or k==k2b) and SBE_DECOMPOSITION>(indices, transformations.K(k, input.spin));  // apply necessary symmetry transformations
-    //indices.iK = components.K(k, input.spin, input.iK);  // check which symmetry-transformed component should be read
+    //if (components.K(k, input.spin, input.iK) < 0) indices.iK = -1;  // check which symmetry-transformed component should be read
 
     // first check if the applied transformations switch between half 1 and half 2 of the vertex
     if (indices.asymmetry_transform) {
@@ -495,7 +495,7 @@ const rvert<Q>& rvert<Q>::symmetry_reduce(const VertexInput &input, IndicesSymme
 template <typename Q>
 template <K_class k>
 auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q {
-    if (indices.iK < 0) assert(false);//return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
+    //if (indices.iK < 0) return 0.;  // components with label -1 in the symmetry table are zero --> return 0. directly
 
     assert(indices.channel_rvert == readMe.channel);
 
@@ -2018,6 +2018,7 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
         int trafo_index = freq_transformations.K1[ sign_w];
         if (trafo_index != 0) {
             Ti<false>(indices, trafo_index);
+
             //indices.iK = itK;
 
             Q result;
@@ -2028,6 +2029,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
 
             K1.setvert(result, idx);
         }
+        if (components.K(k1, indices.spin, indices.iK) < 0) K1.setvert(0.   , idx);  // check which symmetry-transformed component should be read
+
 
         if (CONTOUR_BASIS and ZERO_T and USE_FDT  and is_zero_due_to_FDTs<k1>(itK, w_in, 0., 0., channel)) {
             K1.setvert(0., idx);
@@ -2123,6 +2126,8 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
 
             K2.setvert(result, idx);
         }
+        if (components.K(k2, indices.spin, indices.iK) < 0)
+            K2.setvert(0.   , idx);  // check which symmetry-transformed component should be read
         if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.frequencies.get_wlower_f()) {
             K2.setvert(0., idx);                    }
         if (CONTOUR_BASIS and ZERO_T and USE_FDT and is_zero_due_to_FDTs<k2>(itK, w_in, v_in, 0., channel)) {
@@ -2166,7 +2171,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         int sign_fp = sign_index(indices.v1 - indices.v2);
         int trafo_index = freq_transformations.K3[ sign_w * 4 + sign_f * 2 + sign_fp];
         Ti<false>(indices, trafo_index);
-        //indices.iK = itK;
 
 
         if (trafo_index != 0) {
@@ -2180,6 +2184,9 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 
             K3.setvert(result, idx);
         }
+        if (components.K(k3, indices.spin, indices.iK) < 0)
+            K3.setvert(0.   , idx);  // check which symmetry-transformed component should be read
+
         if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f())) {
             K3.setvert(0., idx);
         }
