@@ -152,9 +152,11 @@ template <typename Q, bool differentiated> void State<Q,differentiated>::set_fre
     this->vertex.set_frequency_grid(state_in.vertex);
 }
 
-template <typename Q, bool differentiated> void State<Q,differentiated>::update_grid(double Lambda) {
-    this->selfenergy.update_grid(Lambda, config);
-    this->vertex.update_grid(Lambda, config);
+template <typename Q, bool differentiated> void State<Q,differentiated>::update_grid(double Lambda_in) {
+    this->selfenergy.update_grid(Lambda_in, config);
+    this->vertex.update_grid(Lambda_in, config);
+    const double hartree_value = myreal(selfenergy.asymp_val_R);
+    vertex.center_frequency_grids(hartree_value + config.epsilon);
 }
 
 

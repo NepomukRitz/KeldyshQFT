@@ -178,7 +178,7 @@ auto FrequencyGrid<eliasGrid>::get_grid_index(const freqType w_in) const -> int 
  *  It rounds down due to the narrowing conversion from double to int.
  *  This is only used for (linear) interpolations. Hence the narrowing conversion is harmless.
  */
-auto FrequencyGrid<eliasGrid>::get_grid_index(freqType& t, freqType w_in) const -> int {
+auto FrequencyGrid<eliasGrid>::get_grid_index(freqType& t, const freqType w_in) const -> int {
     t = t_from_frequency(w_in);
     assert(isfinite(t));
 #ifdef PARAMETRIZED_GRID
@@ -303,8 +303,10 @@ double integration_measure_v1(const double t, const double W_scale) {
 double grid_transf_v2(const double w, const double W_scale, const double w_center) {
     // Version 2: quadratic around w=0, good for w^(-2) tails
     const double w_dev = w - w_center;
-    double w2 = w_dev * w_dev;
-    return sgn(w_dev) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+    const double w2 = w_dev * w_dev;
+    const double res = sgn(w_dev) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
+    assert(isfinite(res));
+    return res;
 }
 double grid_transf_inv_v2(const double t, const double W_scale, const double w_center) {
     // Version 2: quadratic around w=0, good for w^(-2) tails

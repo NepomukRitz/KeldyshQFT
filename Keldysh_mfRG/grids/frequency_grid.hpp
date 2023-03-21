@@ -170,8 +170,9 @@ public:
     void set_w_upper(freqType wmax) {double scale = W_scale; set_essential_parameters(wmax, scale);};
     void set_w_center(freqType w_center_in) {
         w_center = w_center_in;
-        w_upper += w_center_in;
-        w_lower += w_center_in;
+        const double w_upper_centered = (w_upper - w_lower) * 0.5;
+        w_upper = w_upper_centered + w_center_in;
+        w_lower =-w_upper_centered + w_center_in;
         initialize_grid();
     }
     auto wscale_from_wmax(freqType & Wscale, freqType w1, freqType wmax, int N) -> double; // Not necessary if dense grid is chosen for Matsubara T>0

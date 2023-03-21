@@ -572,7 +572,11 @@ void ode_solver(Y& result, const Y& state_ini, const System& rhs,
     double h_try;
     if (tableau.adaptive and config.iter_start > 0) {
         /// next: try an equal stepsize in terms of the reparametrized flow parameter t
-        double htry_last_reparametrized = FlowGrid::t_from_lambda(lambdas[config.iter_start]) - FlowGrid::t_from_lambda(lambdas[config.iter_start - 1]);
+        double lambdas_0 = lambdas[config.iter_start-1];
+        double lambdas_1 = lambdas[config.iter_start];
+        double htry_last_reparametrized = FlowGrid::t_from_lambda(lambdas_1) - FlowGrid::t_from_lambda(lambdas_0);
+        htry_last_reparametrized = std::min(std::abs(htry_last_reparametrized), max_t_step) ;
+        htry_last_reparametrized = std::max(std::abs(htry_last_reparametrized), min_t_step) ;
         h_try = FlowGrid::lambda_from_t(FlowGrid::t_from_lambda(Lambda) + htry_last_reparametrized) - Lambda;
     }
     else {

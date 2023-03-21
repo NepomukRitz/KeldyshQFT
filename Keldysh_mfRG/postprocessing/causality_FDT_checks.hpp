@@ -126,7 +126,7 @@ SelfEnergy<Q> check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const doubl
 
 /// deprecated
 template <typename Q>
-void check_FDTs_K1(const rvert<Q>& rvert4K1, const double T, const bool verbose) {
+void check_FDTs_K1(const rvert<Q>& rvert4K1, const char channel, const double T, const bool verbose) {
     if constexpr(!CONTOUR_BASIS) {
         std::array<size_t, K1at_config.rank> dims_K = rvert4K1.K1.get_dims();
         dims_K[my_defs::K1::keldysh] = 1;
@@ -138,9 +138,11 @@ void check_FDTs_K1(const rvert<Q>& rvert4K1, const double T, const bool verbose)
         for (unsigned int i = 0; i < size_flat; i++) {
             std::array<my_index_t, K1at_config.rank> idx_R;
             getMultIndex<K1at_config.rank>(idx_R, i, dims_K);
+            const std::array<my_index_t, K1at_config.rank> idx_0 = idx_R;
+            idx_R[my_defs::K1::keldysh] = 1;
 
             std::array<my_index_t, K1at_config.rank> idx_K = idx_R;
-            idx_K[my_defs::K1::keldysh] = 1;
+            idx_K[my_defs::K1::keldysh] = channel == 'p' ? 5 : 3;
 
             const Q val_K_from_data = rvert4K1.K1.val(idx_K);
             const Q val_Im_R_from_data = myimag(rvert4K1.K1.val(idx_R));
@@ -152,8 +154,8 @@ void check_FDTs_K1(const rvert<Q>& rvert4K1, const double T, const bool verbose)
 
             const Q val_Im_R_from_FDTs = glb_i * 0.5 * Eff_fac(v,T) * val_K_from_data;
 
-            Im_K1_R_from_data.at(idx_R) = val_Im_R_from_data;
-            Im_K1_R_from_FDTs.at(idx_R) = val_Im_R_from_FDTs;
+            Im_K1_R_from_data.at(idx_0) = val_Im_R_from_data;
+            Im_K1_R_from_FDTs.at(idx_0) = val_Im_R_from_FDTs;
         }
 
         buffer_t difference = Im_K1_R_from_data - Im_K1_R_from_FDTs;
@@ -161,8 +163,8 @@ void check_FDTs_K1(const rvert<Q>& rvert4K1, const double T, const bool verbose)
         double max_norm_Kdat = Im_K1_R_from_data.max_norm();
         if (verbose) {
             utils::print("Check FDT for K1", rvert4K1.channel, ": \n");
-            utils::print("Maximal deviation from FDTs (absolute): \t", max_deviation, "\n");
-            utils::print("Maximal absolute value of Im(K1^R): \t", max_norm_Kdat, "\n");
+            utils::print("Maximal abs. deviation from FDTs: \t", max_deviation, "\t",
+                         " ||Im(K1^R)||_oo: \t", max_norm_Kdat, "\n");
         }
     }
 }
@@ -172,7 +174,7 @@ template <typename Q>
 void check_FDTs(const State<Q>& state, bool verbose) {
     check_FDTs_selfenergy(state.selfenergy, state.config.T, verbose);
     for (char ch : {'a', 'p', 't'}) {
-        check_FDTs_K1(state.vertex.get_rvertex(ch), state.config.T, verbose);
+        check_FDTs_K1(state.vertex.get_rvertex(ch), ch, state.config.T, verbose);
     }
 }
 
@@ -202,7 +204,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 for (int itspin = 0; itspin < n_in; itspin++) {
                     for (int itin = 0; itin < n_in; itin++) {
                         my_defs::K1::index_type idx;
-                        idx[my_defs::K1::keldysh] = 1;
+                        idx[my_defs::K1::keldysh] = 3;
                         idx[my_defs::K1::spin] = itspin;
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
@@ -230,7 +232,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 for (int itspin = 0; itspin < n_in; itspin++) {
                     for (int itin = 0; itin < n_in; itin++) {
                         my_defs::K1::index_type idx;
-                        idx[my_defs::K1::keldysh] = 1;
+                        idx[my_defs::K1::keldysh] = 5;
                         idx[my_defs::K1::spin] = itspin;
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
@@ -260,7 +262,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                 for (int itspin = 0; itspin < n_in; itspin++) {
                     for (int itin = 0; itin < n_in; itin++) {
                         my_defs::K1::index_type idx;
-                        idx[my_defs::K1::keldysh] = 1;
+                        idx[my_defs::K1::keldysh] = 3;
                         idx[my_defs::K1::spin] = itspin;
                         idx[my_defs::K1::omega] = itw;
                         idx[my_defs::K1::internal] = itin;
@@ -390,7 +392,7 @@ void compute_components_through_FDTs(fullvert<Q>& vertex_out, const fullvert<Q>&
                                 vertex_out.pvertex.K2.setvert(G12, idx);
                                 idx[my_defs::K2::keldysh] = 1;
                                 vertex_out.pvertex.K2.setvert(G123, idx);
-                                idx[my_defs::K2::keldysh] = 3;
+                                idx[my_defs::K2::keldysh] = 5;
                                 vertex_out.pvertex.K2.setvert(G13, idx);
 
                             }
