@@ -135,6 +135,7 @@ template <typename Q, bool differentiated> void State<Q,differentiated>::initial
             Hartree_Solver Hartree_Term(Lambda, config);
             const double hartree_value = Hartree_Term.compute_Hartree_term_bracketing(1e-12, checks, checks);
             this->selfenergy.initialize(hartree_value, 0.);
+            vertex.center_frequency_grids(hartree_value + config.epsilon);
         }
     }
 
@@ -151,9 +152,10 @@ template <typename Q, bool differentiated> void State<Q,differentiated>::set_fre
     this->vertex.set_frequency_grid(state_in.vertex);
 }
 
-template <typename Q, bool differentiated> void State<Q,differentiated>::update_grid(double Lambda) {
-    this->selfenergy.update_grid(Lambda, config);
-    this->vertex.update_grid(Lambda, config);
+template <typename Q, bool differentiated> void State<Q,differentiated>::update_grid(double Lambda_in) {
+    this->selfenergy.update_grid(Lambda_in, config);
+    const double hartree_value = myreal(selfenergy.asymp_val_R);
+    this->vertex.update_grid(Lambda_in, hartree_value + config.epsilon, config);
 }
 
 

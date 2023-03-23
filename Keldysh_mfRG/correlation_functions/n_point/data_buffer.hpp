@@ -668,6 +668,12 @@ public:
     dataBuffer() : base_class() {};
     explicit dataBuffer (double Lambda, dimensions_type dims, const fRG_config& config) : base_class(Lambda, dims, config) {};
     //void initInterpolator() const {initialized = true;};
+    void center_frequency_grids(const std::array<double,3> shifts) {
+        assert(base_class::data.max_norm() < 1.e-10);   /// shifting the center of the frequency grids is only allowed if no data is in the buffers yet.
+        base_class::frequencies.  primary_grid.set_w_center(shifts[0]);
+        base_class::frequencies.secondary_grid.set_w_center(shifts[1]);
+        base_class::frequencies. tertiary_grid.set_w_center(shifts[2]);
+    }
 
     template<typename result_type=Q,
             typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
@@ -675,9 +681,19 @@ public:
         return base_class::template interpolate_impl<result_type>(input.template get_freqs<k>(), input.template get_indices<k>());
     }
 
-    void update_grid(double Lambda, const fRG_config& config) {
+    /**
+     * updates frequency grids by rescaling with Lambda
+     * @param Lambda
+     * @param shifts determines how much the centers of the frequency grids need to be shifted
+     *               this shift can be non-zero for runs outside of PHS
+     * @param config
+     */
+    void update_grid(double Lambda, std::array<double,3> shifts, const fRG_config& config) {
         frequencyGrid_type frequencies_new = base_class::get_VertexFreqGrid();  // new frequency grid
         frequencies_new.guess_essential_parameters(Lambda, config);                     // rescale new frequency grid
+        frequencies_new.  primary_grid.set_w_center(shifts[0]);
+        frequencies_new.secondary_grid.set_w_center(shifts[1]);
+        frequencies_new. tertiary_grid.set_w_center(shifts[2]);
         update_grid(frequencies_new, *this);
     }
 

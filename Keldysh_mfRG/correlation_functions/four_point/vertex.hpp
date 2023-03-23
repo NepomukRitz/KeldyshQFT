@@ -124,6 +124,13 @@ public:
                               avertex('a', Lambda, config, true),
                               pvertex('p', Lambda, config, true),
                               tvertex('t', Lambda, config, true) {}
+    void center_frequency_grids(const double hartree_plus_epsilon) {
+        if constexpr (KELDYSH_FORMALISM and !PARTICLE_HOLE_SYMM) {
+            avertex.center_frequency_grids({0., hartree_plus_epsilon, hartree_plus_epsilon});
+            tvertex.center_frequency_grids({0., hartree_plus_epsilon, hartree_plus_epsilon});
+            pvertex.center_frequency_grids({2. * hartree_plus_epsilon, 0., 0.});
+        }
+    }
 
 private:
     /// Returns \gamma_{\bar{r}} := the sum of the contributions of the diagrammatic classes r' =/= r
@@ -258,7 +265,7 @@ public:
     void set_frequency_grid(const fullvert<Q>& vertex);
 
     // Interpolate vertex to updated grid
-    void update_grid(double Lambda, const fRG_config& config);
+    void update_grid(double Lambda, double hartree_plus_epsilon, const fRG_config& config);
     /*
     template<K_class k>
     void update_grid(VertexFrequencyGrid<k> newFrequencyGrid);
@@ -773,6 +780,10 @@ public:
     : vertex(half1), vertex_half2(half2), vertex_nondifferentiated(vertex_nondiff) {
         static_assert(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright, "Only use two-argument constructor for non_symmetric vertex!");}
 
+    void center_frequency_grids(const double hartree_plus_epsilon) {
+        vertex.center_frequency_grids(hartree_plus_epsilon);
+    }
+
     // return half 1 and half 2 (equal for this class, since half 1 and 2 are related by symmetry)
     fullvert<Q>& half1() { return vertex;}
     fullvert<Q>& half2() { if constexpr(symmtype==symmetric_full or symmtype==symmetric_r_irred) return vertex; else return vertex_half2;}
@@ -941,8 +952,8 @@ public:
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.set_frequency_grid(vertex_in.vertex_half2);
     }
 
-    void update_grid(double Lambda, const fRG_config& config) {  // Interpolate vertex to updated grid
-        vertex.update_grid(Lambda, config);
+    void update_grid(double Lambda, double hartree_plus_epsilon, const fRG_config& config) {  // Interpolate vertex to updated grid
+        vertex.update_grid(Lambda, hartree_plus_epsilon, config);
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.update_grid(Lambda, config);
     };
 
@@ -1749,10 +1760,10 @@ template <typename Q> void fullvert<Q>::set_frequency_grid(const fullvert<Q> &ve
     }, vertex.tvertex);
 }
 
-template <typename Q> void fullvert<Q>::update_grid(double Lambda, const fRG_config& config) {
-    this->avertex.update_grid(Lambda, config);
-    this->pvertex.update_grid(Lambda, config);
-    this->tvertex.update_grid(Lambda, config);
+template <typename Q> void fullvert<Q>::update_grid(double Lambda, double hartree_plus_epsilon, const fRG_config& config) {
+    this->avertex.update_grid(Lambda, {0., hartree_plus_epsilon, hartree_plus_epsilon}, config);
+    this->pvertex.update_grid(Lambda, {2.*hartree_plus_epsilon, 0., 0.}, config);
+    this->tvertex.update_grid(Lambda, {0., hartree_plus_epsilon, hartree_plus_epsilon}, config);
 }
 /*
 template <typename Q>

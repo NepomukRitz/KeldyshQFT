@@ -22,6 +22,9 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
         utils::print("Loading non-converged mfRG result from file (Lambda_it = ", Lambda_it, ") \n");
         state_ini = read_state_from_hdf(outputFileName, Lambda_it);
         Lambda_now = state_ini.Lambda;
+        state_ini.config.nODE_ = frgConfig.nODE_;
+        state_ini.config.epsODE_abs_ = frgConfig.epsODE_abs_;
+        state_ini.config.epsODE_rel_ = frgConfig.epsODE_rel_;
     }
     else {
         // start new run
@@ -54,7 +57,7 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
         sopt_state(state_ini);
 
         const std::string parquet_filename = data_dir + "parquetInit4_final_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-        parquet_solver(parquet_filename, state_ini, Lambda_ini, 1, 1e-6, 10, true, 1.0, false);
+        parquet_solver(parquet_filename, state_ini, Lambda_ini, 1, 1e-6, 10, false, 1.0, false);
 
         write_state_to_hdf(outputFileName, Lambda_ini,  frgConfig.nODE_ + U_NRG.size() + 1, state_ini);  // save the initial state to hdf5 file
         Lambda_it = 0;
