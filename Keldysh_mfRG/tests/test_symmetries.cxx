@@ -36,7 +36,7 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
 
     sopt_state(state_ini);
 
-    compare_with_FDTs(state_ini.vertex, Lambda, 0, "SOPT_", frgConfig.T);
+    compare_with_FDTs(state_ini, 0, "SOPT_");
 
     check_SE_causality(state_ini); // check if the self-energy is causal at each step of the flow
 

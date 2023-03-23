@@ -36,7 +36,7 @@ constexpr bool VERBOSE = false;
 
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM 1
+#define PARTICLE_HOLE_SYMM 0
 
 /// Production runs parameters ///
 

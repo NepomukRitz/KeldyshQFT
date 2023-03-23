@@ -8,9 +8,9 @@ double max_rel_err(const double& x, const double& scale) {
 
 
 
-template<> void postRKstep_stuff<double>(double& y, double x, const vec<double>& x_vals, int iteration, const std::string& filename, const ODE_solver_config& config, const bool verbose) {
-    if (verbose) std::cout <<"Intermediate result of ODE solver: " << y << std::endl;
-}
+//template<> void postRKstep_stuff<double>(double& y, double x, const vec<double>& x_vals, int iteration, const std::string& filename, const ODE_solver_config& config, const bool verbose) {
+//    if (verbose) std::cout <<"Intermediate result of ODE solver: " << y << std::endl;
+//}
 
 namespace {
     class rhs_exp_t {
