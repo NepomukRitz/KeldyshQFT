@@ -272,7 +272,7 @@ public:
     /**
      * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
      */
-    void update_grid(double Lambda, const fRG_config& config);
+    void update_grid(double Lambda, std::array<double,3> shifts, const fRG_config& config);
 
     /**
      * Interpolate the vertex to updated grid.
@@ -1960,9 +1960,9 @@ template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexIn
 }
 
 
-template <typename Q> void rvert<Q>::update_grid(double Lambda, const fRG_config& config) {
+template <typename Q> void rvert<Q>::update_grid(double Lambda, std::array<double,3> shifts, const fRG_config& config) {
 
-    apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.update_grid(Lambda, config); });
+    apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.update_grid(Lambda, shifts, config); });
 
 }
 

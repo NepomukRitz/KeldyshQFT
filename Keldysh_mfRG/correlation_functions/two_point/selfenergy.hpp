@@ -253,7 +253,7 @@ template <typename Q> void SelfEnergy<Q>::set_frequency_grid(const SelfEnergy<Q>
 };
 
 template <typename Q> void SelfEnergy<Q>::update_grid(double Lambda, const fRG_config& config) {
-    Sigma.update_grid(Lambda, config);
+    Sigma.update_grid(Lambda, {0.,0.,0.}, config);
 
 }
 
