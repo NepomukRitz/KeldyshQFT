@@ -14,6 +14,7 @@ constexpr bool BOSONIC_PARAM_FOR_K3 = false; // saves and interpolates K3 data o
 
 constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
+constexpr bool shift_fgrids_woPHS = false;      /// determines whether frequency grids are shifted by hartree+epsilon (depending on channel) -> many sample points around new points
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
