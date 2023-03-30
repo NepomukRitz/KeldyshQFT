@@ -22,22 +22,22 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     utils::print(" ---  Post-processing  ---");
 
-    const std::string directory = "/tmp/tmp.Keldysh_mfRG/Data_KFT=0.010000_U=1.000000_REG=2/";
-    //const std::string file = "K1_1LF_n1=401_static_Gamma=0.200000_T=0.010000_L_ini=19_nODE=81.h5";
+    const std::string directory = "/tmp/mfrg_Laptop/Data_KFT=0.010000_U=1.000000_REG=2/";
+    const std::string file = "parquetInit4_U_over_Delta=0.100000_T=0.010000_eVg=0.000000_n1=401_n2=51_n3=21_version3.h5";
 
-    //const std::string filename = directory + file; // hdf5 file with states to be postprocessed
+    const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
     /// functions that do post-processing on several Lambda layers
-    // compute_Phi_tilde(filename);
-    // sum_rule_K1tK(filename);
-    // check_Kramers_Kronig(filename);
-    // compare_flow_with_FDTs(filename, true);
-    // compute_proprocessed_susceptibilities(filename);
+     compute_Phi_tilde(filename);
+     sum_rule_K1tK(filename);
+     check_Kramers_Kronig(filename);
+     compare_flow_with_FDTs(filename, true);
+     compute_proprocessed_susceptibilities(filename);
 
     /// functions that do postprocessing on a single state:
-    // const int Lambda_it = 0;    // pick Lambda layer
-    // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
-    // save_slices_through_fullvertex(filename, 0, 0);
+     const int Lambda_it = 0;    // pick Lambda layer
+     State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
+     save_slices_through_fullvertex(filename, 0);
 
     /// for PT2, where we have to get through multiple files:
 
@@ -60,7 +60,7 @@ auto main(int argc, char * argv[]) -> int {
         /// functions that do postprocessing on a single state:
         // const int Lambda_it = 0;    // pick Lambda layer
         // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
-        // save_slices_through_fullvertex(filename, 0, 0);
+        // save_slices_through_fullvertex(filename, 0);
     }
 
 
