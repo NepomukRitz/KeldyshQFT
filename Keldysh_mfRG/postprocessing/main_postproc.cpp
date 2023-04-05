@@ -22,8 +22,8 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     utils::print(" ---  Post-processing  ---");
 
-    const std::string directory = "/tmp/tmp.Keldysh_mfRG/Data_KFT=0.010000_U=1.000000_REG=2/";
-    //const std::string file = "K1_1LF_n1=401_static_Gamma=0.200000_T=0.010000_L_ini=19_nODE=81.h5";
+    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/phs/T=0.01/Keldysh/parquet/";
+    //const std::string file = "K3_1LF_n1=401_n2=201_n3=101_Gamma=0.200000_T=0.010000_L_ini=19_nODE=81.h5";
 
     //const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
@@ -37,8 +37,33 @@ auto main(int argc, char * argv[]) -> int {
     /// functions that do postprocessing on a single state:
     // const int Lambda_it = 0;    // pick Lambda layer
     // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
-    // save_slices_through_fullvertex(filename, 0, 0);
+    // save_slices_through_fullvertex(filename, 7, 0);
+    // save_slices_through_fullvertex(filename, 7, 1);
 
+    std::string parquet_Us_K3_51[] = {"0.100000", "0.157080", "0.200000", "0.300000", "0.314159", "0.400000",
+                                      "0.500000", "0.628319", "0.942478", "1.000000", "1.256637", "1.500000",
+                                      "1.570796", "1.884956", "2.000000", "2.199115"};
+    std::string parquet_Us_K3_101[] = {"2.356194", "2.500000", "2.513274", "2.827433", "3.000000", "3.141593"};
+
+    //for (const std::string& U : parquet_Us_K3_51) {
+    //    utils::print("Saving slices for U = " + U, true);
+    //    std::string file = "parquetInit4_U_over_Delta=" + U + "_T=0.010000_eVg=0.000000_n1=401_n2=201_n3=51_version1_final.h5";
+//
+    //    const std::string filename = directory + file;
+    //    save_slices_through_fullvertex(filename, 7, 0);
+    //    save_slices_through_fullvertex(filename, 7, 1);
+    //}
+
+    for (const std::string& U : parquet_Us_K3_101) {
+        utils::print("Saving slices for U = " + U, true);
+        std::string file = "parquetInit4_U_over_Delta=" + U + "_T=0.010000_eVg=0.000000_n1=401_n2=201_n3=101_version1_final.h5";
+
+        const std::string filename = directory + file;
+        save_slices_through_fullvertex(filename, 7, 0);
+        save_slices_through_fullvertex(filename, 7, 1);
+    }
+
+    /*
     /// for PT2, where we have to get through multiple files:
 
     std::string PT_Us[] = {"0.100000", "0.157080", "0.314159", "0.500000", "0.628319", "0.942478", "1.000000", "1.256637", "1.500000",
@@ -62,6 +87,7 @@ auto main(int argc, char * argv[]) -> int {
         // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
         // save_slices_through_fullvertex(filename, 0, 0);
     }
+    */
 
 
 #ifdef USE_MPI

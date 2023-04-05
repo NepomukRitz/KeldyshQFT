@@ -180,14 +180,21 @@ void save_slices_through_fullvertex(const std::string& filename, const int iK, c
     int Lambda_it_max = -1;
     check_convergence_hdf(filename, Lambda_it_max);
     State<state_datatype> state = read_state_from_hdf(filename, 0);
-    const rvec freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
+    rvec freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
     const size_t N_freqs = freqs.size();
-    std::array<size_t,3> dims = {(size_t)Lambda_it_max, N_freqs, N_freqs};
+    std::array<size_t,3> dims = {(size_t)Lambda_it_max+1, N_freqs, N_freqs};
     multidimensional::multiarray<state_datatype,3> slices(dims);
 
-    for (int iLambda = 0; iLambda < Lambda_it_max; iLambda++) {
+    std::array<size_t,2> freq_dims = {(size_t)Lambda_it_max+1, N_freqs};
+    multidimensional::multiarray<state_datatype,2> frequencies(freq_dims);
+
+    for (int iLambda = 0; iLambda <= Lambda_it_max; iLambda++) {
+        //utils::print("Saving slices for Lambda-layer " + std::to_string(iLambda) + "...", true);
         state = read_state_from_hdf(filename, iLambda);
+        freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
+#pragma omp parallel for schedule(static, 50)
         for (int iv = 0; iv < N_freqs; iv++) {
+            frequencies(iLambda, iv) = freqs[iv];
             for (int ivp = 0; ivp < N_freqs; ivp++) {
                 VertexInput input(iK, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
                 state_datatype value = state.vertex.value<'t'>(input);
@@ -196,9 +203,11 @@ void save_slices_through_fullvertex(const std::string& filename, const int iK, c
         }
     }
 
-    H5::H5File file(filename + "_slices", H5F_ACC_TRUNC);
+    //utils::print("Saving results...", true);
+    H5::H5File file(filename + "_slices_iK=" + std::to_string(iK) + "_ispin=" + std::to_string(ispin), H5F_ACC_TRUNC);
     write_to_hdf(file, "slices", slices, false);
-    write_to_hdf(file, "freqs", freqs, false);
+    write_to_hdf(file, "freqs", frequencies, false);
     file.close();
+    //utils::print("...done.", true);
 }
 

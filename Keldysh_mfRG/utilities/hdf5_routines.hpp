@@ -535,7 +535,7 @@ namespace hdf5_impl {
         write_to_hdf_LambdaLayer<int>(group, "number_of_gridpoints", std::vector<int>({freqgrid.number_of_gridpoints}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<freqType>(group, "w_upper", std::vector<freqType>({freqgrid.w_upper}), Lambda_it, numberLambdaLayers, file_exists);
         write_to_hdf_LambdaLayer<freqType>(group, "w_lower", std::vector<freqType>({freqgrid.w_lower}), Lambda_it, numberLambdaLayers, file_exists);
-        write_to_hdf_LambdaLayer<freqType>(group, W_CENTER, std::vector<freqType>({freqgrid.w_center}), Lambda_it, numberLambdaLayers, file_exists);
+        // write_to_hdf_LambdaLayer<freqType>(group, W_CENTER, std::vector<freqType>({freqgrid.w_center}), Lambda_it, numberLambdaLayers, file_exists);
         if constexpr(std::is_same_v<gridType,FrequencyGrid<eliasGrid>>)
         {
             write_to_hdf_LambdaLayer<double>(group, "Delta_factor", std::vector<double>({freqgrid.Delta_factor}),
@@ -576,12 +576,12 @@ namespace hdf5_impl {
         read_from_hdf_LambdaLayer<int>(group, "number_of_gridpoints", number_of_gridpoints, Lambda_it);
         read_from_hdf_LambdaLayer<double>(group, "w_upper", w_upper, Lambda_it);
         read_from_hdf_LambdaLayer<double>(group, "w_lower", w_lower, Lambda_it);
-        read_from_hdf_LambdaLayer<double>(group, W_CENTER, w_center, Lambda_it);
+        // read_from_hdf_LambdaLayer<double>(group, W_CENTER, w_center, Lambda_it);
 
         gridType freqgrid_new(type[0], diag_class[0], Lambda, fRG_config(), purely_positive[0]);
         freqgrid_new.w_upper = w_upper[0];
         freqgrid_new.w_lower = w_lower[0];
-        freqgrid_new.w_center = w_center[0];
+        // freqgrid_new.w_center = w_center[0];
 
         if constexpr(std::is_same_v<gridType,FrequencyGrid<eliasGrid>>) {
             std::vector<double> Delta_factor;
