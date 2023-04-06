@@ -23,16 +23,16 @@ auto main(int argc, char * argv[]) -> int {
     utils::print(" ---  Post-processing  ---");
 
     const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/phs/T=0.01/Keldysh/parquet/";
-    //const std::string file = "K3_1LF_n1=401_n2=201_n3=101_Gamma=0.200000_T=0.010000_L_ini=19_nODE=81.h5";
+    const std::string file = "K3_1LF_n1=401_n2=201_n3=101_Gamma=0.200000_T=0.010000_L_ini=19_nODE=81.h5";
 
-    //const std::string filename = directory + file; // hdf5 file with states to be postprocessed
+    const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
     /// functions that do post-processing on several Lambda layers
-    // compute_Phi_tilde(filename);
-    // sum_rule_K1tK(filename);
-    // check_Kramers_Kronig(filename);
-    // compare_flow_with_FDTs(filename, true);
-    // compute_proprocessed_susceptibilities(filename);
+     compute_Phi_tilde(filename);
+     sum_rule_K1tK(filename);
+     check_Kramers_Kronig(filename);
+     compare_flow_with_FDTs(filename, true);
+     compute_proprocessed_susceptibilities(filename);
 
     /// functions that do postprocessing on a single state:
     // const int Lambda_it = 0;    // pick Lambda layer
@@ -85,7 +85,7 @@ auto main(int argc, char * argv[]) -> int {
         /// functions that do postprocessing on a single state:
         // const int Lambda_it = 0;    // pick Lambda layer
         // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
-        // save_slices_through_fullvertex(filename, 0, 0);
+        // save_slices_through_fullvertex(filename, 0);
     }
     */
 
