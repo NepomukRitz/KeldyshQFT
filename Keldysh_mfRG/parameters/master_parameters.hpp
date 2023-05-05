@@ -36,13 +36,13 @@ constexpr bool VERBOSE = false;
 
 
 // Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM 1
+#define PARTICLE_HOLE_SYMM 0
 
 /// Production runs parameters ///
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 1
 #define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1      // mfRG equations for SBE approximation. Only relevant when SBE_DECOMOSITION == 1.
 

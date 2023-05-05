@@ -158,7 +158,6 @@ void compute_proprocessed_susceptibilities(const std::string& filename) {
             bubble_function(result.vertex,  state_bare.vertex, intermediate_res.vertex, Pi, r, state_preproc.config, {true,false,false});
         }
 
-
         //std::string fn_result= filename + "_result";
         //if (iLambda == 0) write_state_to_hdf(fn_result, state_preproc.Lambda, Lambda_it_max+1, result);
         //else add_state_to_hdf(fn_result, iLambda, result);
@@ -171,6 +170,59 @@ void compute_proprocessed_susceptibilities(const std::string& filename) {
             const char r = channels[i];
             const H5std_string& datasetname = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
             write_to_hdf_LambdaLayer<state_datatype>(file, datasetname, result.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
+        }
+        //file.close();
+    }
+}
+
+
+void compute_proprocessed_susceptibilities_PT2(const std::string& filename) {
+    int Lambda_it_max = -1;
+    check_convergence_hdf(filename, Lambda_it_max);
+
+
+    H5::H5File file(filename+"_postproc", H5F_ACC_TRUNC);
+
+    for (int iLambda = 0; iLambda <= Lambda_it_max; iLambda++) {
+        const State<state_datatype> state_preproc = read_state_from_hdf(filename, iLambda);
+
+        State<state_datatype> state_bare(state_preproc, state_preproc.Lambda);      // for bare vertex
+        state_bare.initialize();
+
+        const Propagator<state_datatype> G_H(state_preproc.Lambda, state_bare.selfenergy, 'g', state_preproc.config);
+        const Bubble<state_datatype> Pi_H(G_H,G_H,false);   // use the Hartree propagator to close the lines
+
+        State<state_datatype> intermediate_res = state_bare;    // for storing (Γ0 + Γ∘Π_r∘Γ_0)
+        for (char r : {'a', 'p', 't'}) {
+            bubble_function(intermediate_res.vertex, state_preproc.vertex, state_bare.vertex, Pi_H, r, state_preproc.config, {true,true,false});
+        }
+        //std::string fn_intermediate = filename + "_intermediate";
+        //if (iLambda == 0) write_state_to_hdf(fn_intermediate, state_preproc.Lambda, Lambda_it_max+1, intermediate_res);
+        //else add_state_to_hdf(fn_intermediate, iLambda, intermediate_res);
+
+        State<state_datatype> result = state_bare;
+        for (char r : {'a', 'p', 't'}) {
+            bubble_function(result.vertex,  state_bare.vertex, intermediate_res.vertex, Pi_H, r, state_preproc.config, {true,false,false});
+        }
+
+        ///corrections to the bare bubble from the purely dynamical SE in 2. order:
+        SelfEnergy<state_datatype> PT2_SE = state_preproc.selfenergy;
+        PT2_SE.asymp_val_R = 0.; // we want ONLY the second-order contribution
+        const Propagator<state_datatype> G_K(state_preproc.Lambda, state_bare.selfenergy, PT2_SE, 'e', state_preproc.config);
+        State<state_datatype> PT2_SE_correction (state_preproc, state_preproc.Lambda);
+        const Bubble<state_datatype> Pi_K(G_H,G_K,true);
+        for (char r : {'a', 'p', 't'}) {
+            bubble_function(PT2_SE_correction.vertex, state_bare.vertex, state_bare.vertex, Pi_K, r, state_preproc.config, {true,false,false});
+        }
+
+        State<state_datatype> result_complete = result + PT2_SE_correction;
+
+        utils::print("Writing post-processed result for Lambda layer " + std::to_string(iLambda) + " ...", true);
+        std::array<char,3> channels = {'a', 'p', 't'};
+        for (int i = 0; i < 3; i++) {
+            const char r = channels[i];
+            const H5std_string& datasetname = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
+            write_to_hdf_LambdaLayer<state_datatype>(file, datasetname, result_complete.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
         }
         //file.close();
     }
