@@ -22,7 +22,7 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     utils::print(" ---  Post-processing  ---");
 
-    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/no_phs/T=0.01/eVg=0.50/Keldysh/perturbation_theory/";
+    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/phs/T=0.01/Keldysh/perturbation_theory/";
     //const std::string file = "K3_1LF_n1=401_n2=201_n3=101_Gamma=0.200000_T=0.010000_L_ini=19_nODE=81.h5";
 
     //const std::string filename = directory + file; // hdf5 file with states to be postprocessed
@@ -80,7 +80,7 @@ auto main(int argc, char * argv[]) -> int {
                            "4.500000",  "4.712389",  "4.714866",  "5.000000",  "5.179475",  "5.689866",
                            "6.250552",  "6.866488",  "7.543120",  "8.286428",  "9.102982", "10.000000"};
     for (const std::string& U : PT_Us) {
-        std::string file = "PT2_U_over_Delta=" + U + "_T=0.010000_eVg=0.500000_n1=801_n2=401_n3=101.h5";
+        std::string file = "PT2_U_over_Delta=" + U + "_T=0.010000_eVg=0.000000_n1=801_n2=401_n3=101.h5";
 
         const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
