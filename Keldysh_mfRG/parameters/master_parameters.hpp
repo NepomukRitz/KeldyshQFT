@@ -21,7 +21,7 @@ constexpr bool VERBOSE = false;
 // Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
 //#define FERMI_POLARON_PROBLEM
 
-#define ZERO_TEMP 0  // Determines whether to work in the T = 0 limit
+#define ZERO_TEMP 1  // Determines whether to work in the T = 0 limit
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
@@ -42,7 +42,7 @@ constexpr bool VERBOSE = false;
 
 // Defines the number of diagrammatic classes that are relevant for a code:
 // 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 1
+#define MAX_DIAG_CLASS 3
 #define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1      // mfRG equations for SBE approximation. Only relevant when SBE_DECOMOSITION == 1.
 
@@ -60,7 +60,7 @@ const double loop_tol_rel = 1e-5;
 // Only makes sense for pure K1 calculations.
 //#define STATIC_FEEDBACK
 #ifdef STATIC_FEEDBACK
-//#define BARE_SE_FEEDBACK // use only bare selfenergy. Only makes sense if STATIC_FEEDBACK is defined!
+#define BARE_SE_FEEDBACK // use only bare selfenergy. Only makes sense if STATIC_FEEDBACK is defined!
 #endif
 
 /// Physical parameters ///
@@ -131,7 +131,7 @@ constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp
 constexpr double Lambda_fin = 1;// 1e-4;
 #else
 const double Lambda_ini = 19.8;//pow(10,  1) ;// 1e4;
-const double Lambda_fin = 0.2 ;// 1e-4;
+const double Lambda_fin = 0.1 ;// 1e-4;
 #endif
 constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
 constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
@@ -143,7 +143,8 @@ constexpr double dLambda_initial = 0.5;             //Initial step size for ODE 
 const std::vector<double> U_NRG {0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0, 0.4*M_PI, 1.5,
                                  0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5, 0.8*M_PI, 0.9*M_PI, 3.0,
                                  1.0*M_PI, 1.1*M_PI, 3.5, 1.2*M_PI, 1.25*M_PI, 4.0, 1.3*M_PI, 1.4*M_PI, 4.5,
-                                 1.5*M_PI, 5.0};
+                                 1.5*M_PI, 5.0
+                                , 6.0, 2*M_PI, 8.0, 3*M_PI, 10.0};
 
 #else
 const std::vector<double> U_NRG {};
