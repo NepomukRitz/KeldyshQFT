@@ -268,7 +268,7 @@ void save_slices_through_fullvertex(const std::string& filename, const int iK, c
     multidimensional::multiarray<state_datatype,2> frequencies(freq_dims);
 
     for (int iLambda = 0; iLambda <= Lambda_it_max; iLambda++) {
-        //utils::print("Saving slices for Lambda-layer " + std::to_string(iLambda) + "...", true);
+        utils::print("Saving slices for Lambda-layer " + std::to_string(iLambda) + "...", true);
         state = read_state_from_hdf(filename, iLambda);
         freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
 #pragma omp parallel for schedule(static, 50)

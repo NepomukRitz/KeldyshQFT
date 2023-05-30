@@ -77,17 +77,18 @@ auto main(int argc, char * argv[]) -> int {
         // {5./M_PI*0.5};
 
         //const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1., 1.25, 1.50, 1.75, 2.0, 2.25, 2.5};
-        const std::vector<double> myU_NRG {0.75*M_PI, 2.5, 0.8*M_PI, 0.9*M_PI, 3.0, 1.0*M_PI};
-        run_parquet(config, myU_NRG, 1, true);
+        const std::vector<double> myU_NRG {0.75*M_PI};
+        //run_parquet(config, myU_NRG, 1, true);
         //run_parquet(config, myU_NRG, 2, true);
-        //run_parquet(config, myU_NRG, 3, true);
+        run_parquet(config, myU_NRG, 3, true);
     }
+    /*
     if (n_loops == -1){ /// perturbation theory to fourth order:
         const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
         for (double U_over_Delta: U_over_Delta_list) {
             PT_Machine<state_datatype> PT_Calculator (4, config, U_over_Delta, false, true);
         }
-    }
+    }*/
     if (n_loops == -2){ /// plain and simple second order perturbation theory
         //const std::vector<double> U_over_Delta_list {0.1, 0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0,
         //                                             0.4*M_PI, 1.5, 0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5,

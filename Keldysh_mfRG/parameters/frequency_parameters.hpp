@@ -21,24 +21,24 @@ constexpr bool shift_fgrids_woPHS = false;      /// determines whether frequency
 
 // Number of bosonic and fermionic frequency points.
 // Good production values for Keldysh: nBOS = nFER = 401, nBOS2 = nFER2 = 201, nBOS3 = nFER3 = 51
-//#if KELDYSH_FORMALISM
-constexpr int nBOS = 801;
-constexpr int nFER = 801 - (KELDYSH_FORMALISM ? 0 : 1);
+#if KELDYSH_FORMALISM
+constexpr int nBOS = 201;
+constexpr int nFER = 201 - (KELDYSH_FORMALISM ? 0 : 1);
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 401;//nBOS;
-constexpr int nFER2 = 401 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
-constexpr int nBOS3 = 101; //nBOS;
-constexpr int nFER3 = 101 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
-//#else
-const int COUNT = 32;
-//constexpr int nBOS = COUNT *  4 * 2 + 1;
-//constexpr int nFER = COUNT * 32 * 2;
-//constexpr int nBOS2 = COUNT * 4 * 2 + 1;//nBOS;
-//constexpr int nFER2 = COUNT * 2 * 2;//nFER;
-//constexpr int nBOS3 = COUNT * 4 * 2 + 1; //nBOS;
-//constexpr int nFER3 = COUNT * 2 * 2; //nFER;
+constexpr int nBOS2 = 101;//nBOS;
+constexpr int nFER2 = 101 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
+constexpr int nBOS3 = 25; //nBOS;
+constexpr int nFER3 = 25 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
+#else
+const int COUNT = 3;
+constexpr int nBOS = COUNT *  4 * 2 * 16 + 1;
+constexpr int nFER = COUNT * 32 * 2 * 2;
+constexpr int nBOS2 = COUNT * 4 * 2 * 2 + 1;//nBOS;
+constexpr int nFER2 = COUNT * 2 * 2 * 2;//nFER;
+constexpr int nBOS3 = COUNT * 4 * 2 + 1; //nBOS;
+constexpr int nFER3 = COUNT * 2 * 2; //nFER;
 const int POSINTRANGE = 64  * COUNT;
-//#endif
+#endif
 
 
 const double Delta_factor_K1 = 5.;

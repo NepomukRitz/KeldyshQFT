@@ -261,6 +261,7 @@ void fopt_state(State<Q>& Psi) {
 
 void full_PT4(const std::vector<double>& U_over_Delta_list, const fRG_config& config_in);
 
+/*
 template<typename Q>
 class PT_Machine{
 private:
@@ -707,7 +708,7 @@ void PT_Machine<Q>::debug_FOPT_K1() {
     utils::print_add(" done.", true);
 
 }
-
+*/
 
 #endif //KELDYSH_MFRG_PERTURBATION_THEORY_H
 //#pragma clang diagnostic pop

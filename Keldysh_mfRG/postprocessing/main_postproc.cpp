@@ -22,17 +22,19 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     utils::print(" ---  Post-processing  ---");
 
-    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/no_phs/T=0.01/eVg=0.50/Keldysh/K1SF/bare_SE/";
-    const std::string file = "K1_1LF_n1=401_static_Gamma=0.200000_eVg=0.500000_T=0.010000_L_ini=19_nODE=81.h5";
+    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/phs/T=0.00/Keldysh/1loop/";
+    const std::string file = "K3_1LF_n1=801_n2=401_n3=101_Gamma=0.200000_T=0.000000_L_ini=19_nODE=81.h5";
 
     const std::string filename = directory + file; // hdf5 file with states to be postprocessed
+
+    utils::print("Starting Post-Processing...", true);
 
     /// functions that do post-processing on several Lambda layers
     //compute_Phi_tilde(filename);
     //sum_rule_K1tK(filename);
     //check_Kramers_Kronig(filename);
     //compare_flow_with_FDTs(filename, true);
-    compute_proprocessed_susceptibilities(filename);
+    //compute_proprocessed_susceptibilities(filename);
 
     /// functions that do postprocessing on a single state:
     // const int Lambda_it = 0;    // pick Lambda layer
@@ -43,7 +45,7 @@ auto main(int argc, char * argv[]) -> int {
     //std::string parquet_Us_K3_51[] = {"0.100000", "0.157080", "0.200000", "0.300000", "0.314159", "0.400000",
     //                                  "0.500000", "0.628319", "0.942478", "1.000000", "1.256637", "1.500000",
     //                                  "1.570796", "1.884956", "2.000000", "2.199115"};
-    //std::string parquet_Us_K3_101[] = {"2.356194", "2.500000", "2.513274", "2.827433", "3.000000", "3.141593"};
+    //std::string parquet_Us_K3_101[] = {"2.827433", "3.000000", "3.141593"};
 
     //for (const std::string& U : parquet_Us_K3_51) {
     //    utils::print("Saving slices for U = " + U, true);
@@ -56,7 +58,7 @@ auto main(int argc, char * argv[]) -> int {
 
     //for (const std::string& U : parquet_Us_K3_101) {
     //    utils::print("Saving slices for U = " + U, true);
-    //    std::string file = "parquetInit4_U_over_Delta=" + U + "_T=0.010000_eVg=0.000000_n1=401_n2=201_n3=101_version1_final.h5";
+    //    std::string file = "parquetInit4_U_over_Delta=" + U + "_T=0.010000_eVg=0.500000_n1=801_n2=401_n3=101_version1_final.h5";
 //
     //    const std::string filename = directory + file;
     //    save_slices_through_fullvertex(filename, 7, 0);
