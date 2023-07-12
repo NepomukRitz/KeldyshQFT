@@ -255,14 +255,14 @@ void compute_proprocessed_susceptibilities_PT2(const std::string& filename) {
     }
 }
 
-void save_slices_through_fullvertex(const std::string& filename, const int iK, const int ispin) {
+void save_slices_through_fullvertex(const std::string& filename, const int ispin) {
     int Lambda_it_max = -1;
     check_convergence_hdf(filename, Lambda_it_max);
     State<state_datatype> state = read_state_from_hdf(filename, 0);
     rvec freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
     const size_t N_freqs = freqs.size();
-    std::array<size_t,3> dims = {(size_t)Lambda_it_max+1, N_freqs, N_freqs};
-    multidimensional::multiarray<state_datatype,3> slices(dims);
+    std::array<size_t,4> dims = {(size_t)Lambda_it_max+1, N_freqs, N_freqs,16};
+    multidimensional::multiarray<state_datatype,4> slices(dims);
 
     std::array<size_t,2> freq_dims = {(size_t)Lambda_it_max+1, N_freqs};
     multidimensional::multiarray<state_datatype,2> frequencies(freq_dims);
@@ -275,16 +275,136 @@ void save_slices_through_fullvertex(const std::string& filename, const int iK, c
         for (int iv = 0; iv < N_freqs; iv++) {
             frequencies(iLambda, iv) = freqs[iv];
             for (int ivp = 0; ivp < N_freqs; ivp++) {
-                VertexInput input(iK, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
-                state_datatype value = state.vertex.value<'t'>(input);
-                slices(iLambda, iv, ivp) = value;
+                for (int iK = 0; iK<15; iK++) {
+                    const VertexInput input(iK  , ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                    const state_datatype value = state.vertex.value<'t'>(input);
+                    slices(iLambda, iv, ivp, iK) = value;
+                }
             }
         }
     }
 
     //utils::print("Saving results...", true);
-    H5::H5File file(filename + "_slices_iK=" + std::to_string(iK) + "_ispin=" + std::to_string(ispin), H5F_ACC_TRUNC);
+    H5::H5File file(filename + "_slices" + "_ispin=" + std::to_string(ispin), H5F_ACC_TRUNC);
     write_to_hdf(file, "slices", slices, false);
+    write_to_hdf(file, "freqs", frequencies, false);
+    file.close();
+    //utils::print("...done.", true);
+}
+
+
+void check_FDTs_for_slices_through_fullvertex(const std::string& filename, const int ispin) {
+    int Lambda_it_max = -1;
+    check_convergence_hdf(filename, Lambda_it_max);
+    State<state_datatype> state = read_state_from_hdf(filename, 0);
+    rvec freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
+    const size_t N_freqs = freqs.size();
+    std::array<size_t,4> dims = {(size_t)Lambda_it_max+1, N_freqs, N_freqs, 16};
+    multidimensional::multiarray<state_datatype,4> FDT_results(dims);
+
+    std::array<size_t,2> freq_dims = {(size_t)Lambda_it_max+1, N_freqs};
+    multidimensional::multiarray<state_datatype,2> frequencies(freq_dims);
+
+    for (int iLambda = 0; iLambda <= Lambda_it_max; iLambda++) {
+        utils::print("Saving FDTs for Lambda-layer " + std::to_string(iLambda) + "...", true);
+        state = read_state_from_hdf(filename, iLambda);
+        const double T = state.config.T;
+        freqs = state.vertex.avertex().K1.frequencies.primary_grid.all_frequencies;
+#pragma omp parallel for schedule(static, 50)
+        for (int iv = 0; iv < N_freqs; iv++) {
+            frequencies(iLambda, iv) = freqs[iv];
+            for (int ivp = 0; ivp < N_freqs; ivp++) {
+                const double v = freqs[iv];
+                const double vp= freqs[ivp];
+                const double t_v  = tanh((v -glb_mu)/(2.*T));
+                const double t_vp = tanh((vp-glb_mu)/(2.*T));
+                const double c_v  = cosh((v -glb_mu)/(2.*T));
+                const double c_vp = cosh((vp-glb_mu)/(2.*T));
+                /* Correspondence of indices to Keldysh components:
+                 *  0 = 1111
+                 *  1 = 1112
+                 *  2 = 1121
+                 *  3 = 1122
+                 *  4 = 1211
+                 *  5 = 1212
+                 *  6 = 1221
+                 *  7 = 1222
+                 *  8 = 2111
+                 *  9 = 2112
+                 * 10 = 2121
+                 * 11 = 2122
+                 * 12 = 2211
+                 * 13 = 2212
+                 * 14 = 2221
+                 * 15 = 2222
+                 */
+                const VertexInput input2221(14, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input2212(13, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input2122(11, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input1222( 7, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const state_datatype G2221 = state.vertex.value<'t'>(input2221);
+                const state_datatype G2212 = state.vertex.value<'t'>(input2212);
+                const state_datatype G2122 = state.vertex.value<'t'>(input2122);
+                const state_datatype G1222 = state.vertex.value<'t'>(input1222);
+
+                const VertexInput input1122(3 , ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input1212(5 , ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input1221(6 , ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input2112(9 , ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input2121(10, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const VertexInput input2211(12, ispin, 0., freqs[iv], freqs[ivp], 0, 't');
+                const state_datatype G1122 = state.vertex.value<'t'>(input1122);
+                const state_datatype G1212 = state.vertex.value<'t'>(input1212);
+                const state_datatype G1221 = state.vertex.value<'t'>(input1221);
+                const state_datatype G2112 = state.vertex.value<'t'>(input2112);
+                const state_datatype G2121 = state.vertex.value<'t'>(input2121);
+                const state_datatype G2211 = state.vertex.value<'t'>(input2211);
+
+                const state_datatype FDT1111 = glb_i*(
+                        2*t_vp*(1+t_v *t_v )*imag(G1222) -t_v *t_v *imag(G1212)
+                        +2*t_v *(1+t_vp*t_vp)*imag(G2122) -t_vp*t_vp*imag(G2121) + 2*t_v *t_vp*(imag(G2211)-imag(G2112))
+                );
+                const state_datatype FDT1112 = G2122 + t_vp*(G1122-G2112) + 2.*glb_i*t_v*t_vp*imag(G1222) - glb_i*t_v*imag(G1212);
+                const state_datatype FDT1121 = G1222 + t_v*(G1122 - G1221) + 2.*glb_i*t_v*t_vp*imag(G2122) - glb_i*t_vp*imag(G2121);
+                const state_datatype FDT1122 = G1122;
+                const state_datatype FDT1211 = G2221 + t_vp*(G1221-G2211) - 2.*glb_i*t_v*t_vp*imag(G1222) + glb_i*t_v*imag(G1212);
+                const state_datatype FDT1212 = (c_v*c_v)/(c_vp*c_vp) * G2121 + 2.*glb_i*t_vp* imag(G1222) - 2.*glb_i*t_v*(c_v*c_v)/(c_vp*c_vp)*imag(G2122);
+                const state_datatype FDT1221 = G1221;
+                const state_datatype FDT1222 = G1222;
+                const state_datatype FDT2111 = G2212 + t_v*(G2112-G2211) - 2.*glb_i*t_v*t_vp*imag(G2122)+glb_i*t_vp*imag(G2121);
+                const state_datatype FDT2112 = -conj(G1221);
+                const state_datatype FDT2121 = G2121;
+                const state_datatype FDT2122 = G2122;
+                const state_datatype FDT2211 = -conj(G1122);
+                const state_datatype FDT2212 = G2212;
+                const state_datatype FDT2221 = G2221;
+                const state_datatype FDT2222 = 0.;
+
+
+
+                FDT_results(iLambda, iv, ivp,  0) = FDT1111;
+                FDT_results(iLambda, iv, ivp,  1) = FDT1112;
+                FDT_results(iLambda, iv, ivp,  2) = FDT1121;
+                FDT_results(iLambda, iv, ivp,  3) = FDT1122;
+                FDT_results(iLambda, iv, ivp,  4) = FDT1211;
+                FDT_results(iLambda, iv, ivp,  5) = FDT1212;
+                FDT_results(iLambda, iv, ivp,  6) = FDT1221;
+                FDT_results(iLambda, iv, ivp,  7) = FDT1222;
+                FDT_results(iLambda, iv, ivp,  8) = FDT2111;
+                FDT_results(iLambda, iv, ivp,  9) = FDT2112;
+                FDT_results(iLambda, iv, ivp, 10) = FDT2121;
+                FDT_results(iLambda, iv, ivp, 11) = FDT2122;
+                FDT_results(iLambda, iv, ivp, 12) = FDT2211;
+                FDT_results(iLambda, iv, ivp, 13) = FDT2212;
+                FDT_results(iLambda, iv, ivp, 14) = FDT2221;
+                FDT_results(iLambda, iv, ivp, 15) = FDT2222;
+            }
+        }
+    }
+
+    //utils::print("Saving results...", true);
+    H5::H5File file(filename + "_FDTslices" + "_ispin=" + std::to_string(ispin), H5F_ACC_TRUNC);
+    write_to_hdf(file, "FDT_results", FDT_results, false);
     write_to_hdf(file, "freqs", frequencies, false);
     file.close();
     //utils::print("...done.", true);

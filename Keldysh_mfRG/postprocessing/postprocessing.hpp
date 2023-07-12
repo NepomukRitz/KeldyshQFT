@@ -134,6 +134,9 @@ void compute_proprocessed_susceptibilities(const std::string& filename);
 void compute_proprocessed_susceptibilities_PT2(const std::string& filename);
 
 
-void save_slices_through_fullvertex(const std::string& filename, const int iK, const int ispin);
+void save_slices_through_fullvertex(const std::string& filename, const int ispin);
+
+void check_FDTs_for_slices_through_fullvertex(const std::string& filename, int ispin);
+
 
 #endif //KELDYSH_MFRG_TESTING_POSTPROCESSING_H

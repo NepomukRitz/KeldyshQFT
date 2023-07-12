@@ -27,6 +27,9 @@ auto main(int argc, char * argv[]) -> int {
 
     const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
+    //const std::string filename = "/tmp/mfrg_Laptop/Data_KFT=0.300000_U=1.000000_REG=2/parquetInit4_U_over_Delta=2.356194_T=0.300000_eVg=0.000000_n1=201_n2=51_n3=11_version1.h5"; // hdf5 file with states to be postprocessed
+    //const std::string filename = "/tmp/mfrg_Laptop/Data_KFT=0.010000_U=1.000000_REG=2/parquetInit4_U_over_Delta=2.356194_T=0.010000_eVg=0.000000_n1=1001_n2=501_n3=125_version1_final.h5";
+
     utils::print("Starting Post-Processing...", true);
 
     /// functions that do post-processing on several Lambda layers
@@ -39,8 +42,10 @@ auto main(int argc, char * argv[]) -> int {
     /// functions that do postprocessing on a single state:
     // const int Lambda_it = 0;    // pick Lambda layer
     // State<state_datatype> state = read_state_from_hdf(filename, Lambda_it);
-    save_slices_through_fullvertex(filename, 7, 0);
-    save_slices_through_fullvertex(filename, 7, 1);
+    //save_slices_through_fullvertex(filename, 7, 0);
+
+    save_slices_through_fullvertex(filename, 0);
+    check_FDTs_for_slices_through_fullvertex(filename, 0);
 
     //std::string parquet_Us_K3_51[] = {"0.100000", "0.157080", "0.200000", "0.300000", "0.314159", "0.400000",
     //                                  "0.500000", "0.628319", "0.942478", "1.000000", "1.256637", "1.500000",
