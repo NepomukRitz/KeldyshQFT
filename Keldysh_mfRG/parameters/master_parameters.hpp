@@ -7,7 +7,7 @@
 #include <array>
 
 // For production: uncomment the following line to switch off assert()-functions
-#define NDEBUG
+//#define NDEBUG
 
 #define DEBUG_SYMMETRIES 0 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
 
@@ -109,7 +109,8 @@ constexpr int n_in = 1;
 // Regulator
 // 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen), including Fabian's idea for Keldysh
 // 4: interaction cutoff
-#define REG 2
+// 5: temperature flow
+#define REG 5
 
 
 

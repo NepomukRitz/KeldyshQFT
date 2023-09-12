@@ -176,6 +176,10 @@ public:
     Q GM_REG4(freqType v, int i_in) const;
     Q SM_REG4(freqType v, int i_in) const;
 
+    /// propagators for REG == 5
+    Q GR_REG5(freqType v, int i_in) const;
+    Q SR_REG5(freqType v, int i_in) const;
+
     void initInterpolator() const;
 };
 
@@ -187,6 +191,7 @@ auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
     else if constexpr (REG == 2) { return GR_REG2(v, i_in); }
     else if constexpr (REG == 3) { return GR_REG3(v, i_in); }
     else if constexpr (REG == 4) { return GR_REG4(v, i_in); }
+    else if constexpr (REG == 5) { return GR_REG5(v, i_in); }
     else {
         utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);
     }
@@ -195,10 +200,14 @@ auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
 {
-    if constexpr (EQUILIBRIUM) {
+    if constexpr (EQUILIBRIUM and not (REG==5)) {
         // FDT in equilibrium: (1-2*Eff_distr)*(GR-GA)
         //return (1.-2.*Eff_distr(v))*(GR(v, i_in) - GA(v, i_in));
         return glb_i * (Eff_fac(v,T) * 2. * myimag(GR(v, i_in))); // more efficient: only one interpolation instead of two
+    }
+    else if constexpr (EQUILIBRIUM and (REG==5)){
+        // evaluate FDT with T=Lambda
+        return glb_i * (Eff_fac(v,Lambda) * 2. * myimag(GR(v, i_in)));
     }
     else {
         // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
@@ -221,6 +230,7 @@ auto Propagator<Q>::SR(const double v, const int i_in) const -> Q
     else if constexpr (REG == 2) { return SR_REG2(v, i_in); }
     else if constexpr (REG == 3) { return SR_REG3(v, i_in); }
     else if constexpr (REG == 4) { return SR_REG4(v, i_in); }
+    else if constexpr (REG == 5) { return SR_REG5(v, i_in); }
     else {
         utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);
     }
@@ -229,10 +239,15 @@ auto Propagator<Q>::SR(const double v, const int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
 {
-    if constexpr (EQUILIBRIUM) {
+    if constexpr (EQUILIBRIUM and not (REG==5)) {
         // FDT in equilibrium: (1-2*Eff_distr)*(SR-SA)
         //return (1.-2.*Eff_distr(v))*(SR(v, i_in) - myconj(SR(v, i_in)));
         return glb_i * (Eff_fac(v,T) * 2. * myimag(SR(v, i_in)));
+    }
+    else if constexpr (EQUILIBRIUM and (REG==5)){
+        // special form of SK in the temperature flow
+        const double root_denominator = Lambda * cosh(v/(2*Lambda));
+        return -glb_i * v * myimag(GR_REG5(v, i_in)) / (root_denominator*root_denominator);
     }
     else {
         // Derivation of general matrix form:
@@ -605,6 +620,7 @@ auto Propagator<Q>::norm() const -> double {
 
 template <typename Q>
 auto Propagator<Q>::G0M_inv(const freqType v, const int i_in) const -> Q {
+    assert(!KELDYSH);
     if constexpr(HUBBARD_MODEL) { return G0M_inv_Hubbard(v, i_in);}
     else { return G0M_inv_SIAM(v, i_in);}
 }
@@ -836,13 +852,7 @@ auto Propagator<Q>::SM_REG3_FPP(const double v, const double ksquared, const int
 }
 
 
-
-
-
-
-
 ///     REG == 4: ( interaction flow )
-
 
 template <typename Q>
 auto Propagator<Q>::GR_REG4(const freqType v, const int i_in) const -> Q {
@@ -877,6 +887,20 @@ auto Propagator<Q>::SM_REG4(const freqType v, const int i_in) const -> Q {
     return val;
 // TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
+
+
+/// REG == 5: (temperature flow)
+
+template <typename Q>
+auto Propagator<Q>::GR_REG5(const freqType v, const int i_in) const -> Q {
+    const Q res = 1./( G0R_inv(v, i_in) - selfenergy.valsmooth(0, v, i_in) );
+    return res;
+}
+template <typename Q>
+auto Propagator<Q>::SR_REG5(const freqType v, const int i_in) const -> Q {
+    return 0.0; // special case of the temperature flow
+}
+
 
 template <typename Q>
 void Propagator<Q>::initInterpolator() const {
