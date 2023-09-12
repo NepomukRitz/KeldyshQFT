@@ -58,8 +58,8 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
     //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_a_left_");
     //state_ini.vertex.template symmetry_expand<'a',false,false>();
     //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_a_right_");
-    //state_ini.vertex.template symmetry_expand<'p',true,false>();
-    //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_p_left_");
+    state_ini.vertex.template symmetry_expand<'p',true,false>();
+    state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_p_left_");
     //state_ini.vertex.template symmetry_expand<'p',false,false>();
     //state_ini.vertex.save_expanded(data_dir + "symmetry_expanded_for_p_right_");
     //state_ini.vertex.template symmetry_expand<'t',true,false>();
