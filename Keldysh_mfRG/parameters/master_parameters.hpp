@@ -112,6 +112,9 @@ constexpr int n_in = 1;
 // 5: temperature flow
 #define REG 5
 
+#if REG == 5
+#define USE_FDT_4_SELFENERGY    // if defined, use the FDT explicitly when accessing the Keldysh component of the differentiated self-energy inside the Katanin substitution.
+#endif
 
 
 // if the following is not defined, we flow with the parameter Lambda. The flowgrid just provides suggestions for stepsizes
@@ -130,6 +133,9 @@ constexpr int n_in = 1;
 #if REG == 4
 constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
 constexpr double Lambda_fin = 1;// 1e-4;
+#elif REG == 5
+constexpr double Lambda_ini = 10.;
+constexpr double Lambda_fin = 0.1;
 #else
 const double Lambda_ini = 19.8;//pow(10,  1) ;// 1e4;
 const double Lambda_fin = 0.1 ;// 1e-4;

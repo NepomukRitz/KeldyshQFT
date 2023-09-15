@@ -82,13 +82,6 @@ auto main(int argc, char * argv[]) -> int {
         //run_parquet(config, myU_NRG, 2, true);
         run_parquet(config, myU_NRG, 3, true);
     }
-    /*
-    if (n_loops == -1){ /// perturbation theory to fourth order:
-        const std::vector<double> U_over_Delta_list {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
-        for (double U_over_Delta: U_over_Delta_list) {
-            PT_Machine<state_datatype> PT_Calculator (4, config, U_over_Delta, false, true);
-        }
-    }*/
     if (n_loops == -2){ /// plain and simple second order perturbation theory
         //const std::vector<double> U_over_Delta_list {0.1, 0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0,
         //                                             0.4*M_PI, 1.5, 0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5,
@@ -123,28 +116,6 @@ auto main(int argc, char * argv[]) -> int {
     }
 
     //reproduce_benchmark_data();
-
-
-    //full_PT4(U_over_Delta_list);
-    /// Hartree test
-    //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
-
-    /*
-    // SIAM PT4 specific:
-    data_dir = "../Data_SIAM_PT4/better_resolution_for_K2/";
-    //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/SOPT_integrand/eVg_over_U_" + std::to_string((config.epsilon+config.U*0.5) / glb_U) + "/";
-    //data_dir = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SIAM_PT4/smaller_integration_interval/";
-    utils::makedir(data_dir);
-
-
-    const rvec lambdas = {999., 199., 99., 19., 9.};
-    for (const double lambda : lambdas) {
-        PT_Machine<state_datatype> PT_Calculator (4, lambda, true);
-    }
-
-    //PT_Machine<state_datatype> PT_Calculator (2, 9., false);
-
-*/
 
     utils::print("CPU hours for whole run: \t ");
     utils::get_cpu_hours(t_start);

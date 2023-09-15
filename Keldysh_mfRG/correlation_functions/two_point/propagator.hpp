@@ -179,6 +179,7 @@ public:
     /// propagators for REG == 5
     Q GR_REG5(freqType v, int i_in) const;
     Q SR_REG5(freqType v, int i_in) const;
+    Q diff_Sigma_K_REG5(freqType v, int i_in) const;     // \dot{Σ}^K as obtained from FDT
 
     void initInterpolator() const;
 };
@@ -277,8 +278,13 @@ Q Propagator<Q>::Katanin_R(double v, int i_in) const {
 
 template<typename Q>
 Q Propagator<Q>::Katanin_K(double v, int i_in) const {
+#ifdef USE_FDT_4_SELFENERGY
+    const Q diff_Sigma_K = diff_Sigma_K_REG5(v, i_in);  // special form in the temperature flow
+#else
+    const Q diff_Sigma_K = diff_selfenergy.valsmooth(1, v, i_in);
+#endif
     return GR(v, i_in) * diff_selfenergy.valsmooth(0, v, i_in) * GK(v, i_in)
-            + GR(v, i_in) * diff_selfenergy.valsmooth(1, v, i_in) * conj(GR(v, i_in))
+            + GR(v, i_in) * diff_Sigma_K * conj(GR(v, i_in))
             + GK(v, i_in) * myconj(diff_selfenergy.valsmooth(0, v, i_in)) * conj(GR(v, i_in));
 }
 
@@ -899,6 +905,13 @@ auto Propagator<Q>::GR_REG5(const freqType v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::SR_REG5(const freqType v, const int i_in) const -> Q {
     return 0.0; // special case of the temperature flow
+}
+template <typename Q>
+auto Propagator<Q>::diff_Sigma_K_REG5(const freqType v, const int i_in) const -> Q {
+    const double root_denominator = Lambda * cosh(v/(2*Lambda));
+    const Q term1 = -glb_i * v * myimag(selfenergy(0, v, i_in)) / (root_denominator*root_denominator);
+    const Q term2 = 2.0 * glb_i * tanh(v/(2*Lambda)) * myimag(diff_selfenergy(0, v, i_in));
+    return term1 + term2; // special case of the temperature flow
 }
 
 
