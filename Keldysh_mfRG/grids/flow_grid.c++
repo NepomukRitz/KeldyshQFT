@@ -23,6 +23,8 @@ rvec flowgrid::get_Lambda_checkpoints(const std::vector<double>& Us, const fRG_c
         }
         if (y<=Lambda_ini) Lambda_CPs.push_back(y);
     }
+#elif REG == 5
+    Lambda_CPs = Us;
 #endif
     return Lambda_CPs;
 }

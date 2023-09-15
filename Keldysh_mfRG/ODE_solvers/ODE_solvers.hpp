@@ -27,7 +27,7 @@ void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_
     if constexpr (std::is_same_v<Y, State<state_datatype>>) {
         y_run.Lambda = x_run;
         check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
-        if constexpr(KELDYSH) check_FDTs(y_run, verbose); // check FDTs for Sigma and K1r at each step of the flow
+        if constexpr(KELDYSH and (REG!=5)) check_FDTs(y_run, verbose); // check FDTs for Sigma and K1r at each step of the flow
 
         /// Try to converge the parquet equations at this point.
         /**

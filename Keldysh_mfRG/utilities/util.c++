@@ -228,7 +228,7 @@ namespace utils {
         if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
         print("U for this run is: ", config.U, true);
-        print("T for this run is: ", config.T, true);
+        if constexpr (REG!=5) print("T for this run is: ", config.T, true);
         print("Lambda flows from ", Lambda_ini);
         print_add(" to ", Lambda_fin, true);
         print("nODE for this run: ", config.nODE_, true);

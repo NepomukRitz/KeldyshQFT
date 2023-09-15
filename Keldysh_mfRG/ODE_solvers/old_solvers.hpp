@@ -61,7 +61,7 @@ namespace old_ode_solvers {
         utils::get_time(t0); // measure time for one iteration
 
         check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
-        if (KELDYSH) check_FDTs(y_run, true); // check FDTs for Sigma and K1r at each step of the flow
+        if (KELDYSH and (REG!=5)) check_FDTs(y_run, true); // check FDTs for Sigma and K1r at each step of the flow
         if (filename != "") {
             add_state_to_hdf(filename, iteration + 1,  y_run); // save result to hdf5 file
         }

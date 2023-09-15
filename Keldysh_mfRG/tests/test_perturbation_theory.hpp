@@ -2895,7 +2895,7 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
 #if REG==2
     double Delta = (stdConfig.Gamma + Lambda) / 2.;
 #else
-    double Delta = (config.Gamma) / 2.;
+    double Delta = (stdConfig.Gamma) / 2.;
 #endif
     State<Q> bareState (Lambda, stdConfig);bareState.initialize();  //a state with a bare vertex and a self-energy initialized at the Hartree value
     Propagator<Q> barePropagator(Lambda, bareState.selfenergy, 'g', stdConfig);    //Bare propagator

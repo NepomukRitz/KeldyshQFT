@@ -48,7 +48,7 @@ auto main(int argc, char * argv[]) -> int {
     config.nloops = n_loops;
     config.U = 1.0;
     config.T = (ZERO_T ? 0.0 : T_in);
-    config.Gamma = 0.2;
+    config.Gamma = ((REG==5) ? 4.0/M_PI : 0.2);
     config.epsilon = (PARTICLE_HOLE_SYMMETRY ? 0.0 : 0.5) - config.U * 0.5;
     config.save_intermediateResults = false;
     config.number_of_nodes = n_nodes;
