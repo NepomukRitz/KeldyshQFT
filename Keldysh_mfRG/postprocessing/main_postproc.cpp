@@ -22,8 +22,8 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     utils::print(" ---  Post-processing  ---");
 
-    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/phs/T=0.00/Keldysh/1loop/";
-    const std::string file = "K3_1LF_n1=801_n2=401_n3=101_Gamma=0.200000_T=0.000000_L_ini=19_nODE=81.h5";
+    //const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/mfRG_wo_phs/phs/T=0.00/Keldysh/1loop/";
+    //const std::string file = "K3_1LF_n1=801_n2=401_n3=101_Gamma=0.200000_T=0.000000_L_ini=19_nODE=81.h5";
 
     // const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
@@ -46,14 +46,15 @@ auto main(int argc, char * argv[]) -> int {
     //save_slices_through_fullvertex(filename, 7, 1);
     //save_slices_through_fullvertex(filename, 7, 2);
 
+    const std::string directory = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/T-flow/";
+    const std::vector T_list{"0.010000", "0.050000", "0.100000", "0.500000", "1.000000", "5.000000", "10.000000"};
 
-    const std::string file = "parquetInit4_U_over_Delta=1.570796_T=0.010000_eVg=0.500000_n1=401_n2=201_n3=51_version1_final.h5";
-    const std::string filename = directory + file;
-    for (int iK = 0; iK < 16; ++iK) {
-        if (iK == 7) continue;
-        utils::print("Saving slices for iK = " + std::to_string(iK), true);
-        save_slices_through_fullvertex(filename, iK, 0);
-        save_slices_through_fullvertex(filename, iK, 1);
+    for (const std::string T: T_list) {
+        const std::string file = "parquetInit4_U_over_Delta=1.570796_T=" + T + "_eVg=0.000000_n1=401_n2=201_n3=51_version1_final.h5";
+        const std::string filename = directory + file;
+        utils::print("Saving slices for T = " + T, true);
+        save_slices_through_fullvertex(filename, 0);
+        //save_slices_through_fullvertex(filename, 1);
     }
     /*
     std::string parquet_Us_K3_51[] = {"0.100000", "0.157080", "0.200000", "0.300000", "0.314159", "0.400000",
