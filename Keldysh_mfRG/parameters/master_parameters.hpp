@@ -114,7 +114,7 @@ constexpr int n_in = 1;
 
 #if REG == 5
 static_assert(KELDYSH_FORMALISM);   // This type of flow only works in Keldysh
-//#define USE_FDT_4_SELFENERGY    // if defined, use the FDT explicitly when accessing the Keldysh component of the differentiated self-energy inside the Katanin substitution.
+#define USE_FDT_4_SELFENERGY    // if defined, use the FDT explicitly when accessing the Keldysh component of the differentiated self-energy inside the Katanin substitution.
 #endif
 
 
@@ -136,7 +136,7 @@ constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp
 constexpr double Lambda_fin = 1;// 1e-4;
 #elif REG == 5
 constexpr double Lambda_ini = 10.;
-constexpr double Lambda_fin = 0.01;
+constexpr double Lambda_fin = 0.1;
 #else
 const double Lambda_ini = 19.8;//pow(10,  1) ;// 1e4;
 const double Lambda_fin = 0.1 ;// 1e-4;
@@ -154,7 +154,7 @@ const std::vector<double> U_NRG {0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1
                                  1.5*M_PI, 5.0
                                 , 6.0, 2*M_PI, 8.0, 3*M_PI, 10.0};
 #elif REG == 5
-const std::vector<double> U_NRG {5.0, 1.0, 0.5, 0.1, 0.05};
+const std::vector<double> U_NRG {5.0, 1.0, 0.5};
 #else
 const std::vector<double> U_NRG {};
 #endif

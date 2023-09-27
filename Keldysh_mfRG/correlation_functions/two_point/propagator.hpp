@@ -909,8 +909,8 @@ auto Propagator<Q>::SR_REG5(const freqType v, const int i_in) const -> Q {
 template <typename Q>
 auto Propagator<Q>::diff_Sigma_K_REG5(const freqType v, const int i_in) const -> Q {
     const double root_denominator = Lambda * cosh(v/(2.0*Lambda));
-    const Q term1 = -glb_i * v * myimag(selfenergy(0, v, i_in)) / (root_denominator*root_denominator);
-    const Q term2 = 2.0 * glb_i * tanh(v/(2.0*Lambda)) * myimag(diff_selfenergy(0, v, i_in));
+    const Q term1 = -glb_i * v * myimag(selfenergy.valsmooth(0, v, i_in)) / (root_denominator*root_denominator);
+    const Q term2 = 2.0 * glb_i * tanh(v/(2.0*Lambda)) * myimag(diff_selfenergy.valsmooth(0, v, i_in));
     return term1 + term2; // special case of the temperature flow
 }
 

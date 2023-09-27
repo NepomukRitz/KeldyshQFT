@@ -30,7 +30,7 @@ auto main(int argc, char * argv[]) -> int {
     double t_start = utils::get_time();
 
     /// Parse and check command line arguments:
-    utils::print("number of args: ", argc-1, ", expected: 2 \n");
+    utils::print("number of args: ", argc-1, ", expected: 3 \n");
     const int n_loops = atoi(argv[1]);
     const int n_nodes = atoi(argv[2]);
     //const double U_in = atof(argv[3]);
@@ -77,10 +77,10 @@ auto main(int argc, char * argv[]) -> int {
         // {5./M_PI*0.5};
 
         //const std::vector<double> myU_NRG {0.05, 0.25, 0.5, 0.75, 1., 1.25, 1.50, 1.75, 2.0, 2.25, 2.5};
-        const std::vector<double> myU_NRG {0.75*M_PI};
-        //run_parquet(config, myU_NRG, 1, true);
+        const std::vector<double> myU_NRG {0.5*M_PI};
+        run_parquet(config, myU_NRG, 1, true);
         //run_parquet(config, myU_NRG, 2, true);
-        run_parquet(config, myU_NRG, 3, true);
+        //run_parquet(config, myU_NRG, 3, true);
     }
     if (n_loops == -2){ /// plain and simple second order perturbation theory
         //const std::vector<double> U_over_Delta_list {0.1, 0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0,
