@@ -188,7 +188,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     // initialize empty state with frequency grids corresponding to those in Psi:
     State<Q,true> dPsi(Psi, Lambda); // result
 
-#ifndef STATIC_FEEDBACK
+#if ((not defined STATIC_FEEDBACK) and (not defined PT2_FLOW))
     Propagator<Q> S (Lambda, Psi.selfenergy, 's', Psi.config);
     Propagator<Q> G (Lambda, Psi.selfenergy, 'g', Psi.config);
 #else
@@ -216,7 +216,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     do {
 #endif
 
-#ifndef BARE_SE_FEEDBACK
+#if not defined BARE_SE_FEEDBACK and not defined PT2_FLOW
 #ifdef KATANIN
     Propagator<Q> dG (Lambda, Psi.selfenergy, dPsi.selfenergy, 'k', Psi.config);
 #else
@@ -226,7 +226,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 //    Propagator<Q> dG (Lambda, Psi.selfenergy, 's');
 #else
     Propagator<Q> dG (Lambda, bareSelfEnergy, 's', Psi.config);
-#endif // BARE_SE_FEEDBACK
+#endif // BARE_SE_FEEDBACK, PT2_FLOW
 
     // Initialize bubble objects;
 #ifdef HUBBARD // Use precalculated bubble in this case
@@ -242,7 +242,13 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
 
     if (VERBOSE) utils::print("Compute 1-loop contribution: ", true);
+#ifdef PT2_FLOW
+    State<Q> bareState = State<Q> (Psi.Lambda, Psi.config); // shall and forever will be a bare state.
+    bareState.initialize(false);  // a state with a bare vertex and a self-energy initialized at the Hartree value
+    vertexOneLoopFlow(dPsi.vertex, bareState.vertex, dPi, config);
+#else
     vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi, config);
+#endif
     mfRG_record<Q> record_of_intermediate_results{.dPsi_1loop = dPsi};
     record_of_intermediate_results.dPsi_1loop = dPsi;
 #if DEBUG_SYMMETRIES
