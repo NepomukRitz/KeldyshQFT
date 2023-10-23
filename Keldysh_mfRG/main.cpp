@@ -42,7 +42,7 @@ auto main(int argc, char * argv[]) -> int {
 
     ///fRG runs:
     fRG_config config;
-    config.nODE_ = 81;
+    config.nODE_ = 1;
     config.epsODE_abs_ = 1e-8;
     config.epsODE_rel_ = 1e-6;
     config.nloops = n_loops;
