@@ -208,7 +208,8 @@ auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
     }
     else if constexpr (EQUILIBRIUM and (REG==5)){
         // evaluate FDT with T=Lambda
-        return glb_i * (Eff_fac(v,Lambda) * 2. * myimag(GR(v, i_in)));
+        //return glb_i * (Eff_fac(v,Lambda) * 2. * myimag(GR(v, i_in)));    // explicitly uses FDT
+        return (selfenergy.valsmooth(1, v, i_in) - glb_i * Gamma * Eff_fac(v, Lambda)) * std::norm(GR(v, i_in));
     }
     else {
         // General form (Dyson equation): GR*(SigmaK+SigmaK_res)*GA
@@ -248,7 +249,8 @@ auto Propagator<Q>::SK(const double v, const int i_in) const -> Q
     else if constexpr (EQUILIBRIUM and (REG==5)){
         // special form of SK in the temperature flow
         const double root_denominator = Lambda * cosh(v/(2.0*Lambda));
-        return -glb_i * v * myimag(GR_REG5(v, i_in)) / (root_denominator*root_denominator);
+        // return -glb_i * v * myimag(GR_REG5(v, i_in)) / (root_denominator*root_denominator);  //explicitly uses FDT
+        return glb_i * 0.5 * Gamma * v * std::norm(GR(v, i_in)) / (root_denominator*root_denominator) ;
     }
     else {
         // Derivation of general matrix form:
