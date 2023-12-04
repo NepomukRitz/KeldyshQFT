@@ -125,8 +125,8 @@ public:
 template <typename Q, bool differentiated> void State<Q,differentiated>::initialize(bool checks) {
     // Initial conditions
     // Assign initial conditions to self energy
-    if ((!KELDYSH && PARTICLE_HOLE_SYMMETRY) || HUBBARD_MODEL) {
-        this->selfenergy.initialize(0., 0.); // TODO(high): Proper treatment for the Hubbard model.
+    if (!KELDYSH && PARTICLE_HOLE_SYMMETRY) {
+        this->selfenergy.initialize(0., 0.);
         }
     else {
         this->selfenergy.initialize(config.U / 2., 0.);

@@ -113,8 +113,6 @@ public:
                                     // into r bubble (i.e. in left/right_same/diff_bare functions), and no gammaRb. This
                                     // is needed for correct computation of the central part in multiloop contributions.
 
-    bool completely_crossprojected = false; // Have all reducible parts fully been cross-projected? Needed for the Hubbard model.
-
     fullvert() = default;
     explicit fullvert(const double Lambda) :
                               avertex('a', Lambda, fRG_config(), true),
@@ -275,9 +273,6 @@ public:
 
     void findBestFreqGrid(bool verbose=true);
 
-
-    ///Crossprojection functionality (used for the Hubbard model)
-    void calculate_all_cross_projections();
 
     ///Norm of the vertex
     double sum_norm(int) const;
@@ -967,11 +962,6 @@ public:
     void set_only_same_channel(bool only_same_channel) {
         vertex.only_same_channel = only_same_channel;
         if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.only_same_channel = only_same_channel;
-    }
-
-    void calculate_all_cross_projections() {
-        vertex.calculate_all_cross_projections();
-        if constexpr(symmtype==non_symmetric_diffleft or symmtype==non_symmetric_diffright) vertex_half2.calculate_all_cross_projections();
     }
 
     void initialize(Q val) {
@@ -1733,7 +1723,7 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& rig
         right_vertex.tvertex.enforce_freqsymmetriesK3(tvertex);
     }
 
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and USE_FDT
+#if defined(EQUILIBRIUM) and USE_FDT
     for (char r:"apt") compute_components_through_FDTs(*this, *this, right_vertex, r, Pi.g.T);
     for (char r:"apt") compute_components_through_FDTs(right_vertex, right_vertex, *this, r, Pi.g.T);
 #endif
@@ -1764,32 +1754,6 @@ template <typename Q> void fullvert<Q>::update_grid(double Lambda, double hartre
     this->avertex.update_grid(Lambda, {0., hartree_plus_epsilon, hartree_plus_epsilon}, config);
     this->pvertex.update_grid(Lambda, {2.*hartree_plus_epsilon, 0., 0.}, config);
     this->tvertex.update_grid(Lambda, {0., hartree_plus_epsilon, hartree_plus_epsilon}, config);
-}
-/*
-template <typename Q>
-template<K_class k>
-void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid) {
-    this->avertex.template update_grid<k>(newFrequencyGrid, this->avertex);
-    this->pvertex.template update_grid<k>(newFrequencyGrid, this->pvertex);
-    this->tvertex.template update_grid<k>(newFrequencyGrid, this->tvertex);
-}
-template <typename Q>
-template<K_class k>
-void fullvert<Q>::update_grid(VertexFrequencyGrid<k> newFrequencyGrid, fullvert<Q>& Fullvert4data) {
-    //Fullvert4data.initializeInterpol();
-    this->avertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.avertex);
-    this->pvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.pvertex);
-    this->tvertex.template update_grid<k>(newFrequencyGrid, Fullvert4data.tvertex);
-    //Fullvert4data.set_initializedInterpol(false);
-}
- */
-
-template<class Q>
-void fullvert<Q>::calculate_all_cross_projections() {
-    avertex.cross_project();
-    pvertex.cross_project();
-    tvertex.cross_project();
-    completely_crossprojected = true;
 }
 
 template <typename Q> auto fullvert<Q>::norm_K1(const int p) const -> double {

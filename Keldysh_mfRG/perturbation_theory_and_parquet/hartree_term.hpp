@@ -35,7 +35,6 @@ public:
     /// constructor used for obtaining the self-consistent solution of the Hartree-term
     Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
         //assert(KELDYSH);
-        assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
         selfEnergy.initialize(config.U * filling, 0);
@@ -43,7 +42,6 @@ public:
     };
     /// constructor used for a one-shot calculation of the Hartree-term with a given selfenergy, e.g. in parquet iterations or in the 1l flow equation.
     Hartree_Solver(const double Lambda_in, const SelfEnergy<comp>& Sigma_in, const fRG_config& config_in, const bool diff=false): Lambda(Lambda_in), config(config_in){
-        assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
         selfEnergy = Sigma_in;
@@ -53,7 +51,6 @@ public:
     Hartree_Solver(const double Lambda_in, const fRG_config& config_in, bool test_all_Keldysh_components):
     Lambda(Lambda_in), config(config_in){
         assert(KELDYSH);
-        assert(not HUBBARD_MODEL);
         assert(EQUILIBRIUM); // because we use FDTs
 
         selfEnergy.initialize(config.U * filling, 0);

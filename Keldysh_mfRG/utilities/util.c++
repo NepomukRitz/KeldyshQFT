@@ -216,14 +216,8 @@ namespace utils {
     }
 
     void print_job_info(const fRG_config& config) {
-        if (KELDYSH){
-            if (HUBBARD_MODEL) print("Hubbard model in Keldysh formalism: \n");
-            else               print("SIAM in Keldysh formalism: \n");
-        }
-        else{
-            if (HUBBARD_MODEL) print("Hubbard model in Matsubara formalism: \n");
-            else               print("SIAM in Matsubara formalism: \n");
-        }
+        if (KELDYSH) print("SIAM in Keldysh formalism: \n");
+        else print("SIAM in Matsubara formalism: \n");
 
         if (PARTICLE_HOLE_SYMMETRY) print("Using PARTICLE HOLE Symmetry\n");
 
@@ -248,7 +242,6 @@ namespace utils {
             print("nBOS3 = ", nBOS3, true);
             print("nFER3 = ", nFER3, true);
         }
-        if (HUBBARD_MODEL) print("n_in = ", n_in, true);
     }
 
     void hello_world() {

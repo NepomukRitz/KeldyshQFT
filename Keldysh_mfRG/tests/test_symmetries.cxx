@@ -21,7 +21,6 @@ void test_symmetries(const double Lambda, const fRG_config& frgConfig) {
         state_temp.initialize();             // initialize state with bare vertex and Hartree term in selfenergy
         // initialize the flow with SOPT at Lambda_ini (important!)
         sopt_state(state_temp);
-        // TODO(high): For the Hubbard model, compute the SOPT contribution to the self-energy via FFTs and worry about loops later...
 
         const std::string parquet_temp_filename = data_dir + "parquetInit4_temp" + std::to_string(i) + "_n1=" + std::to_string(nBOS) + (MAX_DIAG_CLASS > 1 ? "_n2=" + std::to_string(nBOS2) : "" ) + (MAX_DIAG_CLASS > 2 ? "_n3=" + std::to_string(nBOS3) : "") + ".h5";
         parquet_solver(parquet_temp_filename, state_temp, Lambda_ini, 1, 1e-4, 1);

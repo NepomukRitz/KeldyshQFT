@@ -11,9 +11,7 @@
 #include "../utilities/mpi_setup.hpp"            // mpi parallelization routines
 #include "../asymptotic_corrections/correction_functions.hpp"            // correction terms due to finite integration range
 #include "../utilities/write_data2file.hpp"      // write vectors into hdf5 file
-#include "../grids/momentum_grid.hpp"            // Momentum grid specific to the 2D Hubbard model
 #include "bubble.hpp"
-#include "precalculated_bubble.hpp"
 #include "integrand.hpp"
 
 
@@ -62,8 +60,6 @@ class BubbleFunctionCalculator{
     void check_presence_of_symmetry_related_contributions();
     void set_channel_specific_freq_ranges_and_prefactor();
     void find_vmin_and_vmax();
-
-    bool missing_cross_projection(); // Needed for the Hubbard model.
 
     template<K_class diag_class> void calculate_bubble_function();
     template<K_class diag_class> value_type get_value(int i_mpi, int i_omp, int n_omp, int n_vectorization);
@@ -117,11 +113,6 @@ class BubbleFunctionCalculator{
         set_channel_specific_freq_ranges_and_prefactor();
         find_vmin_and_vmax();
 
-        // For Hubbard model computations, make sure that the internal structures of the vertices are parametrized correctly.
-        if (HUBBARD_MODEL && (MAX_DIAG_CLASS > 1) && missing_cross_projection()) { // Cross projected parts are only needed for the Hubbard model in K2 and K3.
-            utils::print("Error! Needed crossprojection still has to be computed. Abort.");
-            assert(false);
-        }
 #if SWITCH_SUM_N_INTEGRAL
         vertex1.template symmetry_expand<channel,true ,false>();
         vertex2.template symmetry_expand<channel,false,false>();
@@ -199,14 +190,8 @@ template<char channel, typename Q, typename vertexType_result, typename vertexTy
         typename vertexType_right, class Bubble_Object>
 void BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>::find_vmin_and_vmax() {
     // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    if (HUBBARD_MODEL){ // In the HM we have a larger frequency box for the SE and want to limit us to the range of bosonic vertex frequencies.
-        vmin = dgamma.avertex().K1.frequencies.get_wupper_b();
-        vmax = dgamma.avertex().K1.frequencies.get_wupper_b();
-    }
-    else{
-        vmin =-Delta * 10.; // std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
-        vmax = Delta * 10.; // std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_upper);
-    }
+    vmin =-Delta * 10.; // std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
+    vmax = Delta * 10.; // std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_upper);
 
     if constexpr(MAX_DIAG_CLASS >= 2){
         // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
@@ -224,45 +209,6 @@ void BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, ve
         Nmax = - Nmin - 1;
         vmin = (Nmin*2+1)*(M_PI*Pi.g.T);
         vmax = (Nmax*2+1)*(M_PI*Pi.g.T);
-    }
-}
-
-template<char channel, typename Q,
-        typename vertexType_result,
-        typename vertexType_left,
-        typename vertexType_right,
-        class Bubble_Object>
-bool
-BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>::missing_cross_projection() {
-    switch (channel) {
-        case 'a':
-            if (!vertex1.pvertex().calculated_crossprojections ||
-                !vertex1.tvertex().calculated_crossprojections ||
-                !vertex2.pvertex().calculated_crossprojections ||
-                !vertex2.tvertex().calculated_crossprojections)
-            {
-                return true;
-            }
-            break;
-        case 'p':
-            if (!vertex1.avertex().calculated_crossprojections ||
-                !vertex1.tvertex().calculated_crossprojections ||
-                !vertex2.avertex().calculated_crossprojections ||
-                !vertex2.tvertex().calculated_crossprojections)
-            {
-                return true;
-            }
-            break;
-        case 't':
-            if (!vertex1.avertex().calculated_crossprojections ||
-                !vertex1.pvertex().calculated_crossprojections ||
-                !vertex2.avertex().calculated_crossprojections ||
-                !vertex2.pvertex().calculated_crossprojections)
-            {
-                return true;
-            }
-            break;
-        default:;
     }
 }
 
@@ -381,16 +327,16 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             convert_external_MPI_OMP_indices_to_physical_indices_K1(iK1, i0, ispin,iw, i_in, w,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K1(i0, w);
-            if (trafo == 0 || HUBBARD_MODEL) {
+            if (trafo == 0) {
                 if (ispin == 0 or n_spin == 1)  calculate_value<diag_class,0>(value, i0, i_in, 0, w, 0, 0);
                 else                            calculate_value<diag_class,1>(value, i0, i_in, 0, w, 0, 0);
-            } // TODO: Freqency symmetries for the Hubbard model?
+            }
             break;
         case k2:
             convert_external_MPI_OMP_indices_to_physical_indices_K2(iK2, i0, ispin, iw, iv, i_in, w, v,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K2(i0, w, v);
-            if (trafo == 0 || HUBBARD_MODEL) {
+            if (trafo == 0) {
                 if (ispin == 0 or n_spin == 1) calculate_value<diag_class,0>(value, i0, i_in, 0, w, v, 0);
                 else                           calculate_value<diag_class,1>(value, i0, i_in, 0, w, v, 0);}
             break;
@@ -412,7 +358,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             convert_external_MPI_OMP_indices_to_physical_indices_K3(iK2, i0, ispin, iw, iv, ivp, i_in, w, v, vp,
                                                                     i_mpi, n_omp, i_omp);
             trafo = get_trafo_K3(i0, w, v, vp);
-            if (trafo == 0 || HUBBARD_MODEL) {
+            if (trafo == 0) {
                 if (ispin == 0 or n_spin == 1) calculate_value<diag_class,0>(value, i0, i_in, channel=='a' ? iw : (channel=='p' ? iv : ivp), w, v, vp);  // for 2D interpolation of K3 we need to know the index of the constant bosonic frequency w_r (r = channel of the bubble)
                 else                           calculate_value<diag_class,1>(value, i0, i_in, channel=='a' ? iw : (channel=='p' ? iv : ivp), w, v, vp);
             }
@@ -567,7 +513,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     {
 #endif
         // asymptotic corrections include spin sum
-        if constexpr (!HUBBARD_MODEL and (ZERO_T or KELDYSH) and false) {
+        if constexpr ((ZERO_T or KELDYSH) and false) {
             integration_result +=
                     bubble_value_prefactor() * asymp_corrections_bubble<channel>(k, vertex1, vertex2, Pi.g,
                                                                                  vmin, vmax, w, v, vp, i0, i2,
@@ -650,7 +596,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     dgamma.get_rvertex(channel).K1.set_vec(K1_ordered_result);
     if constexpr(not DEBUG_SYMMETRIES) {
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-        if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK1(dgamma.get_rvertex(channel));
+        dgamma.get_rvertex(channel).enforce_freqsymmetriesK1(dgamma.get_rvertex(channel));
     }
 
 }
@@ -664,9 +610,9 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     dgamma.get_rvertex(channel).K2.set_vec(K2_ordered_result);
     if constexpr(not DEBUG_SYMMETRIES) {
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-        if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK2(dgamma.get_rvertex(channel));
+        dgamma.get_rvertex(channel).enforce_freqsymmetriesK2(dgamma.get_rvertex(channel));
     }
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and USE_FDT
+#if defined(EQUILIBRIUM) and USE_FDT
     compute_components_through_FDTs(dgamma.half1(), dgamma.half1(), dgamma.half1(), channel);
 #endif
 }
@@ -690,9 +636,9 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
     dgamma.get_rvertex(channel).K3.set_vec(K3_ordered_result);
     if constexpr(not DEBUG_SYMMETRIES) {
         dgamma.initializeInterpol();     // initialize Interpolator with the symmetry-reduced sector of the vertex to retrieve all remaining entries
-        if (not HUBBARD_MODEL) dgamma.get_rvertex(channel).enforce_freqsymmetriesK3(dgamma.get_rvertex(channel));
+        dgamma.get_rvertex(channel).enforce_freqsymmetriesK3(dgamma.get_rvertex(channel));
     }
-#if defined(EQUILIBRIUM) and not defined(HUBBARD_MODEL) and USE_FDT
+#if defined(EQUILIBRIUM) and USE_FDT
     compute_components_through_FDTs(dgamma.half1(), dgamma.half1(), dgamma.half1(), channel);
 #endif
 }
@@ -913,7 +859,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             trafo = -1;
         }
     #if USE_FDT
-        if (EQUILIBRIUM and ! HUBBARD_MODEL) {
+        if (EQUILIBRIUM) {
     #if CONTOUR_BASIS != 1
         switch (channel) {
             case 'a':
@@ -995,7 +941,7 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                 //std::cout << "with limits " << vertex1.avertex().K3.frequencies.get_wlower_f() << std::endl;
             }
 #if USE_FDT
-            if (EQUILIBRIUM and ! HUBBARD_MODEL) {
+            if (EQUILIBRIUM) {
 #if CONTOUR_BASIS != 1
                 if (i0 == 0 or i0 == 1) trafo = -1; // components can be determined via FDTs, no need to compute it via integration
 #else

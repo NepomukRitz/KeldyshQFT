@@ -14,7 +14,6 @@
 #include <cassert>
 #include "../utilities/hdf5_routines.hpp"
 #include "../utilities/util.hpp"
-#include "../bubble/precalculated_bubble.hpp"
 #include "../perturbation_theory_and_parquet/parquet_solver.hpp"
 #include "../utilities/anderson_acceleration.hpp"
 
@@ -229,17 +228,9 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
 #endif // BARE_SE_FEEDBACK, PT2_FLOW
 
     // Initialize bubble objects;
-#ifdef HUBBARD // Use precalculated bubble in this case
-    PrecalculatedBubble<comp> Pi(G, dG, false);
-    PrecalculatedBubble<comp> dPi(G, dG, true);
-#else // Otherwise use same type of bubble as before, which directly interpolates
     Bubble<Q> Pi(G, dG, false);
     Bubble<Q> dPi(G, dG, true);
-#endif // HUBBARD
 
-    State<Q> Psi_comp = Psi; // Input state to do computations with. Cannot be const, because it has to be modified in computations for the Hubbard model.
-    // Calculate all possible cross-projections already here to save time later.
-    if (HUBBARD_MODEL) Psi_comp.vertex.calculate_all_cross_projections();
 
     if (VERBOSE) utils::print("Compute 1-loop contribution: ", true);
 #ifdef PT2_FLOW
@@ -247,7 +238,7 @@ auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_
     bareState.initialize(false);  // a state with a bare vertex and a self-energy initialized at the Hartree value
     vertexOneLoopFlow(dPsi.vertex, bareState.vertex, dPi, config);
 #else
-    vertexOneLoopFlow(dPsi.vertex, Psi_comp.vertex, dPi, config);
+    vertexOneLoopFlow(dPsi.vertex, Psi.vertex, dPi, config);
 #endif
     mfRG_record<Q> record_of_intermediate_results{.dPsi_1loop = dPsi};
     record_of_intermediate_results.dPsi_1loop = dPsi;

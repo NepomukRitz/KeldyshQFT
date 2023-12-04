@@ -85,7 +85,7 @@ template <typename T> constexpr int myColsAtCompileTime() {
     }
 }
 
-#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM and not defined(HUBBARD)
+#if PARTICLE_HOLE_SYMM and not KELDYSH_FORMALISM
 using state_datatype = double;
 #else
 using state_datatype = comp;
@@ -627,8 +627,6 @@ struct IndicesSymmetryTransformations: VertexInput{
     //double w, v1, v2; int i_in;
     //K_class kClass_aim;     // we only distinguish kClass==k3 from kClass!=k3 --> important for interpolation in K3
     char channel_rvert;
-    //char channel_bubble;
-    char channel_parametrization = channel_bubble; // W.r.t. which channel is the vertex parametrized? Used for the Hubbard model.
 
     IndicesSymmetryTransformations(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_rvert_in, K_class k_in, my_index_t iw_in, char channel_bubble_in)
             : VertexInput(iK_in, spin_in, w_in, v1_in, v2_in, i_in_in, channel_bubble_in, k_in, iw_in), channel_rvert(channel_rvert_in)

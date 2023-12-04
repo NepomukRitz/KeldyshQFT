@@ -427,7 +427,6 @@ inline std::string data_dir;
 
 #include "frequency_parameters.hpp"
 #include "technical_parameters.hpp"
-#include "momentum_parameters.hpp"
 
 #endif //KELDYSH_MFRG_PARAMETERS_H
 

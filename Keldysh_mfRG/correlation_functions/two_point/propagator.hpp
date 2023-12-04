@@ -7,7 +7,6 @@
 #include "../../utilities/math_utils.hpp"
 #include "selfenergy.hpp"      // self-energy class
 #include "../../parameters/master_parameters.hpp"      // system parameters (lengths of vectors etc.)
-#include "../../grids/momentum_grid.hpp"   // momentum grid and FFT machinery for the 2D Hubbard model
 #include "../../utilities/util.hpp"            // sign - function
 //#include "../../utilities/hdf5_routines.hpp"
 
@@ -140,11 +139,10 @@ public:
     // Matsubara propagators (inverse bare):
     Q G0M_inv(freqType v, int i_in) const;
     Q G0M_inv_SIAM(freqType v, int i_in) const;
-    Q G0M_inv_Hubbard(freqType v, int i_in) const;
+
     // retarded Keldysh propagators (inverse bare):
     Q G0R_inv(freqType v, int i_in) const;
     Q G0R_inv_SIAM(freqType v, int i_in) const;
-    Q G0R_inv_Hubbard(freqType v, int i_in) const;
 
     /// propagators for REG == 1
     Q GR_REG1(freqType v, int i_in) const;
@@ -629,8 +627,7 @@ auto Propagator<Q>::norm() const -> double {
 template <typename Q>
 auto Propagator<Q>::G0M_inv(const freqType v, const int i_in) const -> Q {
     assert(!KELDYSH);
-    if constexpr(HUBBARD_MODEL) { return G0M_inv_Hubbard(v, i_in);}
-    else { return G0M_inv_SIAM(v, i_in);}
+    return G0M_inv_SIAM(v, i_in);
 }
 template <typename Q>
 auto Propagator<Q>::G0M_inv_SIAM(const freqType v, const int i_in) const -> Q {
@@ -645,29 +642,14 @@ auto Propagator<Q>::G0M_inv_SIAM(const freqType v, const int i_in) const -> Q {
         return G0inv;
     }
 }
-template <typename Q>
-auto Propagator<Q>::G0M_inv_Hubbard(const freqType v, const int i_in) const -> Q {
-    double k_x, k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    const Q G0inv_R = v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) + 2 * (cos(k_x) + cos(k_y));
-    return G0inv_R;
-}
 
 template <typename Q>
 auto Propagator<Q>::G0R_inv(const freqType v, const int i_in) const -> Q {
-    if constexpr(HUBBARD_MODEL) { return G0R_inv_Hubbard(v, i_in);}
-    else { return G0R_inv_SIAM(v, i_in);}
+    return G0R_inv_SIAM(v, i_in);
 }
 template <typename Q>
 auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
     const Q G0inv_R = v - epsilon + glb_i * Gamma * 0.5;
-    return G0inv_R;
-}
-template <typename Q>
-auto Propagator<Q>::G0R_inv_Hubbard(const freqType v, const int i_in) const -> Q {
-    double k_x, k_y;
-    get_k_x_and_k_y(i_in, k_x, k_y); // TODO: Only works for s-wave (i.e. when momentum dependence is only internal structure)!
-    const Q G0inv_R = v + 2 * (cos(k_x) + cos(k_y));
     return G0inv_R;
 }
 
@@ -811,7 +793,6 @@ auto Propagator<Q>::SM_REG3(const freqType v, const int i_in) const -> Q {
     const Q G = GM(v, i_in);
     const Q G0inv = G0M_inv(v, i_in);
     return -2 * Lambda / (v * v) * G * G0inv * G;
-// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
 
 
@@ -893,7 +874,6 @@ auto Propagator<Q>::SM_REG4(const freqType v, const int i_in) const -> Q {
     const Q val = G0_inv * G * G;
     assert(isfinite(val));
     return val;
-// TODO: Implement Single-Scale propagator for the Hubbard model corresponding to the regulator chosen.
 }
 
 

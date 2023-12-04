@@ -48,10 +48,6 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
                 case 'f':
                     number_of_gridpoints = nFER;
                     Delta_factor = Delta_factor_SE;
-                    if (HUBBARD_MODEL){ //TODO(medium): Just a hotfix for the Hubbard model. Avoids that one runs out of the frequency box when integrating for the bubble.
-                        U_factor *= 1.5;
-                        Delta_factor *= 1.5;
-                    }
                     break;
                 default:
                     break;

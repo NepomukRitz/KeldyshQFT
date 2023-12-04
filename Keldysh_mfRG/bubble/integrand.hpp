@@ -11,9 +11,7 @@
 #include "../utilities/mpi_setup.hpp"            // mpi parallelization routines
 #include "../asymptotic_corrections/correction_functions.hpp"            // correction terms due to finite integration range
 #include "../utilities/write_data2file.hpp"      // write vectors into hdf5 file
-#include "../grids/momentum_grid.hpp"            // Momentum grid specific to the 2D Hubbard model
 #include "bubble.hpp"
-#include "precalculated_bubble.hpp"
 #include "../multidimensional/multiarray.hpp"
 
 /// TODO: write move constructor (necessary for move in PAID integrator)
@@ -1413,12 +1411,10 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
             default:;
         }
         freqType vpp = wl + i * (wu - wl) / (npoints - 1);
-        //if (diag_class == k1 and not HUBBARD_MODEL) {vertex1.avertex().K1.frequencies.get_freqs_w(vpp, i);}
         freqs[i] = vpp;
     }
 
     std::string filename_prefix = "";
-    if (HUBBARD_MODEL) filename_prefix = "/project/th-scratch/n/Nepomuk.Ritz/PhD_data/SOPT/integrands/";
     save_integrand(freqs, filename_prefix);
 
 }
@@ -1440,7 +1436,7 @@ void Integrand<diag_class,channel, spin, Q, vertexType_left, vertexType_right, B
     get_integrand_vals(freqs, integrand_vals, Pivals, vertex_vals1, vertex_vals2);
 
     std::string filename = "";
-    if (not HUBBARD_MODEL) filename += data_dir;
+    filename += data_dir;
     filename += filename_prefix+"integrand_K" + (diag_class == k1 ? "1" : (diag_class == k2 ? "2" : (diag_class == k3 ? "3" : "2b")));
     filename += channel;
     filename += "_i0=" + std::to_string(i0_symmred)

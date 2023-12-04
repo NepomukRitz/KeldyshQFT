@@ -13,7 +13,6 @@
 #include "../../symmetries/internal_symmetries.hpp"      // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "../../symmetries/symmetry_transformations.hpp" // symmetry transformations of frequencies
 #include "../../symmetries/symmetry_table.hpp"           // table containing information when to apply which symmetry transformations
-#include "../../grids/momentum_grid.hpp"            // functionality for the internal structure of the Hubbard model
 #include "../../utilities/math_utils.hpp"
 #include "../../utilities/minimizer.hpp"
 #include "../n_point/data_buffer.hpp"
@@ -60,17 +59,9 @@ public:
     /// apply_binary_op_to_all_vertexBuffers()
     buffer_type_K1 K1;
     mutable buffer_type_K1 K1_symmetry_expanded;
-    /// cross-projected contributions, needed for the Hubbard model;
-    /// have to be mutable to allow us to compute them at a stage where the vertex should be const.
-    mutable buffer_type_K1 K1_a_proj = K1;
-    mutable buffer_type_K1 K1_p_proj = K1;
-    mutable buffer_type_K1 K1_t_proj = K1;
 
     buffer_type_K2 K2;
     mutable buffer_type_K2 K2_symmetry_expanded;
-    mutable buffer_type_K2 K2_a_proj = K2;
-    mutable buffer_type_K2 K2_p_proj = K2;
-    mutable buffer_type_K2 K2_t_proj = K2;
 
 #if DEBUG_SYMMETRIES
     buffer_type_K2b K2b;
@@ -82,9 +73,6 @@ public:
 
     buffer_type_K3 K3;
     mutable buffer_type_K3 K3_symmetry_expanded;
-    mutable buffer_type_K3 K3_a_proj = K3;
-    mutable buffer_type_K3 K3_p_proj = K3;
-    mutable buffer_type_K3 K3_t_proj = K3;
 
     /**
      * Applies unary operator f to this rvert
@@ -163,24 +151,6 @@ public:
             if (MAX_DIAG_CLASS >= 1) K1 = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
             if (MAX_DIAG_CLASS >= 2) K2 = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
             if (MAX_DIAG_CLASS >= 3) K3 = buffer_type_K3(Lambda, K3_config.dims, config);
-            if constexpr(HUBBARD_MODEL) {
-                if (MAX_DIAG_CLASS >= 1) {
-                    K1_a_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
-                    K1_p_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
-                    K1_t_proj = buffer_type_K1(Lambda, channel_in == 'p' ? K1p_config.dims : K1at_config.dims, config);
-                }
-                if (MAX_DIAG_CLASS >= 2) {
-                    K2_a_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
-                    K2_p_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
-                    K2_t_proj = buffer_type_K2(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
-                }
-                if (MAX_DIAG_CLASS >= 3) {
-                    K3_a_proj = buffer_type_K3(Lambda, K3_config.dims, config);
-                    K3_p_proj = buffer_type_K3(Lambda, K3_config.dims, config);
-                    K3_t_proj = buffer_type_K3(Lambda, K3_config.dims, config);
-                }
-            }
-
 #if DEBUG_SYMMETRIES
             K2b = buffer_type_K2b(Lambda, channel_in == 'p' ? K2p_config.dims : K2at_config.dims, config);
 #endif
@@ -192,7 +162,6 @@ public:
     }
 
     mutable bool calculated_crossprojections = false;
-    void cross_project();
 
     double max_norm() const;
 
@@ -297,9 +266,6 @@ public:
      */
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
-    void K1_crossproject(char channel_out);
-    Q K1_BZ_average(const int iK, int ispin, const int iw);
-
     /** K2 functionality */
 
     /**
@@ -307,18 +273,12 @@ public:
      */
     void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
 
-    // TODO: Implement! Needed for the Hubbard model.
-    void K2_crossproject(char channel_out);
-
     /** K3 functionality */
 
     /**
      * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
      */
     void enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated);
-
-    // TODO: Implement! Needed for the Hubbard model.
-    void K3_crossproject(char channel_out);
 
     void initInterpolator() const {
         apply_unary_op_to_all_vertexBuffers([&](auto &&buffer) -> void { buffer.initInterpolator(); });
@@ -514,26 +474,6 @@ auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& 
 template <typename Q>
 template <K_class k>
 auto rvert<Q>::read_value(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q {
-    if (HUBBARD_MODEL && indices.channel_parametrization != channel) {
-        assert(calculated_crossprojections);
-        switch (indices.channel_parametrization) {
-            case 'a':
-                if      constexpr(k==k1) return readMe.K1_a_proj.interpolate(indices);
-                else if constexpr(k==k3) return readMe.K3_a_proj.interpolate(indices);
-                else                     return readMe.K2_a_proj.interpolate(indices); // for both k2 and k2b we need to interpolate K2
-            case 'p':
-                if      constexpr(k==k1) return readMe.K1_p_proj.interpolate(indices);
-                else if constexpr(k==k3) return readMe.K3_p_proj.interpolate(indices);
-                else                     return readMe.K2_p_proj.interpolate(indices); // for both k2 and k2b we need to interpolate K2
-            case 't':
-                if      constexpr(k==k1) return readMe.K1_t_proj.interpolate(indices);
-                else if constexpr(k==k3) return readMe.K3_t_proj.interpolate(indices);
-                else                     return readMe.K2_t_proj.interpolate(indices); // for both k2 and k2b we need to interpolate K2
-            default:
-                break;
-        }
-    }
-    else {
         if      constexpr(k==k1) return readMe.K1.interpolate(indices);
         else if constexpr(k==k3) return readMe.K3.interpolate(indices);
 #if not DEBUG_SYMMETRIES
@@ -552,7 +492,6 @@ auto rvert<Q>::read_value(const IndicesSymmetryTransformations& indices, const r
             return readMe.K3_SBE.interpolate(indices);
         }
 #endif
-    }
 }
 
 /**
@@ -1744,68 +1683,6 @@ template <typename Q> template<typename result_type>  auto rvert<Q>::right_diff_
 }
 
 
-template<typename Q>
-void rvert<Q>::cross_project() {
-    // TODO(high): Rewrite and update!!
-    if (!calculated_crossprojections){
-        switch (channel) {
-            case 'a':
-                    K1_a_proj = K1;
-                    K1_crossproject('p');
-                    K1_crossproject('t');
-                if (MAX_DIAG_CLASS >= 2){
-                    K2_a_proj = K2;
-                    K2_crossproject('p');
-                    K2_crossproject('t');
-                }
-                if (MAX_DIAG_CLASS == 3){
-                    K3_a_proj = K3;
-                    K3_crossproject('p');
-                    K3_crossproject('t');
-                }
-                break;
-            case 'p':
-                    K1_crossproject('a');
-                    K1_p_proj = K1;
-                    K1_crossproject('t');
-                if (MAX_DIAG_CLASS >= 2){
-                    K2_crossproject('a');
-                    K2_p_proj = K2;
-                    K2_crossproject('t');
-                }
-                if (MAX_DIAG_CLASS == 3){
-                    K3_crossproject('a');
-                    K3_p_proj = K3;
-                    K3_crossproject('t');
-                }
-                break;
-            case 't':
-                    K1_crossproject('a');
-                    K1_crossproject('p');
-                    K1_t_proj = K1;
-                if (MAX_DIAG_CLASS >= 2){
-                    K2_crossproject('a');
-                    K2_crossproject('p');
-                    K2_t_proj = K2;
-                }
-                if (MAX_DIAG_CLASS == 3){
-                    K3_crossproject('a');
-                    K3_crossproject('p');
-                    K3_t_proj = K3;
-                }
-                break;
-            default:
-                utils::print("Error! Invalid channel index!"); assert(false);
-        }
-        calculated_crossprojections = true;
-    }
-    else{
-        utils::print("Error! Crossprojections have already been calculated!");
-        assert(false);
-    }
-}
-
-
 template <typename Q>template<char ch_bubble>  void rvert<Q>::transfToR(VertexInput& input) const {
     freqType w, v1, v2;
 
@@ -2042,54 +1919,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
     }
 }
 
-template<typename Q>
-void rvert<Q>::K1_crossproject(const char channel_out) {
-    /// Prescription: For K1 it suffices to calculate the average over the BZ, independent of the momentum argument and of the channel.
-    const int nK_K1 = channel == 'p' ? K1p_config.dims[my_defs::K1::keldysh] : K1at_config.dims[my_defs::K1::keldysh];
-    for (int iK = 0; iK < nK_K1; ++iK) {
-        for (int it_spin = 0; it_spin < n_spin; it_spin++) {
-#pragma omp parallel for schedule(dynamic)
-            for (int iw = 0; iw < nw1; ++iw) {
-                Q projected_value = K1_BZ_average(iK, it_spin, iw);
-                for (int i_in = 0; i_in < n_in_K1; ++i_in) {
-                    switch (channel_out) {
-                        case 'a':
-                            K1_a_proj.setvert(projected_value, it_spin, iw, iK, i_in);
-                            break; // All internal arguments get the same value for K1!
-                        case 'p':
-                            K1_p_proj.setvert(projected_value, it_spin, iw, iK, i_in);
-                            break;
-                        case 't':
-                            K1_t_proj.setvert(projected_value, it_spin, iw, iK, i_in);
-                            break;
-                        default:
-                            utils::print("Incompatible channel for K1 cross-projection!");
-                    }
-                }
-            }
-        }
-    }
-}
-
-template<typename Q>
-Q rvert<Q>::K1_BZ_average(const int iK, const int ispin, const int iw) {
-    /// Perform the average over the BZ by calculating the q-sum over the REDUCED BZ (see notes for details!)
-    Q value = 0.;
-    value +=      K1.val(ispin, iw, iK, momentum_index(0, 0));
-    value +=      K1.val(ispin, iw, iK, momentum_index(glb_N_q - 1, glb_N_q - 1));
-    value += 2. * K1.val(ispin, iw, iK, momentum_index(glb_N_q - 1, 0));
-    for (int n = 1; n < glb_N_q - 1; ++n) {
-        value += 4. * K1.val(ispin, iw, iK, momentum_index(n, 0));
-        value += 4. * K1.val(ispin, iw, iK, momentum_index(glb_N_q - 1, n));
-        value += 4. * K1.val(ispin, iw, iK, momentum_index(n, n));
-        for (int np = 1; np < n; ++np) {
-            value += 8. * K1.val(ispin, iw, iK, momentum_index(n, np));
-        }
-    }
-    value /= 4. * (glb_N_q - 1) * (glb_N_q - 1);
-    return value;
-}
-
 template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated) { //TODO(medium): Do this also for the cross-projected parts
 #pragma omp parallel for
     for (size_t iflat = 0; iflat < getFlatSize(K2.get_dims()); iflat++) {
@@ -2138,11 +1967,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
         }
     }
 
-}
-
-template<typename Q>
-void rvert<Q>::K2_crossproject(char channel_out) {
-// TODO: Currently does nothing!
 }
 
 
@@ -2203,11 +2027,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
 
 }
 
-
-template<typename Q>
-void rvert<Q>::K3_crossproject(char channel_out) {
-    // TODO: Currently does nothing!
-}
 
 template<typename Q>
 double rvert<Q>::max_norm() const {

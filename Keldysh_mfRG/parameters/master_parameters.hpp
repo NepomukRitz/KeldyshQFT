@@ -15,9 +15,6 @@ constexpr bool VERBOSE = false;
 
 #define USE_ANDERSON_ACCELERATION 1
 
-// Determines whether the 2D Hubbard model shall be studied instead of the SIAM
-//#define HUBBARD
-
 // Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
 //#define FERMI_POLARON_PROBLEM
 
@@ -100,17 +97,11 @@ extern double glb_ainv;
 
 /// Parameters for internal structure ///
 
-#ifdef HUBBARD
-constexpr int n_in_K1 = glb_N_transfer;                         // Number of internal indices needed for K1-objects
-constexpr int n_in_K2 = glb_N_transfer * glb_N_ff;              // Number of internal indices needed for K2-objects
-constexpr int n_in_K3 = glb_N_transfer * glb_N_ff * glb_N_ff;   // Number of internal indices needed for K3-objects
-constexpr int n_in = n_in_K3;                                   // maximal number of internal indices
-#else
+
 constexpr int n_in_K1 = 1;
 constexpr int n_in_K2 = 1;
 constexpr int n_in_K3 = 1;
 constexpr int n_in = 1;
-#endif
 
 /// fRG parameters ///
 
@@ -174,12 +165,6 @@ const std::vector<double> U_NRG {};
 
 /// Set flags used in code; DO NOT TOUCH!!!///
 
-#ifdef HUBBARD
-constexpr bool HUBBARD_MODEL = true;
-#else
-constexpr bool HUBBARD_MODEL = false;
-#endif
-
 #ifdef FERMI_POLARON_PROBLEM
 constexpr bool FPP = true;
 #else
@@ -214,6 +199,5 @@ inline std::string data_dir;
 
 #include "frequency_parameters.hpp"
 #include "technical_parameters.hpp"
-#include "momentum_parameters.hpp"
 
 #endif //KELDYSH_MFRG_PARAMETERS_H

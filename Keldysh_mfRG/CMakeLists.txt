@@ -54,8 +54,6 @@ add_executable(Keldysh_postproc postprocessing/main_postproc.cpp ${keldysh_H} ${
 ## executable for (unit) tests (using Catch)
 add_executable(Keldysh_mfRG_testing tests/unit_tests/unit_tests.cpp ${keldysh_H} ${keldysh_SRC} ${test_SRC})
 
-## executable for production runs of FPP project
-add_executable(FPP_mfRG FPP/FPP_main.cpp ${keldysh_H} ${keldysh_SRC})
 
 ## executable for integrand tests
 add_executable(get_integrand_dGammaL tests/integrand_tests/get_integrand_dGammaL.cpp ${keldysh_H} ${keldysh_SRC})
@@ -82,10 +80,6 @@ if(WORKSTATION OR ASC)
     target_link_libraries(Keldysh_mfRG_testing -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG_testing -lgsl -lgslcblas)
     target_link_libraries(Keldysh_mfRG_testing fftw3)
-
-    target_link_libraries(FPP_mfRG -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
-    target_link_libraries(FPP_mfRG -lgsl -lgslcblas)
-    target_link_libraries(FPP_mfRG fftw3)
 
     target_link_libraries(get_integrand_dGammaL -L/software/opt/bionic/x86_64/hdf5/1.10.5-gcc/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(get_integrand_dGammaL -lgsl -lgslcblas)

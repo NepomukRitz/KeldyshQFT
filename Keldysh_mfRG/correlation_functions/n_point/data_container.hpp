@@ -11,7 +11,7 @@
 #include "../../data_structures.hpp"          // real/complex vector classes
 #include "../../parameters/master_parameters.hpp"               // system parameters (lengths of vectors etc.)
 #include "../../parameters/frequency_parameters.hpp"
-#include "../../grids/frequency_grid.hpp"            // functionality for the internal structure of the Hubbard model
+#include "../../grids/frequency_grid.hpp"
 #include "H5Cpp.h"
 
 /// TODO: treat VertexFrequencyGrid as member of vertexContainerBase via template?

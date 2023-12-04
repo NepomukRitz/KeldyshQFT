@@ -11,7 +11,6 @@
 #include "../utilities/mpi_setup.hpp"            // mpi parallelization routines
 #include "../asymptotic_corrections/correction_functions.hpp"            // correction terms due to finite integration range
 #include "../utilities/write_data2file.hpp"      // write vectors into hdf5 file
-#include "../grids/momentum_grid.hpp"            // Momentum grid specific to the 2D Hubbard model
 
 
 /// Class combining two propagators, either GG or GS+SG

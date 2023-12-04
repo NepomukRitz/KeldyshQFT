@@ -17,7 +17,6 @@
 #include "../test_symmetries.hpp"
 #include "../../perturbation_theory_and_parquet/perturbation_theory.hpp"
 #include "../test_Hartree.hpp"
-#include "../test_Hubbard_SOPT.hpp"
 #include "mpi.h"
 
 
@@ -95,11 +94,8 @@ int main(int argc, char* argv[]) {
 
     //utils::check_input();
 
-    //test_PrecalculateBubble<comp> test_Bubble ;
     //test_Bubble.perform_test();
 
-    //Runtime_comparison<comp> runtime_tester;
-    //runtime_tester.test_runtimes(100);
 
     //if (ZERO_T and REG==2) {
         //data_dir = "../Data_MFU=1.000000/";
@@ -109,9 +105,6 @@ int main(int argc, char* argv[]) {
     //}
 
     //compute_non_symmetric_diags(0.8, true, 1, true);
-
-    /// Hubbard model SOPT tests
-    //Hubbard_SOPT_test();
 
 
     /// Test Hartree functionality
