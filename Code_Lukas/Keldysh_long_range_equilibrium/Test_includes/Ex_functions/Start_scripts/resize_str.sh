@@ -1,1 +1,0 @@
-~/bin/resize_str

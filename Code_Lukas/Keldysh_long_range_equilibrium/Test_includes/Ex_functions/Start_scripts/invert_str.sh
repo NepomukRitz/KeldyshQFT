@@ -1,1 +1,0 @@
-~/bin/invert_str

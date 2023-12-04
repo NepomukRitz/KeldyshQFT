@@ -1,5 +1,0 @@
-#!/bin/bash
-#SBATCH --output=/p/scratch/chmu26/hmu261/Ex_Unit_tests/LOG/mpi-out.%j
-#SBATCH --error=/p/scratch/chmu26/hmu261/Ex_Unit_tests/LOG/mpi-err.%j
-cd /p/scratch/chmu26/hmu261/Ex_Unit_tests/Ex_dsfRG
-srun /p/home/jusers/weidinger1/juwels/bin/ex_dsfRG

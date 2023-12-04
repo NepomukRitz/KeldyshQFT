@@ -1,6 +1,0 @@
-#SBATCH --nodes=5
-#SBATCH --ntasks=5
-#SBATCH --ntasks-per-node=5
-#SBATCH --cpus-per-task=48
-#SBATCH --time=00:15:00
-#SBATCH --partition=batch

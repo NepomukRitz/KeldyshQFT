@@ -1,1 +1,0 @@
-~/bin/ex_generalmatrix

@@ -1,1 +1,0 @@
-~/bin/trapezoidal_integration

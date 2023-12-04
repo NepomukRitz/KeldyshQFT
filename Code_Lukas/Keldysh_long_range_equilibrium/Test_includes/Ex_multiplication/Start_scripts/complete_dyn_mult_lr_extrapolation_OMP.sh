@@ -1,1 +1,0 @@
-~/bin/complete_dyn_mult_lr_extrapolation

@@ -1,1 +1,0 @@
-~/bin/total_mult

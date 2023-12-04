@@ -1,1 +1,0 @@
-~/bin/symmetrize_wbX

@@ -1,1 +1,0 @@
-~/bin/ex_determine_number_of_matrix_components

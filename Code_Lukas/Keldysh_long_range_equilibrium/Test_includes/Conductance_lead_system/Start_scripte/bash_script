@@ -1,3 +1,0 @@
-#!/bin/bash
-cd /gpfs/work/hmu26/hmu261/DATA_PRODUCTION/QPC_short_interactions/T0.0_conductance/Conductance_schar_dsfRG_mpi_L10_Lu0_N30_Nff1500_NfbP1500_NfbX1500_num_freq_pre30000_Vg0.25_h0.0_T0.0_U00.65_U10.0_Xi5.0_mu-1.6_0.005_-1.4_nodes8/
-/gpfs/homea/hmu26/hmu261/bin/conductance_provisorium /gpfs/work/hmu26/hmu261/DATA_PRODUCTION/QPC_short_interactions/T0.0/Schar_dsfRG_mpi_L10_Lu0_N30_Nff1500_NfbP1500_NfbX1500_num_freq_pre30000_Vg0.25_h0.0_T0.0_U00.65_U10.0_Xi5.0_mu-1.6_0.005_-1.4_nodes8/dsfRG_mpi_L10_Lu0_N30_Nff_1500_NfbP_1500_NfbX_1500_num_freq_pre_30000_Vg_0.250000_h_0.000000_mu_-1.600000_T_0.000000_U0_0.650000_U1_0.000000_Xi_5.000000_Lambda_ini_99999.500001_Lambda_fin_0.000000_number_of_nodes_8.mat 0 0.65 0.0 5.0

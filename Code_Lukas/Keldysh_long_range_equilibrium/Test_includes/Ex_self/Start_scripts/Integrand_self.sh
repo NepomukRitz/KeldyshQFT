@@ -1,1 +1,0 @@
-~/bin/Integrand_self

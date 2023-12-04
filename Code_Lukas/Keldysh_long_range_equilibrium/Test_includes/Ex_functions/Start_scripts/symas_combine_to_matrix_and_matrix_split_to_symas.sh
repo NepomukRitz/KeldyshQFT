@@ -1,1 +1,0 @@
-~/bin/symas_combine_to_matrix_and_matrix_split_to_symas
