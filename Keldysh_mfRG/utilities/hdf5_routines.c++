@@ -158,7 +158,6 @@ State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, co
     read_from_hdf(group_params, "MAX_DIAG_CLASS", MAX_DIAG_CLASS_loaded);
     read_from_hdf(group_params, "mu", glb_mu_loaded);
     read_from_hdf(group_params, "V", glb_V_loaded);
-    //read_from_hdf(group_params, "ODEsolver", ODEsolver_loaded);
     read_from_hdf(group_params, "GRID", GRID_loaded);
     bool are_parameters_identical = REG == REG_loaded and
             MAX_DIAG_CLASS == MAX_DIAG_CLASS_loaded and

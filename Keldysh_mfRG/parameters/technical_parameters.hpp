@@ -28,9 +28,6 @@ constexpr double converged_tol = 1e-7;
 //Integrator tolerance
 inline double integrator_tol = 1e-5;
 
-//Simpson integraton number of steps - 10 times the largest one out of nBOS and nFER
-constexpr int nINT = 1501; //(nBOS*(nBOS>=nFER) + nFER*(nBOS<nFER));
-
 // Debug mode allows to select specific Keldysh components contributing to loop and bubbles
 //#define DEBUG_MODE
 

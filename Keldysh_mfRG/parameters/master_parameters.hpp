@@ -106,13 +106,6 @@ static_assert(KELDYSH_FORMALISM);   // This type of flow only works in Keldysh
 #define REPARAMETRIZE_FLOWGRID
 
 
-// ODE solvers:
-// 1 -> basic Runge-Kutta 4; // WARNING: non-adaptive!
-// 2 -> Bogacki–Shampine
-// 3 -> Cash-Carp
-// 4 -> Dormand-Prince
-#define ODEsolver 3
-
 // Limits of the fRG flow
 #if REG == 4
 constexpr double Lambda_ini = 0.;// 1e4;

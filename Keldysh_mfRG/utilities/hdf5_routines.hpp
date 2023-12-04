@@ -701,7 +701,6 @@ namespace hdf5_impl {
             write_to_hdf(group_params, "U", state.config.U, is_dataset_existent);
             write_to_hdf(group_params, "epsilon", state.config.epsilon, is_dataset_existent);
             write_to_hdf(group_params, "V", glb_V, is_dataset_existent);
-            write_to_hdf(group_params, "ODEsolver", ODEsolver, is_dataset_existent);
             write_to_hdf(group_params, "GRID", GRID, is_dataset_existent);
             write_to_hdf(group_params, IS_CONVERGED, is_converged, is_dataset_existent);
         }

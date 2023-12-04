@@ -533,15 +533,7 @@ void ode_solver(Y& result, const Y& state_ini, const System& rhs,
 
     // quality-controlled RK-step (cf. Numerical recipes in C, page 723)
 
-    // To use a different method, just need to put a different tableau here.
-    // Except for FSAL (e.g. Dormand-Prince), which is not supported yet.
-#if ODEsolver == 1
-    const auto tableau = ode_solver_impl::RK4basic;
-#elif ODEsolver == 2
-    const auto tableau = ode_solver_impl::BogaSha;
-#else //ODEsolver == 3
     const auto tableau = ode_solver_impl::cash_carp;
-#endif
     if (verbose and world_rank == 0) {
         const std::string message =
                 "\n-------------------------------------------------------------------------\n\tStarting ODE solver with method: " + tableau.name + " \n"
@@ -834,15 +826,9 @@ namespace boost {
                     (State_t& result, const State_t& state_ini, const System& rhs ,
                      const ODE_solver_config& config=ODE_solver_config(), const bool verbose=true)
             {
-#if ODEsolver==1
-#define ERR_STEPPER runge_kutta4
-#elif ODEsolver==2
-                static_assert(false, "Bogacki-Shampine not available for Boost library");
-#elif ODEsolver==3
+
 #define ERR_STEPPER runge_kutta_cash_karp54
-#elif ODEsolver==4
-#define ERR_STEPPER runge_kutta_dopri5
-#endif
+
                 //double Lambda_now = Lambda_i;
                 double t_now = FlowGrid::t_from_lambda(config.Lambda_i);
                 double t_final = FlowGrid::t_from_lambda(config.Lambda_f);
@@ -852,17 +838,6 @@ namespace boost {
                 vec<double> lambdas_did(MAXSTP+1);
                 lambdas_did[0] = config.Lambda_i;
 
-
-#if ODEsolver==1
-                typedef ERR_STEPPER< State_t, double, State_t, double, boost::numeric::odeint::vector_space_algebra > error_stepper_t;
-                    error_stepper_t stepper();
-
-                if constexpr(!std::is_same_v<FlowGrid, flowgrid::exp_parametrization>) assert(config.Lambda_i>0 && config.Lambda_f > 0); // non-positive numbers not allowed for exp-parametrized flowgrid.
-                vec<double> lambdas_try = flowgrid::construct_flow_grid(config.Lambda_f, config.Lambda_i, FlowGrid::t_from_lambda, FlowGrid::lambda_from_t, config.maximal_number_of_ODE_steps, config.lambda_checkpoints);
-                result = detail::integrate_nonadaptive<error_stepper_t, State_t, FlowGrid>(
-                        error_stepper_t(), rhs, state_now,
-                        t_now, t_final, lambdas_try, lambdas_did, config, verbose); //, typename Stepper::stepper_category() );
-#else
                 typedef ERR_STEPPER< State_t, double, State_t, double, boost::numeric::odeint::vector_space_algebra > error_stepper_t;
                 typedef controlled_runge_kutta< error_stepper_t > controlled_error_stepper_t;
                 controlled_error_stepper_t stepper(
@@ -873,8 +848,6 @@ namespace boost {
                 result = detail::integrate_adaptive_check<controlled_error_stepper_t, State_t, FlowGrid>(
                         stepper, rhs, state_now,
                         t_now, t_final, dt, MAXSTP, lambdas_did, config, verbose);
-
-#endif
             }
 
         } // Namespace odeint
