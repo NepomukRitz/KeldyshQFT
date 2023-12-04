@@ -10,7 +10,6 @@
 #include "old_integrators.hpp"                    // Riemann, Simpson, PAID integrator (should not needed)
 #include "integrator_NR.hpp"                      // adaptive Gauss-Lobatto integrator with Kronrod extension
 #include "../utilities/util.hpp"                  // for rounding functions
-#include "../integrator/paid-integrator/paid.hpp"                 // for PAID integrator
 
 /* compute real part of integrand (for GSL/PAID) */
 template <typename Integrand>
@@ -317,62 +316,14 @@ template <typename Q, typename Integrand> auto integrator_gsl(Integrand& integra
 
 // old wrapper function
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b) -> Q {
-    if (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann<Q>(integrand, nINT);
-    }
-    else if (INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson<Q>(integrand, a, b, nINT);
-    }
-    else if (INTEGRATOR_TYPE == 2) {// Simpson + additional points
-        return integrator_simpson<Q>(integrand, a, b, 0., nINT);      // use standard Simpson plus additional points around w = 0
-    }
-    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
-    }
-    else if (INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl<Q>(integrand, a, b, 0., 0., nINT);
-    }
-    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
-        Adapt<Integrand> adaptor(integrator_tol, integrand);
-        return adaptor.integrate(a, b);
-    }
-    else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        paid::Domain<1> d({a}, {b}); // domain
-        paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
-        paid::PAIDConfig config;
-        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
-        return paid_integral.solve({paid_integrand})[0];
-    }
+    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    return adaptor.integrate(a, b);
 }
 
 // wrapper function, used for loop
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w) -> Q {
-    if (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann<Q>(integrand, nINT);
-    }
-    else if (INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson<Q>(integrand, a, b, nINT);       // only use standard Simpson
-    }
-    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return integrator_simpson<Q>(integrand, a, b, w, nINT);      // use standard Simpson plus additional points around w = 0
-    }
-    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);      // use adaptive Simpson integrator
-    }
-    else if (INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl<Q>(integrand, a, b, w, w, nINT);
-    }
-    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
-        Adapt<Integrand> adaptor(integrator_tol, integrand);
-        return adaptor.integrate(a, b);
-    }
-    else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        paid::Domain<1> d({a}, {b}); // domain
-        paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
-        paid::PAIDConfig config;
-        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
-        return paid_integral.solve({paid_integrand})[0];
-    }
+    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    return adaptor.integrate(a, b);
 }
 
 /**
@@ -384,38 +335,12 @@ template <typename Q, typename Integrand> auto integrator(Integrand& integrand, 
  * @param w2        :   unused
  */
 template <typename Q, typename Integrand> auto integrator(Integrand& integrand, double a, double b, double w1, double w2) -> Q {
-    if (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann<Q>(integrand, nINT);
-    }
-    else if (INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson<Q>(integrand, a, b, nINT);           // only use standard Simpson
-    }
-    else if (INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return integrator_simpson<Q>(integrand, a, b, w1, w2,
-                                  nINT);     // use standard Simpson plus additional points around +- w/2
-    }
-    else if (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator<Q>(integrand, a, b, nINT);          // use adaptive Simpson integrator
-    }
-    else if (INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl<Q>(integrand, a, b, w1, w2, nINT);
-    }
-    else if (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
-        Adapt<Integrand> adaptor(integrator_tol, integrand);
-        return adaptor.integrate(a, b);
-    }
-    else if (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        paid::Domain<1> d({a}, {b}); // domain
-        paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
-        paid::PAIDConfig config;
-        paid::PAID<1, Integrand, Q, int, double> paid_integral(config);
-        return paid_integral.solve({paid_integrand})[0];
-    }
+    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    return adaptor.integrate(a, b);
 }
 
 /**
  * Wrapper function for bubbles and loops, splitting the integration domain along difficult features.
- * ATTENTION: splitting only done for INTEGRATOR_TYPE == 5 and 6.
  * @param a      : lower limit for integration
  * @param b      : upper limit for integration
  * @param w1     : first frequency where features occur
@@ -429,66 +354,24 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
     rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
     std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
 
-    if constexpr(INTEGRATOR_TYPE == 0) { // Riemann sum
-        return integrator_riemann<return_type>(integrand, nINT);
-    }
-    else if constexpr(INTEGRATOR_TYPE == 1) { // Simpson
-        return integrator_simpson<return_type>(integrand, a, b, nINT);           // only use standard Simpson
-    }
-    else if constexpr(INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return integrator_simpson<return_type>(integrand, a, b, w1, w2,
-                                  nINT);     // use standard Simpson plus additional points around +- w/2
-    }
-    else if constexpr(INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return adaptive_simpson_integrator<return_type>(integrand, a, b, nINT);          // use adaptive Simpson integrator
-    }
-    else if constexpr(INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl_qagp_v2<return_type>(integrand, intersections.data(), intersections.size(), nINT, false);
-    }
-    else if constexpr(INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+    return_type result = myzero<return_type>(); // initialize results
+    // integrate intervals of with 2*Delta around the features at w1, w2
+    Adapt<Integrand> adaptor_peaks(integrator_tol, integrand);
+    result += adaptor_peaks.integrate(intersections[3], intersections[4]);
+    result += adaptor_peaks.integrate(intersections[1], intersections[2]);
 
-        return_type result = myzero<return_type>(); // initialize results
-        // integrate intervals of with 2*Delta around the features at w1, w2
-        Adapt<Integrand> adaptor_peaks(integrator_tol, integrand);
-        result += adaptor_peaks.integrate(intersections[3], intersections[4]);
-        result += adaptor_peaks.integrate(intersections[1], intersections[2]);
-
-        // integrate the tails and the interval between the features, with increased tolerance
-        Adapt<Integrand> adaptor_tails(integrator_tol * 10, integrand);
-        result += adaptor_tails.integrate(intersections[0], intersections[1]);
-        result += adaptor_tails.integrate(intersections[2], intersections[3]);
-        result += adaptor_tails.integrate(intersections[4], intersections[5]);
-        if (isinf) {
-            Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, intersections[0]);
-            Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, intersections[5]);
-            result += adapt_il.integrate();
-            result += adapt_iu.integrate();
-        }
-        return result;
+    // integrate the tails and the interval between the features, with increased tolerance
+    Adapt<Integrand> adaptor_tails(integrator_tol * 10, integrand);
+    result += adaptor_tails.integrate(intersections[0], intersections[1]);
+    result += adaptor_tails.integrate(intersections[2], intersections[3]);
+    result += adaptor_tails.integrate(intersections[4], intersections[5]);
+    if (isinf) {
+        Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, intersections[0]);
+        Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, intersections[5]);
+        result += adapt_il.integrate();
+        result += adapt_iu.integrate();
     }
-    else if constexpr(INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        // define points at which to split the integrals (including lower and upper integration limits)
-        vec<paid::Domain<1>> domains;
-        domains.reserve(5);
-        vec<paid::PAIDInput<1, Integrand, int>> integrands;
-        integrands.reserve(5);
-
-        rvec intersections{a, w1 - Delta, w1 + Delta, w2 - Delta, w2 + Delta, b};
-        std::sort(intersections.begin(), intersections.end()); // sort the intersection points to get correct intervals
-
-        for (int i = 0; i < 5; i++){
-            if (intersections[i] < intersections[i+1]) {
-                paid::Domain<1> d({intersections[i]},{intersections[i+1]});
-                domains.push_back(d);
-                paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
-                integrands.push_back(paid_integrand);
-            }
-        }
-        paid::PAIDConfig config;
-        paid::PAID<1, Integrand, return_type, int, double> paid_integral(config);
-        return paid_integral.solve(integrands)[0];
-    }
-    else return 0.;
+    return result;
 }
 
 /**
@@ -499,72 +382,21 @@ template <typename Integrand> auto integrator(Integrand& integrand, double a, do
  */
 template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<double>>& intervals, const my_index_t num_intervals, const bool isinf=false) -> std::result_of_t<Integrand(double)> {
     using return_type = std::result_of_t<Integrand(double)>;
-    if constexpr (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return_type result;
-        for (my_index_t i = 0; i < num_intervals; i++) {
-            result += integrator_riemann<return_type>(integrand, nINT);
-        }
-        return result;
+    Adapt<Integrand> adaptor(integrator_tol, integrand);
+    vec<return_type> result = vec<return_type>(num_intervals);
+    assert(result.size() == num_intervals);
+    for (my_index_t i = 0; i < num_intervals; i++){
+        if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
     }
-    else if constexpr (INTEGRATOR_TYPE == 1) { // Simpson
-        return_type result;
-        for (my_index_t i = 0; i < num_intervals; i++){
-            result += integrator_simpson<return_type>(integrand, intervals[i][0], intervals[i][1], nINT);       // only use standard Simpson
-        }
-        return result;
+    if (isinf) {
+        Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, intervals[0][0]);
+        Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, intervals[num_intervals-1][1]);
+        result[0] += adapt_il.integrate();
+        result[0] += adapt_iu.integrate();
     }
-    else if constexpr (INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return_type result;
-        for (my_index_t i = 0; i < num_intervals; i++){
-            result += integrator_simpson<return_type>(integrand, intervals[i][0], intervals[i][1], nINT);        // use standard Simpson plus additional points around +- w/2
-        }
-        return result;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return_type result;
-        for (my_index_t i = 0; i < num_intervals; i++){
-            result += adaptive_simpson_integrator<return_type>(integrand, intervals[i][0], intervals[i][1], nINT);       // use adaptive Simpson integrator
-        }
-        return result;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl<return_type>(integrand, intervals, num_intervals, nINT, isinf);
-    }
-    else if constexpr (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
-        Adapt<Integrand> adaptor(integrator_tol, integrand);
-        vec<return_type> result = vec<return_type>(num_intervals);
-        assert(result.size() == num_intervals);
-        for (my_index_t i = 0; i < num_intervals; i++){
-            if (intervals[i][0] < intervals[i][1]) result[i] = adaptor.integrate(intervals[i][0], intervals[i][1]);
-        }
-        if (isinf) {
-            Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, intervals[0][0]);
-            Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, intervals[num_intervals-1][1]);
-            result[0] += adapt_il.integrate();
-            result[0] += adapt_iu.integrate();
-        }
-        assert(result.size() == num_intervals);
-        const return_type val = result.sum();
-        return val;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        vec<paid::Domain<1>> domains;
-        domains.reserve(num_intervals);
-        vec<paid::PAIDInput<1, Integrand, int>> integrands;
-        integrands.reserve(num_intervals);
-
-        for (my_index_t i = 0; i < num_intervals; i++){
-            if (intervals[i][0] < intervals[i][1]) {
-                paid::Domain<1> d({intervals[i][0]},{intervals[i][1]});
-                domains.push_back(d);
-                paid::PAIDInput<1, Integrand, int> paid_integrand{d,integrand,0};
-                integrands.push_back(paid_integrand);
-            }
-        }
-        paid::PAIDConfig config;
-        paid::PAID<1, Integrand, return_type, int, double> paid_integral(config);
-        return paid_integral.solve(integrands)[0]; // + (isinf ? integrator_gsl_qag_tails<return_type>(integrand, intervals[0][0], intervals[num_intervals-1][1], nINT) : 0.);
-    }
+    assert(result.size() == num_intervals);
+    const return_type val = result.sum();
+    return val;
 }
 
 /**
@@ -575,40 +407,11 @@ template <typename Integrand> auto integrator(Integrand& integrand, vec<vec<doub
  */
 template <typename Integrand> auto integrator_onlyTails(Integrand& integrand, const double vmin, const double vmax) -> std::result_of_t<Integrand(double)> {
     using return_type = std::result_of_t<Integrand(double)>;
-    if constexpr (INTEGRATOR_TYPE == 0) { // Riemann sum
-        return_type result;
-        assert(false);
-        return result;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 1) { // Simpson
-        return_type result;
-        assert(false);
-        return result;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 2) { // Simpson + additional points
-        return_type result;
-        assert(false);
-        return result;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 3) { // adaptive Simpson
-        return_type result;
-        assert(false);
-        return result;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 4) { // GSL
-        return integrator_gsl_qag_tails<return_type>(integrand, vmin, vmax, nINT);
-    }
-    else if constexpr (INTEGRATOR_TYPE == 5) { // adaptive Gauss-Lobatto with Kronrod extension
+    Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, vmin);
+    Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, vmax);
+    const return_type val = adapt_il.integrate() + adapt_iu.integrate();
 
-        Adapt_semiInfinitLower<Integrand> adapt_il(integrator_tol, integrand, vmin);
-        Adapt_semiInfinitUpper<Integrand> adapt_iu(integrator_tol, integrand, vmax);
-        const return_type val = adapt_il.integrate() + adapt_iu.integrate();
-
-        return val;
-    }
-    else if constexpr (INTEGRATOR_TYPE == 6) { // PAID with Clenshaw-Curtis rule
-        return integrator_gsl_qag_tails<return_type>(integrand, vmin, vmax, nINT);
-    }
+    return val;
 }
 
 

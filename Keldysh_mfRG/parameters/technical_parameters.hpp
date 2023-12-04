@@ -25,16 +25,6 @@ constexpr interpolMethod INTERPOLATION = linear_on_aux;
 //Tolerance for loop convergence
 constexpr double converged_tol = 1e-7;
 
-//Integrator type:
-// 0: Riemann sum
-// 1: Simpson
-// 2: Simpson + additional points
-// 3: adaptive Simpson
-// 4: GSL
-// 5: adaptive Gauss-Lobatto with Kronrod extension (preferred)
-// 6: PAID with Clenshaw-Curtis rule
-constexpr int INTEGRATOR_TYPE = 5;
-
 //Integrator tolerance
 inline double integrator_tol = 1e-5;
 

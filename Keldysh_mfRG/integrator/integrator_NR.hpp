@@ -9,10 +9,6 @@
 #include <limits>
 #include "../data_structures.hpp"
 
-
-
-
-
 template <typename Integrand, typename Q = std::result_of_t<Integrand(double)>>
 struct Adapt {
 public:

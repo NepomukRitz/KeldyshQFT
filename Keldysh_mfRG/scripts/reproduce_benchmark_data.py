@@ -257,9 +257,6 @@ constexpr bool VERBOSE = false;
 // Determines whether the 2D Hubbard model shall be studied instead of the SIAM
 //#define HUBBARD
 
-// Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
-//#define FERMI_POLARON_PROBLEM
-
 #define ZERO_TEMP """ + str(isZEROTEMP) + """ // Determines whether to work in the T = 0 limit
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
 #define KELDYSH_FORMALISM """ + str(isKELDYSH) + """ // 0 for Matsubara; 1 for Keldysh formalism

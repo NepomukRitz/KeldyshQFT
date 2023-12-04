@@ -15,8 +15,6 @@ constexpr bool VERBOSE = false;
 
 #define USE_ANDERSON_ACCELERATION 1
 
-// Determines whether the Fermi-polaron problem shall be studied instead of the SIAM
-//#define FERMI_POLARON_PROBLEM
 
 #define ZERO_TEMP 0  // Determines whether to work in the T = 0 limit
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
@@ -87,21 +85,7 @@ constexpr int n_spin = 1;
 #endif
 constexpr int n_spin_expanded = 2;
 
-/// Parameters for Fermi-polaron problem ///
-
-extern double glb_muc;
-extern double glb_mud;
-extern double glb_mc;
-extern double glb_md;
-extern double glb_ainv;
-
-/// Parameters for internal structure ///
-
-
-constexpr int n_in_K1 = 1;
-constexpr int n_in_K2 = 1;
-constexpr int n_in_K3 = 1;
-constexpr int n_in = 1;
+constexpr int n_in = 1;     // internal index for any additional dependence. Always trivial in this version of the code.
 
 /// fRG parameters ///
 
@@ -131,7 +115,7 @@ static_assert(KELDYSH_FORMALISM);   // This type of flow only works in Keldysh
 
 // Limits of the fRG flow
 #if REG == 4
-constexpr double Lambda_ini = 0.;// 1e4;                // NOLINT(cert-err58-cpp)
+constexpr double Lambda_ini = 0.;// 1e4;
 constexpr double Lambda_fin = 1;// 1e-4;
 #elif REG == 5
 constexpr double Lambda_ini = 5.;
@@ -164,12 +148,6 @@ const std::vector<double> U_NRG {};
 
 
 /// Set flags used in code; DO NOT TOUCH!!!///
-
-#ifdef FERMI_POLARON_PROBLEM
-constexpr bool FPP = true;
-#else
-constexpr bool FPP = false;
-#endif
 
 #if KELDYSH_FORMALISM
 constexpr bool KELDYSH = true;
