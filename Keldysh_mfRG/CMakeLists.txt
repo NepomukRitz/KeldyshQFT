@@ -12,6 +12,8 @@ option(JSC         "Build at JSC"         OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_COMPILER mpicxx)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if(WORKSTATION)
     # for DEBUG build:
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O3 -march=native -flto  -fopenmp ")
