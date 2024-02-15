@@ -131,11 +131,11 @@ void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_
 
 /**
  * Function which calculates a SOPT state. Should however toggle off the components not to be computed.
- * @tparam Q           : Data type of the state, usually comp
- * @param Psi          : State whose Vertex is to be calculated
- * @param Bubble_Object: Previously initialized bubble object.
- * @param Lambda       : Data structure-needed parameter. Should be set to 1. in all SOPT calculations
- * @param state        : State whose Vertex whould be the bare vertex already initialized
+ * @tparam Q            Data type of the state, usually comp
+ * @param Psi           State whose Vertex is to be calculated
+ * @param Bubble_Object Previously initialized bubble object.
+ * @param Lambda        Data structure-needed parameter. Should be set to 1. in all SOPT calculations
+ * @param state         State whose Vertex whould be the bare vertex already initialized
  */
 template<typename Q, class Bubble_Object>
 void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const State<Q>& bareState) {

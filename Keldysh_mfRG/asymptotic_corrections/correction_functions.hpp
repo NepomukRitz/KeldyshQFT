@@ -344,7 +344,7 @@ auto asymp_corrections_bubble(K_class k,
             default:;
         }
     }
-    assert(isfinite(res));
+    assert(my_isfinite(res));
     return res;
 }
 

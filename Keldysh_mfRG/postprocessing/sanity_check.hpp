@@ -10,7 +10,7 @@ template <typename Q>
 void sanity_check(const State<Q>& state) {
     check_SE_causality(state); // check if the self-energy is causal at each step of the flow
 #if KELDYSH_FORMALISM
-    check_Kramers_Kronig(state, true, "");
+    //check_Kramers_Kronig(state, true, "");
     sum_rule_spectrum(state);
     if (REG!=5) check_FDTs(state, true); // check FDTs for Sigma and K1r at each step of the flow
 

@@ -1,6 +1,6 @@
 #include "data_structures.hpp"
 
-auto isfinite(comp z) -> bool {
+auto my_isfinite(comp z) -> bool {
     return std::isfinite(real(z)) and std::isfinite(imag(z));
 };
 

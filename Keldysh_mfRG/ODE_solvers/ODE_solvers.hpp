@@ -356,8 +356,8 @@ namespace ode_solver_impl
         Y y_scale = (abs(result) * config.a_State + abs(dydx*stepsize) * config.a_dState_dLambda) * config.relative_error + config.absolute_error;
         maxrel_error = max_rel_err(err, y_scale); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
         if (VERBOSE) utils::print("ODE solver error estimate: ", maxrel_error, "\n");
-        //assert(isfinite(result));
-        //assert(isfinite(maxrel_error));
+        //assert(my_isfinite(result));
+        //assert(my_isfinite(maxrel_error));
     }
 
 /**

@@ -103,10 +103,10 @@ inline auto myconj(const Q x) -> Q {return conj(x);};
 template<>
 inline auto myconj<double>(const double x) -> double {return x;};
 
-auto isfinite(comp z) -> bool;
+auto my_isfinite(comp z) -> bool;
 
 template<typename T, typename std::enable_if<std::is_floating_point<T>::value>::type* = nullptr >
-auto isfinite(T z) -> bool {
+auto my_isfinite(T z) -> bool {
     return std::isfinite(z);
 };
 
@@ -434,7 +434,8 @@ vec<T> operator- (vec<T> lhs, const double& rhs) {
     lhs -= rhs; return lhs;
 }
 
-// multiplication of a double constant to comp vector
+
+/*// multiplication of a double constant to comp vector
 template <typename T>
 vec<T> operator*= (vec<T>& lhs, const double& rhs) {
 #pragma omp parallel for
@@ -450,7 +451,7 @@ vec<T> operator* (vec<T> lhs, const double& rhs) {
 template <typename T>
 vec<T> operator* (const double& rhs, vec<T> lhs) {
     lhs *= rhs; return lhs;
-}
+}*/
 
 
 // multiplication of a comp constant to double vector
@@ -643,17 +644,17 @@ struct IndicesSymmetryTransformations: VertexInput{
 
 
 struct fRG_config {
-    int nODE_;
-    double epsODE_abs_;
-    double epsODE_rel_;
-    double U = 1.;           // Impurity on-site interaction strength
-    double T = 1.;           // temperature
-    double Gamma = 1.;       // hybridization strength
-    double epsilon = -0.5 * U;     // Impurity on-site energy
-    bool save_intermediateResults = false;
-    int nloops=1;
-    int number_of_nodes=1;
-};
+    int nODE_;                               ///< Maximal number of steps that the ODE solver shall do minus number of checkpoints.
+    double epsODE_abs_;                      ///< absolute accuracy of the ODE solver
+    double epsODE_rel_;                      ///< relative accuracy of the ODE solver
+    double U = 1.;                           ///< impurity on-site interaction strength. Recommendation: set to 1.0
+    double T = 1.;                           ///< temperature
+    double Gamma = 1.;                       ///< hybridization strength
+    double epsilon = -0.5 * U;               ///< Impurity on-site energy
+    bool save_intermediateResults = false;   ///< determines whether intermediate results during individual steps of the ODE solver shall be saved or not.
+    int nloops=1;                            ///< maximal loop order to be computed during the fRG flow
+    int number_of_nodes=1;                   ///< number of nodes to be used during the computation
+};                                           ///< config struct to specify parameters need for an fRG run.
 
 
 

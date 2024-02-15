@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
 ## Only one of these option can ever be set to ON! This is automatically done by the compile_cluster.sh script.
-option(WORKSTATION "Build on workstation" ON)
+option(WORKSTATION "Build on workstation" OFF)
 option(ASC         "Build on ASC cluster" OFF)
 option(KCS         "Build on KCS cluster" OFF)
 option(SuperMUC    "Build on SuperMUC"    OFF)
 option(JSC         "Build at JSC"         OFF)
+
+option(MACBOOK     "Build on MacBook"     ON)
 
 
 ## Set the C++ standard, the compiler, compiler optimization options (O0 - off, O3 - best) and add -fopenmp
@@ -113,4 +115,59 @@ elseif(JSC)
     target_link_libraries(Keldysh_mfRG -Wl,-static -L/p/software/juwelsbooster/stages/2022/software/FFTW/3.3.10-iompi-2021b/lib -lfftw3f -lfftw3 -lfftw3l -lm -Wl,-dy) # FFTW_LIB
     target_link_libraries(Keldysh_mfRG -L/p/software/juwelsbooster/stages/2022/software/GSL/2.7-GCCcore-11.2.0/lib -lgsl -lgslcblas) # GSL
     target_link_libraries(Keldysh_mfRG -L/p/software/juwelsbooster/stages/2022/software/Boost/1.78.0-GCCcore-11.2.0/lib$) # BOOST
+elseif(MACBOOK)
+    include_directories(
+            /usr/local/include/
+            /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/
+            /opt/homebrew/Cellar/gsl/2.7.1/include
+            /opt/homebrew/Cellar/hdf5/1.14.3/include
+            /opt/homebrew/Cellar/boost/1.84.0/include
+    )
+    target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/hdf5/1.14.3/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
+
+    target_link_libraries(Keldysh_postproc -L/opt/homebrew/Cellar/hdf5/1.14.3/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(Keldysh_postproc -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
 endif()
+
+
+# Documentation
+find_package(Doxygen REQUIRED)
+get_target_property(KELDYSH_MFRG_PUBLIC_HEADER_DIR Keldysh_mfRG INTERFACE_INCLUDE_DIRECTORIES)
+file(GLOB_RECURSE KELDYSH_MFRG_PUBLIC_HEADERS ${KELDYSH_MFRG_PUBLIC_HEADER_DIR}/*.h)
+set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR})
+set(DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/../Documentation)
+#This will be the main output of our command
+set(DOXYGEN_INDEX_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Documentation/html/index.html)
+set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
+set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+#Replace variables inside @@ with the current values
+configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
+
+file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}) #Doxygen won't create this for us
+
+add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
+                   DEPENDS ${KELDYSH_MFRG_PUBLIC_HEADERS}
+                   COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                   MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
+                   COMMENT "Generating docs")
+
+add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
+
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+find_package(Sphinx REQUIRED)
+
+set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/Documentation)
+set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/../Documentation/sphinx)
+
+add_custom_target(Sphinx ALL
+                  COMMAND
+                  ${SPHINX_EXECUTABLE} -b html
+                  # Tell Breathe where to find the Doxygen output
+                  -Dbreathe_projects.KeldyshDiag=${DOXYGEN_OUTPUT_DIR}/xml/
+                  ${SPHINX_SOURCE} ${SPHINX_BUILD}
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                  COMMENT "Generating documentation with Sphinx")

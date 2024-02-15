@@ -124,7 +124,7 @@ public:
             }
         }
 
-        assert(isfinite(ans) == true);
+        assert(my_isfinite(ans) == true);
         return ans;
     }
 
@@ -145,7 +145,7 @@ public:
         if constexpr(PARTICLE_HOLE_SYMMETRY) {
             result *= -1.;     // -1=glb_i^2; needed for particle-hole symmetry in Matsubara (we only save the imaginary part of self-energy and propagators)
         }
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
     }
 
@@ -180,7 +180,7 @@ public:
                 break;
             default:;
         }
-        assert(isfinite(Pival) == true);
+        assert(my_isfinite(Pival) == true);
         return Pival;
     }
 

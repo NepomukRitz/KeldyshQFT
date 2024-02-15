@@ -65,7 +65,7 @@ auto correctionFunctionBubbleAT_REG2_Matsubara_PHS(double w, double vmin, double
             val = 1. / w * log(x);
         }
     }
-    isfinite(val);
+    my_isfinite(val);
     return val;
 }
 
@@ -90,7 +90,7 @@ auto correctionFunctionBubbleAT_REG2_Matsubara_NoPHS(double w, double vmin, doub
                           (vmax + w / 2. + glb_i * eps_p + Delta)));
         }
     }
-    isfinite(val);
+    my_isfinite(val);
     return val;
 }
 template <>
@@ -335,7 +335,7 @@ auto correctionFunctionBubbleAT_REG3_Matsubara_PHS(double w, double vmin, double
         val = correctionFunctionBubble_REG3_Matsubara_PHS_nondiff<Q>(w, vmax, Lambda, Delta) + correctionFunctionBubble_REG3_Matsubara_PHS_nondiff<Q>(w, -vmin, Lambda, Delta);
     }
 
-    isfinite(val);
+    my_isfinite(val);
     return val;
 }
 
@@ -364,7 +364,7 @@ auto correctionFunctionBubbleAT_REG4_Matsubara_PHS(double w, double vmin, double
         val = Lambda * Lambda * correctionFunctionBubble_REG4_Matsubara_PHS<Q>(w, vmin, vmax, Delta);
     }
 
-    isfinite(val);
+    my_isfinite(val);
     return val;
 }
 

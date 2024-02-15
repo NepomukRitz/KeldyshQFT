@@ -81,6 +81,7 @@ public:
         std::cout << "Relative difference between closing with S^K or 2S^lesser " << rel_diff << "\n";
     }
 
+    
     double compute_filling_oneshot();
     double compute_Hartree_term(double convergence_threshold = 1e-12);
     double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12, bool Friedel_check = true,

@@ -1290,7 +1290,7 @@ template <typename Q> template<char ch_bubble, bool r_irred>auto fullvert<Q>::le
         }
     }
 #endif
-    assert(isfinite(K1_K2b));
+    assert(my_isfinite(K1_K2b));
     return gamma0 + K1_K2b;
 }
 template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
@@ -1328,7 +1328,7 @@ template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::l
         }
     }
 #endif
-    assert(isfinite(K1_K2b));
+    assert(my_isfinite(K1_K2b));
     return gamma0 + K1_K2b;
 }
 
@@ -1367,7 +1367,7 @@ template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::r
         }
     }
 #endif
-    assert(isfinite(K1_K2));
+    assert(my_isfinite(K1_K2));
     return gamma0 + K1_K2;
 }
 template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q {
@@ -1405,7 +1405,7 @@ template <typename Q> template<char ch_bubble, bool r_irred> auto fullvert<Q>::r
         }
     }
 #endif
-    assert(isfinite(K1_K2));
+    assert(my_isfinite(K1_K2));
     return gamma0 + K1_K2;
 }
 
@@ -1414,7 +1414,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
             gamma_Rb = gammaRb<ch_bubble>(input);
-            assert(isfinite(gamma_Rb));
+            assert(my_isfinite(gamma_Rb));
         }
         return gamma_Rb;
     }
@@ -1423,7 +1423,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     else if constexpr(ch_bubble == 'p'){ K2_K3 = pvertex.left_diff_bare(input, pvertex); }
     else if constexpr(ch_bubble == 't'){ K2_K3 = tvertex.left_diff_bare(input, avertex); }
     else assert(false);
-    assert(isfinite(K2_K3));
+    assert(my_isfinite(K2_K3));
     if constexpr(only_channel_r)
         return K2_K3;
 
@@ -1435,7 +1435,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
             gamma_Rb = gammaRb<ch_bubble>(input, right_vertex);
-            assert(isfinite(gamma_Rb));
+            assert(my_isfinite(gamma_Rb));
         }
         return gamma_Rb;
     }
@@ -1445,7 +1445,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     else if constexpr(ch_bubble == 't'){ K2_K3 = tvertex.left_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex); }
     else assert(false);
 
-    assert(isfinite(K2_K3));
+    assert(my_isfinite(K2_K3));
     if constexpr(only_channel_r)
         return K2_K3;
 
@@ -1458,7 +1458,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
             gamma_Rb = gammaRb<ch_bubble>(input);
-            assert(isfinite(gamma_Rb));
+            assert(my_isfinite(gamma_Rb));
         }
         return gamma_Rb;
     }
@@ -1467,7 +1467,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     else if constexpr(ch_bubble == 'p'){ K2b_K3 = pvertex.right_diff_bare(input, pvertex); }
     else if constexpr(ch_bubble == 't'){ K2b_K3 = tvertex.right_diff_bare(input, avertex); }
     else assert(false);
-    assert(isfinite(K2b_K3));
+    assert(my_isfinite(K2b_K3));
     if constexpr (only_channel_r)
         return K2b_K3;
 
@@ -1479,7 +1479,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
             gamma_Rb = gammaRb<ch_bubble>(input, right_vertex);
-            assert(isfinite(gamma_Rb));
+            assert(my_isfinite(gamma_Rb));
         }
         return gamma_Rb;
     }
@@ -1489,7 +1489,7 @@ template <typename Q> template<char ch_bubble, bool r_irred, bool only_channel_r
     else if constexpr(ch_bubble == 't'){ K2b_K3 = tvertex.right_diff_bare(input, avertex, right_vertex.tvertex, right_vertex.avertex); }
     else assert(false);
 
-    assert(isfinite(K2b_K3));
+    assert(my_isfinite(K2b_K3));
     if constexpr(only_channel_r)
         return K2b_K3;
 
@@ -1652,7 +1652,7 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
             const result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble,result_type>(input);
-            if constexpr(std::is_same_v<Q,result_type>) {assert(isfinite(gamma_Rb));} else {assert((gamma_Rb.allFinite()));}
+            if constexpr(std::is_same_v<Q,result_type>) {assert(my_isfinite(gamma_Rb));} else {assert((gamma_Rb.allFinite()));}
             return gamma_Rb;
         }
     }
@@ -1673,7 +1673,7 @@ template <typename Q> template<char ch_bubble, typename result_type, bool r_irre
     if constexpr(r_irred) {
         if (MAX_DIAG_CLASS >= 2) {
             result_type gamma_Rb = gammaRb_symmetry_expanded<ch_bubble, result_type>(input);
-            if constexpr(std::is_same_v<Q,result_type>) {assert(isfinite(gamma_Rb));} else {assert(gamma_Rb.allFinite());}
+            if constexpr(std::is_same_v<Q,result_type>) {assert(my_isfinite(gamma_Rb));} else {assert(gamma_Rb.allFinite());}
             return gamma_Rb;
         }
     }

@@ -34,7 +34,7 @@ static auto interpolate_nearest1D(const double& x, const Grid& frequencies, cons
 
     Q result = val(index);
 
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 /**
@@ -58,7 +58,7 @@ static auto interpolate_nearest2D(const double& x, const double& y,
 
     Q result = interpolate_nearest1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index  , i);});
 
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -86,7 +86,7 @@ static auto interpolate_nearest3D(const double& x, const double& y, const double
 
     Q result = interpolate_nearest2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index  , i, j);});
 
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -114,7 +114,7 @@ static auto interpolate_lin1D(const double& x, const Grid& frequencies, const st
     Q f2 = val(index + 1);
 
     Q result = ((1. - xd) * f1 + xd * f2);
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -145,7 +145,7 @@ static auto interpolate_lin2D(const double& x, const double& y,
     Q f2 = interpolate_lin1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index+1, i);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -179,7 +179,7 @@ static auto interpolate_lin3D(const double& x, const double& y, const double& z,
     Q f2 = interpolate_lin2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -208,7 +208,7 @@ inline auto interpolate_lin_on_aux1D(const double& x, const Grid& frequencies, c
     const Q f2 = val(index + 1);
 
     const Q result = ((1. - xd) * f1 + xd * f2);
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -240,7 +240,7 @@ inline auto interpolate_lin_on_aux2D(const double& x, const double& y,
     Q f2 = interpolate_lin_on_aux1D<Q>(y, yfrequencies, [&index, &val](int i) -> Q {return val(index+1, i);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -275,7 +275,7 @@ inline auto interpolate_lin_on_aux3D(const double& x, const double& y, const dou
     Q f2 = interpolate_lin_on_aux2D<Q>(y, z, yfrequencies, zfrequencies, [&index, &val](int i, int j) -> Q {return val(index+1, i, j);});
 
     Q result = ((1. - xd) * f1 + xd * f2);
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -310,7 +310,7 @@ inline auto interpolate_sloppycubic1D(const double& x, const Grid& xfrequencies,
                 +(t - x0)*(t - x1)*(t - x3)/((x2-x0)*(x2-x1)*(x2-x3)) * f2
                 +(t - x0)*(t - x1)*(t - x2)/((x3-x0)*(x3-x1)*(x3-x2)) * f3);
 
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 
 
@@ -349,7 +349,7 @@ inline auto interpolate_sloppycubic2D(const double x, const double y, const Grid
                 +(t - x0)*(t - x1)*(t - x3)/((x2-x0)*(x2-x1)*(x2-x3)) * f2
                 +(t - x0)*(t - x1)*(t - x2)/((x3-x0)*(x3-x1)*(x3-x2)) * f3);
 
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 
@@ -386,7 +386,7 @@ inline auto interpolate_sloppycubic3D(const double& x, const double& y, const do
                 +(t - x0)*(t - x1)*(t - x3)/((x2-x0)*(x2-x1)*(x2-x3)) * f2
                 +(t - x0)*(t - x1)*(t - x2)/((x3-x0)*(x3-x1)*(x3-x2)) * f3);
 
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 

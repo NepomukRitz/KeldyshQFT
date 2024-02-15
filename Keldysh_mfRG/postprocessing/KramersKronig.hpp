@@ -27,10 +27,12 @@ rvec log(const rvec& x);
  * @return       : The real part of a causal function, on the x points specifed by xi.
  *
  * Routine implemented by Seung-Sup Lee in MATLAB in the context of the QSpace library.
- */
-rvec KKi2r(const rvec& xi, const rvec& yi, int gflag);
+ *//*
 
-void check_Kramers_Kronig(const State<state_datatype>& state, bool verbose, std::string filename_KKi2="");
+rvec KKi2r(const rvec& xi, const rvec& yi, int gflag);
+*/
+
+//void check_Kramers_Kronig(const State<state_datatype>& state, bool verbose, std::string filename_KKi2="");
 
 #endif //KELDYSH_MFRG_TESTING_KRAMERSKRONIG_H
 

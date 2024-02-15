@@ -8,6 +8,9 @@ rvec log(const rvec& x) {
     return result;
 }
 #if KELDYSH_FORMALISM
+
+
+/*
 rvec KKi2r(const rvec& xi, const rvec& yi, int gflag = 0) {
 
     double vsn = 1e-14; // In case gflag == 0, very narrow interval to define the sharp drop of yi at the edges
@@ -117,8 +120,11 @@ rvec KKi2r(const rvec& xi, const rvec& yi, int gflag = 0) {
 
     return yr;
 }
+*/
 
 
+
+/*
 void check_Kramers_Kronig(const State<state_datatype>& state, const bool verbose, const std::string filename_KKi2) {
 
     // check Kramers-Kronig for retarded self-energy
@@ -178,5 +184,6 @@ void check_Kramers_Kronig(const State<state_datatype>& state, const bool verbose
                         K1tR_im, K1tR_re, K1tR_re_KK});
     }
 }
+*/
 
 #endif

@@ -270,7 +270,7 @@ public:
 
             if constexpr(std::is_same_v<result_type, Q>) {
                 const Q result = values * weights;
-                assert(isfinite(result));
+                assert(my_isfinite(result));
                 return result;
             }
             else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){
@@ -287,7 +287,7 @@ public:
 
 #endif
 
-            //assert(isfinite(result));
+            //assert(my_isfinite(result));
             //return result;
 
         } else { //asymptotic value
@@ -478,7 +478,7 @@ public:
 
 #endif
 
-            //assert(isfinite(result));
+            //assert(my_isfinite(result));
             //return result;
 
         } else { //asymptotic value

@@ -13,7 +13,7 @@ void FrequencyGrid<eliasGrid>::initialize_grid() {
     for(int i=0; i<number_of_gridpoints; ++i) {
         W = t_lower + i * spacing_auxiliary_gridpoint;
         all_frequencies[i] = frequency_from_t(W);
-        assert(isfinite(all_frequencies[i]));
+        assert(my_isfinite(all_frequencies[i]));
         auxiliary_grid[i]= W;
     }
 

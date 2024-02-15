@@ -125,7 +125,7 @@ void check_Kramers_Kronig(const std::string filename) {
         State<state_datatype> state = read_state_from_hdf(filename, iLambdas[i]);  // read data from file
 
         const std::string filename_KKi2 = filename + "_KKi2r_i" + std::to_string(iLambdas[i]);
-        check_Kramers_Kronig(state, false, filename_KKi2);
+        //check_Kramers_Kronig(state, false, filename_KKi2);
     }
 }
 

@@ -467,7 +467,7 @@ auto rvert<Q>::read_symmetryreduced_rvert(const IndicesSymmetryTransformations& 
 
     if ((KELDYSH || !PARTICLE_HOLE_SYMMETRY) && indices.conjugate) value = myconj(value);  // apply complex conjugation if T_C has been used
 
-    assert(isfinite(value));
+    assert(my_isfinite(value));
     return indices.prefactor * value;
 }
 

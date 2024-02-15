@@ -51,13 +51,13 @@ public:
 
 
     /**
-     * Dressed propagator for non-flowing calculations, i,e, no differential SelfEnergy is needed and, hence, is set to zero. 
+     * Dressed propagator for non-flowing calculations, i,e, no differential SelfEnergy is needed and is set to the undifferentiated self-energy.
      * @param Lambda_in : Input scale
      * @param self_in   : SelfEnergy
      * @param type_in   : Type of propagator being handled
      */
     Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, char type_in, const fRG_config& config)
-            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(SelfEnergy<Q> (Lambda_in, config)), type(type_in),
+            :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(self_in), type(type_in),
             epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
 
     /**
@@ -605,12 +605,12 @@ template <typename Q>
 auto Propagator<Q>::G0M_inv_SIAM(const freqType v, const int i_in) const -> Q {
     if constexpr (PARTICLE_HOLE_SYMMETRY) {
         const Q G0inv = v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) + Gamma * 0.5 * sign(v);
-        assert(isfinite(G0inv));
+        assert(my_isfinite(G0inv));
         return G0inv;
     }
     else {
         const Q G0inv =(v * ((!KELDYSH and !ZERO_T) ? M_PI*T : 1.) + Gamma * 0.5 * sign(v)) * glb_i - epsilon ;
-        assert(isfinite(G0inv));
+        assert(my_isfinite(G0inv));
         return G0inv;
     }
 }
@@ -689,7 +689,7 @@ auto Propagator<Q>::GM_REG2(const freqType v, const int i_in) const -> Q {
         const auto sin = sign(v);
         const Q res_inv = ( G0inv + Lambda*0.5*sign(v) - selfenergy.valsmooth(0, v, i_in) );
         const Q res = 1./( G0inv + Lambda*0.5*sign(v) - selfenergy.valsmooth(0, v, i_in) );
-        assert(isfinite(res));
+        assert(my_isfinite(res));
         return res;
     }
     else {
@@ -718,7 +718,7 @@ template <typename Q>
 auto Propagator<Q>::GR_REG3(const freqType v, const int i_in) const -> Q {
     const Q reg = v / (v + glb_i*Lambda);
     const Q res = reg / ( G0R_inv(v, i_in) - reg * selfenergy.valsmooth(0, v, i_in) );
-    assert(isfinite(res));
+    assert(my_isfinite(res));
     return res;
 }
 
@@ -780,7 +780,7 @@ auto Propagator<Q>::SM_REG4(const freqType v, const int i_in) const -> Q {
     const Q G0_inv = G0M_inv(v, i_in);
     const Q G = 1. /( G0_inv - reg * selfenergy.valsmooth(0, v, i_in) );
     const Q val = G0_inv * G * G;
-    assert(isfinite(val));
+    assert(my_isfinite(val));
     return val;
 }
 

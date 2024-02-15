@@ -463,7 +463,7 @@ result_type Spline<Q,rank,3,pos_first_freq_index,DataContainer>::interpolate_spl
     //    }
     //}
 //
-    //assert(isfinite(result));
+    //assert(my_isfinite(result));
     //return result;
 }
 
