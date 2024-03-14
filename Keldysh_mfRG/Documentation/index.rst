@@ -18,6 +18,7 @@ TODO: Add introductory paragraph
    algorithms
    postprocessing
    io
+   miscellaneous
 
 
 
