@@ -13,3 +13,4 @@ Project_Default.xml
 Keldysh_mfRG/Documentation/*
 
 !*.rst
+.DS_Store
