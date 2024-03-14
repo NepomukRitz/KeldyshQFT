@@ -11,3 +11,5 @@ Project_Default.xml
 *.aux
 *.synctex.gz
 Keldysh_mfRG/Documentation/*
+
+!*.rst
