@@ -131,7 +131,7 @@ void check_Kramers_Kronig(const std::string filename) {
 
 #endif
 
-void compute_proprocessed_susceptibilities(const std::string& filename) {
+void compute_postprocessed_susceptibilities(const std::string& filename) {
     int Lambda_it_max = -1;
     check_convergence_hdf(filename, Lambda_it_max);
 

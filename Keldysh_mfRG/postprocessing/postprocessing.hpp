@@ -130,7 +130,7 @@ void check_Kramers_Kronig(std::string filename);
  *     This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0   (zero K2' or K3)
  * @param filename
  */
-void compute_proprocessed_susceptibilities(const std::string& filename);
+void compute_postprocessed_susceptibilities(const std::string& filename);
 void compute_proprocessed_susceptibilities_PT2(const std::string& filename);
 
 

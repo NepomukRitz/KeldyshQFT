@@ -18,7 +18,7 @@ constexpr bool VERBOSE = false;
 
 #define ZERO_TEMP 0  // Determines whether to work in the T = 0 limit
 // Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
-#define KELDYSH_FORMALISM 1 // 0 for Matsubara; 1 for Keldysh formalism
+#define KELDYSH_FORMALISM 1     ///< Determines whether calculations shall be done in the Keldysh or Matsubara formalism.\n 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
 #define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
 #if KELDYSH_FORMALISM or not ZERO_TEMP
