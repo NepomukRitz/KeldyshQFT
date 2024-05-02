@@ -1,7 +1,7 @@
 var searchData=
 [
   ['data_0',['data',['../d5/d5f/classdataContainerBase.html#ae51f02939594c99fc04ce4e04abe5412',1,'dataContainerBase']]],
-  ['data_5fdir_1',['data_dir',['../d1/df8/master__parameters_8hpp.html#a1b384aea75d8da97c90c700d40dc19d2',1,'data_dir:&#160;master_parameters.hpp'],['../d9/d59/namespacegetIntegrand.html#a44bc6399a5c880047b7d513723da36d0',1,'getIntegrand.data_dir']]],
+  ['data_5fdir_1',['data_dir',['../d1/df8/master__parameters_8hpp.html#a1b384aea75d8da97c90c700d40dc19d2',1,'master_parameters.hpp']]],
   ['delta_2',['Delta',['../de/d96/classBubbleFunctionCalculator.html#ac29d93d3ebecea159b546ffffce9677e',1,'BubbleFunctionCalculator::Delta'],['../df/dc8/classLoopCalculator.html#a701715e00d5f97a33a1cb3546077d220',1,'LoopCalculator::Delta'],['../d2/d75/classHartree__Solver.html#a87bd118da5e6996a60516a70d5a4ab33',1,'Hartree_Solver::Delta']]],
   ['delta_5ffactor_3',['Delta_factor',['../df/d83/classFrequencyGrid_3_01eliasGrid_01_4.html#a80bd45202ca342a5ba47bea81ba4c2d6',1,'FrequencyGrid&lt; eliasGrid &gt;']]],
   ['delta_5ffactor_5fk1_4',['Delta_factor_K1',['../d3/d3c/frequency__parameters_8hpp.html#a6ea138cf1b23526993fe12f3add4ff35',1,'frequency_parameters.hpp']]],

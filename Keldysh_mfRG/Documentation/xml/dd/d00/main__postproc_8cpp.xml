@@ -1111,7 +1111,7 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" compoundref="d9/d3a/technical__parameters_8hpp" startline="13">MPI_FLAG</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d9/dae/postprocessing_8c_09_09_1ac32b68835cd73d7ac41aa26ba7c2d908" compoundref="d9/dae/postprocessing_8c_09_09" startline="258" endline="293">save_slices_through_fullvertex</references>
+        <references refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908">save_slices_through_fullvertex</references>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -1172,8 +1172,8 @@
 <codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;parquetInit4_U_over_Delta=1.570796_T=&quot;</highlight><highlight class="normal"><sp/>+<sp/>T<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;_eVg=0.000000_n1=401_n2=201_n3=51_version1_final.h5&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string<sp/>filename<sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">directory</ref><sp/>+<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file</ref>;</highlight></codeline>
 <codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//utils::print(&quot;Saving<sp/>slices<sp/>for<sp/>T<sp/>=<sp/>&quot;<sp/>+<sp/>T,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d9/dae/postprocessing_8c_09_09_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(filename,<sp/>0);</highlight></codeline>
-<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d9/dae/postprocessing_8c_09_09_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(filename,<sp/>1);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(filename,<sp/>0);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(filename,<sp/>1);</highlight></codeline>
 <codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*</highlight></codeline>
 <codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/>std::string<sp/>parquet_Us_K3_51[]<sp/>=<sp/>{&quot;0.100000&quot;,<sp/>&quot;0.157080&quot;,<sp/>&quot;0.200000&quot;,<sp/>&quot;0.300000&quot;,<sp/>&quot;0.314159&quot;,<sp/>&quot;0.400000&quot;,</highlight></codeline>

@@ -681,11 +681,6 @@
         <location file="utilities/hdf5_routines.c++" line="32" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="32" bodyend="36"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1a6e757d17617cdaaf38994b369230dc80" compoundref="de/d62/getIntegrand_8py" startline="95" endline="118">getIntegrand.compile_get_integrand_dGamma_1loop_fromFlow_Cpp</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1aece1226a1eb20ceb7426b8bb01dda455" compoundref="de/d62/getIntegrand_8py" startline="143" endline="166">getIntegrand.compile_get_integrand_dGammaC_Cpp</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1a0ba3135824925065934f234ef8423d9a" compoundref="de/d62/getIntegrand_8py" startline="119" endline="142">getIntegrand.compile_get_integrand_dGammaL_Cpp</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1acb6f69b0cb389468600d89e46b40452f" compoundref="de/d62/getIntegrand_8py" startline="43" endline="86">getIntegrand.compile_stuff</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1ab7eba5c643c81ae7aff5539865fd275d" compoundref="de/d62/getIntegrand_8py" startline="28" endline="42">getIntegrand.plot_integrand_alli2</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1acdf68c5ce2f557fb2d456a799f7d6358" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="217" endline="256">read_Lambdas_from_hdf</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/d4f/hdf5__routines_8c_09_09_1a77fed1ad1e5982cb30b9631a74ebf278" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -769,18 +764,9 @@
 <para>Write used parameters for documentation purpose</para>
         </inbodydescription>
         <location file="utilities/hdf5_routines.c++" line="61" column="7" bodyfile="utilities/hdf5_routines.c++" bodystart="61" bodyend="191"/>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a0fc9c91437f68ed7a4dbd7f265f9715f" compoundref="d9/dae/postprocessing_8c_09_09" startline="296" endline="411">check_FDTs_for_slices_through_fullvertex</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a4c7785e12898454e66547fd785ea92e8" compoundref="d9/dae/postprocessing_8c_09_09" startline="106" endline="130">check_Kramers_Kronig</referencedby>
         <referencedby refid="d8/dca/causality__FDT__checks_8c_09_09_1aa63e0266511b6c4db70efa67918ee795" compoundref="d8/dca/causality__FDT__checks_8c_09_09" startline="3" endline="13">compare_flow_with_FDTs</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a532f006939433b3802b9c407043b3add" compoundref="d9/dae/postprocessing_8c_09_09" startline="3" endline="62">compute_Phi_tilde</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ad7795529aa43acc4d8c7b94cdcd493db" compoundref="d9/dae/postprocessing_8c_09_09" startline="134" endline="176">compute_postprocessed_susceptibilities</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1af1e2a562265def3e9c99c1e0b2d0fb3b" compoundref="d9/dae/postprocessing_8c_09_09" startline="179" endline="256">compute_proprocessed_susceptibilities_PT2</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="127" endline="184">n_loop_flow</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ac32b68835cd73d7ac41aa26ba7c2d908" compoundref="d9/dae/postprocessing_8c_09_09" startline="258" endline="293">save_slices_through_fullvertex</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a3139cb5b36b90494e2eb69cf57c014b9" compoundref="d9/dae/postprocessing_8c_09_09" startline="65" endline="89">sum_rule_K1tK</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1af51195eb9f07aad71215618c96d20a4e" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="345" endline="389">test_read_write_state_hdf</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -807,16 +793,8 @@
         <references refid="d5/de4/hdf5__routines_8hpp_1a31b4dbbf41f3faf7898b472c1035b558">IS_CONVERGED</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1a5f6a575ad9a575289e8d4ec6a609f062">PARAM_LIST</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1ae9d31380262b6d4fa5fcd47f21d5419e" compoundref="d5/de4/hdf5__routines_8hpp" startline="488" endline="496">read_from_hdf</references>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a0fc9c91437f68ed7a4dbd7f265f9715f" compoundref="d9/dae/postprocessing_8c_09_09" startline="296" endline="411">check_FDTs_for_slices_through_fullvertex</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a4c7785e12898454e66547fd785ea92e8" compoundref="d9/dae/postprocessing_8c_09_09" startline="106" endline="130">check_Kramers_Kronig</referencedby>
         <referencedby refid="d8/dca/causality__FDT__checks_8c_09_09_1aa63e0266511b6c4db70efa67918ee795" compoundref="d8/dca/causality__FDT__checks_8c_09_09" startline="3" endline="13">compare_flow_with_FDTs</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a532f006939433b3802b9c407043b3add" compoundref="d9/dae/postprocessing_8c_09_09" startline="3" endline="62">compute_Phi_tilde</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ad7795529aa43acc4d8c7b94cdcd493db" compoundref="d9/dae/postprocessing_8c_09_09" startline="134" endline="176">compute_postprocessed_susceptibilities</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1af1e2a562265def3e9c99c1e0b2d0fb3b" compoundref="d9/dae/postprocessing_8c_09_09" startline="179" endline="256">compute_proprocessed_susceptibilities_PT2</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ac32b68835cd73d7ac41aa26ba7c2d908" compoundref="d9/dae/postprocessing_8c_09_09" startline="258" endline="293">save_slices_through_fullvertex</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a3139cb5b36b90494e2eb69cf57c014b9" compoundref="d9/dae/postprocessing_8c_09_09" startline="65" endline="89">sum_rule_K1tK</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/d4f/hdf5__routines_8c_09_09_1acdf68c5ce2f557fb2d456a799f7d6358" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref></type>
@@ -851,11 +829,8 @@
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1a8e761cba4ac842504c408dfe71037413" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="16" endline="20">open_hdf_file_readOnly</references>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a4c7785e12898454e66547fd785ea92e8" compoundref="d9/dae/postprocessing_8c_09_09" startline="106" endline="130">check_Kramers_Kronig</referencedby>
         <referencedby refid="d8/dca/causality__FDT__checks_8c_09_09_1aa63e0266511b6c4db70efa67918ee795" compoundref="d8/dca/causality__FDT__checks_8c_09_09" startline="3" endline="13">compare_flow_with_FDTs</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a532f006939433b3802b9c407043b3add" compoundref="d9/dae/postprocessing_8c_09_09" startline="3" endline="62">compute_Phi_tilde</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a3139cb5b36b90494e2eb69cf57c014b9" compoundref="d9/dae/postprocessing_8c_09_09" startline="65" endline="89">sum_rule_K1tK</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/d4f/hdf5__routines_8c_09_09_1a348299423b50e44dd3a672875fdeb1a5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>

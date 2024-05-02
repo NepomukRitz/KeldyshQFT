@@ -955,11 +955,11 @@
         <name>get_freqs_w</name>
         <qualifiedname>bufferFrequencyGrid::get_freqs_w</qualifiedname>
         <param>
-          <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, num &gt; &amp;</type>
+          <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">num</ref> &gt; &amp;</type>
           <declname>freqs</declname>
         </param>
         <param>
-          <type>std::array&lt; <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref>, num &gt; &amp;</type>
+          <type>std::array&lt; <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">num</ref> &gt; &amp;</type>
           <declname>i_freqs</declname>
         </param>
         <briefdescription>

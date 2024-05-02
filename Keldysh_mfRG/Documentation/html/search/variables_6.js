@@ -5,8 +5,7 @@ var searchData=
   ['g1_2',['g1',['../d9/ddc/classIntegrandBubble.html#a2028b542d2b515823703fdfabf3d5823',1,'IntegrandBubble']]],
   ['g2_3',['g2',['../d9/ddc/classIntegrandBubble.html#ad43ecf136d8faf157e98f2ac036dd6ba',1,'IntegrandBubble']]],
   ['gamma_4',['Gamma',['../d2/d34/classPropagator.html#aa1d72170fcc752ac7164f4cbb31ef281',1,'Propagator::Gamma'],['../da/da0/structfRG__config.html#a424d2ec952ccad62dca3f2333a614541',1,'fRG_config::Gamma']]],
-  ['gamma0_5fis_5fleft_5',['Gamma0_is_left',['../d9/d59/namespacegetIntegrand.html#a52a6d4326cb90b38ca4519373a78956b',1,'getIntegrand']]],
-  ['glb_5fmu_6',['glb_mu',['../d1/df8/master__parameters_8hpp.html#a18e4694bb937d4a6e8e55f3f795518a0',1,'master_parameters.hpp']]],
-  ['glb_5fnumber_5fof_5fkeldysh_5fcomponents_5fbubble_7',['glb_number_of_Keldysh_components_bubble',['../d2/d1a/Keldysh__symmetries_8hpp.html#a2f24dbf3af29d35bd2122d63b4c29441',1,'Keldysh_symmetries.hpp']]],
-  ['glb_5fv_8',['glb_V',['../d1/df8/master__parameters_8hpp.html#a8229a287d8546a0bdb5c5d19e2cd3d23',1,'master_parameters.hpp']]]
+  ['glb_5fmu_5',['glb_mu',['../d1/df8/master__parameters_8hpp.html#a18e4694bb937d4a6e8e55f3f795518a0',1,'master_parameters.hpp']]],
+  ['glb_5fnumber_5fof_5fkeldysh_5fcomponents_5fbubble_6',['glb_number_of_Keldysh_components_bubble',['../d2/d1a/Keldysh__symmetries_8hpp.html#a2f24dbf3af29d35bd2122d63b4c29441',1,'Keldysh_symmetries.hpp']]],
+  ['glb_5fv_7',['glb_V',['../d1/df8/master__parameters_8hpp.html#a8229a287d8546a0bdb5c5d19e2cd3d23',1,'master_parameters.hpp']]]
 ];

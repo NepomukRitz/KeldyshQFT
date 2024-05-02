@@ -456,16 +456,16 @@
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="17" relation="include">
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
         </childnode>
         <childnode refid="16" relation="include">
         </childnode>
-        <childnode refid="18" relation="include">
-        </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
       </node>
-      <node id="21">
+      <node id="19">
         <label>loop_corrections.c++</label>
         <link refid="d7/df0/loop__corrections_8c_09_09"/>
       </node>
@@ -474,7 +474,7 @@
         <link refid="d0/d0e/loop__corrections_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="21" relation="include">
+        <childnode refid="19" relation="include">
         </childnode>
       </node>
       <node id="3">
@@ -482,7 +482,7 @@
         <link refid="d0/dac/bubble_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="16" relation="include">
+        <childnode refid="14" relation="include">
         </childnode>
       </node>
       <node id="4">
@@ -490,48 +490,44 @@
         <link refid="de/de8/bubble__function_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
-        </childnode>
-        <childnode refid="13" relation="include">
-        </childnode>
         <childnode refid="11" relation="include">
         </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
       </node>
-      <node id="16">
+      <node id="14">
         <label>integrand.hpp</label>
         <link refid="df/d83/integrand_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
       </node>
-      <node id="18">
+      <node id="16">
         <label>integrandSE.hpp</label>
         <link refid="de/d65/integrandSE_8hpp"/>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
       </node>
-      <node id="20">
+      <node id="18">
         <label>loop.c++</label>
         <link refid="d5/dae/loop_8c_09_09"/>
       </node>
-      <node id="19">
+      <node id="17">
         <label>loop.hpp</label>
         <link refid="d8/d1d/loop_8hpp"/>
-        <childnode refid="20" relation="include">
+        <childnode refid="18" relation="include">
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
-        </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-      </node>
-      <node id="8">
-        <label>main.cpp</label>
-        <link refid="df/d0a/main_8cpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
       </node>
       <node id="7">
-        <label>flow.c++</label>
-        <link refid="d4/dde/flow_8c_09_09"/>
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
       </node>
       <node id="6">
         <label>flow.hpp</label>
@@ -540,20 +536,18 @@
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="9" relation="include">
-        </childnode>
       </node>
-      <node id="11">
+      <node id="10">
         <label>right_hand_sides.hpp</label>
         <link refid="d8/dea/right__hand__sides_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
       </node>
-      <node id="17">
+      <node id="15">
         <label>hartree_term.c++</label>
         <link refid="d4/d92/hartree__term_8c_09_09"/>
       </node>
-      <node id="10">
+      <node id="9">
         <label>parquet_solver.c++</label>
         <link refid="d5/d94/parquet__solver_8c_09_09"/>
       </node>
@@ -562,46 +556,40 @@
         <link refid="dd/d0a/parquet__solver_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
         <childnode refid="8" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
         <childnode refid="10" relation="include">
         </childnode>
-        <childnode refid="11" relation="include">
-        </childnode>
       </node>
-      <node id="12">
+      <node id="11">
         <label>perturbation_theory.hpp</label>
         <link refid="d5/d0d/perturbation__theory_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
-        <childnode refid="8" relation="include">
+        <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="9" relation="include">
+        <childnode refid="8" relation="include">
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="9">
+      <node id="8">
         <label>main_postproc.cpp</label>
         <link refid="dd/d00/main__postproc_8cpp"/>
       </node>
-      <node id="14">
-        <label>postprocessing.c++</label>
-        <link refid="d9/dae/postprocessing_8c_09_09"/>
-      </node>
-      <node id="13">
+      <node id="12">
         <label>postprocessing.hpp</label>
         <link refid="d4/d81/postprocessing_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
-        <childnode refid="14" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
-      <node id="15">
+      <node id="13">
         <label>sanity_check.hpp</label>
         <link refid="d2/d3f/sanity__check_8hpp"/>
         <childnode refid="5" relation="include">

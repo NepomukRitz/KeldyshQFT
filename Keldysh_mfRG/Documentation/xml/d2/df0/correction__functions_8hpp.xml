@@ -532,13 +532,13 @@
         </childnode>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="16" relation="include">
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
         </childnode>
         <childnode refid="15" relation="include">
         </childnode>
-        <childnode refid="17" relation="include">
-        </childnode>
-        <childnode refid="18" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
       </node>
       <node id="2">
@@ -546,7 +546,7 @@
         <link refid="d0/dac/bubble_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="15" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
       <node id="3">
@@ -554,48 +554,44 @@
         <link refid="de/de8/bubble__function_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="11" relation="include">
-        </childnode>
-        <childnode refid="12" relation="include">
-        </childnode>
         <childnode refid="10" relation="include">
         </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
       </node>
-      <node id="15">
+      <node id="13">
         <label>integrand.hpp</label>
         <link refid="df/d83/integrand_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="17">
+      <node id="15">
         <label>integrandSE.hpp</label>
         <link refid="de/d65/integrandSE_8hpp"/>
-        <childnode refid="18" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
       </node>
-      <node id="19">
+      <node id="17">
         <label>loop.c++</label>
         <link refid="d5/dae/loop_8c_09_09"/>
       </node>
-      <node id="18">
+      <node id="16">
         <label>loop.hpp</label>
         <link refid="d8/d1d/loop_8hpp"/>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="11" relation="include">
-        </childnode>
         <childnode refid="10" relation="include">
         </childnode>
-      </node>
-      <node id="7">
-        <label>main.cpp</label>
-        <link refid="df/d0a/main_8cpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
       </node>
       <node id="6">
-        <label>flow.c++</label>
-        <link refid="d4/dde/flow_8c_09_09"/>
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
       </node>
       <node id="5">
         <label>flow.hpp</label>
@@ -604,20 +600,18 @@
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="8" relation="include">
-        </childnode>
       </node>
-      <node id="10">
+      <node id="9">
         <label>right_hand_sides.hpp</label>
         <link refid="d8/dea/right__hand__sides_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="16">
+      <node id="14">
         <label>hartree_term.c++</label>
         <link refid="d4/d92/hartree__term_8c_09_09"/>
       </node>
-      <node id="9">
+      <node id="8">
         <label>parquet_solver.c++</label>
         <link refid="d5/d94/parquet__solver_8c_09_09"/>
       </node>
@@ -626,46 +620,40 @@
         <link refid="dd/d0a/parquet__solver_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
         <childnode refid="7" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="10" relation="include">
-        </childnode>
       </node>
-      <node id="11">
+      <node id="10">
         <label>perturbation_theory.hpp</label>
         <link refid="d5/d0d/perturbation__theory_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="7" relation="include">
+        <childnode refid="6" relation="include">
         </childnode>
-        <childnode refid="8" relation="include">
+        <childnode refid="7" relation="include">
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
       </node>
-      <node id="8">
+      <node id="7">
         <label>main_postproc.cpp</label>
         <link refid="dd/d00/main__postproc_8cpp"/>
       </node>
-      <node id="13">
-        <label>postprocessing.c++</label>
-        <link refid="d9/dae/postprocessing_8c_09_09"/>
-      </node>
-      <node id="12">
+      <node id="11">
         <label>postprocessing.hpp</label>
         <link refid="d4/d81/postprocessing_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="13" relation="include">
-        </childnode>
-        <childnode refid="14" relation="include">
+        <childnode refid="12" relation="include">
         </childnode>
       </node>
-      <node id="14">
+      <node id="12">
         <label>sanity_check.hpp</label>
         <link refid="d2/d3f/sanity__check_8hpp"/>
         <childnode refid="4" relation="include">
@@ -1099,7 +1087,7 @@
 <codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/d1f/integrator_8hpp_1a7d04a371ecbcd8fe19d860c0b46871d9" kindref="member">integrator_onlyTails</ref>(integrand,<sp/>vmin,<sp/>vmax);</highlight></codeline>
 <codeline lineno="23"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="24"><highlight class="normal"></highlight></codeline>
-<codeline lineno="51"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0e8f8c5700d73a66191a72ea5eba2082" kindref="member">spin</ref>,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>channel,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0e8f8c5700d73a66191a72ea5eba2082" kindref="member">spin</ref>,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,</highlight></codeline>
 <codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_1</ref>,</highlight></codeline>
 <codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_2</ref>&gt;</highlight></codeline>
 <codeline lineno="54" refid="d2/df0/correction__functions_8hpp_1ac617baabe863b35d7652e62c345a3400" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/df0/correction__functions_8hpp_1ac617baabe863b35d7652e62c345a3400" kindref="member">asymp_corrections_bubble</ref>(<ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>,</highlight></codeline>

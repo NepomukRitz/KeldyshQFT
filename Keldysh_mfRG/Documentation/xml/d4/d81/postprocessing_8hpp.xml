@@ -11,7 +11,6 @@
     <includes refid="d1/db3/KramersKronig_8hpp" local="yes">KramersKronig.hpp</includes>
     <includes refid="de/de8/bubble__function_8hpp" local="yes">../bubble/bubble_function.hpp</includes>
     <includedby refid="d5/d21/flow_8hpp" local="yes">flow.hpp</includedby>
-    <includedby refid="d9/dae/postprocessing_8c_09_09" local="yes">postprocessing.c++</includedby>
     <includedby refid="d2/d3f/sanity__check_8hpp" local="yes">sanity_check.hpp</includedby>
     <incdepgraph>
       <node id="74">
@@ -796,13 +795,9 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="4">
+      <node id="3">
         <label>main.cpp</label>
         <link refid="df/d0a/main_8cpp"/>
-      </node>
-      <node id="3">
-        <label>flow.c++</label>
-        <link refid="d4/dde/flow_8c_09_09"/>
       </node>
       <node id="2">
         <label>flow.hpp</label>
@@ -811,55 +806,47 @@
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="5" relation="include">
-        </childnode>
       </node>
-      <node id="10">
+      <node id="8">
         <label>right_hand_sides.hpp</label>
         <link refid="d8/dea/right__hand__sides_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
       </node>
-      <node id="9">
+      <node id="7">
         <label>parquet_solver.c++</label>
         <link refid="d5/d94/parquet__solver_8c_09_09"/>
       </node>
-      <node id="8">
+      <node id="6">
         <label>parquet_solver.hpp</label>
         <link refid="dd/d0a/parquet__solver_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="5" relation="include">
+        <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="9" relation="include">
-        </childnode>
-        <childnode refid="10" relation="include">
+        <childnode refid="8" relation="include">
         </childnode>
       </node>
-      <node id="5">
+      <node id="4">
         <label>main_postproc.cpp</label>
         <link refid="dd/d00/main__postproc_8cpp"/>
-      </node>
-      <node id="6">
-        <label>postprocessing.c++</label>
-        <link refid="d9/dae/postprocessing_8c_09_09"/>
       </node>
       <node id="1">
         <label>postprocessing.hpp</label>
         <link refid="d4/d81/postprocessing_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="6" relation="include">
-        </childnode>
-        <childnode refid="7" relation="include">
+        <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="7">
+      <node id="5">
         <label>sanity_check.hpp</label>
         <link refid="d2/d3f/sanity__check_8hpp"/>
-        <childnode refid="8" relation="include">
+        <childnode refid="6" relation="include">
         </childnode>
       </node>
     </invincdepgraph>
@@ -883,17 +870,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="73" column="6" bodyfile="postprocessing/postprocessing.c++" bodystart="3" bodyend="62" declfile="postprocessing/postprocessing.hpp" declline="73" declcolumn="6"/>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
-        <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
-        <references refid="d7/d59/data__structures_8hpp_1a5b6ea4ce336353d3b6af014581c163a5" compoundref="d7/d59/data__structures_8hpp" startline="94" endline="94">myreal</references>
-        <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
-        <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1acdf68c5ce2f557fb2d456a799f7d6358" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="217" endline="256">read_Lambdas_from_hdf</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
-        <references refid="d9/d8b/write__data2file_8c_09_09_1a9992b4a1a01038cb7f3f462bb3c2e63c" compoundref="d9/d8b/write__data2file_8c_09_09" startline="19" endline="37">write_h5_rvecs</references>
+        <location file="postprocessing/postprocessing.hpp" line="73" column="6" declfile="postprocessing/postprocessing.hpp" declline="73" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ac7415fe2ab8f68dbdd25510af0a86a4d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -910,25 +887,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="102" column="6" bodyfile="postprocessing/postprocessing.c++" bodystart="65" bodyend="89" declfile="postprocessing/postprocessing.hpp" declline="102" declcolumn="6"/>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
-        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
-        <references refid="d7/d59/data__structures_8hpp_1a5b6ea4ce336353d3b6af014581c163a5" compoundref="d7/d59/data__structures_8hpp" startline="94" endline="94">myreal</references>
-        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1acdf68c5ce2f557fb2d456a799f7d6358" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="217" endline="256">read_Lambdas_from_hdf</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
-        <references refid="d9/d8b/write__data2file_8c_09_09_1a9992b4a1a01038cb7f3f462bb3c2e63c" compoundref="d9/d8b/write__data2file_8c_09_09" startline="19" endline="37">write_h5_rvecs</references>
+        <location file="postprocessing/postprocessing.hpp" line="102" column="6" declfile="postprocessing/postprocessing.hpp" declline="102" declcolumn="6"/>
       </memberdef>
-      <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ab67d7d4ba1acc5297a2e2b2867559291" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
         <definition>double sum_rule_spectrum</definition>
-        <argsstring>(const State&lt; state_datatype &gt; &amp;state)</argsstring>
+        <argsstring>(const State&lt; state_datatype &gt; &amp;)</argsstring>
         <name>sum_rule_spectrum</name>
         <param>
           <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt; &amp;</type>
-          <declname>state</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -936,10 +903,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="118" column="8" bodyfile="postprocessing/postprocessing.c++" bodystart="93" bodyend="104" declfile="postprocessing/postprocessing.hpp" declline="118" declcolumn="8"/>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="dd/d1f/integrator_8hpp_1a48c076c51ab55e8e2172d7d4fe99b12a" compoundref="dd/d1f/integrator_8hpp" startline="318" endline="321">integrator</references>
-        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <location file="postprocessing/postprocessing.hpp" line="118" column="8" declfile="postprocessing/postprocessing.hpp" declline="118" declcolumn="8"/>
         <referencedby refid="d2/d3f/sanity__check_8hpp_1a884fca24faf1e006b285fcce3ddd0299" compoundref="d2/d3f/sanity__check_8hpp" startline="10" endline="23">sanity_check</referencedby>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -958,11 +922,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="125" column="6" bodyfile="postprocessing/postprocessing.c++" bodystart="106" bodyend="130" declfile="postprocessing/postprocessing.hpp" declline="125" declcolumn="6"/>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1acdf68c5ce2f557fb2d456a799f7d6358" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="217" endline="256">read_Lambdas_from_hdf</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
+        <location file="postprocessing/postprocessing.hpp" line="125" column="6" declfile="postprocessing/postprocessing.hpp" declline="125" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -989,15 +949,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="133" column="6" bodyfile="postprocessing/postprocessing.c++" bodystart="134" bodyend="176" declfile="postprocessing/postprocessing.hpp" declline="133" declcolumn="6"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1aac40d6d3e07e0a2aec0ca17a4a249c30">DATASET_K1_a_postproc</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1aab34826044bcc05e544271bf58bc78e9">DATASET_K1_p_postproc</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1aa94c257ab4ea3417138e4bab7b4462a1">DATASET_K1_t_postproc</references>
-        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
+        <location file="postprocessing/postprocessing.hpp" line="133" column="6" declfile="postprocessing/postprocessing.hpp" declline="133" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1013,18 +965,8 @@
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
-<para>corrections to the bare bubble from the purely dynamical SE in 2. order:</para>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="134" column="6" bodyfile="postprocessing/postprocessing.c++" bodystart="179" bodyend="256" declfile="postprocessing/postprocessing.hpp" declline="134" declcolumn="6"/>
-        <references refid="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" compoundref="d6/d2d/selfenergy_8hpp" startline="32">SelfEnergy&lt; Q &gt;::asymp_val_R</references>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1aac40d6d3e07e0a2aec0ca17a4a249c30">DATASET_K1_a_postproc</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1aab34826044bcc05e544271bf58bc78e9">DATASET_K1_p_postproc</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1aa94c257ab4ea3417138e4bab7b4462a1">DATASET_K1_t_postproc</references>
-        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
+        <location file="postprocessing/postprocessing.hpp" line="134" column="6" declfile="postprocessing/postprocessing.hpp" declline="134" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1045,12 +987,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="137" column="6" bodyfile="postprocessing/postprocessing.c++" bodystart="258" bodyend="293" declfile="postprocessing/postprocessing.hpp" declline="137" declcolumn="6"/>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
-        <references refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</references>
+        <location file="postprocessing/postprocessing.hpp" line="137" column="6" declfile="postprocessing/postprocessing.hpp" declline="137" declcolumn="6"/>
         <referencedby refid="dd/d00/main__postproc_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="dd/d00/main__postproc_8cpp" startline="17" endline="126">main</referencedby>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1072,14 +1009,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="139" column="6" bodyfile="postprocessing/postprocessing.c++" bodystart="296" bodyend="411" declfile="postprocessing/postprocessing.hpp" declline="139" declcolumn="6"/>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
-        <references refid="d1/df8/master__parameters_8hpp_1a18e4694bb937d4a6e8e55f3f795518a0" compoundref="d1/df8/master__parameters_8hpp" startline="62">glb_mu</references>
-        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
-        <references refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</references>
+        <location file="postprocessing/postprocessing.hpp" line="139" column="6" declfile="postprocessing/postprocessing.hpp" declline="139" declcolumn="6"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -1159,7 +1089,7 @@
 <codeline lineno="70"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
 <codeline lineno="71"><highlight class="comment"><sp/>*<sp/>Ward<sp/>identity<sp/>-2<sp/>Im<sp/>Sigma^R<sp/>=<sp/>\tilde{\Phi}<sp/>(Heyder2017,<sp/>Eqs.<sp/>(C24),<sp/>(C26)</highlight></codeline>
 <codeline lineno="72"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="73"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1acb6bef2d27448a2775a1fe9e74597580" kindref="member">compute_Phi_tilde</ref>(std::string<sp/>filename);</highlight></codeline>
+<codeline lineno="73" refid="d4/d81/postprocessing_8hpp_1acb6bef2d27448a2775a1fe9e74597580" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1acb6bef2d27448a2775a1fe9e74597580" kindref="member">compute_Phi_tilde</ref>(std::string<sp/>filename);</highlight></codeline>
 <codeline lineno="74"><highlight class="normal"></highlight></codeline>
 <codeline lineno="75"><highlight class="normal"></highlight></codeline>
 <codeline lineno="76" refid="d9/d6a/classIntegrand__sum__rule__K1tK" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="d9/d6a/classIntegrand__sum__rule__K1tK" kindref="compound">Integrand_sum_rule_K1tK</ref><sp/>{</highlight></codeline>
@@ -1188,7 +1118,7 @@
 <codeline lineno="99"><highlight class="normal"></highlight></codeline>
 <codeline lineno="100"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="101"><highlight class="normal"></highlight></codeline>
-<codeline lineno="102"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac7415fe2ab8f68dbdd25510af0a86a4d" kindref="member">sum_rule_K1tK</ref>(std::string<sp/>filename);</highlight></codeline>
+<codeline lineno="102" refid="d4/d81/postprocessing_8hpp_1ac7415fe2ab8f68dbdd25510af0a86a4d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac7415fe2ab8f68dbdd25510af0a86a4d" kindref="member">sum_rule_K1tK</ref>(std::string<sp/>filename);</highlight></codeline>
 <codeline lineno="103"><highlight class="normal"></highlight></codeline>
 <codeline lineno="104"><highlight class="normal"></highlight></codeline>
 <codeline lineno="105" refid="df/db3/classIntegrand__sum__rule__spectrum" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="df/db3/classIntegrand__sum__rule__spectrum" kindref="compound">Integrand_sum_rule_spectrum</ref><sp/>{</highlight></codeline>
@@ -1204,18 +1134,18 @@
 <codeline lineno="115"><highlight class="normal"></highlight></codeline>
 <codeline lineno="116"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="117"><highlight class="normal"></highlight></codeline>
-<codeline lineno="118"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ab67d7d4ba1acc5297a2e2b2867559291" kindref="member">sum_rule_spectrum</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state</ref>);</highlight></codeline>
+<codeline lineno="118" refid="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" kindref="member">sum_rule_spectrum</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref>&amp;);</highlight></codeline>
 <codeline lineno="119"><highlight class="normal"></highlight></codeline>
 <codeline lineno="120"><highlight class="normal"></highlight></codeline>
-<codeline lineno="125"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" kindref="member">check_Kramers_Kronig</ref>(std::string<sp/>filename);</highlight></codeline>
+<codeline lineno="125" refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" kindref="member">check_Kramers_Kronig</ref>(std::string<sp/>filename);</highlight></codeline>
 <codeline lineno="126"><highlight class="normal"></highlight></codeline>
-<codeline lineno="133"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" kindref="member">compute_postprocessed_susceptibilities</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
-<codeline lineno="134"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" kindref="member">compute_proprocessed_susceptibilities_PT2</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
+<codeline lineno="133" refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" kindref="member">compute_postprocessed_susceptibilities</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
+<codeline lineno="134" refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" kindref="member">compute_proprocessed_susceptibilities_PT2</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
 <codeline lineno="135"><highlight class="normal"></highlight></codeline>
 <codeline lineno="136"><highlight class="normal"></highlight></codeline>
-<codeline lineno="137"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
+<codeline lineno="137" refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
 <codeline lineno="138"><highlight class="normal"></highlight></codeline>
-<codeline lineno="139"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" kindref="member">check_FDTs_for_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
+<codeline lineno="139" refid="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" kindref="member">check_FDTs_for_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
 <codeline lineno="140"><highlight class="normal"></highlight></codeline>
 <codeline lineno="141"><highlight class="normal"></highlight></codeline>
 <codeline lineno="142"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//KELDYSH_MFRG_TESTING_POSTPROCESSING_H</highlight><highlight class="normal"></highlight></codeline>

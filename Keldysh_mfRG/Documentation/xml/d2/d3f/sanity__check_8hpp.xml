@@ -813,13 +813,9 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="5">
+      <node id="4">
         <label>main.cpp</label>
         <link refid="df/d0a/main_8cpp"/>
-      </node>
-      <node id="4">
-        <label>flow.c++</label>
-        <link refid="d4/dde/flow_8c_09_09"/>
       </node>
       <node id="3">
         <label>flow.hpp</label>
@@ -828,16 +824,14 @@
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="6" relation="include">
-        </childnode>
       </node>
-      <node id="8">
+      <node id="7">
         <label>right_hand_sides.hpp</label>
         <link refid="d8/dea/right__hand__sides_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="7">
+      <node id="6">
         <label>parquet_solver.c++</label>
         <link refid="d5/d94/parquet__solver_8c_09_09"/>
       </node>
@@ -846,16 +840,16 @@
         <link refid="dd/d0a/parquet__solver_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
         <childnode refid="5" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="8" relation="include">
-        </childnode>
       </node>
-      <node id="6">
+      <node id="5">
         <label>main_postproc.cpp</label>
         <link refid="dd/d00/main__postproc_8cpp"/>
       </node>
@@ -892,7 +886,7 @@
         <references refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
-        <references refid="d9/dae/postprocessing_8c_09_09_1ab67d7d4ba1acc5297a2e2b2867559291" compoundref="d9/dae/postprocessing_8c_09_09" startline="93" endline="104">sum_rule_spectrum</references>
+        <references refid="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d">sum_rule_spectrum</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
       </memberdef>
     </sectiondef>
@@ -914,7 +908,7 @@
 <codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" kindref="member">check_SE_causality</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state</ref>);<sp/></highlight><highlight class="comment">//<sp/>check<sp/>if<sp/>the<sp/>self-energy<sp/>is<sp/>causal<sp/>at<sp/>each<sp/>step<sp/>of<sp/>the<sp/>flow</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>KELDYSH_FORMALISM</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//check_Kramers_Kronig(state,<sp/>true,<sp/>&quot;&quot;);</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d9/dae/postprocessing_8c_09_09_1ab67d7d4ba1acc5297a2e2b2867559291" kindref="member">sum_rule_spectrum</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state</ref>);</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" kindref="member">sum_rule_spectrum</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state</ref>);</highlight></codeline>
 <codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" kindref="member">REG</ref>!=5)<sp/><ref refid="d1/d75/causality__FDT__checks_8hpp_1a6e71610e223d517d2087c2e6a53617af" kindref="member">check_FDTs</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state</ref>,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);<sp/></highlight><highlight class="comment">//<sp/>check<sp/>FDTs<sp/>for<sp/>Sigma<sp/>and<sp/>K1r<sp/>at<sp/>each<sp/>step<sp/>of<sp/>the<sp/>flow</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="16"><highlight class="normal"></highlight></codeline>
 <codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>

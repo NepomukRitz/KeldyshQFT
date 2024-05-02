@@ -11,9 +11,7 @@ var searchData=
   ['alpha_8',['alpha',['../d6/dc0/structAdapt.html#ae137add926c1bfd9f4c3e66e8c81026b',1,'Adapt']]],
   ['asymmetry_5ftransform_9',['asymmetry_transform',['../da/d93/structIndicesSymmetryTransformations.html#a09194893d546ad4ce2995eb0aee7b815',1,'IndicesSymmetryTransformations']]],
   ['asymp_5fval_5fr_10',['asymp_val_R',['../d5/df6/classSelfEnergy.html#a8c962e14e202a889f9932adc8b205558',1,'SelfEnergy']]],
-  ['author_11',['author',['../d5/d89/namespaceconf.html#a0b68e66074bc74dbb7460951f810b4c8',1,'conf']]],
-  ['aux_5fpos_5fsection_5fboundaries_12',['aux_pos_section_boundaries',['../d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4.html#a19b0fee61a416b3f1ee2020872270645',1,'FrequencyGrid&lt; hybridGrid &gt;']]],
-  ['auxiliary_5fgrid_13',['auxiliary_grid',['../df/d83/classFrequencyGrid_3_01eliasGrid_01_4.html#a8e98ce96470c4f49940aabcf7eb8587a',1,'FrequencyGrid&lt; eliasGrid &gt;::auxiliary_grid'],['../d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4.html#a457489ef3d9b8b6f70d045e2d2f49d80',1,'FrequencyGrid&lt; hybridGrid &gt;::auxiliary_grid'],['../d9/dfe/classFrequencyGrid_3_01angularGrid_01_4.html#aa13075dd331e80753899b266c7ea7871',1,'FrequencyGrid&lt; angularGrid &gt;::auxiliary_grid']]],
-  ['avertex_14',['avertex',['../dc/d2d/classfullvert.html#a5f5bd160f3bfbe4b4f78163d5c8307fe',1,'fullvert']]],
-  ['axs0_15',['axs0',['../d9/d59/namespacegetIntegrand.html#a839b1ca54d486ab9a2ab0cf0da185743',1,'getIntegrand']]]
+  ['aux_5fpos_5fsection_5fboundaries_11',['aux_pos_section_boundaries',['../d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4.html#a19b0fee61a416b3f1ee2020872270645',1,'FrequencyGrid&lt; hybridGrid &gt;']]],
+  ['auxiliary_5fgrid_12',['auxiliary_grid',['../df/d83/classFrequencyGrid_3_01eliasGrid_01_4.html#a8e98ce96470c4f49940aabcf7eb8587a',1,'FrequencyGrid&lt; eliasGrid &gt;::auxiliary_grid'],['../d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4.html#a457489ef3d9b8b6f70d045e2d2f49d80',1,'FrequencyGrid&lt; hybridGrid &gt;::auxiliary_grid'],['../d9/dfe/classFrequencyGrid_3_01angularGrid_01_4.html#aa13075dd331e80753899b266c7ea7871',1,'FrequencyGrid&lt; angularGrid &gt;::auxiliary_grid']]],
+  ['avertex_13',['avertex',['../dc/d2d/classfullvert.html#a5f5bd160f3bfbe4b4f78163d5c8307fe',1,'fullvert']]]
 ];

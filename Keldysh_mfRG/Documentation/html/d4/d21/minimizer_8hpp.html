@@ -182,14 +182,13 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <p class="definition">Definition at line <a class="el" href="../../d4/d21/minimizer_8hpp_source.html#l00020">20</a> of file <a class="el" href="../../d4/d21/minimizer_8hpp_source.html">minimizer.hpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   20</span>                                                             {</div>
 <div class="line"><span class="lineno">   21</span>    <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">CostFunction</a> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">cost</a> = *(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">CostFunction</a>*) <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">params</a>;</div>
-<div class="line"><span class="lineno">   22</span>    <span class="keywordtype">size_t</span> size = <a class="code hl_variable" href="../../d9/d59/namespacegetIntegrand.html#a8de2c1f4f0e95b0891bbf53c7585193c">v</a>-&gt;size;</div>
+<div class="line"><span class="lineno">   22</span>    <span class="keywordtype">size_t</span> size = v-&gt;size;</div>
 <div class="line"><span class="lineno">   23</span>    <span class="comment">//std::vector&lt;double&gt; input(size);</span></div>
 <div class="line"><span class="lineno">   24</span>    <span class="comment">//for (size_t i = 0; i &lt; v-&gt;size; i++) input[i] = gsl_vector_get(v, i);</span></div>
-<div class="line"><span class="lineno">   25</span>    std::vector&lt;double&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">input</a>(<a class="code hl_variable" href="../../d9/d59/namespacegetIntegrand.html#a8de2c1f4f0e95b0891bbf53c7585193c">v</a>-&gt;data, <a class="code hl_variable" href="../../d9/d59/namespacegetIntegrand.html#a8de2c1f4f0e95b0891bbf53c7585193c">v</a>-&gt;data + size);</div>
+<div class="line"><span class="lineno">   25</span>    std::vector&lt;double&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">input</a>(v-&gt;data, v-&gt;data + size);</div>
 <div class="line"><span class="lineno">   26</span>    <span class="keywordtype">double</span> <a class="code hl_function" href="#aaaee068878af2ea4d0bac236bd982591">costval</a> = <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">cost</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">input</a>);</div>
 <div class="line"><span class="lineno">   27</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="#aaaee068878af2ea4d0bac236bd982591">costval</a>;</div>
 <div class="line"><span class="lineno">   28</span>}</div>
-<div class="ttc" id="anamespacegetIntegrand_html_a8de2c1f4f0e95b0891bbf53c7585193c"><div class="ttname"><a href="../../d9/d59/namespacegetIntegrand.html#a8de2c1f4f0e95b0891bbf53c7585193c">getIntegrand.v</a></div><div class="ttdeci">int v</div><div class="ttdef"><b>Definition</b> <a href="../../de/d62/getIntegrand_8py_source.html#l00272">getIntegrand.py:272</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, and <a class="el" href="../../d4/d21/minimizer_8hpp_source.html#l00014">costval()</a>.</p>
 
@@ -522,7 +521,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_df38b2a5d584e0f6066b4518b95c638b.html">utilities</a></li><li class="navelem"><a class="el" href="../../d4/d21/minimizer_8hpp.html">minimizer.hpp</a></li>
-    <li class="footer">Generated on Thu May 2 2024 15:26:53 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Thu May 2 2024 15:38:23 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

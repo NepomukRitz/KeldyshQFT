@@ -549,9 +549,9 @@ template&lt;<a class="el" href="../../d7/d59/data__structures_8hpp.html#a82cbf94
 <div class="line"><span class="lineno">  495</span>        }</div>
 <div class="line"><span class="lineno">  496</span>        <span class="keywordflow">else</span> { <span class="comment">// relevant for t-channel (spin component 0) and a-channel (spin component 1): there i_spin = 0, 1, 2</span></div>
 <div class="line"><span class="lineno">  497</span> </div>
-<div class="line"><span class="lineno">  498</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span>(<a class="code hl_variable" href="../../d9/d59/namespacegetIntegrand.html#affe557b99ce21081450f9a33337f29ab">channel</a> == <span class="charliteral">&#39;t&#39;</span></div>
+<div class="line"><span class="lineno">  498</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span>(channel == <span class="charliteral">&#39;t&#39;</span></div>
 <div class="line"><span class="lineno">  499</span><span class="preprocessor">#if DEBUG_SYMMETRIES</span></div>
-<div class="line"><span class="lineno">  500</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">or</a> <a class="code hl_variable" href="../../d9/d59/namespacegetIntegrand.html#affe557b99ce21081450f9a33337f29ab">channel</a> == <span class="charliteral">&#39;a&#39;</span></div>
+<div class="line"><span class="lineno">  500</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">or</a> channel == <span class="charliteral">&#39;a&#39;</span></div>
 <div class="line"><span class="lineno">  501</span><span class="preprocessor">#endif</span></div>
 <div class="line"><span class="lineno">  502</span>            ) {</div>
 <div class="line"><span class="lineno">  503</span>                <span class="comment">// channel = t, i_spin = 1</span></div>
@@ -595,7 +595,6 @@ template&lt;<a class="el" href="../../d7/d59/data__structures_8hpp.html#a82cbf94
 <div class="ttc" id="adata__structures_8hpp_html_a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90"><div class="ttname"><a href="../../d7/d59/data__structures_8hpp.html#a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90">k3</a></div><div class="ttdeci">@ k3</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00480">data_structures.hpp:480</a></div></div>
 <div class="ttc" id="adata__structures_8hpp_html_a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e"><div class="ttname"><a href="../../d7/d59/data__structures_8hpp.html#a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e">k1</a></div><div class="ttdeci">@ k1</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00480">data_structures.hpp:480</a></div></div>
 <div class="ttc" id="adata__structures_8hpp_html_a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021"><div class="ttname"><a href="../../d7/d59/data__structures_8hpp.html#a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021">k2b</a></div><div class="ttdeci">@ k2b</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00480">data_structures.hpp:480</a></div></div>
-<div class="ttc" id="anamespacegetIntegrand_html_affe557b99ce21081450f9a33337f29ab"><div class="ttname"><a href="../../d9/d59/namespacegetIntegrand.html#affe557b99ce21081450f9a33337f29ab">getIntegrand.channel</a></div><div class="ttdeci">str channel</div><div class="ttdef"><b>Definition</b> <a href="../../de/d62/getIntegrand_8py_source.html#l00267">getIntegrand.py:267</a></div></div>
 <div class="ttc" id="anamespacemy__defs_1_1K1_html_ae0dde289d1bfdb687324024b44a56cb3a0e8f8c5700d73a66191a72ea5eba2082"><div class="ttname"><a href="../../db/d58/namespacemy__defs_1_1K1.html#ae0dde289d1bfdb687324024b44a56cb3a0e8f8c5700d73a66191a72ea5eba2082">my_defs::K1::spin</a></div><div class="ttdeci">@ spin</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00499">data_structures.hpp:499</a></div></div>
 <div class="ttc" id="astructVertexInput_html"><div class="ttname"><a href="../../d2/db2/structVertexInput.html">VertexInput</a></div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00536">data_structures.hpp:536</a></div></div>
 </div><!-- fragment -->
@@ -2094,7 +2093,7 @@ template&lt;<a class="el" href="../../d7/d59/data__structures_8hpp.html#a82cbf94
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d1/d9f/classIntegrand.html">Integrand</a></li>
-    <li class="footer">Generated on Thu May 2 2024 15:26:53 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Thu May 2 2024 15:38:24 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

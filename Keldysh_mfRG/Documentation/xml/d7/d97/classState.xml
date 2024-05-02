@@ -444,7 +444,6 @@
         <references refid="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="17">shift_fgrids_woPHS</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
         <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="25">State&lt; Q, differentiated &gt;::vertex</references>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d7/d97/classState_1a33aa01d752071307a5680a52d333b249" compoundref="da/d3b/state_8hpp" startline="35" endline="37">State&lt; Q, differentiated &gt;::State</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">

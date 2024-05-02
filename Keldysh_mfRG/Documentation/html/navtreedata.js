@@ -25,12 +25,10 @@
 var NAVTREE =
 [
   [ "SIAM-Keldysh-mfRG", "index.html", [
-    [ "Introduction to the KCS-Cluster", "dd/de8/md_scripts_2kcs__instructions.html", null ],
-    [ "Profiling with gprof", "d2/da3/md_scripts_2Profiling.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", "namespacemembers_dup" ],
+        [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ],
         [ "Variables", "namespacemembers_vars.html", null ],
         [ "Typedefs", "namespacemembers_type.html", null ],
@@ -68,17 +66,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d2/d34/classPropagator.html#a68009e2fa03e67e5101fcd3a184b8b41",
-"d3/d77/symmetry__table_8hpp.html#a3e79767248b215c016341a4505898f29",
-"d4/dde/flow_8c_09_09.html#a4aadec32e0b8b7022f429e01abd4e1ac",
-"d5/de4/hdf5__routines_8hpp.html#afe0475193af36ddf563126885ac60199",
-"d7/d3f/classmultidimensional_1_1multiarray.html#a7798825b221fe13945fb7f06a523c757",
-"d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4.html#aa02741d1cf3a2457ed516ddf5b8f93a9",
-"d9/d59/namespacegetIntegrand.html#a3e3a1fa0579ae3ec0c425e72a1ce6677",
-"da/dc3/ODE__solvers_8hpp_source.html",
-"dd/d0a/parquet__solver_8hpp.html#a07f441b6693f6e2e8d958049ae06cb73",
-"de/dac/namespacehdf5__impl.html#a5bed3a47ed017e75c4152bb28be5e1c5",
-"df/dd5/classbufferFrequencyGrid.html#a622b97ae2430f7b7218757a68bcd2416"
+"d2/d34/classPropagator.html#ad14344fe45ff29ff130d9c18414669a7",
+"d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4.html#a3650c86afb2448e9321e477b65b49529",
+"d5/d39/frequency__grid_8hpp.html#a34be0fbd5a9f7466dd2ea8efec38066da3d04e5eb1b8ee6f85a48f2d32cf1e7fe",
+"d5/df6/classSelfEnergy.html#ad8cbafc3e1bda57e185bd591f0471d4c",
+"d7/d3f/classmultidimensional_1_1multiarray.html#adc2341497fc392f72af8c3d3190a7b13",
+"d7/da5/namespacemultidimensional.html#ab443d869fd7457b4e8cff297ca2432a2",
+"d9/ddc/classIntegrandBubble.html#a308805432b2556436a0049f8cc598199",
+"dc/d2d/classfullvert.html#ad0dff3dc2aa5666c59584d111e4338bd",
+"de/d96/classBubbleFunctionCalculator.html#a6fd361c516a0a817f42b270cc3958829",
+"df/dc8/classLoopCalculator.html#a67fa83fe176919505421fd442df4b5c1"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

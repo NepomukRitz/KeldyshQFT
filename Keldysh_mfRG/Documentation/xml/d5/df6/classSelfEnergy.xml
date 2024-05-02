@@ -101,7 +101,6 @@
         <inbodydescription>
         </inbodydescription>
         <location file="correlation_functions/two_point/selfenergy.hpp" line="32" column="7" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="32" bodyend="-1"/>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1af1e2a562265def3e9c99c1e0b2d0fb3b" compoundref="d9/dae/postprocessing_8c_09_09" startline="179" endline="256">compute_proprocessed_susceptibilities_PT2</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
         <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
       </memberdef>

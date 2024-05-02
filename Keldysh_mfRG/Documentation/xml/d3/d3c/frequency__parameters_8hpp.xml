@@ -5,72 +5,72 @@
     <includedby refid="da/dbc/data__container_8hpp" local="yes">data_container.hpp</includedby>
     <includedby refid="d1/df8/master__parameters_8hpp" local="yes">master_parameters.hpp</includedby>
     <invincdepgraph>
-      <node id="45">
+      <node id="43">
         <label>ODE_solver_config.hpp</label>
         <link refid="de/d91/ODE__solver__config_8hpp"/>
-        <childnode refid="32" relation="include">
+        <childnode refid="30" relation="include">
         </childnode>
       </node>
-      <node id="33">
+      <node id="31">
         <label>ODE_solvers.c++</label>
         <link refid="de/dd8/ODE__solvers_8c_09_09"/>
       </node>
-      <node id="32">
+      <node id="30">
         <label>ODE_solvers.hpp</label>
         <link refid="da/dc3/ODE__solvers_8hpp"/>
-        <childnode refid="33" relation="include">
+        <childnode refid="31" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="14" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
-      <node id="37">
+      <node id="35">
         <label>old_solvers.hpp</label>
         <link refid="dd/df7/old__solvers_8hpp"/>
-        <childnode refid="32" relation="include">
+        <childnode refid="30" relation="include">
         </childnode>
       </node>
-      <node id="21">
+      <node id="19">
         <label>bubble_corrections.c++</label>
         <link refid="d7/d3a/bubble__corrections_8c_09_09"/>
       </node>
-      <node id="20">
+      <node id="18">
         <label>bubble_corrections.hpp</label>
         <link refid="dd/dea/bubble__corrections_8hpp"/>
-        <childnode refid="21" relation="include">
+        <childnode refid="19" relation="include">
         </childnode>
-        <childnode refid="22" relation="include">
+        <childnode refid="20" relation="include">
         </childnode>
-        <childnode refid="27" relation="include">
+        <childnode refid="25" relation="include">
         </childnode>
       </node>
-      <node id="22">
+      <node id="20">
         <label>correction_functions.hpp</label>
         <link refid="d2/df0/correction__functions_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
         <childnode refid="23" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
-        </childnode>
-        <childnode refid="24" relation="include">
-        </childnode>
-        <childnode refid="25" relation="include">
-        </childnode>
       </node>
-      <node id="28">
+      <node id="26">
         <label>loop_corrections.c++</label>
         <link refid="d7/df0/loop__corrections_8c_09_09"/>
       </node>
-      <node id="27">
+      <node id="25">
         <label>loop_corrections.hpp</label>
         <link refid="d0/d0e/loop__corrections_8hpp"/>
-        <childnode refid="22" relation="include">
+        <childnode refid="20" relation="include">
         </childnode>
-        <childnode refid="28" relation="include">
+        <childnode refid="26" relation="include">
         </childnode>
       </node>
       <node id="6">
@@ -78,7 +78,7 @@
         <link refid="d0/dac/bubble_8hpp"/>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
       </node>
       <node id="7">
@@ -86,14 +86,14 @@
         <link refid="de/de8/bubble__function_8hpp"/>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
         <childnode refid="14" relation="include">
         </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
       </node>
-      <node id="19">
+      <node id="17">
         <label>integrand.hpp</label>
         <link refid="df/d83/integrand_8hpp"/>
         <childnode refid="7" relation="include">
@@ -110,25 +110,25 @@
         <link refid="d1/d2d/vertex_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
-        <childnode refid="20" relation="include">
+        <childnode refid="18" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
         <childnode refid="22" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
-        </childnode>
-        <childnode refid="24" relation="include">
+        <childnode refid="23" relation="include">
         </childnode>
         <childnode refid="25" relation="include">
         </childnode>
-        <childnode refid="27" relation="include">
-        </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="14" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
-        <childnode refid="29" relation="include">
+        <childnode refid="27" relation="include">
         </childnode>
       </node>
       <node id="3">
@@ -136,7 +136,7 @@
         <link refid="dc/d80/data__buffer_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="40" relation="include">
+        <childnode refid="38" relation="include">
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
@@ -147,285 +147,281 @@
         <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="29">
+      <node id="27">
         <label>state.hpp</label>
         <link refid="da/d3b/state_8hpp"/>
+        <childnode refid="28" relation="include">
+        </childnode>
         <childnode refid="30" relation="include">
         </childnode>
         <childnode refid="32" relation="include">
         </childnode>
-        <childnode refid="34" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
+        <childnode refid="33" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="38" relation="include">
+        <childnode refid="36" relation="include">
         </childnode>
-        <childnode refid="37" relation="include">
+        <childnode refid="35" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
         <childnode refid="14" relation="include">
         </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
       </node>
-      <node id="43">
+      <node id="41">
         <label>propagator.c++</label>
         <link refid="de/d5d/propagator_8c_09_09"/>
       </node>
-      <node id="42">
+      <node id="40">
         <label>propagator.hpp</label>
         <link refid="d5/df7/propagator_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="39" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
+        <childnode refid="22" relation="include">
         </childnode>
-        <childnode refid="25" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
-        <childnode refid="43" relation="include">
+        <childnode refid="23" relation="include">
         </childnode>
         <childnode refid="14" relation="include">
         </childnode>
-        <childnode refid="29" relation="include">
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
         </childnode>
       </node>
-      <node id="40">
+      <node id="38">
         <label>selfenergy.hpp</label>
         <link refid="d6/d2d/selfenergy_8hpp"/>
-        <childnode refid="34" relation="include">
+        <childnode refid="32" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="35" relation="include">
+        <childnode refid="33" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="39" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
+        <childnode refid="22" relation="include">
         </childnode>
-        <childnode refid="25" relation="include">
+        <childnode refid="23" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="42" relation="include">
-        </childnode>
         <childnode refid="14" relation="include">
         </childnode>
-        <childnode refid="29" relation="include">
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
         </childnode>
       </node>
-      <node id="58">
+      <node id="56">
         <label>data_structures.c++</label>
         <link refid="da/d4d/data__structures_8c_09_09"/>
       </node>
-      <node id="46">
+      <node id="44">
         <label>data_structures.hpp</label>
         <link refid="d7/d59/data__structures_8hpp"/>
-        <childnode refid="47" relation="include">
+        <childnode refid="45" relation="include">
         </childnode>
-        <childnode refid="30" relation="include">
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
         </childnode>
         <childnode refid="20" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
-        </childnode>
-        <childnode refid="22" relation="include">
         </childnode>
         <childnode refid="3" relation="include">
         </childnode>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="58" relation="include">
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
         </childnode>
         <childnode refid="59" relation="include">
         </childnode>
-        <childnode refid="49" relation="include">
+        <childnode refid="25" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="60" relation="include">
         </childnode>
-        <childnode refid="38" relation="include">
+        <childnode refid="63" relation="include">
         </childnode>
-        <childnode refid="53" relation="include">
-        </childnode>
-        <childnode refid="61" relation="include">
-        </childnode>
-        <childnode refid="27" relation="include">
-        </childnode>
-        <childnode refid="62" relation="include">
-        </childnode>
-        <childnode refid="65" relation="include">
-        </childnode>
-        <childnode refid="52" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="42" relation="include">
-        </childnode>
-        <childnode refid="4" relation="include">
-        </childnode>
-        <childnode refid="64" relation="include">
+        <childnode refid="50" relation="include">
         </childnode>
         <childnode refid="14" relation="include">
         </childnode>
         <childnode refid="40" relation="include">
         </childnode>
-        <childnode refid="29" relation="include">
+        <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="72" relation="include">
+        <childnode refid="62" relation="include">
         </childnode>
-        <childnode refid="56" relation="include">
-        </childnode>
-        <childnode refid="68" relation="include">
-        </childnode>
-        <childnode refid="5" relation="include">
-        </childnode>
-        <childnode refid="70" relation="include">
-        </childnode>
-      </node>
-      <node id="60">
-        <label>flow_grid.c++</label>
-        <link refid="d6/d8d/flow__grid_8c_09_09"/>
-      </node>
-      <node id="59">
-        <label>flow_grid.hpp</label>
-        <link refid="d5/dd1/flow__grid_8hpp"/>
-        <childnode refid="32" relation="include">
-        </childnode>
-        <childnode refid="9" relation="include">
-        </childnode>
-        <childnode refid="60" relation="include">
-        </childnode>
-        <childnode refid="37" relation="include">
-        </childnode>
-        <childnode refid="8" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
-      </node>
-      <node id="51">
-        <label>frequency_grid.c++</label>
-        <link refid="d5/d3d/frequency__grid_8c_09_09"/>
-      </node>
-      <node id="49">
-        <label>frequency_grid.hpp</label>
-        <link refid="d5/d39/frequency__grid_8hpp"/>
-        <childnode refid="50" relation="include">
-        </childnode>
-        <childnode refid="47" relation="include">
-        </childnode>
-        <childnode refid="2" relation="include">
-        </childnode>
-        <childnode refid="51" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
         <childnode refid="38" relation="include">
         </childnode>
-        <childnode refid="52" relation="include">
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="68" relation="include">
+        </childnode>
+      </node>
+      <node id="58">
+        <label>flow_grid.c++</label>
+        <link refid="d6/d8d/flow__grid_8c_09_09"/>
+      </node>
+      <node id="57">
+        <label>flow_grid.hpp</label>
+        <link refid="d5/dd1/flow__grid_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
         </childnode>
         <childnode refid="15" relation="include">
         </childnode>
-        <childnode refid="40" relation="include">
+      </node>
+      <node id="49">
+        <label>frequency_grid.c++</label>
+        <link refid="d5/d3d/frequency__grid_8c_09_09"/>
+      </node>
+      <node id="47">
+        <label>frequency_grid.hpp</label>
+        <link refid="d5/d39/frequency__grid_8hpp"/>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
         </childnode>
       </node>
-      <node id="54">
+      <node id="52">
         <label>integrator.c++</label>
         <link refid="d7/d61/integrator_8c_09_09"/>
       </node>
-      <node id="53">
+      <node id="51">
         <label>integrator.hpp</label>
         <link refid="dd/d1f/integrator_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
         <childnode refid="22" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="52" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="23" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
-        </childnode>
-        <childnode refid="54" relation="include">
-        </childnode>
-        <childnode refid="25" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
+        <childnode refid="15" relation="include">
         </childnode>
       </node>
-      <node id="61">
+      <node id="59">
         <label>integrator_NR.hpp</label>
         <link refid="da/db4/integrator__NR_8hpp"/>
-        <childnode refid="53" relation="include">
+        <childnode refid="51" relation="include">
         </childnode>
       </node>
-      <node id="55">
+      <node id="53">
         <label>old_integrators.c++</label>
         <link refid="de/d11/old__integrators_8c_09_09"/>
       </node>
-      <node id="52">
+      <node id="50">
         <label>old_integrators.hpp</label>
         <link refid="d7/d65/old__integrators_8hpp"/>
+        <childnode refid="51" relation="include">
+        </childnode>
         <childnode refid="53" relation="include">
         </childnode>
-        <childnode refid="55" relation="include">
-        </childnode>
       </node>
-      <node id="50">
+      <node id="48">
         <label>InterpolatorLinOrSloppy.hpp</label>
         <link refid="d3/d17/InterpolatorLinOrSloppy_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="40" relation="include">
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>integrandSE.hpp</label>
+        <link refid="de/d65/integrandSE_8hpp"/>
+        <childnode refid="23" relation="include">
         </childnode>
       </node>
       <node id="24">
-        <label>integrandSE.hpp</label>
-        <link refid="de/d65/integrandSE_8hpp"/>
-        <childnode refid="25" relation="include">
-        </childnode>
-      </node>
-      <node id="26">
         <label>loop.c++</label>
         <link refid="d5/dae/loop_8c_09_09"/>
       </node>
-      <node id="25">
+      <node id="23">
         <label>loop.hpp</label>
         <link refid="d8/d1d/loop_8hpp"/>
-        <childnode refid="26" relation="include">
+        <childnode refid="24" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
         <childnode refid="14" relation="include">
         </childnode>
-      </node>
-      <node id="11">
-        <label>main.cpp</label>
-        <link refid="df/d0a/main_8cpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
       </node>
       <node id="10">
-        <label>flow.c++</label>
-        <link refid="d4/dde/flow_8c_09_09"/>
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
       </node>
       <node id="9">
         <label>flow.hpp</label>
@@ -434,19 +430,17 @@
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
-        </childnode>
       </node>
-      <node id="14">
+      <node id="13">
         <label>right_hand_sides.hpp</label>
         <link refid="d8/dea/right__hand__sides_8hpp"/>
         <childnode refid="9" relation="include">
         </childnode>
       </node>
-      <node id="64">
+      <node id="62">
         <label>ranged_view.hpp</label>
         <link refid="dd/df3/ranged__view_8hpp"/>
-        <childnode refid="30" relation="include">
+        <childnode refid="28" relation="include">
         </childnode>
       </node>
       <node id="1">
@@ -454,76 +448,76 @@
         <link refid="d3/d3c/frequency__parameters_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="44" relation="include">
+        <childnode refid="42" relation="include">
         </childnode>
       </node>
-      <node id="44">
+      <node id="42">
         <label>master_parameters.hpp</label>
         <link refid="d1/df8/master__parameters_8hpp"/>
-        <childnode refid="45" relation="include">
+        <childnode refid="43" relation="include">
         </childnode>
-        <childnode refid="32" relation="include">
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
         </childnode>
         <childnode refid="20" relation="include">
         </childnode>
-        <childnode refid="22" relation="include">
-        </childnode>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="46" relation="include">
+        <childnode refid="44" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="59" relation="include">
+        <childnode refid="57" relation="include">
         </childnode>
-        <childnode refid="49" relation="include">
+        <childnode refid="47" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="39" relation="include">
         </childnode>
-        <childnode refid="38" relation="include">
+        <childnode refid="36" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
+        <childnode refid="22" relation="include">
         </childnode>
-        <childnode refid="53" relation="include">
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
         </childnode>
         <childnode refid="25" relation="include">
         </childnode>
-        <childnode refid="27" relation="include">
+        <childnode refid="10" relation="include">
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="50" relation="include">
         </childnode>
-        <childnode refid="52" relation="include">
-        </childnode>
-        <childnode refid="37" relation="include">
+        <childnode refid="35" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="42" relation="include">
+        <childnode refid="40" relation="include">
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="14" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
-        <childnode refid="56" relation="include">
+        <childnode refid="54" relation="include">
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="23">
+      <node id="21">
         <label>hartree_term.c++</label>
         <link refid="d4/d92/hartree__term_8c_09_09"/>
       </node>
-      <node id="41">
+      <node id="39">
         <label>hartree_term.hpp</label>
         <link refid="d1/db3/hartree__term_8hpp"/>
-        <childnode refid="23" relation="include">
+        <childnode refid="21" relation="include">
         </childnode>
-        <childnode refid="29" relation="include">
+        <childnode refid="27" relation="include">
         </childnode>
       </node>
-      <node id="13">
+      <node id="12">
         <label>parquet_solver.c++</label>
         <link refid="d5/d94/parquet__solver_8c_09_09"/>
       </node>
@@ -532,91 +526,85 @@
         <link refid="dd/d0a/parquet__solver_8hpp"/>
         <childnode refid="9" relation="include">
         </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
         <childnode refid="11" relation="include">
         </childnode>
         <childnode refid="12" relation="include">
         </childnode>
         <childnode refid="13" relation="include">
         </childnode>
-        <childnode refid="14" relation="include">
-        </childnode>
       </node>
-      <node id="15">
+      <node id="14">
         <label>perturbation_theory.hpp</label>
         <link refid="d5/d0d/perturbation__theory_8hpp"/>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="11" relation="include">
+        <childnode refid="10" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="11" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
       </node>
-      <node id="31">
+      <node id="29">
         <label>KramersKronig.c++</label>
         <link refid="d7/d43/KramersKronig_8c_09_09"/>
       </node>
-      <node id="30">
+      <node id="28">
         <label>KramersKronig.hpp</label>
         <link refid="d1/db3/KramersKronig_8hpp"/>
-        <childnode refid="31" relation="include">
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
         </childnode>
         <childnode refid="16" relation="include">
         </childnode>
-        <childnode refid="18" relation="include">
-        </childnode>
       </node>
-      <node id="36">
+      <node id="34">
         <label>causality_FDT_checks.c++</label>
         <link refid="d8/dca/causality__FDT__checks_8c_09_09"/>
       </node>
-      <node id="35">
+      <node id="33">
         <label>causality_FDT_checks.hpp</label>
         <link refid="d1/d75/causality__FDT__checks_8hpp"/>
-        <childnode refid="32" relation="include">
+        <childnode refid="30" relation="include">
         </childnode>
-        <childnode refid="36" relation="include">
+        <childnode refid="34" relation="include">
         </childnode>
-        <childnode refid="37" relation="include">
+        <childnode refid="35" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="18" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
       </node>
-      <node id="12">
+      <node id="11">
         <label>main_postproc.cpp</label>
         <link refid="dd/d00/main__postproc_8cpp"/>
       </node>
-      <node id="17">
-        <label>postprocessing.c++</label>
-        <link refid="d9/dae/postprocessing_8c_09_09"/>
-      </node>
-      <node id="16">
+      <node id="15">
         <label>postprocessing.hpp</label>
         <link refid="d4/d81/postprocessing_8hpp"/>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="17" relation="include">
-        </childnode>
-        <childnode refid="18" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
       </node>
-      <node id="18">
+      <node id="16">
         <label>sanity_check.hpp</label>
         <link refid="d2/d3f/sanity__check_8hpp"/>
         <childnode refid="8" relation="include">
         </childnode>
       </node>
-      <node id="48">
+      <node id="46">
         <label>Keldysh_symmetries.c++</label>
         <link refid="d4/de0/Keldysh__symmetries_8c_09_09"/>
       </node>
-      <node id="47">
+      <node id="45">
         <label>Keldysh_symmetries.hpp</label>
         <link refid="d2/d1a/Keldysh__symmetries_8hpp"/>
-        <childnode refid="48" relation="include">
+        <childnode refid="46" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
         </childnode>
@@ -626,235 +614,235 @@
         </childnode>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="49" relation="include">
+        <childnode refid="47" relation="include">
         </childnode>
-        <childnode refid="38" relation="include">
+        <childnode refid="36" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
-        </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="40" relation="include">
+        <childnode refid="38" relation="include">
         </childnode>
-        <childnode refid="56" relation="include">
+        <childnode refid="54" relation="include">
         </childnode>
       </node>
-      <node id="72">
+      <node id="70">
         <label>symmetry_table.hpp</label>
         <link refid="d3/d77/symmetry__table_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
       </node>
-      <node id="57">
+      <node id="55">
         <label>symmetry_transformations.c++</label>
         <link refid="d5/def/symmetry__transformations_8c_09_09"/>
       </node>
-      <node id="56">
+      <node id="54">
         <label>symmetry_transformations.hpp</label>
         <link refid="db/d7d/symmetry__transformations_8hpp"/>
-        <childnode refid="50" relation="include">
+        <childnode refid="48" relation="include">
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="57" relation="include">
+        <childnode refid="55" relation="include">
         </childnode>
       </node>
-      <node id="34">
+      <node id="32">
         <label>anderson_acceleration.hpp</label>
         <link refid="d6/d7b/anderson__acceleration_8hpp"/>
         <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="14" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
-      <node id="39">
+      <node id="37">
         <label>hdf5_routines.c++</label>
         <link refid="d5/d4f/hdf5__routines_8c_09_09"/>
       </node>
-      <node id="38">
+      <node id="36">
         <label>hdf5_routines.hpp</label>
         <link refid="d5/de4/hdf5__routines_8hpp"/>
-        <childnode refid="32" relation="include">
+        <childnode refid="30" relation="include">
         </childnode>
-        <childnode refid="35" relation="include">
+        <childnode refid="33" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="23" relation="include">
-        </childnode>
-        <childnode refid="39" relation="include">
-        </childnode>
-        <childnode refid="24" relation="include">
-        </childnode>
-        <childnode refid="25" relation="include">
-        </childnode>
-        <childnode refid="11" relation="include">
-        </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="21" relation="include">
         </childnode>
         <childnode refid="37" relation="include">
         </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
         <childnode refid="8" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
         </childnode>
         <childnode refid="14" relation="include">
         </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
       </node>
-      <node id="63">
+      <node id="61">
         <label>math_utils.c++</label>
         <link refid="df/d31/math__utils_8c_09_09"/>
       </node>
-      <node id="62">
+      <node id="60">
         <label>math_utils.hpp</label>
         <link refid="de/dbb/math__utils_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="59" relation="include">
+        <childnode refid="57" relation="include">
         </childnode>
-        <childnode refid="49" relation="include">
+        <childnode refid="47" relation="include">
         </childnode>
-        <childnode refid="63" relation="include">
+        <childnode refid="61" relation="include">
         </childnode>
-        <childnode refid="42" relation="include">
+        <childnode refid="40" relation="include">
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="64" relation="include">
+        <childnode refid="62" relation="include">
         </childnode>
-        <childnode refid="56" relation="include">
+        <childnode refid="54" relation="include">
         </childnode>
       </node>
-      <node id="66">
+      <node id="64">
         <label>minimizer.hpp</label>
         <link refid="d4/d21/minimizer_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="40" relation="include">
+        <childnode refid="38" relation="include">
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="67">
+      <node id="65">
         <label>mpi_setup.c++</label>
         <link refid="d4/dda/mpi__setup_8c_09_09"/>
       </node>
-      <node id="65">
+      <node id="63">
         <label>mpi_setup.hpp</label>
         <link refid="db/de0/mpi__setup_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="38" relation="include">
+        <childnode refid="36" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
         </childnode>
         <childnode refid="66" relation="include">
-        </childnode>
-        <childnode refid="67" relation="include">
         </childnode>
         <childnode refid="68" relation="include">
         </childnode>
-        <childnode refid="70" relation="include">
-        </childnode>
       </node>
-      <node id="69">
+      <node id="67">
         <label>util.c++</label>
         <link refid="d6/d35/util_8c_09_09"/>
       </node>
-      <node id="68">
+      <node id="66">
         <label>util.hpp</label>
         <link refid="d0/d3f/util_8hpp"/>
-        <childnode refid="47" relation="include">
+        <childnode refid="45" relation="include">
         </childnode>
-        <childnode refid="32" relation="include">
+        <childnode refid="30" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
         </childnode>
         <childnode refid="20" relation="include">
         </childnode>
-        <childnode refid="7" relation="include">
+        <childnode refid="47" relation="include">
         </childnode>
-        <childnode refid="35" relation="include">
+        <childnode refid="39" relation="include">
         </childnode>
-        <childnode refid="22" relation="include">
+        <childnode refid="36" relation="include">
         </childnode>
-        <childnode refid="49" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="51" relation="include">
         </childnode>
-        <childnode refid="38" relation="include">
+        <childnode refid="25" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
-        </childnode>
-        <childnode refid="53" relation="include">
-        </childnode>
-        <childnode refid="27" relation="include">
+        <childnode refid="10" relation="include">
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="60" relation="include">
         </childnode>
-        <childnode refid="62" relation="include">
+        <childnode refid="64" relation="include">
         </childnode>
-        <childnode refid="66" relation="include">
+        <childnode refid="50" relation="include">
         </childnode>
-        <childnode refid="52" relation="include">
+        <childnode refid="35" relation="include">
         </childnode>
-        <childnode refid="37" relation="include">
+        <childnode refid="40" relation="include">
         </childnode>
-        <childnode refid="42" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
-        <childnode refid="14" relation="include">
+        <childnode refid="27" relation="include">
         </childnode>
-        <childnode refid="29" relation="include">
-        </childnode>
-        <childnode refid="69" relation="include">
+        <childnode refid="67" relation="include">
         </childnode>
       </node>
-      <node id="71">
+      <node id="69">
         <label>write_data2file.c++</label>
         <link refid="d9/d8b/write__data2file_8c_09_09"/>
       </node>
-      <node id="70">
+      <node id="68">
         <label>write_data2file.hpp</label>
         <link refid="d8/d74/write__data2file_8hpp"/>
-        <childnode refid="32" relation="include">
+        <childnode refid="30" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="39" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="17" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
+        <childnode refid="22" relation="include">
         </childnode>
-        <childnode refid="25" relation="include">
+        <childnode refid="23" relation="include">
         </childnode>
-        <childnode refid="37" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
+        <childnode refid="35" relation="include">
         </childnode>
         <childnode refid="14" relation="include">
         </childnode>
-        <childnode refid="40" relation="include">
+        <childnode refid="15" relation="include">
         </childnode>
-        <childnode refid="71" relation="include">
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="69" relation="include">
         </childnode>
       </node>
     </invincdepgraph>
@@ -951,7 +939,6 @@
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
       </memberdef>
@@ -971,7 +958,6 @@
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" compoundref="d6/d2d/selfenergy_8hpp" startline="407" endline="423">SelfEnergy&lt; Q &gt;::check_symmetries</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a532f006939433b3802b9c407043b3add" compoundref="d9/dae/postprocessing_8c_09_09" startline="3" endline="62">compute_Phi_tilde</referencedby>
         <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="275" endline="289">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
@@ -997,7 +983,6 @@
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
       </memberdef>
@@ -1039,7 +1024,6 @@
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1aec10c7c2fae276227544e207cbd802d0" compoundref="db/d7d/symmetry__transformations_8hpp" startline="17" endline="64">T1</referencedby>

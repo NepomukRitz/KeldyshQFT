@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['plot_0',['plot',['../de/d73/namespaceplot.html',1,'']]],
-  ['plotting_5froutines_1',['plotting_routines',['../d7/d09/namespaceplotting__routines.html',1,'']]]
+  ['reproduce_5fbenchmark_5fdata_0',['reproduce_benchmark_data',['../dd/d95/namespacereproduce__benchmark__data.html',1,'']]]
 ];

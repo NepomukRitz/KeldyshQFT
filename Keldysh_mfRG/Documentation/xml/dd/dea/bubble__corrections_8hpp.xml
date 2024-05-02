@@ -444,7 +444,7 @@
         </childnode>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="22" relation="include">
+        <childnode refid="20" relation="include">
         </childnode>
       </node>
       <node id="3">
@@ -454,25 +454,25 @@
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="18" relation="include">
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
         </childnode>
         <childnode refid="17" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
-        </childnode>
-        <childnode refid="20" relation="include">
+        <childnode refid="18" relation="include">
         </childnode>
       </node>
-      <node id="23">
+      <node id="21">
         <label>loop_corrections.c++</label>
         <link refid="d7/df0/loop__corrections_8c_09_09"/>
       </node>
-      <node id="22">
+      <node id="20">
         <label>loop_corrections.hpp</label>
         <link refid="d0/d0e/loop__corrections_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="23" relation="include">
+        <childnode refid="21" relation="include">
         </childnode>
       </node>
       <node id="4">
@@ -480,7 +480,7 @@
         <link refid="d0/dac/bubble_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="17" relation="include">
+        <childnode refid="15" relation="include">
         </childnode>
       </node>
       <node id="5">
@@ -488,48 +488,44 @@
         <link refid="de/de8/bubble__function_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
-        <childnode refid="13" relation="include">
-        </childnode>
-        <childnode refid="14" relation="include">
-        </childnode>
         <childnode refid="12" relation="include">
         </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
       </node>
-      <node id="17">
+      <node id="15">
         <label>integrand.hpp</label>
         <link refid="df/d83/integrand_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="19">
+      <node id="17">
         <label>integrandSE.hpp</label>
         <link refid="de/d65/integrandSE_8hpp"/>
-        <childnode refid="20" relation="include">
+        <childnode refid="18" relation="include">
         </childnode>
       </node>
-      <node id="21">
+      <node id="19">
         <label>loop.c++</label>
         <link refid="d5/dae/loop_8c_09_09"/>
       </node>
-      <node id="20">
+      <node id="18">
         <label>loop.hpp</label>
         <link refid="d8/d1d/loop_8hpp"/>
-        <childnode refid="21" relation="include">
+        <childnode refid="19" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
         </childnode>
-        <childnode refid="13" relation="include">
-        </childnode>
         <childnode refid="12" relation="include">
         </childnode>
-      </node>
-      <node id="9">
-        <label>main.cpp</label>
-        <link refid="df/d0a/main_8cpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
       </node>
       <node id="8">
-        <label>flow.c++</label>
-        <link refid="d4/dde/flow_8c_09_09"/>
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
       </node>
       <node id="7">
         <label>flow.hpp</label>
@@ -538,20 +534,18 @@
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="10" relation="include">
-        </childnode>
       </node>
-      <node id="12">
+      <node id="11">
         <label>right_hand_sides.hpp</label>
         <link refid="d8/dea/right__hand__sides_8hpp"/>
         <childnode refid="7" relation="include">
         </childnode>
       </node>
-      <node id="18">
+      <node id="16">
         <label>hartree_term.c++</label>
         <link refid="d4/d92/hartree__term_8c_09_09"/>
       </node>
-      <node id="11">
+      <node id="10">
         <label>parquet_solver.c++</label>
         <link refid="d5/d94/parquet__solver_8c_09_09"/>
       </node>
@@ -560,46 +554,40 @@
         <link refid="dd/d0a/parquet__solver_8hpp"/>
         <childnode refid="7" relation="include">
         </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
         <childnode refid="9" relation="include">
         </childnode>
         <childnode refid="10" relation="include">
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
-        </childnode>
       </node>
-      <node id="13">
+      <node id="12">
         <label>perturbation_theory.hpp</label>
         <link refid="d5/d0d/perturbation__theory_8hpp"/>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="9" relation="include">
+        <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="10" relation="include">
+        <childnode refid="9" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
         </childnode>
       </node>
-      <node id="10">
+      <node id="9">
         <label>main_postproc.cpp</label>
         <link refid="dd/d00/main__postproc_8cpp"/>
       </node>
-      <node id="15">
-        <label>postprocessing.c++</label>
-        <link refid="d9/dae/postprocessing_8c_09_09"/>
-      </node>
-      <node id="14">
+      <node id="13">
         <label>postprocessing.hpp</label>
         <link refid="d4/d81/postprocessing_8hpp"/>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
+        <childnode refid="14" relation="include">
         </childnode>
       </node>
-      <node id="16">
+      <node id="14">
         <label>sanity_check.hpp</label>
         <link refid="d2/d3f/sanity__check_8hpp"/>
         <childnode refid="6" relation="include">
@@ -1368,7 +1356,6 @@
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a0141c6e09ccc03e02202610597a96a83" compoundref="df/da4/multiarray_8hpp" startline="240" endline="248">multidimensional::multiarray&lt; T, depth &gt;::at_vectorized</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a1a0f7133f9225325c79118a154b6e4f6" compoundref="df/da4/multiarray_8hpp" startline="250" endline="254">multidimensional::multiarray&lt; T, depth &gt;::at_vectorized</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a5757d174bade77621dff6d192e8177de" compoundref="df/da4/multiarray_8hpp" startline="231" endline="238">multidimensional::multiarray&lt; T, depth &gt;::at_vectorized</referencedby>
-        <referencedby refid="dd/d95/namespacereproduce__benchmark__data_1ae8834c5abad07c748cc0efc1c9d1b4be" compoundref="d6/de5/reproduce__benchmark__data_8py" startline="7" endline="18">reproduce_benchmark_data.backup_files</referencedby>
         <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1ab8541a6759186032981a267f59e53adf" compoundref="dd/df3/ranged__view_8hpp" startline="54" endline="63">multidimensional::BlockView&lt; T, depth &gt;::BlockView</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a66832383adea26f0073cb95cdf0ecc6c" compoundref="de/de8/bubble__function_8hpp" startline="980" endline="983">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::bubble_value_prefactor</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
@@ -1386,18 +1373,15 @@
         <referencedby refid="d2/d4a/classGeneralVertex_1a39fcda7cd0a1b72d75253a4b5c4c9536" compoundref="d1/d2d/vertex_8hpp" startline="778" endline="780">GeneralVertex&lt; Q, symmtype, differentiated &gt;::center_frequency_grids</referencedby>
         <referencedby refid="d4/dbd/classrvert_1af488a9612a47c628088324a8c386c34c" compoundref="d3/d22/r__vertex_8hpp" startline="160" endline="162">rvert&lt; Q &gt;::center_frequency_grids</referencedby>
         <referencedby refid="dc/d7a/classdataBuffer_1a92ae72eb3b219072c7552081201048fe" compoundref="dc/d80/data__buffer_8hpp" startline="671" endline="676">dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::center_frequency_grids</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1abe68382e5921cbad602577447e4cc000" compoundref="db/de8/ipynb__scripts_2plotting__routines_8py" startline="52" endline="57">plotting_routines.change_prefix</referencedby>
         <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1aea8a1c49f6dd081ec82e1c707ffe3c57" compoundref="dd/df3/ranged__view_8hpp" startline="74" endline="86">multidimensional::BlockView&lt; T, depth &gt;::check_bounds</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1afdbae946939f1379a4e55e7e8a0934ce" compoundref="df/da4/multiarray_8hpp" startline="626" endline="638">multidimensional::multiarray&lt; T, depth &gt;::check_bounds</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1acd08f67a199b8f422c2b179d11e22d4e" compoundref="df/da4/multiarray_8hpp" startline="641" endline="653">multidimensional::multiarray&lt; T, depth &gt;::check_bounds_end</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a6e71610e223d517d2087c2e6a53617af" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="174" endline="179">check_FDTs</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a0fc9c91437f68ed7a4dbd7f265f9715f" compoundref="d9/dae/postprocessing_8c_09_09" startline="296" endline="411">check_FDTs_for_slices_through_fullvertex</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="129" endline="170">check_FDTs_K1</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="85" endline="125">check_FDTs_selfenergy</referencedby>
         <referencedby refid="dc/d7a/classdataBuffer_1a0f89e6cb358e2992c895af00050c5174" compoundref="dc/d80/data__buffer_8hpp" startline="813" endline="825">dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::check_if_frequencyGrid_identical</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a4c7785e12898454e66547fd785ea92e8" compoundref="d9/dae/postprocessing_8c_09_09" startline="106" endline="130">check_Kramers_Kronig</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1af46f4d80e0be1f216b3793b40035614b" compoundref="de/de8/bubble__function_8hpp" startline="991" endline="1009">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::check_presence_of_symmetry_related_contributions</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1aee3fd67f3e3418a7e1be2b60fc93c980" compoundref="d6/d2d/selfenergy_8hpp" startline="397" endline="403">SelfEnergy&lt; Q &gt;::check_resolution</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
@@ -1420,10 +1404,6 @@
         <referencedby refid="d8/dca/causality__FDT__checks_8c_09_09_1aa63e0266511b6c4db70efa67918ee795" compoundref="d8/dca/causality__FDT__checks_8c_09_09" startline="3" endline="13">compare_flow_with_FDTs</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a2ad9fde94cddf669f941f8405a461ae2" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="913" endline="929">compare_with_FDTs</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1a6e757d17617cdaaf38994b369230dc80" compoundref="de/d62/getIntegrand_8py" startline="95" endline="118">getIntegrand.compile_get_integrand_dGamma_1loop_fromFlow_Cpp</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1aece1226a1eb20ceb7426b8bb01dda455" compoundref="de/d62/getIntegrand_8py" startline="143" endline="166">getIntegrand.compile_get_integrand_dGammaC_Cpp</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1a0ba3135824925065934f234ef8423d9a" compoundref="de/d62/getIntegrand_8py" startline="119" endline="142">getIntegrand.compile_get_integrand_dGammaL_Cpp</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1acb6f69b0cb389468600d89e46b40452f" compoundref="de/d62/getIntegrand_8py" startline="43" endline="86">getIntegrand.compile_stuff</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a97f702e04f1c5d26a95211570c003781" compoundref="dd/d0a/parquet__solver_8hpp" startline="73" endline="87">compute_BSE</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1" compoundref="dd/d0a/parquet__solver_8hpp" startline="28" endline="62">compute_BSE</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
@@ -1436,9 +1416,6 @@
         <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="127" endline="439">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
         <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="473" endline="496">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
         <referencedby refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" compoundref="d8/d1d/loop_8hpp" startline="442" endline="470">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_zeroT</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a532f006939433b3802b9c407043b3add" compoundref="d9/dae/postprocessing_8c_09_09" startline="3" endline="62">compute_Phi_tilde</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ad7795529aa43acc4d8c7b94cdcd493db" compoundref="d9/dae/postprocessing_8c_09_09" startline="134" endline="176">compute_postprocessed_susceptibilities</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1af1e2a562265def3e9c99c1e0b2d0fb3b" compoundref="d9/dae/postprocessing_8c_09_09" startline="179" endline="256">compute_proprocessed_susceptibilities_PT2</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a9ef507c1d49fff7991752cab04374824" compoundref="dd/d0a/parquet__solver_8hpp" startline="462" endline="490">compute_SDE</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1a17567ec5d9df767870c3a7489f64a1" compoundref="dd/d0a/parquet__solver_8hpp" startline="92" endline="178">compute_SDE_impl</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a975283a2a8d88b37c80ee3d2f39e68c3" compoundref="dd/d0a/parquet__solver_8hpp" startline="182" endline="200">compute_SDE_impl_v1</referencedby>
@@ -1500,7 +1477,6 @@
         <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a4556d172b65be55721c97d88f400ad3b" compoundref="d5/dd1/flow__grid_8hpp" startline="98" endline="102">flowgrid::sqrt_parametrization::dlambda_dt</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1af276d08919421578503dd91a0d177c84" compoundref="de/dbb/math__utils_8hpp" startline="1085" endline="1091">dot</referencedby>
         <referencedby refid="d7/d65/old__integrators_8hpp_1a1336b0c6f19a86e6932ae49a7a1233c6" compoundref="d7/d65/old__integrators_8hpp" startline="19" endline="25">dotproduct</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1a7cc2bc58a20953150c0143c53ddbd92e" compoundref="db/de8/ipynb__scripts_2plotting__routines_8py" startline="15" endline="23">plotting_routines.effec_distribution</referencedby>
         <referencedby refid="d5/d5f/classdataContainerBase_1a8ab6ca579df1cff6717d9fc17c37cdc9" compoundref="da/dbc/data__container_8hpp" startline="157" endline="159">dataContainerBase&lt; Q, rank &gt;::eigen_segment</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a72843a896df64733c74232efdd5f2af6" compoundref="df/da4/multiarray_8hpp" startline="196" endline="208">multidimensional::multiarray&lt; T, depth &gt;::eigen_segment</referencedby>
         <referencedby refid="d5/d5f/classdataContainerBase_1a6d65f15d6b8115ba71c9ec5145e63302" compoundref="da/dbc/data__container_8hpp" startline="161" endline="163">dataContainerBase&lt; Q, rank &gt;::eigen_segment</referencedby>
@@ -1524,8 +1500,6 @@
         <referencedby refid="de/d5d/propagator_8c_09_09_1a5ac32276d18b22b867cfbc3805a6d223" compoundref="de/d5d/propagator_8c_09_09" startline="24" endline="34">Fermi_distribution</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1ac916c7e34a3a0c7d788ea3ec04446f29" compoundref="d4/d92/hartree__term_8c_09_09" startline="182" endline="194">Hartree_Solver::fermi_distribution</referencedby>
         <referencedby refid="de/d5d/propagator_8c_09_09_1a82ecb2fda37c3bedbb8dd4cfa1aa47cf" compoundref="de/d5d/propagator_8c_09_09" startline="9" endline="12">Fermi_fac</referencedby>
-        <referencedby refid="d2/d28/namespacesetup__figure_1a9bfd90b25229a375b10ef974a8c5f81a" compoundref="d4/dbc/setup__figure_8py" startline="17" endline="36">setup_figure.finalize_figure_selfenergy</referencedby>
-        <referencedby refid="d2/d28/namespacesetup__figure_1a0544af65a27b11d30e2e209e023551f1" compoundref="d4/dbc/setup__figure_8py" startline="37" endline="50">setup_figure.finalize_figure_spectralfunction</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" compoundref="de/de8/bubble__function_8hpp" startline="191" endline="213">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a0fb3accac383318a2535f3fbdfa26414" compoundref="d1/d2d/vertex_8hpp" startline="2068" endline="2073">fullvert&lt; Q &gt;::findBestFreqGrid</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1ae95e38ba06e10e921ed2fe0101bf699f" compoundref="df/da4/multiarray_8hpp" startline="363" endline="366">multidimensional::multiarray&lt; T, depth &gt;::flat_at</referencedby>
@@ -1560,8 +1534,6 @@
         <referencedby refid="d2/d4a/classGeneralVertex_1ae4f311a388963f2d55476f7d3add6a71" compoundref="d1/d2d/vertex_8hpp" startline="771" endline="773">GeneralVertex&lt; Q, symmtype, differentiated &gt;::GeneralVertex</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a1998a1c7f8941816fe6706838b16ca26" compoundref="d6/d35/util_8c_09_09" startline="161" endline="186">utils::generate_data_directory</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1af65af7c5e8113ae01d07af1063e05a01" compoundref="db/de8/ipynb__scripts_2plotting__routines_8py" startline="29" endline="51">plotting_routines.generate_filename_fRG</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1a46c974daa3dcc27042323716519730ae" compoundref="db/de8/ipynb__scripts_2plotting__routines_8py" startline="58" endline="73">plotting_routines.generate_label</referencedby>
         <referencedby refid="dc/d3c/structode__solver__impl_1_1butcher__tableau_1a94fa681ccf80f2647307baae0d3a1c6f" compoundref="da/dc3/ODE__solvers_8hpp" startline="203" endline="212">ode_solver_impl::butcher_tableau&lt; stages &gt;::get_a</referencedby>
         <referencedby refid="df/dd5/classbufferFrequencyGrid_1a1d20d85f69c7e9292044f236f9f32bde" compoundref="d5/d39/frequency__grid_8hpp" startline="510" endline="521">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
         <referencedby refid="df/dd5/classbufferFrequencyGrid_1ae0a77a63244297527cfdc6ad4a53e392" compoundref="d5/d39/frequency__grid_8hpp" startline="522" endline="541">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
@@ -1625,15 +1597,6 @@
         <referencedby refid="d2/d1a/Keldysh__symmetries_8hpp_1ab3ef98f1e58c31aca1a8bc57a7690b25" compoundref="d2/d1a/Keldysh__symmetries_8hpp" startline="254" endline="272">get_i0_left_right</referencedby>
         <referencedby refid="d7/d59/data__structures_8hpp_1ac35f96e33d0feaaaf0e94b57052ca393" compoundref="d7/d59/data__structures_8hpp" startline="51" endline="58">get_Id_Matrix_4x4</referencedby>
         <referencedby refid="d2/db2/structVertexInput_1a181dc6772f5264cb38e1e1041824ae40" compoundref="d7/d59/data__structures_8hpp" startline="580" endline="615">VertexInput::get_indices</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1af1c44baca959bf876be1dbce3a4dba4d" compoundref="de/d62/getIntegrand_8py" startline="175" endline="178">getIntegrand.get_integrand_dGamma_1loop</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1afdac74b8af965e2014d79d9f562ded7e" compoundref="de/d62/getIntegrand_8py" startline="171" endline="174">getIntegrand.get_integrand_dGamma_1loop_fromFlow</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1aab3c3401b1ccad77ada588747b5bcbeb" compoundref="de/d62/getIntegrand_8py" startline="183" endline="187">getIntegrand.get_integrand_dGammaC</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1a46902ef3e92856bd353e2838c7280de3" compoundref="de/d62/getIntegrand_8py" startline="179" endline="182">getIntegrand.get_integrand_dGammaL</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1a302b6518c3df0fac9f6e752d9b104e7c" compoundref="de/d62/getIntegrand_8py" startline="206" endline="223">getIntegrand.get_integrand_filename_dGamma_1loop</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1ae873b3eb1fc25f99b13814fa633aed56" compoundref="de/d62/getIntegrand_8py" startline="242" endline="258">getIntegrand.get_integrand_filename_dGammaC</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1afaa4a831b0327c85654ea1c31e36c9eb" compoundref="de/d62/getIntegrand_8py" startline="224" endline="241">getIntegrand.get_integrand_filename_dGammaL</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1abdd42636e64de29240839ebd24f0c8ee" compoundref="de/d62/getIntegrand_8py" startline="188" endline="205">getIntegrand.get_integrand_filename_Gamma1_Pi_Gamma2</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1a3b461523321771151e17ce5c144da522" compoundref="de/d62/getIntegrand_8py" startline="167" endline="170">getIntegrand.get_integrand_Gamma1_Pi_Gamma2</referencedby>
         <referencedby refid="d8/d2c/classIntegrandSE_1a3de6ed35b2ae2ba2ccc71c5961723674" compoundref="de/d65/integrandSE_8hpp" startline="204" endline="226">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::get_integrand_vals</referencedby>
         <referencedby refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" compoundref="d6/d8d/flow__grid_8c_09_09" startline="14" endline="30">flowgrid::get_Lambda_checkpoints</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a054dceb68c5eb4713f18e88c980711ab" compoundref="de/de8/bubble__function_8hpp" startline="964" endline="974">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_Matsubara_integration_intervals</referencedby>
@@ -1718,7 +1681,6 @@
         <referencedby refid="da/dbf/classirreducible_1a808bca3689d1374634c3f74f28f70cc2" compoundref="d1/d2d/vertex_8hpp" startline="1169" endline="1192">irreducible&lt; Q &gt;::initialize</referencedby>
         <referencedby refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="967" endline="970">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513" compoundref="d6/d2d/selfenergy_8hpp" startline="153" endline="157">SelfEnergy&lt; Q &gt;::initialize</referencedby>
-        <referencedby refid="d2/d28/namespacesetup__figure_1a007e755d45da83573a214a75e1f5ce02" compoundref="d4/dbc/setup__figure_8py" startline="4" endline="16">setup_figure.initialize_figure</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1accf972145186913d2ccaf053d34f99b7" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="10" endline="29">FrequencyGrid&lt; eliasGrid &gt;::initialize_grid</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a7afb905fe94d4f530269814433181eb7" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="554" endline="573">FrequencyGrid&lt; hybridGrid &gt;::initialize_grid</referencedby>
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a24be16d9223cb707374e10a7b2f5f43d" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="699" endline="709">FrequencyGrid&lt; angularGrid &gt;::initialize_grid</referencedby>
@@ -1811,14 +1773,6 @@
         <referencedby refid="d4/dbd/classrvert_1ac25d631e3fb944004cdac6a1334e9e4f" compoundref="d3/d22/r__vertex_8hpp" startline="1639" endline="1648">rvert&lt; Q &gt;::left_same_bare_symmetry_expanded</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a21ba518424bd3c9b2575d9d8b6476c43" compoundref="d1/d2d/vertex_8hpp" startline="1543" endline="1596">fullvert&lt; Q &gt;::left_same_bare_symmetry_expanded</referencedby>
         <referencedby refid="d2/d4a/classGeneralVertex_1abca5a01e345bc8e6597249dd4befe811" compoundref="d1/d2d/vertex_8hpp" startline="872" endline="882">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_same_bare_symmetry_expanded</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1a68a21a93c52bb1dbec9e3cf767c66b06" compoundref="d8/de5/ipynb__scripts_2load__data_8py" startline="111" endline="192">load_data.load_data</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1ac1c097e7b7afef7e3ca36b153c64f180" compoundref="d0/d32/python__scripts_2load__data_8py" startline="5" endline="39">load_data.load_hdf5</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1a47715d62acae83af7fcc3a89fd313896" compoundref="d8/de5/ipynb__scripts_2load__data_8py" startline="55" endline="86">load_data.load_K1</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1ae9c30efd0678d231c7321b9ec5828b0b" compoundref="d8/de5/ipynb__scripts_2load__data_8py" startline="87" endline="110">load_data.load_K2</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1aa8632dfe38a3febe31bf04ff8e2e4758" compoundref="d8/de5/ipynb__scripts_2load__data_8py" startline="4" endline="20">load_data.load_parameters</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1ae9df5a3e4bd9bb1531a719e71065e93b" compoundref="d8/de5/ipynb__scripts_2load__data_8py" startline="21" endline="54">load_data.load_SE_A</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1ae030fd4581b0f20dd2133714ed247c53" compoundref="d8/de5/ipynb__scripts_2load__data_8py" startline="193" endline="211">load_data.load_SIAM_NRG</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1a91f1be1df1a560a299524128b6d57cfb" compoundref="d8/de5/ipynb__scripts_2load__data_8py" startline="212" endline="233">load_data.load_SIAM_NRG_finite_T</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1a6a596ed7bf95a10c45fd7aef6983d640" compoundref="df/d83/integrand_8hpp" startline="539" endline="595">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_left_scalar</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1abe45c78d4ef5dcc6b53e4e0cfab6d041" compoundref="df/d83/integrand_8hpp" startline="656" endline="672">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_left_vectorized</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1af4ae177dec9b129329eda2511b301e22" compoundref="df/d83/integrand_8hpp" startline="599" endline="651">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_right_scalar</referencedby>
@@ -1866,8 +1820,6 @@
         <referencedby refid="d7/d59/data__structures_8hpp_1a50967bf77ad436714d217c7b769a44a7" compoundref="d7/d59/data__structures_8hpp" startline="96" endline="96">myreal&lt; double &gt;</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1a72c94ca69e9b4d057f7060c99aec1eec" compoundref="df/d31/math__utils_8c_09_09" startline="58" endline="62">myround</referencedby>
         <referencedby refid="d7/d59/data__structures_8hpp_1a8ea989566e61dd7b2602c8486455399e" compoundref="d7/d59/data__structures_8hpp" startline="41" endline="48">myzero</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="127" endline="184">n_loop_flow</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d2/d4a/classGeneralVertex_1a7c4edf330670ed73cdd306e508137c76" compoundref="d1/d2d/vertex_8hpp" startline="935" endline="938">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm</referencedby>
         <referencedby refid="d7/d97/classState_1ac507d44949f78a583a7bed16fa9fcde9" compoundref="da/d3b/state_8hpp" startline="180" endline="185">State&lt; Q, differentiated &gt;::norm</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="589" endline="596">Propagator&lt; Q &gt;::norm</referencedby>
@@ -1885,7 +1837,6 @@
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
         <referencedby refid="d2/da0/namespaceboost_1_1numeric_1_1odeint_1a5510944be8243a1ed307b3a0648e7541" compoundref="da/dc3/ODE__solvers_8hpp" startline="826" endline="851">boost::numeric::odeint::ode_solver_boost</referencedby>
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1ad94c07731716a791b8db29612498a0d5" compoundref="da/dc3/ODE__solvers_8hpp" startline="159" endline="168">ODE_solver_Euler</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1a670940cf3d8eeabab08ea81ce10443de" compoundref="d0/d32/python__scripts_2load__data_8py" startline="40" endline="54">load_data.omegas</referencedby>
         <referencedby refid="de/dac/namespacehdf5__impl_1a71d51e4bfd62dbc3c1fb78b28d5105a2" compoundref="d5/de4/hdf5__routines_8hpp" startline="159" endline="162">hdf5_impl::open_Dataset</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a8e761cba4ac842504c408dfe71037413" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="16" endline="20">open_hdf_file_readOnly</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a924110dbdaccbbc744def3ca0838cb4c" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="21" endline="30">open_hdf_file_readWrite</referencedby>
@@ -2003,12 +1954,6 @@
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a812ac35cc43da6ba3591f65ccd94001e" compoundref="de/de8/bubble__function_8hpp" startline="219" endline="257">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::perform_computation</referencedby>
         <referencedby refid="dd/d46/namespaceselfenergy__loop_1aefc5e618636f72d0443b6b1e2c9a8309" compoundref="de/d65/integrandSE_8hpp" startline="18" endline="18">selfenergy_loop::pick_channel</referencedby>
         <referencedby refid="dd/d46/namespaceselfenergy__loop_1a9a229d51a6fa389dca0166fb6ea10f6a" compoundref="de/d65/integrandSE_8hpp" startline="19" endline="19">selfenergy_loop::pick_spin</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1a9ce053a0fa97847059c202c08bcc38b3" compoundref="db/de8/ipynb__scripts_2plotting__routines_8py" startline="74" endline="388">plotting_routines.plot_fRG</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1a7ce446ebee719c7e343ac7956d35edb2" compoundref="db/de8/ipynb__scripts_2plotting__routines_8py" startline="389" endline="621">plotting_routines.plot_fRG_V_runs</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1aaa2dc6b3eaae5c6c019757fdd47cf26b" compoundref="de/d62/getIntegrand_8py" startline="19" endline="26">getIntegrand.plot_integrand</referencedby>
-        <referencedby refid="d9/d59/namespacegetIntegrand_1ab7eba5c643c81ae7aff5539865fd275d" compoundref="de/d62/getIntegrand_8py" startline="28" endline="42">getIntegrand.plot_integrand_alli2</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1ab50a9ace2cb6e84d44537ed0579d4aac" compoundref="db/d3d/python__scripts_2plotting__routines_8py" startline="6" endline="30">plotting_routines.plot_selfenergy</referencedby>
-        <referencedby refid="d7/d09/namespaceplotting__routines_1a9c84c11834d1694cb8c8a01f2708c49a" compoundref="db/d3d/python__scripts_2plotting__routines_8py" startline="31" endline="55">plotting_routines.plot_spectralfunction</referencedby>
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1a35926ed20edc2503238326c955ab6ded" compoundref="da/dc3/ODE__solvers_8hpp" startline="26" endline="67">postRKstep_stuff</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a7aeba71c9187b7904b0e994030d89484" compoundref="de/dbb/math__utils_8hpp" startline="957" endline="966">power2</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" compoundref="df/d83/integrand_8hpp" startline="284" endline="335">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</referencedby>
@@ -2038,10 +1983,8 @@
         <referencedby refid="d4/dbd/classrvert_1a8e9446837a4a9308c720370ccbaa1445" compoundref="d3/d22/r__vertex_8hpp" startline="460" endline="472">rvert&lt; Q &gt;::read_symmetryreduced_rvert</referencedby>
         <referencedby refid="d4/dbd/classrvert_1ab58daf308f162bdc6d4d93aa39d7dc21" compoundref="d3/d22/r__vertex_8hpp" startline="476" endline="495">rvert&lt; Q &gt;::read_value</referencedby>
         <referencedby refid="d9/d2a/classvec_1af5a1d0abf515fb504d6aa7b0356d874b" compoundref="d7/d59/data__structures_8hpp" startline="347" endline="349">vec&lt; T &gt;::real</referencedby>
-        <referencedby refid="dc/dd6/namespaceload__data_1a2d96a5707f3027d9adc8e83b32079260" compoundref="d0/d32/python__scripts_2load__data_8py" startline="55" endline="73">load_data.rearrange_SE</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a1478fc6f27e0d03e0df937d5cbeffbf9" compoundref="d6/d2d/selfenergy_8hpp" startline="362" endline="364">SelfEnergy&lt; Q &gt;::rel_deviation_to</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a5072e97c8ff1a5940081e26256cd1ed2" compoundref="d1/d2d/vertex_8hpp" startline="1695" endline="1733">fullvert&lt; Q &gt;::reorder_due2antisymmetry</referencedby>
-        <referencedby refid="dd/d95/namespacereproduce__benchmark__data_1a84d882896f07aec2c6fd9ad967102d57" compoundref="d6/de5/reproduce__benchmark__data_8py" startline="19" endline="28">reproduce_benchmark_data.restore_backup_files</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a910c1f3d01af773982abfdfbdc44af08" compoundref="d1/d2d/vertex_8hpp" startline="1456" endline="1476">fullvert&lt; Q &gt;::right_diff_bare</referencedby>
         <referencedby refid="d2/d4a/classGeneralVertex_1aa13763454fa35f06b317985ec1f2e30b" compoundref="d1/d2d/vertex_8hpp" startline="849" endline="852">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_diff_bare</referencedby>
@@ -2078,7 +2021,6 @@
         <referencedby refid="d8/d2c/classIntegrandSE_1aafbce3768155a327575781a864fd31e8" compoundref="de/d65/integrandSE_8hpp" startline="229" endline="247">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
         <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="250" endline="271">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
         <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="77" endline="118">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ac32b68835cd73d7ac41aa26ba7c2d908" compoundref="d9/dae/postprocessing_8c_09_09" startline="258" endline="293">save_slices_through_fullvertex</referencedby>
         <referencedby refid="d7/dbe/structmfRG__record_1a93b8fefd8136bbebcfe993f76d281ff7" compoundref="d8/dea/right__hand__sides_8hpp" startline="76" endline="128">mfRG_record&lt; Q &gt;::save_states</referencedby>
         <referencedby refid="d7/d59/data__structures_8hpp_1a7bce458be2d6738c530f923d717b8fbe" compoundref="d7/d59/data__structures_8hpp" startline="189" endline="197">scalar_map</referencedby>
         <referencedby refid="d7/da5/namespacemultidimensional_1a7f3da0d0d4fcf00db82104c27cf167d0" compoundref="df/da4/multiarray_8hpp" startline="767" endline="776">multidimensional::scalar_map</referencedby>
@@ -2155,8 +2097,6 @@
         <referencedby refid="d9/d2a/classvec_1a16fc2bce0517df5b52cf812fa185497a" compoundref="d7/d59/data__structures_8hpp" startline="397" endline="399">vec&lt; T &gt;::sum</referencedby>
         <referencedby refid="d2/d4a/classGeneralVertex_1acaeb8f5e899ed8bb442316038024f591" compoundref="d1/d2d/vertex_8hpp" startline="939" endline="939">GeneralVertex&lt; Q, symmtype, differentiated &gt;::sum_norm</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a3e1354ef46407511ac75e2c8ba5e427a" compoundref="d1/d2d/vertex_8hpp" startline="1816" endline="1822">fullvert&lt; Q &gt;::sum_norm</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a3139cb5b36b90494e2eb69cf57c014b9" compoundref="d9/dae/postprocessing_8c_09_09" startline="65" endline="89">sum_rule_K1tK</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ab67d7d4ba1acc5297a2e2b2867559291" compoundref="d9/dae/postprocessing_8c_09_09" startline="93" endline="104">sum_rule_spectrum</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a93453abd12c30f9f4fef36b8c9e89a0d" compoundref="de/dbb/math__utils_8hpp" startline="997" endline="1005">switch2bosonicFreqs</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1a2430db65f6ccf099ccb637962a7f1135" compoundref="df/d31/math__utils_8c_09_09" startline="146" endline="154">switch2bosonicFreqs&lt; &apos;p&apos;&gt;</referencedby>
@@ -2243,10 +2183,7 @@
         <referencedby refid="de/dac/namespacehdf5__impl_1a2c81f521e97b68137709bb9b0719c9a7" compoundref="d5/de4/hdf5__routines_8hpp" startline="172" endline="180">hdf5_impl::write_data_to_Dataset</referencedby>
         <referencedby refid="de/dac/namespacehdf5__impl_1a22baa87deb3599e55182b9b0caeedff8" compoundref="d5/de4/hdf5__routines_8hpp" startline="189" endline="197">hdf5_impl::write_data_to_Dataset</referencedby>
         <referencedby refid="de/dac/namespacehdf5__impl_1ac77e56ba9f320721c5cfc26f6709c9e1" compoundref="d5/de4/hdf5__routines_8hpp" startline="531" endline="562">hdf5_impl::write_freqparams_to_hdf_LambdaLayer</referencedby>
-        <referencedby refid="dd/d95/namespacereproduce__benchmark__data_1a9e02be9aba8919fb36241684a8c2ec5d" compoundref="d6/de5/reproduce__benchmark__data_8py" startline="91" endline="181">reproduce_benchmark_data.write_frequency_parameters</referencedby>
         <referencedby refid="d9/d8b/write__data2file_8c_09_09_1a9992b4a1a01038cb7f3f462bb3c2e63c" compoundref="d9/d8b/write__data2file_8c_09_09" startline="19" endline="37">write_h5_rvecs</referencedby>
-        <referencedby refid="dd/d95/namespacereproduce__benchmark__data_1a9b034cec9b20d36996dfb3bf68dfe0da" compoundref="d6/de5/reproduce__benchmark__data_8py" startline="29" endline="90">reproduce_benchmark_data.write_main</referencedby>
-        <referencedby refid="dd/d95/namespacereproduce__benchmark__data_1ab8f0aee068130b938554b05686168bba" compoundref="d6/de5/reproduce__benchmark__data_8py" startline="237" endline="434">reproduce_benchmark_data.write_master_parameters</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a4ed165c426f1f02c659b95cca2be40d6" compoundref="d4/d92/hartree__term_8c_09_09" startline="157" endline="180">Hartree_Solver::write_out_propagators</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1aa9e93c49d1f43476367a48a0509ae368" compoundref="de/de8/bubble__function_8hpp" startline="570" endline="589">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a128238645c8ca2ae9fe3ac89a974dea6" compoundref="de/de8/bubble__function_8hpp" startline="595" endline="602">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K1</referencedby>
@@ -2255,7 +2192,6 @@
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1addecd120bccc2c0faf65cdfec3f50953" compoundref="de/de8/bubble__function_8hpp" startline="635" endline="644">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K3</referencedby>
         <referencedby refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</referencedby>
         <referencedby refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" compoundref="d5/de4/hdf5__routines_8hpp" startline="621" endline="830">hdf5_impl::write_state_to_hdf_LambdaLayer</referencedby>
-        <referencedby refid="dd/d95/namespacereproduce__benchmark__data_1a57d2ab37775605c12cec01a1e8c4364a" compoundref="d6/de5/reproduce__benchmark__data_8py" startline="182" endline="236">reproduce_benchmark_data.write_technical_parameters</referencedby>
         <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">mfRG_stats::write_to_hdf</referencedby>
         <referencedby refid="d3/d22/r__vertex_8hpp_1a3642c9fe84de001565a9267dba94c63b" compoundref="d5/de4/hdf5__routines_8hpp" startline="444" endline="458">write_to_hdf</referencedby>
         <referencedby refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</referencedby>

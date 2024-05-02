@@ -52,6 +52,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Post processing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv4I0E18check_SE_causalityvRK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">check_SE_causality()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv4I0E21check_FDTs_selfenergy10SelfEnergyI1QERK10SelfEnergyI1QEKdKb"><code class="docutils literal notranslate"><span class="pre">check_FDTs_selfenergy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv417sum_rule_spectrumRK5StateI14state_datatypeE"><code class="docutils literal notranslate"><span class="pre">sum_rule_spectrum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv438compute_postprocessed_susceptibilitiesRKNSt6stringE"><code class="docutils literal notranslate"><span class="pre">compute_postprocessed_susceptibilities()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
@@ -98,26 +100,22 @@
 <dd><p>Function that checks FDTs for self-energy and K1 in all channels for given input state: </p>
 </dd></dl>
 
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygenfunction: Unable to resolve function “sum_rule_spectrum” with arguments (const State&lt;state_datatype&gt;&amp;) in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/Keldysh_mfRG/cmake-build-debug/../Documentation/xml/.
-Potential matches:
-</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">double</span> <span class="n">sum_rule_spectrum</span><span class="p">(</span><span class="n">const</span> <span class="n">State</span><span class="o">&lt;</span><span class="n">state_datatype</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">state</span><span class="p">)</span>
-<span class="o">-</span> <span class="n">double</span> <span class="n">sum_rule_spectrum</span><span class="p">(</span><span class="n">const</span> <span class="n">State</span><span class="o">&lt;</span><span class="n">state_datatype</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">state</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygenfunction: Unable to resolve function “compute_postprocessed_susceptibilities” with arguments (const std::string&amp;) in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/Keldysh_mfRG/cmake-build-debug/../Documentation/xml/.
-Potential matches:
-</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">void</span> <span class="n">compute_postprocessed_susceptibilities</span><span class="p">(</span><span class="n">const</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">filename</span><span class="p">)</span>
-<span class="o">-</span> <span class="n">void</span> <span class="n">compute_postprocessed_susceptibilities</span><span class="p">(</span><span class="n">const</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">filename</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417sum_rule_spectrumRK5StateI14state_datatypeE">
+<span id="_CPPv317sum_rule_spectrumRK5StateI14state_datatypeE"></span><span id="_CPPv217sum_rule_spectrumRK5StateI14state_datatypeE"></span><span id="sum_rule_spectrum__State:state_datatype:CR"></span><span class="target" id="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sum_rule_spectrum</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">state_datatype</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417sum_rule_spectrumRK5StateI14state_datatypeE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv438compute_postprocessed_susceptibilitiesRKNSt6stringE">
+<span id="_CPPv338compute_postprocessed_susceptibilitiesRKNSt6stringE"></span><span id="_CPPv238compute_postprocessed_susceptibilitiesRKNSt6stringE"></span><span id="compute_postprocessed_susceptibilities__ssCR"></span><span class="target" id="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_postprocessed_susceptibilities</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">filename</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv438compute_postprocessed_susceptibilitiesRKNSt6stringE" title="Link to this definition"></a><br /></dt>
+<dd><p>Take hdf5 file, compute the susceptibilities from it and save them to the hdf5 file. Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0) This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0 (zero K2’ or K3) </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

@@ -668,20 +668,16 @@
         <link refid="de/de8/bubble__function_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="9" relation="include">
-        </childnode>
-        <childnode refid="10" relation="include">
-        </childnode>
         <childnode refid="8" relation="include">
         </childnode>
-      </node>
-      <node id="5">
-        <label>main.cpp</label>
-        <link refid="df/d0a/main_8cpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
       </node>
       <node id="4">
-        <label>flow.c++</label>
-        <link refid="d4/dde/flow_8c_09_09"/>
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
       </node>
       <node id="3">
         <label>flow.hpp</label>
@@ -690,16 +686,14 @@
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="6" relation="include">
-        </childnode>
       </node>
-      <node id="8">
+      <node id="7">
         <label>right_hand_sides.hpp</label>
         <link refid="d8/dea/right__hand__sides_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="7">
+      <node id="6">
         <label>parquet_solver.c++</label>
         <link refid="d5/d94/parquet__solver_8c_09_09"/>
       </node>
@@ -708,46 +702,40 @@
         <link refid="dd/d0a/parquet__solver_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
         <childnode refid="5" relation="include">
         </childnode>
         <childnode refid="6" relation="include">
         </childnode>
         <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="8" relation="include">
-        </childnode>
       </node>
-      <node id="9">
+      <node id="8">
         <label>perturbation_theory.hpp</label>
         <link refid="d5/d0d/perturbation__theory_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="5" relation="include">
+        <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="6" relation="include">
+        <childnode refid="5" relation="include">
         </childnode>
         <childnode refid="2" relation="include">
         </childnode>
       </node>
-      <node id="6">
+      <node id="5">
         <label>main_postproc.cpp</label>
         <link refid="dd/d00/main__postproc_8cpp"/>
       </node>
-      <node id="11">
-        <label>postprocessing.c++</label>
-        <link refid="d9/dae/postprocessing_8c_09_09"/>
-      </node>
-      <node id="10">
+      <node id="9">
         <label>postprocessing.hpp</label>
         <link refid="d4/d81/postprocessing_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="11" relation="include">
-        </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="10" relation="include">
         </childnode>
       </node>
-      <node id="12">
+      <node id="10">
         <label>sanity_check.hpp</label>
         <link refid="d2/d3f/sanity__check_8hpp"/>
         <childnode refid="2" relation="include">
@@ -818,8 +806,6 @@
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1aed74c3bfb0bc69e7c74a900ddfef178d" compoundref="d8/dea/right__hand__sides_8hpp" startline="39" endline="65">calculate_dSigma_SOPT</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a5ab14a76538cdb69001c01f9ebf492ca" compoundref="dd/d0a/parquet__solver_8hpp" startline="346" endline="373">check_selfconsistency_of_K1K2</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1" compoundref="dd/d0a/parquet__solver_8hpp" startline="28" endline="62">compute_BSE</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1ad7795529aa43acc4d8c7b94cdcd493db" compoundref="d9/dae/postprocessing_8c_09_09" startline="134" endline="176">compute_postprocessed_susceptibilities</referencedby>
-        <referencedby refid="d9/dae/postprocessing_8c_09_09_1af1e2a562265def3e9c99c1e0b2d0fb3b" compoundref="d9/dae/postprocessing_8c_09_09" startline="179" endline="256">compute_proprocessed_susceptibilities_PT2</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1a17567ec5d9df767870c3a7489f64a1" compoundref="dd/d0a/parquet__solver_8hpp" startline="92" endline="178">compute_SDE_impl</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1a6336ef3f9900b878dba73ab9792cb60c" compoundref="d5/d0d/perturbation__theory_8hpp" startline="43" endline="69">selfEnergyInSOPT</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</referencedby>
@@ -916,7 +902,7 @@
 <codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="df/d83/integrand_8hpp" kindref="compound">integrand.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="16"><highlight class="normal"></highlight></codeline>
 <codeline lineno="17"><highlight class="normal"></highlight></codeline>
-<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref>,</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>channel,</highlight></codeline>
 <codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,</highlight></codeline>
 <codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref>,</highlight></codeline>
 <codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref>,</highlight></codeline>
@@ -1066,10 +1052,10 @@
 <codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="169"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="170"><highlight class="normal"></highlight></codeline>
-<codeline lineno="171"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref>,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref>,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref>,</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>channel,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref>,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref>,</highlight></codeline>
 <codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref>,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref>&gt;</highlight></codeline>
 <codeline lineno="173"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="174"><highlight class="normal"><ref refid="de/d96/classBubbleFunctionCalculator" kindref="compound">BubbleFunctionCalculator</ref>&lt;<ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref>,<sp/>Q,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref>,</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><ref refid="de/d96/classBubbleFunctionCalculator" kindref="compound">BubbleFunctionCalculator</ref>&lt;channel,<sp/>Q,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref>,</highlight></codeline>
 <codeline lineno="175" refid="de/d96/classBubbleFunctionCalculator_1a3a41b66df84d0e75680d9d2359f63ef5" refkind="member"><highlight class="normal"><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref>&gt;::set_channel_specific_freq_ranges_and_prefactor()<sp/>{</highlight></codeline>
 <codeline lineno="176"><highlight class="normal"></highlight><highlight class="comment">//<sp/>set<sp/>channel-specific<sp/>frequency<sp/>ranges<sp/>and<sp/>prefactor<sp/>(1,<sp/>1,<sp/>-1<sp/>for<sp/>a,<sp/>p,<sp/>t)<sp/>for<sp/>sum<sp/>over<sp/>spins.</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="177"><highlight class="normal"></highlight></codeline>

@@ -3,7 +3,7 @@ var searchData=
   ['data_0',['data',['../d5/d5f/classdataContainerBase.html#ae51f02939594c99fc04ce4e04abe5412',1,'dataContainerBase::data'],['../d7/d3f/classmultidimensional_1_1multiarray.html#ab0eb44d006398d29be417ed6b34ecb10',1,'multidimensional::multiarray::data() noexcept'],['../d7/d3f/classmultidimensional_1_1multiarray.html#a52ab95f511cdd77c599ff3431dc60790',1,'multidimensional::multiarray::data() const noexcept']]],
   ['data_5fbuffer_2ehpp_1',['data_buffer.hpp',['../dc/d80/data__buffer_8hpp.html',1,'']]],
   ['data_5fcontainer_2ehpp_2',['data_container.hpp',['../da/dbc/data__container_8hpp.html',1,'']]],
-  ['data_5fdir_3',['data_dir',['../d1/df8/master__parameters_8hpp.html#a1b384aea75d8da97c90c700d40dc19d2',1,'data_dir:&#160;master_parameters.hpp'],['../d9/d59/namespacegetIntegrand.html#a44bc6399a5c880047b7d513723da36d0',1,'getIntegrand.data_dir']]],
+  ['data_5fdir_3',['data_dir',['../d1/df8/master__parameters_8hpp.html#a1b384aea75d8da97c90c700d40dc19d2',1,'master_parameters.hpp']]],
   ['data_5fstructures_2ec_2b_2b_4',['data_structures.c++',['../da/d4d/data__structures_8c_09_09.html',1,'']]],
   ['data_5fstructures_2ehpp_5',['data_structures.hpp',['../d7/d59/data__structures_8hpp.html',1,'']]],
   ['databuffer_6',['dataBuffer',['../dc/d7a/classdataBuffer.html',1,'dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;'],['../dc/d7a/classdataBuffer.html#ad98fef292c1055e74c2681f0a5579608',1,'dataBuffer::dataBuffer()'],['../dc/d7a/classdataBuffer.html#afa513487c69eae424b628bc60edd703e',1,'dataBuffer::dataBuffer(double Lambda, dimensions_type dims, const fRG_config &amp;config)']]],

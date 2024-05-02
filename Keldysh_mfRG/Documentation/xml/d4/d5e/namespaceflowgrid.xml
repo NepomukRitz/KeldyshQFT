@@ -56,8 +56,6 @@
         <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
         <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="127" endline="184">n_loop_flow</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
       </memberdef>
       <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1ab54f368d15e474e02fb8432c37161569" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">

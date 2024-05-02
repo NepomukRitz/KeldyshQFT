@@ -178,6 +178,10 @@
     <value><![CDATA[tests/]]></value>
     <value><![CDATA[cmake-build-debug/]]></value>
     <value><![CDATA[reference_data/]]></value>
+    <value><![CDATA[Documentation/]]></value>
+    <value><![CDATA[scripts/]]></value>
+    <value><![CDATA[postprocessing/postprocessing.c++]]></value>
+    <value><![CDATA[mfRG_flow/flow.c++]]></value>
   </option>
   <option  id='EXCLUDE_SYMLINKS' default='yes' type='bool'><value>NO</value></option>
   <option  id='EXCLUDE_PATTERNS' default='yes' type='stringlist'>

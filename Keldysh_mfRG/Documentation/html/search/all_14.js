@@ -13,8 +13,7 @@ var searchData=
   ['use_5ffdt_10',['USE_FDT',['../d1/df8/master__parameters_8hpp.html#ae20708713b54d1d5431fd089f5125fad',1,'master_parameters.hpp']]],
   ['use_5fmpi_11',['USE_MPI',['../d9/d3a/technical__parameters_8hpp.html#a3869d282031f6ea6b50fdb980b758420',1,'technical_parameters.hpp']]],
   ['use_5fnew_5fmfrg_5feqs_12',['USE_NEW_MFRG_EQS',['../d1/df8/master__parameters_8hpp.html#a808342a47e654eb0ea306a96b76ecc22',1,'master_parameters.hpp']]],
-  ['usetex_13',['usetex',['../d7/d09/namespaceplotting__routines.html#a0affc5ba7b10820ddde990876f351c5f',1,'plotting_routines']]],
-  ['util_2ec_2b_2b_14',['util.c++',['../d6/d35/util_8c_09_09.html',1,'']]],
-  ['util_2ehpp_15',['util.hpp',['../d0/d3f/util_8hpp.html',1,'']]],
-  ['utils_16',['utils',['../d6/d84/namespaceutils.html',1,'']]]
+  ['util_2ec_2b_2b_13',['util.c++',['../d6/d35/util_8c_09_09.html',1,'']]],
+  ['util_2ehpp_14',['util.hpp',['../d0/d3f/util_8hpp.html',1,'']]],
+  ['utils_15',['utils',['../d6/d84/namespaceutils.html',1,'']]]
 ];
