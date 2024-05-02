@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d2/d28/namespacesetup__figure" kind="namespace" language="Python">
+    <compoundname>setup_figure</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d2/d28/namespacesetup__figure_1a007e755d45da83573a214a75e1f5ce02" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>setup_figure.initialize_figure</definition>
+        <argsstring>()</argsstring>
+        <name>initialize_figure</name>
+        <qualifiedname>setup_figure.initialize_figure</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/setup_figure.py" line="4" column="1" bodyfile="scripts/python_scripts/setup_figure.py" bodystart="4" bodyend="16"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d28/namespacesetup__figure_1a9bfd90b25229a375b10ef974a8c5f81a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>setup_figure.finalize_figure_selfenergy</definition>
+        <argsstring>(lines, leg, re, iK, fs)</argsstring>
+        <name>finalize_figure_selfenergy</name>
+        <qualifiedname>setup_figure.finalize_figure_selfenergy</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">lines</ref></type>
+          <defname>lines</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">leg</ref></type>
+          <defname>leg</defname>
+        </param>
+        <param>
+          <type>re</type>
+          <defname>re</defname>
+        </param>
+        <param>
+          <type>iK</type>
+          <defname>iK</defname>
+        </param>
+        <param>
+          <type>fs</type>
+          <defname>fs</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/setup_figure.py" line="17" column="1" bodyfile="scripts/python_scripts/setup_figure.py" bodystart="17" bodyend="36"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d28/namespacesetup__figure_1a0544af65a27b11d30e2e209e023551f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>setup_figure.finalize_figure_spectralfunction</definition>
+        <argsstring>(lines, leg, fs)</argsstring>
+        <name>finalize_figure_spectralfunction</name>
+        <qualifiedname>setup_figure.finalize_figure_spectralfunction</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">lines</ref></type>
+          <defname>lines</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">leg</ref></type>
+          <defname>leg</defname>
+        </param>
+        <param>
+          <type>fs</type>
+          <defname>fs</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/setup_figure.py" line="37" column="1" bodyfile="scripts/python_scripts/setup_figure.py" bodystart="37" bodyend="50"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="scripts/python_scripts/setup_figure.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

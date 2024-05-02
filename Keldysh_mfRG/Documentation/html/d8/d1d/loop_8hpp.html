@@ -107,16 +107,6 @@ $(function(){initNavTree('d8/d1d/loop_8hpp.html','../../'); initResizable(); });
 <code>#include &quot;<a class="el" href="../../d2/df0/correction__functions_8hpp_source.html">../asymptotic_corrections/correction_functions.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="../../de/d65/integrandSE_8hpp_source.html">integrandSE.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html">../utilities/hdf5_routines.hpp</a>&quot;</code><br />
-</div><div class="textblock"><div class="dynheader">
-Include dependency graph for loop.hpp:</div>
-<div class="dyncontent">
-<div class="center"><!-- SVG 0 --></div>
-</div>
-</div><div class="textblock"><div class="dynheader">
-This graph shows which files directly or indirectly include this file:</div>
-<div class="dyncontent">
-<div class="center"><!-- SVG 1 --></div>
-</div>
 </div>
 <p><a href="../../d8/d1d/loop_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -209,7 +199,7 @@ template&lt;<a class="el" href="../../d9/db9/classbool.html">bool</a> all_spins,
 <div class="line"><span class="lineno">  541</span>        self.asymp_val_R = std::real(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">asymp_val</a>);</div>
 <div class="line"><span class="lineno">  542</span>        <span class="comment">// we do not want to add the asymptotic value twice:</span></div>
 <div class="line"><span class="lineno">  543</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> iv = 0; iv &lt; <a class="code hl_variable" href="../../d3/d3c/frequency__parameters_8hpp.html#ad5072d3f3d8695936a61384479d97222">nFER</a>; ++iv) {</div>
-<div class="line"><span class="lineno">  544</span>            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in = 0; i_in &lt; <a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++i_in) {</div>
+<div class="line"><span class="lineno">  544</span>            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in = 0; <a class="code hl_variable" href="../../d9/d59/namespacegetIntegrand.html#a9e34c20b9b4b3f9db34da5515e091c7a">i_in</a> &lt; <a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++<a class="code hl_variable" href="../../d9/d59/namespacegetIntegrand.html#a9e34c20b9b4b3f9db34da5515e091c7a">i_in</a>) {</div>
 <div class="line"><span class="lineno">  545</span>                self.addself(0, iv, i_in, -std::real(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">asymp_val</a>));</div>
 <div class="line"><span class="lineno">  546</span>            }</div>
 <div class="line"><span class="lineno">  547</span>        }</div>
@@ -223,13 +213,9 @@ template&lt;<a class="el" href="../../d9/db9/classbool.html">bool</a> all_spins,
 <div class="ttc" id="afrequency__parameters_8hpp_html_ae2fbdf104305af49bfe5b3c0da204d9b"><div class="ttname"><a href="../../d3/d3c/frequency__parameters_8hpp.html#ae2fbdf104305af49bfe5b3c0da204d9b">nSE</a></div><div class="ttdeci">constexpr int nSE</div><div class="ttdef"><b>Definition</b> <a href="../../d3/d3c/frequency__parameters_8hpp_source.html#l00055">frequency_parameters.hpp:55</a></div></div>
 <div class="ttc" id="amaster__parameters_8hpp_html_a37f8dd24020d8c5bf068a780c61d1fb8"><div class="ttname"><a href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a></div><div class="ttdeci">constexpr int n_in</div><div class="ttdef"><b>Definition</b> <a href="../../d1/df8/master__parameters_8hpp_source.html#l00079">master_parameters.hpp:79</a></div></div>
 <div class="ttc" id="amaster__parameters_8hpp_html_ac209459b6113297c093b5c50febc47ad"><div class="ttname"><a href="../../d1/df8/master__parameters_8hpp.html#ac209459b6113297c093b5c50febc47ad">PARTICLE_HOLE_SYMMETRY</a></div><div class="ttdeci">constexpr bool PARTICLE_HOLE_SYMMETRY</div><div class="ttdef"><b>Definition</b> <a href="../../d1/df8/master__parameters_8hpp_source.html#l00148">master_parameters.hpp:148</a></div></div>
+<div class="ttc" id="anamespacegetIntegrand_html_a9e34c20b9b4b3f9db34da5515e091c7a"><div class="ttname"><a href="../../d9/d59/namespacegetIntegrand.html#a9e34c20b9b4b3f9db34da5515e091c7a">getIntegrand.i_in</a></div><div class="ttdeci">int i_in</div><div class="ttdef"><b>Definition</b> <a href="../../de/d62/getIntegrand_8py_source.html#l00274">getIntegrand.py:274</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../d6/d2d/selfenergy_8hpp_source.html#l00242">SelfEnergy&lt; Q &gt;::addself()</a>, <a class="el" href="../../d6/d2d/selfenergy_8hpp_source.html#l00032">SelfEnergy&lt; Q &gt;::asymp_val_R</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../d5/df7/propagator_8hpp_source.html#l00809">Propagator&lt; Q &gt;::initInterpolator()</a>, <a class="el" href="../../d1/df8/master__parameters_8hpp_source.html#l00079">n_in</a>, <a class="el" href="../../d3/d3c/frequency__parameters_8hpp_source.html#l00036">nFER</a>, <a class="el" href="../../d3/d3c/frequency__parameters_8hpp_source.html#l00055">nSE</a>, <a class="el" href="../../d1/df8/master__parameters_8hpp_source.html#l00148">PARTICLE_HOLE_SYMMETRY</a>, and <a class="el" href="../../d6/d2d/selfenergy_8hpp_source.html#l00167">SelfEnergy&lt; Q &gt;::val()</a>.</p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><!-- SVG 2 --></div>
-</div>
 
 </div>
 </div>
@@ -239,7 +225,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_ad90714e399e93baefad77eabc58948e.html">loop</a></li><li class="navelem"><a class="el" href="../../d8/d1d/loop_8hpp.html">loop.hpp</a></li>
-    <li class="footer">Generated on Thu May 2 2024 14:52:41 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Thu May 2 2024 15:26:53 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

@@ -19,6 +19,46 @@ var namespaces_dup =
       [ "templates_path", "d5/d89/namespaceconf.html#ae850ae634911b713e036b43894fdd525", null ]
     ] ],
     [ "flowgrid", "d4/d5e/namespaceflowgrid.html", "d4/d5e/namespaceflowgrid" ],
+    [ "getIntegrand", "d9/d59/namespacegetIntegrand.html", [
+      [ "compile_get_integrand_dGamma_1loop_Cpp", "d9/d59/namespacegetIntegrand.html#ad38edb885363bdd9c85123c6a8d97d44", null ],
+      [ "compile_get_integrand_dGamma_1loop_fromFlow_Cpp", "d9/d59/namespacegetIntegrand.html#a6e757d17617cdaaf38994b369230dc80", null ],
+      [ "compile_get_integrand_dGammaC_Cpp", "d9/d59/namespacegetIntegrand.html#aece1226a1eb20ceb7426b8bb01dda455", null ],
+      [ "compile_get_integrand_dGammaL_Cpp", "d9/d59/namespacegetIntegrand.html#a0ba3135824925065934f234ef8423d9a", null ],
+      [ "compile_get_integrand_Gamma1_Pi_Gamma2_Cpp", "d9/d59/namespacegetIntegrand.html#a13f86a70c6fb0cc9a235003771fd1701", null ],
+      [ "compile_stuff", "d9/d59/namespacegetIntegrand.html#acb6f69b0cb389468600d89e46b40452f", null ],
+      [ "get_integrand_dGamma_1loop", "d9/d59/namespacegetIntegrand.html#af1c44baca959bf876be1dbce3a4dba4d", null ],
+      [ "get_integrand_dGamma_1loop_fromFlow", "d9/d59/namespacegetIntegrand.html#afdac74b8af965e2014d79d9f562ded7e", null ],
+      [ "get_integrand_dGammaC", "d9/d59/namespacegetIntegrand.html#aab3c3401b1ccad77ada588747b5bcbeb", null ],
+      [ "get_integrand_dGammaL", "d9/d59/namespacegetIntegrand.html#a46902ef3e92856bd353e2838c7280de3", null ],
+      [ "get_integrand_filename_dGamma_1loop", "d9/d59/namespacegetIntegrand.html#a302b6518c3df0fac9f6e752d9b104e7c", null ],
+      [ "get_integrand_filename_dGammaC", "d9/d59/namespacegetIntegrand.html#ae873b3eb1fc25f99b13814fa633aed56", null ],
+      [ "get_integrand_filename_dGammaL", "d9/d59/namespacegetIntegrand.html#afaa4a831b0327c85654ea1c31e36c9eb", null ],
+      [ "get_integrand_filename_Gamma1_Pi_Gamma2", "d9/d59/namespacegetIntegrand.html#abdd42636e64de29240839ebd24f0c8ee", null ],
+      [ "get_integrand_Gamma1_Pi_Gamma2", "d9/d59/namespacegetIntegrand.html#a3b461523321771151e17ce5c144da522", null ],
+      [ "plot_integrand", "d9/d59/namespacegetIntegrand.html#aaa2dc6b3eaae5c6c019757fdd47cf26b", null ],
+      [ "plot_integrand_alli2", "d9/d59/namespacegetIntegrand.html#ab7eba5c643c81ae7aff5539865fd275d", null ],
+      [ "axs0", "d9/d59/namespacegetIntegrand.html#a839b1ca54d486ab9a2ab0cf0da185743", null ],
+      [ "channel", "d9/d59/namespacegetIntegrand.html#affe557b99ce21081450f9a33337f29ab", null ],
+      [ "data_dir", "d9/d59/namespacegetIntegrand.html#a44bc6399a5c880047b7d513723da36d0", null ],
+      [ "exe_dir", "d9/d59/namespacegetIntegrand.html#ac6e7b8ed7deae27fe802e9c09a97aad4", null ],
+      [ "fig0", "d9/d59/namespacegetIntegrand.html#a8144e183cee7f5eaedc69b0bd745cdaf", null ],
+      [ "filename", "d9/d59/namespacegetIntegrand.html#a8cdef4da4b5917a52cd40d381b84fb6d", null ],
+      [ "Gamma0_is_left", "d9/d59/namespacegetIntegrand.html#a52a6d4326cb90b38ca4519373a78956b", null ],
+      [ "i0", "d9/d59/namespacegetIntegrand.html#a8c9600ab594068787054475dc580f6c0", null ],
+      [ "i2", "d9/d59/namespacegetIntegrand.html#ae64ba327eca938178004f4325dab5e26", null ],
+      [ "i_in", "d9/d59/namespacegetIntegrand.html#a9e34c20b9b4b3f9db34da5515e091c7a", null ],
+      [ "integrandFilename", "d9/d59/namespacegetIntegrand.html#a1ca55189f9a353c9ea4f52a65ce7345e", null ],
+      [ "it_Lambda", "d9/d59/namespacegetIntegrand.html#a1d8afac08a218b89edddac39a4e26e2e", null ],
+      [ "k_class_int", "d9/d59/namespacegetIntegrand.html#a3e3a1fa0579ae3ec0c425e72a1ce6677", null ],
+      [ "ncols", "d9/d59/namespacegetIntegrand.html#a85ab2bd6847af31679c686c6fd51279e", null ],
+      [ "nrows", "d9/d59/namespacegetIntegrand.html#a39e3cbb6463381f3064623b3ae512276", null ],
+      [ "num", "d9/d59/namespacegetIntegrand.html#a92229957959e0f6a9805e92481d323f9", null ],
+      [ "rkStep", "d9/d59/namespacegetIntegrand.html#a8cf9d41af70ebd017e2947e37fd9ed73", null ],
+      [ "spin", "d9/d59/namespacegetIntegrand.html#a4d62848768af6928fe58e2a6f0987329", null ],
+      [ "v", "d9/d59/namespacegetIntegrand.html#a8de2c1f4f0e95b0891bbf53c7585193c", null ],
+      [ "vp", "d9/d59/namespacegetIntegrand.html#a4e095fa5805b564f2a9100f4f4efe4b8", null ],
+      [ "w", "d9/d59/namespacegetIntegrand.html#ac27f31b5826d872c73024a5fa645598f", null ]
+    ] ],
     [ "hdf5_impl", "de/dac/namespacehdf5__impl.html", [
       [ "create_Dataset", "de/dac/namespacehdf5__impl.html#a051173408fd066a45da9008c503412c6", null ],
       [ "init_freqgrid_from_hdf_LambdaLayer", "de/dac/namespacehdf5__impl.html#a08bacb7aab46467735721ffb04434514", null ],
@@ -31,6 +71,19 @@ var namespaces_dup =
       [ "write_state_to_hdf_LambdaLayer", "de/dac/namespacehdf5__impl.html#a468934d31943e2ac5607091266a2e5a0", null ],
       [ "write_to_hdf_LambdaLayer_impl", "de/dac/namespacehdf5__impl.html#a702d77a3dad9aecc7dd17aa30bd93aa7", null ]
     ] ],
+    [ "load_data", "dc/dd6/namespaceload__data.html", [
+      [ "compute_spectralfunction", "dc/dd6/namespaceload__data.html#ae6c2c7198a9f15f6cf0c5c30a46f61d3", null ],
+      [ "load_data", "dc/dd6/namespaceload__data.html#a68a21a93c52bb1dbec9e3cf767c66b06", null ],
+      [ "load_hdf5", "dc/dd6/namespaceload__data.html#ac1c097e7b7afef7e3ca36b153c64f180", null ],
+      [ "load_K1", "dc/dd6/namespaceload__data.html#a47715d62acae83af7fcc3a89fd313896", null ],
+      [ "load_K2", "dc/dd6/namespaceload__data.html#ae9c30efd0678d231c7321b9ec5828b0b", null ],
+      [ "load_parameters", "dc/dd6/namespaceload__data.html#aa8632dfe38a3febe31bf04ff8e2e4758", null ],
+      [ "load_SE_A", "dc/dd6/namespaceload__data.html#ae9df5a3e4bd9bb1531a719e71065e93b", null ],
+      [ "load_SIAM_NRG", "dc/dd6/namespaceload__data.html#ae030fd4581b0f20dd2133714ed247c53", null ],
+      [ "load_SIAM_NRG_finite_T", "dc/dd6/namespaceload__data.html#a91f1be1df1a560a299524128b6d57cfb", null ],
+      [ "omegas", "dc/dd6/namespaceload__data.html#a670940cf3d8eeabab08ea81ce10443de", null ],
+      [ "rearrange_SE", "dc/dd6/namespaceload__data.html#a2d96a5707f3027d9adc8e83b32079260", null ]
+    ] ],
     [ "math_impl", "d3/d46/namespacemath__impl.html", [
       [ "getFlatIndex", "d3/d46/namespacemath__impl.html#a980df65c33bf56b93b476c06db10f0c6", null ]
     ] ],
@@ -41,9 +94,42 @@ var namespaces_dup =
       [ "RK4_step", "dd/df1/namespaceold__ode__solvers.html#a98a7c97d9a18a4af97f23c8b8f78d471", null ],
       [ "RK4_step", "dd/df1/namespaceold__ode__solvers.html#aeb954768e9e969cbed9beb79669621c8", null ]
     ] ],
+    [ "plot", "de/d73/namespaceplot.html", [
+      [ "cnt", "de/d73/namespaceplot.html#a44e8549f71b4953920a3d3e13858a4cb", null ],
+      [ "filename", "de/d73/namespaceplot.html#a10cf634990454ca5d82d4e1d7d314940", null ],
+      [ "fs", "de/d73/namespaceplot.html#a580d4780341d8dc1deed9c81266a8934", null ],
+      [ "plot", "de/d73/namespaceplot.html#af9bedf9ca52ee7158bbe9064f649d211", null ]
+    ] ],
+    [ "plotting_routines", "d7/d09/namespaceplotting__routines.html", [
+      [ "change_prefix", "d7/d09/namespaceplotting__routines.html#abe68382e5921cbad602577447e4cc000", null ],
+      [ "effec_distribution", "d7/d09/namespaceplotting__routines.html#a7cc2bc58a20953150c0143c53ddbd92e", null ],
+      [ "generate_filename_fRG", "d7/d09/namespaceplotting__routines.html#af65af7c5e8113ae01d07af1063e05a01", null ],
+      [ "generate_Keldysh_component", "d7/d09/namespaceplotting__routines.html#ab6609dd8d76efb7cd89f61e80f8f55dc", null ],
+      [ "generate_label", "d7/d09/namespaceplotting__routines.html#a46c974daa3dcc27042323716519730ae", null ],
+      [ "plot_fRG", "d7/d09/namespaceplotting__routines.html#a9ce053a0fa97847059c202c08bcc38b3", null ],
+      [ "plot_fRG_V_runs", "d7/d09/namespaceplotting__routines.html#a7ce446ebee719c7e343ac7956d35edb2", null ],
+      [ "plot_selfenergy", "d7/d09/namespaceplotting__routines.html#ab50a9ace2cb6e84d44537ed0579d4aac", null ],
+      [ "plot_spectralfunction", "d7/d09/namespaceplotting__routines.html#a9c84c11834d1694cb8c8a01f2708c49a", null ],
+      [ "family", "d7/d09/namespaceplotting__routines.html#a1f0c8f313a1e10600e37d7bc975932fa", null ],
+      [ "usetex", "d7/d09/namespaceplotting__routines.html#a0affc5ba7b10820ddde990876f351c5f", null ]
+    ] ],
+    [ "reproduce_benchmark_data", "dd/d95/namespacereproduce__benchmark__data.html", [
+      [ "backup_files", "dd/d95/namespacereproduce__benchmark__data.html#ae8834c5abad07c748cc0efc1c9d1b4be", null ],
+      [ "restore_backup_files", "dd/d95/namespacereproduce__benchmark__data.html#a84d882896f07aec2c6fd9ad967102d57", null ],
+      [ "write_frequency_parameters", "dd/d95/namespacereproduce__benchmark__data.html#a9e02be9aba8919fb36241684a8c2ec5d", null ],
+      [ "write_main", "dd/d95/namespacereproduce__benchmark__data.html#a9b034cec9b20d36996dfb3bf68dfe0da", null ],
+      [ "write_master_parameters", "dd/d95/namespacereproduce__benchmark__data.html#ab8f0aee068130b938554b05686168bba", null ],
+      [ "write_technical_parameters", "dd/d95/namespacereproduce__benchmark__data.html#a57d2ab37775605c12cec01a1e8c4364a", null ],
+      [ "backups", "dd/d95/namespacereproduce__benchmark__data.html#ac08dbb45daad0336bc0bb2e5c34a03fa", null ]
+    ] ],
     [ "selfenergy_loop", "dd/d46/namespaceselfenergy__loop.html", [
       [ "pick_channel", "dd/d46/namespaceselfenergy__loop.html#aefc5e618636f72d0443b6b1e2c9a8309", null ],
       [ "pick_spin", "dd/d46/namespaceselfenergy__loop.html#a9a229d51a6fa389dca0166fb6ea10f6a", null ]
+    ] ],
+    [ "setup_figure", "d2/d28/namespacesetup__figure.html", [
+      [ "finalize_figure_selfenergy", "d2/d28/namespacesetup__figure.html#a9bfd90b25229a375b10ef974a8c5f81a", null ],
+      [ "finalize_figure_spectralfunction", "d2/d28/namespacesetup__figure.html#a0544af65a27b11d30e2e209e023551f1", null ],
+      [ "initialize_figure", "d2/d28/namespacesetup__figure.html#a007e755d45da83573a214a75e1f5ce02", null ]
     ] ],
     [ "utils", "d6/d84/namespaceutils.html", [
       [ "check_input", "d6/d84/namespaceutils.html#a8d114e75fc9ba4f8d0eb984183e2bd88", null ],

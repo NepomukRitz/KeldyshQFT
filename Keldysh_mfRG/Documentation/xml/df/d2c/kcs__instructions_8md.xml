@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="df/d2c/kcs__instructions_8md" kind="file" language="Markdown">
+    <compoundname>kcs_instructions.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>Introduction<sp/>to<sp/>the<sp/>KCS-Cluster</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Project<sp/>name<sp/>for<sp/>LS<sp/>vonDelft:<sp/>**pn34vu**</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Overview</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">-<sp/>Login<sp/>node:<sp/>kcs-login<sp/>(`$<sp/>ssh<sp/>&lt;lrz-ID&gt;@kcs-login.cos.lrz.de`)</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>Need<sp/>to<sp/>have<sp/>an<sp/>established<sp/>VPN<sp/>connection<sp/>to<sp/>the<sp/>MWN<sp/>(or<sp/>be<sp/>physically<sp/>connected<sp/>to<sp/>it).</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>slurm<sp/>jobs<sp/>can<sp/>only<sp/>request<sp/>whole<sp/>machines<sp/>-&gt;<sp/>**Always<sp/>use<sp/>all<sp/>32<sp/>cores<sp/>on<sp/>each<sp/>node!**</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>150<sp/>nodes,<sp/>32<sp/>cores/node<sp/>on<sp/>2<sp/>sockets</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>memory<sp/>configurations:<sp/>180<sp/>GB,<sp/>370<sp/>GB,<sp/>760<sp/>GB<sp/>(2x)</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>standard<sp/>queue:<sp/>runtime:<sp/>72h</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>long-runner<sp/>queue:<sp/>runtime:<sp/>30<sp/>days,<sp/>only<sp/>1<sp/>job/user<sp/>(Slurm:<sp/>partition<sp/>kcs_long,<sp/>see<sp/>below)</highlight></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>File<sp/>System</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal"><sp/>-<sp/>GPFS<sp/>file<sp/>system,<sp/>efficient<sp/>for<sp/>large<sp/>files<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>-<sp/>page<sp/>size<sp/>16<sp/>MB<sp/>-&gt;<sp/>**Do<sp/>not<sp/>use<sp/>many<sp/>small<sp/>files!**</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>-<sp/>quota:<sp/>100<sp/>TB<sp/>for<sp/>the<sp/>chair<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">&lt;br<sp/>/&gt;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">-<sp/>LRZ<sp/>DSS<sp/>(data<sp/>science<sp/>storage),<sp/>organized<sp/>in<sp/>containers<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-<sp/>LRZ<sp/>documentation:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>https://doku.lrz.de/display/PUBLIC/Data+Science+Storage</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-<sp/>Web<sp/>interface<sp/>for<sp/>storage<sp/>management:<sp/>https://dssweb.dss.lrz.de<sp/>(only<sp/>accessible<sp/>for<sp/>chair<sp/>admins)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-<sp/>default<sp/>container<sp/>0000</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>-<sp/>quota<sp/>(can<sp/>be<sp/>changed<sp/>via<sp/>web<sp/>interface<sp/>-&gt;<sp/>ask<sp/>chair<sp/>admin):<sp/>\</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>1<sp/>TB<sp/>for<sp/>chair,<sp/>64<sp/>GB/user,<sp/>65000<sp/>files/user</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>-<sp/>daily<sp/>backup</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>-<sp/>path<sp/>of<sp/>&quot;home&quot;<sp/>directory:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>`/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/\&lt;lrz-ID&gt;`</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-<sp/>can<sp/>create<sp/>new<sp/>containers,<sp/>some<sp/>settings<sp/>cannot<sp/>be<sp/>changed<sp/>afterwards<sp/>(see<sp/>LRZ</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>documentation)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-<sp/>useful<sp/>for<sp/>new<sp/>projects<sp/>that<sp/>need<sp/>a<sp/>lot<sp/>of<sp/>storage<sp/>(ask<sp/>chair<sp/>admin)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-<sp/>share<sp/>containers<sp/>via<sp/>globus<sp/>(https://doku.lrz.de/display/PUBLIC/DSS+How+Globus+Data+Transfer+and+Globus+Sharing+for+DSS+works)</highlight></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Setting<sp/>up<sp/>a<sp/>.bashrc<sp/>file</highlight></codeline>
+<codeline><highlight class="normal">It<sp/>is<sp/>highly<sp/>recommended<sp/>to<sp/>set<sp/>up<sp/>a<sp/>`.bashrc`<sp/>file<sp/>to<sp/>configure<sp/>shortcuts<sp/></highlight></codeline>
+<codeline><highlight class="normal">and<sp/>load<sp/>some<sp/>modules<sp/>automatically<sp/>on<sp/>login.\</highlight></codeline>
+<codeline><highlight class="normal">In<sp/>the<sp/>home-directory<sp/>entered<sp/>when<sp/>logging<sp/>onto<sp/>KCS<sp/>(`/dss/dsshome1/lxc09/&lt;lrz-ID&gt;`),<sp/>create<sp/>a<sp/>`.bashrc`</highlight></codeline>
+<codeline><highlight class="normal">file<sp/>using<sp/>a<sp/>command-line<sp/>text<sp/>editor<sp/>like<sp/>vim<sp/>or<sp/>nano<sp/>(nano<sp/>has<sp/>to<sp/>be<sp/>loaded<sp/>first<sp/>using<sp/></highlight></codeline>
+<codeline><highlight class="normal">the<sp/>module<sp/>system,<sp/>see<sp/>below).\</highlight></codeline>
+<codeline><highlight class="normal">A<sp/>good<sp/>starting<sp/>point<sp/>is<sp/>the<sp/>following<sp/>file<sp/>(comments<sp/>start<sp/>with<sp/>a<sp/>`#`):</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">#<sp/>set<sp/>up<sp/>an<sp/>alias<sp/>for<sp/>the<sp/>&quot;home&quot;<sp/>directory<sp/>used<sp/>for<sp/>computations</highlight></codeline>
+<codeline><highlight class="normal">alias<sp/>kcshome=&quot;cd<sp/>/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>useful<sp/>to<sp/>get<sp/>all<sp/>information<sp/>about<sp/>all<sp/>files<sp/>in<sp/>a<sp/>given<sp/>directory<sp/>in<sp/>human-readable<sp/>form</highlight></codeline>
+<codeline><highlight class="normal">alias<sp/>ll=&quot;ls<sp/>-lah&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>simplifies<sp/>navigation<sp/>through<sp/>the<sp/>command-line<sp/>history</highlight></codeline>
+<codeline><highlight class="normal">bind<sp/>&apos;&quot;\e[A&quot;:<sp/>history-search-backward&apos;</highlight></codeline>
+<codeline><highlight class="normal">bind<sp/>&apos;&quot;\e[B&quot;:<sp/>history-search-forward&apos;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>load<sp/>some<sp/>modules<sp/>by<sp/>default</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>nano<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>Beginner-friendly<sp/>command-line<sp/>text<sp/>editor</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>gsl<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>TODO:<sp/>Better<sp/>to<sp/>be<sp/>included<sp/>in<sp/>the<sp/>compile<sp/>script!</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>mkl<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>TODO:<sp/>Do<sp/>we<sp/>need<sp/>this?</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>boost/1.61_icc<sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>TODO:<sp/>Warning<sp/>that<sp/>this<sp/>module<sp/>is<sp/>scheduled<sp/>for<sp/>retirement<sp/>by<sp/>end<sp/>of<sp/>2019<sp/>(!)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>hdf5/1.8.20-cxx-frt-threadsafe<sp/>#<sp/>NOT<sp/>SUFFICIENT<sp/>to<sp/>load<sp/>in<sp/>compile<sp/>script!<sp/>Needed<sp/>here<sp/>as<sp/>well!</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">After<sp/>creating<sp/>or<sp/>modifying<sp/>the<sp/>`.bashrc`<sp/>file,<sp/>one<sp/>has<sp/>to<sp/>reload<sp/>it<sp/>using<sp/>`#<sp/>source<sp/>.bashrc`.<sp/></highlight></codeline>
+<codeline><highlight class="normal">Alternatively,<sp/>one<sp/>can<sp/>log<sp/>off<sp/>an<sp/>log<sp/>on<sp/>to<sp/>KCS<sp/>again,<sp/></highlight></codeline>
+<codeline><highlight class="normal">as<sp/>the<sp/>`.bashrc`<sp/>file<sp/>is<sp/>always<sp/>automatically<sp/>loaded<sp/>upon<sp/>login.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Module<sp/>System</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Grants<sp/>access<sp/>to<sp/>pre-installed<sp/>packages.<sp/>Useful<sp/>commands:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">|<sp/>Command<sp/>|<sp/>Explanation<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>-------<sp/>|<sp/>-----------<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`module<sp/>avail`<sp/>|<sp/>shows<sp/>available<sp/>modules<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`module<sp/>list`<sp/><sp/>|<sp/>shows<sp/>the<sp/>currently<sp/>loaded<sp/>modules<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`module<sp/>load<sp/>&lt;module_name&gt;`<sp/><sp/>|<sp/>loads<sp/>the<sp/>module<sp/>\&lt;module_name&gt;<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`module<sp/>unload<sp/>&lt;module_name&gt;`<sp/><sp/>|<sp/>unloads<sp/>the<sp/>module<sp/>\&lt;module_name&gt;<sp/>|</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Cloning<sp/>the<sp/>code<sp/>(to<sp/>the<sp/>right<sp/>place)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>code<sp/>should<sp/>be<sp/>placed<sp/>into<sp/>the<sp/>&quot;home&quot;<sp/>directory<sp/>used<sp/>for<sp/>computations,<sp/>for<sp/>which<sp/>the<sp/>shortcut<sp/>`kcshome`</highlight></codeline>
+<codeline><highlight class="normal">was<sp/>set<sp/>up<sp/>in<sp/>the<sp/>`.bashrc`<sp/>file<sp/>above.<sp/>It<sp/>is<sp/>then<sp/>simply<sp/>a<sp/>matter<sp/>of<sp/>navigating<sp/>to<sp/>the<sp/>&quot;home&quot;<sp/></highlight></codeline>
+<codeline><highlight class="normal">directory<sp/>and<sp/>cloning<sp/>the<sp/>correct<sp/>git<sp/>repository:</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">$<sp/>kcshome</highlight></codeline>
+<codeline><highlight class="normal">$<sp/>git<sp/>clone<sp/>https://gitlab.physik.uni-muenchen.de/LDAP_ls-vondelft/&lt;project&gt;.git</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">It<sp/>is<sp/>easiest<sp/>to<sp/>clone<sp/>the<sp/>git<sp/>repo<sp/>via<sp/>https<sp/>and<sp/>not<sp/>ssh.<sp/></highlight></codeline>
+<codeline><highlight class="normal">Otherwise<sp/>one<sp/>would<sp/>have<sp/>to<sp/>set<sp/>up<sp/>a<sp/>ssh-key-pair.</highlight></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Compiling<sp/>the<sp/>code</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Depending<sp/>on<sp/>the<sp/>setup<sp/>used,<sp/>there<sp/>should<sp/>already<sp/>be<sp/>a<sp/>makefile<sp/>or<sp/>a<sp/>compile<sp/>script<sp/>in<sp/>the<sp/>code<sp/>base</highlight></codeline>
+<codeline><highlight class="normal">of<sp/>the<sp/>git<sp/>repository.<sp/>As<sp/>of<sp/>September<sp/>2021,<sp/>the<sp/>compile<sp/>script<sp/>for<sp/>the<sp/>Keldysh<sp/>mfRG<sp/>code<sp/>is<sp/>located<sp/>at</highlight></codeline>
+<codeline><highlight class="normal">(starting<sp/>from<sp/>`kcshome`)<sp/>`mfrg/Keldysh_mfRG/scripts/compile_kcs.sh`<sp/>and<sp/>reads</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">#!/bin/bash</highlight></codeline>
+<codeline><highlight class="normal">#<sp/><sp/>environment<sp/>variable<sp/>KELDYSH_MFRG<sp/>needs<sp/>to<sp/>point<sp/>to<sp/>the<sp/>&quot;Keldysh_mfRG&quot;<sp/>directory<sp/>of<sp/>the<sp/>repository:</highlight></codeline>
+<codeline><highlight class="normal">#<sp/><sp/>in<sp/>~/.bashrc:</highlight></codeline>
+<codeline><highlight class="normal">#<sp/><sp/>export<sp/>KELDYSH_MFRG=&quot;/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>gcc</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>hdf5/1.8.20-cxx-frt-threadsafe</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>fftw</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>gsl</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>boost/1.61_icc</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">export<sp/>LANG=C</highlight></codeline>
+<codeline><highlight class="normal">export<sp/>LC_ALL=C</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">HDF5=&quot;$HDF5_INC<sp/>$HDF5_CPP_SHLIB<sp/>$HDF5_SHLIB<sp/>$SZIP_LIB<sp/>-lz&quot;</highlight></codeline>
+<codeline><highlight class="normal">FFTW=&quot;$FFTW_INC<sp/>$FFTW_LIB&quot;</highlight></codeline>
+<codeline><highlight class="normal">GSL=&quot;$GSL_INC<sp/>$GSL_LIB&quot;</highlight></codeline>
+<codeline><highlight class="normal">BOOST=&quot;$BOOST_INC<sp/>-L$BOOST_LIBDIR$&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">mpiCC<sp/>-std=c++17<sp/>$KELDYSH_MFRG/main.cpp<sp/>-o<sp/>$KELDYSH_MFRG/main.o<sp/>-fopenmp<sp/>$FFTW<sp/>$HDF5<sp/>$GSL<sp/>$BOOST</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">As<sp/>one<sp/>can<sp/>already<sp/>tell<sp/>from<sp/>this<sp/>file,<sp/>before<sp/>it<sp/>can<sp/>be<sp/>executed,<sp/>one<sp/>has<sp/>to<sp/>define<sp/>another<sp/>shortcut</highlight></codeline>
+<codeline><highlight class="normal">to<sp/>set<sp/>the<sp/>correct<sp/>absolute<sp/>path<sp/>to<sp/>the<sp/>directory<sp/>of<sp/>the<sp/>code.</highlight></codeline>
+<codeline><highlight class="normal">To<sp/>do<sp/>that,<sp/>access<sp/>the<sp/>`.bashrc`<sp/>file<sp/>via<sp/>`$<sp/>nano<sp/>~/.bashrc`<sp/>and<sp/>add<sp/>the<sp/>line<sp/></highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">`export<sp/>KELDYSH_MFRG=&quot;/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG&quot;`</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>compile<sp/>script<sp/>can<sp/>then<sp/>simply<sp/>be<sp/>executed<sp/>by<sp/></highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">`$<sp/>./mfrg/Keldysh_mfRG/scripts/compile_kcs.sh`.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Submitting<sp/>jobs</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>job<sp/>handling<sp/>of<sp/>the<sp/>cluster<sp/>is<sp/>organized<sp/>by<sp/>SLURM.<sp/>For<sp/>basic<sp/>information<sp/>on<sp/>SLURM<sp/>see<sp/>https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html.</highlight></codeline>
+<codeline><highlight class="normal">To<sp/>submit<sp/>a<sp/>job,<sp/>one<sp/>needs<sp/>to<sp/>provide<sp/></highlight></codeline>
+<codeline><highlight class="normal">a<sp/>corresponding<sp/>shell<sp/>script,<sp/>e.g.<sp/>by<sp/>modifying<sp/>`mfrg/Keldysh_mfRG/scripts/batchfile.sh`<sp/>(see<sp/>official<sp/>Slurm<sp/>documentation<sp/>https://slurm.schedmd.com/sbatch.html<sp/>for<sp/>details):</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">#!/bin/bash</highlight></codeline>
+<codeline><highlight class="normal">#</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--job-name=jobname</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--mem=2040</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--time=2-20:00:00</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--mail-type=ALL</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--mail-user=&lt;username&gt;@physik.uni-muenchen.de</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--chdir=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--output=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/runs/jobname.%j.%N.out</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--error=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/runs/jobname.%j.%N.err</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--nodes=4</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--ntasks-per-node=1</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">echo<sp/>$HOSTNAME</highlight></codeline>
+<codeline><highlight class="normal">echo<sp/>$SLURM_ARRAY_JOB_ID</highlight></codeline>
+<codeline><highlight class="normal">echo<sp/>$SLURM_NTASKS</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">export<sp/>OMP_NUM_THREADS=32</highlight></codeline>
+<codeline><highlight class="normal">mpiexec<sp/>-n<sp/>$SLURM_NTASKS<sp/>./main.o</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">####<sp/>Description:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">|<sp/>Option<sp/>|<sp/>Explanation<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>------<sp/>|<sp/>-----------<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`job-name`<sp/>|<sp/>Name<sp/>of<sp/>job<sp/>in<sp/>slurm<sp/>queue.<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`mem`<sp/>|<sp/>Requested<sp/>memory<sp/>(minimum)<sp/>in<sp/>MB.<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`time`<sp/>|<sp/>Job<sp/>wall<sp/>time:<sp/>after<sp/>this<sp/>time,<sp/>the<sp/>job<sp/>will<sp/>be<sp/>killed<sp/>by<sp/>slurm.<sp/>Maximum<sp/>runtime<sp/>is<sp/>3<sp/>days.<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`mail-type`<sp/>|<sp/>Settings<sp/>for<sp/>slurm<sp/>status<sp/>emails<sp/>(see<sp/>below).<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`chdir`<sp/>|<sp/>Directory<sp/>in<sp/>which<sp/>the<sp/>batchfile<sp/>will<sp/>be<sp/>executed<sp/>(=path<sp/>to<sp/>executable).<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`output`<sp/>|<sp/>Name<sp/>of<sp/>log<sp/>file.<sp/>`%j`<sp/>=<sp/>job-ID,<sp/>`%N`<sp/>=<sp/>node-ID.<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`error`<sp/>|<sp/>Name<sp/>of<sp/>error<sp/>log<sp/>file.<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`nodes`<sp/>|<sp/>Number<sp/>of<sp/>(MPI)<sp/>nodes<sp/>on<sp/>which<sp/>to<sp/>execute<sp/>the<sp/>job.<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`ntasks-per-node`<sp/>|<sp/>Number<sp/>of<sp/>MPI<sp/>tasks<sp/>per<sp/>node.<sp/>When<sp/>using<sp/>OpenMP,<sp/>set<sp/>to<sp/>1<sp/>(only<sp/>use<sp/>MPI<sp/>for<sp/>inter-node<sp/>parallelization).<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`OMP_NUM_THREADS`<sp/>|<sp/>Number<sp/>of<sp/>OpenMP<sp/>threads.<sp/>Should<sp/>be<sp/>equal<sp/>to<sp/>the<sp/>number<sp/>of<sp/>available<sp/>cores<sp/>per<sp/>node<sp/>(=32<sp/>on<sp/>KCS).<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`main.o`<sp/>|<sp/>Job<sp/>executable.<sp/>|</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">####<sp/>Optional<sp/>settings:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">`#SBATCH<sp/>--partition=kcs_long`<sp/>:<sp/>Submit<sp/>the<sp/>job<sp/>to<sp/>the<sp/>KCS<sp/>long-runner<sp/>queue<sp/>(wall<sp/>time<sp/>&lt;<sp/>30<sp/>days).</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">####<sp/>SLURM<sp/>status<sp/>emails:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">If<sp/>activated,<sp/>Slurm<sp/>informs<sp/>per<sp/>email<sp/>when<sp/>jobs<sp/>start/finish/fail<sp/>etc.<sp/>Deactivate<sp/>Slurm<sp/>emails<sp/>if<sp/>you<sp/>are<sp/>submitting<sp/>many<sp/>jobs,<sp/>and<sp/>do<sp/>NOT<sp/>forward<sp/>these<sp/>emails<sp/>to<sp/>another<sp/>email<sp/>account<sp/>(see<sp/>https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html).</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Useful<sp/>SLURM<sp/>commands</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">|<sp/>Command<sp/>|<sp/>Explanation<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>-------<sp/>|<sp/>-----------<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`sinfo`<sp/>|<sp/>view<sp/>information<sp/>about<sp/>SLURM<sp/>nodes<sp/>and<sp/>partitions.<sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`squeue`<sp/><sp/>|<sp/>show<sp/>all<sp/>information<sp/>about<sp/>pending<sp/>and<sp/>running<sp/>jobs<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`squeue<sp/>-u<sp/>&lt;lrz-ID&gt;`<sp/><sp/>|<sp/>show<sp/>all<sp/>information<sp/>about<sp/>pending<sp/>and<sp/>running<sp/>jobs<sp/>of<sp/>\&lt;lrz-ID&gt;<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`sbatch<sp/>batchfile.sh`<sp/><sp/>|<sp/>submit<sp/>a<sp/>job<sp/>configured<sp/>in<sp/>`batchfile.sh`<sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>`scancel<sp/>&lt;job-ID&gt;`<sp/><sp/>|<sp/>cancel<sp/>the<sp/>job<sp/>\&lt;job-ID&gt;<sp/>|</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Accessing<sp/>the<sp/>data</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Data<sp/>can<sp/>be<sp/>downloaded<sp/>from<sp/>KCS<sp/>to<sp/>`&lt;local-path&gt;`<sp/>on<sp/>your<sp/>workstation/laptop<sp/>using<sp/>rsync:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">`rsync<sp/>-auvh<sp/>&lt;lrz-ID&gt;@kcs-login.cos.lrz.de:/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/&lt;path-to-result-file&gt;<sp/>&lt;local-path&gt;`</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Hint:<sp/>if<sp/>you<sp/>have<sp/>defined<sp/>e.g.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">`kcs=&lt;lrz-ID&gt;@kcs-login.cos.lrz.de`<sp/>and</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">`kcshome=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG`</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">in<sp/>your<sp/>local<sp/>.bashrc<sp/>(on<sp/>the<sp/>workstation/laptop),<sp/>the<sp/>command<sp/>simplifies:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">`rsync<sp/>-auvh<sp/>$kcs:$kcshome/&lt;path-to-result-file&gt;<sp/>&lt;local-path&gt;`.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">(If<sp/>the<sp/>command<sp/>is<sp/>executed<sp/>from<sp/>within<sp/>the<sp/>destination<sp/>directory<sp/>`&lt;local-path&gt;`,<sp/>then<sp/>simply<sp/>replace<sp/>`&lt;local-path&gt;`=`.`<sp/>)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Running<sp/>unit<sp/>tests</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">As<sp/>long<sp/>as<sp/>unit<sp/>test<sp/>really<sp/>are<sp/>just<sp/>unit<sp/>test<sp/>and<sp/>do<sp/>not<sp/>take<sp/>much<sp/>time<sp/>to<sp/>execute,<sp/></highlight></codeline>
+<codeline><highlight class="normal">it<sp/>should<sp/>be<sp/>alright<sp/>to<sp/>run<sp/>them<sp/>even<sp/>on<sp/>the<sp/>login<sp/>node.<sp/></highlight></codeline>
+    </programlisting>
+    <location file="scripts/kcs_instructions.md"/>
+  </compounddef>
+</doxygen>

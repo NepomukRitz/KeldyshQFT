@@ -1406,6 +1406,46 @@
     <member refid="d4/d5e/namespaceflowgrid_1a20584ce67a10be7ccb51dc6b44b46ab3" kind="function"><name>construct_flow_grid</name></member>
     <member refid="d4/d5e/namespaceflowgrid_1a74b8d0ac0fe4652ae1d9e180dbcffe4b" kind="function"><name>flow_grid_step_sizes</name></member>
   </compound>
+  <compound refid="d9/d59/namespacegetIntegrand" kind="namespace"><name>getIntegrand</name>
+    <member refid="d9/d59/namespacegetIntegrand_1ac6e7b8ed7deae27fe802e9c09a97aad4" kind="variable"><name>exe_dir</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kind="variable"><name>data_dir</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kind="variable"><name>it_Lambda</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kind="variable"><name>rkStep</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kind="variable"><name>k_class_int</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kind="variable"><name>channel</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kind="variable"><name>i0</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kind="variable"><name>i2</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a4d62848768af6928fe58e2a6f0987329" kind="variable"><name>spin</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kind="variable"><name>w</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kind="variable"><name>v</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kind="variable"><name>vp</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kind="variable"><name>i_in</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a8cdef4da4b5917a52cd40d381b84fb6d" kind="variable"><name>filename</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a52a6d4326cb90b38ca4519373a78956b" kind="variable"><name>Gamma0_is_left</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a1ca55189f9a353c9ea4f52a65ce7345e" kind="variable"><name>integrandFilename</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a8144e183cee7f5eaedc69b0bd745cdaf" kind="variable"><name>fig0</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a839b1ca54d486ab9a2ab0cf0da185743" kind="variable"><name>axs0</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a92229957959e0f6a9805e92481d323f9" kind="variable"><name>num</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a39e3cbb6463381f3064623b3ae512276" kind="variable"><name>nrows</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a85ab2bd6847af31679c686c6fd51279e" kind="variable"><name>ncols</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1aaa2dc6b3eaae5c6c019757fdd47cf26b" kind="function"><name>plot_integrand</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1ab7eba5c643c81ae7aff5539865fd275d" kind="function"><name>plot_integrand_alli2</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1acb6f69b0cb389468600d89e46b40452f" kind="function"><name>compile_stuff</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a13f86a70c6fb0cc9a235003771fd1701" kind="function"><name>compile_get_integrand_Gamma1_Pi_Gamma2_Cpp</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1ad38edb885363bdd9c85123c6a8d97d44" kind="function"><name>compile_get_integrand_dGamma_1loop_Cpp</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a6e757d17617cdaaf38994b369230dc80" kind="function"><name>compile_get_integrand_dGamma_1loop_fromFlow_Cpp</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a0ba3135824925065934f234ef8423d9a" kind="function"><name>compile_get_integrand_dGammaL_Cpp</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1aece1226a1eb20ceb7426b8bb01dda455" kind="function"><name>compile_get_integrand_dGammaC_Cpp</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a3b461523321771151e17ce5c144da522" kind="function"><name>get_integrand_Gamma1_Pi_Gamma2</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1afdac74b8af965e2014d79d9f562ded7e" kind="function"><name>get_integrand_dGamma_1loop_fromFlow</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1af1c44baca959bf876be1dbce3a4dba4d" kind="function"><name>get_integrand_dGamma_1loop</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a46902ef3e92856bd353e2838c7280de3" kind="function"><name>get_integrand_dGammaL</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1aab3c3401b1ccad77ada588747b5bcbeb" kind="function"><name>get_integrand_dGammaC</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1abdd42636e64de29240839ebd24f0c8ee" kind="function"><name>get_integrand_filename_Gamma1_Pi_Gamma2</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1a302b6518c3df0fac9f6e752d9b104e7c" kind="function"><name>get_integrand_filename_dGamma_1loop</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1afaa4a831b0327c85654ea1c31e36c9eb" kind="function"><name>get_integrand_filename_dGammaL</name></member>
+    <member refid="d9/d59/namespacegetIntegrand_1ae873b3eb1fc25f99b13814fa633aed56" kind="function"><name>get_integrand_filename_dGammaC</name></member>
+  </compound>
   <compound refid="de/dac/namespacehdf5__impl" kind="namespace"><name>hdf5_impl</name>
     <member refid="de/dac/namespacehdf5__impl_1a08bacb7aab46467735721ffb04434514" kind="function"><name>init_freqgrid_from_hdf_LambdaLayer</name></member>
     <member refid="de/dac/namespacehdf5__impl_1ac77e56ba9f320721c5cfc26f6709c9e1" kind="function"><name>write_freqparams_to_hdf_LambdaLayer</name></member>
@@ -1417,6 +1457,19 @@
     <member refid="de/dac/namespacehdf5__impl_1a5bed3a47ed017e75c4152bb28be5e1c5" kind="function"><name>read_from_hdf_impl</name></member>
     <member refid="de/dac/namespacehdf5__impl_1a799a9e0ddcf448a166f2073f25d4cdaa" kind="function"><name>read_from_hdf_LambdaLayer_impl</name></member>
     <member refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" kind="function"><name>write_state_to_hdf_LambdaLayer</name></member>
+  </compound>
+  <compound refid="dc/dd6/namespaceload__data" kind="namespace"><name>load_data</name>
+    <member refid="dc/dd6/namespaceload__data_1aa8632dfe38a3febe31bf04ff8e2e4758" kind="function"><name>load_parameters</name></member>
+    <member refid="dc/dd6/namespaceload__data_1ae9df5a3e4bd9bb1531a719e71065e93b" kind="function"><name>load_SE_A</name></member>
+    <member refid="dc/dd6/namespaceload__data_1a47715d62acae83af7fcc3a89fd313896" kind="function"><name>load_K1</name></member>
+    <member refid="dc/dd6/namespaceload__data_1ae9c30efd0678d231c7321b9ec5828b0b" kind="function"><name>load_K2</name></member>
+    <member refid="dc/dd6/namespaceload__data_1a68a21a93c52bb1dbec9e3cf767c66b06" kind="function"><name>load_data</name></member>
+    <member refid="dc/dd6/namespaceload__data_1ae030fd4581b0f20dd2133714ed247c53" kind="function"><name>load_SIAM_NRG</name></member>
+    <member refid="dc/dd6/namespaceload__data_1a91f1be1df1a560a299524128b6d57cfb" kind="function"><name>load_SIAM_NRG_finite_T</name></member>
+    <member refid="dc/dd6/namespaceload__data_1ac1c097e7b7afef7e3ca36b153c64f180" kind="function"><name>load_hdf5</name></member>
+    <member refid="dc/dd6/namespaceload__data_1a670940cf3d8eeabab08ea81ce10443de" kind="function"><name>omegas</name></member>
+    <member refid="dc/dd6/namespaceload__data_1a2d96a5707f3027d9adc8e83b32079260" kind="function"><name>rearrange_SE</name></member>
+    <member refid="dc/dd6/namespaceload__data_1ae6c2c7198a9f15f6cf0c5c30a46f61d3" kind="function"><name>compute_spectralfunction</name></member>
   </compound>
   <compound refid="d3/d46/namespacemath__impl" kind="namespace"><name>math_impl</name>
     <member refid="d3/d46/namespacemath__impl_1a980df65c33bf56b93b476c06db10f0c6" kind="function"><name>getFlatIndex</name></member>
@@ -1525,9 +1578,42 @@
     <member refid="dd/df1/namespaceold__ode__solvers_1a98a7c97d9a18a4af97f23c8b8f78d471" kind="function"><name>RK4_step</name></member>
     <member refid="dd/df1/namespaceold__ode__solvers_1aeb954768e9e969cbed9beb79669621c8" kind="function"><name>RK4_step</name></member>
   </compound>
+  <compound refid="de/d73/namespaceplot" kind="namespace"><name>plot</name>
+    <member refid="de/d73/namespaceplot_1a10cf634990454ca5d82d4e1d7d314940" kind="variable"><name>filename</name></member>
+    <member refid="de/d73/namespaceplot_1a44e8549f71b4953920a3d3e13858a4cb" kind="variable"><name>cnt</name></member>
+    <member refid="de/d73/namespaceplot_1af9bedf9ca52ee7158bbe9064f649d211" kind="variable"><name>plot</name></member>
+    <member refid="de/d73/namespaceplot_1a580d4780341d8dc1deed9c81266a8934" kind="variable"><name>fs</name></member>
+  </compound>
+  <compound refid="d7/d09/namespaceplotting__routines" kind="namespace"><name>plotting_routines</name>
+    <member refid="d7/d09/namespaceplotting__routines_1a0affc5ba7b10820ddde990876f351c5f" kind="variable"><name>usetex</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1a1f0c8f313a1e10600e37d7bc975932fa" kind="variable"><name>family</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1a7cc2bc58a20953150c0143c53ddbd92e" kind="function"><name>effec_distribution</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1ab6609dd8d76efb7cd89f61e80f8f55dc" kind="function"><name>generate_Keldysh_component</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1af65af7c5e8113ae01d07af1063e05a01" kind="function"><name>generate_filename_fRG</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1abe68382e5921cbad602577447e4cc000" kind="function"><name>change_prefix</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1a46c974daa3dcc27042323716519730ae" kind="function"><name>generate_label</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1a9ce053a0fa97847059c202c08bcc38b3" kind="function"><name>plot_fRG</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1a7ce446ebee719c7e343ac7956d35edb2" kind="function"><name>plot_fRG_V_runs</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1ab50a9ace2cb6e84d44537ed0579d4aac" kind="function"><name>plot_selfenergy</name></member>
+    <member refid="d7/d09/namespaceplotting__routines_1a9c84c11834d1694cb8c8a01f2708c49a" kind="function"><name>plot_spectralfunction</name></member>
+  </compound>
+  <compound refid="dd/d95/namespacereproduce__benchmark__data" kind="namespace"><name>reproduce_benchmark_data</name>
+    <member refid="dd/d95/namespacereproduce__benchmark__data_1ac08dbb45daad0336bc0bb2e5c34a03fa" kind="variable"><name>backups</name></member>
+    <member refid="dd/d95/namespacereproduce__benchmark__data_1ae8834c5abad07c748cc0efc1c9d1b4be" kind="function"><name>backup_files</name></member>
+    <member refid="dd/d95/namespacereproduce__benchmark__data_1a84d882896f07aec2c6fd9ad967102d57" kind="function"><name>restore_backup_files</name></member>
+    <member refid="dd/d95/namespacereproduce__benchmark__data_1a9b034cec9b20d36996dfb3bf68dfe0da" kind="function"><name>write_main</name></member>
+    <member refid="dd/d95/namespacereproduce__benchmark__data_1a9e02be9aba8919fb36241684a8c2ec5d" kind="function"><name>write_frequency_parameters</name></member>
+    <member refid="dd/d95/namespacereproduce__benchmark__data_1a57d2ab37775605c12cec01a1e8c4364a" kind="function"><name>write_technical_parameters</name></member>
+    <member refid="dd/d95/namespacereproduce__benchmark__data_1ab8f0aee068130b938554b05686168bba" kind="function"><name>write_master_parameters</name></member>
+  </compound>
   <compound refid="dd/d46/namespaceselfenergy__loop" kind="namespace"><name>selfenergy_loop</name>
     <member refid="dd/d46/namespaceselfenergy__loop_1aefc5e618636f72d0443b6b1e2c9a8309" kind="function"><name>pick_channel</name></member>
     <member refid="dd/d46/namespaceselfenergy__loop_1a9a229d51a6fa389dca0166fb6ea10f6a" kind="function"><name>pick_spin</name></member>
+  </compound>
+  <compound refid="d2/d28/namespacesetup__figure" kind="namespace"><name>setup_figure</name>
+    <member refid="d2/d28/namespacesetup__figure_1a007e755d45da83573a214a75e1f5ce02" kind="function"><name>initialize_figure</name></member>
+    <member refid="d2/d28/namespacesetup__figure_1a9bfd90b25229a375b10ef974a8c5f81a" kind="function"><name>finalize_figure_selfenergy</name></member>
+    <member refid="d2/d28/namespacesetup__figure_1a0544af65a27b11d30e2e209e023551f1" kind="function"><name>finalize_figure_spectralfunction</name></member>
   </compound>
   <compound refid="d8/dcc/namespacestd" kind="namespace"><name>std</name>
   </compound>
@@ -2071,6 +2157,26 @@
   <compound refid="d2/d3f/sanity__check_8hpp" kind="file"><name>sanity_check.hpp</name>
     <member refid="d2/d3f/sanity__check_8hpp_1a884fca24faf1e006b285fcce3ddd0299" kind="function"><name>sanity_check</name></member>
   </compound>
+  <compound refid="df/d2c/kcs__instructions_8md" kind="file"><name>kcs_instructions.md</name>
+  </compound>
+  <compound refid="d6/db2/Profiling_8md" kind="file"><name>Profiling.md</name>
+  </compound>
+  <compound refid="de/d62/getIntegrand_8py" kind="file"><name>getIntegrand.py</name>
+  </compound>
+  <compound refid="d8/de5/ipynb__scripts_2load__data_8py" kind="file"><name>ipynb_scripts/load_data.py</name>
+  </compound>
+  <compound refid="d0/d32/python__scripts_2load__data_8py" kind="file"><name>python_scripts/load_data.py</name>
+  </compound>
+  <compound refid="db/d7a/plot_8py" kind="file"><name>plot.py</name>
+  </compound>
+  <compound refid="db/de8/ipynb__scripts_2plotting__routines_8py" kind="file"><name>ipynb_scripts/plotting_routines.py</name>
+  </compound>
+  <compound refid="db/d3d/python__scripts_2plotting__routines_8py" kind="file"><name>python_scripts/plotting_routines.py</name>
+  </compound>
+  <compound refid="d4/dbc/setup__figure_8py" kind="file"><name>setup_figure.py</name>
+  </compound>
+  <compound refid="d6/de5/reproduce__benchmark__data_8py" kind="file"><name>reproduce_benchmark_data.py</name>
+  </compound>
   <compound refid="d1/dfd/internal__symmetries_8hpp" kind="file"><name>internal_symmetries.hpp</name>
   </compound>
   <compound refid="d4/de0/Keldysh__symmetries_8c_09_09" kind="file"><name>Keldysh_symmetries.c++</name>
@@ -2382,6 +2488,10 @@
     <member refid="d8/d74/write__data2file_8hpp_1a9992b4a1a01038cb7f3f462bb3c2e63c" kind="function"><name>write_h5_rvecs</name></member>
     <member refid="d8/d74/write__data2file_8hpp_1a8dd834ef3d6e007be64e5f1c79144821" kind="function"><name>test_write_h5_rvecs</name></member>
   </compound>
+  <compound refid="dd/de8/md_scripts_2kcs__instructions" kind="page"><name>md_scripts_2kcs__instructions</name>
+  </compound>
+  <compound refid="d2/da3/md_scripts_2Profiling" kind="page"><name>md_scripts_2Profiling</name>
+  </compound>
   <compound refid="dir_ec91f0544e2a178672ced2e875bd1117" kind="dir"><name>asymptotic_corrections</name>
   </compound>
   <compound refid="dir_de9b10064118dc9f2c9648c6ecc35a96" kind="dir"><name>bubble</name>
@@ -2398,6 +2508,8 @@
   </compound>
   <compound refid="dir_d3aa368cf518ca4413cb05ed24da604b" kind="dir"><name>interpolations</name>
   </compound>
+  <compound refid="dir_72efe2e4d9eb6781157c3162c0f5008e" kind="dir"><name>ipynb_scripts</name>
+  </compound>
   <compound refid="dir_ad90714e399e93baefad77eabc58948e" kind="dir"><name>loop</name>
   </compound>
   <compound refid="dir_4cec6998d037ffff14fbd09b4928cae8" kind="dir"><name>mfRG_flow</name>
@@ -2413,6 +2525,10 @@
   <compound refid="dir_a52d1cf80d7db40ef5e5f9f8a0f1d837" kind="dir"><name>perturbation_theory_and_parquet</name>
   </compound>
   <compound refid="dir_e4f1ce5319e85c7908e8df0e328b8d80" kind="dir"><name>postprocessing</name>
+  </compound>
+  <compound refid="dir_01ceb172316a91b6f187300f776b8a59" kind="dir"><name>python_scripts</name>
+  </compound>
+  <compound refid="dir_53e6fa9553ac22a5646d2a2b2d7b97a1" kind="dir"><name>scripts</name>
   </compound>
   <compound refid="dir_3e5922525fa33f19479cfde15131040f" kind="dir"><name>symmetries</name>
   </compound>

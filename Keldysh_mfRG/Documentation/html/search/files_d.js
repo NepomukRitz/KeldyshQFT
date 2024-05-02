@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['sanity_5fcheck_2ehpp_0',['sanity_check.hpp',['../d2/d3f/sanity__check_8hpp.html',1,'']]],
-  ['selfenergy_2ehpp_1',['selfenergy.hpp',['../d6/d2d/selfenergy_8hpp.html',1,'']]],
-  ['state_2ehpp_2',['state.hpp',['../da/d3b/state_8hpp.html',1,'']]],
-  ['symmetry_5ftable_2ehpp_3',['symmetry_table.hpp',['../d3/d77/symmetry__table_8hpp.html',1,'']]],
-  ['symmetry_5ftransformations_2ec_2b_2b_4',['symmetry_transformations.c++',['../d5/def/symmetry__transformations_8c_09_09.html',1,'']]],
-  ['symmetry_5ftransformations_2ehpp_5',['symmetry_transformations.hpp',['../db/d7d/symmetry__transformations_8hpp.html',1,'']]]
+  ['r_5fvertex_2ehpp_0',['r_vertex.hpp',['../d3/d22/r__vertex_8hpp.html',1,'']]],
+  ['ranged_5fview_2ehpp_1',['ranged_view.hpp',['../dd/df3/ranged__view_8hpp.html',1,'']]],
+  ['reproduce_5fbenchmark_5fdata_2epy_2',['reproduce_benchmark_data.py',['../d6/de5/reproduce__benchmark__data_8py.html',1,'']]],
+  ['right_5fhand_5fsides_2ehpp_3',['right_hand_sides.hpp',['../d8/dea/right__hand__sides_8hpp.html',1,'']]],
+  ['runtime_5ferror_2ehpp_4',['runtime_error.hpp',['../d1/d64/runtime__error_8hpp.html',1,'']]]
 ];

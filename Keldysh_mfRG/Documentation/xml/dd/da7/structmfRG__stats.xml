@@ -34,7 +34,6 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="135" column="12" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="135" bodyend="-1"/>
-        <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">write_to_hdf</referencedby>
       </memberdef>
       <memberdef kind="variable" id="dd/da7/structmfRG__stats_1ad9f64007410a48760308b5d67e098fac" prot="public" static="no" mutable="no">
         <type>int</type>
@@ -83,7 +82,6 @@
         <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
         <references refid="dd/da7/structmfRG__stats_1a14193eaef49805c52d60c016188ca805" compoundref="d8/dea/right__hand__sides_8hpp" startline="134">number_of_SE_iterations</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1a924110dbdaccbbc744def3ca0838cb4c" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="21" endline="30">open_hdf_file_readWrite</references>
-        <references refid="dd/da7/structmfRG__stats_1aa0283b00595ba77a0cc5033e653c9844" compoundref="d8/dea/right__hand__sides_8hpp" startline="135">time</references>
         <references refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" compoundref="d1/df8/master__parameters_8hpp" startline="118" endline="122">U_NRG</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1a4a896bffba9072fda2acceb9bffe1eff" compoundref="d5/de4/hdf5__routines_8hpp" startline="462" endline="466">write_to_hdf_LambdaLayer</references>
       </memberdef>

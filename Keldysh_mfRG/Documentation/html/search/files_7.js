@@ -1,7 +1,15 @@
 var searchData=
 [
-  ['keldysh_5fsymmetries_2ec_2b_2b_0',['Keldysh_symmetries.c++',['../d4/de0/Keldysh__symmetries_8c_09_09.html',1,'']]],
-  ['keldysh_5fsymmetries_2ehpp_1',['Keldysh_symmetries.hpp',['../d2/d1a/Keldysh__symmetries_8hpp.html',1,'']]],
-  ['kramerskronig_2ec_2b_2b_2',['KramersKronig.c++',['../d7/d43/KramersKronig_8c_09_09.html',1,'']]],
-  ['kramerskronig_2ehpp_3',['KramersKronig.hpp',['../d1/db3/KramersKronig_8hpp.html',1,'']]]
+  ['integrand_2ehpp_0',['integrand.hpp',['../df/d83/integrand_8hpp.html',1,'']]],
+  ['integrandse_2ehpp_1',['integrandSE.hpp',['../de/d65/integrandSE_8hpp.html',1,'']]],
+  ['integrator_2ec_2b_2b_2',['integrator.c++',['../d7/d61/integrator_8c_09_09.html',1,'']]],
+  ['integrator_2ehpp_3',['integrator.hpp',['../dd/d1f/integrator_8hpp.html',1,'']]],
+  ['integrator_5fnr_2ehpp_4',['integrator_NR.hpp',['../da/db4/integrator__NR_8hpp.html',1,'']]],
+  ['internal_5fsymmetries_2ehpp_5',['internal_symmetries.hpp',['../d1/dfd/internal__symmetries_8hpp.html',1,'']]],
+  ['interpolatorlinorsloppy_2ehpp_6',['InterpolatorLinOrSloppy.hpp',['../d3/d17/InterpolatorLinOrSloppy_8hpp.html',1,'']]],
+  ['interpolatorspline1d_2ehpp_7',['InterpolatorSpline1D.hpp',['../d1/d52/InterpolatorSpline1D_8hpp.html',1,'']]],
+  ['interpolatorspline2d_2ehpp_8',['InterpolatorSpline2D.hpp',['../d6/d91/InterpolatorSpline2D_8hpp.html',1,'']]],
+  ['interpolatorspline3d_2ehpp_9',['InterpolatorSpline3D.hpp',['../dd/dcc/InterpolatorSpline3D_8hpp.html',1,'']]],
+  ['ipynb_5fscripts_2fload_5fdata_2epy_10',['load_data.py',['../d8/de5/ipynb__scripts_2load__data_8py.html',1,'']]],
+  ['ipynb_5fscripts_2fplotting_5froutines_2epy_11',['plotting_routines.py',['../db/de8/ipynb__scripts_2plotting__routines_8py.html',1,'']]]
 ];

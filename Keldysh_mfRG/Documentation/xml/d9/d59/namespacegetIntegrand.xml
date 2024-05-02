@@ -1,0 +1,1090 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d9/d59/namespacegetIntegrand" kind="namespace" language="Python">
+    <compoundname>getIntegrand</compoundname>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1ac6e7b8ed7deae27fe802e9c09a97aad4" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">str</ref></type>
+        <definition>str getIntegrand.exe_dir</definition>
+        <argsstring></argsstring>
+        <name>exe_dir</name>
+        <qualifiedname>getIntegrand.exe_dir</qualifiedname>
+        <initializer>=  &quot;/tmp/tmp.0CYjLbB99I/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">tests</ref>/&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="260" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="260" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">str</ref></type>
+        <definition>str getIntegrand.data_dir</definition>
+        <argsstring></argsstring>
+        <name>data_dir</name>
+        <qualifiedname>getIntegrand.data_dir</qualifiedname>
+        <initializer>=  &quot;/tmp/tmp.0CYjLbB99I/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Data_KF</ref>/&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="263" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.it_Lambda</definition>
+        <argsstring></argsstring>
+        <name>it_Lambda</name>
+        <qualifiedname>getIntegrand.it_Lambda</qualifiedname>
+        <initializer>=  10</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="264" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="264" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.rkStep</definition>
+        <argsstring></argsstring>
+        <name>rkStep</name>
+        <qualifiedname>getIntegrand.rkStep</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="265" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="265" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.k_class_int</definition>
+        <argsstring></argsstring>
+        <name>k_class_int</name>
+        <qualifiedname>getIntegrand.k_class_int</qualifiedname>
+        <initializer>=  3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="266" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="266" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">str</ref></type>
+        <definition>str getIntegrand.channel</definition>
+        <argsstring></argsstring>
+        <name>channel</name>
+        <qualifiedname>getIntegrand.channel</qualifiedname>
+        <initializer>=  &apos;a&apos;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="267" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="267" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.i0</definition>
+        <argsstring></argsstring>
+        <name>i0</name>
+        <qualifiedname>getIntegrand.i0</qualifiedname>
+        <initializer>=  1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="268" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="268" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.i2</definition>
+        <argsstring></argsstring>
+        <name>i2</name>
+        <qualifiedname>getIntegrand.i2</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="269" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="269" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a4d62848768af6928fe58e2a6f0987329" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.spin</definition>
+        <argsstring></argsstring>
+        <name>spin</name>
+        <qualifiedname>getIntegrand.spin</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="270" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="270" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.w</definition>
+        <argsstring></argsstring>
+        <name>w</name>
+        <qualifiedname>getIntegrand.w</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="271" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="271" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.v</definition>
+        <argsstring></argsstring>
+        <name>v</name>
+        <qualifiedname>getIntegrand.v</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="272" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="272" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.vp</definition>
+        <argsstring></argsstring>
+        <name>vp</name>
+        <qualifiedname>getIntegrand.vp</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="273" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="273" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.i_in</definition>
+        <argsstring></argsstring>
+        <name>i_in</name>
+        <qualifiedname>getIntegrand.i_in</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="274" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="274" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a8cdef4da4b5917a52cd40d381b84fb6d" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">str</ref></type>
+        <definition>str getIntegrand.filename</definition>
+        <argsstring></argsstring>
+        <name>filename</name>
+        <qualifiedname>getIntegrand.filename</qualifiedname>
+        <initializer>=  &quot;Psi_SDE_a_l&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="279" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="279" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a52a6d4326cb90b38ca4519373a78956b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int getIntegrand.Gamma0_is_left</definition>
+        <argsstring></argsstring>
+        <name>Gamma0_is_left</name>
+        <qualifiedname>getIntegrand.Gamma0_is_left</qualifiedname>
+        <initializer>=  0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="280" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="280" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a1ca55189f9a353c9ea4f52a65ce7345e" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>getIntegrand.integrandFilename</definition>
+        <argsstring></argsstring>
+        <name>integrandFilename</name>
+        <qualifiedname>getIntegrand.integrandFilename</qualifiedname>
+        <initializer>=  <ref refid="d9/d59/namespacegetIntegrand_1abdd42636e64de29240839ebd24f0c8ee" kindref="member">get_integrand_filename_Gamma1_Pi_Gamma2</ref>(<ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref>, <ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref>, <ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref>, <ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref>, <ref refid="d9/d59/namespacegetIntegrand_1a52a6d4326cb90b38ca4519373a78956b" kindref="member">Gamma0_is_left</ref>)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="283" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="283" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a8144e183cee7f5eaedc69b0bd745cdaf" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>getIntegrand.fig0</definition>
+        <argsstring></argsstring>
+        <name>fig0</name>
+        <qualifiedname>getIntegrand.fig0</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="284" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="284" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a839b1ca54d486ab9a2ab0cf0da185743" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>getIntegrand.axs0</definition>
+        <argsstring></argsstring>
+        <name>axs0</name>
+        <qualifiedname>getIntegrand.axs0</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="284" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="284" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a92229957959e0f6a9805e92481d323f9" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>getIntegrand.num</definition>
+        <argsstring></argsstring>
+        <name>num</name>
+        <qualifiedname>getIntegrand.num</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="284" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="284" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a39e3cbb6463381f3064623b3ae512276" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>getIntegrand.nrows</definition>
+        <argsstring></argsstring>
+        <name>nrows</name>
+        <qualifiedname>getIntegrand.nrows</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="284" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="284" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/d59/namespacegetIntegrand_1a85ab2bd6847af31679c686c6fd51279e" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>getIntegrand.ncols</definition>
+        <argsstring></argsstring>
+        <name>ncols</name>
+        <qualifiedname>getIntegrand.ncols</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="284" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="284" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1aaa2dc6b3eaae5c6c019757fdd47cf26b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.plot_integrand</definition>
+        <argsstring>(ax, filename, kwargs={})</argsstring>
+        <name>plot_integrand</name>
+        <qualifiedname>getIntegrand.plot_integrand</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ax</ref></type>
+          <defname>ax</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cdef4da4b5917a52cd40d381b84fb6d" kindref="member">filename</ref></type>
+          <defname>filename</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">kwargs</ref></type>
+          <defname>kwargs</defname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="19" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="19" bodyend="26"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1ab7eba5c643c81ae7aff5539865fd275d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.plot_integrand_alli2</definition>
+        <argsstring>(ax, filename_pt1, filename_pt2, kwargs={})</argsstring>
+        <name>plot_integrand_alli2</name>
+        <qualifiedname>getIntegrand.plot_integrand_alli2</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ax</ref></type>
+          <defname>ax</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">filename_pt1</ref></type>
+          <defname>filename_pt1</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">filename_pt2</ref></type>
+          <defname>filename_pt2</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">kwargs</ref></type>
+          <defname>kwargs</defname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>For Keldysh bubble: Sum up all inner Keldysh indices. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="28" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="28" bodyend="42"/>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1acb6f69b0cb389468600d89e46b40452f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.compile_stuff</definition>
+        <argsstring>(string cpp_target)</argsstring>
+        <name>compile_stuff</name>
+        <qualifiedname>getIntegrand.compile_stuff</qualifiedname>
+        <param>
+          <type>string</type>
+          <declname>cpp_target</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="43" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="43" bodyend="86"/>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d9/d59/namespacegetIntegrand_1ad38edb885363bdd9c85123c6a8d97d44" compoundref="de/d62/getIntegrand_8py" startline="91" endline="94">compile_get_integrand_dGamma_1loop_Cpp</referencedby>
+        <referencedby refid="d9/d59/namespacegetIntegrand_1a13f86a70c6fb0cc9a235003771fd1701" compoundref="de/d62/getIntegrand_8py" startline="87" endline="90">compile_get_integrand_Gamma1_Pi_Gamma2_Cpp</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1a13f86a70c6fb0cc9a235003771fd1701" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.compile_get_integrand_Gamma1_Pi_Gamma2_Cpp</definition>
+        <argsstring>()</argsstring>
+        <name>compile_get_integrand_Gamma1_Pi_Gamma2_Cpp</name>
+        <qualifiedname>getIntegrand.compile_get_integrand_Gamma1_Pi_Gamma2_Cpp</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="87" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="87" bodyend="90"/>
+        <references refid="d9/d59/namespacegetIntegrand_1acb6f69b0cb389468600d89e46b40452f" compoundref="de/d62/getIntegrand_8py" startline="43" endline="86">compile_stuff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1ad38edb885363bdd9c85123c6a8d97d44" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.compile_get_integrand_dGamma_1loop_Cpp</definition>
+        <argsstring>()</argsstring>
+        <name>compile_get_integrand_dGamma_1loop_Cpp</name>
+        <qualifiedname>getIntegrand.compile_get_integrand_dGamma_1loop_Cpp</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="91" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="91" bodyend="94"/>
+        <references refid="d9/d59/namespacegetIntegrand_1acb6f69b0cb389468600d89e46b40452f" compoundref="de/d62/getIntegrand_8py" startline="43" endline="86">compile_stuff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1a6e757d17617cdaaf38994b369230dc80" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.compile_get_integrand_dGamma_1loop_fromFlow_Cpp</definition>
+        <argsstring>()</argsstring>
+        <name>compile_get_integrand_dGamma_1loop_fromFlow_Cpp</name>
+        <qualifiedname>getIntegrand.compile_get_integrand_dGamma_1loop_fromFlow_Cpp</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="95" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="95" bodyend="118"/>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1a0ba3135824925065934f234ef8423d9a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.compile_get_integrand_dGammaL_Cpp</definition>
+        <argsstring>()</argsstring>
+        <name>compile_get_integrand_dGammaL_Cpp</name>
+        <qualifiedname>getIntegrand.compile_get_integrand_dGammaL_Cpp</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="119" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="119" bodyend="142"/>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1aece1226a1eb20ceb7426b8bb01dda455" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.compile_get_integrand_dGammaC_Cpp</definition>
+        <argsstring>()</argsstring>
+        <name>compile_get_integrand_dGammaC_Cpp</name>
+        <qualifiedname>getIntegrand.compile_get_integrand_dGammaC_Cpp</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="143" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="143" bodyend="166"/>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1a3b461523321771151e17ce5c144da522" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_Gamma1_Pi_Gamma2</definition>
+        <argsstring>(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, filename, Gamma0_is_left)</argsstring>
+        <name>get_integrand_Gamma1_Pi_Gamma2</name>
+        <qualifiedname>getIntegrand.get_integrand_Gamma1_Pi_Gamma2</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac6e7b8ed7deae27fe802e9c09a97aad4" kindref="member">exe_dir</ref></type>
+          <defname>exe_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4d62848768af6928fe58e2a6f0987329" kindref="member">spin</ref></type>
+          <defname>spin</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cdef4da4b5917a52cd40d381b84fb6d" kindref="member">filename</ref></type>
+          <defname>filename</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a52a6d4326cb90b38ca4519373a78956b" kindref="member">Gamma0_is_left</ref></type>
+          <defname>Gamma0_is_left</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="167" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="167" bodyend="170"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1afdac74b8af965e2014d79d9f562ded7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_dGamma_1loop_fromFlow</definition>
+        <argsstring>(exe_dir, data_dir, filename, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in)</argsstring>
+        <name>get_integrand_dGamma_1loop_fromFlow</name>
+        <qualifiedname>getIntegrand.get_integrand_dGamma_1loop_fromFlow</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac6e7b8ed7deae27fe802e9c09a97aad4" kindref="member">exe_dir</ref></type>
+          <defname>exe_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cdef4da4b5917a52cd40d381b84fb6d" kindref="member">filename</ref></type>
+          <defname>filename</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4d62848768af6928fe58e2a6f0987329" kindref="member">spin</ref></type>
+          <defname>spin</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="171" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="171" bodyend="174"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1af1c44baca959bf876be1dbce3a4dba4d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_dGamma_1loop</definition>
+        <argsstring>(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in)</argsstring>
+        <name>get_integrand_dGamma_1loop</name>
+        <qualifiedname>getIntegrand.get_integrand_dGamma_1loop</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac6e7b8ed7deae27fe802e9c09a97aad4" kindref="member">exe_dir</ref></type>
+          <defname>exe_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4d62848768af6928fe58e2a6f0987329" kindref="member">spin</ref></type>
+          <defname>spin</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="175" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="175" bodyend="178"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1a46902ef3e92856bd353e2838c7280de3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_dGammaL</definition>
+        <argsstring>(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, i_loop)</argsstring>
+        <name>get_integrand_dGammaL</name>
+        <qualifiedname>getIntegrand.get_integrand_dGammaL</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac6e7b8ed7deae27fe802e9c09a97aad4" kindref="member">exe_dir</ref></type>
+          <defname>exe_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4d62848768af6928fe58e2a6f0987329" kindref="member">spin</ref></type>
+          <defname>spin</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i_loop</ref></type>
+          <defname>i_loop</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="179" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="179" bodyend="182"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1aab3c3401b1ccad77ada588747b5bcbeb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_dGammaC</definition>
+        <argsstring>(exe_dir, data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, spin, w, v, vp, i_in, i_loop)</argsstring>
+        <name>get_integrand_dGammaC</name>
+        <qualifiedname>getIntegrand.get_integrand_dGammaC</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac6e7b8ed7deae27fe802e9c09a97aad4" kindref="member">exe_dir</ref></type>
+          <defname>exe_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4d62848768af6928fe58e2a6f0987329" kindref="member">spin</ref></type>
+          <defname>spin</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i_loop</ref></type>
+          <defname>i_loop</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="183" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="183" bodyend="187"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1abdd42636e64de29240839ebd24f0c8ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_filename_Gamma1_Pi_Gamma2</definition>
+        <argsstring>(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, Gamma0_is_left)</argsstring>
+        <name>get_integrand_filename_Gamma1_Pi_Gamma2</name>
+        <qualifiedname>getIntegrand.get_integrand_filename_Gamma1_Pi_Gamma2</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a52a6d4326cb90b38ca4519373a78956b" kindref="member">Gamma0_is_left</ref></type>
+          <defname>Gamma0_is_left</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="188" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="188" bodyend="205"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1a302b6518c3df0fac9f6e752d9b104e7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_filename_dGamma_1loop</definition>
+        <argsstring>(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in)</argsstring>
+        <name>get_integrand_filename_dGamma_1loop</name>
+        <qualifiedname>getIntegrand.get_integrand_filename_dGamma_1loop</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="206" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="206" bodyend="223"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1afaa4a831b0327c85654ea1c31e36c9eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_filename_dGammaL</definition>
+        <argsstring>(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop)</argsstring>
+        <name>get_integrand_filename_dGammaL</name>
+        <qualifiedname>getIntegrand.get_integrand_filename_dGammaL</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i_loop</ref></type>
+          <defname>i_loop</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="224" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="224" bodyend="241"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d59/namespacegetIntegrand_1ae873b3eb1fc25f99b13814fa633aed56" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>getIntegrand.get_integrand_filename_dGammaC</definition>
+        <argsstring>(data_dir, it_Lambda, rkStep, k_class_int, channel, i0, i2, w, v, vp, i_in, i_loop)</argsstring>
+        <name>get_integrand_filename_dGammaC</name>
+        <qualifiedname>getIntegrand.get_integrand_filename_dGammaC</qualifiedname>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a44bc6399a5c880047b7d513723da36d0" kindref="member">data_dir</ref></type>
+          <defname>data_dir</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a1d8afac08a218b89edddac39a4e26e2e" kindref="member">it_Lambda</ref></type>
+          <defname>it_Lambda</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8cf9d41af70ebd017e2947e37fd9ed73" kindref="member">rkStep</ref></type>
+          <defname>rkStep</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a3e3a1fa0579ae3ec0c425e72a1ce6677" kindref="member">k_class_int</ref></type>
+          <defname>k_class_int</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1affe557b99ce21081450f9a33337f29ab" kindref="member">channel</ref></type>
+          <defname>channel</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8c9600ab594068787054475dc580f6c0" kindref="member">i0</ref></type>
+          <defname>i0</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ae64ba327eca938178004f4325dab5e26" kindref="member">i2</ref></type>
+          <defname>i2</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1ac27f31b5826d872c73024a5fa645598f" kindref="member">w</ref></type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a8de2c1f4f0e95b0891bbf53c7585193c" kindref="member">v</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a4e095fa5805b564f2a9100f4f4efe4b8" kindref="member">vp</ref></type>
+          <defname>vp</defname>
+        </param>
+        <param>
+          <type><ref refid="d9/d59/namespacegetIntegrand_1a9e34c20b9b4b3f9db34da5515e091c7a" kindref="member">i_in</ref></type>
+          <defname>i_in</defname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i_loop</ref></type>
+          <defname>i_loop</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="scripts/python_scripts/getIntegrand.py" line="242" column="1" bodyfile="scripts/python_scripts/getIntegrand.py" bodystart="242" bodyend="258"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="scripts/python_scripts/getIntegrand.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

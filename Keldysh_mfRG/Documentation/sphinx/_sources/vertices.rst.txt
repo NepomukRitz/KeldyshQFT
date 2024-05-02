@@ -13,5 +13,3 @@ Vertices
 .. doxygenclass:: GeneralVertex
    :members:
 
-
-

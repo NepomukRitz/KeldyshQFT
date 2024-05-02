@@ -25,10 +25,12 @@
 var NAVTREE =
 [
   [ "SIAM-Keldysh-mfRG", "index.html", [
+    [ "Introduction to the KCS-Cluster", "dd/de8/md_scripts_2kcs__instructions.html", null ],
+    [ "Profiling with gprof", "d2/da3/md_scripts_2Profiling.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
+        [ "All", "namespacemembers.html", "namespacemembers_dup" ],
         [ "Functions", "namespacemembers_func.html", null ],
         [ "Variables", "namespacemembers_vars.html", null ],
         [ "Typedefs", "namespacemembers_type.html", null ],
@@ -66,17 +68,17 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d2/d34/classPropagator.html#a9db5264dc57f6caadcf25ea76d1d5ef1",
-"d3/d77/symmetry__table_8hpp.html#ad5c768b736b268924b868caa5a27e7d8",
-"d5/d0d/perturbation__theory_8hpp.html#ad96cff632c117ef6ed1059a765176dfd",
-"d5/df6/classSelfEnergy.html#a44806c0df9dfc5dd5e0eeb37a19f90f7",
-"d7/d3f/classmultidimensional_1_1multiarray.html#ab6f6e91f1f50a8256056c7f45e998ede",
-"d7/d97/classState.html#afb8c6f45132d5ace493863f6efb5e0d8",
-"d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4.html#a1fcf3dea7bc6913f951ea74492366202",
-"dc/d2d/classfullvert.html#a355b89b5f3eef064a2d3f488f6bbcd1a",
-"de/d65/integrandSE_8hpp.html#aefc5e618636f72d0443b6b1e2c9a8309",
-"df/da4/multiarray_8hpp.html#a7f3da0d0d4fcf00db82104c27cf167d0",
-"namespacemembers_func.html"
+"d2/d34/classPropagator.html#a68009e2fa03e67e5101fcd3a184b8b41",
+"d3/d77/symmetry__table_8hpp.html#a3e79767248b215c016341a4505898f29",
+"d4/dde/flow_8c_09_09.html#a4aadec32e0b8b7022f429e01abd4e1ac",
+"d5/de4/hdf5__routines_8hpp.html#afe0475193af36ddf563126885ac60199",
+"d7/d3f/classmultidimensional_1_1multiarray.html#a7798825b221fe13945fb7f06a523c757",
+"d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4.html#aa02741d1cf3a2457ed516ddf5b8f93a9",
+"d9/d59/namespacegetIntegrand.html#a3e3a1fa0579ae3ec0c425e72a1ce6677",
+"da/dc3/ODE__solvers_8hpp_source.html",
+"dd/d0a/parquet__solver_8hpp.html#a07f441b6693f6e2e8d958049ae06cb73",
+"de/dac/namespacehdf5__impl.html#a5bed3a47ed017e75c4152bb28be5e1c5",
+"df/dd5/classbufferFrequencyGrid.html#a622b97ae2430f7b7218757a68bcd2416"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

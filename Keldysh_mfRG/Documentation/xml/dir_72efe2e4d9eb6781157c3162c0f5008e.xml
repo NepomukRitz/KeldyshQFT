@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dir_72efe2e4d9eb6781157c3162c0f5008e" kind="dir">
+    <compoundname>ipynb_scripts</compoundname>
+    <innerfile refid="d8/de5/ipynb__scripts_2load__data_8py">ipynb_scripts/load_data.py</innerfile>
+    <innerfile refid="db/de8/ipynb__scripts_2plotting__routines_8py">ipynb_scripts/plotting_routines.py</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="scripts/ipynb_scripts/"/>
+  </compounddef>
+</doxygen>

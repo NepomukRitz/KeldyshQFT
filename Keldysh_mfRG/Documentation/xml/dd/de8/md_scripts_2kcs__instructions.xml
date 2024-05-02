@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dd/de8/md_scripts_2kcs__instructions" kind="page">
+    <compoundname>md_scripts_2kcs__instructions</compoundname>
+    <title>Introduction to the KCS-Cluster</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Project name for LS vonDelft: <bold>pn34vu</bold></para>
+<para><heading level="2">Overview</heading>
+</para>
+<para><itemizedlist>
+<listitem><para>Login node: kcs-login (<computeroutput>$ ssh &lt;lrz-ID&gt;@kcs-login.cos.lrz.de</computeroutput>)</para>
+</listitem><listitem><para>Need to have an established VPN connection to the MWN (or be physically connected to it).</para>
+</listitem><listitem><para>slurm jobs can only request whole machines -&gt; <bold>Always use all 32 cores on each node!</bold></para>
+</listitem><listitem><para>150 nodes, 32 cores/node on 2 sockets</para>
+</listitem><listitem><para>memory configurations: 180 GB, 370 GB, 760 GB (2x)</para>
+</listitem><listitem><para>standard queue: runtime: 72h</para>
+</listitem><listitem><para>long-runner queue: runtime: 30 days, only 1 job/user (Slurm: partition kcs_long, see below)</para>
+</listitem></itemizedlist>
+</para>
+<para><heading level="2">File System</heading>
+</para>
+<para><itemizedlist>
+<listitem><para>GPFS file system, efficient for large files<itemizedlist>
+<listitem><para>page size 16 MB -&gt; <bold>Do not use many small files!</bold></para>
+</listitem><listitem><para>quota: 100 TB for the chair</para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+<para><linebreak/>
+</para>
+<para><itemizedlist>
+<listitem><para>LRZ DSS (data science storage), organized in containers<itemizedlist>
+<listitem><para>LRZ documentation: <ulink url="https://doku.lrz.de/display/PUBLIC/Data+Science+Storage">https://doku.lrz.de/display/PUBLIC/Data+Science+Storage</ulink></para>
+</listitem><listitem><para>Web interface for storage management: <ulink url="https://dssweb.dss.lrz.de">https://dssweb.dss.lrz.de</ulink> (only accessible for chair admins)</para>
+</listitem><listitem><para>default container 0000<itemizedlist>
+<listitem><para>quota (can be changed via web interface -&gt; ask chair admin): \ 1 TB for chair, 64 GB/user, 65000 files/user</para>
+</listitem><listitem><para>daily backup</para>
+</listitem><listitem><para>path of &quot;home&quot; directory: <computeroutput>/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/\&lt;lrz-ID&gt;</computeroutput></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>can create new containers, some settings cannot be changed afterwards (see LRZ documentation)<itemizedlist>
+<listitem><para>useful for new projects that need a lot of storage (ask chair admin)</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>share containers via globus (<ulink url="https://doku.lrz.de/display/PUBLIC/DSS+How+Globus+Data+Transfer+and+Globus+Sharing+for+DSS+works">https://doku.lrz.de/display/PUBLIC/DSS+How+Globus+Data+Transfer+and+Globus+Sharing+for+DSS+works</ulink>)</para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+<para><heading level="2">Setting up a .bashrc file</heading>
+</para>
+<para>It is highly recommended to set up a <computeroutput>.bashrc</computeroutput> file to configure shortcuts and load some modules automatically on login.\ In the home-directory entered when logging onto KCS (<computeroutput>/dss/dsshome1/lxc09/&lt;lrz-ID&gt;</computeroutput>), create a <computeroutput>.bashrc</computeroutput> file using a command-line text editor like vim or nano (nano has to be loaded first using the module system, see below).\ A good starting point is the following file (comments start with a <computeroutput>#</computeroutput>):</para>
+<para><programlisting><codeline><highlight class="normal">#<sp/>set<sp/>up<sp/>an<sp/>alias<sp/>for<sp/>the<sp/>&quot;home&quot;<sp/>directory<sp/>used<sp/>for<sp/>computations</highlight></codeline>
+<codeline><highlight class="normal">alias<sp/>kcshome=&quot;cd<sp/>/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>useful<sp/>to<sp/>get<sp/>all<sp/>information<sp/>about<sp/>all<sp/>files<sp/>in<sp/>a<sp/>given<sp/>directory<sp/>in<sp/>human-readable<sp/>form</highlight></codeline>
+<codeline><highlight class="normal">alias<sp/>ll=&quot;ls<sp/>-lah&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>simplifies<sp/>navigation<sp/>through<sp/>the<sp/>command-line<sp/>history</highlight></codeline>
+<codeline><highlight class="normal">bind<sp/>&apos;&quot;\e[A&quot;:<sp/>history-search-backward&apos;</highlight></codeline>
+<codeline><highlight class="normal">bind<sp/>&apos;&quot;\e[B&quot;:<sp/>history-search-forward&apos;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>load<sp/>some<sp/>modules<sp/>by<sp/>default</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>nano<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>Beginner-friendly<sp/>command-line<sp/>text<sp/>editor</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>gsl<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>TODO:<sp/>Better<sp/>to<sp/>be<sp/>included<sp/>in<sp/>the<sp/>compile<sp/>script!</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>mkl<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>TODO:<sp/>Do<sp/>we<sp/>need<sp/>this?</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>boost/1.61_icc<sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>TODO:<sp/>Warning<sp/>that<sp/>this<sp/>module<sp/>is<sp/>scheduled<sp/>for<sp/>retirement<sp/>by<sp/>end<sp/>of<sp/>2019<sp/>(!)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>hdf5/1.8.20-cxx-frt-threadsafe<sp/>#<sp/>NOT<sp/>SUFFICIENT<sp/>to<sp/>load<sp/>in<sp/>compile<sp/>script!<sp/>Needed<sp/>here<sp/>as<sp/>well!</highlight></codeline>
+</programlisting> After creating or modifying the <computeroutput>.bashrc</computeroutput> file, one has to reload it using <computeroutput># source .bashrc</computeroutput>. Alternatively, one can log off an log on to KCS again, as the <computeroutput>.bashrc</computeroutput> file is always automatically loaded upon login.</para>
+<para><heading level="2">Module System</heading>
+</para>
+<para>Grants access to pre-installed packages. Useful commands:</para>
+<para><table rows="5" cols="2"><row>
+<entry thead="yes"><para>Command   </para>
+</entry><entry thead="yes"><para>Explanation    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>module avail</computeroutput>   </para>
+</entry><entry thead="no"><para>shows available modules    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>module list</computeroutput>   </para>
+</entry><entry thead="no"><para>shows the currently loaded modules    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>module load &lt;module_name&gt;</computeroutput>   </para>
+</entry><entry thead="no"><para>loads the module &lt;module_name&gt;    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>module unload &lt;module_name&gt;</computeroutput>   </para>
+</entry><entry thead="no"><para>unloads the module &lt;module_name&gt;   </para>
+</entry></row>
+</table>
+</para>
+<para><heading level="2">Cloning the code (to the right place)</heading>
+</para>
+<para>The code should be placed into the &quot;home&quot; directory used for computations, for which the shortcut <computeroutput>kcshome</computeroutput> was set up in the <computeroutput>.bashrc</computeroutput> file above. It is then simply a matter of navigating to the &quot;home&quot; directory and cloning the correct git repository: <programlisting><codeline><highlight class="normal">$<sp/>kcshome</highlight></codeline>
+<codeline><highlight class="normal">$<sp/>git<sp/>clone<sp/>https://gitlab.physik.uni-muenchen.de/LDAP_ls-vondelft/&lt;project&gt;.git</highlight></codeline>
+</programlisting> It is easiest to clone the git repo via https and not ssh. Otherwise one would have to set up a ssh-key-pair.</para>
+<para><heading level="2">Compiling the code</heading>
+</para>
+<para>Depending on the setup used, there should already be a makefile or a compile script in the code base of the git repository. As of September 2021, the compile script for the Keldysh mfRG code is located at (starting from <computeroutput>kcshome</computeroutput>) <computeroutput>mfrg/Keldysh_mfRG/scripts/compile_kcs.sh</computeroutput> and reads</para>
+<para><programlisting><codeline><highlight class="normal">#!/bin/bash</highlight></codeline>
+<codeline><highlight class="normal">#<sp/><sp/>environment<sp/>variable<sp/>KELDYSH_MFRG<sp/>needs<sp/>to<sp/>point<sp/>to<sp/>the<sp/>&quot;Keldysh_mfRG&quot;<sp/>directory<sp/>of<sp/>the<sp/>repository:</highlight></codeline>
+<codeline><highlight class="normal">#<sp/><sp/>in<sp/>~/.bashrc:</highlight></codeline>
+<codeline><highlight class="normal">#<sp/><sp/>export<sp/>KELDYSH_MFRG=&quot;/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>gcc</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>hdf5/1.8.20-cxx-frt-threadsafe</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>fftw</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>gsl</highlight></codeline>
+<codeline><highlight class="normal">module<sp/>load<sp/>boost/1.61_icc</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">export<sp/>LANG=C</highlight></codeline>
+<codeline><highlight class="normal">export<sp/>LC_ALL=C</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">HDF5=&quot;$HDF5_INC<sp/>$HDF5_CPP_SHLIB<sp/>$HDF5_SHLIB<sp/>$SZIP_LIB<sp/>-lz&quot;</highlight></codeline>
+<codeline><highlight class="normal">FFTW=&quot;$FFTW_INC<sp/>$FFTW_LIB&quot;</highlight></codeline>
+<codeline><highlight class="normal">GSL=&quot;$GSL_INC<sp/>$GSL_LIB&quot;</highlight></codeline>
+<codeline><highlight class="normal">BOOST=&quot;$BOOST_INC<sp/>-L$BOOST_LIBDIR$&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">mpiCC<sp/>-std=c++17<sp/>$KELDYSH_MFRG/main.cpp<sp/>-o<sp/>$KELDYSH_MFRG/main.o<sp/>-fopenmp<sp/>$FFTW<sp/>$HDF5<sp/>$GSL<sp/>$BOOST</highlight></codeline>
+</programlisting></para>
+<para>As one can already tell from this file, before it can be executed, one has to define another shortcut to set the correct absolute path to the directory of the code. To do that, access the <computeroutput>.bashrc</computeroutput> file via <computeroutput>$ nano ~/.bashrc</computeroutput> and add the line</para>
+<para><computeroutput>export KELDYSH_MFRG=&quot;/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG&quot;</computeroutput></para>
+<para>The compile script can then simply be executed by</para>
+<para><computeroutput>$ ./mfrg/Keldysh_mfRG/scripts/compile_kcs.sh</computeroutput>.</para>
+<para><heading level="2">Submitting jobs</heading>
+</para>
+<para>The job handling of the cluster is organized by SLURM. For basic information on SLURM see <ulink url="https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html">https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html</ulink>. To submit a job, one needs to provide a corresponding shell script, e.g. by modifying <computeroutput>mfrg/Keldysh_mfRG/scripts/batchfile.sh</computeroutput> (see official Slurm documentation <ulink url="https://slurm.schedmd.com/sbatch.html">https://slurm.schedmd.com/sbatch.html</ulink> for details):</para>
+<para><programlisting><codeline><highlight class="normal">#!/bin/bash</highlight></codeline>
+<codeline><highlight class="normal">#</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--job-name=jobname</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--mem=2040</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--time=2-20:00:00</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--mail-type=ALL</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--mail-user=&lt;username&gt;@physik.uni-muenchen.de</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--chdir=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--output=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/runs/jobname.%j.%N.out</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--error=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/runs/jobname.%j.%N.err</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--nodes=4</highlight></codeline>
+<codeline><highlight class="normal">#SBATCH<sp/>--ntasks-per-node=1</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">echo<sp/>$HOSTNAME</highlight></codeline>
+<codeline><highlight class="normal">echo<sp/>$SLURM_ARRAY_JOB_ID</highlight></codeline>
+<codeline><highlight class="normal">echo<sp/>$SLURM_NTASKS</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">export<sp/>OMP_NUM_THREADS=32</highlight></codeline>
+<codeline><highlight class="normal">mpiexec<sp/>-n<sp/>$SLURM_NTASKS<sp/>./main.o</highlight></codeline>
+</programlisting></para>
+<para><heading level="3">Description:</heading>
+</para>
+<para><table rows="12" cols="2"><row>
+<entry thead="yes"><para>Option   </para>
+</entry><entry thead="yes"><para>Explanation    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>job-name</computeroutput>   </para>
+</entry><entry thead="no"><para>Name of job in slurm queue.    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>mem</computeroutput>   </para>
+</entry><entry thead="no"><para>Requested memory (minimum) in MB.    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>time</computeroutput>   </para>
+</entry><entry thead="no"><para>Job wall time: after this time, the job will be killed by slurm. Maximum runtime is 3 days.    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>mail-type</computeroutput>   </para>
+</entry><entry thead="no"><para>Settings for slurm status emails (see below).    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>chdir</computeroutput>   </para>
+</entry><entry thead="no"><para>Directory in which the batchfile will be executed (=path to executable).    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>output</computeroutput>   </para>
+</entry><entry thead="no"><para>Name of log file. <computeroutput>j</computeroutput> = job-ID, <computeroutput>N</computeroutput> = node-ID.    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>error</computeroutput>   </para>
+</entry><entry thead="no"><para>Name of error log file.    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>nodes</computeroutput>   </para>
+</entry><entry thead="no"><para>Number of (MPI) nodes on which to execute the job.    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>ntasks-per-node</computeroutput>   </para>
+</entry><entry thead="no"><para>Number of MPI tasks per node. When using OpenMP, set to 1 (only use MPI for inter-node parallelization).    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>OMP_NUM_THREADS</computeroutput>   </para>
+</entry><entry thead="no"><para>Number of OpenMP threads. Should be equal to the number of available cores per node (=32 on KCS).    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>main.o</computeroutput>   </para>
+</entry><entry thead="no"><para>Job executable.   </para>
+</entry></row>
+</table>
+</para>
+<para><heading level="3">Optional settings:</heading>
+</para>
+<para><computeroutput>#SBATCH --partition=kcs_long</computeroutput> : Submit the job to the KCS long-runner queue (wall time &lt; 30 days).</para>
+<para><heading level="3">SLURM status emails:</heading>
+</para>
+<para>If activated, Slurm informs per email when jobs start/finish/fail etc. Deactivate Slurm emails if you are submitting many jobs, and do NOT forward these emails to another email account (see <ulink url="https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html">https://www.en.it.physik.uni-muenchen.de/dienste/rechencluster/index.html</ulink>).</para>
+<para><heading level="2">Useful SLURM commands</heading>
+</para>
+<para><table rows="6" cols="2"><row>
+<entry thead="yes"><para>Command   </para>
+</entry><entry thead="yes"><para>Explanation    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>sinfo</computeroutput>   </para>
+</entry><entry thead="no"><para>view information about SLURM nodes and partitions.    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>squeue</computeroutput>   </para>
+</entry><entry thead="no"><para>show all information about pending and running jobs    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>squeue -u &lt;lrz-ID&gt;</computeroutput>   </para>
+</entry><entry thead="no"><para>show all information about pending and running jobs of &lt;lrz-ID&gt;    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>sbatch batchfile.sh</computeroutput>   </para>
+</entry><entry thead="no"><para>submit a job configured in <computeroutput>batchfile.sh</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>scancel &lt;job-ID&gt;</computeroutput>   </para>
+</entry><entry thead="no"><para>cancel the job &lt;job-ID&gt;   </para>
+</entry></row>
+</table>
+</para>
+<para><heading level="2">Accessing the data</heading>
+</para>
+<para>Data can be downloaded from KCS to <computeroutput>&lt;local-path&gt;</computeroutput> on your workstation/laptop using rsync:</para>
+<para><computeroutput>rsync -auvh &lt;lrz-ID&gt;@kcs-login.cos.lrz.de:/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG/&lt;path-to-result-file&gt; &lt;local-path&gt;</computeroutput></para>
+<para>Hint: if you have defined e.g.</para>
+<para><computeroutput>kcs=&lt;lrz-ID&gt;@kcs-login.cos.lrz.de</computeroutput> and</para>
+<para><computeroutput>kcshome=/dss/dsskcsfs01/pn34vu/pn34vu-dss-0000/&lt;lrz-ID&gt;/mfrg/Keldysh_mfRG</computeroutput></para>
+<para>in your local .bashrc (on the workstation/laptop), the command simplifies:</para>
+<para><computeroutput>rsync -auvh $kcs:$kcshome/&lt;path-to-result-file&gt; &lt;local-path&gt;</computeroutput>.</para>
+<para>(If the command is executed from within the destination directory <computeroutput>&lt;local-path&gt;</computeroutput>, then simply replace <computeroutput>&lt;local-path&gt;</computeroutput>=<computeroutput>.</computeroutput> )</para>
+<para><heading level="2">Running unit tests</heading>
+</para>
+<para>As long as unit test really are just unit test and do not take much time to execute, it should be alright to run them even on the login node. </para>
+    </detaileddescription>
+    <location file="scripts/kcs_instructions.md"/>
+  </compounddef>
+</doxygen>

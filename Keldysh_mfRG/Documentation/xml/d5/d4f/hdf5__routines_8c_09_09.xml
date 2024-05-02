@@ -681,6 +681,11 @@
         <location file="utilities/hdf5_routines.c++" line="32" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="32" bodyend="36"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
+        <referencedby refid="d9/d59/namespacegetIntegrand_1a6e757d17617cdaaf38994b369230dc80" compoundref="de/d62/getIntegrand_8py" startline="95" endline="118">getIntegrand.compile_get_integrand_dGamma_1loop_fromFlow_Cpp</referencedby>
+        <referencedby refid="d9/d59/namespacegetIntegrand_1aece1226a1eb20ceb7426b8bb01dda455" compoundref="de/d62/getIntegrand_8py" startline="143" endline="166">getIntegrand.compile_get_integrand_dGammaC_Cpp</referencedby>
+        <referencedby refid="d9/d59/namespacegetIntegrand_1a0ba3135824925065934f234ef8423d9a" compoundref="de/d62/getIntegrand_8py" startline="119" endline="142">getIntegrand.compile_get_integrand_dGammaL_Cpp</referencedby>
+        <referencedby refid="d9/d59/namespacegetIntegrand_1acb6f69b0cb389468600d89e46b40452f" compoundref="de/d62/getIntegrand_8py" startline="43" endline="86">getIntegrand.compile_stuff</referencedby>
+        <referencedby refid="d9/d59/namespacegetIntegrand_1ab7eba5c643c81ae7aff5539865fd275d" compoundref="de/d62/getIntegrand_8py" startline="28" endline="42">getIntegrand.plot_integrand_alli2</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1acdf68c5ce2f557fb2d456a799f7d6358" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="217" endline="256">read_Lambdas_from_hdf</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/d4f/hdf5__routines_8c_09_09_1a77fed1ad1e5982cb30b9631a74ebf278" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">

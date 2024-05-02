@@ -20,7 +20,8 @@ var searchData=
   ['k3_5fsbe_5fexpanded_5fconfig_17',['K3_SBE_expanded_config',['../d2/d1a/Keldysh__symmetries_8hpp.html#a4836c149ec08918a1737864f9ba7f425',1,'Keldysh_symmetries.hpp']]],
   ['k3_5fsbe_5fsymmetry_5fexpanded_18',['K3_SBE_symmetry_expanded',['../d4/dbd/classrvert.html#acb92d3fb8a28fdce300847346f8d9a43',1,'rvert']]],
   ['k3_5fsymmetry_5fexpanded_19',['K3_symmetry_expanded',['../d4/dbd/classrvert.html#aab7b4ae8404727aafda16a2a9aed8e34',1,'rvert']]],
-  ['k_5fdims_20',['K_dims',['../dd/d54/structComponents.html#a3582880eed5fca460621dc9e277474d6',1,'Components::K_dims'],['../db/d06/structTransformations.html#a8522acd58387014dd5946998b1914420',1,'Transformations::K_dims']]],
-  ['kclass_5faim_21',['kClass_aim',['../d2/db2/structVertexInput.html#a96f889d7d07dccc13be12107f275416d',1,'VertexInput']]],
-  ['keldysh_22',['KELDYSH',['../d1/df8/master__parameters_8hpp.html#afab5195e3ffff420d211040e5672fcbe',1,'master_parameters.hpp']]]
+  ['k_5fclass_5fint_20',['k_class_int',['../d9/d59/namespacegetIntegrand.html#a3e3a1fa0579ae3ec0c425e72a1ce6677',1,'getIntegrand']]],
+  ['k_5fdims_21',['K_dims',['../dd/d54/structComponents.html#a3582880eed5fca460621dc9e277474d6',1,'Components::K_dims'],['../db/d06/structTransformations.html#a8522acd58387014dd5946998b1914420',1,'Transformations::K_dims']]],
+  ['kclass_5faim_22',['kClass_aim',['../d2/db2/structVertexInput.html#a96f889d7d07dccc13be12107f275416d',1,'VertexInput']]],
+  ['keldysh_23',['KELDYSH',['../d1/df8/master__parameters_8hpp.html#afab5195e3ffff420d211040e5672fcbe',1,'master_parameters.hpp']]]
 ];

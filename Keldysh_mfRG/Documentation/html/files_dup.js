@@ -14,6 +14,7 @@ var files_dup =
     [ "parameters", "dir_71fd758a6a15c08fe6e53029e0ced71d.html", "dir_71fd758a6a15c08fe6e53029e0ced71d" ],
     [ "perturbation_theory_and_parquet", "dir_a52d1cf80d7db40ef5e5f9f8a0f1d837.html", "dir_a52d1cf80d7db40ef5e5f9f8a0f1d837" ],
     [ "postprocessing", "dir_e4f1ce5319e85c7908e8df0e328b8d80.html", "dir_e4f1ce5319e85c7908e8df0e328b8d80" ],
+    [ "scripts", "dir_53e6fa9553ac22a5646d2a2b2d7b97a1.html", "dir_53e6fa9553ac22a5646d2a2b2d7b97a1" ],
     [ "symmetries", "dir_3e5922525fa33f19479cfde15131040f.html", "dir_3e5922525fa33f19479cfde15131040f" ],
     [ "utilities", "dir_df38b2a5d584e0f6066b4518b95c638b.html", "dir_df38b2a5d584e0f6066b4518b95c638b" ],
     [ "data_structures.c++", "da/d4d/data__structures_8c_09_09.html", "da/d4d/data__structures_8c_09_09" ],

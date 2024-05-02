@@ -13,7 +13,7 @@ var searchData=
   ['shift_5ffgrids_5fwophs_10',['shift_fgrids_woPHS',['../d3/d3c/frequency__parameters_8hpp.html#abaf7a8bf0faac6945caeae137a97d0e6',1,'frequency_parameters.hpp']]],
   ['sigma_11',['Sigma',['../d5/df6/classSelfEnergy.html#ac0be622ed99ea87af0e3a03e23df4956',1,'SelfEnergy']]],
   ['spacing_5fauxiliary_5fgridpoint_12',['spacing_auxiliary_gridpoint',['../df/d83/classFrequencyGrid_3_01eliasGrid_01_4.html#a25c7d154ecec5e6681333521aa3334ee',1,'FrequencyGrid&lt; eliasGrid &gt;::spacing_auxiliary_gridpoint'],['../d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4.html#a009a67736ed73d0d87ad30cb4f5a3c1b',1,'FrequencyGrid&lt; hybridGrid &gt;::spacing_auxiliary_gridpoint'],['../d9/dfe/classFrequencyGrid_3_01angularGrid_01_4.html#a1a89cad1292a4683ba2157864fe7c3b5',1,'FrequencyGrid&lt; angularGrid &gt;::spacing_auxiliary_gridpoint']]],
-  ['spin_13',['spin',['../d2/db2/structVertexInput.html#a1d771b43454581ec99290380e35a477d',1,'VertexInput::spin'],['../df/dc8/classLoopCalculator.html#aec1023a6ba78aadb07e010d0aaef5b88',1,'LoopCalculator::spin']]],
+  ['spin_13',['spin',['../d2/db2/structVertexInput.html#a1d771b43454581ec99290380e35a477d',1,'VertexInput::spin'],['../df/dc8/classLoopCalculator.html#aec1023a6ba78aadb07e010d0aaef5b88',1,'LoopCalculator::spin'],['../d9/d59/namespacegetIntegrand.html#a4d62848768af6928fe58e2a6f0987329',1,'getIntegrand.spin']]],
   ['stats_14',['stats',['../d2/dc9/classrhs__n__loop__flow__t.html#a093c4c5f2ef7e577a1c170832a4a39b5',1,'rhs_n_loop_flow_t']]],
   ['store_5fintegrand_5ffor_5fpt_15',['store_integrand_for_PT',['../de/d96/classBubbleFunctionCalculator.html#a7059c902056342447ef9dd316fe070f6',1,'BubbleFunctionCalculator']]]
 ];

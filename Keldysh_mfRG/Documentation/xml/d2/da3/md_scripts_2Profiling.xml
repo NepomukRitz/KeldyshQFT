@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d2/da3/md_scripts_2Profiling" kind="page">
+    <compoundname>md_scripts_2Profiling</compoundname>
+    <title>Profiling with gprof</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><orderedlist>
+<listitem><para>compile with flag -pg (in CMakeLists.txt)</para>
+</listitem><listitem><para>running executable gives gmon.out</para>
+</listitem><listitem><para>run gprof<orderedlist>
+<listitem><para>grof &lt;executable&gt; gmon.out &gt; analysis.text</para>
+</listitem><listitem><para>After downloading grof2dot: gprof &lt;executable&gt; gmon.out | gprof2dot-master/gprof2dot.py &gt; graph.dot </para>
+</listitem></orderedlist>
+</para>
+</listitem></orderedlist>
+</para>
+    </detaileddescription>
+    <location file="scripts/Profiling.md"/>
+  </compounddef>
+</doxygen>
