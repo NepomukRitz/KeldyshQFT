@@ -1,7 +1,6 @@
 var conf_8py =
 [
     [ "author", "d1/d3e/conf_8py.html#a0b68e66074bc74dbb7460951f810b4c8", null ],
-    [ "breathe_default_members", "d1/d3e/conf_8py.html#a54585428ce84441199d9dfd7087e2243", null ],
     [ "breathe_default_project", "d1/d3e/conf_8py.html#a15ff89fd36856d4530d4ed2083e6dfc7", null ],
     [ "copyright", "d1/d3e/conf_8py.html#aa11e0a8e9c47ccc775796bd64c295d2c", null ],
     [ "exclude_patterns", "d1/d3e/conf_8py.html#a7ad48fb6f3e9b129c02346ea0d3527c1", null ],

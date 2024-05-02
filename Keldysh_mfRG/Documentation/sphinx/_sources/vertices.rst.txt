@@ -1,15 +1,17 @@
 Vertices
 ========
 
-
-.. doxygenclass:: GeneralVertex
-   :members:
-
-.. doxygenclass:: fullvert
+.. doxygenclass:: irreducible
    :members:
 
 .. doxygenclass:: rvert
    :members:
 
-.. doxygenclass:: irreducible
+.. doxygenclass:: fullvert
    :members:
+
+.. doxygenclass:: GeneralVertex
+   :members:
+
+
+

@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'KeldyshDiag'
+project = 'KF_QFT'
 copyright = '2024, Nepomuk Ritz'
 author = 'Nepomuk Ritz'
 release = '1.0.0'
@@ -17,7 +17,7 @@ release = '1.0.0'
 extensions = ["breathe"]
 # Breathe Configuration
 breathe_default_project = "KeldyshDiag"
-breathe_default_members = ('members', 'undoc-members')
+#breathe_default_members = ('members', 'undoc-members')
 
 
 templates_path = ['_templates']

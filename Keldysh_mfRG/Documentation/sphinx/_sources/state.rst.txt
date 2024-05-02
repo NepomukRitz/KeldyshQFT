@@ -1,2 +1,5 @@
 State
 =====
+
+.. doxygenclass:: State
+   :members:

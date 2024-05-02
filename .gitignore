@@ -10,6 +10,7 @@ Project_Default.xml
 *.idea*
 *.aux
 *.synctex.gz
+*.dot
 
 !*.rst
 .DS_Store

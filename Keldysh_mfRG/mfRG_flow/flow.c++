@@ -1,9 +1,5 @@
 #include "flow.hpp"
 
-/**
- * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
- * Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.
- */
 State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_config& frgConfig){
 
     State<state_datatype> state_fin (Lambda_fin, frgConfig), state_ini(Lambda_ini, frgConfig);   // create final and initial state

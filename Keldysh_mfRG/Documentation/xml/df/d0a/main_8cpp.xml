@@ -1157,7 +1157,7 @@
         <references refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" compoundref="d6/d35/util_8c_09_09" startline="21" endline="27">utils::get_time</references>
         <references refid="d6/d84/namespaceutils_1ac868c960e917a080f09ef20123e977a6" compoundref="d6/d35/util_8c_09_09" startline="247" endline="255">utils::hello_world</references>
         <references refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" compoundref="d9/d3a/technical__parameters_8hpp" startline="13">MPI_FLAG</references>
-        <references refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</references>
+        <references refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="35">nBOS</references>
         <references refid="da/da0/structfRG__config_1a51d3e7a345c3007c371a06c7db4c1bfa" compoundref="d7/d59/data__structures_8hpp" startline="655">fRG_config::nloops</references>
         <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>

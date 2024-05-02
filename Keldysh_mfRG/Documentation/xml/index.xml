@@ -1391,7 +1391,6 @@
     <member refid="d5/d89/namespaceconf_1aca7e23e5f354ec5d8e18d6b5769908c9" kind="variable"><name>release</name></member>
     <member refid="d5/d89/namespaceconf_1ae475e080536acb271a0a0efe56c3ba42" kind="variable"><name>extensions</name></member>
     <member refid="d5/d89/namespaceconf_1a15ff89fd36856d4530d4ed2083e6dfc7" kind="variable"><name>breathe_default_project</name></member>
-    <member refid="d5/d89/namespaceconf_1a54585428ce84441199d9dfd7087e2243" kind="variable"><name>breathe_default_members</name></member>
     <member refid="d5/d89/namespaceconf_1ae850ae634911b713e036b43894fdd525" kind="variable"><name>templates_path</name></member>
     <member refid="d5/d89/namespaceconf_1a7ad48fb6f3e9b129c02346ea0d3527c1" kind="variable"><name>exclude_patterns</name></member>
     <member refid="d5/d89/namespaceconf_1a012ba9863b958ed7baa933116f2a05b6" kind="variable"><name>html_theme</name></member>

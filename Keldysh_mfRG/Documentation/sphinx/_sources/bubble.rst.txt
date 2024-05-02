@@ -1,2 +1,5 @@
 Bubble
 ======
+
+.. doxygenclass:: Bubble
+   :members:

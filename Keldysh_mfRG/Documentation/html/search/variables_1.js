@@ -8,6 +8,5 @@ var searchData=
   ['bfreqs_5',['bfreqs',['../de/d11/old__integrators_8c_09_09.html#a0815f1933b40316c522e6cb4848f48c4',1,'bfreqs:&#160;old_integrators.c++'],['../d7/d65/old__integrators_8hpp.html#a0815f1933b40316c522e6cb4848f48c4',1,'bfreqs:&#160;old_integrators.c++']]],
   ['bogasha_6',['BogaSha',['../d8/da5/namespaceode__solver__impl.html#a245a3d320956cba6bbeba44fc8fd188a',1,'ode_solver_impl']]],
   ['bosonic_5fparam_5ffor_5fk3_7',['BOSONIC_PARAM_FOR_K3',['../d3/d3c/frequency__parameters_8hpp.html#a0202923e518730f85dd10460af50fea6',1,'frequency_parameters.hpp']]],
-  ['breathe_5fdefault_5fmembers_8',['breathe_default_members',['../d5/d89/namespaceconf.html#a54585428ce84441199d9dfd7087e2243',1,'conf']]],
-  ['breathe_5fdefault_5fproject_9',['breathe_default_project',['../d5/d89/namespaceconf.html#a15ff89fd36856d4530d4ed2083e6dfc7',1,'conf']]]
+  ['breathe_5fdefault_5fproject_8',['breathe_default_project',['../d5/d89/namespaceconf.html#a15ff89fd36856d4530d4ed2083e6dfc7',1,'conf']]]
 ];

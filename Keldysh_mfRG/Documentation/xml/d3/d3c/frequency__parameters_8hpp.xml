@@ -951,7 +951,7 @@
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
       </memberdef>
@@ -997,7 +997,7 @@
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
       </memberdef>
@@ -1039,7 +1039,7 @@
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1aec10c7c2fae276227544e207cbd802d0" compoundref="db/d7d/symmetry__transformations_8hpp" startline="17" endline="64">T1</referencedby>

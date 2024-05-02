@@ -9,7 +9,7 @@
         <argsstring></argsstring>
         <name>project</name>
         <qualifiedname>conf.project</qualifiedname>
-        <initializer>=  &apos;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">KeldyshDiag</ref>&apos;</initializer>
+        <initializer>=  &apos;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">KF_QFT</ref>&apos;</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -92,21 +92,6 @@
         <inbodydescription>
         </inbodydescription>
         <location file="Documentation/conf.py" line="19" column="1" bodyfile="Documentation/conf.py" bodystart="19" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="d5/d89/namespaceconf_1a54585428ce84441199d9dfd7087e2243" prot="public" static="no" mutable="no">
-        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">tuple</ref></type>
-        <definition>tuple conf.breathe_default_members</definition>
-        <argsstring></argsstring>
-        <name>breathe_default_members</name>
-        <qualifiedname>conf.breathe_default_members</qualifiedname>
-        <initializer>=  (&apos;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">members</ref>&apos;, &apos;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">undoc</ref>-<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">members</ref>&apos;)</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="Documentation/conf.py" line="20" column="1" bodyfile="Documentation/conf.py" bodystart="20" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d5/d89/namespaceconf_1ae850ae634911b713e036b43894fdd525" prot="public" static="no" mutable="no">
         <type>list</type>

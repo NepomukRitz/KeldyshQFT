@@ -1829,8 +1829,8 @@
         <referencedby refid="d7/d59/data__structures_8hpp_1a50967bf77ad436714d217c7b769a44a7" compoundref="d7/d59/data__structures_8hpp" startline="96" endline="96">myreal&lt; double &gt;</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1a72c94ca69e9b4d057f7060c99aec1eec" compoundref="df/d31/math__utils_8c_09_09" startline="58" endline="62">myround</referencedby>
         <referencedby refid="d7/d59/data__structures_8hpp_1a8ea989566e61dd7b2602c8486455399e" compoundref="d7/d59/data__structures_8hpp" startline="41" endline="48">myzero</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="127" endline="184">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d2/d4a/classGeneralVertex_1a7c4edf330670ed73cdd306e508137c76" compoundref="d1/d2d/vertex_8hpp" startline="935" endline="938">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm</referencedby>
         <referencedby refid="d7/d97/classState_1ac507d44949f78a583a7bed16fa9fcde9" compoundref="da/d3b/state_8hpp" startline="180" endline="185">State&lt; Q, differentiated &gt;::norm</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="589" endline="596">Propagator&lt; Q &gt;::norm</referencedby>

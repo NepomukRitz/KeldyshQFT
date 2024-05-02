@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parquet equations &mdash; KeldyshDiag 1.0.0 documentation</title>
+  <title>Parquet equations &mdash; KF_QFT 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -20,7 +20,9 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="mfRG" href="mfrg.html" />
+    <link rel="prev" title="Perturbation theory" href="perturbation_theory.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            KeldyshDiag
+            KF_QFT
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -42,8 +44,8 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
@@ -51,7 +53,19 @@
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
 <li class="toctree-l1"><a class="reference internal" href="miscellaneous.html">Miscellaneous</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="algorithms.html">Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="perturbation_theory.html">Perturbation theory</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Parquet equations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv411run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb"><code class="docutils literal notranslate"><span class="pre">run_parquet()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb"><code class="docutils literal notranslate"><span class="pre">parquet_solver()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi"><code class="docutils literal notranslate"><span class="pre">parquet_iteration()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd"><code class="docutils literal notranslate"><span class="pre">compute_BSE()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi"><code class="docutils literal notranslate"><span class="pre">compute_SDE()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mfrg.html">mfRG</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -60,7 +74,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">KeldyshDiag</a>
+          <a href="index.html">KF_QFT</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -68,6 +82,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="algorithms.html">Algorithms</a></li>
       <li class="breadcrumb-item active">Parquet equations</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/parquet.rst.txt" rel="nofollow"> View page source</a>
@@ -80,12 +95,86 @@
              
   <section id="parquet-equations">
 <h1>Parquet equations<a class="headerlink" href="#parquet-equations" title="Link to this heading"></a></h1>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb">
+<span id="_CPPv311run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb"></span><span id="_CPPv211run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb"></span><span id="run_parquet__fRG_configCR.std::vector:double:CR.iC.bC"></span><span class="target" id="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">run_parquet</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">U_NRG_list</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">overwrite_old_results</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb" title="Link to this definition"></a><br /></dt>
+<dd><p>Run the parquet solver, given a set of parameters. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – Config struct which holds all necessary parameters </p></li>
+<li><p><strong>U_NRG_list</strong> – List of values for U/Δ for which to run a calculation </p></li>
+<li><p><strong>version</strong> – Version of the implementation of the Schwinger-Dyson equation to be used. Recommendation: 1 </p></li>
+<li><p><strong>overwrite_old_results</strong> – Determines whether existing results for the given parameters shall be overwritten or not. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb">
+<span id="_CPPv3I0E14parquet_solverKNSt6stringER5StateI1QEKdKiKdKiKbKdKb"></span><span id="_CPPv2I0E14parquet_solverKNSt6stringER5StateI1QEKdKiKdKiKbKdKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parquet_solver</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">filename</span></span>, <a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb" title="parquet_solver::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">accuracy</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-6</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Nmax</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">6</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">overwrite_old_results</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mixing_ratio</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">use_last_state_anyway</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb" title="Link to this definition"></a><br /></dt>
+<dd><p>Iterate the parquet equations for a given input state until convergence. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – : File name for result </p></li>
+<li><p><strong>state_in</strong> – : Input state used as initial input to the parquet equations (e.g. SOPT) </p></li>
+<li><p><strong>Lambda</strong> – : Lambda value at which to iterate the parquet equations </p></li>
+<li><p><strong>accuracy</strong> – : Desired relative accuracy used as convergence criterion for both vertex and selfenergy (default: 0.001) </p></li>
+<li><p><strong>Nmax</strong> – : Maximal number of parquet iterations, used as a break condition in case convergence cannot be reached (default: 50) </p></li>
+<li><p><strong>mixing_ratio</strong> – mixing ratio in [0.1 - 0.5] for stabilizing the parquet iteration </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi">
+<span id="_CPPv3I0E17parquet_iterationR5StateI1QERK5StateI1QEKdKiKi"></span><span id="_CPPv2I0E17parquet_iterationR5StateI1QERK5StateI1QEKdKiKi"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1aad1680ae03adc0f566df945376e95234"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parquet_iteration</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi" title="parquet_iteration::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_out</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi" title="parquet_iteration::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">it_Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi" title="Link to this definition"></a><br /></dt>
+<dd><p>One iteration of the parquet solver: Compute both the Bethe-Salpeter and the Schwinger-Dyson equation for given input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state_out</strong> – : Lhs of the BSE and SDE. </p></li>
+<li><p><strong>state_in</strong> – : Input to the rhs of the BSE and SDE </p></li>
+<li><p><strong>Lambda</strong> – : Lambda value at which to compute the parquet equations </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd">
+<span id="_CPPv3I0E11compute_BSER6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd"></span><span id="_CPPv2I0E11compute_BSER6VertexI1QXfalseEER6VertexI1QXfalseEER6VertexI1QXfalseEERK5StateI1QEKd"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_BSE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Gamma_BSE</span></span>, <span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Gamma_BSE_L</span></span>, <span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Gamma_BSE_R</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="Link to this definition"></a><br /></dt>
+<dd><p>Insert the vertex of input “state” into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Gamma_BSE</strong> – : Vertex computed as the lhs of the BSE </p></li>
+<li><p><strong>Gamma_BSE_L</strong> – : Vertex computed as the lhs of the BSE, with Ir on the left and full Gamma on the right </p></li>
+<li><p><strong>Gamma_BSE_R</strong> – : Vertex computed as the lhs of the BSE, with Ir on the right and full Gamma on the left </p></li>
+<li><p><strong>state_in</strong> – : Input state for which to check the BSE </p></li>
+<li><p><strong>Lambda</strong> – : Flow parameter Lambda at which input state was computed </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi">
+<span id="_CPPv3I0E11compute_SDER10SelfEnergyI1QERK5StateI1QEKdi"></span><span id="_CPPv2I0E11compute_SDER10SelfEnergyI1QERK5StateI1QEKdi"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1a9ef507c1d49fff7991752cab04374824"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_SDE</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="selfenergy.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi" title="compute_SDE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Sigma_SDE</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi" title="compute_SDE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="perturbation_theory.html" class="btn btn-neutral float-left" title="Perturbation theory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mfrg.html" class="btn btn-neutral float-right" title="mfRG" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

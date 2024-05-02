@@ -151,7 +151,7 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const State<Q>& bar
     vertexInSOPT(Psi.vertex, bareState, Pi);  // Uses the previously defined bubble, which does not contain the SOPT SE yet.
 }
 
-// Overload of sopt_state, in case no Bubble object has been initialized yet.
+// Wrapper of sopt_state_impl, in case no Bubble object has been initialized yet.
 template<typename Q>
 void sopt_state(State<Q>& Psi, const bool diff = false) {
     assert(Psi.initialized);

@@ -1129,7 +1129,7 @@
         <referencedby refid="d4/dbd/classrvert_1ac25d631e3fb944004cdac6a1334e9e4f" compoundref="d3/d22/r__vertex_8hpp" startline="1639" endline="1648">rvert&lt; Q &gt;::left_same_bare_symmetry_expanded</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a21ba518424bd3c9b2575d9d8b6476c43" compoundref="d1/d2d/vertex_8hpp" startline="1543" endline="1596">fullvert&lt; Q &gt;::left_same_bare_symmetry_expanded</referencedby>
         <referencedby refid="d4/dbd/classrvert_1ad498d49dc6d00972a1fc5aecc0f4f9cc" compoundref="d3/d22/r__vertex_8hpp" startline="2032" endline="2044">rvert&lt; Q &gt;::max_norm</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a812ac35cc43da6ba3591f65ccd94001e" compoundref="de/de8/bubble__function_8hpp" startline="219" endline="257">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::perform_computation</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
@@ -1299,7 +1299,7 @@
         <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1a35926ed20edc2503238326c955ab6ded" compoundref="da/dc3/ODE__solvers_8hpp" startline="26" endline="67">postRKstep_stuff</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="dd/df1/namespaceold__ode__solvers_1aeb954768e9e969cbed9beb79669621c8" compoundref="dd/df7/old__solvers_8hpp" startline="51" endline="68">old_ode_solvers::RK4_step</referencedby>
@@ -1577,8 +1577,8 @@
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a72caad1ac1ebcb7f63c2096567157933" compoundref="d8/dea/right__hand__sides_8hpp" startline="642" endline="662">calculate_dGammaR</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
         <referencedby refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" compoundref="d6/d8d/flow__grid_8c_09_09" startline="14" endline="30">flowgrid::get_Lambda_checkpoints</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="127" endline="184">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
       </memberdef>
@@ -1596,8 +1596,8 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/master_parameters.hpp" line="111" column="14" bodyfile="parameters/master_parameters.hpp" bodystart="111" bodyend="-1"/>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="127" endline="184">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d1/df8/master__parameters_8hpp_1a70259e3a107270133da97beb4df92c1b" prot="public" static="no" constexpr="yes" mutable="no">
@@ -1654,8 +1654,8 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/master_parameters.hpp" line="118" column="19" bodyfile="parameters/master_parameters.hpp" bodystart="118" bodyend="122"/>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="127" endline="184">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
         <referencedby refid="d7/dbe/structmfRG__record_1a93b8fefd8136bbebcfe993f76d281ff7" compoundref="d8/dea/right__hand__sides_8hpp" startline="76" endline="128">mfRG_record&lt; Q &gt;::save_states</referencedby>
         <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">mfRG_stats::write_to_hdf</referencedby>
@@ -1864,7 +1864,7 @@
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a97f702e04f1c5d26a95211570c003781" compoundref="dd/d0a/parquet__solver_8hpp" startline="73" endline="87">compute_BSE</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1ad9258c4214b31ccef74aad6764dc4db5" compoundref="dd/d0a/parquet__solver_8hpp" startline="494" endline="535">compute_diff_SDE</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>

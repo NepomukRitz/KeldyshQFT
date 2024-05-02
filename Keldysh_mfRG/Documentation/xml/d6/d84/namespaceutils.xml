@@ -37,7 +37,7 @@
         <location file="utilities/util.c++" line="21" column="12" bodyfile="utilities/util.c++" bodystart="21" bodyend="27" declfile="utilities/util.hpp" declline="151" declcolumn="12"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a812ac35cc43da6ba3591f65ccd94001e" compoundref="de/de8/bubble__function_8hpp" startline="219" endline="257">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::perform_computation</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
@@ -87,7 +87,7 @@
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" compoundref="d4/dda/mpi__setup_8c_09_09" startline="9" endline="13">mpi_world_size</references>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
       </memberdef>
       <memberdef kind="function" id="d6/d84/namespaceutils_1a782e4fcd0ce2ae9a576049387bfd125b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -356,7 +356,7 @@
         <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1afbf101e814fc65a748987878efb4f4e1" compoundref="da/dc3/ODE__solvers_8hpp" startline="663" endline="720">boost::numeric::odeint::detail::integrate_nonadaptive</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
         <referencedby refid="d4/d21/minimizer_8hpp_1a4cf1f8fcc0a66dfcb227b42a1f615375" compoundref="d4/d21/minimizer_8hpp" startline="39" endline="154">minimizer</referencedby>
-        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="3" endline="116">n_loop_flow</referencedby>
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
         <referencedby refid="d9/ddc/classIntegrandBubble_1a1c24d31ffd89a0bffcb1416215710903" compoundref="df/d83/integrand_8hpp" startline="58" endline="80">IntegrandBubble&lt; Q &gt;::operator()</referencedby>
         <referencedby refid="dc/d7a/classdataBuffer_1addda1eff16406b44ee3b8d4020882821" compoundref="dc/d80/data__buffer_8hpp" startline="725" endline="811">dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::optimize_grid</referencedby>

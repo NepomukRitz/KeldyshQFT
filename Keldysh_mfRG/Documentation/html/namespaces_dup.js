@@ -8,7 +8,6 @@ var namespaces_dup =
     [ "boost", "d4/da9/namespaceboost.html", "d4/da9/namespaceboost" ],
     [ "conf", "d5/d89/namespaceconf.html", [
       [ "author", "d5/d89/namespaceconf.html#a0b68e66074bc74dbb7460951f810b4c8", null ],
-      [ "breathe_default_members", "d5/d89/namespaceconf.html#a54585428ce84441199d9dfd7087e2243", null ],
       [ "breathe_default_project", "d5/d89/namespaceconf.html#a15ff89fd36856d4530d4ed2083e6dfc7", null ],
       [ "copyright", "d5/d89/namespaceconf.html#aa11e0a8e9c47ccc775796bd64c295d2c", null ],
       [ "exclude_patterns", "d5/d89/namespaceconf.html#a7ad48fb6f3e9b129c02346ea0d3527c1", null ],

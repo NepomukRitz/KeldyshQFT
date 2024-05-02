@@ -1093,19 +1093,17 @@
         <param>
           <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
           <declname>config</declname>
-          <defname>frgConfig</defname>
         </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Initialize and run the fRG flow. Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h. Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.</para>
-<para>Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h. Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin. </para>
+<para>Initialize and run the fRG flow. Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h. Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin. </para>
         </detaileddescription>
         <inbodydescription>
 <para>old Runge-Kutta solver:</para>
 <para>use parquet solver to compute result at Lambda_fin (for comparison with frg result)</para>
         </inbodydescription>
-        <location file="mfRG_flow/flow.hpp" line="23" column="7" bodyfile="mfRG_flow/flow.c++" bodystart="7" bodyend="120" declfile="mfRG_flow/flow.hpp" declline="23" declcolumn="7"/>
+        <location file="mfRG_flow/flow.hpp" line="23" column="7" bodyfile="mfRG_flow/flow.c++" bodystart="3" bodyend="116" declfile="mfRG_flow/flow.hpp" declline="23" declcolumn="7"/>
         <references refid="d8/d66/structODE__solver__config_1a3a78a13774a6da9bd2adceaec2340352" compoundref="de/d91/ODE__solver__config_8hpp" startline="61">ODE_solver_config::absolute_error</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
         <references refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</references>
@@ -1167,7 +1165,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="mfRG_flow/flow.hpp" line="34" column="7" bodyfile="mfRG_flow/flow.c++" bodystart="131" bodyend="188" declfile="mfRG_flow/flow.hpp" declline="34" declcolumn="7"/>
+        <location file="mfRG_flow/flow.hpp" line="34" column="7" bodyfile="mfRG_flow/flow.c++" bodystart="127" bodyend="184" declfile="mfRG_flow/flow.hpp" declline="34" declcolumn="7"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d8/d66/structODE__solver__config_1aa5b7faba7bcaec9f98a691801a78e028" compoundref="de/d91/ODE__solver__config_8hpp" startline="54">ODE_solver_config::filename</references>
         <references refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" compoundref="d6/d8d/flow__grid_8c_09_09" startline="14" endline="30">flowgrid::get_Lambda_checkpoints</references>

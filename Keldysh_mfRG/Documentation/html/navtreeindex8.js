@@ -1,7 +1,5 @@
 var NAVTREEINDEX8 =
 {
-"dc/d2d/classfullvert.html#a2df73aad4aa1694bacf440d2ddd3017f":[1,0,25,66],
-"dc/d2d/classfullvert.html#a2f700872916d51ec1a80d4be0bb51094":[1,0,25,4],
 "dc/d2d/classfullvert.html#a355b89b5f3eef064a2d3f488f6bbcd1a":[1,0,25,1],
 "dc/d2d/classfullvert.html#a3a1f028e7068d586c4150cd5ddd9234e":[1,0,25,9],
 "dc/d2d/classfullvert.html#a3e1354ef46407511ac75e2c8ba5e427a":[1,0,25,54],
@@ -64,12 +62,12 @@ var NAVTREEINDEX8 =
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a4226e0192000382362c5ae256f71d07a":[0,0,9,0,1],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a812afb3800b3dcb25719565ef91cdd72":[1,0,4,0,2],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a812afb3800b3dcb25719565ef91cdd72":[0,0,9,0,2],
-"dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a94fa681ccf80f2647307baae0d3a1c6f":[0,0,9,0,0],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a94fa681ccf80f2647307baae0d3a1c6f":[1,0,4,0,0],
+"dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a94fa681ccf80f2647307baae0d3a1c6f":[0,0,9,0,0],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a963afc64d787ae9903a838e4849c91ca":[1,0,4,0,4],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a963afc64d787ae9903a838e4849c91ca":[0,0,9,0,4],
-"dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a9bbe39008eae25a141bea62aa8f39b8a":[0,0,9,0,3],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a9bbe39008eae25a141bea62aa8f39b8a":[1,0,4,0,3],
+"dc/d3c/structode__solver__impl_1_1butcher__tableau.html#a9bbe39008eae25a141bea62aa8f39b8a":[0,0,9,0,3],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#ab8e115afad434c4a42e83442d9907feb":[0,0,9,0,5],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#ab8e115afad434c4a42e83442d9907feb":[1,0,4,0,5],
 "dc/d3c/structode__solver__impl_1_1butcher__tableau.html#acfb350f51a5dfa0348b98a96c967ec02":[1,0,4,0,8],
@@ -249,5 +247,7 @@ var NAVTREEINDEX8 =
 "de/d5d/propagator_8c_09_09.html#a82ecb2fda37c3bedbb8dd4cfa1aa47cf":[2,0,2,2,0,4],
 "de/d5d/propagator_8c_09_09.html#aaa16e5a816b9a56cc9ef2c8101725ef3":[2,0,2,2,0,2],
 "de/d5d/propagator_8c_09_09.html#ad4ac30553ec90ced0033be4512c3ffd9":[2,0,2,2,0,1],
-"de/d5d/propagator_8c_09_09_source.html":[2,0,2,2,0]
+"de/d5d/propagator_8c_09_09_source.html":[2,0,2,2,0],
+"de/d65/integrandSE_8hpp.html":[2,0,7,0],
+"de/d65/integrandSE_8hpp.html#a9a229d51a6fa389dca0166fb6ea10f6a":[2,0,7,0,2]
 };

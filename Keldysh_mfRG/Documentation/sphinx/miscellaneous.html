@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Miscellaneous &mdash; KeldyshDiag 1.0.0 documentation</title>
+  <title>Miscellaneous &mdash; KF_QFT 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -21,6 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Parameters" href="parameters.html" />
     <link rel="prev" title="I/O" href="io.html" /> 
 </head>
 
@@ -33,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            KeldyshDiag
+            KF_QFT
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -43,19 +44,34 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing.html">Post processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Miscellaneous</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#frequency-grid">Frequency Grid</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#integration">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#frequency-grid">Frequency Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I_17frequencyGridTypeE13FrequencyGrid"><code class="docutils literal notranslate"><span class="pre">FrequencyGrid</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0_6size_t_10my_index_t_10my_index_t0E6Spline"><code class="docutils literal notranslate"><span class="pre">Spline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00E5Adapt"><code class="docutils literal notranslate"><span class="pre">Adapt</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N5Adapt9integrateEdd"><code class="docutils literal notranslate"><span class="pre">Adapt::integrate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N5Adapt9integrateEdd1Q1Q1Q"><code class="docutils literal notranslate"><span class="pre">Adapt::integrate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
 </ul>
 
         </div>
@@ -64,7 +80,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">KeldyshDiag</a>
+          <a href="index.html">KF_QFT</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -86,12 +102,44 @@
 <h1>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading"></a></h1>
 <section id="frequency-grid">
 <h2>Frequency Grid<a class="headerlink" href="#frequency-grid" title="Link to this heading"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I_17frequencyGridTypeE13FrequencyGrid">
+<span id="_CPPv3I_17frequencyGridTypeE13FrequencyGrid"></span><span id="_CPPv2I_17frequencyGridTypeE13FrequencyGrid"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">frequencyGridType</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">freqGridType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d3/db4/classFrequencyGrid"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrequencyGrid</span></span></span><a class="headerlink" href="#_CPPv4I_17frequencyGridTypeE13FrequencyGrid" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
 </section>
 <section id="interpolation">
 <h2>Interpolation<a class="headerlink" href="#interpolation" title="Link to this heading"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0_6size_t_10my_index_t_10my_index_t0E6Spline">
+<span id="_CPPv3I0_6size_t_10my_index_t_10my_index_t0E6Spline"></span><span id="_CPPv2I0_6size_t_10my_index_t_10my_index_t0E6Spline"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rank</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">my_index_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numberFrequencyDims</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">my_index_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pos_first_freq_index</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DataContainer</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d1/de6/classSpline"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Spline</span></span></span><a class="headerlink" href="#_CPPv4I0_6size_t_10my_index_t_10my_index_t0E6Spline" title="Link to this definition"></a><br /></dt>
+<dd><p>below is a modified version of source: <a class="reference external" href="https://kluge.in-chemnitz.de/opensource/SplineK1/SplineK1.h">https://kluge.in-chemnitz.de/opensource/SplineK1/SplineK1.h</a> alternative: <a class="reference external" href="https://github.com/igmhub/likely/blob/master/likely/TriCubicInterpolator.h">https://github.com/igmhub/likely/blob/master/likely/TriCubicInterpolator.h</a></p>
+</dd></dl>
+
 </section>
 <section id="integration">
 <h2>Integration<a class="headerlink" href="#integration" title="Link to this heading"></a></h2>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I00E5Adapt">
+<span id="_CPPv3I00E5Adapt"></span><span id="_CPPv2I00E5Adapt"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Integrand</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">result_of_t</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00E5Adapt" title="Adapt::Integrand"><span class="n"><span class="pre">Integrand</span></span></a><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d6/dc0/structAdapt"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Adapt</span></span></span><a class="headerlink" href="#_CPPv4I00E5Adapt" title="Link to this definition"></a><br /></dt>
+<dd><p>Adaptive integration using 4-point Gauss-Lobatto rule with 7-point Gauss-Kronrod extension, and 13-point Gauss-Kronrod as error estimate. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Adapt9integrateEdd">
+<span id="_CPPv3N5Adapt9integrateEdd"></span><span id="_CPPv2N5Adapt9integrateEdd"></span><span id="Adapt::integrate__double.double"></span><span class="target" id="d6/dc0/structAdapt_1aea59190231c23744a7108f395568049d"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">integrate</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">b</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00E5Adapt" title="Adapt::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4N5Adapt9integrateEdd" title="Link to this definition"></a><br /></dt>
+<dd><p>Integrate integrand from a to b. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Adapt9integrateEdd1Q1Q1Q">
+<span id="_CPPv3N5Adapt9integrateEdd1Q1Q1Q"></span><span id="_CPPv2N5Adapt9integrateEdd1Q1Q1Q"></span><span id="Adapt::integrate__double.double.Q.Q.Q"></span><span class="target" id="d6/dc0/structAdapt_1ae8357cf7676239abcf6fcb591351e158"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">integrate</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">b</span></span>, <a class="reference internal" href="#_CPPv4I00E5Adapt" title="Adapt::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fa</span></span>, <a class="reference internal" href="#_CPPv4I00E5Adapt" title="Adapt::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fb</span></span>, <a class="reference internal" href="#_CPPv4I00E5Adapt" title="Adapt::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">is</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00E5Adapt" title="Adapt::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4N5Adapt9integrateEdd1Q1Q1Q" title="Link to this definition"></a><br /></dt>
+<dd><p>Helper function for recursion: Integrate integrand in subinterval [a, b], reusing the boundary values fa, fb and given error estimate is. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </section>
 </section>
 
@@ -100,6 +148,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="io.html" class="btn btn-neutral float-left" title="I/O" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parameters.html" class="btn btn-neutral float-right" title="Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
