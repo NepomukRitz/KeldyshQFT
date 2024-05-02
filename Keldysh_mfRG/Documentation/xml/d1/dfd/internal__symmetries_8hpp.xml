@@ -1,0 +1,395 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d1/dfd/internal__symmetries_8hpp" kind="file" language="C++">
+    <compoundname>internal_symmetries.hpp</compoundname>
+    <includedby refid="d3/d22/r__vertex_8hpp" local="yes">r_vertex.hpp</includedby>
+    <invincdepgraph>
+      <node id="31">
+        <label>ODE_solvers.c++</label>
+        <link refid="de/dd8/ODE__solvers_8c_09_09"/>
+      </node>
+      <node id="30">
+        <label>ODE_solvers.hpp</label>
+        <link refid="da/dc3/ODE__solvers_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>old_solvers.hpp</label>
+        <link refid="dd/df7/old__solvers_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>bubble_corrections.c++</label>
+        <link refid="d7/d3a/bubble__corrections_8c_09_09"/>
+      </node>
+      <node id="18">
+        <label>bubble_corrections.hpp</label>
+        <link refid="dd/dea/bubble__corrections_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>correction_functions.hpp</label>
+        <link refid="d2/df0/correction__functions_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>loop_corrections.c++</label>
+        <link refid="d7/df0/loop__corrections_8c_09_09"/>
+      </node>
+      <node id="25">
+        <label>loop_corrections.hpp</label>
+        <link refid="d0/d0e/loop__corrections_8hpp"/>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>bubble.hpp</label>
+        <link refid="d0/dac/bubble_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>bubble_function.hpp</label>
+        <link refid="de/de8/bubble__function_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>integrand.hpp</label>
+        <link refid="df/d83/integrand_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>r_vertex.hpp</label>
+        <link refid="d3/d22/r__vertex_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>vertex.hpp</label>
+        <link refid="d1/d2d/vertex_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>state.hpp</label>
+        <link refid="da/d3b/state_8hpp"/>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>integrandSE.hpp</label>
+        <link refid="de/d65/integrandSE_8hpp"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>loop.c++</label>
+        <link refid="d5/dae/loop_8c_09_09"/>
+      </node>
+      <node id="23">
+        <label>loop.hpp</label>
+        <link refid="d8/d1d/loop_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
+      </node>
+      <node id="8">
+        <label>flow.c++</label>
+        <link refid="d4/dde/flow_8c_09_09"/>
+      </node>
+      <node id="7">
+        <label>flow.hpp</label>
+        <link refid="d5/d21/flow_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>right_hand_sides.hpp</label>
+        <link refid="d8/dea/right__hand__sides_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>hartree_term.c++</label>
+        <link refid="d4/d92/hartree__term_8c_09_09"/>
+      </node>
+      <node id="11">
+        <label>parquet_solver.c++</label>
+        <link refid="d5/d94/parquet__solver_8c_09_09"/>
+      </node>
+      <node id="6">
+        <label>parquet_solver.hpp</label>
+        <link refid="dd/d0a/parquet__solver_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>perturbation_theory.hpp</label>
+        <link refid="d5/d0d/perturbation__theory_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>KramersKronig.c++</label>
+        <link refid="d7/d43/KramersKronig_8c_09_09"/>
+      </node>
+      <node id="28">
+        <label>KramersKronig.hpp</label>
+        <link refid="d1/db3/KramersKronig_8hpp"/>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="34">
+        <label>causality_FDT_checks.c++</label>
+        <link refid="d8/dca/causality__FDT__checks_8c_09_09"/>
+      </node>
+      <node id="33">
+        <label>causality_FDT_checks.hpp</label>
+        <link refid="d1/d75/causality__FDT__checks_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>main_postproc.cpp</label>
+        <link refid="dd/d00/main__postproc_8cpp"/>
+      </node>
+      <node id="15">
+        <label>postprocessing.c++</label>
+        <link refid="d9/dae/postprocessing_8c_09_09"/>
+      </node>
+      <node id="14">
+        <label>postprocessing.hpp</label>
+        <link refid="d4/d81/postprocessing_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>sanity_check.hpp</label>
+        <link refid="d2/d3f/sanity__check_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>internal_symmetries.hpp</label>
+        <link refid="d1/dfd/internal__symmetries_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="32">
+        <label>anderson_acceleration.hpp</label>
+        <link refid="d6/d7b/anderson__acceleration_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>hdf5_routines.c++</label>
+        <link refid="d5/d4f/hdf5__routines_8c_09_09"/>
+      </node>
+      <node id="36">
+        <label>hdf5_routines.hpp</label>
+        <link refid="d5/de4/hdf5__routines_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>KELDYSH_MFRG_INTERNAL_SYMMETRIES_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>KELDYSH_MFRG_INTERNAL_SYMMETRIES_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*void<sp/>internal_T1_K1_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">void<sp/>internal_T2_K1_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">void<sp/>internal_T3_K1_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">void<sp/>internal_TC_K1_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">void<sp/>internal_T1_K1_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="12"><highlight class="comment">void<sp/>internal_T2_K1_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="13"><highlight class="comment">void<sp/>internal_T3_K1_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">void<sp/>internal_TC_K1_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">void<sp/>internal_T1_K1_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">void<sp/>internal_T2_K1_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">void<sp/>internal_T3_K1_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">void<sp/>internal_TC_K1_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"></highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">void<sp/>internal_T1_K2_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">void<sp/>internal_T2_K2_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">void<sp/>internal_T3_K2_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">void<sp/>internal_TC_K2_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">void<sp/>internal_T1_K2_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="26"><highlight class="comment">void<sp/>internal_T2_K2_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="27"><highlight class="comment">void<sp/>internal_T3_K2_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="28"><highlight class="comment">void<sp/>internal_TC_K2_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="29"><highlight class="comment">void<sp/>internal_T1_K2_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">void<sp/>internal_T2_K2_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">void<sp/>internal_T3_K2_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="32"><highlight class="comment">void<sp/>internal_TC_K2_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"></highlight></codeline>
+<codeline lineno="34"><highlight class="comment">void<sp/>internal_T1_K3_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="35"><highlight class="comment">void<sp/>internal_T2_K3_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="36"><highlight class="comment">void<sp/>internal_T3_K3_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">void<sp/>internal_TC_K3_a(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="38"><highlight class="comment">void<sp/>internal_T1_K3_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="39"><highlight class="comment">void<sp/>internal_T2_K3_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="40"><highlight class="comment">void<sp/>internal_T3_K3_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="41"><highlight class="comment">void<sp/>internal_TC_K3_p(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="42"><highlight class="comment">void<sp/>internal_T1_K3_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="43"><highlight class="comment">void<sp/>internal_T2_K3_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="44"><highlight class="comment">void<sp/>internal_T3_K3_t(int&amp;<sp/>i_in){}</highlight></codeline>
+<codeline lineno="45"><highlight class="comment">void<sp/>internal_TC_K3_t(int&amp;<sp/>i_in){}*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//KELDYSH_MFRG_INTERNAL_SYMMETRIES_HPP</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="symmetries/internal_symmetries.hpp"/>
+  </compounddef>
+</doxygen>

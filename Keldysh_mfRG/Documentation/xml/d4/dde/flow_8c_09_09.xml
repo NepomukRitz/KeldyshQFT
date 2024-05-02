@@ -1,0 +1,1333 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d4/dde/flow_8c_09_09" kind="file" language="C++">
+    <compoundname>flow.c++</compoundname>
+    <includes refid="d5/d21/flow_8hpp" local="yes">flow.hpp</includes>
+    <incdepgraph>
+      <node id="83">
+        <label>ODE_solver_config.hpp</label>
+        <link refid="de/d91/ODE__solver__config_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="80">
+        <label>../ODE_solvers/ODE_solvers.hpp</label>
+        <link refid="da/dc3/ODE__solvers_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="82" relation="include">
+        </childnode>
+        <childnode refid="83" relation="include">
+        </childnode>
+        <childnode refid="84" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+        <childnode refid="68" relation="include">
+        </childnode>
+      </node>
+      <node id="82">
+        <label>old_solvers.hpp</label>
+        <link refid="dd/df7/old__solvers_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="72">
+        <label>bubble_corrections.hpp</label>
+        <link refid="dd/dea/bubble__corrections_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="71">
+        <label>../asymptotic_corrections/correction_functions.hpp</label>
+        <link refid="d2/df0/correction__functions_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="72" relation="include">
+        </childnode>
+        <childnode refid="73" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+      </node>
+      <node id="73">
+        <label>loop_corrections.hpp</label>
+        <link refid="d0/d0e/loop__corrections_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="72" relation="include">
+        </childnode>
+      </node>
+      <node id="74">
+        <label>bubble.hpp</label>
+        <link refid="d0/dac/bubble_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+      </node>
+      <node id="70">
+        <label>../bubble/bubble_function.hpp</label>
+        <link refid="de/de8/bubble__function_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+      </node>
+      <node id="75">
+        <label>integrand.hpp</label>
+        <link refid="df/d83/integrand_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>r_vertex.hpp</label>
+        <link refid="d3/d22/r__vertex_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>four_point/vertex.hpp</label>
+        <link refid="d1/d2d/vertex_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
+      <node id="49">
+        <label>../n_point/data_buffer.hpp</label>
+        <link refid="dc/d80/data__buffer_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+      </node>
+      <node id="50">
+        <label>data_container.hpp</label>
+        <link refid="da/dbc/data__container_8hpp"/>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>../correlation_functions/state.hpp</label>
+        <link refid="da/d3b/state_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="68" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="60">
+        <label>two_point/propagator.hpp</label>
+        <link refid="d5/df7/propagator_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="56">
+        <label>two_point/selfenergy.hpp</label>
+        <link refid="d6/d2d/selfenergy_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>../data_structures.hpp</label>
+        <link refid="d7/d59/data__structures_8hpp"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="79">
+        <label>../grids/flow_grid.hpp</label>
+        <link refid="d5/dd1/flow__grid_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="32">
+        <label>../grids/frequency_grid.hpp</label>
+        <link refid="d5/d39/frequency__grid_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+      </node>
+      <node id="62">
+        <label>../integrator/integrator.hpp</label>
+        <link refid="dd/d1f/integrator_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="65">
+        <label>integrator_NR.hpp</label>
+        <link refid="da/db4/integrator__NR_8hpp"/>
+        <childnode refid="66" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="64">
+        <label>old_integrators.hpp</label>
+        <link refid="d7/d65/old__integrators_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+      </node>
+      <node id="51">
+        <label>../../interpolations/InterpolatorLinOrSloppy.hpp</label>
+        <link refid="d3/d17/InterpolatorLinOrSloppy_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+      </node>
+      <node id="52">
+        <label>../../interpolations/InterpolatorSpline1D.hpp</label>
+        <link refid="d1/d52/InterpolatorSpline1D_8hpp"/>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="54">
+        <label>../../interpolations/InterpolatorSpline2D.hpp</label>
+        <link refid="d6/d91/InterpolatorSpline2D_8hpp"/>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="55">
+        <label>../../interpolations/InterpolatorSpline3D.hpp</label>
+        <link refid="dd/dcc/InterpolatorSpline3D_8hpp"/>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="77">
+        <label>integrandSE.hpp</label>
+        <link refid="de/d65/integrandSE_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+      </node>
+      <node id="76">
+        <label>../loop/loop.hpp</label>
+        <link refid="d8/d1d/loop_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="77" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>flow.c++</label>
+        <link refid="d4/dde/flow_8c_09_09"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>flow.hpp</label>
+        <link refid="d5/d21/flow_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="69" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="80" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
+        <childnode refid="87" relation="include">
+        </childnode>
+        <childnode refid="93" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+      </node>
+      <node id="86">
+        <label>right_hand_sides.hpp</label>
+        <link refid="d8/dea/right__hand__sides_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="76" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="80" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="87" relation="include">
+        </childnode>
+        <childnode refid="89" relation="include">
+        </childnode>
+      </node>
+      <node id="34">
+        <label>../multidimensional/multiarray.hpp</label>
+        <link refid="df/da4/multiarray_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+      </node>
+      <node id="92">
+        <label>../multidimensional/ranged_view.hpp</label>
+        <link refid="dd/df3/ranged__view_8hpp"/>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>frequency_parameters.hpp</label>
+        <link refid="d3/d3c/frequency__parameters_8hpp"/>
+      </node>
+      <node id="4">
+        <label>../parameters/master_parameters.hpp</label>
+        <link refid="d1/df8/master__parameters_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>technical_parameters.hpp</label>
+        <link refid="d9/d3a/technical__parameters_8hpp"/>
+      </node>
+      <node id="61">
+        <label>../perturbation_theory_and_parquet/hartree_term.hpp</label>
+        <link refid="d1/db3/hartree__term_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+      </node>
+      <node id="87">
+        <label>../perturbation_theory_and_parquet/parquet_solver.hpp</label>
+        <link refid="dd/d0a/parquet__solver_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="88" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="76" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+        <childnode refid="69" relation="include">
+        </childnode>
+        <childnode refid="89" relation="include">
+        </childnode>
+        <childnode refid="90" relation="include">
+        </childnode>
+      </node>
+      <node id="69">
+        <label>../perturbation_theory_and_parquet/perturbation_theory.hpp</label>
+        <link refid="d5/d0d/perturbation__theory_8hpp"/>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="76" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+      </node>
+      <node id="91">
+        <label>KramersKronig.hpp</label>
+        <link refid="d1/db3/KramersKronig_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="92" relation="include">
+        </childnode>
+      </node>
+      <node id="81">
+        <label>../postprocessing/causality_FDT_checks.hpp</label>
+        <link refid="d1/d75/causality__FDT__checks_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+      </node>
+      <node id="93">
+        <label>postprocessing.hpp</label>
+        <link refid="d4/d81/postprocessing_8hpp"/>
+        <childnode refid="78" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="91" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+      </node>
+      <node id="90">
+        <label>../postprocessing/sanity_check.hpp</label>
+        <link refid="d2/d3f/sanity__check_8hpp"/>
+        <childnode refid="91" relation="include">
+        </childnode>
+        <childnode refid="93" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>../../symmetries/Keldysh_symmetries.hpp</label>
+        <link refid="d2/d1a/Keldysh__symmetries_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+      </node>
+      <node id="40">
+        <label>../../symmetries/internal_symmetries.hpp</label>
+        <link refid="d1/dfd/internal__symmetries_8hpp"/>
+      </node>
+      <node id="42">
+        <label>../../symmetries/symmetry_table.hpp</label>
+        <link refid="d3/d77/symmetry__table_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="41">
+        <label>../../symmetries/symmetry_transformations.hpp</label>
+        <link refid="db/d7d/symmetry__transformations_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="89">
+        <label>../utilities/anderson_acceleration.hpp</label>
+        <link refid="d6/d7b/anderson__acceleration_8hpp"/>
+        <childnode refid="88" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="78">
+        <label>../utilities/hdf5_routines.hpp</label>
+        <link refid="d5/de4/hdf5__routines_8hpp"/>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="33">
+        <label>../utilities/math_utils.hpp</label>
+        <link refid="de/dbb/math__utils_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="43">
+        <label>../../utilities/minimizer.hpp</label>
+        <link refid="d4/d21/minimizer_8hpp"/>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>mpi_setup.hpp</label>
+        <link refid="db/de0/mpi__setup_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>runtime_error.hpp</label>
+        <link refid="d1/d64/runtime__error_8hpp"/>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="36">
+        <label>../utilities/template_utils.hpp</label>
+        <link refid="dd/de3/template__utils_8hpp"/>
+      </node>
+      <node id="23">
+        <label>../utilities/util.hpp</label>
+        <link refid="d0/d3f/util_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="58">
+        <label>../../utilities/write_data2file.hpp</label>
+        <link refid="d8/d74/write__data2file_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>Eigen/Dense</label>
+      </node>
+      <node id="39">
+        <label>H5Cpp.h</label>
+      </node>
+      <node id="22">
+        <label>algorithm</label>
+      </node>
+      <node id="7">
+        <label>array</label>
+      </node>
+      <node id="28">
+        <label>bits/stdc++.h</label>
+      </node>
+      <node id="68">
+        <label>boost/numeric/odeint.hpp</label>
+      </node>
+      <node id="85">
+        <label>boost/numeric/odeint/integrate/detail/integrate_adaptive.hpp</label>
+      </node>
+      <node id="84">
+        <label>boost/numeric/odeint/integrate/integrate_adaptive.hpp</label>
+      </node>
+      <node id="15">
+        <label>cassert</label>
+      </node>
+      <node id="25">
+        <label>chrono</label>
+      </node>
+      <node id="5">
+        <label>cmath</label>
+      </node>
+      <node id="12">
+        <label>complex</label>
+      </node>
+      <node id="53">
+        <label>cstdio</label>
+      </node>
+      <node id="88">
+        <label>deque</label>
+      </node>
+      <node id="35">
+        <label>exception</label>
+      </node>
+      <node id="59">
+        <label>fstream</label>
+      </node>
+      <node id="14">
+        <label>functional</label>
+      </node>
+      <node id="45">
+        <label>gsl/gsl_errno.h</label>
+      </node>
+      <node id="63">
+        <label>gsl/gsl_integration.h</label>
+      </node>
+      <node id="46">
+        <label>gsl/gsl_math.h</label>
+      </node>
+      <node id="47">
+        <label>gsl/gsl_min.h</label>
+      </node>
+      <node id="48">
+        <label>gsl/gsl_multimin.h</label>
+      </node>
+      <node id="13">
+        <label>initializer_list</label>
+      </node>
+      <node id="27">
+        <label>iostream</label>
+      </node>
+      <node id="66">
+        <label>limits</label>
+      </node>
+      <node id="31">
+        <label>mpi.h</label>
+      </node>
+      <node id="16">
+        <label>numeric</label>
+      </node>
+      <node id="57">
+        <label>omp.h</label>
+      </node>
+      <node id="38">
+        <label>stdexcept</label>
+      </node>
+      <node id="44">
+        <label>stdio.h</label>
+      </node>
+      <node id="3">
+        <label>string</label>
+      </node>
+      <node id="29">
+        <label>sys/stat.h</label>
+      </node>
+      <node id="24">
+        <label>sys/time.h</label>
+      </node>
+      <node id="19">
+        <label>type_traits</label>
+      </node>
+      <node id="26">
+        <label>unistd.h</label>
+      </node>
+      <node id="67">
+        <label>utility</label>
+      </node>
+      <node id="6">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt;</type>
+        <definition>State&lt; state_datatype &gt; n_loop_flow</definition>
+        <argsstring>(const std::string &amp;outputFileName, const fRG_config &amp;frgConfig)</argsstring>
+        <name>n_loop_flow</name>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::string &amp;</type>
+          <declname>outputFileName</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>frgConfig</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h. Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin. </para>
+        </detaileddescription>
+        <inbodydescription>
+<para>old Runge-Kutta solver:</para>
+<para>use parquet solver to compute result at Lambda_fin (for comparison with frg result)</para>
+        </inbodydescription>
+        <location file="mfRG_flow/flow.c++" line="7" column="7" bodyfile="mfRG_flow/flow.c++" bodystart="7" bodyend="120"/>
+        <references refid="d8/d66/structODE__solver__config_1a3a78a13774a6da9bd2adceaec2340352" compoundref="de/d91/ODE__solver__config_8hpp" startline="61">ODE_solver_config::absolute_error</references>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" compoundref="d1/df8/master__parameters_8hpp" startline="159">data_dir</references>
+        <references refid="da/da0/structfRG__config_1a7105806d089345d509624aad24ed0e52" compoundref="d7/d59/data__structures_8hpp" startline="648">fRG_config::epsODE_abs_</references>
+        <references refid="da/da0/structfRG__config_1a7d612a661f06e043fb5e1bae19825dc5" compoundref="d7/d59/data__structures_8hpp" startline="649">fRG_config::epsODE_rel_</references>
+        <references refid="d8/d66/structODE__solver__config_1aa5b7faba7bcaec9f98a691801a78e028" compoundref="de/d91/ODE__solver__config_8hpp" startline="54">ODE_solver_config::filename</references>
+        <references refid="d6/d84/namespaceutils_1a5020e8df3fe9af5189eb7170db07439f" compoundref="d6/d35/util_8c_09_09" startline="48" endline="61">utils::get_cpu_hours</references>
+        <references refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" compoundref="d6/d8d/flow__grid_8c_09_09" startline="14" endline="30">flowgrid::get_Lambda_checkpoints</references>
+        <references refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" compoundref="d6/d35/util_8c_09_09" startline="21" endline="27">utils::get_time</references>
+        <references refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</references>
+        <references refid="d8/d66/structODE__solver__config_1a1a280a307f261f051ff4523b77577151" compoundref="de/d91/ODE__solver__config_8hpp" startline="52">ODE_solver_config::iter_start</references>
+        <references refid="d8/d66/structODE__solver__config_1a2ef66e42d02cd0c71b93c3809424d7a1" compoundref="de/d91/ODE__solver__config_8hpp" startline="53">ODE_solver_config::lambda_checkpoints</references>
+        <references refid="d8/d66/structODE__solver__config_1a771444e896cc4989f27d04f103fb2f92" compoundref="de/d91/ODE__solver__config_8hpp" startline="58">ODE_solver_config::Lambda_f</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3" compoundref="d1/df8/master__parameters_8hpp" startline="111">Lambda_fin</references>
+        <references refid="d8/d66/structODE__solver__config_1ae2ca81968116778ec306ecb49b9dafd5" compoundref="de/d91/ODE__solver__config_8hpp" startline="58">ODE_solver_config::Lambda_i</references>
+        <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
+        <references refid="d8/d66/structODE__solver__config_1ac2515d552f0a766ad6d127571e1640b2" compoundref="de/d91/ODE__solver__config_8hpp" startline="59">ODE_solver_config::Lambda_now</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
+        <references refid="d8/d66/structODE__solver__config_1a43fe22c125166b15eabe86c416c30cf3" compoundref="de/d91/ODE__solver__config_8hpp" startline="51">ODE_solver_config::maximal_number_of_ODE_steps</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="35">nBOS</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="37">nBOS2</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" compoundref="d3/d3c/frequency__parameters_8hpp" startline="39">nBOS3</references>
+        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
+        <references refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <references refid="d8/d66/structODE__solver__config_1ad7cd18e32d999c84a2fa487af18ab08b" compoundref="de/d91/ODE__solver__config_8hpp" startline="60">ODE_solver_config::relative_error</references>
+        <references refid="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4" compoundref="d5/d0d/perturbation__theory_8hpp" startline="156" endline="177">sopt_state</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" compoundref="d1/df8/master__parameters_8hpp" startline="118" endline="122">U_NRG</references>
+        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</references>
+        <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt;</type>
+        <definition>State&lt; state_datatype &gt; n_loop_flow</definition>
+        <argsstring>(const std::string &amp;inputFileName, const fRG_config &amp;frgConfig, const unsigned int it_start)</argsstring>
+        <name>n_loop_flow</name>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::string &amp;</type>
+          <declname>inputFileName</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>frgConfig</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+          <declname>it_start</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Checkpointing: Continue to compute an n-loop flow that has been canceled before, e.g. due to running into the wall time. For given iteration it_start, read the state at this iteration from previously computed results, then continue to compute the flow up to Lambda_fin.</para>
+<para>Usage: Check the number &lt;Nmax&gt; of the last Lambda layer of a given file &lt;inputFileName&gt; that has been successfully computed. (See log file: "Successfully saved in hdf5 file: &lt;inputFileName&gt; in Lambda layer &lt;Nmax&gt;.) Use this number &lt;Nmax&gt; as input &lt;it_start&gt; for this function. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/flow.c++" line="131" column="7" bodyfile="mfRG_flow/flow.c++" bodystart="131" bodyend="188"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d8/d66/structODE__solver__config_1aa5b7faba7bcaec9f98a691801a78e028" compoundref="de/d91/ODE__solver__config_8hpp" startline="54">ODE_solver_config::filename</references>
+        <references refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" compoundref="d6/d8d/flow__grid_8c_09_09" startline="14" endline="30">flowgrid::get_Lambda_checkpoints</references>
+        <references refid="d8/d66/structODE__solver__config_1a1a280a307f261f051ff4523b77577151" compoundref="de/d91/ODE__solver__config_8hpp" startline="52">ODE_solver_config::iter_start</references>
+        <references refid="d8/d66/structODE__solver__config_1a2ef66e42d02cd0c71b93c3809424d7a1" compoundref="de/d91/ODE__solver__config_8hpp" startline="53">ODE_solver_config::lambda_checkpoints</references>
+        <references refid="d8/d66/structODE__solver__config_1a771444e896cc4989f27d04f103fb2f92" compoundref="de/d91/ODE__solver__config_8hpp" startline="58">ODE_solver_config::Lambda_f</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3" compoundref="d1/df8/master__parameters_8hpp" startline="111">Lambda_fin</references>
+        <references refid="d8/d66/structODE__solver__config_1ae2ca81968116778ec306ecb49b9dafd5" compoundref="de/d91/ODE__solver__config_8hpp" startline="58">ODE_solver_config::Lambda_i</references>
+        <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
+        <references refid="d8/d66/structODE__solver__config_1ac2515d552f0a766ad6d127571e1640b2" compoundref="de/d91/ODE__solver__config_8hpp" startline="59">ODE_solver_config::Lambda_now</references>
+        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" compoundref="d1/df8/master__parameters_8hpp" startline="118" endline="122">U_NRG</references>
+        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;<ref refid="d5/d21/flow_8hpp" kindref="compound">flow.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7" refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" refkind="member"><highlight class="normal"><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref><sp/><ref refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" kindref="member">n_loop_flow</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref>&amp;<sp/>frgConfig){</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref><sp/>(<ref refid="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3" kindref="member">Lambda_fin</ref>,<sp/>frgConfig),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>(<ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/>frgConfig);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>final<sp/>and<sp/>initial<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/>=<sp/>-1;</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Lambda_now;</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref><sp/>=<sp/><ref refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" kindref="member">check_convergence_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>);</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Loading<sp/>converged<sp/>mfRG<sp/>result<sp/>from<sp/>file<sp/>(Lambda_it<sp/>=<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/></highlight><highlight class="stringliteral">&quot;)<sp/>\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref><sp/>=<sp/><ref refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" kindref="member">read_state_from_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>);</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref>;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/>&gt;=<sp/>0)<sp/>{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>load<sp/>state<sp/>if<sp/>file<sp/>exists<sp/>already</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Loading<sp/>non-converged<sp/>mfRG<sp/>result<sp/>from<sp/>file<sp/>(Lambda_it<sp/>=<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/></highlight><highlight class="stringliteral">&quot;)<sp/>\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref><sp/>=<sp/><ref refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" kindref="member">read_state_from_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>);</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Lambda_now<sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.Lambda;</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.config.nODE_<sp/>=<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" kindref="member">nODE_</ref>;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.config.epsODE_abs_<sp/>=<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a7105806d089345d509624aad24ed0e52" kindref="member">epsODE_abs_</ref>;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.config.epsODE_rel_<sp/>=<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a7d612a661f06e043fb5e1bae19825dc5" kindref="member">epsODE_rel_</ref>;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>start<sp/>new<sp/>run</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Start<sp/>new<sp/>mfRG<sp/>run.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADAPTIVE_GRID</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref><sp/>=<sp/>0;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref><sp/>&lt;<sp/>1;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>++)<sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref>.<ref refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" kindref="member">initialize</ref>();<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>initialize<sp/>state<sp/>with<sp/>bare<sp/>vertex<sp/>and<sp/>Hartree<sp/>term<sp/>in<sp/>selfenergy</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>initialize<sp/>the<sp/>flow<sp/>with<sp/>SOPT<sp/>at<sp/>Lambda_ini<sp/>(important!)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4" kindref="member">sopt_state</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref>);</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">parquet_temp_filename</ref><sp/>=<sp/><ref refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" kindref="member">data_dir</ref><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;parquetInit4_temp&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>)<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;_n1=&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>)<sp/>+<sp/>(<ref refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" kindref="member">MAX_DIAG_CLASS</ref><sp/>&gt;<sp/>1<sp/>?<sp/></highlight><highlight class="stringliteral">&quot;_n2=&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>)<sp/>:<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal"><sp/>)<sp/>+<sp/>(<ref refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" kindref="member">MAX_DIAG_CLASS</ref><sp/>&gt;<sp/>2<sp/>?<sp/></highlight><highlight class="stringliteral">&quot;_n3=&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>)<sp/>:<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">)<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;.h5&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" kindref="member">parquet_solver</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">parquet_temp_filename</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/>1,<sp/>1e-4,<sp/>1);</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref>.vertex.half1().check_vertex_resolution();</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref>.findBestFreqGrid(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref>.vertex.half1().check_vertex_resolution();</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.set_frequency_grid(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_temp</ref>);<sp/></highlight><highlight class="comment">//<sp/>copy<sp/>frequency<sp/>grid</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.initialize();<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>initialize<sp/>state<sp/>with<sp/>bare<sp/>vertex<sp/>and<sp/>Hartree<sp/>term<sp/>in<sp/>selfenergy</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>initialize<sp/>the<sp/>flow<sp/>with<sp/>SOPT<sp/>at<sp/>Lambda_ini<sp/>(important!)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4" kindref="member">sopt_state</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>PT2_FLOW</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">parquet_filename</ref><sp/>=<sp/><ref refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" kindref="member">data_dir</ref><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;parquetInit4_final_n1=&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>)<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;_n2=&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>)<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;_n3=&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>)<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;.h5&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" kindref="member">parquet_solver</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">parquet_filename</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/>1,<sp/>1e-6,<sp/>10,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">,<sp/>1.0,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/><sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" kindref="member">nODE_</ref><sp/>+<sp/><ref refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" kindref="member">U_NRG</ref>.size()<sp/>+<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>);<sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>initial<sp/>state<sp/>to<sp/>hdf5<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Lambda_now<sp/>=<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//state_ini.vertex.half1().check_vertex_resolution();</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADAPTIVE_GRID</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.findBestFreqGrid(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.vertex.half1().check_vertex_resolution();</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>+</highlight><highlight class="stringliteral">&quot;_postOpt&quot;</highlight><highlight class="normal">,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/><sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" kindref="member">nODE_</ref><sp/>+<sp/><ref refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" kindref="member">U_NRG</ref>.size()<sp/>+<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>);<sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>initial<sp/>state<sp/>to<sp/>hdf5<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(<ref refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" kindref="member">REG</ref><sp/>!=<sp/>5)<sp/><ref refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" kindref="member">compare_with_FDTs</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.vertex,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/>0,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>,<sp/>frgConfig,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">,<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" kindref="member">nODE_</ref><sp/>+<sp/><ref refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" kindref="member">U_NRG</ref>.size()<sp/>+<sp/>1);</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;double&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_checkpoints</ref><sp/>=<sp/><ref refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" kindref="member">flowgrid::get_Lambda_checkpoints</ref>(<ref refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" kindref="member">U_NRG</ref>,<sp/>frgConfig);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d2/dc9/classrhs__n__loop__flow__t" kindref="compound">rhs_n_loop_flow_t&lt;state_datatype&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">rhs_mfrg</ref>(frgConfig);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d8/d66/structODE__solver__config" kindref="compound">ODE_solver_config</ref><sp/>config;</highlight><highlight class="comment">//<sp/>=<sp/>ODE_solver_config_standard;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a2ef66e42d02cd0c71b93c3809424d7a1" kindref="member">lambda_checkpoints</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_checkpoints</ref>;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1aa5b7faba7bcaec9f98a691801a78e028" kindref="member">filename</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref>;</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a43fe22c125166b15eabe86c416c30cf3" kindref="member">maximal_number_of_ODE_steps</ref><sp/>=<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" kindref="member">nODE_</ref>;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a3a78a13774a6da9bd2adceaec2340352" kindref="member">absolute_error</ref><sp/>=<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a7105806d089345d509624aad24ed0e52" kindref="member">epsODE_abs_</ref>;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1ad7cd18e32d999c84a2fa487af18ab08b" kindref="member">relative_error</ref><sp/>=<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a7d612a661f06e043fb5e1bae19825dc5" kindref="member">epsODE_rel_</ref>;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a1a280a307f261f051ff4523b77577151" kindref="member">iter_start</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1ae2ca81968116778ec306ecb49b9dafd5" kindref="member">Lambda_i</ref><sp/>=<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1ac2515d552f0a766ad6d127571e1640b2" kindref="member">Lambda_now</ref><sp/>=<sp/>Lambda_now;</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a771444e896cc4989f27d04f103fb2f92" kindref="member">Lambda_f</ref><sp/>=<sp/><ref refid="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3" kindref="member">Lambda_fin</ref>;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//ODE_solver_RK4(state_fin,<sp/>Lambda_fin,<sp/>state_ini,<sp/>Lambda_ini,<sp/>rhs_mfrg,<sp/>flowgrid::sq_substitution,<sp/>flowgrid::sq_resubstitution,<sp/>nODE,<sp/>Lambda_checkpoints,<sp/>outputFileName);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>the<sp/>flow<sp/>using<sp/>an<sp/>ODE<sp/>solver</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>REG<sp/>==<sp/>4</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">param</ref><sp/>=<sp/><ref refid="d0/d87/classflowgrid_1_1linear__parametrization" kindref="compound">flowgrid::linear_parametrization</ref>;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">param</ref><sp/>=<sp/><ref refid="d9/d72/classflowgrid_1_1sqrt__parametrization" kindref="compound">flowgrid::sqrt_parametrization</ref>;</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">t_start</ref><sp/>=<sp/><ref refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" kindref="member">utils::get_time</ref>();</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ode_solver&lt;State&lt;state_datatype&gt;</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">param</ref>&gt;(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">rhs_mfrg</ref>,<sp/>config,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;CPU<sp/>hours<sp/>for<sp/>fRG<sp/>run:<sp/>\t<sp/>&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1a5020e8df3fe9af5189eb7170db07439f" kindref="member">utils::get_cpu_hours</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">t_start</ref>);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//using<sp/>namespace<sp/>boost::numeric::odeint;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//ode_solver_boost&lt;State&lt;state_datatype&gt;,<sp/>param&gt;(state_fin,<sp/>state_ini,<sp/>rhs_mfrg,<sp/>config,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_parquet_compare</ref><sp/>(<ref refid="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3" kindref="member">Lambda_fin</ref>,<sp/>frgConfig);</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_parquet_compare</ref>.initialize();</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//sopt_state(state_parquet_compare,<sp/>Lambda_fin);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>std::string<sp/>parquet_filename_forcomparison<sp/>=<sp/>data_dir<sp/>+<sp/>&quot;parquet_for_comparison_n1=&quot;<sp/>+<sp/>std::to_string(nBOS)<sp/>+<sp/>&quot;_n2=&quot;<sp/>+<sp/>std::to_string(nBOS2)<sp/>+<sp/>&quot;_n3=&quot;<sp/>+<sp/>std::to_string(nBOS3)<sp/>+<sp/>&quot;.h5&quot;;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//parquet_solver(parquet_filename_forcomparison,<sp/>state_parquet_compare,<sp/>Lambda_fin,<sp/>1,<sp/>1e-6,<sp/>10);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">filename_result</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">outputFileName</ref><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;_final&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">filename_result</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/><sp/><sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref>);<sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>initial<sp/>state<sp/>to<sp/>hdf5<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref>;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131" refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" refkind="member"><highlight class="normal"><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref><sp/><ref refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" kindref="member">n_loop_flow</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">inputFileName</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref>&amp;<sp/>frgConfig,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">it_start</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">it_start</ref><sp/>&lt;<sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" kindref="member">nODE_</ref><sp/>+<sp/><ref refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" kindref="member">U_NRG</ref>.size()<sp/>+<sp/>1)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>start<sp/>iteration<sp/>needs<sp/>to<sp/>be<sp/>within<sp/>the<sp/>range<sp/>of<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref><sp/>=<sp/><ref refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" kindref="member">read_state_from_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">inputFileName</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">it_start</ref>);<sp/></highlight><highlight class="comment">//<sp/>read<sp/>initial<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">inputFileName</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/><sp/>frgConfig.<ref refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" kindref="member">nODE_</ref><sp/>+<sp/><ref refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" kindref="member">U_NRG</ref>.size()<sp/>+<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>);<sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>initial<sp/>state<sp/>to<sp/>hdf5<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Lambda_now<sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>.Lambda;</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref><sp/>(<ref refid="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3" kindref="member">Lambda_fin</ref>,<sp/>frgConfig);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//state_ini.findBestFreqGrid(true);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//state_ini.vertex.half1().check_vertex_resolution();</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;double&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_checkpoints</ref><sp/>=<sp/><ref refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" kindref="member">flowgrid::get_Lambda_checkpoints</ref>(<ref refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" kindref="member">U_NRG</ref>,<sp/>frgConfig);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>compare_with_FDTs(state_ini.vertex,<sp/>Lambda_now,<sp/>0,<sp/>inputFileName,<sp/>true,<sp/>frgConfig.nODE_<sp/>+<sp/>U_NRG.size()<sp/>+<sp/>1);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//ode_solver&lt;State&lt;state_datatype&gt;,<sp/>flowgrid::sqrt_parametrization&gt;(state_fin,<sp/>Lambda_fin,<sp/>state_ini,<sp/>Lambda_ini,<sp/>rhs_n_loop_flow,</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Lambda_checkpoints,<sp/>inputFileName,<sp/>it_start);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>construct<sp/>the<sp/>flowgrid<sp/>for<sp/>ODE<sp/>solver<sp/>with<sp/>non-adaptive<sp/>step-size</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>the<sp/>adaptive<sp/>algorithms<sp/>this<sp/>only<sp/>determines<sp/>the<sp/>maximal<sp/>number<sp/>of<sp/>ODE<sp/>steps</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//vec&lt;double&gt;<sp/>lambdas_try<sp/>=<sp/>flowgrid::construct_flow_grid(Lambda_fin,<sp/>Lambda_ini,<sp/>flowgrid::linear_parametrization::t_from_lambda,<sp/>flowgrid::linear_parametrization::lambda_from_t,<sp/>frgConfig.nODE_,<sp/>Lambda_checkpoints);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d2/dc9/classrhs__n__loop__flow__t" kindref="compound">rhs_n_loop_flow_t&lt;state_datatype&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">rhs_mfrg</ref>(frgConfig);</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d8/d66/structODE__solver__config" kindref="compound">ODE_solver_config</ref><sp/>config;</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a1a280a307f261f051ff4523b77577151" kindref="member">iter_start</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">it_start</ref>;</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a2ef66e42d02cd0c71b93c3809424d7a1" kindref="member">lambda_checkpoints</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_checkpoints</ref>;</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1aa5b7faba7bcaec9f98a691801a78e028" kindref="member">filename</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">inputFileName</ref>;</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1ae2ca81968116778ec306ecb49b9dafd5" kindref="member">Lambda_i</ref><sp/>=<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>;</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1ac2515d552f0a766ad6d127571e1640b2" kindref="member">Lambda_now</ref><sp/>=<sp/>Lambda_now;</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>config.<ref refid="d8/d66/structODE__solver__config_1a771444e896cc4989f27d04f103fb2f92" kindref="member">Lambda_f</ref><sp/>=<sp/><ref refid="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3" kindref="member">Lambda_fin</ref>;</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal"><ref refid="d2/da0/namespaceboost_1_1numeric_1_1odeint" kindref="compound">boost::numeric::odeint</ref>;</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"></highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>REG<sp/>==<sp/>4</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">param</ref><sp/>=<sp/><ref refid="d0/d87/classflowgrid_1_1linear__parametrization" kindref="compound">flowgrid::linear_parametrization</ref>;</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">param</ref><sp/>=<sp/><ref refid="d8/de8/classflowgrid_1_1exp__parametrization" kindref="compound">flowgrid::exp_parametrization</ref>;</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//ode_solver_boost&lt;State&lt;state_datatype&gt;,<sp/>param&gt;(state_fin,<sp/>Lambda_fin,<sp/>state_ini,<sp/>Lambda_ini,<sp/>rhs_mfrg,<sp/>config,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//ODE_solver_RK4(state_fin,<sp/>Lambda_fin,<sp/>state_ini,<sp/>Lambda_ini,<sp/>rhs_mfrg,<sp/>flowgrid::sq_substitution,<sp/>flowgrid::sq_resubstitution,<sp/>nODE,<sp/>Lambda_checkpoints,<sp/>outputFileName);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>the<sp/>flow<sp/>using<sp/>an<sp/>ODE<sp/>solver</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ode_solver&lt;State&lt;state_datatype&gt;</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">param</ref>&gt;(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_ini</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">rhs_mfrg</ref>,<sp/>config,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//using<sp/>namespace<sp/>boost::numeric::odeint;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//ode_solver_boost&lt;State&lt;state_datatype&gt;,<sp/>flowgrid::sqrt_parametrization&gt;(state_fin,<sp/>Lambda_fin,<sp/>state_ini,<sp/>Lambda_ini,<sp/>rhs_mfrg,<sp/>config,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">filename_result</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">inputFileName</ref><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;_final&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">filename_result</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" kindref="member">Lambda_ini</ref>,<sp/><sp/><sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref>);<sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>initial<sp/>state<sp/>to<sp/>hdf5<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"></highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_fin</ref>;</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::runtime_error(</highlight><highlight class="stringliteral">&quot;Error:<sp/>Start<sp/>iteration<sp/>is<sp/>too<sp/>large.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">State&lt;state_datatype&gt;</ref>();</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="188"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"></highlight></codeline>
+<codeline lineno="190"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="mfRG_flow/flow.c++"/>
+  </compounddef>
+</doxygen>

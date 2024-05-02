@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="da/d4d/data__structures_8c_09_09" kind="file" language="C++">
+    <compoundname>data_structures.c++</compoundname>
+    <includes refid="d7/d59/data__structures_8hpp" local="yes">data_structures.hpp</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>data_structures.c++</label>
+        <link refid="da/d4d/data__structures_8c_09_09"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>data_structures.hpp</label>
+        <link refid="d7/d59/data__structures_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>frequency_parameters.hpp</label>
+        <link refid="d3/d3c/frequency__parameters_8hpp"/>
+      </node>
+      <node id="10">
+        <label>parameters/master_parameters.hpp</label>
+        <link refid="d1/df8/master__parameters_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>technical_parameters.hpp</label>
+        <link refid="d9/d3a/technical__parameters_8hpp"/>
+      </node>
+      <node id="15">
+        <label>Eigen/Dense</label>
+      </node>
+      <node id="12">
+        <label>array</label>
+      </node>
+      <node id="8">
+        <label>cassert</label>
+      </node>
+      <node id="4">
+        <label>cmath</label>
+      </node>
+      <node id="3">
+        <label>complex</label>
+      </node>
+      <node id="7">
+        <label>functional</label>
+      </node>
+      <node id="6">
+        <label>initializer_list</label>
+      </node>
+      <node id="9">
+        <label>numeric</label>
+      </node>
+      <node id="11">
+        <label>string</label>
+      </node>
+      <node id="5">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto my_isfinite</definition>
+        <argsstring>(comp z) -&gt; bool</argsstring>
+        <name>my_isfinite</name>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a407c4f6cd09a6f2bf296c8cf21a76aca" kindref="member">comp</ref></type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.c++" line="3" column="6" bodyfile="data_structures.c++" bodystart="3" bodyend="5"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d2/df0/correction__functions_8hpp_1ac617baabe863b35d7652e62c345a3400" compoundref="d2/df0/correction__functions_8hpp" startline="54" endline="349">asymp_corrections_bubble</referencedby>
+        <referencedby refid="dd/dea/bubble__corrections_8hpp_1a673249424b76bf0312371543dd9fcf32" compoundref="dd/dea/bubble__corrections_8hpp" startline="73" endline="95">correctionFunctionBubbleAT_REG2_Matsubara_NoPHS</referencedby>
+        <referencedby refid="dd/dea/bubble__corrections_8hpp_1a8b82f59edcffae366dfd5732270821ce" compoundref="dd/dea/bubble__corrections_8hpp" startline="48" endline="70">correctionFunctionBubbleAT_REG2_Matsubara_PHS</referencedby>
+        <referencedby refid="dd/dea/bubble__corrections_8hpp_1a577956afec9c428d5f85b35323fd23a9" compoundref="dd/dea/bubble__corrections_8hpp" startline="327" endline="340">correctionFunctionBubbleAT_REG3_Matsubara_PHS</referencedby>
+        <referencedby refid="dd/dea/bubble__corrections_8hpp_1a3b6801846bb5cb11907d139037a490c1" compoundref="dd/dea/bubble__corrections_8hpp" startline="356" endline="369">correctionFunctionBubbleAT_REG4_Matsubara_PHS</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="686" endline="699">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="718" endline="723">Propagator&lt; Q &gt;::GR_REG3</referencedby>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1accf972145186913d2ccaf053d34f99b7" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="10" endline="29">FrequencyGrid&lt; eliasGrid &gt;::initialize_grid</referencedby>
+        <referencedby refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" compoundref="dc/d80/data__buffer_8hpp" startline="179" endline="423">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::interpolate_impl</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1abe049053b951a153eeafc7e38ef45967" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="105" endline="119">interpolate_lin1D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1ab8ba60e3f924fc214c4524499a73bdb6" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="134" endline="150">interpolate_lin2D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a9823a30450c495e023a08df7e756a1c3" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="168" endline="184">interpolate_lin3D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1aba149aeaf0055fa2706852c28a38fd89" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="198" endline="213">interpolate_lin_on_aux1D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a861065a6b1fee9acbb42f91f4dff10ed" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="228" endline="245">interpolate_lin_on_aux2D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a19d1737333fe8a5e4fe2215b8cb55eb3" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="263" endline="280">interpolate_lin_on_aux3D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a618bd0c01e4be69450d18733429ae405" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="31" endline="39">interpolate_nearest1D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a5d215bb4e70524de05713722cccb3c13" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="53" endline="63">interpolate_nearest2D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1aafd5326ee7874a8ac033a5b1081c3130" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="81" endline="91">interpolate_nearest3D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1ae07941036397e55e91d7c971701798eb" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="293" endline="317">interpolate_sloppycubic1D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a33ad7272ed2add395d22ebc25fbda18a" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="330" endline="354">interpolate_sloppycubic2D</referencedby>
+        <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a3ea7779aba6eee29610390e29196f9a6" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="366" endline="391">interpolate_sloppycubic3D</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a4903a387462011800d0bdf5f6cab80a0" compoundref="d1/d2d/vertex_8hpp" startline="1412" endline="1432">fullvert&lt; Q &gt;::left_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a5764a575f836bbd99a6096c957706077" compoundref="d1/d2d/vertex_8hpp" startline="1433" endline="1454">fullvert&lt; Q &gt;::left_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a4301a9ea991bdbe8abea9e56c88a1531" compoundref="d1/d2d/vertex_8hpp" startline="1651" endline="1671">fullvert&lt; Q &gt;::left_diff_bare_symmetry_expanded</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a9c60e78db51bb564c5f5b48e361773fe" compoundref="d1/d2d/vertex_8hpp" startline="1258" endline="1295">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a979ab081a5d2c7cf842864d4881eee58" compoundref="d1/d2d/vertex_8hpp" startline="1296" endline="1333">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a8e9446837a4a9308c720370ccbaa1445" compoundref="d3/d22/r__vertex_8hpp" startline="460" endline="472">rvert&lt; Q &gt;::read_symmetryreduced_rvert</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a910c1f3d01af773982abfdfbdc44af08" compoundref="d1/d2d/vertex_8hpp" startline="1456" endline="1476">fullvert&lt; Q &gt;::right_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a7097308dc80547ccfc4c4a8a3e735c62" compoundref="d1/d2d/vertex_8hpp" startline="1477" endline="1498">fullvert&lt; Q &gt;::right_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a78ecf14103cf47c44635489ba21d615c" compoundref="d1/d2d/vertex_8hpp" startline="1672" endline="1693">fullvert&lt; Q &gt;::right_diff_bare_symmetry_expanded</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a1517ecda5f1d20e6d934010cec48745e" compoundref="d1/d2d/vertex_8hpp" startline="1335" endline="1372">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1af914c469c229333915893485a0105d15" compoundref="d1/d2d/vertex_8hpp" startline="1373" endline="1410">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="777" endline="785">Propagator&lt; Q &gt;::SM_REG4</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="43" endline="129">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="161" endline="185">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a1bf888805c3422916edce456cf079e37" compoundref="d0/dac/bubble_8hpp" startline="132" endline="150">Bubble&lt; Q &gt;::value_Matsubara</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="da/d4d/data__structures_8c_09_09_1a81f1bef5a84a0e99516dd9a243e312d5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;out, K_class k)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.c++" line="8" column="1" bodyfile="data_structures.c++" bodystart="8" bodyend="14"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+      </memberdef>
+      <memberdef kind="function" id="da/d4d/data__structures_8c_09_09_1ae1aee0363fb52f7b04d8cf5a35a0173e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream &amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;out, vertexType symmtype)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84" kindref="member">vertexType</ref></type>
+          <declname>symmtype</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.c++" line="16" column="1" bodyfile="data_structures.c++" bodystart="16" bodyend="23"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
+        <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
+        <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
+        <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;<ref refid="d7/d59/data__structures_8hpp" kindref="compound">data_structures.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3" refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" kindref="member">my_isfinite</ref>(<ref refid="d7/d59/data__structures_8hpp_1a407c4f6cd09a6f2bf296c8cf21a76aca" kindref="member">comp</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">z</ref>)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>std::isfinite(real(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">z</ref>))<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">and</ref><sp/>std::isfinite(imag(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">z</ref>));</highlight></codeline>
+<codeline lineno="5"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8" refid="da/d4d/data__structures_8c_09_09_1a81f1bef5a84a0e99516dd9a243e312d5" refkind="member"><highlight class="normal">std::ostream&amp;<sp/><ref refid="da/d4d/data__structures_8c_09_09_1a81f1bef5a84a0e99516dd9a243e312d5" kindref="member">operator &lt;&lt; </ref>(std::ostream&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref>,<sp/><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" kindref="member">k1</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">or</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" kindref="member">k2</ref>)<sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;K&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>+1);}</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" kindref="member">k3</ref>)<sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;K&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>);}</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" kindref="member">k2b</ref>)<sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;K&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>)<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;&apos;&quot;</highlight><highlight class="normal">;}</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/><sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;selfenergy&quot;</highlight><highlight class="normal">;}</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref>;</highlight></codeline>
+<codeline lineno="14"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16" refid="da/d4d/data__structures_8c_09_09_1ae1aee0363fb52f7b04d8cf5a35a0173e" refkind="member"><highlight class="normal">std::ostream&amp;<sp/><ref refid="da/d4d/data__structures_8c_09_09_1a81f1bef5a84a0e99516dd9a243e312d5" kindref="member">operator &lt;&lt; </ref>(std::ostream&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref>,<sp/><ref refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84" kindref="member">vertexType</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" kindref="member">symmetric_full</ref>)<sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;symmetric_full&quot;</highlight><highlight class="normal">;}</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" kindref="member">symmetric_r_irred</ref>)<sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;symmetric_r_irred&quot;</highlight><highlight class="normal">;}</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" kindref="member">non_symmetric_diffleft</ref>)<sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;non_symmetric_diffleft&quot;</highlight><highlight class="normal">;}</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref><sp/>==<sp/><ref refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" kindref="member">non_symmetric_diffright</ref>)<sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;non_symmetric_diffright&quot;</highlight><highlight class="normal">;}</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(</highlight><highlight class="keyword">false</highlight><highlight class="normal">);}</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">out</ref>;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="data_structures.c++"/>
+  </compounddef>
+</doxygen>

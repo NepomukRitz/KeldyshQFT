@@ -1,0 +1,14 @@
+digraph "interpolations"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  dir_d3aa368cf518ca4413cb05ed24da604b [label="interpolations", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_d3aa368cf518ca4413cb05ed24da604b.html",tooltip=""];
+  dir_15107c8e7a0cc6e02ee0f5189f1c1343 [label="grids", fillcolor="#edf0f7", color="grey25", style="filled", URL="dir_15107c8e7a0cc6e02ee0f5189f1c1343.html",tooltip=""];
+  dir_3e5922525fa33f19479cfde15131040f [label="symmetries", fillcolor="#edf0f7", color="grey25", style="filled", URL="dir_3e5922525fa33f19479cfde15131040f.html",tooltip=""];
+  dir_d3aa368cf518ca4413cb05ed24da604b->dir_15107c8e7a0cc6e02ee0f5189f1c1343 [headlabel="1", labeldistance=1.5 headhref="dir_000007_000005.html" href="dir_000007_000005.html" color="steelblue1" fontcolor="steelblue1"];
+  dir_d3aa368cf518ca4413cb05ed24da604b->dir_3e5922525fa33f19479cfde15131040f [headlabel="1", labeldistance=1.5 headhref="dir_000007_000016.html" href="dir_000007_000016.html" color="steelblue1" fontcolor="steelblue1"];
+}

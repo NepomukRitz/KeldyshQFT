@@ -1,0 +1,14 @@
+digraph "SelfEnergy::addself"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="RL";
+  Node1 [id="Node000001",label="SelfEnergy::addself",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="LoopCalculator::compute\l_Keldysh",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$df/dc8/classLoopCalculator.html#a92e1b8bae469c8850f355f7516c6a713",tooltip=" "];
+  Node1 -> Node3 [id="edge2_Node000001_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="loop",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d8/d1d/loop_8hpp.html#aa4154b9b6c780472c89bc83590d73b6e",tooltip=" "];
+}

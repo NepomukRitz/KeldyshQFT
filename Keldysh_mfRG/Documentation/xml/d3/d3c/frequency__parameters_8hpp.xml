@@ -1,0 +1,1592 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d3/d3c/frequency__parameters_8hpp" kind="file" language="C++">
+    <compoundname>frequency_parameters.hpp</compoundname>
+    <includedby refid="da/dbc/data__container_8hpp" local="yes">data_container.hpp</includedby>
+    <includedby refid="d1/df8/master__parameters_8hpp" local="yes">master_parameters.hpp</includedby>
+    <invincdepgraph>
+      <node id="45">
+        <label>ODE_solver_config.hpp</label>
+        <link refid="de/d91/ODE__solver__config_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+      </node>
+      <node id="33">
+        <label>ODE_solvers.c++</label>
+        <link refid="de/dd8/ODE__solvers_8c_09_09"/>
+      </node>
+      <node id="32">
+        <label>ODE_solvers.hpp</label>
+        <link refid="da/dc3/ODE__solvers_8hpp"/>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>old_solvers.hpp</label>
+        <link refid="dd/df7/old__solvers_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>bubble_corrections.c++</label>
+        <link refid="d7/d3a/bubble__corrections_8c_09_09"/>
+      </node>
+      <node id="20">
+        <label>bubble_corrections.hpp</label>
+        <link refid="dd/dea/bubble__corrections_8hpp"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>correction_functions.hpp</label>
+        <link refid="d2/df0/correction__functions_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>loop_corrections.c++</label>
+        <link refid="d7/df0/loop__corrections_8c_09_09"/>
+      </node>
+      <node id="27">
+        <label>loop_corrections.hpp</label>
+        <link refid="d0/d0e/loop__corrections_8hpp"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>bubble.hpp</label>
+        <link refid="d0/dac/bubble_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>bubble_function.hpp</label>
+        <link refid="de/de8/bubble__function_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>integrand.hpp</label>
+        <link refid="df/d83/integrand_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>r_vertex.hpp</label>
+        <link refid="d3/d22/r__vertex_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>vertex.hpp</label>
+        <link refid="d1/d2d/vertex_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>data_buffer.hpp</label>
+        <link refid="dc/d80/data__buffer_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>data_container.hpp</label>
+        <link refid="da/dbc/data__container_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>state.hpp</label>
+        <link refid="da/d3b/state_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="43">
+        <label>propagator.c++</label>
+        <link refid="de/d5d/propagator_8c_09_09"/>
+      </node>
+      <node id="42">
+        <label>propagator.hpp</label>
+        <link refid="d5/df7/propagator_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+      </node>
+      <node id="40">
+        <label>selfenergy.hpp</label>
+        <link refid="d6/d2d/selfenergy_8hpp"/>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+      </node>
+      <node id="58">
+        <label>data_structures.c++</label>
+        <link refid="da/d4d/data__structures_8c_09_09"/>
+      </node>
+      <node id="46">
+        <label>data_structures.hpp</label>
+        <link refid="d7/d59/data__structures_8hpp"/>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="72" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="68" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+      </node>
+      <node id="60">
+        <label>flow_grid.c++</label>
+        <link refid="d6/d8d/flow__grid_8c_09_09"/>
+      </node>
+      <node id="59">
+        <label>flow_grid.hpp</label>
+        <link refid="d5/dd1/flow__grid_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="51">
+        <label>frequency_grid.c++</label>
+        <link refid="d5/d3d/frequency__grid_8c_09_09"/>
+      </node>
+      <node id="49">
+        <label>frequency_grid.hpp</label>
+        <link refid="d5/d39/frequency__grid_8hpp"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+      </node>
+      <node id="54">
+        <label>integrator.c++</label>
+        <link refid="d7/d61/integrator_8c_09_09"/>
+      </node>
+      <node id="53">
+        <label>integrator.hpp</label>
+        <link refid="dd/d1f/integrator_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="61">
+        <label>integrator_NR.hpp</label>
+        <link refid="da/db4/integrator__NR_8hpp"/>
+        <childnode refid="53" relation="include">
+        </childnode>
+      </node>
+      <node id="55">
+        <label>old_integrators.c++</label>
+        <link refid="de/d11/old__integrators_8c_09_09"/>
+      </node>
+      <node id="52">
+        <label>old_integrators.hpp</label>
+        <link refid="d7/d65/old__integrators_8hpp"/>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+      </node>
+      <node id="50">
+        <label>InterpolatorLinOrSloppy.hpp</label>
+        <link refid="d3/d17/InterpolatorLinOrSloppy_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>integrandSE.hpp</label>
+        <link refid="de/d65/integrandSE_8hpp"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>loop.c++</label>
+        <link refid="d5/dae/loop_8c_09_09"/>
+      </node>
+      <node id="25">
+        <label>loop.hpp</label>
+        <link refid="d8/d1d/loop_8hpp"/>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
+      </node>
+      <node id="10">
+        <label>flow.c++</label>
+        <link refid="d4/dde/flow_8c_09_09"/>
+      </node>
+      <node id="9">
+        <label>flow.hpp</label>
+        <link refid="d5/d21/flow_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>right_hand_sides.hpp</label>
+        <link refid="d8/dea/right__hand__sides_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="64">
+        <label>ranged_view.hpp</label>
+        <link refid="dd/df3/ranged__view_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>frequency_parameters.hpp</label>
+        <link refid="d3/d3c/frequency__parameters_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
+        <label>master_parameters.hpp</label>
+        <link refid="d1/df8/master__parameters_8hpp"/>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>hartree_term.c++</label>
+        <link refid="d4/d92/hartree__term_8c_09_09"/>
+      </node>
+      <node id="41">
+        <label>hartree_term.hpp</label>
+        <link refid="d1/db3/hartree__term_8hpp"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>parquet_solver.c++</label>
+        <link refid="d5/d94/parquet__solver_8c_09_09"/>
+      </node>
+      <node id="8">
+        <label>parquet_solver.hpp</label>
+        <link refid="dd/d0a/parquet__solver_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>perturbation_theory.hpp</label>
+        <link refid="d5/d0d/perturbation__theory_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>KramersKronig.c++</label>
+        <link refid="d7/d43/KramersKronig_8c_09_09"/>
+      </node>
+      <node id="30">
+        <label>KramersKronig.hpp</label>
+        <link refid="d1/db3/KramersKronig_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="36">
+        <label>causality_FDT_checks.c++</label>
+        <link refid="d8/dca/causality__FDT__checks_8c_09_09"/>
+      </node>
+      <node id="35">
+        <label>causality_FDT_checks.hpp</label>
+        <link refid="d1/d75/causality__FDT__checks_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>main_postproc.cpp</label>
+        <link refid="dd/d00/main__postproc_8cpp"/>
+      </node>
+      <node id="17">
+        <label>postprocessing.c++</label>
+        <link refid="d9/dae/postprocessing_8c_09_09"/>
+      </node>
+      <node id="16">
+        <label>postprocessing.hpp</label>
+        <link refid="d4/d81/postprocessing_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>sanity_check.hpp</label>
+        <link refid="d2/d3f/sanity__check_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="48">
+        <label>Keldysh_symmetries.c++</label>
+        <link refid="d4/de0/Keldysh__symmetries_8c_09_09"/>
+      </node>
+      <node id="47">
+        <label>Keldysh_symmetries.hpp</label>
+        <link refid="d2/d1a/Keldysh__symmetries_8hpp"/>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+      </node>
+      <node id="72">
+        <label>symmetry_table.hpp</label>
+        <link refid="d3/d77/symmetry__table_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="57">
+        <label>symmetry_transformations.c++</label>
+        <link refid="d5/def/symmetry__transformations_8c_09_09"/>
+      </node>
+      <node id="56">
+        <label>symmetry_transformations.hpp</label>
+        <link refid="db/d7d/symmetry__transformations_8hpp"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+      </node>
+      <node id="34">
+        <label>anderson_acceleration.hpp</label>
+        <link refid="d6/d7b/anderson__acceleration_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="39">
+        <label>hdf5_routines.c++</label>
+        <link refid="d5/d4f/hdf5__routines_8c_09_09"/>
+      </node>
+      <node id="38">
+        <label>hdf5_routines.hpp</label>
+        <link refid="d5/de4/hdf5__routines_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="63">
+        <label>math_utils.c++</label>
+        <link refid="df/d31/math__utils_8c_09_09"/>
+      </node>
+      <node id="62">
+        <label>math_utils.hpp</label>
+        <link refid="de/dbb/math__utils_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+      </node>
+      <node id="66">
+        <label>minimizer.hpp</label>
+        <link refid="d4/d21/minimizer_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="67">
+        <label>mpi_setup.c++</label>
+        <link refid="d4/dda/mpi__setup_8c_09_09"/>
+      </node>
+      <node id="65">
+        <label>mpi_setup.hpp</label>
+        <link refid="db/de0/mpi__setup_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+        <childnode refid="68" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+      </node>
+      <node id="69">
+        <label>util.c++</label>
+        <link refid="d6/d35/util_8c_09_09"/>
+      </node>
+      <node id="68">
+        <label>util.hpp</label>
+        <link refid="d0/d3f/util_8hpp"/>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="69" relation="include">
+        </childnode>
+      </node>
+      <node id="71">
+        <label>write_data2file.c++</label>
+        <link refid="d9/d8b/write__data2file_8c_09_09"/>
+      </node>
+      <node id="70">
+        <label>write_data2file.hpp</label>
+        <link refid="d8/d74/write__data2file_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" prot="public" static="no">
+        <name>GRID</name>
+        <initializer>0</initializer>
+        <briefdescription>
+<para>Frequency grid parameters ///. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="8" column="9" bodyfile="parameters/frequency_parameters.hpp" bodystart="8" bodyend="-1"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="df/d31/math__utils_8c_09_09_1af8d15aa3b1c20600949eba3423835cbd" compoundref="df/d31/math__utils_8c_09_09" startline="184" endline="203">K2_convert2internalFreqs</referencedby>
+        <referencedby refid="df/d31/math__utils_8c_09_09_1a5b1bfeebec25bd9a9463b436378bdfa6" compoundref="df/d31/math__utils_8c_09_09" startline="204" endline="219">K2_convert2naturalFreqs</referencedby>
+        <referencedby refid="df/d31/math__utils_8c_09_09_1a5315c219f92f27815ac56da467fab9ec" compoundref="df/d31/math__utils_8c_09_09" startline="222" endline="244">K3_convert2internalFreqs</referencedby>
+        <referencedby refid="df/d31/math__utils_8c_09_09_1a9119552b1e767d657ce117e25fb1d324" compoundref="df/d31/math__utils_8c_09_09" startline="245" endline="258">K3_convert2naturalFreqs</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="399" endline="462">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
+        <referencedby refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" compoundref="d5/de4/hdf5__routines_8hpp" startline="621" endline="830">hdf5_impl::write_state_to_hdf_LambdaLayer</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a0202923e518730f85dd10460af50fea6" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>constexpr bool BOSONIC_PARAM_FOR_K3</definition>
+        <argsstring></argsstring>
+        <name>BOSONIC_PARAM_FOR_K3</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="13" column="16" bodyfile="parameters/frequency_parameters.hpp" bodystart="13" bodyend="-1"/>
+        <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1af927f74b91e538ad98a3a817b5bfc195" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>constexpr bool INTERPOL2D_FOR_K3</definition>
+        <argsstring></argsstring>
+        <name>INTERPOL2D_FOR_K3</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a0202923e518730f85dd10460af50fea6" kindref="member">BOSONIC_PARAM_FOR_K3</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">and</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="15" column="16" bodyfile="parameters/frequency_parameters.hpp" bodystart="15" bodyend="-1"/>
+        <referencedby refid="dc/d2d/classfullvert_1a0fb3accac383318a2535f3fbdfa26414" compoundref="d1/d2d/vertex_8hpp" startline="2068" endline="2073">fullvert&lt; Q &gt;::findBestFreqGrid</referencedby>
+        <referencedby refid="d5/def/symmetry__transformations_8c_09_09_1acca2d320b6e1d863c785d414f8dda287" compoundref="d5/def/symmetry__transformations_8c_09_09" startline="3" endline="24">switch_channel</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1aec10c7c2fae276227544e207cbd802d0" compoundref="db/d7d/symmetry__transformations_8hpp" startline="17" endline="64">T1</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1ae8b6c7aba446997e0f0e0913277394b5" compoundref="db/d7d/symmetry__transformations_8hpp" startline="168" endline="196">Tph</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a1ff6ce969efd86c4361a29f381fea032" compoundref="db/d7d/symmetry__transformations_8hpp" startline="197" endline="214">TR</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>constexpr bool shift_fgrids_woPHS</definition>
+        <argsstring></argsstring>
+        <name>shift_fgrids_woPHS</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="17" column="16" bodyfile="parameters/frequency_parameters.hpp" bodystart="17" bodyend="-1"/>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nBOS</definition>
+        <argsstring></argsstring>
+        <name>nBOS</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref> *  4 * 2 * 16 + 1</initializer>
+        <briefdescription>
+<para>determines whether frequency grids are shifted by hartree+epsilon (depending on channel) -&gt; many sample points around new points </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="35" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="35" bodyend="-1"/>
+        <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
+        <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nFER</definition>
+        <argsstring></argsstring>
+        <name>nFER</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref> * 32 * 2 * 2</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="36" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="36" bodyend="-1"/>
+        <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" compoundref="d6/d2d/selfenergy_8hpp" startline="407" endline="423">SelfEnergy&lt; Q &gt;::check_symmetries</referencedby>
+        <referencedby refid="d9/dae/postprocessing_8c_09_09_1a532f006939433b3802b9c407043b3add" compoundref="d9/dae/postprocessing_8c_09_09" startline="3" endline="62">compute_Phi_tilde</referencedby>
+        <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="275" endline="289">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+        <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nBOS2</definition>
+        <argsstring></argsstring>
+        <name>nBOS2</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref> * 4 * 2 * 2 + 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="37" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="37" bodyend="-1"/>
+        <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
+        <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nFER2</definition>
+        <argsstring></argsstring>
+        <name>nFER2</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref> * 2 * 2 * 2</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="38" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="38" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="376" endline="563">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nBOS3</definition>
+        <argsstring></argsstring>
+        <name>nBOS3</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref> * 4 * 2 + 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="39" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="39" bodyend="-1"/>
+        <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
+        <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1aec10c7c2fae276227544e207cbd802d0" compoundref="db/d7d/symmetry__transformations_8hpp" startline="17" endline="64">T1</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1ae8b6c7aba446997e0f0e0913277394b5" compoundref="db/d7d/symmetry__transformations_8hpp" startline="168" endline="196">Tph</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a1ff6ce969efd86c4361a29f381fea032" compoundref="db/d7d/symmetry__transformations_8hpp" startline="197" endline="214">TR</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nFER3</definition>
+        <argsstring></argsstring>
+        <name>nFER3</name>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref> * 2 * 2</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="40" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="40" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="376" endline="563">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int POSINTRANGE</definition>
+        <argsstring></argsstring>
+        <name>POSINTRANGE</name>
+        <initializer>= 64  * <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="42" column="11" bodyfile="parameters/frequency_parameters.hpp" bodystart="42" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="376" endline="563">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1ac5e8d2fd2f8d7b542aa387e3fa8a1679" compoundref="d4/d92/hartree__term_8c_09_09" startline="5" endline="23">Hartree_Solver::compute_filling_oneshot</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" compoundref="de/de8/bubble__function_8hpp" startline="191" endline="213">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" compoundref="d8/d1d/loop_8hpp" startline="76" endline="93">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a6ea138cf1b23526993fe12f3add4ff35" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Delta_factor_K1</definition>
+        <argsstring></argsstring>
+        <name>Delta_factor_K1</name>
+        <initializer>= 5.</initializer>
+        <briefdescription>
+<para>Scale factor for the frequency grid of the K1 vertex class. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="45" column="14" bodyfile="parameters/frequency_parameters.hpp" bodystart="45" bodyend="-1"/>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1ab3096582b02c56eb2c838631a7e5de51" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Delta_factor_SE</definition>
+        <argsstring></argsstring>
+        <name>Delta_factor_SE</name>
+        <initializer>= 10.</initializer>
+        <briefdescription>
+<para>Scale factor for the frequency grid of the self-energy. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="46" column="14" bodyfile="parameters/frequency_parameters.hpp" bodystart="46" bodyend="-1"/>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a6e08a06d210b49b2ac511ad77d0be00d" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Delta_factor_K2_w</definition>
+        <argsstring></argsstring>
+        <name>Delta_factor_K2_w</name>
+        <initializer>= 15.</initializer>
+        <briefdescription>
+<para>Scale factor for the frequency grid of the bosonic frequency of the K2 and K2&apos; vertex classes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="47" column="14" bodyfile="parameters/frequency_parameters.hpp" bodystart="47" bodyend="-1"/>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a1bd20877e89f8eb953d5bb4e9f147a20" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Delta_factor_K2_v</definition>
+        <argsstring></argsstring>
+        <name>Delta_factor_K2_v</name>
+        <initializer>= 20.</initializer>
+        <briefdescription>
+<para>Scale factor for the frequency grid of the fermionic frequency of the K2 and K2&apos; vertex classes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="48" column="14" bodyfile="parameters/frequency_parameters.hpp" bodystart="48" bodyend="-1"/>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a823f4683d45c1c5e52d311a5075a0275" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Delta_factor_K3_w</definition>
+        <argsstring></argsstring>
+        <name>Delta_factor_K3_w</name>
+        <initializer>= 10.</initializer>
+        <briefdescription>
+<para>Scale factor for the frequency grid of the bosonic frequency of the K3 vertex class. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="49" column="14" bodyfile="parameters/frequency_parameters.hpp" bodystart="49" bodyend="-1"/>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1ad46998952fa4265ee0a38e0021ca46b4" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Delta_factor_K3_v</definition>
+        <argsstring></argsstring>
+        <name>Delta_factor_K3_v</name>
+        <initializer>= 10.</initializer>
+        <briefdescription>
+<para>Scale factor for the frequency grid of the fermionic frequencies of the K3 vertex class. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="50" column="14" bodyfile="parameters/frequency_parameters.hpp" bodystart="50" bodyend="-1"/>
+        <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1ae2fbdf104305af49bfe5b3c0da204d9b" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nSE</definition>
+        <argsstring></argsstring>
+        <name>nSE</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="55" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="55" bodyend="-1"/>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a98a9c7b110f336bae9c31792defaef9d" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nPROP</definition>
+        <argsstring></argsstring>
+        <name>nPROP</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="56" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="56" bodyend="-1"/>
+        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="589" endline="596">Propagator&lt; Q &gt;::norm</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a45672349f0fe09504c9bdb610de3244a" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw1_a</definition>
+        <argsstring></argsstring>
+        <name>nw1_a</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="61" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1aff66573b25bca15a492172ca1652795c" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw2_a</definition>
+        <argsstring></argsstring>
+        <name>nw2_a</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="62" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1af03f92e366cfa156c94a7b37d2fb441b" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv2_a</definition>
+        <argsstring></argsstring>
+        <name>nv2_a</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="63" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1addfd6ca3791447dedbd73b86c2a930d3" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw3_a</definition>
+        <argsstring></argsstring>
+        <name>nw3_a</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="64" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a6942b8d5952479ca20a65b94e01f4087" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv3_a</definition>
+        <argsstring></argsstring>
+        <name>nv3_a</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="65" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a1280b0a21edb429f8fcfbc27d076c80a" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw1_p</definition>
+        <argsstring></argsstring>
+        <name>nw1_p</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="67" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a61e1601901e11fd7b5d0de16d6a064b8" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw2_p</definition>
+        <argsstring></argsstring>
+        <name>nw2_p</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="68" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a7c532e634962b8e1ab9a5651f2b5c130" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv2_p</definition>
+        <argsstring></argsstring>
+        <name>nv2_p</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="69" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1ada0a493e071fe298e0a244a7d54cadef" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw3_p</definition>
+        <argsstring></argsstring>
+        <name>nw3_p</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="70" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a8ce52eb30c67c8785a9aaf8af82f8a91" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv3_p</definition>
+        <argsstring></argsstring>
+        <name>nv3_p</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="71" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1aa009138cc100e03b42a508727a81f263" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw1_t</definition>
+        <argsstring></argsstring>
+        <name>nw1_t</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="73" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a7f7cabc4a13d8d9b2a0a3d71f8a4d502" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw2_t</definition>
+        <argsstring></argsstring>
+        <name>nw2_t</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="74" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1aab96efc2c1bd079089202751119fc7bb" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv2_t</definition>
+        <argsstring></argsstring>
+        <name>nv2_t</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="75" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a7c9a9452f9306e227bc53d2153240377" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw3_t</definition>
+        <argsstring></argsstring>
+        <name>nw3_t</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="76" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a1f9ac6d7b6c008d5917421922b8ba159" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv3_t</definition>
+        <argsstring></argsstring>
+        <name>nv3_t</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="77" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a9ec4b78d73963b8446b8a4d6fbb50aa5" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw1</definition>
+        <argsstring></argsstring>
+        <name>nw1</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="79" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="79" bodyend="-1"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a483d20f988a997b877b2ec030b1473d2" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw2</definition>
+        <argsstring></argsstring>
+        <name>nw2</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="80" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="80" bodyend="-1"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a2879cadca110991e27d2a6f77e1ff0c1" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv2</definition>
+        <argsstring></argsstring>
+        <name>nv2</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="81" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="81" bodyend="-1"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a9a140833a7b3ece20810a2e2af1c1bfe" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nw3</definition>
+        <argsstring></argsstring>
+        <name>nw3</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="82" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="82" bodyend="-1"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1aab46ca0c8af88445d37b8b93dc8428de" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int nv3</definition>
+        <argsstring></argsstring>
+        <name>nv3</name>
+        <initializer>= <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="parameters/frequency_parameters.hpp" line="83" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="83" bodyend="-1"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>FPP_MFRG_FREQUENCY_PARAMETERS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FPP_MFRG_FREQUENCY_PARAMETERS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Grid<sp/>type</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8" refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>GRID<sp/>0<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>0:<sp/>use<sp/>Elias&apos;<sp/>grid;<sp/><sp/><sp/><sp/><sp/><sp/>1:<sp/>use<sp/>hybrid<sp/>grid;<sp/><sp/><sp/><sp/><sp/>2:<sp/>polar<sp/>coordinates<sp/>(currently<sp/>not<sp/>for<sp/>K3<sp/>yet)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">//#define<sp/>ADAPTIVE_GRID<sp/><sp/><sp/>//<sp/>if<sp/>defined:<sp/>use<sp/>optimization<sp/>routine;<sp/>if<sp/>undefined:<sp/>just<sp/>rescale<sp/>the<sp/>grid;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//#define<sp/>ROTATEK2<sp/>//<sp/>saves<sp/>and<sp/>interpolates<sp/>K2<sp/>data<sp/>on<sp/>and<sp/>rotated<sp/>grid<sp/>(corresponds<sp/>to<sp/>&quot;fermionic&quot;<sp/>parametrization)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13" refid="d3/d3c/frequency__parameters_8hpp_1a0202923e518730f85dd10460af50fea6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a0202923e518730f85dd10460af50fea6" kindref="member">BOSONIC_PARAM_FOR_K3</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>saves<sp/>and<sp/>interpolates<sp/>K3<sp/>data<sp/>on<sp/>and<sp/>rotated<sp/>grid<sp/>(corresponds<sp/>to<sp/>&quot;bosonic&quot;<sp/>parametrization)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15" refid="d3/d3c/frequency__parameters_8hpp_1af927f74b91e538ad98a3a817b5bfc195" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1af927f74b91e538ad98a3a817b5bfc195" kindref="member">INTERPOL2D_FOR_K3</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a0202923e518730f85dd10460af50fea6" kindref="member">BOSONIC_PARAM_FOR_K3</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">and</ref><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17" refid="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" kindref="member">shift_fgrids_woPHS</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Limits<sp/>of<sp/>the<sp/>frequency<sp/>grid<sp/>vectors<sp/>for<sp/>the<sp/>different<sp/>kinds<sp/>of<sp/>frequencies</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">//<sp/>(i.e.<sp/>bosonic<sp/>transfer<sp/>frequency<sp/>and<sp/>fermionic<sp/>frequencies</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Number<sp/>of<sp/>bosonic<sp/>and<sp/>fermionic<sp/>frequency<sp/>points.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Good<sp/>production<sp/>values<sp/>for<sp/>Keldysh:<sp/>nBOS<sp/>=<sp/>nFER<sp/>=<sp/>401,<sp/>nBOS2<sp/>=<sp/>nFER2<sp/>=<sp/>201,<sp/>nBOS3<sp/>=<sp/>nFER3<sp/>=<sp/>51</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>KELDYSH_FORMALISM</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref><sp/>=<sp/>401;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref><sp/>=<sp/>401<sp/>-<sp/>(<ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/>?<sp/>0<sp/>:<sp/>1);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Number<sp/>of<sp/>frequency<sp/>points<sp/>for<sp/>K2<sp/>and<sp/>K3<sp/>classes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref><sp/>=<sp/>201;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref><sp/>=<sp/>201<sp/>-<sp/>(<ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">or</ref><sp/><ref refid="d1/df8/master__parameters_8hpp_1a9897b8f62212deed8e0b93f70f570970" kindref="member">ZERO_TEMP</ref><sp/>?<sp/>0<sp/>:<sp/>1);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref><sp/>=<sp/>51;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref><sp/>=<sp/>51<sp/>-<sp/>(<ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">or</ref><sp/><ref refid="d1/df8/master__parameters_8hpp_1a9897b8f62212deed8e0b93f70f570970" kindref="member">ZERO_TEMP</ref><sp/>?<sp/>0<sp/>:<sp/>1);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref><sp/>=<sp/>4;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35" refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref><sp/>*<sp/><sp/>4<sp/>*<sp/>2<sp/>*<sp/>16<sp/>+<sp/>1;</highlight></codeline>
+<codeline lineno="36" refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref><sp/>*<sp/>32<sp/>*<sp/>2<sp/>*<sp/>2;</highlight></codeline>
+<codeline lineno="37" refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref><sp/>*<sp/>4<sp/>*<sp/>2<sp/>*<sp/>2<sp/>+<sp/>1;</highlight><highlight class="comment">//nBOS;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref><sp/>*<sp/>2<sp/>*<sp/>2<sp/>*<sp/>2;</highlight><highlight class="comment">//nFER;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39" refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref><sp/>*<sp/>4<sp/>*<sp/>2<sp/>+<sp/>1;<sp/></highlight><highlight class="comment">//nBOS;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref><sp/>*<sp/>2<sp/>*<sp/>2;<sp/></highlight><highlight class="comment">//nFER;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42" refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" kindref="member">POSINTRANGE</ref><sp/>=<sp/>64<sp/><sp/>*<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">COUNT</ref>;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45" refid="d3/d3c/frequency__parameters_8hpp_1a6ea138cf1b23526993fe12f3add4ff35" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a6ea138cf1b23526993fe12f3add4ff35" kindref="member">Delta_factor_K1</ref><sp/>=<sp/>5.;<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="46" refid="d3/d3c/frequency__parameters_8hpp_1ab3096582b02c56eb2c838631a7e5de51" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ab3096582b02c56eb2c838631a7e5de51" kindref="member">Delta_factor_SE</ref><sp/>=<sp/>10.;<sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="47" refid="d3/d3c/frequency__parameters_8hpp_1a6e08a06d210b49b2ac511ad77d0be00d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a6e08a06d210b49b2ac511ad77d0be00d" kindref="member">Delta_factor_K2_w</ref><sp/>=<sp/>15.;<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="48" refid="d3/d3c/frequency__parameters_8hpp_1a1bd20877e89f8eb953d5bb4e9f147a20" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a1bd20877e89f8eb953d5bb4e9f147a20" kindref="member">Delta_factor_K2_v</ref><sp/>=<sp/>20.;<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="49" refid="d3/d3c/frequency__parameters_8hpp_1a823f4683d45c1c5e52d311a5075a0275" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a823f4683d45c1c5e52d311a5075a0275" kindref="member">Delta_factor_K3_w</ref><sp/>=<sp/>10.;<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="50" refid="d3/d3c/frequency__parameters_8hpp_1ad46998952fa4265ee0a38e0021ca46b4" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad46998952fa4265ee0a38e0021ca46b4" kindref="member">Delta_factor_K3_v</ref><sp/>=<sp/>10.;<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Number<sp/>of<sp/>frequency<sp/>points<sp/>for<sp/>the<sp/>self<sp/>energy<sp/>and<sp/>the<sp/>susceptibility</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="d3/d3c/frequency__parameters_8hpp_1ae2fbdf104305af49bfe5b3c0da204d9b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ae2fbdf104305af49bfe5b3c0da204d9b" kindref="member">nSE</ref><sp/><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>;</highlight></codeline>
+<codeline lineno="56" refid="d3/d3c/frequency__parameters_8hpp_1a98a9c7b110f336bae9c31792defaef9d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a98a9c7b110f336bae9c31792defaef9d" kindref="member">nPROP</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Number<sp/>of<sp/>frequency<sp/>points<sp/>for<sp/>the<sp/>K1<sp/>class<sp/>(bosonic<sp/>freq<sp/>w),</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="comment">//<sp/>K2<sp/>(bosonic<sp/>freq<sp/>w,<sp/>fermionic<sp/>freq<sp/>v)<sp/>and<sp/>K3<sp/>(bosonic<sp/>frequency<sp/>w<sp/>and<sp/>fermionic<sp/>freqs,<sp/>both<sp/>v<sp/>and<sp/>vp)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="comment">//<sp/>for<sp/>the<sp/>a<sp/>channel</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="d3/d3c/frequency__parameters_8hpp_1a45672349f0fe09504c9bdb610de3244a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a45672349f0fe09504c9bdb610de3244a" kindref="member">nw1_a</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>;</highlight></codeline>
+<codeline lineno="62" refid="d3/d3c/frequency__parameters_8hpp_1aff66573b25bca15a492172ca1652795c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1aff66573b25bca15a492172ca1652795c" kindref="member">nw2_a</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>;</highlight></codeline>
+<codeline lineno="63" refid="d3/d3c/frequency__parameters_8hpp_1af03f92e366cfa156c94a7b37d2fb441b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1af03f92e366cfa156c94a7b37d2fb441b" kindref="member">nv2_a</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>;</highlight></codeline>
+<codeline lineno="64" refid="d3/d3c/frequency__parameters_8hpp_1addfd6ca3791447dedbd73b86c2a930d3" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1addfd6ca3791447dedbd73b86c2a930d3" kindref="member">nw3_a</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>;</highlight></codeline>
+<codeline lineno="65" refid="d3/d3c/frequency__parameters_8hpp_1a6942b8d5952479ca20a65b94e01f4087" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a6942b8d5952479ca20a65b94e01f4087" kindref="member">nv3_a</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="comment">//<sp/>for<sp/>the<sp/>p<sp/>channel</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67" refid="d3/d3c/frequency__parameters_8hpp_1a1280b0a21edb429f8fcfbc27d076c80a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a1280b0a21edb429f8fcfbc27d076c80a" kindref="member">nw1_p</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>;</highlight></codeline>
+<codeline lineno="68" refid="d3/d3c/frequency__parameters_8hpp_1a61e1601901e11fd7b5d0de16d6a064b8" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a61e1601901e11fd7b5d0de16d6a064b8" kindref="member">nw2_p</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>;</highlight></codeline>
+<codeline lineno="69" refid="d3/d3c/frequency__parameters_8hpp_1a7c532e634962b8e1ab9a5651f2b5c130" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a7c532e634962b8e1ab9a5651f2b5c130" kindref="member">nv2_p</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>;</highlight></codeline>
+<codeline lineno="70" refid="d3/d3c/frequency__parameters_8hpp_1ada0a493e071fe298e0a244a7d54cadef" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ada0a493e071fe298e0a244a7d54cadef" kindref="member">nw3_p</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>;</highlight></codeline>
+<codeline lineno="71" refid="d3/d3c/frequency__parameters_8hpp_1a8ce52eb30c67c8785a9aaf8af82f8a91" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a8ce52eb30c67c8785a9aaf8af82f8a91" kindref="member">nv3_p</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight><highlight class="comment">//<sp/>for<sp/>the<sp/>t<sp/>channel</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73" refid="d3/d3c/frequency__parameters_8hpp_1aa009138cc100e03b42a508727a81f263" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1aa009138cc100e03b42a508727a81f263" kindref="member">nw1_t</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>;</highlight></codeline>
+<codeline lineno="74" refid="d3/d3c/frequency__parameters_8hpp_1a7f7cabc4a13d8d9b2a0a3d71f8a4d502" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a7f7cabc4a13d8d9b2a0a3d71f8a4d502" kindref="member">nw2_t</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>;</highlight></codeline>
+<codeline lineno="75" refid="d3/d3c/frequency__parameters_8hpp_1aab96efc2c1bd079089202751119fc7bb" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1aab96efc2c1bd079089202751119fc7bb" kindref="member">nv2_t</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>;</highlight></codeline>
+<codeline lineno="76" refid="d3/d3c/frequency__parameters_8hpp_1a7c9a9452f9306e227bc53d2153240377" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a7c9a9452f9306e227bc53d2153240377" kindref="member">nw3_t</ref><sp/><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>;</highlight></codeline>
+<codeline lineno="77" refid="d3/d3c/frequency__parameters_8hpp_1a1f9ac6d7b6c008d5917421922b8ba159" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a1f9ac6d7b6c008d5917421922b8ba159" kindref="member">nv3_t</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="comment">//<sp/>for<sp/>a<sp/>general<sp/>channel<sp/>r</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79" refid="d3/d3c/frequency__parameters_8hpp_1a9ec4b78d73963b8446b8a4d6fbb50aa5" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a9ec4b78d73963b8446b8a4d6fbb50aa5" kindref="member">nw1</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>;</highlight></codeline>
+<codeline lineno="80" refid="d3/d3c/frequency__parameters_8hpp_1a483d20f988a997b877b2ec030b1473d2" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a483d20f988a997b877b2ec030b1473d2" kindref="member">nw2</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>;</highlight></codeline>
+<codeline lineno="81" refid="d3/d3c/frequency__parameters_8hpp_1a2879cadca110991e27d2a6f77e1ff0c1" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a2879cadca110991e27d2a6f77e1ff0c1" kindref="member">nv2</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>;</highlight></codeline>
+<codeline lineno="82" refid="d3/d3c/frequency__parameters_8hpp_1a9a140833a7b3ece20810a2e2af1c1bfe" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a9a140833a7b3ece20810a2e2af1c1bfe" kindref="member">nw3</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>;</highlight></codeline>
+<codeline lineno="83" refid="d3/d3c/frequency__parameters_8hpp_1aab46ca0c8af88445d37b8b93dc8428de" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1aab46ca0c8af88445d37b8b93dc8428de" kindref="member">nv3</ref><sp/>=<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//FPP_MFRG_FREQUENCY_PARAMETERS_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="parameters/frequency_parameters.hpp"/>
+  </compounddef>
+</doxygen>

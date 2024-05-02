@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d2/da0/namespaceboost_1_1numeric_1_1odeint" kind="namespace" language="C++">
+    <compoundname>boost::numeric::odeint</compoundname>
+    <innerclass refid="d9/dae/structboost_1_1numeric_1_1odeint_1_1vector__space__norm__inf_3_01State_3_01state__datatype_01_4_01_4" prot="public">boost::numeric::odeint::vector_space_norm_inf&lt; State&lt; state_datatype &gt; &gt;</innerclass>
+    <innernamespace refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail">boost::numeric::odeint::detail</innernamespace>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d2/da0/namespaceboost_1_1numeric_1_1odeint_1a5510944be8243a1ed307b3a0648e7541" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">State_t</ref></type>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FlowGrid</ref></type>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">System</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void boost::numeric::odeint::ode_solver_boost</definition>
+        <argsstring>(State_t &amp;result, const State_t &amp;state_ini, const System &amp;rhs, const ODE_solver_config &amp;config=ODE_solver_config(), const bool verbose=true)</argsstring>
+        <name>ode_solver_boost</name>
+        <qualifiedname>boost::numeric::odeint::ode_solver_boost</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">State_t</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">State_t</ref> &amp;</type>
+          <declname>state_ini</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">System</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d8/d66/structODE__solver__config" kindref="compound">ODE_solver_config</ref> &amp;</type>
+          <declname>config</declname>
+          <defval><ref refid="d8/d66/structODE__solver__config" kindref="compound">ODE_solver_config</ref>()</defval>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+          <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solvers.hpp" line="825" column="18" bodyfile="ODE_solvers/ODE_solvers.hpp" bodystart="826" bodyend="851"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a32376f9b22dd79c20dceee6af4857234" compoundref="d1/df8/master__parameters_8hpp" startline="114">dLambda_initial</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="correlation_functions/state.hpp" line="207" column="9"/>
+  </compounddef>
+</doxygen>

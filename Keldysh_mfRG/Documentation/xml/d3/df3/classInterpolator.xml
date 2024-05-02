@@ -1,0 +1,597 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d3/df3/classInterpolator" kind="class" language="C++" prot="public">
+    <compoundname>Interpolator</compoundname>
+    <basecompoundref refid="db/dbf/classdataContainer__type" prot="public" virt="non-virtual">dataContainer_type</basecompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; comp, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; state_datatype, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; state_datatype, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; state_datatype, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; Q, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</derivedcompoundref>
+    <derivedcompoundref refid="dc/d7a/classdataBuffer" prot="public" virt="non-virtual">dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</derivedcompoundref>
+    <includes refid="dc/d80/data__buffer_8hpp" local="no">data_buffer.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>rank</declname>
+        <defname>rank</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>numberFrequencyDims</declname>
+        <defname>numberFrequencyDims</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>pos_first_freqpoint</declname>
+        <defname>pos_first_freqpoint</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="db/dbf/classdataContainer__type" kindref="compound">dataContainer_type</ref></type>
+      </param>
+      <param>
+        <type><ref refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5" kindref="member">interpolMethod</ref></type>
+        <declname>inter</declname>
+        <defname>inter</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="d3/df3/classInterpolator_1a82508572e7f2f37b0b1fd4fba54377ee" prot="private" static="no">
+        <type><ref refid="db/dbf/classdataContainer__type" kindref="compound">dataContainer_type</ref></type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::base_class =  dataContainer_type</definition>
+        <argsstring></argsstring>
+        <name>base_class</name>
+        <qualifiedname>Interpolator::base_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="19" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d3/df3/classInterpolator_1a04ed1281587c1a87801cda84bb5470fb" prot="private" static="no">
+        <type><ref refid="d3/df3/classInterpolator" kindref="compound">Interpolator</ref></type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::this_class =  Interpolator</definition>
+        <argsstring></argsstring>
+        <name>this_class</name>
+        <qualifiedname>Interpolator::this_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="20" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d3/df3/classInterpolator_1adc89138efcc80605775301cffb4d7e9d" prot="private" static="no">
+        <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref> &gt;</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::frequencies_type =  std::array&lt;freqType, numberFrequencyDims&gt;</definition>
+        <argsstring></argsstring>
+        <name>frequencies_type</name>
+        <qualifiedname>Interpolator::frequencies_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="22" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="d3/df3/classInterpolator_1a90cb24659fbf8d65d29db9fe01ab475a" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> base_class::index_type</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::index_type =  typename base_class::index_type</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>Interpolator::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="36" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d3/df3/classInterpolator_1a220838ec7429b2d8ac08199acc0a8297" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> base_class::dimensions_type</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::dimensions_type =  typename base_class::dimensions_type</definition>
+        <argsstring></argsstring>
+        <name>dimensions_type</name>
+        <qualifiedname>Interpolator::dimensions_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="37" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d3/df3/classInterpolator_1a67e07c1e4ad28745ebc847a70eb08096" prot="public" static="no" mutable="yes">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::initialized</definition>
+        <argsstring></argsstring>
+        <name>initialized</name>
+        <qualifiedname>Interpolator::initialized</qualifiedname>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="39" column="18" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="39" bodyend="-1"/>
+        <referencedby refid="d3/df3/classInterpolator_1a26f6d3b803b2279d27484071988e7b55" compoundref="dc/d80/data__buffer_8hpp" startline="42" endline="42">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::initInterpolator</referencedby>
+        <referencedby refid="d3/df3/classInterpolator_1aa6c856038bb2e340e390ceeda17892bd" compoundref="dc/d80/data__buffer_8hpp" startline="43" endline="43">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::set_initializedInterpol</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="d3/df3/classInterpolator_1ad71f28c5cb4c5120963fd8a5141eeaa8" prot="private" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>static constexpr my_index_t Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::numSamples</definition>
+        <argsstring>()</argsstring>
+        <name>numSamples</name>
+        <qualifiedname>Interpolator::numSamples</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="24" column="33" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="24" bodyend="26"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d3/df3/classInterpolator_1a7eec042901fc9826eb108a89c92ebf61" compoundref="dc/d80/data__buffer_8hpp" startline="46" endline="87">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::get_weights</referencedby>
+        <referencedby refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" compoundref="dc/d80/data__buffer_8hpp" startline="179" endline="423">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::interpolate_impl</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/df3/classInterpolator_1a2569e20b63cd087a974ddf08d6e49ff9" prot="private" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>static constexpr my_index_t Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::numSamples_half</definition>
+        <argsstring>()</argsstring>
+        <name>numSamples_half</name>
+        <qualifiedname>Interpolator::numSamples_half</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="27" column="33" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="27" bodyend="29"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1ad1b536b45480122002c4de0cde5b2a6c" compoundref="de/dbb/math__utils_8hpp" startline="13" endline="17">my_integer_pow</references>
+        <referencedby refid="d3/df3/classInterpolator_1a7eec042901fc9826eb108a89c92ebf61" compoundref="dc/d80/data__buffer_8hpp" startline="46" endline="87">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::get_weights</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/df3/classInterpolator_1a9e61fe174ea434ff4b3eb4a3d29c7c72" prot="private" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> result_type</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>static constexpr my_index_t Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::get_vecsize</definition>
+        <argsstring>()</argsstring>
+        <name>get_vecsize</name>
+        <qualifiedname>Interpolator::get_vecsize</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="31" column="33" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="31" bodyend="34"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d3/df3/classInterpolator_1a3a8a9849df9072cc2466910a0936e243" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::Interpolator</definition>
+        <argsstring>()</argsstring>
+        <name>Interpolator</name>
+        <qualifiedname>Interpolator::Interpolator</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="40" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/df3/classInterpolator_1a58d96aa0aaf552d5fe58f0d52421a6ee" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::Interpolator</definition>
+        <argsstring>(double Lambda, dimensions_type dims, const fRG_config &amp;config)</argsstring>
+        <name>Interpolator</name>
+        <qualifiedname>Interpolator::Interpolator</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="d3/df3/classInterpolator_1a220838ec7429b2d8ac08199acc0a8297" kindref="member">dimensions_type</ref></type>
+          <declname>dims</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="41" column="14" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="41" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/df3/classInterpolator_1a26f6d3b803b2279d27484071988e7b55" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::initInterpolator</definition>
+        <argsstring>() const</argsstring>
+        <name>initInterpolator</name>
+        <qualifiedname>Interpolator::initInterpolator</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="42" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="42" bodyend="42"/>
+        <references refid="d3/df3/classInterpolator_1a67e07c1e4ad28745ebc847a70eb08096" compoundref="dc/d80/data__buffer_8hpp" startline="39">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::initialized</references>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/df3/classInterpolator_1aa6c856038bb2e340e390ceeda17892bd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::set_initializedInterpol</definition>
+        <argsstring>(const bool is) const</argsstring>
+        <name>set_initializedInterpol</name>
+        <qualifiedname>Interpolator::set_initializedInterpol</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>is</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="43" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="43" bodyend="43"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d3/df3/classInterpolator_1a67e07c1e4ad28745ebc847a70eb08096" compoundref="dc/d80/data__buffer_8hpp" startline="39">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::initialized</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/df3/classInterpolator_1a7eec042901fc9826eb108a89c92ebf61" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Eigen::Matrix&lt; double, <ref refid="d3/df3/classInterpolator_1ad71f28c5cb4c5120963fd8a5141eeaa8" kindref="member">numSamples</ref>(), 1 &gt;</type>
+        <definition>Eigen::Matrix&lt; double, numSamples(), 1 &gt; Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::get_weights</definition>
+        <argsstring>(const frequencies_type &amp;frequencies, index_type &amp;idx_low) const</argsstring>
+        <name>get_weights</name>
+        <qualifiedname>Interpolator::get_weights</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d3/df3/classInterpolator_1adc89138efcc80605775301cffb4d7e9d" kindref="member">frequencies_type</ref> &amp;</type>
+          <declname>frequencies</declname>
+        </param>
+        <param>
+          <type><ref refid="d3/df3/classInterpolator_1a90cb24659fbf8d65d29db9fe01ab475a" kindref="member">index_type</ref> &amp;</type>
+          <declname>idx_low</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="46" column="19" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="46" bodyend="87"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5a4cfc14cb896a2f4e003dd5eb5adef579" compoundref="d9/d3a/technical__parameters_8hpp" startline="21">linear</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5a1e1d58bf823edf2abe9a4bc1c4497e59" compoundref="d9/d3a/technical__parameters_8hpp" startline="21">linear_on_aux</references>
+        <references refid="d3/df3/classInterpolator_1ad71f28c5cb4c5120963fd8a5141eeaa8" compoundref="dc/d80/data__buffer_8hpp" startline="24" endline="26">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::numSamples</references>
+        <references refid="d3/df3/classInterpolator_1a2569e20b63cd087a974ddf08d6e49ff9" compoundref="dc/d80/data__buffer_8hpp" startline="27" endline="29">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::numSamples_half</references>
+        <referencedby refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" compoundref="dc/d80/data__buffer_8hpp" startline="179" endline="423">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::interpolate_impl</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> result_type</type>
+            <defval>Q</defval>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> std::enable_if_t&lt;(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>+<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt; rank) <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">and</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt;=3), <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
+            <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::interpolate_impl</definition>
+        <argsstring>(const frequencies_type &amp;frequencies, index_type indices) const -&gt; result_type</argsstring>
+        <name>interpolate_impl</name>
+        <qualifiedname>Interpolator::interpolate_impl</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d3/df3/classInterpolator_1adc89138efcc80605775301cffb4d7e9d" kindref="member">frequencies_type</ref> &amp;</type>
+          <declname>frequencies</declname>
+        </param>
+        <param>
+          <type><ref refid="d3/df3/classInterpolator_1a90cb24659fbf8d65d29db9fe01ab475a" kindref="member">index_type</ref></type>
+          <declname>indices</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="179" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="179" bodyend="423"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d3/df3/classInterpolator_1a7eec042901fc9826eb108a89c92ebf61" compoundref="dc/d80/data__buffer_8hpp" startline="46" endline="87">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::get_weights</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" compoundref="da/d4d/data__structures_8c_09_09" startline="3" endline="5">my_isfinite</references>
+        <references refid="d3/df3/classInterpolator_1ad71f28c5cb4c5120963fd8a5141eeaa8" compoundref="dc/d80/data__buffer_8hpp" startline="24" endline="26">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::numSamples</references>
+        <references refid="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" compoundref="d2/d1a/Keldysh__symmetries_8hpp" startline="35" endline="38">SE_config</references>
+        <references refid="df/d31/math__utils_8c_09_09_1aa8c8683a92f6dbb9abd5fd9feb592372" compoundref="df/d31/math__utils_8c_09_09" startline="117" endline="126">signFlipCorrection_MF_int</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>TODO: Profile and improve:<itemizedlist>
+<listitem><para><ref refid="d3/df3/classInterpolator_1a7eec042901fc9826eb108a89c92ebf61" kindref="member">get_weights()</ref></para>
+</listitem><listitem><para>get_values()</para>
+</listitem><listitem><para>handling of frequency-/index-arrays (avoid copies) </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="23">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="24">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="25">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="26">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>Interpolator&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="19">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="20">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="21">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="22">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="17">
+        <label>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="16" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>dataBuffer&lt; Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>dataBuffer&lt; Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="13">
+        <label>dataBuffer&lt; Q, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; Q, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="15">
+        <label>dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="10">
+        <label>dataBuffer&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>dataBuffer&lt; comp, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; comp, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="5">
+        <label>dataBuffer&lt; state_datatype, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>dataBuffer&lt; state_datatype, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>dataBuffer&lt; state_datatype, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>dataBuffer&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>dataContainer_type</label>
+        <link refid="db/dbf/classdataContainer__type"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="2">
+        <label>dataContainer_type</label>
+        <link refid="db/dbf/classdataContainer__type"/>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/n_point/data_buffer.hpp" line="18" column="1" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="18" bodyend="427"/>
+    <listofallmembers>
+      <member refid="d3/df3/classInterpolator_1a82508572e7f2f37b0b1fd4fba54377ee" prot="private" virt="non-virtual"><scope>Interpolator</scope><name>base_class</name></member>
+      <member refid="d3/df3/classInterpolator_1a220838ec7429b2d8ac08199acc0a8297" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>dimensions_type</name></member>
+      <member refid="d3/df3/classInterpolator_1adc89138efcc80605775301cffb4d7e9d" prot="private" virt="non-virtual"><scope>Interpolator</scope><name>frequencies_type</name></member>
+      <member refid="d3/df3/classInterpolator_1a9e61fe174ea434ff4b3eb4a3d29c7c72" prot="private" virt="non-virtual"><scope>Interpolator</scope><name>get_vecsize</name></member>
+      <member refid="d3/df3/classInterpolator_1a7eec042901fc9826eb108a89c92ebf61" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>get_weights</name></member>
+      <member refid="d3/df3/classInterpolator_1a90cb24659fbf8d65d29db9fe01ab475a" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>index_type</name></member>
+      <member refid="d3/df3/classInterpolator_1a67e07c1e4ad28745ebc847a70eb08096" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>initialized</name></member>
+      <member refid="d3/df3/classInterpolator_1a26f6d3b803b2279d27484071988e7b55" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>initInterpolator</name></member>
+      <member refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>interpolate_impl</name></member>
+      <member refid="d3/df3/classInterpolator_1a3a8a9849df9072cc2466910a0936e243" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>Interpolator</name></member>
+      <member refid="d3/df3/classInterpolator_1a58d96aa0aaf552d5fe58f0d52421a6ee" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>Interpolator</name></member>
+      <member refid="d3/df3/classInterpolator_1ad71f28c5cb4c5120963fd8a5141eeaa8" prot="private" virt="non-virtual"><scope>Interpolator</scope><name>numSamples</name></member>
+      <member refid="d3/df3/classInterpolator_1a2569e20b63cd087a974ddf08d6e49ff9" prot="private" virt="non-virtual"><scope>Interpolator</scope><name>numSamples_half</name></member>
+      <member refid="d3/df3/classInterpolator_1aa6c856038bb2e340e390ceeda17892bd" prot="public" virt="non-virtual"><scope>Interpolator</scope><name>set_initializedInterpol</name></member>
+      <member refid="d3/df3/classInterpolator_1a04ed1281587c1a87801cda84bb5470fb" prot="private" virt="non-virtual"><scope>Interpolator</scope><name>this_class</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

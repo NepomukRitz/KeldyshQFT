@@ -1,0 +1,499 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="df/dc8/classLoopCalculator" kind="class" language="C++" prot="public">
+    <compoundname>LoopCalculator</compoundname>
+    <includes refid="d8/d1d/loop_8hpp" local="no">loop.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertType</ref></type>
+      </param>
+      <param>
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <declname>all_spins</declname>
+        <defname>all_spins</defname>
+      </param>
+      <param>
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <declname>version</declname>
+        <defname>version</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a04b71e2db57b7efc7db1fc8d3f24b6f5" prot="private" static="no" mutable="no">
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+        <definition>SelfEnergy&lt;Q&gt;&amp; LoopCalculator&lt; Q, vertType, all_spins, version &gt;::self</definition>
+        <argsstring></argsstring>
+        <name>self</name>
+        <qualifiedname>LoopCalculator::self</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="32" column="16" bodyfile="loop/loop.hpp" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1ad1438ad50b060e3b43ed57f5afbe66ad" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertType</ref> &amp;</type>
+        <definition>const vertType&amp; LoopCalculator&lt; Q, vertType, all_spins, version &gt;::fullvertex</definition>
+        <argsstring></argsstring>
+        <name>fullvertex</name>
+        <qualifiedname>LoopCalculator::fullvertex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="33" column="20" bodyfile="loop/loop.hpp" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a0290fa71489a614932092a7e491e7187" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/d34/classPropagator" kindref="compound">Propagator</ref>&lt; Q &gt; &amp;</type>
+        <definition>const Propagator&lt;Q&gt;&amp; LoopCalculator&lt; Q, vertType, all_spins, version &gt;::prop</definition>
+        <argsstring></argsstring>
+        <name>prop</name>
+        <qualifiedname>LoopCalculator::prop</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="34" column="22" bodyfile="loop/loop.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a701715e00d5f97a33a1cb3546077d220" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double LoopCalculator&lt; Q, vertType, all_spins, version &gt;::Delta</definition>
+        <argsstring></argsstring>
+        <name>Delta</name>
+        <qualifiedname>LoopCalculator::Delta</qualifiedname>
+        <initializer>= (prop.Lambda + prop.Gamma) / 2.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="36" column="18" bodyfile="loop/loop.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a37b202fe46520045e64f624cd7f2b97e" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int LoopCalculator&lt; Q, vertType, all_spins, version &gt;::iv</definition>
+        <argsstring></argsstring>
+        <name>iv</name>
+        <qualifiedname>LoopCalculator::iv</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="38" column="15" bodyfile="loop/loop.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1aec1023a6ba78aadb07e010d0aaef5b88" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int LoopCalculator&lt; Q, vertType, all_spins, version &gt;::spin</definition>
+        <argsstring></argsstring>
+        <name>spin</name>
+        <qualifiedname>LoopCalculator::spin</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="39" column="15" bodyfile="loop/loop.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a922315ed8fe5dcc02e6c16ad6dd3ed64" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int LoopCalculator&lt; Q, vertType, all_spins, version &gt;::i_in</definition>
+        <argsstring></argsstring>
+        <name>i_in</name>
+        <qualifiedname>LoopCalculator::i_in</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="40" column="15" bodyfile="loop/loop.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a5d672f323142496f3c8cf54f8a26ad35" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>const freqType LoopCalculator&lt; Q, vertType, all_spins, version &gt;::v</definition>
+        <argsstring></argsstring>
+        <name>v</name>
+        <qualifiedname>LoopCalculator::v</qualifiedname>
+        <initializer>= self.Sigma.frequencies.primary_grid.get_frequency(<ref refid="df/dc8/classLoopCalculator_1a37b202fe46520045e64f624cd7f2b97e" kindref="member">iv</ref>)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="42" column="20" bodyfile="loop/loop.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a3263ca7efd6657ca4acd9aa4840aeb73" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double LoopCalculator&lt; Q, vertType, all_spins, version &gt;::v_lower</definition>
+        <argsstring></argsstring>
+        <name>v_lower</name>
+        <qualifiedname>LoopCalculator::v_lower</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="44" column="12" bodyfile="loop/loop.hpp" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a9a6dc52f4e3df9312e18f2affd0fd46f" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double LoopCalculator&lt; Q, vertType, all_spins, version &gt;::v_upper</definition>
+        <argsstring></argsstring>
+        <name>v_upper</name>
+        <qualifiedname>LoopCalculator::v_upper</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="44" column="20" bodyfile="loop/loop.hpp" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1acfd8e0da68bc41b75ed439a5c6ee3cd2" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int LoopCalculator&lt; Q, vertType, all_spins, version &gt;::Nmin</definition>
+        <argsstring></argsstring>
+        <name>Nmin</name>
+        <qualifiedname>LoopCalculator::Nmin</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="45" column="9" bodyfile="loop/loop.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a0930743f663abfb94cae7fedc97d7a1a" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int LoopCalculator&lt; Q, vertType, all_spins, version &gt;::Nmax</definition>
+        <argsstring></argsstring>
+        <name>Nmax</name>
+        <qualifiedname>LoopCalculator::Nmax</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="45" column="14" bodyfile="loop/loop.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a86e27620c52d10ac45d71be3ed48e66b" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q LoopCalculator&lt; Q, vertType, all_spins, version &gt;::prefactor</definition>
+        <argsstring></argsstring>
+        <name>prefactor</name>
+        <qualifiedname>LoopCalculator::prefactor</qualifiedname>
+        <initializer>= <ref refid="df/dc8/classLoopCalculator_1a137760f611007b6261903f9c5da158c2" kindref="member">set_prefactor</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="54" column="7" bodyfile="loop/loop.hpp" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a4455e9fdce6314c03dd8b67cecdcc58d" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q LoopCalculator&lt; Q, vertType, all_spins, version &gt;::integratedR</definition>
+        <argsstring></argsstring>
+        <name>integratedR</name>
+        <qualifiedname>LoopCalculator::integratedR</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="57" column="7" bodyfile="loop/loop.hpp" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/dc8/classLoopCalculator_1a67fa83fe176919505421fd442df4b5c1" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q LoopCalculator&lt; Q, vertType, all_spins, version &gt;::integratedK</definition>
+        <argsstring></argsstring>
+        <name>integratedK</name>
+        <qualifiedname>LoopCalculator::integratedK</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="58" column="7" bodyfile="loop/loop.hpp" bodystart="58" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</definition>
+        <argsstring>()</argsstring>
+        <name>set_v_limits</name>
+        <qualifiedname>LoopCalculator::set_v_limits</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>One integrates the integrands from v_lower-|v| to v_upper+|v| The limits of the integral must depend on v because of the transformations that must be done on the frequencies (i.e. (v,v&apos;,v) -&gt; (v-v&apos;,*,*) and some transformations flip the sign of w=v-v&apos;, needing both extensions of the integration domain in both directions</para>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="46" column="10" bodyfile="loop/loop.hpp" bodystart="76" bodyend="93"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="42">POSINTRANGE</references>
+        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="40">Propagator&lt; Q &gt;::T</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+        <referencedby refid="df/dc8/classLoopCalculator_1aca844a623ba7eac57c4f51e1cf29926d" compoundref="d8/d1d/loop_8hpp" startline="65" endline="70">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::LoopCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1a137760f611007b6261903f9c5da158c2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>Q LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_prefactor</definition>
+        <argsstring>()</argsstring>
+        <name>set_prefactor</name>
+        <qualifiedname>LoopCalculator::set_prefactor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="51" column="7" bodyfile="loop/loop.hpp" bodystart="96" bodyend="100"/>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+      </memberdef>
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1ab938f38116a7fe9d804769656487ea6a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>Q LoopCalculator&lt; Q, vertType, all_spins, version &gt;::Keldysh_prefactor</definition>
+        <argsstring>()</argsstring>
+        <name>Keldysh_prefactor</name>
+        <qualifiedname>LoopCalculator::Keldysh_prefactor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="52" column="7" bodyfile="loop/loop.hpp" bodystart="103" bodyend="109"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+      </memberdef>
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1a205e8a326ef4578c70170d3d25dc2fb9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>Q LoopCalculator&lt; Q, vertType, all_spins, version &gt;::Matsubara_prefactor</definition>
+        <argsstring>()</argsstring>
+        <name>Matsubara_prefactor</name>
+        <qualifiedname>LoopCalculator::Matsubara_prefactor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="53" column="7" bodyfile="loop/loop.hpp" bodystart="112" bodyend="115"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</definition>
+        <argsstring>()</argsstring>
+        <name>compute_Keldysh</name>
+        <qualifiedname>LoopCalculator::compute_Keldysh</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="60" column="10" bodyfile="loop/loop.hpp" bodystart="127" bodyend="439"/>
+        <references refid="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" compoundref="d6/d2d/selfenergy_8hpp" startline="242" endline="244">SelfEnergy&lt; Q &gt;::addself</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+        <references refid="dd/d1f/integrator_8hpp_1a7302c6b3faf870a9680b7a66f4c44bc4" compoundref="dd/d1f/integrator_8hpp" startline="425" endline="486">integrator_Matsubara_T0</references>
+        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="230" endline="232">SelfEnergy&lt; Q &gt;::setself</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+      </memberdef>
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_zeroT</definition>
+        <argsstring>()</argsstring>
+        <name>compute_Matsubara_zeroT</name>
+        <qualifiedname>LoopCalculator::compute_Matsubara_zeroT</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="61" column="10" bodyfile="loop/loop.hpp" bodystart="442" bodyend="470"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="dd/d1f/integrator_8hpp_1a7302c6b3faf870a9680b7a66f4c44bc4" compoundref="dd/d1f/integrator_8hpp" startline="425" endline="486">integrator_Matsubara_T0</references>
+        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="230" endline="232">SelfEnergy&lt; Q &gt;::setself</references>
+      </memberdef>
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</definition>
+        <argsstring>()</argsstring>
+        <name>compute_Matsubara_finiteT</name>
+        <qualifiedname>LoopCalculator::compute_Matsubara_finiteT</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>in MF: use symmetric_full integration interval =&gt; asymptotic correction=0</para>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="62" column="10" bodyfile="loop/loop.hpp" bodystart="473" bodyend="496"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="230" endline="232">SelfEnergy&lt; Q &gt;::setself</references>
+        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="40">Propagator&lt; Q &gt;::T</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1aca844a623ba7eac57c4f51e1cf29926d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LoopCalculator&lt; Q, vertType, all_spins, version &gt;::LoopCalculator</definition>
+        <argsstring>(SelfEnergy&lt; Q &gt; &amp;self_in, const vertType &amp;fullvertex_in, const Propagator&lt; Q &gt; &amp;prop_in, const int iSE)</argsstring>
+        <name>LoopCalculator</name>
+        <qualifiedname>LoopCalculator::LoopCalculator</qualifiedname>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>self_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertType</ref> &amp;</type>
+          <declname>fullvertex_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/d34/classPropagator" kindref="compound">Propagator</ref>&lt; Q &gt; &amp;</type>
+          <declname>prop_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>iSE</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="65" column="5" bodyfile="loop/loop.hpp" bodystart="65" bodyend="70"/>
+        <references refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" compoundref="d8/d1d/loop_8hpp" startline="76" endline="93">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</references>
+      </memberdef>
+      <memberdef kind="function" id="df/dc8/classLoopCalculator_1a49d0591f1fbf479522e35b5669b1cfcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void LoopCalculator&lt; Q, vertType, all_spins, version &gt;::perform_computation</definition>
+        <argsstring>()</argsstring>
+        <name>perform_computation</name>
+        <qualifiedname>LoopCalculator::perform_computation</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="loop/loop.hpp" line="72" column="10" bodyfile="loop/loop.hpp" bodystart="118" bodyend="124"/>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Class to actually calculate the loop integral for a given external fermionic frequency and internal index. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Self-energy loop The selfenergy loop can be closed in two different versions: version 0: close the loop above with propagator G^{3|1} =&gt; parametrize vertex in t-channel convention with w=0 version 1: close the loop right with propagator G^{2|1} =&gt; parametrize vertex in a-channel convention with w=0 3 -&gt; _____ -&gt; 1 | | 0 &lt;-|____|&lt;- 2 Note: the vertices in versions 0 and 1 are related by crossing symmetry, hence we expect the results to be identical in both versions </para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>LoopCalculator&lt; Q, vertType, all_spins, version &gt;</label>
+        <link refid="df/dc8/classLoopCalculator"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-self</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>-fullvertex</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>-prop</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>-Delta</edgelabel>
+          <edgelabel>-v</edgelabel>
+          <edgelabel>-v_lower</edgelabel>
+          <edgelabel>-v_upper</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>-Nmax</edgelabel>
+          <edgelabel>-Nmin</edgelabel>
+          <edgelabel>-i_in</edgelabel>
+          <edgelabel>-iv</edgelabel>
+          <edgelabel>-spin</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>-integratedK</edgelabel>
+          <edgelabel>-integratedR</edgelabel>
+          <edgelabel>-prefactor</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>Q</label>
+      </node>
+      <node id="2">
+        <label>SelfEnergy&lt; Q &gt;</label>
+      </node>
+      <node id="4">
+        <label>const Propagator&lt; Q &gt; &amp;</label>
+      </node>
+      <node id="3">
+        <label>const vertType &amp;</label>
+      </node>
+      <node id="5">
+        <label>double</label>
+      </node>
+      <node id="6">
+        <label>int</label>
+      </node>
+    </collaborationgraph>
+    <location file="loop/loop.hpp" line="31" column="1" bodyfile="loop/loop.hpp" bodystart="31" bodyend="73"/>
+    <listofallmembers>
+      <member refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>compute_Keldysh</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>compute_Matsubara_finiteT</name></member>
+      <member refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>compute_Matsubara_zeroT</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a701715e00d5f97a33a1cb3546077d220" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>Delta</name></member>
+      <member refid="df/dc8/classLoopCalculator_1ad1438ad50b060e3b43ed57f5afbe66ad" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>fullvertex</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a922315ed8fe5dcc02e6c16ad6dd3ed64" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>i_in</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a67fa83fe176919505421fd442df4b5c1" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>integratedK</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a4455e9fdce6314c03dd8b67cecdcc58d" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>integratedR</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a37b202fe46520045e64f624cd7f2b97e" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>iv</name></member>
+      <member refid="df/dc8/classLoopCalculator_1ab938f38116a7fe9d804769656487ea6a" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>Keldysh_prefactor</name></member>
+      <member refid="df/dc8/classLoopCalculator_1aca844a623ba7eac57c4f51e1cf29926d" prot="public" virt="non-virtual"><scope>LoopCalculator</scope><name>LoopCalculator</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a205e8a326ef4578c70170d3d25dc2fb9" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>Matsubara_prefactor</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a0930743f663abfb94cae7fedc97d7a1a" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>Nmax</name></member>
+      <member refid="df/dc8/classLoopCalculator_1acfd8e0da68bc41b75ed439a5c6ee3cd2" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>Nmin</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a49d0591f1fbf479522e35b5669b1cfcc" prot="public" virt="non-virtual"><scope>LoopCalculator</scope><name>perform_computation</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a86e27620c52d10ac45d71be3ed48e66b" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>prefactor</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a0290fa71489a614932092a7e491e7187" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>prop</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a04b71e2db57b7efc7db1fc8d3f24b6f5" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>self</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a137760f611007b6261903f9c5da158c2" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>set_prefactor</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>set_v_limits</name></member>
+      <member refid="df/dc8/classLoopCalculator_1aec1023a6ba78aadb07e010d0aaef5b88" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>spin</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a5d672f323142496f3c8cf54f8a26ad35" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>v</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a3263ca7efd6657ca4acd9aa4840aeb73" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>v_lower</name></member>
+      <member refid="df/dc8/classLoopCalculator_1a9a6dc52f4e3df9312e18f2affd0fd46f" prot="private" virt="non-virtual"><scope>LoopCalculator</scope><name>v_upper</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

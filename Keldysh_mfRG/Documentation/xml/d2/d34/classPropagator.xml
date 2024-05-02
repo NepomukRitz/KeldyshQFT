@@ -1,0 +1,1576 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d2/d34/classPropagator" kind="class" language="C++" prot="public">
+    <compoundname>Propagator</compoundname>
+    <includes refid="d5/df7/propagator_8hpp" local="no">propagator.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Propagator&lt; Q &gt;::Lambda</definition>
+        <argsstring></argsstring>
+        <name>Lambda</name>
+        <qualifiedname>Propagator::Lambda</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="34" column="18" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="34" bodyend="-1"/>
+        <referencedby refid="d2/d34/classPropagator_1a68009e2fa03e67e5101fcd3a184b8b41" compoundref="d5/df7/propagator_8hpp" startline="800" endline="805">Propagator&lt; Q &gt;::diff_Sigma_K_REG5</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac5efa025ac7c3458983f104e63eda780" compoundref="d5/df7/propagator_8hpp" startline="649" endline="654">Propagator&lt; Q &gt;::GM_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="686" endline="699">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a42c3e1df68725e6a1bff62ee703f7b37" compoundref="d5/df7/propagator_8hpp" startline="737" endline="741">Propagator&lt; Q &gt;::GM_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ab96b87abd4eb9b7c913d4462d3429e40" compoundref="d5/df7/propagator_8hpp" startline="770" endline="774">Propagator&lt; Q &gt;::GM_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e" compoundref="d5/df7/propagator_8hpp" startline="634" endline="639">Propagator&lt; Q &gt;::GR_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1afc124b80502bc51f16422bf23fb94238" compoundref="d5/df7/propagator_8hpp" startline="673" endline="676">Propagator&lt; Q &gt;::GR_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="718" endline="723">Propagator&lt; Q &gt;::GR_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac5d014e3176022a797269f2a4792c7f5" compoundref="d5/df7/propagator_8hpp" startline="755" endline="759">Propagator&lt; Q &gt;::GR_REG4</referencedby>
+        <referencedby refid="d8/dea/right__hand__sides_8hpp_1ad4c21683a4272299af7d4c7aabf14b20" compoundref="d8/dea/right__hand__sides_8hpp" startline="831" endline="847">selfEnergyFlowCorrections</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a332aed41af9be61257a97960decd3f2c" compoundref="d5/df7/propagator_8hpp" startline="657" endline="660">Propagator&lt; Q &gt;::SM_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aa4d095f7d63c94e4d99333e3d80e67dc" compoundref="d5/df7/propagator_8hpp" startline="744" endline="749">Propagator&lt; Q &gt;::SM_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="777" endline="785">Propagator&lt; Q &gt;::SM_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a9db5264dc57f6caadcf25ea76d1d5ef1" compoundref="d5/df7/propagator_8hpp" startline="642" endline="645">Propagator&lt; Q &gt;::SR_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a5e50650bc62a302aae20955630765da9" compoundref="d5/df7/propagator_8hpp" startline="761" endline="767">Propagator&lt; Q &gt;::SR_REG4</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+        <definition>const SelfEnergy&lt;Q&gt;&amp; Propagator&lt; Q &gt;::selfenergy</definition>
+        <argsstring></argsstring>
+        <name>selfenergy</name>
+        <qualifiedname>Propagator::selfenergy</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="35" column="22" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="35" bodyend="-1"/>
+        <referencedby refid="d2/d34/classPropagator_1a68009e2fa03e67e5101fcd3a184b8b41" compoundref="d5/df7/propagator_8hpp" startline="800" endline="805">Propagator&lt; Q &gt;::diff_Sigma_K_REG5</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac5efa025ac7c3458983f104e63eda780" compoundref="d5/df7/propagator_8hpp" startline="649" endline="654">Propagator&lt; Q &gt;::GM_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="686" endline="699">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a42c3e1df68725e6a1bff62ee703f7b37" compoundref="d5/df7/propagator_8hpp" startline="737" endline="741">Propagator&lt; Q &gt;::GM_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ab96b87abd4eb9b7c913d4462d3429e40" compoundref="d5/df7/propagator_8hpp" startline="770" endline="774">Propagator&lt; Q &gt;::GM_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e" compoundref="d5/df7/propagator_8hpp" startline="634" endline="639">Propagator&lt; Q &gt;::GR_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1afc124b80502bc51f16422bf23fb94238" compoundref="d5/df7/propagator_8hpp" startline="673" endline="676">Propagator&lt; Q &gt;::GR_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="718" endline="723">Propagator&lt; Q &gt;::GR_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac5d014e3176022a797269f2a4792c7f5" compoundref="d5/df7/propagator_8hpp" startline="755" endline="759">Propagator&lt; Q &gt;::GR_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a50f24f1dcea3718f52849344fc6ac024" compoundref="d5/df7/propagator_8hpp" startline="791" endline="794">Propagator&lt; Q &gt;::GR_REG5</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a18327a87ffaaa6a830f5a316a77324b3" compoundref="d5/df7/propagator_8hpp" startline="809" endline="812">Propagator&lt; Q &gt;::initInterpolator</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="589" endline="596">Propagator&lt; Q &gt;::norm</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="77" endline="118">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="777" endline="785">Propagator&lt; Q &gt;::SM_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a5e50650bc62a302aae20955630765da9" compoundref="d5/df7/propagator_8hpp" startline="761" endline="767">Propagator&lt; Q &gt;::SR_REG4</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a4ed165c426f1f02c659b95cca2be40d6" compoundref="d4/d92/hartree__term_8c_09_09" startline="157" endline="180">Hartree_Solver::write_out_propagators</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+        <definition>const SelfEnergy&lt;Q&gt;&amp; Propagator&lt; Q &gt;::diff_selfenergy</definition>
+        <argsstring></argsstring>
+        <name>diff_selfenergy</name>
+        <qualifiedname>Propagator::diff_selfenergy</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="36" column="22" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="36" bodyend="-1"/>
+        <referencedby refid="d2/d34/classPropagator_1a68009e2fa03e67e5101fcd3a184b8b41" compoundref="d5/df7/propagator_8hpp" startline="800" endline="805">Propagator&lt; Q &gt;::diff_Sigma_K_REG5</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a18327a87ffaaa6a830f5a316a77324b3" compoundref="d5/df7/propagator_8hpp" startline="809" endline="812">Propagator&lt; Q &gt;::initInterpolator</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" compoundref="d5/df7/propagator_8hpp" startline="274" endline="283">Propagator&lt; Q &gt;::Katanin_K</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a821a892d54207fc495a9adb970b476dd" compoundref="d5/df7/propagator_8hpp" startline="269" endline="271">Propagator&lt; Q &gt;::Katanin_R</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="77" endline="118">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d34/classPropagator_1a31d81f345df1e2eb6e4349e6d52252fb" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> char</type>
+        <definition>const char Propagator&lt; Q &gt;::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>Propagator::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="37" column="16" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="37" bodyend="-1"/>
+        <referencedby refid="d2/d34/classPropagator_1a18327a87ffaaa6a830f5a316a77324b3" compoundref="d5/df7/propagator_8hpp" startline="809" endline="812">Propagator&lt; Q &gt;::initInterpolator</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="77" endline="118">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d34/classPropagator_1a1c8a818bc4c60992c78e93a8782e5e46" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Propagator&lt; Q &gt;::epsilon</definition>
+        <argsstring></argsstring>
+        <name>epsilon</name>
+        <qualifiedname>Propagator::epsilon</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="38" column="18" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="38" bodyend="-1"/>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ada412877562e746afa7f6803d588fbbd" compoundref="d5/df7/propagator_8hpp" startline="623" endline="626">Propagator&lt; Q &gt;::G0R_inv_SIAM</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d34/classPropagator_1aa1d72170fcc752ac7164f4cbb31ef281" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Propagator&lt; Q &gt;::Gamma</definition>
+        <argsstring></argsstring>
+        <name>Gamma</name>
+        <qualifiedname>Propagator::Gamma</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="39" column="18" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="39" bodyend="-1"/>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ada412877562e746afa7f6803d588fbbd" compoundref="d5/df7/propagator_8hpp" startline="623" endline="626">Propagator&lt; Q &gt;::G0R_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double Propagator&lt; Q &gt;::T</definition>
+        <argsstring></argsstring>
+        <name>T</name>
+        <qualifiedname>Propagator::T</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="40" column="18" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="40" bodyend="-1"/>
+        <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="473" endline="496">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" compoundref="d8/d1d/loop_8hpp" startline="76" endline="93">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d2/d34/classPropagator_1a878f3624c2c3df7c520b66fcbd8fdcb5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Propagator&lt; Q &gt;::Propagator</definition>
+        <argsstring>(double Lambda_in, char type_in, const fRG_config &amp;config)</argsstring>
+        <name>Propagator</name>
+        <qualifiedname>Propagator::Propagator</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda_in</declname>
+        </param>
+        <param>
+          <type>char</type>
+          <declname>type_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Free <ref refid="d2/d34/classPropagator" kindref="compound">Propagator</ref> object. <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> and differentiated <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> are zero <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>Lambda_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Input scale </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of propagator being handled </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="48" column="5" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="48" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a8fedbdc63cad1a3952de98354587dffb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Propagator&lt; Q &gt;::Propagator</definition>
+        <argsstring>(double Lambda_in, const SelfEnergy&lt; Q &gt; &amp;self_in, char type_in, const fRG_config &amp;config)</argsstring>
+        <name>Propagator</name>
+        <qualifiedname>Propagator::Propagator</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>self_in</declname>
+        </param>
+        <param>
+          <type>char</type>
+          <declname>type_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Dressed propagator for non-flowing calculations, i,e, no differential <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> is needed and is set to the undifferentiated self-energy. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>Lambda_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Input scale </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>self_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of propagator being handled </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="59" column="5" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="59" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a14d2c483bdd806b4f5d3473a6b1f9202" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Propagator&lt; Q &gt;::Propagator</definition>
+        <argsstring>(double Lambda_in, const SelfEnergy&lt; Q &gt; &amp;self_in, const SelfEnergy&lt; Q &gt; &amp;diffSelf_in, char type_in, const fRG_config &amp;config)</argsstring>
+        <name>Propagator</name>
+        <qualifiedname>Propagator::Propagator</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>self_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>diffSelf_in</declname>
+        </param>
+        <param>
+          <type>char</type>
+          <declname>type_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Dressed propagator for flows. Needs both a <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> and a Differential <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>Lambda_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Input scale </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>self_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>diffSelf_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Differential <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of propagator being handled </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="70" column="5" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="70" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::valsmooth</definition>
+        <argsstring>(int, freqType, int i_in) const -&gt; Q</argsstring>
+        <name>valsmooth</name>
+        <qualifiedname>Propagator::valsmooth</qualifiedname>
+        <param>
+          <type>int</type>
+          <defname>iK</defname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="74" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="307" bodyend="453"/>
+        <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" compoundref="d5/df7/propagator_8hpp" startline="36">Propagator&lt; Q &gt;::diff_selfenergy</references>
+        <references refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</references>
+        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" compoundref="d5/df7/propagator_8hpp" startline="274" endline="283">Propagator&lt; Q &gt;::Katanin_K</references>
+        <references refid="d2/d34/classPropagator_1a821a892d54207fc495a9adb970b476dd" compoundref="d5/df7/propagator_8hpp" startline="269" endline="271">Propagator&lt; Q &gt;::Katanin_R</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</references>
+        <references refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="296" endline="303">Propagator&lt; Q &gt;::SM</references>
+        <references refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</references>
+        <references refid="d2/d34/classPropagator_1a31d81f345df1e2eb6e4349e6d52252fb" compoundref="d5/df7/propagator_8hpp" startline="37">Propagator&lt; Q &gt;::type</references>
+        <referencedby refid="df/db3/classIntegrand__sum__rule__spectrum_1a9617ccc54433c850c01db0451af83351" compoundref="d4/d81/postprocessing_8hpp" startline="111" endline="114">Integrand_sum_rule_spectrum::operator()</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="77" endline="118">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">return_type</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::valsmooth_vectorized</definition>
+        <argsstring>(freqType, int i_in) const -&gt; return_type</argsstring>
+        <name>valsmooth_vectorized</name>
+        <qualifiedname>Propagator::valsmooth_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <defname>v</defname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="75" column="22" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="458" bodyend="585"/>
+        <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6" compoundref="d1/df8/master__parameters_8hpp" startline="65">EQUILIBRIUM</references>
+        <references refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" compoundref="d5/df7/propagator_8hpp" startline="274" endline="283">Propagator&lt; Q &gt;::Katanin_K</references>
+        <references refid="d2/d34/classPropagator_1a821a892d54207fc495a9adb970b476dd" compoundref="d5/df7/propagator_8hpp" startline="269" endline="271">Propagator&lt; Q &gt;::Katanin_R</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</references>
+        <references refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</references>
+        <references refid="d2/d34/classPropagator_1a31d81f345df1e2eb6e4349e6d52252fb" compoundref="d5/df7/propagator_8hpp" startline="37">Propagator&lt; Q &gt;::type</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Propagator&lt; Q &gt;::save_propagator_values</definition>
+        <argsstring>(const std::string &amp;filename, const rvec &amp;frequencies) const</argsstring>
+        <name>save_propagator_values</name>
+        <qualifiedname>Propagator::save_propagator_values</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+          <declname>frequencies</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="77" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="77" bodyend="118"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" compoundref="d5/df7/propagator_8hpp" startline="36">Propagator&lt; Q &gt;::diff_selfenergy</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" compoundref="d1/df8/master__parameters_8hpp" startline="19">KELDYSH_FORMALISM</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <references refid="d2/d34/classPropagator_1a31d81f345df1e2eb6e4349e6d52252fb" compoundref="d5/df7/propagator_8hpp" startline="37">Propagator&lt; Q &gt;::type</references>
+        <references refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</references>
+        <references refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::GR</definition>
+        <argsstring>(double v, int i_in) const -&gt; Q</argsstring>
+        <name>GR</name>
+        <qualifiedname>Propagator::GR</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="121" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="181" bodyend="191"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e" compoundref="d5/df7/propagator_8hpp" startline="634" endline="639">Propagator&lt; Q &gt;::GR_REG1</references>
+        <references refid="d2/d34/classPropagator_1afc124b80502bc51f16422bf23fb94238" compoundref="d5/df7/propagator_8hpp" startline="673" endline="676">Propagator&lt; Q &gt;::GR_REG2</references>
+        <references refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="718" endline="723">Propagator&lt; Q &gt;::GR_REG3</references>
+        <references refid="d2/d34/classPropagator_1ac5d014e3176022a797269f2a4792c7f5" compoundref="d5/df7/propagator_8hpp" startline="755" endline="759">Propagator&lt; Q &gt;::GR_REG4</references>
+        <references refid="d2/d34/classPropagator_1a50f24f1dcea3718f52849344fc6ac024" compoundref="d5/df7/propagator_8hpp" startline="791" endline="794">Propagator&lt; Q &gt;::GR_REG5</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e" compoundref="d5/df7/propagator_8hpp" startline="634" endline="639">Propagator&lt; Q &gt;::GR_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" compoundref="d5/df7/propagator_8hpp" startline="274" endline="283">Propagator&lt; Q &gt;::Katanin_K</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a821a892d54207fc495a9adb970b476dd" compoundref="d5/df7/propagator_8hpp" startline="269" endline="271">Propagator&lt; Q &gt;::Katanin_R</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="589" endline="596">Propagator&lt; Q &gt;::norm</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" compoundref="d4/d92/hartree__term_8c_09_09" startline="104" endline="141">Hartree_Solver::operator()</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a9db5264dc57f6caadcf25ea76d1d5ef1" compoundref="d5/df7/propagator_8hpp" startline="642" endline="645">Propagator&lt; Q &gt;::SR_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a47394eda59cacc165a78197b91f10f72" compoundref="d5/df7/propagator_8hpp" startline="679" endline="682">Propagator&lt; Q &gt;::SR_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a1bfd299d641e7ab9ad0191d1e69e4c37" compoundref="d5/df7/propagator_8hpp" startline="726" endline="731">Propagator&lt; Q &gt;::SR_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a4ed165c426f1f02c659b95cca2be40d6" compoundref="d4/d92/hartree__term_8c_09_09" startline="157" endline="180">Hartree_Solver::write_out_propagators</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::GK</definition>
+        <argsstring>(double v, int i_in) const -&gt; Q</argsstring>
+        <name>GK</name>
+        <qualifiedname>Propagator::GK</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="122" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="194" bodyend="217"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/df7/propagator_8hpp_1aa2042d967015a77b9e9260caee00b2de" compoundref="de/d5d/propagator_8c_09_09" startline="19" endline="22">Eff_fac</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6" compoundref="d1/df8/master__parameters_8hpp" startline="65">EQUILIBRIUM</references>
+        <references refid="d2/d34/classPropagator_1aa1d72170fcc752ac7164f4cbb31ef281" compoundref="d5/df7/propagator_8hpp" startline="39">Propagator&lt; Q &gt;::Gamma</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="40">Propagator&lt; Q &gt;::T</references>
+        <referencedby refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" compoundref="d5/df7/propagator_8hpp" startline="274" endline="283">Propagator&lt; Q &gt;::Katanin_K</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a4ed165c426f1f02c659b95cca2be40d6" compoundref="d4/d92/hartree__term_8c_09_09" startline="157" endline="180">Hartree_Solver::write_out_propagators</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::SR</definition>
+        <argsstring>(double v, int i_in) const -&gt; Q</argsstring>
+        <name>SR</name>
+        <qualifiedname>Propagator::SR</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="123" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="221" bodyend="231"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <references refid="d2/d34/classPropagator_1a9db5264dc57f6caadcf25ea76d1d5ef1" compoundref="d5/df7/propagator_8hpp" startline="642" endline="645">Propagator&lt; Q &gt;::SR_REG1</references>
+        <references refid="d2/d34/classPropagator_1a47394eda59cacc165a78197b91f10f72" compoundref="d5/df7/propagator_8hpp" startline="679" endline="682">Propagator&lt; Q &gt;::SR_REG2</references>
+        <references refid="d2/d34/classPropagator_1a1bfd299d641e7ab9ad0191d1e69e4c37" compoundref="d5/df7/propagator_8hpp" startline="726" endline="731">Propagator&lt; Q &gt;::SR_REG3</references>
+        <references refid="d2/d34/classPropagator_1a5e50650bc62a302aae20955630765da9" compoundref="d5/df7/propagator_8hpp" startline="761" endline="767">Propagator&lt; Q &gt;::SR_REG4</references>
+        <references refid="d2/d34/classPropagator_1ad14344fe45ff29ff130d9c18414669a7" compoundref="d5/df7/propagator_8hpp" startline="796" endline="798">Propagator&lt; Q &gt;::SR_REG5</references>
+        <referencedby refid="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" compoundref="d4/d92/hartree__term_8c_09_09" startline="104" endline="141">Hartree_Solver::operator()</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::SK</definition>
+        <argsstring>(double v, int i_in) const -&gt; Q</argsstring>
+        <name>SK</name>
+        <qualifiedname>Propagator::SK</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="124" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="234" bodyend="266"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/df7/propagator_8hpp_1aa2042d967015a77b9e9260caee00b2de" compoundref="de/d5d/propagator_8c_09_09" startline="19" endline="22">Eff_fac</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6" compoundref="d1/df8/master__parameters_8hpp" startline="65">EQUILIBRIUM</references>
+        <references refid="d2/d34/classPropagator_1aa1d72170fcc752ac7164f4cbb31ef281" compoundref="d5/df7/propagator_8hpp" startline="39">Propagator&lt; Q &gt;::Gamma</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <references refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</references>
+        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="40">Propagator&lt; Q &gt;::T</references>
+        <referencedby refid="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" compoundref="d4/d92/hartree__term_8c_09_09" startline="104" endline="141">Hartree_Solver::operator()</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a821a892d54207fc495a9adb970b476dd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>Q Propagator&lt; Q &gt;::Katanin_R</definition>
+        <argsstring>(double v, int i_in) const</argsstring>
+        <name>Katanin_R</name>
+        <qualifiedname>Propagator::Katanin_R</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+<para>Katanin extension. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="127" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="269" bodyend="271"/>
+        <references refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" compoundref="d5/df7/propagator_8hpp" startline="36">Propagator&lt; Q &gt;::diff_selfenergy</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>Q Propagator&lt; Q &gt;::Katanin_K</definition>
+        <argsstring>(double v, int i_in) const</argsstring>
+        <name>Katanin_K</name>
+        <qualifiedname>Propagator::Katanin_K</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="128" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="274" bodyend="283"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" compoundref="d5/df7/propagator_8hpp" startline="36">Propagator&lt; Q &gt;::diff_selfenergy</references>
+        <references refid="d2/d34/classPropagator_1a68009e2fa03e67e5101fcd3a184b8b41" compoundref="d5/df7/propagator_8hpp" startline="800" endline="805">Propagator&lt; Q &gt;::diff_Sigma_K_REG5</references>
+        <references refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d7/d59/data__structures_8hpp_1a769c275d7647a628a4bad2041e0fc27f" compoundref="d7/d59/data__structures_8hpp" startline="102" endline="102">myconj</references>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::GM</definition>
+        <argsstring>(freqType v, int i_in) const -&gt; Q</argsstring>
+        <name>GM</name>
+        <qualifiedname>Propagator::GM</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="131" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="286" bodyend="293"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1ac5efa025ac7c3458983f104e63eda780" compoundref="d5/df7/propagator_8hpp" startline="649" endline="654">Propagator&lt; Q &gt;::GM_REG1</references>
+        <references refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="686" endline="699">Propagator&lt; Q &gt;::GM_REG2</references>
+        <references refid="d2/d34/classPropagator_1a42c3e1df68725e6a1bff62ee703f7b37" compoundref="d5/df7/propagator_8hpp" startline="737" endline="741">Propagator&lt; Q &gt;::GM_REG3</references>
+        <references refid="d2/d34/classPropagator_1ab96b87abd4eb9b7c913d4462d3429e40" compoundref="d5/df7/propagator_8hpp" startline="770" endline="774">Propagator&lt; Q &gt;::GM_REG4</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <referencedby refid="d2/d34/classPropagator_1ac5efa025ac7c3458983f104e63eda780" compoundref="d5/df7/propagator_8hpp" startline="649" endline="654">Propagator&lt; Q &gt;::GM_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="589" endline="596">Propagator&lt; Q &gt;::norm</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" compoundref="d4/d92/hartree__term_8c_09_09" startline="104" endline="141">Hartree_Solver::operator()</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a332aed41af9be61257a97960decd3f2c" compoundref="d5/df7/propagator_8hpp" startline="657" endline="660">Propagator&lt; Q &gt;::SM_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="703" endline="711">Propagator&lt; Q &gt;::SM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aa4d095f7d63c94e4d99333e3d80e67dc" compoundref="d5/df7/propagator_8hpp" startline="744" endline="749">Propagator&lt; Q &gt;::SM_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::SM</definition>
+        <argsstring>(freqType v, int i_in) const -&gt; Q</argsstring>
+        <name>SM</name>
+        <qualifiedname>Propagator::SM</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="132" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="296" bodyend="303"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <references refid="d2/d34/classPropagator_1a332aed41af9be61257a97960decd3f2c" compoundref="d5/df7/propagator_8hpp" startline="657" endline="660">Propagator&lt; Q &gt;::SM_REG1</references>
+        <references refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="703" endline="711">Propagator&lt; Q &gt;::SM_REG2</references>
+        <references refid="d2/d34/classPropagator_1aa4d095f7d63c94e4d99333e3d80e67dc" compoundref="d5/df7/propagator_8hpp" startline="744" endline="749">Propagator&lt; Q &gt;::SM_REG3</references>
+        <references refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="777" endline="785">Propagator&lt; Q &gt;::SM_REG4</references>
+        <referencedby refid="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" compoundref="d4/d92/hartree__term_8c_09_09" startline="104" endline="141">Hartree_Solver::operator()</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; Q &gt;::norm</definition>
+        <argsstring>() const -&gt; double</argsstring>
+        <name>norm</name>
+        <qualifiedname>Propagator::norm</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="134" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="589" bodyend="596"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a98a9c7b110f336bae9c31792defaef9d" compoundref="d3/d3c/frequency__parameters_8hpp" startline="56">nPROP</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::G0M_inv</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>G0M_inv</name>
+        <qualifiedname>Propagator::G0M_inv</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+<para>model-specific bare propagators </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="138" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="600" bodyend="603"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <referencedby refid="d2/d34/classPropagator_1ac5efa025ac7c3458983f104e63eda780" compoundref="d5/df7/propagator_8hpp" startline="649" endline="654">Propagator&lt; Q &gt;::GM_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="686" endline="699">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a42c3e1df68725e6a1bff62ee703f7b37" compoundref="d5/df7/propagator_8hpp" startline="737" endline="741">Propagator&lt; Q &gt;::GM_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ab96b87abd4eb9b7c913d4462d3429e40" compoundref="d5/df7/propagator_8hpp" startline="770" endline="774">Propagator&lt; Q &gt;::GM_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aa4d095f7d63c94e4d99333e3d80e67dc" compoundref="d5/df7/propagator_8hpp" startline="744" endline="749">Propagator&lt; Q &gt;::SM_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="777" endline="785">Propagator&lt; Q &gt;::SM_REG4</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::G0M_inv_SIAM</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>G0M_inv_SIAM</name>
+        <qualifiedname>Propagator::G0M_inv_SIAM</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="139" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="605" bodyend="616"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1a1c8a818bc4c60992c78e93a8782e5e46" compoundref="d5/df7/propagator_8hpp" startline="38">Propagator&lt; Q &gt;::epsilon</references>
+        <references refid="d2/d34/classPropagator_1aa1d72170fcc752ac7164f4cbb31ef281" compoundref="d5/df7/propagator_8hpp" startline="39">Propagator&lt; Q &gt;::Gamma</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" compoundref="da/d4d/data__structures_8c_09_09" startline="3" endline="5">my_isfinite</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
+        <references refid="de/dbb/math__utils_8hpp_1a0bb692dd2ccfca1d2a03544ff6b3c7c8" compoundref="de/dbb/math__utils_8hpp" startline="24" endline="26">sign</references>
+        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="40">Propagator&lt; Q &gt;::T</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+        <referencedby refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="600" endline="603">Propagator&lt; Q &gt;::G0M_inv</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::G0R_inv</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>G0R_inv</name>
+        <qualifiedname>Propagator::G0R_inv</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="142" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="619" bodyend="621"/>
+        <references refid="d2/d34/classPropagator_1ada412877562e746afa7f6803d588fbbd" compoundref="d5/df7/propagator_8hpp" startline="623" endline="626">Propagator&lt; Q &gt;::G0R_inv_SIAM</references>
+        <referencedby refid="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e" compoundref="d5/df7/propagator_8hpp" startline="634" endline="639">Propagator&lt; Q &gt;::GR_REG1</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1afc124b80502bc51f16422bf23fb94238" compoundref="d5/df7/propagator_8hpp" startline="673" endline="676">Propagator&lt; Q &gt;::GR_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="718" endline="723">Propagator&lt; Q &gt;::GR_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac5d014e3176022a797269f2a4792c7f5" compoundref="d5/df7/propagator_8hpp" startline="755" endline="759">Propagator&lt; Q &gt;::GR_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a50f24f1dcea3718f52849344fc6ac024" compoundref="d5/df7/propagator_8hpp" startline="791" endline="794">Propagator&lt; Q &gt;::GR_REG5</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a1bfd299d641e7ab9ad0191d1e69e4c37" compoundref="d5/df7/propagator_8hpp" startline="726" endline="731">Propagator&lt; Q &gt;::SR_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a5e50650bc62a302aae20955630765da9" compoundref="d5/df7/propagator_8hpp" startline="761" endline="767">Propagator&lt; Q &gt;::SR_REG4</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ada412877562e746afa7f6803d588fbbd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::G0R_inv_SIAM</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>G0R_inv_SIAM</name>
+        <qualifiedname>Propagator::G0R_inv_SIAM</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="143" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="623" bodyend="626"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1a1c8a818bc4c60992c78e93a8782e5e46" compoundref="d5/df7/propagator_8hpp" startline="38">Propagator&lt; Q &gt;::epsilon</references>
+        <references refid="d2/d34/classPropagator_1aa1d72170fcc752ac7164f4cbb31ef281" compoundref="d5/df7/propagator_8hpp" startline="39">Propagator&lt; Q &gt;::Gamma</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <referencedby refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GR_REG1</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GR_REG1</name>
+        <qualifiedname>Propagator::GR_REG1</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+<para>propagators for REG == 1 </para>
+        </briefdescription>
+        <detaileddescription>
+<para>G_0^Λ(v) = θ(|v| - Λ) G_0(v) </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="146" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="634" bodyend="639"/>
+        <references refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a9db5264dc57f6caadcf25ea76d1d5ef1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SR_REG1</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SR_REG1</name>
+        <qualifiedname>Propagator::SR_REG1</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="147" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="642" bodyend="645"/>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ac5efa025ac7c3458983f104e63eda780" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GM_REG1</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GM_REG1</name>
+        <qualifiedname>Propagator::GM_REG1</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="148" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="649" bodyend="654"/>
+        <references refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="600" endline="603">Propagator&lt; Q &gt;::G0M_inv</references>
+        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a332aed41af9be61257a97960decd3f2c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SM_REG1</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SM_REG1</name>
+        <qualifiedname>Propagator::SM_REG1</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="149" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="657" bodyend="660"/>
+        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="296" endline="303">Propagator&lt; Q &gt;::SM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a26d79a95d26ad109921bebffc69770c1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SM_REG1_FPP</definition>
+        <argsstring>(double v, double ksquared, int i_in) const</argsstring>
+        <name>SM_REG1_FPP</name>
+        <qualifiedname>Propagator::SM_REG1_FPP</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>ksquared</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="151" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="664" bodyend="667"/>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1afc124b80502bc51f16422bf23fb94238" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GR_REG2</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GR_REG2</name>
+        <qualifiedname>Propagator::GR_REG2</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+<para>propagators for REG == 2 </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="154" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="673" bodyend="676"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a47394eda59cacc165a78197b91f10f72" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SR_REG2</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SR_REG2</name>
+        <qualifiedname>Propagator::SR_REG2</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="155" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="679" bodyend="682"/>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GM_REG2</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GM_REG2</name>
+        <qualifiedname>Propagator::GM_REG2</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="156" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="686" bodyend="699"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="600" endline="603">Propagator&lt; Q &gt;::G0M_inv</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" compoundref="da/d4d/data__structures_8c_09_09" startline="3" endline="5">my_isfinite</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <references refid="de/dbb/math__utils_8hpp_1a0bb692dd2ccfca1d2a03544ff6b3c7c8" compoundref="de/dbb/math__utils_8hpp" startline="24" endline="26">sign</references>
+        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SM_REG2</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SM_REG2</name>
+        <qualifiedname>Propagator::SM_REG2</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="157" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="703" bodyend="711"/>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
+        <references refid="de/dbb/math__utils_8hpp_1a0bb692dd2ccfca1d2a03544ff6b3c7c8" compoundref="de/dbb/math__utils_8hpp" startline="24" endline="26">sign</references>
+        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="296" endline="303">Propagator&lt; Q &gt;::SM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GR_REG3</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GR_REG3</name>
+        <qualifiedname>Propagator::GR_REG3</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+<para>propagators for REG == 3 </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="160" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="718" bodyend="723"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" compoundref="da/d4d/data__structures_8c_09_09" startline="3" endline="5">my_isfinite</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a1bfd299d641e7ab9ad0191d1e69e4c37" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SR_REG3</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SR_REG3</name>
+        <qualifiedname>Propagator::SR_REG3</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="161" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="726" bodyend="731"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</references>
+        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a42c3e1df68725e6a1bff62ee703f7b37" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GM_REG3</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GM_REG3</name>
+        <qualifiedname>Propagator::GM_REG3</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="162" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="737" bodyend="741"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="600" endline="603">Propagator&lt; Q &gt;::G0M_inv</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1aa4d095f7d63c94e4d99333e3d80e67dc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SM_REG3</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SM_REG3</name>
+        <qualifiedname>Propagator::SM_REG3</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="163" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="744" bodyend="749"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="600" endline="603">Propagator&lt; Q &gt;::G0M_inv</references>
+        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="296" endline="303">Propagator&lt; Q &gt;::SM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ac5d014e3176022a797269f2a4792c7f5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GR_REG4</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GR_REG4</name>
+        <qualifiedname>Propagator::GR_REG4</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+<para>propagators for REG == 3 </para>
+        </briefdescription>
+        <detaileddescription>
+<para>REG == 4: ( interaction flow ) </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="166" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="755" bodyend="759"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a5e50650bc62a302aae20955630765da9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SR_REG4</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SR_REG4</name>
+        <qualifiedname>Propagator::SR_REG4</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="167" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="761" bodyend="767"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ab96b87abd4eb9b7c913d4462d3429e40" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GM_REG4</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GM_REG4</name>
+        <qualifiedname>Propagator::GM_REG4</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="168" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="770" bodyend="774"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="600" endline="603">Propagator&lt; Q &gt;::G0M_inv</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SM_REG4</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SM_REG4</name>
+        <qualifiedname>Propagator::SM_REG4</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="169" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="777" bodyend="785"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="600" endline="603">Propagator&lt; Q &gt;::G0M_inv</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" compoundref="da/d4d/data__structures_8c_09_09" startline="3" endline="5">my_isfinite</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="296" endline="303">Propagator&lt; Q &gt;::SM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a50f24f1dcea3718f52849344fc6ac024" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::GR_REG5</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>GR_REG5</name>
+        <qualifiedname>Propagator::GR_REG5</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+<para>propagators for REG == 5 </para>
+        </briefdescription>
+        <detaileddescription>
+<para>REG == 5: (temperature flow) </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="172" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="791" bodyend="794"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" compoundref="d5/df7/propagator_8hpp" startline="619" endline="621">Propagator&lt; Q &gt;::G0R_inv</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1ad14344fe45ff29ff130d9c18414669a7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::SR_REG5</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>SR_REG5</name>
+        <qualifiedname>Propagator::SR_REG5</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="173" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="796" bodyend="798"/>
+        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a68009e2fa03e67e5101fcd3a184b8b41" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>auto Propagator&lt; Q &gt;::diff_Sigma_K_REG5</definition>
+        <argsstring>(freqType v, int i_in) const</argsstring>
+        <name>diff_Sigma_K_REG5</name>
+        <qualifiedname>Propagator::diff_Sigma_K_REG5</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="174" column="7" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="800" bodyend="805"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" compoundref="d5/df7/propagator_8hpp" startline="36">Propagator&lt; Q &gt;::diff_selfenergy</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <referencedby refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" compoundref="d5/df7/propagator_8hpp" startline="274" endline="283">Propagator&lt; Q &gt;::Katanin_K</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a18327a87ffaaa6a830f5a316a77324b3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Propagator&lt; Q &gt;::initInterpolator</definition>
+        <argsstring>() const</argsstring>
+        <name>initInterpolator</name>
+        <qualifiedname>Propagator::initInterpolator</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.hpp" line="176" column="10" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="809" bodyend="812"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" compoundref="d5/df7/propagator_8hpp" startline="36">Propagator&lt; Q &gt;::diff_selfenergy</references>
+        <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
+        <references refid="d2/d34/classPropagator_1a31d81f345df1e2eb6e4349e6d52252fb" compoundref="d5/df7/propagator_8hpp" startline="37">Propagator&lt; Q &gt;::type</references>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1a9c4b156ab3bcad3d51b1a17ee65193bd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; double &gt;::GK</definition>
+        <argsstring>(const double v, const int i_in) const -&gt; double</argsstring>
+        <name>GK</name>
+        <qualifiedname>Propagator::GK</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.c++" line="38" column="17" bodyfile="correlation_functions/two_point/propagator.c++" bodystart="38" bodyend="42"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d34/classPropagator_1add2b744a830010e306fd52443385c087" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Propagator&lt; double &gt;::SK</definition>
+        <argsstring>(const double v, const int i_in) const -&gt; double</argsstring>
+        <name>SK</name>
+        <qualifiedname>Propagator::SK</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/propagator.c++" line="45" column="17" bodyfile="correlation_functions/two_point/propagator.c++" bodystart="45" bodyend="49"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para><ref refid="d2/d34/classPropagator" kindref="compound">Propagator</ref> class ///. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Propagator&lt; Q &gt;</label>
+        <link refid="d2/d34/classPropagator"/>
+      </node>
+      <node id="2">
+        <label>Propagator&lt; state_datatype &gt;</label>
+        <link refid="d2/d34/classPropagator"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Propagator&lt; Q &gt;</label>
+        <link refid="d2/d34/classPropagator"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+Gamma</edgelabel>
+          <edgelabel>+Lambda</edgelabel>
+          <edgelabel>+T</edgelabel>
+          <edgelabel>+epsilon</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+diff_selfenergy</edgelabel>
+          <edgelabel>+selfenergy</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>SelfEnergy&lt; Q &gt;</label>
+      </node>
+      <node id="4">
+        <label>char</label>
+      </node>
+      <node id="2">
+        <label>double</label>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/two_point/propagator.hpp" line="32" column="1" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="32" bodyend="177"/>
+    <listofallmembers>
+      <member refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" prot="public" virt="non-virtual"><scope>Propagator</scope><name>diff_selfenergy</name></member>
+      <member refid="d2/d34/classPropagator_1a68009e2fa03e67e5101fcd3a184b8b41" prot="public" virt="non-virtual"><scope>Propagator</scope><name>diff_Sigma_K_REG5</name></member>
+      <member refid="d2/d34/classPropagator_1a1c8a818bc4c60992c78e93a8782e5e46" prot="public" virt="non-virtual"><scope>Propagator</scope><name>epsilon</name></member>
+      <member refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" prot="public" virt="non-virtual"><scope>Propagator</scope><name>G0M_inv</name></member>
+      <member refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" prot="public" virt="non-virtual"><scope>Propagator</scope><name>G0M_inv_SIAM</name></member>
+      <member refid="d2/d34/classPropagator_1aa09164a513560ac95cd1c7ce0e271eab" prot="public" virt="non-virtual"><scope>Propagator</scope><name>G0R_inv</name></member>
+      <member refid="d2/d34/classPropagator_1ada412877562e746afa7f6803d588fbbd" prot="public" virt="non-virtual"><scope>Propagator</scope><name>G0R_inv_SIAM</name></member>
+      <member refid="d2/d34/classPropagator_1aa1d72170fcc752ac7164f4cbb31ef281" prot="public" virt="non-virtual"><scope>Propagator</scope><name>Gamma</name></member>
+      <member refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GK</name></member>
+      <member refid="d2/d34/classPropagator_1a9c4b156ab3bcad3d51b1a17ee65193bd" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GK</name></member>
+      <member refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GM</name></member>
+      <member refid="d2/d34/classPropagator_1ac5efa025ac7c3458983f104e63eda780" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GM_REG1</name></member>
+      <member refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GM_REG2</name></member>
+      <member refid="d2/d34/classPropagator_1a42c3e1df68725e6a1bff62ee703f7b37" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GM_REG3</name></member>
+      <member refid="d2/d34/classPropagator_1ab96b87abd4eb9b7c913d4462d3429e40" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GM_REG4</name></member>
+      <member refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GR</name></member>
+      <member refid="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GR_REG1</name></member>
+      <member refid="d2/d34/classPropagator_1afc124b80502bc51f16422bf23fb94238" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GR_REG2</name></member>
+      <member refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GR_REG3</name></member>
+      <member refid="d2/d34/classPropagator_1ac5d014e3176022a797269f2a4792c7f5" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GR_REG4</name></member>
+      <member refid="d2/d34/classPropagator_1a50f24f1dcea3718f52849344fc6ac024" prot="public" virt="non-virtual"><scope>Propagator</scope><name>GR_REG5</name></member>
+      <member refid="d2/d34/classPropagator_1a18327a87ffaaa6a830f5a316a77324b3" prot="public" virt="non-virtual"><scope>Propagator</scope><name>initInterpolator</name></member>
+      <member refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" prot="public" virt="non-virtual"><scope>Propagator</scope><name>Katanin_K</name></member>
+      <member refid="d2/d34/classPropagator_1a821a892d54207fc495a9adb970b476dd" prot="public" virt="non-virtual"><scope>Propagator</scope><name>Katanin_R</name></member>
+      <member refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" prot="public" virt="non-virtual"><scope>Propagator</scope><name>Lambda</name></member>
+      <member refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" prot="public" virt="non-virtual"><scope>Propagator</scope><name>norm</name></member>
+      <member refid="d2/d34/classPropagator_1a878f3624c2c3df7c520b66fcbd8fdcb5" prot="public" virt="non-virtual"><scope>Propagator</scope><name>Propagator</name></member>
+      <member refid="d2/d34/classPropagator_1a8fedbdc63cad1a3952de98354587dffb" prot="public" virt="non-virtual"><scope>Propagator</scope><name>Propagator</name></member>
+      <member refid="d2/d34/classPropagator_1a14d2c483bdd806b4f5d3473a6b1f9202" prot="public" virt="non-virtual"><scope>Propagator</scope><name>Propagator</name></member>
+      <member refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" prot="public" virt="non-virtual"><scope>Propagator</scope><name>save_propagator_values</name></member>
+      <member refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" prot="public" virt="non-virtual"><scope>Propagator</scope><name>selfenergy</name></member>
+      <member refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SK</name></member>
+      <member refid="d2/d34/classPropagator_1add2b744a830010e306fd52443385c087" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SK</name></member>
+      <member refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SM</name></member>
+      <member refid="d2/d34/classPropagator_1a332aed41af9be61257a97960decd3f2c" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SM_REG1</name></member>
+      <member refid="d2/d34/classPropagator_1a26d79a95d26ad109921bebffc69770c1" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SM_REG1_FPP</name></member>
+      <member refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SM_REG2</name></member>
+      <member refid="d2/d34/classPropagator_1aa4d095f7d63c94e4d99333e3d80e67dc" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SM_REG3</name></member>
+      <member refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SM_REG4</name></member>
+      <member refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SR</name></member>
+      <member refid="d2/d34/classPropagator_1a9db5264dc57f6caadcf25ea76d1d5ef1" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SR_REG1</name></member>
+      <member refid="d2/d34/classPropagator_1a47394eda59cacc165a78197b91f10f72" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SR_REG2</name></member>
+      <member refid="d2/d34/classPropagator_1a1bfd299d641e7ab9ad0191d1e69e4c37" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SR_REG3</name></member>
+      <member refid="d2/d34/classPropagator_1a5e50650bc62a302aae20955630765da9" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SR_REG4</name></member>
+      <member refid="d2/d34/classPropagator_1ad14344fe45ff29ff130d9c18414669a7" prot="public" virt="non-virtual"><scope>Propagator</scope><name>SR_REG5</name></member>
+      <member refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" prot="public" virt="non-virtual"><scope>Propagator</scope><name>T</name></member>
+      <member refid="d2/d34/classPropagator_1a31d81f345df1e2eb6e4349e6d52252fb" prot="public" virt="non-virtual"><scope>Propagator</scope><name>type</name></member>
+      <member refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" prot="public" virt="non-virtual"><scope>Propagator</scope><name>valsmooth</name></member>
+      <member refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" prot="public" virt="non-virtual"><scope>Propagator</scope><name>valsmooth_vectorized</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

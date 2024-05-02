@@ -1,0 +1,60 @@
+digraph "Propagator::GR"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="RL";
+  Node1 [id="Node000001",label="Propagator::GR",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="Propagator::GK",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a7ba0e8319f75d4d7b2006b23a62da6e7",tooltip=" "];
+  Node2 -> Node3 [id="edge2_Node000002_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="Propagator::Katanin_K",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a05c87261fbbdb3a2ccf1b5f6a6014914",tooltip=" "];
+  Node3 -> Node4 [id="edge3_Node000003_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="Propagator::valsmooth",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a4cb4d8dd3bc37a818c67d7e2859fe631",tooltip=" "];
+  Node4 -> Node5 [id="edge4_Node000004_Node000005",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="Integrand_sum_rule\l_spectrum::operator()",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$df/db3/classIntegrand__sum__rule__spectrum.html#a9617ccc54433c850c01db0451af83351",tooltip=" "];
+  Node4 -> Node6 [id="edge5_Node000004_Node000006",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="Propagator::save_propagator\l_values",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#ac839deb3d533ad677354d0ef15342a72",tooltip=" "];
+  Node3 -> Node7 [id="edge6_Node000003_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node7 [id="Node000007",label="Propagator::valsmooth\l_vectorized",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a86e91327f6ae47e00aa04e7544a5a512",tooltip=" "];
+  Node2 -> Node4 [id="edge7_Node000002_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 -> Node7 [id="edge8_Node000002_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 -> Node8 [id="edge9_Node000002_Node000008",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node8 [id="Node000008",label="Hartree_Solver::write\l_out_propagators",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d75/classHartree__Solver.html#a4ed165c426f1f02c659b95cca2be40d6",tooltip=" "];
+  Node1 -> Node9 [id="edge10_Node000001_Node000009",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node9 [id="Node000009",label="Propagator::GR_REG1",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a4fab2f7c3852ba97041c20b4601e380e",tooltip="propagators for REG == 1"];
+  Node9 -> Node1 [id="edge11_Node000009_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node3 [id="edge12_Node000001_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node10 [id="edge13_Node000001_Node000010",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node10 [id="Node000010",label="Propagator::Katanin_R",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a821a892d54207fc495a9adb970b476dd",tooltip="Katanin extension."];
+  Node10 -> Node4 [id="edge14_Node000010_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node10 -> Node7 [id="edge15_Node000010_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node11 [id="edge16_Node000001_Node000011",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node11 [id="Node000011",label="Propagator::norm",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a90c3d7f002b491a30d2d23ad1ae388e6",tooltip=" "];
+  Node1 -> Node12 [id="edge17_Node000001_Node000012",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node12 [id="Node000012",label="Hartree_Solver::operator()",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d75/classHartree__Solver.html#a6a8890e00ddebaf50cd2c2a985e9c361",tooltip=" "];
+  Node1 -> Node13 [id="edge18_Node000001_Node000013",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node13 [id="Node000013",label="Propagator::SK",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a6287870a3e08981dd190b7b5f6a4cb55",tooltip=" "];
+  Node13 -> Node12 [id="edge19_Node000013_Node000012",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node13 -> Node4 [id="edge20_Node000013_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node13 -> Node7 [id="edge21_Node000013_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node14 [id="edge22_Node000001_Node000014",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node14 [id="Node000014",label="Propagator::SR_REG1",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a9db5264dc57f6caadcf25ea76d1d5ef1",tooltip=" "];
+  Node14 -> Node15 [id="edge23_Node000014_Node000015",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node15 [id="Node000015",label="Propagator::SR",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#aa98f8e50066433690e258358defad021",tooltip=" "];
+  Node15 -> Node12 [id="edge24_Node000015_Node000012",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node15 -> Node13 [id="edge25_Node000015_Node000013",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node15 -> Node4 [id="edge26_Node000015_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node15 -> Node7 [id="edge27_Node000015_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node16 [id="edge28_Node000001_Node000016",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node16 [id="Node000016",label="Propagator::SR_REG2",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a47394eda59cacc165a78197b91f10f72",tooltip=" "];
+  Node16 -> Node15 [id="edge29_Node000016_Node000015",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node17 [id="edge30_Node000001_Node000017",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node17 [id="Node000017",label="Propagator::SR_REG3",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d2/d34/classPropagator.html#a1bfd299d641e7ab9ad0191d1e69e4c37",tooltip=" "];
+  Node17 -> Node15 [id="edge31_Node000017_Node000015",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node4 [id="edge32_Node000001_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node7 [id="edge33_Node000001_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node8 [id="edge34_Node000001_Node000008",dir="back",color="steelblue1",style="solid",tooltip=" "];
+}

@@ -1,0 +1,826 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4" kind="class" language="C++" prot="public">
+    <compoundname>FrequencyGrid&lt; hybridGrid &gt;</compoundname>
+    <includes refid="d5/d39/frequency__grid_8hpp" local="no">frequency_grid.hpp</includes>
+    <templateparamlist>
+    </templateparamlist>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9e7e0fdd1c87ac4e0b5321d507165519" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+          <param>
+            <type>size_t</type>
+            <declname>rank</declname>
+            <defname>rank</defname>
+          </param>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+            <declname>numberFrequencyDims</declname>
+            <defname>numberFrequencyDims</defname>
+          </param>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+            <declname>pos_first_freqpoint</declname>
+            <defname>pos_first_freqpoint</defname>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> frequencyGrid_type</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">class</ref></type>
+        <definition>friend class DataContainer</definition>
+        <argsstring></argsstring>
+        <name>DataContainer</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::DataContainer</qualifiedname>
+        <param>
+          <type><ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="195" column="18" bodyfile="grids/frequency_grid.hpp" bodystart="195" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a04d236ce55dc34d13c50431f690fb882" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int FrequencyGrid&lt; hybridGrid &gt;::number_of_gridpoints</definition>
+        <argsstring></argsstring>
+        <name>number_of_gridpoints</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::number_of_gridpoints</qualifiedname>
+        <briefdescription>
+<para>essential grid parameters: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="199" column="9" bodyfile="grids/frequency_grid.hpp" bodystart="199" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a3f26888eb16d75171ca40285eeb551d7" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::w_upper</definition>
+        <argsstring></argsstring>
+        <name>w_upper</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::w_upper</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="200" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="200" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1afc16e155cbc9a889a4814df7c931eec4" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::w_lower</definition>
+        <argsstring></argsstring>
+        <name>w_lower</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::w_lower</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="201" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="201" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af266d63e6a4afd9d0b9c45048c229173" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::w_center</definition>
+        <argsstring></argsstring>
+        <name>w_center</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::w_center</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="202" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="202" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aa21da8a93ace6da349f0c25bc1d96f5a" prot="public" static="no" mutable="no">
+        <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, 2 &gt;</type>
+        <definition>std::array&lt;freqType,2&gt; FrequencyGrid&lt; hybridGrid &gt;::pos_section_boundaries</definition>
+        <argsstring></argsstring>
+        <name>pos_section_boundaries</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::pos_section_boundaries</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="203" column="16" bodyfile="grids/frequency_grid.hpp" bodystart="203" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a5556b0f0514edb2031fff9095471b616" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char FrequencyGrid&lt; hybridGrid &gt;::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::type</qualifiedname>
+        <briefdescription>
+<para>grid identifier: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="211" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="211" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9ddf531b31f164cb195f6cda1731a49e" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int FrequencyGrid&lt; hybridGrid &gt;::diag_class</definition>
+        <argsstring></argsstring>
+        <name>diag_class</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::diag_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="212" column="9" bodyfile="grids/frequency_grid.hpp" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9aae1e46697592749bdf256fa03959ad" prot="public" static="no" mutable="no">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool FrequencyGrid&lt; hybridGrid &gt;::purely_positive</definition>
+        <argsstring></argsstring>
+        <name>purely_positive</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::purely_positive</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="213" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="213" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a13f907c24e1e18a9a8bfe018ae04a51e" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::t_upper</definition>
+        <argsstring></argsstring>
+        <name>t_upper</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::t_upper</qualifiedname>
+        <briefdescription>
+<para>auxiliary grid parameters: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="216" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="216" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ab4a7b4153b9f1356cd034abf987ba45a" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::t_lower</definition>
+        <argsstring></argsstring>
+        <name>t_lower</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::t_lower</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="217" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="217" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a19b0fee61a416b3f1ee2020872270645" prot="public" static="no" mutable="no">
+        <type>std::array&lt; double, 2 &gt;</type>
+        <definition>std::array&lt;double,2&gt; FrequencyGrid&lt; hybridGrid &gt;::aux_pos_section_boundaries</definition>
+        <argsstring></argsstring>
+        <name>aux_pos_section_boundaries</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::aux_pos_section_boundaries</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="218" column="16" bodyfile="grids/frequency_grid.hpp" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a009a67736ed73d0d87ad30cb4f5a3c1b" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::spacing_auxiliary_gridpoint</definition>
+        <argsstring></argsstring>
+        <name>spacing_auxiliary_gridpoint</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::spacing_auxiliary_gridpoint</qualifiedname>
+        <initializer>=1.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="219" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="219" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a68395589576578a818149d7f934ad4cd" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::recip_curvature_quad</definition>
+        <argsstring></argsstring>
+        <name>recip_curvature_quad</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::recip_curvature_quad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="220" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="220" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9a3ee031897f3d64cdcf63dc0c9ce286" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::recip_slope_lin</definition>
+        <argsstring></argsstring>
+        <name>recip_slope_lin</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::recip_slope_lin</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="221" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="221" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a510a6f3e40e862f8aaaefcb04ac982d9" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::factor_rat</definition>
+        <argsstring></argsstring>
+        <name>factor_rat</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::factor_rat</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="222" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="222" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1afc4048779e8e0061084e8cce2ba17273" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::rescale_rat</definition>
+        <argsstring></argsstring>
+        <name>rescale_rat</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::rescale_rat</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="223" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="223" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1afc99390956b50562c825656d1d3731fa" prot="public" static="no" mutable="no">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &gt;</type>
+        <definition>vec&lt;freqType&gt; FrequencyGrid&lt; hybridGrid &gt;::all_frequencies</definition>
+        <argsstring></argsstring>
+        <name>all_frequencies</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::all_frequencies</qualifiedname>
+        <briefdescription>
+<para>list of all frequencies: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="227" column="9" bodyfile="grids/frequency_grid.hpp" bodystart="227" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a457489ef3d9b8b6f70d045e2d2f49d80" prot="public" static="no" mutable="no">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &gt;</type>
+        <definition>vec&lt;freqType&gt; FrequencyGrid&lt; hybridGrid &gt;::auxiliary_grid</definition>
+        <argsstring></argsstring>
+        <name>auxiliary_grid</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::auxiliary_grid</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="228" column="9" bodyfile="grids/frequency_grid.hpp" bodystart="228" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</definition>
+        <argsstring>(double Lambda, const fRG_config &amp;config)</argsstring>
+        <name>guess_essential_parameters</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+<para>guess essential parameters from value of Lambda </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="206" column="10" bodyfile="grids/frequency_grid.c++" bodystart="427" bodyend="493"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="35">nBOS</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="37">nBOS2</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" compoundref="d3/d3c/frequency__parameters_8hpp" startline="39">nBOS3</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" compoundref="d3/d3c/frequency__parameters_8hpp" startline="38">nFER2</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" compoundref="d3/d3c/frequency__parameters_8hpp" startline="40">nFER3</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af479ef25f3b608c4371840eb5e2b7871" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; hybridGrid &gt;::derive_auxiliary_parameters</definition>
+        <argsstring>()</argsstring>
+        <name>derive_auxiliary_parameters</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::derive_auxiliary_parameters</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="224" column="10" bodyfile="grids/frequency_grid.c++" bodystart="405" bodyend="425"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d43/KramersKronig_8c_09_09_1ad9512117c829517886f44895ef9ece90" compoundref="d7/d43/KramersKronig_8c_09_09" startline="3" endline="9">log</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a3018649d0e8ff47a97a85e206eb7bee3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::frequency_from_t</definition>
+        <argsstring>(freqType t) const</argsstring>
+        <name>frequency_from_t</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::frequency_from_t</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+<para>grid functions: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="231" column="14" bodyfile="grids/frequency_grid.c++" bodystart="495" bodyend="523"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="df/d31/math__utils_8c_09_09_1ae36d92596d8ec0a89dfa3bdc9ab693f7" compoundref="df/d31/math__utils_8c_09_09" startline="21" endline="23">sgn</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aff4d59cd2e2e4b61dac9605723968f16" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::t_from_frequency</definition>
+        <argsstring>(freqType w) const</argsstring>
+        <name>t_from_frequency</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::t_from_frequency</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="232" column="14" bodyfile="grids/frequency_grid.c++" bodystart="525" bodyend="552"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d43/KramersKronig_8c_09_09_1ad9512117c829517886f44895ef9ece90" compoundref="d7/d43/KramersKronig_8c_09_09" startline="3" endline="9">log</references>
+        <references refid="df/d31/math__utils_8c_09_09_1ae36d92596d8ec0a89dfa3bdc9ab693f7" compoundref="df/d31/math__utils_8c_09_09" startline="21" endline="23">sgn</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af2267533329d0f003dab2b04f6ce7115" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FrequencyGrid&lt; hybridGrid &gt;::FrequencyGrid</definition>
+        <argsstring>(const char type_in, const unsigned int diag_class_in, const double Lambda, const fRG_config &amp;config, const bool purely_positive=false)</argsstring>
+        <name>FrequencyGrid</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::FrequencyGrid</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> char</type>
+          <declname>type_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+          <declname>diag_class_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>purely_positive</declname>
+          <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></defval>
+        </param>
+        <briefdescription>
+<para>constructor: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="237" column="5" bodyfile="grids/frequency_grid.hpp" bodystart="237" bodyend="243"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a6a4cca8b2cac4da52bd1c700e04e3cdf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::get_frequency</definition>
+        <argsstring>(const int index) const</argsstring>
+        <name>get_frequency</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_frequency</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>getter functions: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="246" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="246" bodyend="246"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a1fcf3dea7bc6913f951ea74492366202" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::get_auxiliary_gridpoint</definition>
+        <argsstring>(const int index) const</argsstring>
+        <name>get_auxiliary_gridpoint</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_auxiliary_gridpoint</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="247" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="247" bodyend="247"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aed15a23caf5defcd22fca2f247169cce" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &gt; &amp;</type>
+        <definition>const vec&lt; freqType &gt; &amp; FrequencyGrid&lt; hybridGrid &gt;::get_all_frequencies</definition>
+        <argsstring>() const</argsstring>
+        <name>get_all_frequencies</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_all_frequencies</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="248" column="15" bodyfile="grids/frequency_grid.hpp" bodystart="248" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aba7dc8a542d3ae592d9ddec514d53300" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &gt; &amp;</type>
+        <definition>const vec&lt; freqType &gt; &amp; FrequencyGrid&lt; hybridGrid &gt;::get_all_auxiliary_gridpoints</definition>
+        <argsstring>() const</argsstring>
+        <name>get_all_auxiliary_gridpoints</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_all_auxiliary_gridpoints</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="249" column="15" bodyfile="grids/frequency_grid.hpp" bodystart="249" bodyend="249"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ac62107db25cc4e912633f0930db2e143" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; hybridGrid &gt;::get_spacing_auxiliary_gridpoints</definition>
+        <argsstring>() const</argsstring>
+        <name>get_spacing_auxiliary_gridpoints</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_spacing_auxiliary_gridpoints</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="250" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="250" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a6ac99c5ae003e7bf251b4306b68dedbb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char</type>
+        <definition>char FrequencyGrid&lt; hybridGrid &gt;::get_type</definition>
+        <argsstring>() const</argsstring>
+        <name>get_type</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="251" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="251" bodyend="251"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a973f27ca3a86018a82b6a527f16b15b1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char</type>
+        <definition>char FrequencyGrid&lt; hybridGrid &gt;::get_diag_class</definition>
+        <argsstring>() const</argsstring>
+        <name>get_diag_class</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_diag_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="252" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="252" bodyend="252"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a3b0cec5b4ef017ed82b715e452c22df1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; hybridGrid &gt;::set_essential_parameters</definition>
+        <argsstring>(freqType wmax_in, std::array&lt; freqType, 2 &gt; new_pos_section_boundaries)</argsstring>
+        <name>set_essential_parameters</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::set_essential_parameters</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>wmax_in</declname>
+        </param>
+        <param>
+          <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, 2 &gt;</type>
+          <declname>new_pos_section_boundaries</declname>
+        </param>
+        <briefdescription>
+<para>setter functions: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="255" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="255" bodyend="259"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a186978f2ba4fa3ccf640e41039bf9bac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; hybridGrid &gt;::set_w_upper</definition>
+        <argsstring>(freqType wmax)</argsstring>
+        <name>set_w_upper</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::set_w_upper</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>wmax</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="260" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="260" bodyend="262"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a7afb905fe94d4f530269814433181eb7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; hybridGrid &gt;::initialize_grid</definition>
+        <argsstring>()</argsstring>
+        <name>initialize_grid</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::initialize_grid</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="263" column="10" bodyfile="grids/frequency_grid.c++" bodystart="554" bodyend="573"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="df/d31/math__utils_8c_09_09_1a084943946a2fd123daa3065696824405" compoundref="df/d31/math__utils_8c_09_09" startline="128" endline="133">is_doubleOccurencies</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ad22f41c3c5d721f855ba0cf86243bbfb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; hybridGrid &gt;::update_pos_section_boundaries</definition>
+        <argsstring>(std::array&lt; freqType, 2 &gt; new_pos_section_boundaries)</argsstring>
+        <name>update_pos_section_boundaries</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::update_pos_section_boundaries</qualifiedname>
+        <param>
+          <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, 2 &gt;</type>
+          <declname>new_pos_section_boundaries</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="264" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="264" bodyend="269"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ab53adf8b334425a30f07dd872bd83d7f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int FrequencyGrid&lt; hybridGrid &gt;::get_grid_index</definition>
+        <argsstring>(freqType frequency) const</argsstring>
+        <name>get_grid_index</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_grid_index</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>frequency</declname>
+        </param>
+        <briefdescription>
+<para>core grid functionality (has to be super efficient) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Do I need this? The next function basically does the same</para>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="272" column="9" bodyfile="grids/frequency_grid.c++" bodystart="575" bodyend="591"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28" compoundref="d9/d3a/technical__parameters_8hpp" startline="18">inter_tol</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a8f372ca3e64babac389d28cee1c869e1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int FrequencyGrid&lt; hybridGrid &gt;::get_grid_index</definition>
+        <argsstring>(freqType &amp;t, freqType frequency) const</argsstring>
+        <name>get_grid_index</name>
+        <qualifiedname>FrequencyGrid&lt; hybridGrid &gt;::get_grid_index</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>frequency</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="273" column="9" bodyfile="grids/frequency_grid.c++" bodystart="593" bodyend="606"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28" compoundref="d9/d3a/technical__parameters_8hpp" startline="18">inter_tol</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>FrequencyGrid&lt; hybridGrid &gt;</label>
+        <link refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+diag_class</edgelabel>
+          <edgelabel>+number_of_gridpoints</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+factor_rat</edgelabel>
+          <edgelabel>+recip_curvature_quad</edgelabel>
+          <edgelabel>+recip_slope_lin</edgelabel>
+          <edgelabel>+rescale_rat</edgelabel>
+          <edgelabel>+spacing_auxiliary_gridpoint</edgelabel>
+          <edgelabel>+t_lower</edgelabel>
+          <edgelabel>+t_upper</edgelabel>
+          <edgelabel>+w_center</edgelabel>
+          <edgelabel>+w_lower</edgelabel>
+          <edgelabel>+w_upper</edgelabel>
+          <edgelabel>...</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+pos_section_boundaries</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+purely_positive</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+aux_pos_section_boundaries</edgelabel>
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+all_frequencies</edgelabel>
+          <edgelabel>+auxiliary_grid</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>T</label>
+      </node>
+      <node id="9">
+        <label>std::array&lt; double, 2 &gt;</label>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="template-instance">
+          <edgelabel>&lt; double, 2 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>std::array&lt; freqType, 2 &gt;</label>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="template-instance">
+          <edgelabel>&lt; freqType, 2 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="7">
+        <label>char</label>
+      </node>
+      <node id="3">
+        <label>double</label>
+      </node>
+      <node id="2">
+        <label>int</label>
+      </node>
+      <node id="5">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="13">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>vec&lt; T &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="13" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>vec&lt; freqType &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="11" relation="public-inheritance">
+        </childnode>
+        <childnode refid="12" relation="template-instance">
+          <edgelabel>&lt; freqType &gt;</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="grids/frequency_grid.hpp" line="193" column="1" bodyfile="grids/frequency_grid.hpp" bodystart="193" bodyend="276"/>
+    <listofallmembers>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1afc99390956b50562c825656d1d3731fa" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>all_frequencies</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a19b0fee61a416b3f1ee2020872270645" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>aux_pos_section_boundaries</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a457489ef3d9b8b6f70d045e2d2f49d80" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>auxiliary_grid</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9e7e0fdd1c87ac4e0b5321d507165519" prot="private" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>DataContainer</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af479ef25f3b608c4371840eb5e2b7871" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>derive_auxiliary_parameters</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9ddf531b31f164cb195f6cda1731a49e" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>diag_class</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a510a6f3e40e862f8aaaefcb04ac982d9" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>factor_rat</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a3018649d0e8ff47a97a85e206eb7bee3" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>frequency_from_t</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af2267533329d0f003dab2b04f6ce7115" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>FrequencyGrid</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aba7dc8a542d3ae592d9ddec514d53300" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_all_auxiliary_gridpoints</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aed15a23caf5defcd22fca2f247169cce" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_all_frequencies</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a1fcf3dea7bc6913f951ea74492366202" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_auxiliary_gridpoint</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a973f27ca3a86018a82b6a527f16b15b1" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_diag_class</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a6a4cca8b2cac4da52bd1c700e04e3cdf" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_frequency</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ab53adf8b334425a30f07dd872bd83d7f" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_grid_index</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a8f372ca3e64babac389d28cee1c869e1" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_grid_index</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ac62107db25cc4e912633f0930db2e143" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_spacing_auxiliary_gridpoints</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a6ac99c5ae003e7bf251b4306b68dedbb" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>get_type</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>guess_essential_parameters</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a7afb905fe94d4f530269814433181eb7" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>initialize_grid</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a04d236ce55dc34d13c50431f690fb882" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>number_of_gridpoints</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aa21da8a93ace6da349f0c25bc1d96f5a" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>pos_section_boundaries</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9aae1e46697592749bdf256fa03959ad" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>purely_positive</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a68395589576578a818149d7f934ad4cd" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>recip_curvature_quad</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a9a3ee031897f3d64cdcf63dc0c9ce286" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>recip_slope_lin</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1afc4048779e8e0061084e8cce2ba17273" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>rescale_rat</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a3b0cec5b4ef017ed82b715e452c22df1" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>set_essential_parameters</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a186978f2ba4fa3ccf640e41039bf9bac" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>set_w_upper</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a009a67736ed73d0d87ad30cb4f5a3c1b" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>spacing_auxiliary_gridpoint</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1aff4d59cd2e2e4b61dac9605723968f16" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>t_from_frequency</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ab4a7b4153b9f1356cd034abf987ba45a" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>t_lower</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a13f907c24e1e18a9a8bfe018ae04a51e" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>t_upper</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a5556b0f0514edb2031fff9095471b616" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>type</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1ad22f41c3c5d721f855ba0cf86243bbfb" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>update_pos_section_boundaries</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af266d63e6a4afd9d0b9c45048c229173" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>w_center</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1afc16e155cbc9a889a4814df7c931eec4" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>w_lower</name></member>
+      <member refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a3f26888eb16d75171ca40285eeb551d7" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; hybridGrid &gt;</scope><name>w_upper</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

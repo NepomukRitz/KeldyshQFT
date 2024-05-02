@@ -1,0 +1,1005 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4" kind="class" language="C++" prot="public">
+    <compoundname>FrequencyGrid&lt; eliasGrid &gt;</compoundname>
+    <includes refid="d5/d39/frequency__grid_8hpp" local="no">frequency_grid.hpp</includes>
+    <templateparamlist>
+    </templateparamlist>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a9e7e0fdd1c87ac4e0b5321d507165519" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+          <param>
+            <type>size_t</type>
+            <declname>rank</declname>
+            <defname>rank</defname>
+          </param>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+            <declname>numberFrequencyDims</declname>
+            <defname>numberFrequencyDims</defname>
+          </param>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+            <declname>pos_first_freqpoint</declname>
+            <defname>pos_first_freqpoint</defname>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> frequencyGrid_type</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">class</ref></type>
+        <definition>friend class DataContainer</definition>
+        <argsstring></argsstring>
+        <name>DataContainer</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::DataContainer</qualifiedname>
+        <param>
+          <type><ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="71" column="37" bodyfile="grids/frequency_grid.hpp" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a2428bf42fc248d120f4f0cda857eb989" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void hdf5_impl::init_freqgrid_from_hdf_LambdaLayer</definition>
+        <argsstring>(H5::Group &amp;group, gridType &amp;freqgrid, int Lambda_it, double Lambda)</argsstring>
+        <name>hdf5_impl::init_freqgrid_from_hdf_LambdaLayer</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::init_freqgrid_from_hdf_LambdaLayer</qualifiedname>
+        <param>
+          <type>H5::Group &amp;</type>
+          <declname>group</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref> &amp;</type>
+          <declname>freqgrid</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>Lambda_it</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="72" column="28"/>
+      </memberdef>
+      <memberdef kind="friend" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a2a2dccc2f396b736e81b15a619343e9f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void hdf5_impl::write_freqparams_to_hdf_LambdaLayer</definition>
+        <argsstring>(H5::Group &amp;group, const gridType &amp;freqgrid, const int Lambda_it, const int numberLambdaLayers, const bool file_exists, const bool verbose)</argsstring>
+        <name>hdf5_impl::write_freqparams_to_hdf_LambdaLayer</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::write_freqparams_to_hdf_LambdaLayer</qualifiedname>
+        <param>
+          <type>H5::Group &amp;</type>
+          <declname>group</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref> &amp;</type>
+          <declname>freqgrid</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>Lambda_it</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>numberLambdaLayers</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>file_exists</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="73" column="28"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab92630834a147095874cf088c802c517" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int FrequencyGrid&lt; eliasGrid &gt;::number_of_gridpoints</definition>
+        <argsstring></argsstring>
+        <name>number_of_gridpoints</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::number_of_gridpoints</qualifiedname>
+        <briefdescription>
+<para>essential grid parameters: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="79" column="9" bodyfile="grids/frequency_grid.hpp" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1aa0b907d4658b0a5bf162b2d5a4009705" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::w_upper</definition>
+        <argsstring></argsstring>
+        <name>w_upper</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::w_upper</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="80" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="80" bodyend="-1"/>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a94fe2c65ec59b09c3222936abdbe2113" compoundref="d5/d39/frequency__grid_8hpp" startline="420" endline="420">bufferFrequencyGrid&lt; k &gt;::get_wupper_b</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1ade43dba55fae9ec91e36cf3f1c20abb3" compoundref="d5/d39/frequency__grid_8hpp" startline="422" endline="422">bufferFrequencyGrid&lt; k &gt;::get_wupper_f</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a016e2aad5e723677c8dfde546d1a495f" compoundref="d5/d39/frequency__grid_8hpp" startline="429" endline="432">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1acfb9ad9c9c37a6bedc49225d29aa214a" compoundref="d5/d39/frequency__grid_8hpp" startline="433" endline="446">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1acc88c55d5f30e48f9db830bf29a65142" compoundref="d5/d39/frequency__grid_8hpp" startline="447" endline="451">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab2b07237e0b9984fd1c9ba96b326d6d9" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::w_lower</definition>
+        <argsstring></argsstring>
+        <name>w_lower</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::w_lower</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="81" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="81" bodyend="-1"/>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a4bd908933d3323fda3ddea4262ed0b4f" compoundref="d5/d39/frequency__grid_8hpp" startline="419" endline="419">bufferFrequencyGrid&lt; k &gt;::get_wlower_b</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a1eef42657500f7b8fa928cb403e551eb" compoundref="d5/d39/frequency__grid_8hpp" startline="421" endline="421">bufferFrequencyGrid&lt; k &gt;::get_wlower_f</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a3db267ada075488c5b960c2b662445a4" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::W_scale</definition>
+        <argsstring></argsstring>
+        <name>W_scale</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::W_scale</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="82" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a95957c156dee7240d73924150c76ff2f" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::w_center</definition>
+        <argsstring></argsstring>
+        <name>w_center</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::w_center</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="83" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="83" bodyend="-1"/>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a016e2aad5e723677c8dfde546d1a495f" compoundref="d5/d39/frequency__grid_8hpp" startline="429" endline="432">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1acfb9ad9c9c37a6bedc49225d29aa214a" compoundref="d5/d39/frequency__grid_8hpp" startline="433" endline="446">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1acc88c55d5f30e48f9db830bf29a65142" compoundref="d5/d39/frequency__grid_8hpp" startline="447" endline="451">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a78c08a94b69e90694fad10fc9f0e2038" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char FrequencyGrid&lt; eliasGrid &gt;::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::type</qualifiedname>
+        <briefdescription>
+<para>grid identifier </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="91" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a873975f4ebdb2263ec96cf0dccb30f1c" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+        <definition>unsigned int FrequencyGrid&lt; eliasGrid &gt;::diag_class</definition>
+        <argsstring></argsstring>
+        <name>diag_class</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::diag_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="92" column="18" bodyfile="grids/frequency_grid.hpp" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a41681b58050ae673ab6aee095297be31" prot="public" static="no" mutable="no">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool FrequencyGrid&lt; eliasGrid &gt;::purely_positive</definition>
+        <argsstring></argsstring>
+        <name>purely_positive</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::purely_positive</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="93" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab32338d830bdf17cc3af369130c7ec0b" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::t_upper</definition>
+        <argsstring></argsstring>
+        <name>t_upper</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::t_upper</qualifiedname>
+        <briefdescription>
+<para>auxiliary grid parameters: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="96" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="96" bodyend="-1"/>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a6be97b30a56f8eaa289853f2de3d61cc" compoundref="d5/d39/frequency__grid_8hpp" startline="424" endline="424">bufferFrequencyGrid&lt; k &gt;::get_tupper_b_aux</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a8126dd168fb717f5cc576f9bf1a2c609" compoundref="d5/d39/frequency__grid_8hpp" startline="426" endline="426">bufferFrequencyGrid&lt; k &gt;::get_tupper_f_aux</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ae4e84e4f410edf741a524f743813f142" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::t_lower</definition>
+        <argsstring></argsstring>
+        <name>t_lower</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::t_lower</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="97" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="97" bodyend="-1"/>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a2029d3508a3d7f8b89944e29abceefe3" compoundref="d5/d39/frequency__grid_8hpp" startline="423" endline="423">bufferFrequencyGrid&lt; k &gt;::get_tlower_b_aux</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1ac2545d0f83822d68e9cc64662c1883d3" compoundref="d5/d39/frequency__grid_8hpp" startline="425" endline="425">bufferFrequencyGrid&lt; k &gt;::get_tlower_f_aux</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a25c7d154ecec5e6681333521aa3334ee" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::spacing_auxiliary_gridpoint</definition>
+        <argsstring></argsstring>
+        <name>spacing_auxiliary_gridpoint</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::spacing_auxiliary_gridpoint</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="98" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1afe4fc1156f6fa3628b1a0cfb84ff1cd8" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double FrequencyGrid&lt; eliasGrid &gt;::U_factor</definition>
+        <argsstring></argsstring>
+        <name>U_factor</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::U_factor</qualifiedname>
+        <initializer>= 0./3.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="99" column="12" bodyfile="grids/frequency_grid.hpp" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a80bd45202ca342a5ba47bea81ba4c2d6" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double FrequencyGrid&lt; eliasGrid &gt;::Delta_factor</definition>
+        <argsstring></argsstring>
+        <name>Delta_factor</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::Delta_factor</qualifiedname>
+        <initializer>= 10.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="100" column="12" bodyfile="grids/frequency_grid.hpp" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a959818c04acc2b574e37f34fb960a2b3" prot="public" static="no" mutable="no">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &gt;</type>
+        <definition>vec&lt;freqType&gt; FrequencyGrid&lt; eliasGrid &gt;::all_frequencies</definition>
+        <argsstring></argsstring>
+        <name>all_frequencies</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::all_frequencies</qualifiedname>
+        <briefdescription>
+<para>list of all frequencies: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="104" column="9" bodyfile="grids/frequency_grid.hpp" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a8e98ce96470c4f49940aabcf7eb8587a" prot="public" static="no" mutable="no">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &gt;</type>
+        <definition>vec&lt;freqType&gt; FrequencyGrid&lt; eliasGrid &gt;::auxiliary_grid</definition>
+        <argsstring></argsstring>
+        <name>auxiliary_grid</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::auxiliary_grid</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="105" column="9" bodyfile="grids/frequency_grid.hpp" bodystart="105" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</definition>
+        <argsstring>(double Lambda, const fRG_config &amp;config)</argsstring>
+        <name>guess_essential_parameters</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+<para>guess essential parameters from value of Lambda </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="86" column="10" bodyfile="grids/frequency_grid.c++" bodystart="38" bodyend="132"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a6ea138cf1b23526993fe12f3add4ff35" compoundref="d3/d3c/frequency__parameters_8hpp" startline="45">Delta_factor_K1</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a1bd20877e89f8eb953d5bb4e9f147a20" compoundref="d3/d3c/frequency__parameters_8hpp" startline="48">Delta_factor_K2_v</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a6e08a06d210b49b2ac511ad77d0be00d" compoundref="d3/d3c/frequency__parameters_8hpp" startline="47">Delta_factor_K2_w</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ad46998952fa4265ee0a38e0021ca46b4" compoundref="d3/d3c/frequency__parameters_8hpp" startline="50">Delta_factor_K3_v</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a823f4683d45c1c5e52d311a5075a0275" compoundref="d3/d3c/frequency__parameters_8hpp" startline="49">Delta_factor_K3_w</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ab3096582b02c56eb2c838631a7e5de51" compoundref="d3/d3c/frequency__parameters_8hpp" startline="46">Delta_factor_SE</references>
+        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="35">nBOS</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="37">nBOS2</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" compoundref="d3/d3c/frequency__parameters_8hpp" startline="39">nBOS3</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" compoundref="d3/d3c/frequency__parameters_8hpp" startline="38">nFER2</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" compoundref="d3/d3c/frequency__parameters_8hpp" startline="40">nFER3</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1aae66f273e968dd41252b935a0e9d7a17" compoundref="d5/d39/frequency__grid_8hpp" startline="407" endline="413">bufferFrequencyGrid&lt; k &gt;::guess_essential_parameters</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a95e3e23b12e37a53c2ace8c8682a243f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; eliasGrid &gt;::derive_auxiliary_parameters</definition>
+        <argsstring>()</argsstring>
+        <name>derive_auxiliary_parameters</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::derive_auxiliary_parameters</qualifiedname>
+        <briefdescription>
+<para>derive auxiliary parameters from essential parameters </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="101" column="10" bodyfile="grids/frequency_grid.c++" bodystart="33" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a3a3dc74299c0e1191e71d3615356e092" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FrequencyGrid&lt; eliasGrid &gt;::FrequencyGrid</definition>
+        <argsstring>(char type_in, unsigned int diag_class_in, double Lambda, const fRG_config &amp;config, bool purely_positive=false)</argsstring>
+        <name>FrequencyGrid</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::FrequencyGrid</qualifiedname>
+        <param>
+          <type>char</type>
+          <declname>type_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+          <declname>diag_class_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>purely_positive</declname>
+          <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></defval>
+        </param>
+        <briefdescription>
+<para>This constructor initializes a frequency grid with the global values. This is not needed anymore! </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="112" column="5" bodyfile="grids/frequency_grid.hpp" bodystart="112" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ad2122bdc2222e53f0be1a9a5c6f1d4b6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::get_frequency</definition>
+        <argsstring>(int index) const -&gt; freqType</argsstring>
+        <name>get_frequency</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_frequency</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>getter functions </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="117" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="117" bodyend="117"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a03961b5caff715d6982570ce2a599460" compoundref="d5/d39/frequency__grid_8hpp" startline="629" endline="632">bufferFrequencyGrid&lt; k &gt;::get_freqs_w</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a79d720f515895b974480abf686ae24fc" compoundref="d5/d39/frequency__grid_8hpp" startline="633" endline="641">bufferFrequencyGrid&lt; k &gt;::get_freqs_w</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a4103b26ae674f764bdabf27b657d2c39" compoundref="d5/d39/frequency__grid_8hpp" startline="642" endline="650">bufferFrequencyGrid&lt; k &gt;::get_freqs_w</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1ae8061f2a96fdb2418f8545efb02b89b6" compoundref="d5/d39/frequency__grid_8hpp" startline="454" endline="464">bufferFrequencyGrid&lt; k &gt;::get_grid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a9c829e21d491e684ade4a54ed0ad75fd" compoundref="d5/d39/frequency__grid_8hpp" startline="465" endline="483">bufferFrequencyGrid&lt; k &gt;::get_grid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a622b97ae2430f7b7218757a68bcd2416" compoundref="d5/d39/frequency__grid_8hpp" startline="484" endline="508">bufferFrequencyGrid&lt; k &gt;::get_grid_index</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a4ee47cc0e88aebfee652f70256643111" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::get_auxiliary_gridpoint</definition>
+        <argsstring>(int index) const -&gt; freqType</argsstring>
+        <name>get_auxiliary_gridpoint</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_auxiliary_gridpoint</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="118" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="118" bodyend="118"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a1d20d85f69c7e9292044f236f9f32bde" compoundref="d5/d39/frequency__grid_8hpp" startline="510" endline="521">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1ae0a77a63244297527cfdc6ad4a53e392" compoundref="d5/d39/frequency__grid_8hpp" startline="522" endline="541">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1afcbc5ac73dec43b73e82649cc1b124ff" compoundref="d5/d39/frequency__grid_8hpp" startline="542" endline="567">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a0e43a648ede88dde5faf234f9d5e9a6d" compoundref="d5/d39/frequency__grid_8hpp" startline="569" endline="580">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index_unnormalized</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a0a45fbc35fbc8370819c4c2a59c109df" compoundref="d5/d39/frequency__grid_8hpp" startline="581" endline="600">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index_unnormalized</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a35c0ef32daebf62a24296568293a7acd" compoundref="d5/d39/frequency__grid_8hpp" startline="601" endline="626">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index_unnormalized</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a2b9ef8caba584d9a35e9439f92ad1fc5" compoundref="d5/d39/frequency__grid_8hpp" startline="668" endline="671">bufferFrequencyGrid&lt; k &gt;::get_freqs_aux</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a55a183e84c7e68606d7334bfcc31cf81" compoundref="d5/d39/frequency__grid_8hpp" startline="672" endline="678">bufferFrequencyGrid&lt; k &gt;::get_freqs_aux</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a278dc79764f361707e78fe1a255110b5" compoundref="d5/d39/frequency__grid_8hpp" startline="679" endline="686">bufferFrequencyGrid&lt; k &gt;::get_freqs_aux</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1afe02bbe464b386ffb46de0a109bc011c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::get_all_frequencies</definition>
+        <argsstring>() const -&gt; vec&lt; freqType &gt;</argsstring>
+        <name>get_all_frequencies</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_all_frequencies</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="119" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="119" bodyend="119"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a7349f01a267064ed4a95884381d2d0fc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::get_all_auxiliary_gridpoints</definition>
+        <argsstring>() const -&gt; vec&lt; freqType &gt;</argsstring>
+        <name>get_all_auxiliary_gridpoints</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_all_auxiliary_gridpoints</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="120" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="120" bodyend="120"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab6386af4092af8b06d62d8b7c39b2f65" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType FrequencyGrid&lt; eliasGrid &gt;::get_spacing_auxiliary_gridpoints</definition>
+        <argsstring>() const</argsstring>
+        <name>get_spacing_auxiliary_gridpoints</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_spacing_auxiliary_gridpoints</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="121" column="14" bodyfile="grids/frequency_grid.hpp" bodystart="121" bodyend="121"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ae60554036a1b16901661e31c4a11b7de" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char</type>
+        <definition>char FrequencyGrid&lt; eliasGrid &gt;::get_type</definition>
+        <argsstring>() const</argsstring>
+        <name>get_type</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="122" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="122" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a2584731366a5e09550652bc3f0c1d508" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char</type>
+        <definition>char FrequencyGrid&lt; eliasGrid &gt;::get_diag_class</definition>
+        <argsstring>() const</argsstring>
+        <name>get_diag_class</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_diag_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="123" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="123" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a58ea991cceb2dd6ee1710e8c732263cc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; eliasGrid &gt;::set_essential_parameters</definition>
+        <argsstring>(const freqType wmax_in, const freqType Wscale_in)</argsstring>
+        <name>set_essential_parameters</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::set_essential_parameters</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>wmax_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>Wscale_in</declname>
+        </param>
+        <briefdescription>
+<para>setter functions </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>TODO: Figure out better solution for non-uniform grid</para>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="127" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="127" bodyend="169"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="df/d31/math__utils_8c_09_09_1a28a474b34bb52e38453dfef3498d440e" compoundref="df/d31/math__utils_8c_09_09" startline="96" endline="100">round2bfreq</references>
+        <references refid="df/d31/math__utils_8c_09_09_1ae91f1ae4164410f29b627938634c30e0" compoundref="df/d31/math__utils_8c_09_09" startline="101" endline="105">round2ffreq</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ad4cdec3471a3c180c612dde663eae9a6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; eliasGrid &gt;::set_w_upper</definition>
+        <argsstring>(freqType wmax)</argsstring>
+        <name>set_w_upper</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::set_w_upper</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>wmax</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="170" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="170" bodyend="170"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a9139c88bddccc212c955306e9461ffea" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; eliasGrid &gt;::set_w_center</definition>
+        <argsstring>(freqType w_center_in)</argsstring>
+        <name>set_w_center</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::set_w_center</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w_center_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="171" column="10" bodyfile="grids/frequency_grid.hpp" bodystart="171" bodyend="177"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a6db1aab70984a585d8a4a91c9c68c2da" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::wscale_from_wmax</definition>
+        <argsstring>(freqType &amp;Wscale, freqType w1, freqType wmax, int N) -&gt; double</argsstring>
+        <name>wscale_from_wmax</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::wscale_from_wmax</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>Wscale</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w1</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>wmax</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>N</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This function picks a suitable W_scale for a given wmax for Matsubara T&gt;0 <simplesect kind="return"><para>Wscale non-linearity of <ref refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1afe5e6a34fba8b999659a5179daf2d689" kindref="member">t_from_frequency()</ref> </para>
+</simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>w1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>first positive Matsubara frequency </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>wmax</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>upper bound of frequency grid </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>N</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>relates tmax to t1 by t1=tmax/N (for bosons: (nBOS-1)/2; for fermions: nFER-1) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="178" column="10" bodyfile="grids/frequency_grid.c++" bodystart="260" bodyend="273"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1aa27d5d8029f7b94f1eabf7d4f287c3c3" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="372" endline="378">wscale_from_wmax_v1</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1aa81ff3d55be51607832b6ae53fdddee3" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="388" endline="395">wscale_from_wmax_v3</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1accf972145186913d2ccaf053d34f99b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; eliasGrid &gt;::initialize_grid</definition>
+        <argsstring>()</argsstring>
+        <name>initialize_grid</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::initialize_grid</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This function initializes the frequency grid according to the grid parameters w_upper(=-w_lower): upper limit of frequency box number_of_gridpoints: number of frequency points W_scale: non-linearity of the t_from_frequency function </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="180" column="10" bodyfile="grids/frequency_grid.c++" bodystart="10" bodyend="29"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="df/d31/math__utils_8c_09_09_1a084943946a2fd123daa3065696824405" compoundref="df/d31/math__utils_8c_09_09" startline="128" endline="133">is_doubleOccurencies</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="da/d4d/data__structures_8c_09_09_1a1b776da091e98686fc5f400e4f91ea9d" compoundref="da/d4d/data__structures_8c_09_09" startline="3" endline="5">my_isfinite</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1aee440995a175b5e761f750784ad120cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void FrequencyGrid&lt; eliasGrid &gt;::update_Wscale</definition>
+        <argsstring>(freqType Wscale)</argsstring>
+        <name>update_Wscale</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::update_Wscale</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>Wscale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="181" column="10" bodyfile="grids/frequency_grid.c++" bodystart="134" bodyend="137"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1abd4d1c02f8c415a4e426b883a716e2f0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::get_grid_index</definition>
+        <argsstring>(freqType w_in) const -&gt; int</argsstring>
+        <name>get_grid_index</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_grid_index</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w_in</declname>
+        </param>
+        <briefdescription>
+<para>core grid functionality (has to be super efficient) </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function returns the index corresponding to the frequency w_in. It rounds down due to the narrowing conversion from double to int. This is only used for (linear) interpolations. Hence the narrowing conversion is harmless. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="184" column="10" bodyfile="grids/frequency_grid.c++" bodystart="143" bodyend="171"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1a6b7445f4535a5480e56a9be7fbc10529" compoundref="d9/d3a/technical__parameters_8hpp" startline="22">INTERPOLATION</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5a4cfc14cb896a2f4e003dd5eb5adef579" compoundref="d9/d3a/technical__parameters_8hpp" startline="21">linear</references>
+        <references refid="de/dbb/math__utils_8hpp_1a5aa8b355745fa35e09e7f9fbdeffda82" compoundref="de/dbb/math__utils_8hpp" startline="1038" endline="1056">locate</references>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a1d20d85f69c7e9292044f236f9f32bde" compoundref="d5/d39/frequency__grid_8hpp" startline="510" endline="521">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1ae0a77a63244297527cfdc6ad4a53e392" compoundref="d5/d39/frequency__grid_8hpp" startline="522" endline="541">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1afcbc5ac73dec43b73e82649cc1b124ff" compoundref="d5/d39/frequency__grid_8hpp" startline="542" endline="567">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a0e43a648ede88dde5faf234f9d5e9a6d" compoundref="d5/d39/frequency__grid_8hpp" startline="569" endline="580">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index_unnormalized</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a0a45fbc35fbc8370819c4c2a59c109df" compoundref="d5/d39/frequency__grid_8hpp" startline="581" endline="600">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index_unnormalized</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a35c0ef32daebf62a24296568293a7acd" compoundref="d5/d39/frequency__grid_8hpp" startline="601" endline="626">bufferFrequencyGrid&lt; k &gt;::get_auxgrid_index_unnormalized</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1ae8061f2a96fdb2418f8545efb02b89b6" compoundref="d5/d39/frequency__grid_8hpp" startline="454" endline="464">bufferFrequencyGrid&lt; k &gt;::get_grid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a9c829e21d491e684ade4a54ed0ad75fd" compoundref="d5/d39/frequency__grid_8hpp" startline="465" endline="483">bufferFrequencyGrid&lt; k &gt;::get_grid_index</referencedby>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1a622b97ae2430f7b7218757a68bcd2416" compoundref="d5/d39/frequency__grid_8hpp" startline="484" endline="508">bufferFrequencyGrid&lt; k &gt;::get_grid_index</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1af3f7ab409e9acfea5d5313cd13b6e8c3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::get_grid_index</definition>
+        <argsstring>(freqType &amp;t, freqType w_in) const</argsstring>
+        <name>get_grid_index</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::get_grid_index</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This function returns the index corresponding to the frequency w_in. It rounds down due to the narrowing conversion from double to int. This is only used for (linear) interpolations. Hence the narrowing conversion is harmless. </para>
+        </detaileddescription>
+        <inbodydescription>
+<para>TODO: If this is not satisfied -&gt; use locate</para>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="185" column="9" bodyfile="grids/frequency_grid.c++" bodystart="177" bodyend="210"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1a6b7445f4535a5480e56a9be7fbc10529" compoundref="d9/d3a/technical__parameters_8hpp" startline="22">INTERPOLATION</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5a4cfc14cb896a2f4e003dd5eb5adef579" compoundref="d9/d3a/technical__parameters_8hpp" startline="21">linear</references>
+        <references refid="de/dbb/math__utils_8hpp_1a5aa8b355745fa35e09e7f9fbdeffda82" compoundref="de/dbb/math__utils_8hpp" startline="1038" endline="1056">locate</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1afe5e6a34fba8b999659a5179daf2d689" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::t_from_frequency</definition>
+        <argsstring>(freqType w) const -&gt; freqType</argsstring>
+        <name>t_from_frequency</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::t_from_frequency</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+<para>grid functions: </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The used t_from_frequency function is determined here <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>frequency </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="188" column="10" bodyfile="grids/frequency_grid.c++" bodystart="217" bodyend="231"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1a993806e22f0ca0c5b8a91780e4b8dbbf" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="355" endline="357">grid_transf_lin</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1ab235c4fe88dacf556a8ce010996a99e5" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="299" endline="306">grid_transf_v2</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1a79a90d242591b0dc95001edb9f70cafb" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="322" endline="327">grid_transf_v3</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1a66c66f478c97d743d6ec45f2e984c452" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="337" endline="342">grid_transf_v4</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+        <referencedby refid="df/dd5/classbufferFrequencyGrid_1ab678924140252131bfff71213c0c31fa" compoundref="d5/d39/frequency__grid_8hpp" startline="687" endline="687">bufferFrequencyGrid&lt; k &gt;::gridtransf_f</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a318d3b59151ed5f5ad7efdc05c916c8c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto FrequencyGrid&lt; eliasGrid &gt;::frequency_from_t</definition>
+        <argsstring>(freqType t) const -&gt; freqType</argsstring>
+        <name>frequency_from_t</name>
+        <qualifiedname>FrequencyGrid&lt; eliasGrid &gt;::frequency_from_t</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The used frequency_from_t function is determined here <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>point on auxiliary grid </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/frequency_grid.hpp" line="189" column="10" bodyfile="grids/frequency_grid.c++" bodystart="238" bodyend="251"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1ab834e3a3ad3ebdcbe9bbdd16778e69ad" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="361" endline="363">grid_transf_inv_lin</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1aebb39778d723746dc1e5fff668568818" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="307" endline="310">grid_transf_inv_v2</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1aa7ff9e9299d47fc7cfac1895f9c2a667" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="328" endline="331">grid_transf_inv_v3</references>
+        <references refid="d5/d3d/frequency__grid_8c_09_09_1a3ee22ca1fbe2c0af7c0dab05acb734fc" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="343" endline="346">grid_transf_inv_v4</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>FrequencyGrid&lt; eliasGrid &gt;</label>
+        <link refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+diag_class</edgelabel>
+          <edgelabel>+number_of_gridpoints</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+Delta_factor</edgelabel>
+          <edgelabel>+U_factor</edgelabel>
+          <edgelabel>+W_scale</edgelabel>
+          <edgelabel>+spacing_auxiliary_gridpoint</edgelabel>
+          <edgelabel>+t_lower</edgelabel>
+          <edgelabel>+t_upper</edgelabel>
+          <edgelabel>+w_center</edgelabel>
+          <edgelabel>+w_lower</edgelabel>
+          <edgelabel>+w_upper</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+purely_positive</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+all_frequencies</edgelabel>
+          <edgelabel>+auxiliary_grid</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>T</label>
+      </node>
+      <node id="5">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="4">
+        <label>char</label>
+      </node>
+      <node id="3">
+        <label>double</label>
+      </node>
+      <node id="2">
+        <label>int</label>
+      </node>
+      <node id="10">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>vec&lt; T &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="10" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>vec&lt; freqType &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="template-instance">
+          <edgelabel>&lt; freqType &gt;</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="grids/frequency_grid.hpp" line="70" column="1" bodyfile="grids/frequency_grid.hpp" bodystart="70" bodyend="190"/>
+    <listofallmembers>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a959818c04acc2b574e37f34fb960a2b3" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>all_frequencies</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a8e98ce96470c4f49940aabcf7eb8587a" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>auxiliary_grid</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a9e7e0fdd1c87ac4e0b5321d507165519" prot="private" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>DataContainer</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a80bd45202ca342a5ba47bea81ba4c2d6" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>Delta_factor</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a95e3e23b12e37a53c2ace8c8682a243f" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>derive_auxiliary_parameters</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a873975f4ebdb2263ec96cf0dccb30f1c" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>diag_class</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a318d3b59151ed5f5ad7efdc05c916c8c" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>frequency_from_t</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a3a3dc74299c0e1191e71d3615356e092" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>FrequencyGrid</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a7349f01a267064ed4a95884381d2d0fc" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_all_auxiliary_gridpoints</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1afe02bbe464b386ffb46de0a109bc011c" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_all_frequencies</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a4ee47cc0e88aebfee652f70256643111" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_auxiliary_gridpoint</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a2584731366a5e09550652bc3f0c1d508" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_diag_class</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ad2122bdc2222e53f0be1a9a5c6f1d4b6" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_frequency</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1abd4d1c02f8c415a4e426b883a716e2f0" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_grid_index</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1af3f7ab409e9acfea5d5313cd13b6e8c3" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_grid_index</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab6386af4092af8b06d62d8b7c39b2f65" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_spacing_auxiliary_gridpoints</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ae60554036a1b16901661e31c4a11b7de" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>get_type</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>guess_essential_parameters</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a2428bf42fc248d120f4f0cda857eb989" prot="private" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>hdf5_impl::init_freqgrid_from_hdf_LambdaLayer</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a2a2dccc2f396b736e81b15a619343e9f" prot="private" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>hdf5_impl::write_freqparams_to_hdf_LambdaLayer</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1accf972145186913d2ccaf053d34f99b7" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>initialize_grid</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab92630834a147095874cf088c802c517" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>number_of_gridpoints</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a41681b58050ae673ab6aee095297be31" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>purely_positive</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a58ea991cceb2dd6ee1710e8c732263cc" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>set_essential_parameters</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a9139c88bddccc212c955306e9461ffea" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>set_w_center</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ad4cdec3471a3c180c612dde663eae9a6" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>set_w_upper</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a25c7d154ecec5e6681333521aa3334ee" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>spacing_auxiliary_gridpoint</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1afe5e6a34fba8b999659a5179daf2d689" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>t_from_frequency</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ae4e84e4f410edf741a524f743813f142" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>t_lower</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab32338d830bdf17cc3af369130c7ec0b" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>t_upper</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a78c08a94b69e90694fad10fc9f0e2038" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>type</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1afe4fc1156f6fa3628b1a0cfb84ff1cd8" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>U_factor</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1aee440995a175b5e761f750784ad120cd" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>update_Wscale</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a95957c156dee7240d73924150c76ff2f" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>w_center</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1ab2b07237e0b9984fd1c9ba96b326d6d9" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>w_lower</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a3db267ada075488c5b960c2b662445a4" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>W_scale</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1aa0b907d4658b0a5bf162b2d5a4009705" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>w_upper</name></member>
+      <member refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a6db1aab70984a585d8a4a91c9c68c2da" prot="public" virt="non-virtual"><scope>FrequencyGrid&lt; eliasGrid &gt;</scope><name>wscale_from_wmax</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

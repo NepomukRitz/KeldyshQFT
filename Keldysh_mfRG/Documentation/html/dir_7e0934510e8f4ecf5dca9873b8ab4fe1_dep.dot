@@ -1,0 +1,12 @@
+digraph "multidimensional"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  dir_7e0934510e8f4ecf5dca9873b8ab4fe1 [label="multidimensional", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_7e0934510e8f4ecf5dca9873b8ab4fe1.html",tooltip=""];
+  dir_df38b2a5d584e0f6066b4518b95c638b [label="utilities", fillcolor="#edf0f7", color="grey25", style="filled", URL="dir_df38b2a5d584e0f6066b4518b95c638b.html",tooltip=""];
+  dir_7e0934510e8f4ecf5dca9873b8ab4fe1->dir_df38b2a5d584e0f6066b4518b95c638b [headlabel="2", labeldistance=1.5 headhref="dir_000010_000018.html" href="dir_000010_000018.html" color="steelblue1" fontcolor="steelblue1"];
+}

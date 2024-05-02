@@ -6,61 +6,52 @@
 #include <string>
 #include <array>
 
-// For production: uncomment the following line to switch off assert()-functions
-//#define NDEBUG
+//#define NDEBUG    ///< If defined, assert-functions are switched off. Recommended setting for production runs.
 
-#define DEBUG_SYMMETRIES 1 // 0 for false; 1 for true; used for test_symmetries() -> computes the mfRG equations once without use of symmetries
+#define DEBUG_SYMMETRIES 1 ///< 0 for false; 1 for true. Performs computations without use of symmetries if true. Useful for debugging purposes.
 
-constexpr bool VERBOSE = false;
+constexpr bool VERBOSE = false; ///< If true, detailed information about all computational steps are written into the log file. Recommended setting for production runs: false
 
-#define USE_ANDERSON_ACCELERATION 1
+#define USE_ANDERSON_ACCELERATION 1 ///< 0 for false; 1 for true. If true, Anderson acceleration is used to converge parquet iterations and self-energy iterations in mfRG faster.
 
 
-#define ZERO_TEMP 0  // Determines whether to work in the T = 0 limit
-// Defines the formalism (not defined: Matsubara formalism, defined: Keldysh formalism)
+#define ZERO_TEMP 0 ///< 0 for false; 1 for true. If true, temperature T = 0 is assumed.
 #define KELDYSH_FORMALISM 1     ///< Determines whether calculations shall be done in the Keldysh or Matsubara formalism.\n 0 for Matsubara; 1 for Keldysh formalism
 #define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
-#define SWITCH_SUM_N_INTEGRAL 1    // if defined: sum over internal indices within integrand
+#define SWITCH_SUM_N_INTEGRAL 1    ///< 0 for false; 1 for true. If true, the sum over internal Keldysh indices is done before the frequency integration. Recommended setting: 1.
 #if KELDYSH_FORMALISM or not ZERO_TEMP
-#define VECTORIZED_INTEGRATION 1  // perform integrals with vector-valued integrands ; 0 for False; 1 for True;
-                                 // Keldysh: vectorizes over Keldysh indices
-                                 // Matsubara finite T: vectorizes Matsubara sum
+#define VECTORIZED_INTEGRATION 1  ///< 0 for false; 1 for true. If true, integrals are performed with vector-valued integrands. For Keldysh, vectorization over Keldysh indices. For Matsubara at finite T, vectorization over the Matsubara sum.
+
 #else
 #define VECTORIZED_INTEGRATION 0
 #endif
 
 
-// Determines whether particle-hole symmetry is assumed
-#define PARTICLE_HOLE_SYMM 1
+#define PARTICLE_HOLE_SYMM 1 ///< 0 for false; 1 for true. If true, particle-hole symmetry is assumed.
 
 /// Production runs parameters ///
 
-// Defines the number of diagrammatic classes that are relevant for a code:
-// 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies
-#define MAX_DIAG_CLASS 3
+#define MAX_DIAG_CLASS 3 ///< Defines the diagrammatic classes that will be considered: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies. Useful for debugging purposes and for computations in second order perturbation theory, which only require K1.
 #define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1      // mfRG equations for SBE approximation. Only relevant when SBE_DECOMOSITION == 1.
 
 #define ANALYTIC_TAILS 1
 
-#define KATANIN
-#define SELF_ENERGY_FLOW_CORRECTIONS 1
+#define KATANIN ///< If defined, the Katanin extension is used during mfRG computations.
+#define SELF_ENERGY_FLOW_CORRECTIONS 1 ///< 0 for false; 1 for true. If true, corrections to the flow equations for the vertex from the self-energy, starting at l=3, are included.
 const int nmax_Selfenergy_iterations = 10;
 const double tol_selfenergy_correction_abs = 1e-9;
 const double tol_selfenergy_correction_rel = 1e-5;
 const double loop_tol_abs = 1e-9;
 const double loop_tol_rel = 1e-5;
 
-// If defined, use static K1 inter-channel feedback as done by Severin Jakobs.
-// Only makes sense for pure K1 calculations.
-//#define STATIC_FEEDBACK
+//#define STATIC_FEEDBACK ///< If defined, use static K1 inter-channel feedback as done by Severin Jakobs. Only makes sense for pure K1 calculations.
 #ifdef STATIC_FEEDBACK
-#define BARE_SE_FEEDBACK // use only bare selfenergy. Only makes sense if STATIC_FEEDBACK is defined!
+#define BARE_SE_FEEDBACK ///< If defined, only bare selfenergy is used. Only makes sense if STATIC_FEEDBACK is defined. Useful for benchmarks with previous Keldysh fRG schemes.
 #endif
 
-// If defined, only capture the flow equations up to O(U^2)
-// Only makes sense for pure K1 calculations.
-//#define PT2_FLOW
+
+//#define PT2_FLOW ///< If defined, only compute the flow equations up to O(U^2). Only makes sense for pure K1 calculations. Useful as a consistency check together with independent PT2 calculations.
 #ifdef PT2_FLOW
 static_assert(MAX_DIAG_CLASS == 1);
 static_assert(PARTICLE_HOLE_SYMM == 1);
@@ -68,10 +59,10 @@ static_assert(PARTICLE_HOLE_SYMM == 1);
 
 /// Physical parameters ///
 
-constexpr double glb_mu = 0.0;                     // Chemical potential -- w.l.o.g. ALWAYS set to zero (for the SIAM)
+constexpr double glb_mu = 0.0;                     ///< Chemical potential -- w.l.o.g. ALWAYS set to 0.0 for the AM!
 
-constexpr double glb_V = 0.;                       // Bias voltage (glb_V == 0. in equilibrium)
-constexpr bool EQUILIBRIUM = true;                 // If defined, use equilibrium FDT's for propagators
+constexpr double glb_V = 0.;                       ///< Bias voltage (glb_V == 0. in equilibrium)
+constexpr bool EQUILIBRIUM = true;                 ///< If true, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
 #define USE_FDT 0
 
@@ -114,21 +105,21 @@ constexpr double Lambda_fin = 1;// 1e-4;
 constexpr double Lambda_ini = 5.;
 constexpr double Lambda_fin = 4.0;
 #else
-const double Lambda_ini = 19.8;//pow(10,  1) ;// 1e4;
-const double Lambda_fin = 0.1 ;// 1e-4;
+//pow(10,  1) ;// 1e4;
+const double Lambda_ini = 19.8;           ///< Initial value of the regulator \Lambda for an mfRG flow.
+// 1e-4;
+const double Lambda_fin = 0.1 ;           ///< Final value of the regulator \Lambda for an mfRG flow.
 #endif
-constexpr double Lambda_scale = 1./200.;             //Scale of the log substitution
-constexpr double dLambda_initial = 0.5;             //Initial step size for ODE solvers with adaptive step size control
+constexpr double Lambda_scale = 1./200.;  ///< Scale of the log substitution, relevant in the hybridization flow.
+constexpr double dLambda_initial = 0.5;   ///< Initial step size for ODE solvers with adaptive step size control.
 
 #if REG == 2
-// Vector with the values of U for which we have NRG data to compare with (exclude zero!)
-// Attention: these values are in units of Delta/2, not Delta -> corresponding U_fRG values are twice as large! /// Not anymore!
 //const std::vector<double> U_NRG {0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1., 1.2, 1.25, 1.5, 1.75, 2., 2.25, 2.5, 3., 5.};
 const std::vector<double> U_NRG {0.05*M_PI, 0.1*M_PI, 0.5, 0.2*M_PI, 0.3*M_PI, 1.0, 0.4*M_PI, 1.5,
                                  0.5*M_PI, 0.6*M_PI, 2.0, 0.7*M_PI, 0.75*M_PI, 2.5, 0.8*M_PI, 0.9*M_PI, 3.0,
                                  1.0*M_PI, 1.1*M_PI, 3.5, 1.2*M_PI, 1.25*M_PI, 4.0, 1.3*M_PI, 1.4*M_PI, 4.5,
                                  1.5*M_PI, 5.0
-                                , 6.0, 2*M_PI, 8.0, 3*M_PI, 10.0};
+                                , 6.0, 2*M_PI, 8.0, 3*M_PI, 10.0};                                                  ///< Vector with the values of U in units of \Delta that an mfRG flow should cover. Serve as checkpoints for the flow. Useful for benchmarking purposes if data from other methods at precise parameter points are available.
 #elif REG == 5
 const std::vector<double> U_NRG {5.0, 1.0, 0.5};
 #else

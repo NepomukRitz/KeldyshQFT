@@ -8,25 +8,24 @@
 //If defined, the flow of the self_energy is symmetrized, closed above and below
 //#define SYMMETRIZED_SELF_ENERGY_FLOW
 
-// Flag whether to use MPI, comment out following to not use MPI_FLAG
-#define USE_MPI
+#define USE_MPI ///< If defined, MPI is used for parallelization across multiple nodes.
 #ifdef USE_MPI
 constexpr bool MPI_FLAG = true;
 #else
 constexpr bool MPI_FLAG = false;
 #endif
 
-//Tolerance for closeness to grid points when interpolating
-constexpr double inter_tol = 1e-5;
+constexpr double inter_tol = 1e-5;  ///< Tolerance for closeness to grid points when interpolating.
+
 
 enum interpolMethod {linear=0, linear_on_aux=1, cubic=4};
-constexpr interpolMethod INTERPOLATION = linear_on_aux;
+constexpr interpolMethod INTERPOLATION = linear_on_aux;     ///< Interpolation method to me used. linear: linear interpolation on the frequency grid. linear_on_aux: linear interpolation on the grid for the auxiliary frequency \Omega. cubic: Interpolation with cubic splines (warning: expensive!).
 
-//Tolerance for loop convergence
-constexpr double converged_tol = 1e-7;
 
-//Integrator tolerance
-inline double integrator_tol = 1e-5;
+constexpr double converged_tol = 1e-7;  ///< Tolerance for loop convergence in mfRG.
+
+inline double integrator_tol = 1e-5;    ///< Integrator tolerance.
+
 
 // Debug mode allows to select specific Keldysh components contributing to loop and bubbles
 //#define DEBUG_MODE

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dir_df38b2a5d584e0f6066b4518b95c638b" kind="dir">
+    <compoundname>utilities</compoundname>
+    <innerfile refid="d6/d7b/anderson__acceleration_8hpp">anderson_acceleration.hpp</innerfile>
+    <innerfile refid="d5/d4f/hdf5__routines_8c_09_09">hdf5_routines.c++</innerfile>
+    <innerfile refid="d5/de4/hdf5__routines_8hpp">hdf5_routines.hpp</innerfile>
+    <innerfile refid="df/d31/math__utils_8c_09_09">math_utils.c++</innerfile>
+    <innerfile refid="de/dbb/math__utils_8hpp">math_utils.hpp</innerfile>
+    <innerfile refid="d4/d21/minimizer_8hpp">minimizer.hpp</innerfile>
+    <innerfile refid="d4/dda/mpi__setup_8c_09_09">mpi_setup.c++</innerfile>
+    <innerfile refid="db/de0/mpi__setup_8hpp">mpi_setup.hpp</innerfile>
+    <innerfile refid="d1/d64/runtime__error_8hpp">runtime_error.hpp</innerfile>
+    <innerfile refid="dd/de3/template__utils_8hpp">template_utils.hpp</innerfile>
+    <innerfile refid="d6/d35/util_8c_09_09">util.c++</innerfile>
+    <innerfile refid="d0/d3f/util_8hpp">util.hpp</innerfile>
+    <innerfile refid="d9/d8b/write__data2file_8c_09_09">write_data2file.c++</innerfile>
+    <innerfile refid="d8/d74/write__data2file_8hpp">write_data2file.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="utilities/"/>
+  </compounddef>
+</doxygen>

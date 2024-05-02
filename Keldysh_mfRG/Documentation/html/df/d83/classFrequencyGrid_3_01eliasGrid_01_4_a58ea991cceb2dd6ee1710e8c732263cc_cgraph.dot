@@ -1,0 +1,28 @@
+digraph "FrequencyGrid&lt; eliasGrid &gt;::set_essential_parameters"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="FrequencyGrid\< eliasGrid\l \>::set_essential_parameters",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="setter functions"];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="correctionFunctionBubble\l_REG3_Matsubara_PHS_diff",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af",tooltip=" "];
+  Node2 -> Node3 [id="edge2_Node000002_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="glb_i",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d7/d59/data__structures_8hpp.html#ae0c8f095bd2588bb4d374b002c94a90d",tooltip=" "];
+  Node2 -> Node4 [id="edge3_Node000002_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="log",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d7/d43/KramersKronig_8c_09_09.html#ad9512117c829517886f44895ef9ece90",tooltip=" "];
+  Node4 -> Node2 [id="edge4_Node000004_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node4 -> Node4 [id="edge5_Node000004_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node5 [id="edge6_Node000001_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="round2bfreq",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$df/d31/math__utils_8c_09_09.html#a28a474b34bb52e38453dfef3498d440e",tooltip=" "];
+  Node5 -> Node2 [id="edge7_Node000005_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node5 -> Node6 [id="edge8_Node000005_Node000006",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="sign",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$de/dbb/math__utils_8hpp.html#a0bb692dd2ccfca1d2a03544ff6b3c7c8",tooltip=" "];
+  Node6 -> Node2 [id="edge9_Node000006_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node7 [id="edge10_Node000001_Node000007",color="steelblue1",style="solid",tooltip=" "];
+  Node7 [id="Node000007",label="round2ffreq",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$df/d31/math__utils_8c_09_09.html#ae91f1ae4164410f29b627938634c30e0",tooltip=" "];
+  Node7 -> Node2 [id="edge11_Node000007_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node7 -> Node6 [id="edge12_Node000007_Node000006",color="steelblue1",style="solid",tooltip=" "];
+}

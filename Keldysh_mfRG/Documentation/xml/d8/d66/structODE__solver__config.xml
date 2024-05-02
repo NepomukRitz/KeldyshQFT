@@ -1,0 +1,404 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d8/d66/structODE__solver__config" kind="struct" language="C++" prot="public">
+    <compoundname>ODE_solver_config</compoundname>
+    <includes refid="de/d91/ODE__solver__config_8hpp" local="no">ODE_solver_config.hpp</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a43fe22c125166b15eabe86c416c30cf3" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+        <definition>unsigned int ODE_solver_config::maximal_number_of_ODE_steps</definition>
+        <argsstring></argsstring>
+        <name>maximal_number_of_ODE_steps</name>
+        <qualifiedname>ODE_solver_config::maximal_number_of_ODE_steps</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="51" column="18" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="51" bodyend="-1"/>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a1a280a307f261f051ff4523b77577151" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+        <definition>unsigned int ODE_solver_config::iter_start</definition>
+        <argsstring></argsstring>
+        <name>iter_start</name>
+        <qualifiedname>ODE_solver_config::iter_start</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="52" column="18" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="52" bodyend="-1"/>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1a58b67ba50cbb4f7de77e1cefc97ab1d9" compoundref="da/dc3/ODE__solvers_8hpp" startline="723" endline="820">boost::numeric::odeint::detail::integrate_adaptive_check</referencedby>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1afbf101e814fc65a748987878efb4f4e1" compoundref="da/dc3/ODE__solvers_8hpp" startline="663" endline="720">boost::numeric::odeint::detail::integrate_nonadaptive</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a2ef66e42d02cd0c71b93c3809424d7a1" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; double &gt;</type>
+        <definition>std::vector&lt;double&gt; ODE_solver_config::lambda_checkpoints</definition>
+        <argsstring></argsstring>
+        <name>lambda_checkpoints</name>
+        <qualifiedname>ODE_solver_config::lambda_checkpoints</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="53" column="17" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="53" bodyend="-1"/>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1a58b67ba50cbb4f7de77e1cefc97ab1d9" compoundref="da/dc3/ODE__solvers_8hpp" startline="723" endline="820">boost::numeric::odeint::detail::integrate_adaptive_check</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1aa5b7faba7bcaec9f98a691801a78e028" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ODE_solver_config::filename</definition>
+        <argsstring></argsstring>
+        <name>filename</name>
+        <qualifiedname>ODE_solver_config::filename</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="54" column="17" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="54" bodyend="-1"/>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1a58b67ba50cbb4f7de77e1cefc97ab1d9" compoundref="da/dc3/ODE__solvers_8hpp" startline="723" endline="820">boost::numeric::odeint::detail::integrate_adaptive_check</referencedby>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1afbf101e814fc65a748987878efb4f4e1" compoundref="da/dc3/ODE__solvers_8hpp" startline="663" endline="720">boost::numeric::odeint::detail::integrate_nonadaptive</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a9b61726911ed341ec29ae4d92f1e2ef9" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+        <definition>unsigned int ODE_solver_config::max_stepResizing_attempts</definition>
+        <argsstring></argsstring>
+        <name>max_stepResizing_attempts</name>
+        <qualifiedname>ODE_solver_config::max_stepResizing_attempts</qualifiedname>
+        <briefdescription>
+<para>parameters for adaptive ODE solvers: </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="57" column="18" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="57" bodyend="-1"/>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1a58b67ba50cbb4f7de77e1cefc97ab1d9" compoundref="da/dc3/ODE__solvers_8hpp" startline="723" endline="820">boost::numeric::odeint::detail::integrate_adaptive_check</referencedby>
+        <referencedby refid="d8/da5/namespaceode__solver__impl_1ae8d7c77b57d20b001caefe7dcdeaf812" compoundref="da/dc3/ODE__solvers_8hpp" startline="377" endline="497">ode_solver_impl::rkqs</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1ae2ca81968116778ec306ecb49b9dafd5" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ODE_solver_config::Lambda_i</definition>
+        <argsstring></argsstring>
+        <name>Lambda_i</name>
+        <qualifiedname>ODE_solver_config::Lambda_i</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="58" column="12" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="58" bodyend="-1"/>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a771444e896cc4989f27d04f103fb2f92" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ODE_solver_config::Lambda_f</definition>
+        <argsstring></argsstring>
+        <name>Lambda_f</name>
+        <qualifiedname>ODE_solver_config::Lambda_f</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="58" column="21" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="58" bodyend="-1"/>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a35926ed20edc2503238326c955ab6ded" compoundref="da/dc3/ODE__solvers_8hpp" startline="26" endline="67">postRKstep_stuff</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1ac2515d552f0a766ad6d127571e1640b2" prot="public" static="no" mutable="yes">
+        <type>double</type>
+        <definition>double ODE_solver_config::Lambda_now</definition>
+        <argsstring></argsstring>
+        <name>Lambda_now</name>
+        <qualifiedname>ODE_solver_config::Lambda_now</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="59" column="20" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="59" bodyend="-1"/>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1ad7cd18e32d999c84a2fa487af18ab08b" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ODE_solver_config::relative_error</definition>
+        <argsstring></argsstring>
+        <name>relative_error</name>
+        <qualifiedname>ODE_solver_config::relative_error</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="60" column="12" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="60" bodyend="-1"/>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d8/da5/namespaceode__solver__impl_1a3c57cdacfa861db25e7720e774f4be07" compoundref="da/dc3/ODE__solvers_8hpp" startline="296" endline="361">ode_solver_impl::rk_step</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a3a78a13774a6da9bd2adceaec2340352" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ODE_solver_config::absolute_error</definition>
+        <argsstring></argsstring>
+        <name>absolute_error</name>
+        <qualifiedname>ODE_solver_config::absolute_error</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="61" column="12" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="61" bodyend="-1"/>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d8/da5/namespaceode__solver__impl_1a3c57cdacfa861db25e7720e774f4be07" compoundref="da/dc3/ODE__solvers_8hpp" startline="296" endline="361">ode_solver_impl::rk_step</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a5b09f29d1e624a35e3276afb05065892" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ODE_solver_config::a_State</definition>
+        <argsstring></argsstring>
+        <name>a_State</name>
+        <qualifiedname>ODE_solver_config::a_State</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="62" column="12" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="62" bodyend="-1"/>
+        <referencedby refid="d8/da5/namespaceode__solver__impl_1a3c57cdacfa861db25e7720e774f4be07" compoundref="da/dc3/ODE__solvers_8hpp" startline="296" endline="361">ode_solver_impl::rk_step</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d66/structODE__solver__config_1a53e79394ef7c954a2bc546ed7e6a02fa" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ODE_solver_config::a_dState_dLambda</definition>
+        <argsstring></argsstring>
+        <name>a_dState_dLambda</name>
+        <qualifiedname>ODE_solver_config::a_dState_dLambda</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="63" column="12" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="63" bodyend="-1"/>
+        <referencedby refid="d8/da5/namespaceode__solver__impl_1a3c57cdacfa861db25e7720e774f4be07" compoundref="da/dc3/ODE__solvers_8hpp" startline="296" endline="361">ode_solver_impl::rk_step</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d8/d66/structODE__solver__config_1a779043e04d240b0d88cdd2491d7e03e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ODE_solver_config::ODE_solver_config</definition>
+        <argsstring>()</argsstring>
+        <name>ODE_solver_config</name>
+        <qualifiedname>ODE_solver_config::ODE_solver_config</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="8" column="5" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="8" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d66/structODE__solver__config_1ae3945474846faf30ceb54c411d6bc285" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ODE_solver_config::ODE_solver_config</definition>
+        <argsstring>(int maximal_number_of_ODE_steps_in, double Lambda_i_in, double Lambda_f_in, int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in)</argsstring>
+        <name>ODE_solver_config</name>
+        <qualifiedname>ODE_solver_config::ODE_solver_config</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>maximal_number_of_ODE_steps_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>Lambda_i_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>Lambda_f_in</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>max_stepResizing_attempts_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>relative_error_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>absolute_error_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="22" column="5" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="22" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d66/structODE__solver__config_1a256506791a2a0a24210a683620e86228" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ODE_solver_config::ODE_solver_config</definition>
+        <argsstring>(unsigned int maximal_number_of_ODE_steps_in, double Lambda_i_in, double Lambda_f_in, unsigned int iter_start_in, std::vector&lt; double &gt; lambda_checkpoints_in, std::string filename_in, unsigned int max_stepResizing_attempts_in, double relative_error_in, double absolute_error_in, double a_State_in, double a_dState_dLambda_in)</argsstring>
+        <name>ODE_solver_config</name>
+        <qualifiedname>ODE_solver_config::ODE_solver_config</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+          <declname>maximal_number_of_ODE_steps_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>Lambda_i_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>Lambda_f_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+          <declname>iter_start_in</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; double &gt;</type>
+          <declname>lambda_checkpoints_in</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>filename_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+          <declname>max_stepResizing_attempts_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>relative_error_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>absolute_error_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a_State_in</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a_dState_dLambda_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/ODE_solver_config.hpp" line="36" column="5" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="36" bodyend="49"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>ODE_solver_config</label>
+        <link refid="d8/d66/structODE__solver__config"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+iter_start</edgelabel>
+          <edgelabel>+max_stepResizing_attempts</edgelabel>
+          <edgelabel>+maximal_number_of_ODE_steps</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+lambda_checkpoints</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>+filename</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+Lambda_f</edgelabel>
+          <edgelabel>+Lambda_i</edgelabel>
+          <edgelabel>+Lambda_now</edgelabel>
+          <edgelabel>+a_State</edgelabel>
+          <edgelabel>+a_dState_dLambda</edgelabel>
+          <edgelabel>+absolute_error</edgelabel>
+          <edgelabel>+relative_error</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>T</label>
+      </node>
+      <node id="4">
+        <label>double</label>
+      </node>
+      <node id="2">
+        <label>int</label>
+      </node>
+      <node id="8">
+        <label>std::basic_string&lt; Char &gt;</label>
+      </node>
+      <node id="7">
+        <label>std::string</label>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>std::vector&lt; double &gt;</label>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="template-instance">
+          <edgelabel>&lt; double &gt;</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="ODE_solvers/ODE_solver_config.hpp" line="6" column="1" bodyfile="ODE_solvers/ODE_solver_config.hpp" bodystart="6" bodyend="64"/>
+    <listofallmembers>
+      <member refid="d8/d66/structODE__solver__config_1a53e79394ef7c954a2bc546ed7e6a02fa" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>a_dState_dLambda</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a5b09f29d1e624a35e3276afb05065892" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>a_State</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a3a78a13774a6da9bd2adceaec2340352" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>absolute_error</name></member>
+      <member refid="d8/d66/structODE__solver__config_1aa5b7faba7bcaec9f98a691801a78e028" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>filename</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a1a280a307f261f051ff4523b77577151" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>iter_start</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a2ef66e42d02cd0c71b93c3809424d7a1" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>lambda_checkpoints</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a771444e896cc4989f27d04f103fb2f92" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>Lambda_f</name></member>
+      <member refid="d8/d66/structODE__solver__config_1ae2ca81968116778ec306ecb49b9dafd5" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>Lambda_i</name></member>
+      <member refid="d8/d66/structODE__solver__config_1ac2515d552f0a766ad6d127571e1640b2" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>Lambda_now</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a9b61726911ed341ec29ae4d92f1e2ef9" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>max_stepResizing_attempts</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a43fe22c125166b15eabe86c416c30cf3" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>maximal_number_of_ODE_steps</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a779043e04d240b0d88cdd2491d7e03e0" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>ODE_solver_config</name></member>
+      <member refid="d8/d66/structODE__solver__config_1ae3945474846faf30ceb54c411d6bc285" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>ODE_solver_config</name></member>
+      <member refid="d8/d66/structODE__solver__config_1a256506791a2a0a24210a683620e86228" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>ODE_solver_config</name></member>
+      <member refid="d8/d66/structODE__solver__config_1ad7cd18e32d999c84a2fa487af18ab08b" prot="public" virt="non-virtual"><scope>ODE_solver_config</scope><name>relative_error</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

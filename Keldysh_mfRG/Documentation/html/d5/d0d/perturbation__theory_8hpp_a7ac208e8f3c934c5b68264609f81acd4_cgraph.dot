@@ -1,0 +1,47 @@
+digraph "sopt_state"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="sopt_state",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="correctionFunctionBubble\l_REG3_Matsubara_PHS_diff",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af",tooltip=" "];
+  Node2 -> Node3 [id="edge2_Node000002_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="glb_i",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d7/d59/data__structures_8hpp.html#ae0c8f095bd2588bb4d374b002c94a90d",tooltip=" "];
+  Node2 -> Node4 [id="edge3_Node000002_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="log",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d7/d43/KramersKronig_8c_09_09.html#ad9512117c829517886f44895ef9ece90",tooltip=" "];
+  Node4 -> Node2 [id="edge4_Node000004_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node4 -> Node4 [id="edge5_Node000004_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node5 [id="edge6_Node000001_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="utils::print",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5",tooltip=" "];
+  Node5 -> Node2 [id="edge7_Node000005_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node5 -> Node6 [id="edge8_Node000005_Node000006",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="mpi_world_rank",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d4/dda/mpi__setup_8c_09_09.html#a191972e98e51a56d90e8e5f750496c7d",tooltip=" "];
+  Node6 -> Node2 [id="edge9_Node000006_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node5 -> Node7 [id="edge10_Node000005_Node000007",color="steelblue1",style="solid",tooltip=" "];
+  Node7 [id="Node000007",label="utils::print_time_stamp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d6/d84/namespaceutils.html#ac76a8cfe22f29cfa7738ebd9972f60c8",tooltip=" "];
+  Node7 -> Node2 [id="edge11_Node000007_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node8 [id="edge12_Node000001_Node000008",color="steelblue1",style="solid",tooltip=" "];
+  Node8 [id="Node000008",label="utils::print_add",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d6/d84/namespaceutils.html#abc69e50b2a20892c52c84cee55052ffe",tooltip=" "];
+  Node8 -> Node2 [id="edge13_Node000008_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node8 -> Node6 [id="edge14_Node000008_Node000006",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node9 [id="edge15_Node000001_Node000009",color="steelblue1",style="solid",tooltip=" "];
+  Node9 [id="Node000009",label="sopt_state_impl",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d5/d0d/perturbation__theory_8hpp.html#ad3a00a8aa8e7ec50537f318bda4c7432",tooltip=" "];
+  Node9 -> Node2 [id="edge16_Node000009_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node9 -> Node5 [id="edge17_Node000009_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node9 -> Node8 [id="edge18_Node000009_Node000008",color="steelblue1",style="solid",tooltip=" "];
+  Node9 -> Node10 [id="edge19_Node000009_Node000010",color="steelblue1",style="solid",tooltip=" "];
+  Node10 [id="Node000010",label="selfEnergyInSOPT",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d5/d0d/perturbation__theory_8hpp.html#a6336ef3f9900b878dba73ab9792cb60c",tooltip=" "];
+  Node10 -> Node11 [id="edge20_Node000010_Node000011",color="steelblue1",style="solid",tooltip=" "];
+  Node11 [id="Node000011",label="bubble_function",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$de/de8/bubble__function_8hpp.html#af33e47ff22bc507b4226169779a87c95",tooltip=" "];
+  Node10 -> Node2 [id="edge21_Node000010_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node9 -> Node12 [id="edge22_Node000009_Node000012",color="steelblue1",style="solid",tooltip=" "];
+  Node12 [id="Node000012",label="vertexInSOPT",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$d5/d0d/perturbation__theory_8hpp.html#a528cc117342e0fcca28edb8e28b48b2c",tooltip=" "];
+  Node12 -> Node11 [id="edge23_Node000012_Node000011",color="steelblue1",style="solid",tooltip=" "];
+  Node12 -> Node2 [id="edge24_Node000012_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node12 -> Node5 [id="edge25_Node000012_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node12 -> Node8 [id="edge26_Node000012_Node000008",color="steelblue1",style="solid",tooltip=" "];
+}

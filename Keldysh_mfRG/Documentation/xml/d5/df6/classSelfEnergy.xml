@@ -1,0 +1,1371 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d5/df6/classSelfEnergy" kind="class" language="C++" prot="public">
+    <compoundname>SelfEnergy</compoundname>
+    <includes refid="d6/d2d/selfenergy_8hpp" local="no">selfenergy.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df" prot="public" static="no">
+        <type><ref refid="df/dd5/classbufferFrequencyGrid" kindref="compound">bufferFrequencyGrid</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a925f6df3ecae5016cd0f312e087f611e" kindref="member">selfenergy</ref> &gt;</type>
+        <definition>using SelfEnergy&lt; Q &gt;::freqGrid_type =  bufferFrequencyGrid&lt;selfenergy&gt;</definition>
+        <argsstring></argsstring>
+        <name>freqGrid_type</name>
+        <qualifiedname>SelfEnergy::freqGrid_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="20" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d5/df6/classSelfEnergy_1a7d7fd9f86a8d29fefd6146f6415fef40" prot="public" static="no">
+        <type><ref refid="dc/d7a/classdataBuffer" kindref="compound">dataBuffer</ref>&lt; Q, <ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a925f6df3ecae5016cd0f312e087f611e" kindref="member">selfenergy</ref>, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, <ref refid="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df" kindref="member">freqGrid_type</ref>, <ref refid="d9/d3a/technical__parameters_8hpp_1a6b7445f4535a5480e56a9be7fbc10529" kindref="member">INTERPOLATION</ref> &gt;</type>
+        <definition>using SelfEnergy&lt; Q &gt;::buffer_type =  dataBuffer&lt;Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION&gt;</definition>
+        <argsstring></argsstring>
+        <name>buffer_type</name>
+        <qualifiedname>SelfEnergy::buffer_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="21" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d5/df6/classSelfEnergy_1aec678602c2dbbe4c981f436fa8ea5ba8" prot="public" static="no">
+        <type>std::array&lt; double, 1 &gt;</type>
+        <definition>using SelfEnergy&lt; Q &gt;::frequencies_type =  std::array&lt;double,1&gt;</definition>
+        <argsstring></argsstring>
+        <name>frequencies_type</name>
+        <qualifiedname>SelfEnergy::frequencies_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="22" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d5/df6/classSelfEnergy_1a205b1475f5cdf9fb14b799ec9e97ab9a" prot="public" static="no">
+        <type>std::array&lt; <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref>, SE_config.rank &gt;</type>
+        <definition>using SelfEnergy&lt; Q &gt;::index_type =  std::array&lt;my_index_t, SE_config.rank&gt;</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>SelfEnergy::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="23" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" prot="public" static="no" mutable="no">
+        <type><ref refid="d5/df6/classSelfEnergy_1a7d7fd9f86a8d29fefd6146f6415fef40" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type SelfEnergy&lt; Q &gt;::Sigma</definition>
+        <argsstring></argsstring>
+        <name>Sigma</name>
+        <qualifiedname>SelfEnergy::Sigma</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="31" column="17" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="31" bodyend="-1"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb" compoundref="d6/d2d/selfenergy_8hpp" startline="35" endline="35">SelfEnergy&lt; Q &gt;::SelfEnergy</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8" compoundref="d6/d2d/selfenergy_8hpp" startline="246" endline="248">SelfEnergy&lt; Q &gt;::set_frequency_grid</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" prot="public" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q SelfEnergy&lt; Q &gt;::asymp_val_R</definition>
+        <argsstring></argsstring>
+        <name>asymp_val_R</name>
+        <qualifiedname>SelfEnergy::asymp_val_R</qualifiedname>
+        <initializer>= 0.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="32" column="7" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="32" bodyend="-1"/>
+        <referencedby refid="d9/dae/postprocessing_8c_09_09_1af1e2a562265def3e9c99c1e0b2d0fb3b" compoundref="d9/dae/postprocessing_8c_09_09" startline="179" endline="256">compute_proprocessed_susceptibilities_PT2</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1ad760943d50481dd1425adbddb3d504bc" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SelfEnergy&lt; Q &gt;::SelfEnergy</definition>
+        <argsstring>(double Lambda, const fRG_config &amp;config)</argsstring>
+        <name>SelfEnergy</name>
+        <qualifiedname>SelfEnergy::SelfEnergy</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="34" column="15" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="34" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SelfEnergy&lt; Q &gt;::SelfEnergy</definition>
+        <argsstring>(const freqGrid_type &amp;frequencies_in)</argsstring>
+        <name>SelfEnergy</name>
+        <qualifiedname>SelfEnergy::SelfEnergy</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df" kindref="member">freqGrid_type</ref> &amp;</type>
+          <declname>frequencies_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="35" column="15" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="35" bodyend="35"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="31">SelfEnergy&lt; Q &gt;::Sigma</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::initialize</definition>
+        <argsstring>(Q valR, Q valK)</argsstring>
+        <name>initialize</name>
+        <qualifiedname>SelfEnergy::initialize</qualifiedname>
+        <param>
+          <type>Q</type>
+          <declname>valR</declname>
+        </param>
+        <param>
+          <type>Q</type>
+          <declname>valK</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Function initializes the Retarded and Keldysh components of the self-energy <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of values (usually comp) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>valR</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Value for the constant Retarded self-energy </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>valK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Value for the constant Keldysh self-energy </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="37" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="153" bodyend="157"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
+        <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a44226621aee89d2ee5e5eff112dfd5f2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::val</definition>
+        <argsstring>(int iK, int iv, int i_in) const -&gt; Q</argsstring>
+        <name>val</name>
+        <qualifiedname>SelfEnergy::val</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>iv</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the saved value of the self-energy <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of values (usually comp) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index (either 0 or 1) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>iv</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Frequency index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Internal structure index </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The value of SigmaR/K at the chosen indices </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="38" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="167" bodyend="169"/>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::valsmooth</definition>
+        <argsstring>(int iK, double v, int i_in) const -&gt; Q</argsstring>
+        <name>valsmooth</name>
+        <qualifiedname>SelfEnergy::valsmooth</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Linear interpolating function returning the value of the Retarded or Keldysh self-energy at freq v <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of values (usually comp) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index (either 0 or 1) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Frequency </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Internal index </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>: Interpolated value using the saved values as basis </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="39" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="201" bodyend="220"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28" compoundref="d9/d3a/technical__parameters_8hpp" startline="18">inter_tol</references>
+        <references refid="d6/dfc/namespacemy__defs_1_1SE_1a8bb0a6e36cdfe570fba3110d9322df26ada6fc27d34344cd3c471e707201131f4" compoundref="d7/d59/data__structures_8hpp" startline="492">my_defs::SE::internal</references>
+        <references refid="d6/dfc/namespacemy__defs_1_1SE_1a8bb0a6e36cdfe570fba3110d9322df26a1de5b20eff06ae484ded79a5ea8fa6c6" compoundref="d7/d59/data__structures_8hpp" startline="492">my_defs::SE::keldysh</references>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::setself</definition>
+        <argsstring>(int iK, int iv, int i_in, Q val)</argsstring>
+        <name>setself</name>
+        <qualifiedname>SelfEnergy::setself</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>iv</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type>Q</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets the value of the self-energy to a specific value at the specified location <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of values (usually comp) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index (either 0 or 1) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>iv</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Frequency index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Internal index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Value of the self-energy at this given point </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="40" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="230" bodyend="232"/>
+        <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="127" endline="439">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="473" endline="496">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" compoundref="d8/d1d/loop_8hpp" startline="442" endline="470">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_zeroT</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::addself</definition>
+        <argsstring>(int iK, int iv, int i_in, Q val)</argsstring>
+        <name>addself</name>
+        <qualifiedname>SelfEnergy::addself</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>iv</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type>Q</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Adds the given value at the specified location <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of values (usually comp) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index (either 0 or 1) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>iv</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Frequency index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Internal index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Value of the self-energy at this given point </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="41" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="242" bodyend="244"/>
+        <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="127" endline="439">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1aa7d75d4c76a9e99f37d89cb8fd479392" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::acc</definition>
+        <argsstring>(int i) const -&gt; Q</argsstring>
+        <name>acc</name>
+        <qualifiedname>SelfEnergy::acc</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access function to element i (hdf5-relevant) <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of values (usually comp) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>i</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Index </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Sigma[i] </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="42" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="177" bodyend="180"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a40d554dd455b33c9ac8ccc3442d0fb36" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::direct_set</definition>
+        <argsstring>(int i, Q val)</argsstring>
+        <name>direct_set</name>
+        <qualifiedname>SelfEnergy::direct_set</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>Q</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set value of self-energy at index i <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Type of values (usually comp) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>i</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="43" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="188" bodyend="191"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::set_frequency_grid</definition>
+        <argsstring>(const SelfEnergy&lt; Q &gt; selfEnergy)</argsstring>
+        <name>set_frequency_grid</name>
+        <qualifiedname>SelfEnergy::set_frequency_grid</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>selfEnergy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="44" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="246" bodyend="248"/>
+        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="31">SelfEnergy&lt; Q &gt;::Sigma</references>
+        <referencedby refid="d7/d97/classState_1aa5e0b0c02b861f0cd2555ef34a4584b5" compoundref="da/d3b/state_8hpp" startline="150" endline="153">State&lt; Q, differentiated &gt;::set_frequency_grid</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::norm</definition>
+        <argsstring>(int p) const -&gt; double</argsstring>
+        <name>norm</name>
+        <qualifiedname>SelfEnergy::norm</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="45" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="346" bodyend="356"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="85" endline="125">check_FDTs_selfenergy</referencedby>
+        <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a73153e76cf9a7a9d57b1027705cda53d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::norm</definition>
+        <argsstring>() const -&gt; double</argsstring>
+        <name>norm</name>
+        <qualifiedname>SelfEnergy::norm</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="46" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="359" bodyend="361"/>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a1478fc6f27e0d03e0df937d5cbeffbf9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::rel_deviation_to</definition>
+        <argsstring>(const SelfEnergy&lt; Q &gt; &amp;base) const -&gt; double</argsstring>
+        <name>rel_deviation_to</name>
+        <qualifiedname>SelfEnergy::rel_deviation_to</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>base</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="47" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="362" bodyend="364"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</definition>
+        <argsstring>() const -&gt; Eigen::Array&lt; Q, Eigen::Dynamic, 1 &gt;</argsstring>
+        <name>get_selfenergy_vector_incl_hartree</name>
+        <qualifiedname>SelfEnergy::get_selfenergy_vector_incl_hartree</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="49" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="49" bodyend="54"/>
+        <references refid="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" compoundref="d6/d2d/selfenergy_8hpp" startline="32">SelfEnergy&lt; Q &gt;::asymp_val_R</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
+        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="31">SelfEnergy&lt; Q &gt;::Sigma</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::update_grid</definition>
+        <argsstring>(double Lambda, const fRG_config &amp;config)</argsstring>
+        <name>update_grid</name>
+        <qualifiedname>SelfEnergy::update_grid</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+<para>Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="57" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="250" bodyend="253"/>
+        <references refid="dc/d7a/classdataBuffer_1a74ad9cdfcb8e10219bb029e0af9df8ca" compoundref="dc/d80/data__buffer_8hpp" startline="691" endline="698">dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::update_grid</references>
+        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1aaf5b4b1c92f967082630cf69af72c2c5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::update_grid</definition>
+        <argsstring>(const freqGrid_type &amp;frequencies_new)</argsstring>
+        <name>update_grid</name>
+        <qualifiedname>SelfEnergy::update_grid</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df" kindref="member">freqGrid_type</ref> &amp;</type>
+          <declname>frequencies_new</declname>
+        </param>
+        <briefdescription>
+<para>Interpolate self-energy to input grid. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="59" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="255" bodyend="259"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a44806c0df9dfc5dd5e0eeb37a19f90f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::update_grid</definition>
+        <argsstring>(const freqGrid_type &amp;frequencies_new, SelfEnergy&lt; Q &gt; selfEnergy4Sigma)</argsstring>
+        <name>update_grid</name>
+        <qualifiedname>SelfEnergy::update_grid</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df" kindref="member">freqGrid_type</ref> &amp;</type>
+          <declname>frequencies_new</declname>
+        </param>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>selfEnergy4Sigma</declname>
+        </param>
+        <briefdescription>
+<para>Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="61" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="261" bodyend="265"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a48b989837676cebb7043a4f14ae02203" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::findBestFreqGrid</definition>
+        <argsstring>(bool verbose)</argsstring>
+        <name>findBestFreqGrid</name>
+        <qualifiedname>SelfEnergy::findBestFreqGrid</qualifiedname>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+<para>finds optimal grid parameters with <ref refid="d4/d21/minimizer_8hpp_1a4cf1f8fcc0a66dfcb227b42a1f615375" kindref="member">minimizer()</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="63" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="314" bodyend="317"/>
+        <referencedby refid="d7/d97/classState_1a85527803dbcedce85301a0831b1c473d" compoundref="da/d3b/state_8hpp" startline="162" endline="165">State&lt; Q, differentiated &gt;::findBestFreqGrid</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1acf675ff02b328e7022dd997422327d8f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::shrink_freq_box</definition>
+        <argsstring>(double rel_tail_threshold) const -&gt; freqGrid_type</argsstring>
+        <name>shrink_freq_box</name>
+        <qualifiedname>SelfEnergy::shrink_freq_box</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>rel_tail_threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="64" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="319" bodyend="322"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double SelfEnergy&lt; Q &gt;::analyze_tails</definition>
+        <argsstring>(bool verbose) const</argsstring>
+        <name>analyze_tails</name>
+        <qualifiedname>SelfEnergy::analyze_tails</qualifiedname>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="65" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="325" bodyend="342"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1a1e26b17d6ce68bbd4a4cc2031722a433" compoundref="de/dbb/math__utils_8hpp" startline="973" endline="983">maxabs</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1ad47166569063f3ab50c934ae27d8cedd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>auto SelfEnergy&lt; Q &gt;::get_deriv_maxSE</definition>
+        <argsstring>(bool verbose) const</argsstring>
+        <name>get_deriv_maxSE</name>
+        <qualifiedname>SelfEnergy::get_deriv_maxSE</qualifiedname>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+<para>computes finite differences of Sigma </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="67" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="367" bodyend="379"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1ab65f67d9fcf903f929d3188fd66b3fce" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>auto SelfEnergy&lt; Q &gt;::get_curvature_maxSE</definition>
+        <argsstring>(bool verbose) const</argsstring>
+        <name>get_curvature_maxSE</name>
+        <qualifiedname>SelfEnergy::get_curvature_maxSE</qualifiedname>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="68" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="380" bodyend="394"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1aee1d547bf449180cfad2a0027d04164a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::operator+=</definition>
+        <argsstring>(const SelfEnergy&lt; Q &gt; &amp;self1) -&gt; SelfEnergy&lt; Q &gt;</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>SelfEnergy::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>self1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="71" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="71" bodyend="75"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a09bd75350e2ef6c26956fe56cff5f2b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::operator+=</definition>
+        <argsstring>(Qfac alpha) -&gt; SelfEnergy&lt; Q &gt;</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>SelfEnergy::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          <declname>alpha</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="81" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="81" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a7cc1dbbb0a956e6c34c8c3ff7af1ada1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::operator*=</definition>
+        <argsstring>(Qfac alpha) -&gt; SelfEnergy&lt; Q &gt;</argsstring>
+        <name>operator*=</name>
+        <qualifiedname>SelfEnergy::operator*=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          <declname>alpha</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="96" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="96" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a4c3ef6eb5fcde3e4a069a6f934761c92" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::operator-=</definition>
+        <argsstring>(const SelfEnergy&lt; Q &gt; &amp;self1) -&gt; SelfEnergy&lt; Q &gt;</argsstring>
+        <name>operator-=</name>
+        <qualifiedname>SelfEnergy::operator-=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>self1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="119" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="119" bodyend="123"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1ad8cbafc3e1bda57e185bd591f0471d4c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto SelfEnergy&lt; Q &gt;::operator/=</definition>
+        <argsstring>(const SelfEnergy&lt; Q &gt; &amp;self1) -&gt; SelfEnergy&lt; Q &gt;</argsstring>
+        <name>operator/=</name>
+        <qualifiedname>SelfEnergy::operator/=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>self1</declname>
+        </param>
+        <briefdescription>
+<para>Elementwise division (needed for error estimate of adaptive ODE solvers) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="129" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="129" bodyend="133"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1aee3fd67f3e3418a7e1be2b60fc93c980" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::check_resolution</definition>
+        <argsstring>() const</argsstring>
+        <name>check_resolution</name>
+        <qualifiedname>SelfEnergy::check_resolution</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>TODO: dump state in file if certain thresholds are exceeded</para>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="140" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="397" bodyend="403"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void SelfEnergy&lt; Q &gt;::check_symmetries</definition>
+        <argsstring>() const</argsstring>
+        <name>check_symmetries</name>
+        <qualifiedname>SelfEnergy::check_symmetries</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="141" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="407" bodyend="423"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a769c275d7647a628a4bad2041e0fc27f" compoundref="d7/d59/data__structures_8hpp" startline="102" endline="102">myconj</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="d5/df6/classSelfEnergy_1aa90f29a78622daaaf78dd2fc3169cd8e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt; Q &gt; operator+</definition>
+        <argsstring>(SelfEnergy&lt; Q &gt; lhs, const SelfEnergy&lt; Q &gt; &amp;rhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>SelfEnergy::operator+</qualifiedname>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="76" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="76" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a5f679a53ec9986d94933e3eebd2375dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt; Q &gt; operator+</definition>
+        <argsstring>(SelfEnergy&lt; Q &gt; lhs, const Qfac &amp;rhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>SelfEnergy::operator+</qualifiedname>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="86" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="86" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="friend" id="d5/df6/classSelfEnergy_1ab4474a85c8c4b4491fbc34bbe85d8dc9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt; Q &gt; operator+</definition>
+        <argsstring>(const Qfac &amp;rhs, SelfEnergy&lt; Q &gt; lhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>SelfEnergy::operator+</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="91" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="91" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a76b9436f81bb209afa766a9a961382d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt; Q &gt; operator*</definition>
+        <argsstring>(SelfEnergy&lt; Q &gt; lhs, const Qfac &amp;rhs)</argsstring>
+        <name>operator*</name>
+        <qualifiedname>SelfEnergy::operator*</qualifiedname>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="102" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="102" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a42b9663d92a8fab80fde07dbdcdf8368" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt; Q &gt; operator*</definition>
+        <argsstring>(const Qfac &amp;rhs, SelfEnergy&lt; Q &gt; lhs)</argsstring>
+        <name>operator*</name>
+        <qualifiedname>SelfEnergy::operator*</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Qfac</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="107" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="107" bodyend="110"/>
+      </memberdef>
+      <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a66cab3961eb707dc079278b26514cea4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt; Q &gt; operator-</definition>
+        <argsstring>(SelfEnergy&lt; Q &gt; lhs, const SelfEnergy&lt; Q &gt; &amp;rhs)</argsstring>
+        <name>operator-</name>
+        <qualifiedname>SelfEnergy::operator-</qualifiedname>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="124" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="124" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a32e9f66a8d928ac70178c07159ed8616" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt; Q &gt; operator/</definition>
+        <argsstring>(SelfEnergy&lt; Q &gt; lhs, const SelfEnergy&lt; Q &gt; &amp;rhs)</argsstring>
+        <name>operator/</name>
+        <qualifiedname>SelfEnergy::operator/</qualifiedname>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="134" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="134" bodyend="137"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>TODO: Use Vertex buffer for self-energy. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>SelfEnergy&lt; Q &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+      </node>
+      <node id="2">
+        <label>SelfEnergy&lt; comp &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; comp &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>SelfEnergy&lt; state_datatype &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="8">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+        <childnode refid="18" relation="usage">
+          <edgelabel>+frequencies</edgelabel>
+        </childnode>
+      </node>
+      <node id="15">
+        <label>Array&lt; Q, Eigen::Dynamic, 1 &gt;</label>
+        <link refid="d2/dc9/classEigen_1_1Array_3_01Q_00_01Eigen_1_1Dynamic_00_011_01_4"/>
+      </node>
+      <node id="17">
+        <label>Array&lt; T, Eigen::Dynamic, 1 &gt;</label>
+      </node>
+      <node id="19">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+        <childnode refid="19" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="20">
+        <label>Q</label>
+      </node>
+      <node id="1">
+        <label>SelfEnergy&lt; Q &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+Sigma</edgelabel>
+        </childnode>
+        <childnode refid="20" relation="usage">
+          <edgelabel>+asymp_val_R</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>T</label>
+      </node>
+      <node id="11">
+        <label>std::array&lt; size_type, depth &gt;</label>
+        <childnode refid="12" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="template-instance">
+          <edgelabel>&lt; size_type, depth &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="5">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="6">
+        <label>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>dataBuffer&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="template-instance">
+          <edgelabel>&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+        <childnode refid="10" relation="usage">
+          <edgelabel>#data</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>dataContainer_type</label>
+        <link refid="db/dbf/classdataContainer__type"/>
+      </node>
+      <node id="18">
+        <label>frequencyGrid_type</label>
+      </node>
+      <node id="10">
+        <label>multidimensional::multiarray&lt; Q, rank &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="11" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="15" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="16" relation="template-instance">
+          <edgelabel>&lt; Q, rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>multidimensional::multiarray&lt; T, depth &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="11" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="17" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>size_type</label>
+      </node>
+      <node id="13">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="14" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/two_point/selfenergy.hpp" line="18" column="1" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="18" bodyend="142"/>
+    <listofallmembers>
+      <member refid="d5/df6/classSelfEnergy_1aa7d75d4c76a9e99f37d89cb8fd479392" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>acc</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>addself</name></member>
+      <member refid="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>analyze_tails</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>asymp_val_R</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a7d7fd9f86a8d29fefd6146f6415fef40" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>buffer_type</name></member>
+      <member refid="d5/df6/classSelfEnergy_1aee3fd67f3e3418a7e1be2b60fc93c980" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>check_resolution</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>check_symmetries</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a40d554dd455b33c9ac8ccc3442d0fb36" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>direct_set</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a48b989837676cebb7043a4f14ae02203" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>findBestFreqGrid</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>freqGrid_type</name></member>
+      <member refid="d5/df6/classSelfEnergy_1aec678602c2dbbe4c981f436fa8ea5ba8" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>frequencies_type</name></member>
+      <member refid="d5/df6/classSelfEnergy_1ab65f67d9fcf903f929d3188fd66b3fce" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>get_curvature_maxSE</name></member>
+      <member refid="d5/df6/classSelfEnergy_1ad47166569063f3ab50c934ae27d8cedd" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>get_deriv_maxSE</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>get_selfenergy_vector_incl_hartree</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a205b1475f5cdf9fb14b799ec9e97ab9a" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>index_type</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>initialize</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>norm</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a73153e76cf9a7a9d57b1027705cda53d" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>norm</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a76b9436f81bb209afa766a9a961382d2" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator*</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a42b9663d92a8fab80fde07dbdcdf8368" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator*</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a7cc1dbbb0a956e6c34c8c3ff7af1ada1" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator*=</name></member>
+      <member refid="d5/df6/classSelfEnergy_1aa90f29a78622daaaf78dd2fc3169cd8e" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator+</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a5f679a53ec9986d94933e3eebd2375dd" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator+</name></member>
+      <member refid="d5/df6/classSelfEnergy_1ab4474a85c8c4b4491fbc34bbe85d8dc9" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator+</name></member>
+      <member refid="d5/df6/classSelfEnergy_1aee1d547bf449180cfad2a0027d04164a" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator+=</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a09bd75350e2ef6c26956fe56cff5f2b1" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator+=</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a66cab3961eb707dc079278b26514cea4" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator-</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a4c3ef6eb5fcde3e4a069a6f934761c92" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator-=</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a32e9f66a8d928ac70178c07159ed8616" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator/</name></member>
+      <member refid="d5/df6/classSelfEnergy_1ad8cbafc3e1bda57e185bd591f0471d4c" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>operator/=</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a1478fc6f27e0d03e0df937d5cbeffbf9" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>rel_deviation_to</name></member>
+      <member refid="d5/df6/classSelfEnergy_1ad760943d50481dd1425adbddb3d504bc" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>SelfEnergy</name></member>
+      <member refid="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>SelfEnergy</name></member>
+      <member refid="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>set_frequency_grid</name></member>
+      <member refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>setself</name></member>
+      <member refid="d5/df6/classSelfEnergy_1acf675ff02b328e7022dd997422327d8f" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>shrink_freq_box</name></member>
+      <member refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>Sigma</name></member>
+      <member refid="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>update_grid</name></member>
+      <member refid="d5/df6/classSelfEnergy_1aaf5b4b1c92f967082630cf69af72c2c5" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>update_grid</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a44806c0df9dfc5dd5e0eeb37a19f90f7" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>update_grid</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a44226621aee89d2ee5e5eff112dfd5f2" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>val</name></member>
+      <member refid="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>valsmooth</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

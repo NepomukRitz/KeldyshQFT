@@ -1,0 +1,630 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d9/d2a/classvec" kind="class" language="C++" prot="public">
+    <compoundname>vec</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">std::vector&lt; T &gt;</basecompoundref>
+    <includes refid="d7/d59/data__structures_8hpp" local="no">data_structures.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d9/d2a/classvec_1a3b45e536c8abac4ac7ccaf0caa7410b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>vec&lt; T &gt;::vec</definition>
+        <argsstring>()</argsstring>
+        <name>vec</name>
+        <qualifiedname>vec::vec</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="120" column="5" bodyfile="data_structures.hpp" bodystart="120" bodyend="120"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1af56de11484296155d337fc918708cd6b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>vec&lt; T &gt;::vec</definition>
+        <argsstring>(size_t n)</argsstring>
+        <name>vec</name>
+        <qualifiedname>vec::vec</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="121" column="14" bodyfile="data_structures.hpp" bodystart="121" bodyend="121"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a9f0ef61a49591c1abc4ea63469bba077" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>vec&lt; T &gt;::vec</definition>
+        <argsstring>(size_t n, T value)</argsstring>
+        <name>vec</name>
+        <qualifiedname>vec::vec</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="122" column="5" bodyfile="data_structures.hpp" bodystart="122" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a6e59caea36baa49054b4bfd09b59e108" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">class</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">InputIterator</ref></type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>vec&lt; T &gt;::vec</definition>
+        <argsstring>(InputIterator first, InputIterator last)</argsstring>
+        <name>vec</name>
+        <qualifiedname>vec::vec</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">InputIterator</ref></type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">InputIterator</ref></type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="124" column="5" bodyfile="data_structures.hpp" bodystart="124" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1ab5d771c55edea97234938db777688736" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>vec&lt; T &gt;::vec</definition>
+        <argsstring>(std::initializer_list&lt; T &gt; m)</argsstring>
+        <name>vec</name>
+        <qualifiedname>vec::vec</qualifiedname>
+        <param>
+          <type>std::initializer_list&lt; T &gt;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="126" column="5" bodyfile="data_structures.hpp" bodystart="126" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1af23dc92d16940d4017025a4e8895857f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>vec&lt; T &gt;::vec</definition>
+        <argsstring>(std::vector&lt; T &gt; vect)</argsstring>
+        <name>vec</name>
+        <qualifiedname>vec::vec</qualifiedname>
+        <param>
+          <type>std::vector&lt; T &gt;</type>
+          <declname>vect</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="127" column="5" bodyfile="data_structures.hpp" bodystart="127" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a52a0ea2e88124c0ff02ebfcc258bc7c0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>T</type>
+        <definition>T vec&lt; T &gt;::operator()</definition>
+        <argsstring>(int i) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>vec::operator()</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="129" column="7" bodyfile="data_structures.hpp" bodystart="129" bodyend="129"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a960ecfd1624d58c3d6206b95d2e966db" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt;</type>
+        <definition>vec&lt; T &gt; vec&lt; T &gt;::operator()</definition>
+        <argsstring>(int i1, int i2) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>vec::operator()</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="130" column="9" bodyfile="data_structures.hpp" bodystart="291" bodyend="296"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1af1f214f0a9a8034c483bab7094570fe4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt;</type>
+        <definition>vec&lt; T &gt; vec&lt; T &gt;::inv</definition>
+        <argsstring>() const</argsstring>
+        <name>inv</name>
+        <qualifiedname>vec::inv</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="132" column="9" bodyfile="data_structures.hpp" bodystart="341" bodyend="343"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1af5a1d0abf515fb504d6aa7b0356d874b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; double &gt;</type>
+        <definition>vec&lt; double &gt; vec&lt; T &gt;::real</definition>
+        <argsstring>() const</argsstring>
+        <name>real</name>
+        <qualifiedname>vec::real</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="133" column="9" bodyfile="data_structures.hpp" bodystart="347" bodyend="349"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a950a7f55f4a98bbe4482d31974b50ece" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; double &gt;</type>
+        <definition>vec&lt; double &gt; vec&lt; T &gt;::imag</definition>
+        <argsstring>() const</argsstring>
+        <name>imag</name>
+        <qualifiedname>vec::imag</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="134" column="9" bodyfile="data_structures.hpp" bodystart="353" bodyend="355"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a9eee6ef2df34517880ba13d527763111" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="db/d7d/symmetry__transformations_8hpp_1a689a60d7c45398774777d3cba59a88d9" kindref="member">T2</ref></type>
+            <defval>double</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="db/d7d/symmetry__transformations_8hpp_1a689a60d7c45398774777d3cba59a88d9" kindref="member">T2</ref> &gt;</type>
+        <definition>vec&lt; T2 &gt; vec&lt; T &gt;::abs</definition>
+        <argsstring>() const</argsstring>
+        <name>abs</name>
+        <qualifiedname>vec::abs</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="135" column="20" bodyfile="data_structures.hpp" bodystart="361" bodyend="368"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="de/dbb/math__utils_8hpp_1a1e26b17d6ce68bbd4a4cc2031722a433" compoundref="de/dbb/math__utils_8hpp" startline="973" endline="983">maxabs</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a260586ee3e87e4169fb5ab08c9560c0d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt;</type>
+        <definition>vec&lt; T &gt; vec&lt; T &gt;::conj</definition>
+        <argsstring>() const</argsstring>
+        <name>conj</name>
+        <qualifiedname>vec::conj</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="136" column="9" bodyfile="data_structures.hpp" bodystart="372" bodyend="374"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a9b7faaec55b805be159126c5142419d6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double vec&lt; T &gt;::max_norm</definition>
+        <argsstring>() const</argsstring>
+        <name>max_norm</name>
+        <qualifiedname>vec::max_norm</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="137" column="12" bodyfile="data_structures.hpp" bodystart="379" bodyend="385"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1ae570b3cd4d67f70a11d275797a842ac6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt;</type>
+        <definition>vec&lt; T &gt; vec&lt; T &gt;::diff</definition>
+        <argsstring>() const</argsstring>
+        <name>diff</name>
+        <qualifiedname>vec::diff</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="138" column="9" bodyfile="data_structures.hpp" bodystart="389" bodyend="393"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a16fc2bce0517df5b52cf812fa185497a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T vec&lt; T &gt;::sum</definition>
+        <argsstring>() const</argsstring>
+        <name>sum</name>
+        <qualifiedname>vec::sum</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="139" column="7" bodyfile="data_structures.hpp" bodystart="397" bodyend="399"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a148b4fd6140692b38c8667f1665556bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::operator+=</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;m)</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>vec::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+<para>DEFINITIONS <ndash/> MEMBER FUNCTIONS ///. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="142" column="10" bodyfile="data_structures.hpp" bodystart="246" bodyend="248"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1ae012d3994913cb2d171fc8f497911acc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::operator+=</definition>
+        <argsstring>(const Q &amp;c)</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>vec::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Q &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="144" column="10" bodyfile="data_structures.hpp" bodystart="252" bodyend="254"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a1cf2f85398750e34a8c4b3e1568e86b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::operator-=</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;m)</argsstring>
+        <name>operator-=</name>
+        <qualifiedname>vec::operator-=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="146" column="10" bodyfile="data_structures.hpp" bodystart="258" bodyend="260"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1ae2feecd402553b75544fcd336e286c68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::operator-=</definition>
+        <argsstring>(const Q &amp;c)</argsstring>
+        <name>operator-=</name>
+        <qualifiedname>vec::operator-=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Q &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="148" column="10" bodyfile="data_structures.hpp" bodystart="264" bodyend="267"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1ad1ec1a36866cec2ec5a0625284a69c62" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::operator*=</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;m)</argsstring>
+        <name>operator*=</name>
+        <qualifiedname>vec::operator*=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="150" column="10" bodyfile="data_structures.hpp" bodystart="276" bodyend="279"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a134ab7d070bdfcda50f29515e31ae0ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::operator*=</definition>
+        <argsstring>(const Q &amp;c)</argsstring>
+        <name>operator*=</name>
+        <qualifiedname>vec::operator*=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Q &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="152" column="10" bodyfile="data_structures.hpp" bodystart="283" bodyend="286"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1aa8ce037cf9fa1eafbc80739e296db92c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::operator/=</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;m)</argsstring>
+        <name>operator/=</name>
+        <qualifiedname>vec::operator/=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="154" column="10" bodyfile="data_structures.hpp" bodystart="271" bodyend="273"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a80ca832299797ad4eca7e9876666d35a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">R</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::elementwise_map_assign</definition>
+        <argsstring>(const Q &amp;op, const vec&lt; R &gt; &amp;rhs)</argsstring>
+        <name>elementwise_map_assign</name>
+        <qualifiedname>vec::elementwise_map_assign</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Q &amp;</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">R</ref> &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="158" column="9" bodyfile="data_structures.hpp" bodystart="158" bodyend="171"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d2a/classvec_1a4bd47169786e6f6be3d43310bd391093" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">R</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt; &amp;</type>
+        <definition>vec&lt; T &gt; &amp; vec&lt; T &gt;::scalar_map_assign</definition>
+        <argsstring>(const Q &amp;op, const R &amp;rhs)</argsstring>
+        <name>scalar_map_assign</name>
+        <qualifiedname>vec::scalar_map_assign</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Q &amp;</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">R</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="174" column="9" bodyfile="data_structures.hpp" bodystart="174" bodyend="183"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>DECLARATIONS ///. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>General vector class, defining element-wise addition, subtraction and multiplication, as well as real/imag part etc. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>std::vector&lt; T &gt;</label>
+      </node>
+      <node id="7">
+        <label>vec&lt; GeneralVertex&lt; Q, true &gt; &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; GeneralVertex&lt; Q, true &gt; &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>vec&lt; Q &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>vec&lt; T &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>vec&lt; bool &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; bool &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>vec&lt; double &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; double &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>vec&lt; freqType &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; freqType &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>T</label>
+      </node>
+      <node id="2">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>vec&lt; T &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="data_structures.hpp" line="118" column="1" bodyfile="data_structures.hpp" bodystart="118" bodyend="185"/>
+    <listofallmembers>
+      <member refid="d9/d2a/classvec_1a9eee6ef2df34517880ba13d527763111" prot="public" virt="non-virtual"><scope>vec</scope><name>abs</name></member>
+      <member refid="d9/d2a/classvec_1a260586ee3e87e4169fb5ab08c9560c0d" prot="public" virt="non-virtual"><scope>vec</scope><name>conj</name></member>
+      <member refid="d9/d2a/classvec_1ae570b3cd4d67f70a11d275797a842ac6" prot="public" virt="non-virtual"><scope>vec</scope><name>diff</name></member>
+      <member refid="dd/d4e/classstd_1_1vector_1a2396209900e8f592db1f0b2467f7d899" prot="public" virt="non-virtual"><scope>vec</scope><name>elements</name></member>
+      <member refid="d9/d2a/classvec_1a80ca832299797ad4eca7e9876666d35a" prot="public" virt="non-virtual"><scope>vec</scope><name>elementwise_map_assign</name></member>
+      <member refid="d9/d2a/classvec_1a950a7f55f4a98bbe4482d31974b50ece" prot="public" virt="non-virtual"><scope>vec</scope><name>imag</name></member>
+      <member refid="d9/d2a/classvec_1af1f214f0a9a8034c483bab7094570fe4" prot="public" virt="non-virtual"><scope>vec</scope><name>inv</name></member>
+      <member refid="d9/d2a/classvec_1a9b7faaec55b805be159126c5142419d6" prot="public" virt="non-virtual"><scope>vec</scope><name>max_norm</name></member>
+      <member refid="d9/d2a/classvec_1a52a0ea2e88124c0ff02ebfcc258bc7c0" prot="public" virt="non-virtual"><scope>vec</scope><name>operator()</name></member>
+      <member refid="d9/d2a/classvec_1a960ecfd1624d58c3d6206b95d2e966db" prot="public" virt="non-virtual"><scope>vec</scope><name>operator()</name></member>
+      <member refid="d9/d2a/classvec_1ad1ec1a36866cec2ec5a0625284a69c62" prot="public" virt="non-virtual"><scope>vec</scope><name>operator*=</name></member>
+      <member refid="d9/d2a/classvec_1a134ab7d070bdfcda50f29515e31ae0ef" prot="public" virt="non-virtual"><scope>vec</scope><name>operator*=</name></member>
+      <member refid="d9/d2a/classvec_1a148b4fd6140692b38c8667f1665556bd" prot="public" virt="non-virtual"><scope>vec</scope><name>operator+=</name></member>
+      <member refid="d9/d2a/classvec_1ae012d3994913cb2d171fc8f497911acc" prot="public" virt="non-virtual"><scope>vec</scope><name>operator+=</name></member>
+      <member refid="d9/d2a/classvec_1a1cf2f85398750e34a8c4b3e1568e86b3" prot="public" virt="non-virtual"><scope>vec</scope><name>operator-=</name></member>
+      <member refid="d9/d2a/classvec_1ae2feecd402553b75544fcd336e286c68" prot="public" virt="non-virtual"><scope>vec</scope><name>operator-=</name></member>
+      <member refid="d9/d2a/classvec_1aa8ce037cf9fa1eafbc80739e296db92c" prot="public" virt="non-virtual"><scope>vec</scope><name>operator/=</name></member>
+      <member refid="d9/d2a/classvec_1af5a1d0abf515fb504d6aa7b0356d874b" prot="public" virt="non-virtual"><scope>vec</scope><name>real</name></member>
+      <member refid="d9/d2a/classvec_1a4bd47169786e6f6be3d43310bd391093" prot="public" virt="non-virtual"><scope>vec</scope><name>scalar_map_assign</name></member>
+      <member refid="d9/d2a/classvec_1a16fc2bce0517df5b52cf812fa185497a" prot="public" virt="non-virtual"><scope>vec</scope><name>sum</name></member>
+      <member refid="d9/d2a/classvec_1a3b45e536c8abac4ac7ccaf0caa7410b1" prot="public" virt="non-virtual"><scope>vec</scope><name>vec</name></member>
+      <member refid="d9/d2a/classvec_1af56de11484296155d337fc918708cd6b" prot="public" virt="non-virtual"><scope>vec</scope><name>vec</name></member>
+      <member refid="d9/d2a/classvec_1a9f0ef61a49591c1abc4ea63469bba077" prot="public" virt="non-virtual"><scope>vec</scope><name>vec</name></member>
+      <member refid="d9/d2a/classvec_1a6e59caea36baa49054b4bfd09b59e108" prot="public" virt="non-virtual"><scope>vec</scope><name>vec</name></member>
+      <member refid="d9/d2a/classvec_1ab5d771c55edea97234938db777688736" prot="public" virt="non-virtual"><scope>vec</scope><name>vec</name></member>
+      <member refid="d9/d2a/classvec_1af23dc92d16940d4017025a4e8895857f" prot="public" virt="non-virtual"><scope>vec</scope><name>vec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

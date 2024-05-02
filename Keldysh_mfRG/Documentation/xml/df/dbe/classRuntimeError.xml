@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="df/dbe/classRuntimeError" kind="class" language="C++" prot="public">
+    <compoundname>RuntimeError</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">std::runtime_error</basecompoundref>
+    <includes refid="d1/d64/runtime__error_8hpp" local="no">runtime_error.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="df/dbe/classRuntimeError_1a5be420b12bd78b0b9078c8f2a8d46e1a" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RuntimeError::RuntimeError</definition>
+        <argsstring>(std::string const &amp;reason)</argsstring>
+        <name>RuntimeError</name>
+        <qualifiedname>RuntimeError::RuntimeError</qualifiedname>
+        <param>
+          <type>std::string <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> &amp;</type>
+          <declname>reason</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/runtime_error.hpp" line="9" column="14" bodyfile="utilities/runtime_error.hpp" bodystart="14" bodyend="15"/>
+      </memberdef>
+      <memberdef kind="function" id="df/dbe/classRuntimeError_1a563259ab2c1e44e97c8bf9a1c77c34d5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>RuntimeError::~RuntimeError</definition>
+        <argsstring>()</argsstring>
+        <name>~RuntimeError</name>
+        <qualifiedname>RuntimeError::~RuntimeError</qualifiedname>
+        <exceptions> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">throw</ref> ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/runtime_error.hpp" line="10" column="13" bodyfile="utilities/runtime_error.hpp" bodystart="17" bodyend="17"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>RuntimeError</label>
+        <link refid="df/dbe/classRuntimeError"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>std::exception</label>
+      </node>
+      <node id="2">
+        <label>std::runtime_error</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>RuntimeError</label>
+        <link refid="df/dbe/classRuntimeError"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>std::exception</label>
+      </node>
+      <node id="2">
+        <label>std::runtime_error</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="utilities/runtime_error.hpp" line="7" column="1" bodyfile="utilities/runtime_error.hpp" bodystart="7" bodyend="12"/>
+    <listofallmembers>
+      <member refid="df/dbe/classRuntimeError_1a5be420b12bd78b0b9078c8f2a8d46e1a" prot="public" virt="non-virtual"><scope>RuntimeError</scope><name>RuntimeError</name></member>
+      <member refid="df/dbe/classRuntimeError_1a563259ab2c1e44e97c8bf9a1c77c34d5" prot="public" virt="virtual"><scope>RuntimeError</scope><name>~RuntimeError</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

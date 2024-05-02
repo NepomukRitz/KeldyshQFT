@@ -1,0 +1,333 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="df/db3/classIntegrand__sum__rule__spectrum" kind="class" language="C++" prot="public">
+    <compoundname>Integrand_sum_rule_spectrum</compoundname>
+    <includes refid="d4/d81/postprocessing_8hpp" local="no">postprocessing.hpp</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="df/db3/classIntegrand__sum__rule__spectrum_1a8802aad4bbdf71d5b82d78f8e7845bbf" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Integrand_sum_rule_spectrum::it_spin</definition>
+        <argsstring></argsstring>
+        <name>it_spin</name>
+        <qualifiedname>Integrand_sum_rule_spectrum::it_spin</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="106" column="9" bodyfile="postprocessing/postprocessing.hpp" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="df/db3/classIntegrand__sum__rule__spectrum_1ae92644806964a19f842ecfe52638069b" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/d34/classPropagator" kindref="compound">Propagator</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt;</type>
+        <definition>const Propagator&lt;state_datatype&gt; Integrand_sum_rule_spectrum::prop</definition>
+        <argsstring></argsstring>
+        <name>prop</name>
+        <qualifiedname>Integrand_sum_rule_spectrum::prop</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="107" column="22" bodyfile="postprocessing/postprocessing.hpp" bodystart="107" bodyend="-1"/>
+        <referencedby refid="df/db3/classIntegrand__sum__rule__spectrum_1a9617ccc54433c850c01db0451af83351" compoundref="d4/d81/postprocessing_8hpp" startline="111" endline="114">operator()</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="df/db3/classIntegrand__sum__rule__spectrum_1a0e01811a1f973b4c911244daea0579ca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Integrand_sum_rule_spectrum::Integrand_sum_rule_spectrum</definition>
+        <argsstring>(const double Lambda, const SelfEnergy&lt; state_datatype &gt; &amp;self_in, const fRG_config &amp;config)</argsstring>
+        <name>Integrand_sum_rule_spectrum</name>
+        <qualifiedname>Integrand_sum_rule_spectrum::Integrand_sum_rule_spectrum</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt; &amp;</type>
+          <declname>self_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="109" column="5" bodyfile="postprocessing/postprocessing.hpp" bodystart="109" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="df/db3/classIntegrand__sum__rule__spectrum_1a9617ccc54433c850c01db0451af83351" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand_sum_rule_spectrum::operator()</definition>
+        <argsstring>(const double w) const -&gt; double</argsstring>
+        <name>operator()</name>
+        <qualifiedname>Integrand_sum_rule_spectrum::operator()</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="111" column="10" bodyfile="postprocessing/postprocessing.hpp" bodystart="111" bodyend="114"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
+        <references refid="df/db3/classIntegrand__sum__rule__spectrum_1ae92644806964a19f842ecfe52638069b" compoundref="d4/d81/postprocessing_8hpp" startline="107">prop</references>
+        <references refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="12">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="13" relation="public-inheritance">
+        </childnode>
+        <childnode refid="22" relation="usage">
+          <edgelabel>+frequencies</edgelabel>
+        </childnode>
+      </node>
+      <node id="19">
+        <label>Array&lt; Q, Eigen::Dynamic, 1 &gt;</label>
+        <link refid="d2/dc9/classEigen_1_1Array_3_01Q_00_01Eigen_1_1Dynamic_00_011_01_4"/>
+      </node>
+      <node id="21">
+        <label>Array&lt; T, Eigen::Dynamic, 1 &gt;</label>
+      </node>
+      <node id="1">
+        <label>Integrand_sum_rule_spectrum</label>
+        <link refid="df/db3/classIntegrand__sum__rule__spectrum"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-it_spin</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>-prop</edgelabel>
+        </childnode>
+      </node>
+      <node id="23">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="27">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="12" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+        <childnode refid="23" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="30">
+        <label>Propagator&lt; Q &gt;</label>
+        <link refid="d2/d34/classPropagator"/>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+Gamma</edgelabel>
+          <edgelabel>+Lambda</edgelabel>
+          <edgelabel>+T</edgelabel>
+          <edgelabel>+epsilon</edgelabel>
+        </childnode>
+        <childnode refid="31" relation="usage">
+          <edgelabel>+diff_selfenergy</edgelabel>
+          <edgelabel>+selfenergy</edgelabel>
+        </childnode>
+        <childnode refid="29" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Propagator&lt; state_datatype &gt;</label>
+        <link refid="d2/d34/classPropagator"/>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+Gamma</edgelabel>
+          <edgelabel>+Lambda</edgelabel>
+          <edgelabel>+T</edgelabel>
+          <edgelabel>+epsilon</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+diff_selfenergy</edgelabel>
+          <edgelabel>+selfenergy</edgelabel>
+        </childnode>
+        <childnode refid="29" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+        <childnode refid="30" relation="template-instance">
+          <edgelabel>&lt; state_datatype &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="28">
+        <label>Q</label>
+      </node>
+      <node id="25">
+        <label>SelfEnergy&lt; Q &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+        <childnode refid="26" relation="usage">
+          <edgelabel>+Sigma</edgelabel>
+        </childnode>
+        <childnode refid="28" relation="usage">
+          <edgelabel>+asymp_val_R</edgelabel>
+        </childnode>
+      </node>
+      <node id="31">
+        <label>SelfEnergy&lt; Q &gt;</label>
+      </node>
+      <node id="5">
+        <label>SelfEnergy&lt; state_datatype &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+Sigma</edgelabel>
+        </childnode>
+        <childnode refid="24" relation="usage">
+          <edgelabel>+asymp_val_R</edgelabel>
+        </childnode>
+        <childnode refid="25" relation="template-instance">
+          <edgelabel>&lt; state_datatype &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="18">
+        <label>T</label>
+      </node>
+      <node id="15">
+        <label>std::array&lt; size_type, depth &gt;</label>
+        <childnode refid="16" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; size_type, depth &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="29">
+        <label>char</label>
+      </node>
+      <node id="10">
+        <label>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="11" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>dataBuffer&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="27" relation="public-inheritance">
+        </childnode>
+        <childnode refid="10" relation="template-instance">
+          <edgelabel>&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>dataBuffer&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="10" relation="template-instance">
+          <edgelabel>&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="13">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+        <childnode refid="14" relation="usage">
+          <edgelabel>#data</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>dataContainer_type</label>
+        <link refid="db/dbf/classdataContainer__type"/>
+      </node>
+      <node id="4">
+        <label>double</label>
+      </node>
+      <node id="22">
+        <label>frequencyGrid_type</label>
+      </node>
+      <node id="2">
+        <label>int</label>
+      </node>
+      <node id="14">
+        <label>multidimensional::multiarray&lt; Q, rank &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="15" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="19" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="20" relation="template-instance">
+          <edgelabel>&lt; Q, rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="20">
+        <label>multidimensional::multiarray&lt; T, depth &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="15" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="21" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>size_type</label>
+      </node>
+      <node id="17">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="18" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="24">
+        <label>std::complex</label>
+      </node>
+    </collaborationgraph>
+    <location file="postprocessing/postprocessing.hpp" line="105" column="1" bodyfile="postprocessing/postprocessing.hpp" bodystart="105" bodyend="116"/>
+    <listofallmembers>
+      <member refid="df/db3/classIntegrand__sum__rule__spectrum_1a0e01811a1f973b4c911244daea0579ca" prot="public" virt="non-virtual"><scope>Integrand_sum_rule_spectrum</scope><name>Integrand_sum_rule_spectrum</name></member>
+      <member refid="df/db3/classIntegrand__sum__rule__spectrum_1a8802aad4bbdf71d5b82d78f8e7845bbf" prot="private" virt="non-virtual"><scope>Integrand_sum_rule_spectrum</scope><name>it_spin</name></member>
+      <member refid="df/db3/classIntegrand__sum__rule__spectrum_1a9617ccc54433c850c01db0451af83351" prot="public" virt="non-virtual"><scope>Integrand_sum_rule_spectrum</scope><name>operator()</name></member>
+      <member refid="df/db3/classIntegrand__sum__rule__spectrum_1ae92644806964a19f842ecfe52638069b" prot="private" virt="non-virtual"><scope>Integrand_sum_rule_spectrum</scope><name>prop</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

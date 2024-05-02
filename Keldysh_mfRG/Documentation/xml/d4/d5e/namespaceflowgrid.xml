@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d4/d5e/namespaceflowgrid" kind="namespace" language="C++">
+    <compoundname>flowgrid</compoundname>
+    <innerclass refid="d8/de8/classflowgrid_1_1exp__parametrization" prot="public">flowgrid::exp_parametrization</innerclass>
+    <innerclass refid="d0/d87/classflowgrid_1_1linear__parametrization" prot="public">flowgrid::linear_parametrization</innerclass>
+    <innerclass refid="de/d7f/classflowgrid_1_1log__parametrization" prot="public">flowgrid::log_parametrization</innerclass>
+    <innerclass refid="d9/d72/classflowgrid_1_1sqrt__parametrization" prot="public">flowgrid::sqrt_parametrization</innerclass>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1a58bd836fe49a08b0aaf2cbc808e61371" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void flowgrid::add_points_to_Lambda_grid</definition>
+        <argsstring>(std::vector&lt; double &gt; &amp;grid, const std::vector&lt; double &gt; &amp;lambda_checkpoints)</argsstring>
+        <name>add_points_to_Lambda_grid</name>
+        <qualifiedname>flowgrid::add_points_to_Lambda_grid</qualifiedname>
+        <param>
+          <type>std::vector&lt; double &gt; &amp;</type>
+          <declname>grid</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::vector&lt; double &gt; &amp;</type>
+          <declname>lambda_checkpoints</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="16" column="10" bodyfile="grids/flow_grid.c++" bodystart="3" bodyend="12" declfile="grids/flow_grid.hpp" declline="16" declcolumn="10"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d4/d5e/namespaceflowgrid_1a20584ce67a10be7ccb51dc6b44b46ab3" compoundref="d6/d8d/flow__grid_8c_09_09" startline="52" endline="66">construct_flow_grid</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref></type>
+        <definition>rvec flowgrid::get_Lambda_checkpoints</definition>
+        <argsstring>(const std::vector&lt; double &gt; &amp;Us, const fRG_config &amp;config)</argsstring>
+        <name>get_Lambda_checkpoints</name>
+        <qualifiedname>flowgrid::get_Lambda_checkpoints</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::vector&lt; double &gt; &amp;</type>
+          <declname>Us</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="18" column="10" bodyfile="grids/flow_grid.c++" bodystart="14" bodyend="30" declfile="grids/flow_grid.hpp" declline="18" declcolumn="10"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
+        <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a4aadec32e0b8b7022f429e01abd4e1ac" compoundref="d4/dde/flow_8c_09_09" startline="131" endline="188">n_loop_flow</referencedby>
+        <referencedby refid="d4/dde/flow_8c_09_09_1a7bebcecda67107fbc8dde6bed6d3ecaa" compoundref="d4/dde/flow_8c_09_09" startline="7" endline="120">n_loop_flow</referencedby>
+        <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1ab54f368d15e474e02fb8432c37161569" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double flowgrid::log_substitution</definition>
+        <argsstring>(double x)</argsstring>
+        <name>log_substitution</name>
+        <qualifiedname>flowgrid::log_substitution</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="20" column="12" bodyfile="grids/flow_grid.c++" bodystart="32" bodyend="35" declfile="grids/flow_grid.hpp" declline="20" declcolumn="12"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a70259e3a107270133da97beb4df92c1b" compoundref="d1/df8/master__parameters_8hpp" startline="113">Lambda_scale</references>
+      </memberdef>
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1a70c1c1c0025f39b9eaa48478af527d24" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double flowgrid::log_resubstitution</definition>
+        <argsstring>(double x)</argsstring>
+        <name>log_resubstitution</name>
+        <qualifiedname>flowgrid::log_resubstitution</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="21" column="12" bodyfile="grids/flow_grid.c++" bodystart="36" bodyend="39" declfile="grids/flow_grid.hpp" declline="21" declcolumn="12"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a70259e3a107270133da97beb4df92c1b" compoundref="d1/df8/master__parameters_8hpp" startline="113">Lambda_scale</references>
+      </memberdef>
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1a37050085fae9eb1d68814bf26cd44a20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double flowgrid::sq_substitution</definition>
+        <argsstring>(double x)</argsstring>
+        <name>sq_substitution</name>
+        <qualifiedname>flowgrid::sq_substitution</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="23" column="12" bodyfile="grids/flow_grid.c++" bodystart="41" bodyend="45" declfile="grids/flow_grid.hpp" declline="23" declcolumn="12"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1abf807dc3185f40d7f969ba4014bf1191" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double flowgrid::sq_resubstitution</definition>
+        <argsstring>(double x)</argsstring>
+        <name>sq_resubstitution</name>
+        <qualifiedname>flowgrid::sq_resubstitution</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="24" column="12" bodyfile="grids/flow_grid.c++" bodystart="46" bodyend="49" declfile="grids/flow_grid.hpp" declline="24" declcolumn="12"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1a20584ce67a10be7ccb51dc6b44b46ab3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref></type>
+        <definition>rvec flowgrid::construct_flow_grid</definition>
+        <argsstring>(double x_fin, double x_ini, double subst(double x), double resubst(double x), unsigned int N_ODE, const std::vector&lt; double &gt; &amp;lambda_checkpoints)</argsstring>
+        <name>construct_flow_grid</name>
+        <qualifiedname>flowgrid::construct_flow_grid</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>x_fin</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>x_ini</declname>
+        </param>
+        <param>
+          <type>double </type>
+          <declname>subst</declname>
+          <array>double x</array>
+        </param>
+        <param>
+          <type>double </type>
+          <declname>resubst</declname>
+          <array>double x</array>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+          <declname>N_ODE</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::vector&lt; double &gt; &amp;</type>
+          <declname>lambda_checkpoints</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="27" column="10" bodyfile="grids/flow_grid.c++" bodystart="52" bodyend="66" declfile="grids/flow_grid.hpp" declline="27" declcolumn="10"/>
+        <references refid="d4/d5e/namespaceflowgrid_1a58bd836fe49a08b0aaf2cbc808e61371" compoundref="d6/d8d/flow__grid_8c_09_09" startline="3" endline="12">add_points_to_Lambda_grid</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d4/d5e/namespaceflowgrid_1a74b8d0ac0fe4652ae1d9e180dbcffe4b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref></type>
+        <definition>rvec flowgrid::flow_grid_step_sizes</definition>
+        <argsstring>(const rvec &amp;x_vals)</argsstring>
+        <name>flow_grid_step_sizes</name>
+        <qualifiedname>flowgrid::flow_grid_step_sizes</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+          <declname>x_vals</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="32" column="10" bodyfile="grids/flow_grid.c++" bodystart="69" bodyend="75" declfile="grids/flow_grid.hpp" declline="32" declcolumn="10"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="grids/flow_grid.hpp" line="14" column="1"/>
+  </compounddef>
+</doxygen>

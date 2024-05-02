@@ -1,0 +1,396 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d2/db2/structVertexInput" kind="struct" language="C++" prot="public">
+    <compoundname>VertexInput</compoundname>
+    <derivedcompoundref refid="da/d93/structIndicesSymmetryTransformations" prot="public" virt="non-virtual">IndicesSymmetryTransformations</derivedcompoundref>
+    <includes refid="d7/d59/data__structures_8hpp" local="no">data_structures.hpp</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int VertexInput::iK</definition>
+        <argsstring></argsstring>
+        <name>iK</name>
+        <qualifiedname>VertexInput::iK</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="537" column="9" bodyfile="data_structures.hpp" bodystart="537" bodyend="-1"/>
+        <referencedby refid="d2/db2/structVertexInput_1a181dc6772f5264cb38e1e1041824ae40" compoundref="d7/d59/data__structures_8hpp" startline="580" endline="615">get_indices</referencedby>
+        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1aec33b77df1a63bd679f357f2bf803352" compoundref="d7/d59/data__structures_8hpp" startline="632" endline="634">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
+        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1acbfacc2104e5cd75fc2318a6a7c874d3" compoundref="d7/d59/data__structures_8hpp" startline="639" endline="641">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
+        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1af88595f7a45faa9fb9e2bb51d1662402" compoundref="d7/d59/data__structures_8hpp" startline="636" endline="638">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1a6a596ed7bf95a10c45fd7aef6983d640" compoundref="df/d83/integrand_8hpp" startline="539" endline="595">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_left_scalar</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1af4ae177dec9b129329eda2511b301e22" compoundref="df/d83/integrand_8hpp" startline="599" endline="651">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_right_scalar</referencedby>
+        <referencedby refid="d2/db2/structVertexInput_1ac15c49e9861b144225d0b239b3ffb901" compoundref="d7/d59/data__structures_8hpp" startline="545" endline="553">VertexInput</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1a359ef2dec2bc859dc0154c840f0425cd" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType VertexInput::w</definition>
+        <argsstring></argsstring>
+        <name>w</name>
+        <qualifiedname>VertexInput::w</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="538" column="14" bodyfile="data_structures.hpp" bodystart="538" bodyend="-1"/>
+        <referencedby refid="d2/db2/structVertexInput_1aedad3a03674a56618fdb53d2b7284aea" compoundref="d7/d59/data__structures_8hpp" startline="556" endline="577">get_freqs</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a9c60e78db51bb564c5f5b48e361773fe" compoundref="d1/d2d/vertex_8hpp" startline="1258" endline="1295">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a979ab081a5d2c7cf842864d4881eee58" compoundref="d1/d2d/vertex_8hpp" startline="1296" endline="1333">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a21ba518424bd3c9b2575d9d8b6476c43" compoundref="d1/d2d/vertex_8hpp" startline="1543" endline="1596">fullvert&lt; Q &gt;::left_same_bare_symmetry_expanded</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a1517ecda5f1d20e6d934010cec48745e" compoundref="d1/d2d/vertex_8hpp" startline="1335" endline="1372">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1af914c469c229333915893485a0105d15" compoundref="d1/d2d/vertex_8hpp" startline="1373" endline="1410">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1af1efc317b029dcf0a0a03ff1f7d69d71" compoundref="d1/d2d/vertex_8hpp" startline="1597" endline="1650">fullvert&lt; Q &gt;::right_same_bare_symmetry_expanded</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1a250f273f9a3993a6865ed039a2e0d2cd" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType VertexInput::v1</definition>
+        <argsstring></argsstring>
+        <name>v1</name>
+        <qualifiedname>VertexInput::v1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="538" column="16" bodyfile="data_structures.hpp" bodystart="538" bodyend="-1"/>
+        <referencedby refid="d2/db2/structVertexInput_1aedad3a03674a56618fdb53d2b7284aea" compoundref="d7/d59/data__structures_8hpp" startline="556" endline="577">get_freqs</referencedby>
+        <referencedby refid="dd/d1f/integrator_8hpp_1ae588a37561b507181aee84ba87671518" compoundref="dd/d1f/integrator_8hpp" startline="559" endline="609">matsubarasum_vectorized</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1aa3570a6eba51c3323127a2256eba95a1" prot="public" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType VertexInput::v2</definition>
+        <argsstring></argsstring>
+        <name>v2</name>
+        <qualifiedname>VertexInput::v2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="538" column="19" bodyfile="data_structures.hpp" bodystart="538" bodyend="-1"/>
+        <referencedby refid="d2/db2/structVertexInput_1aedad3a03674a56618fdb53d2b7284aea" compoundref="d7/d59/data__structures_8hpp" startline="556" endline="577">get_freqs</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1abc05b14c8e9017ae8456e1dfdc76fc7e" prot="public" static="no" mutable="no">
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>my_index_t VertexInput::i_in</definition>
+        <argsstring></argsstring>
+        <name>i_in</name>
+        <qualifiedname>VertexInput::i_in</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="539" column="16" bodyfile="data_structures.hpp" bodystart="539" bodyend="-1"/>
+        <referencedby refid="d2/db2/structVertexInput_1a181dc6772f5264cb38e1e1041824ae40" compoundref="d7/d59/data__structures_8hpp" startline="580" endline="615">get_indices</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1a1d771b43454581ec99290380e35a477d" prot="public" static="no" mutable="no">
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>my_index_t VertexInput::spin</definition>
+        <argsstring></argsstring>
+        <name>spin</name>
+        <qualifiedname>VertexInput::spin</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="540" column="16" bodyfile="data_structures.hpp" bodystart="540" bodyend="-1"/>
+        <referencedby refid="d2/df0/correction__functions_8hpp_1ac617baabe863b35d7652e62c345a3400" compoundref="d2/df0/correction__functions_8hpp" startline="54" endline="349">asymp_corrections_bubble</referencedby>
+        <referencedby refid="d2/db2/structVertexInput_1a181dc6772f5264cb38e1e1041824ae40" compoundref="d7/d59/data__structures_8hpp" startline="580" endline="615">get_indices</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1a9acedf0c5af6839894c86a76e0f30e32" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char VertexInput::channel_bubble</definition>
+        <argsstring></argsstring>
+        <name>channel_bubble</name>
+        <qualifiedname>VertexInput::channel_bubble</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="541" column="10" bodyfile="data_structures.hpp" bodystart="541" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1a96f889d7d07dccc13be12107f275416d" prot="public" static="no" mutable="no">
+        <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+        <definition>K_class VertexInput::kClass_aim</definition>
+        <argsstring></argsstring>
+        <name>kClass_aim</name>
+        <qualifiedname>VertexInput::kClass_aim</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="542" column="13" bodyfile="data_structures.hpp" bodystart="542" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d2/db2/structVertexInput_1a34563c83610453083ffffb9394e76045" prot="public" static="no" mutable="no">
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>my_index_t VertexInput::iw_r</definition>
+        <argsstring></argsstring>
+        <name>iw_r</name>
+        <qualifiedname>VertexInput::iw_r</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="543" column="16" bodyfile="data_structures.hpp" bodystart="543" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d2/db2/structVertexInput_1ac15c49e9861b144225d0b239b3ffb901" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>VertexInput::VertexInput</definition>
+        <argsstring>(int iK_in, my_index_t spin_in, freqType w_in, freqType v1_in, freqType v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)</argsstring>
+        <name>VertexInput</name>
+        <qualifiedname>VertexInput::VertexInput</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>spin_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v1_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v2_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>i_in_in</declname>
+        </param>
+        <param>
+          <type>char</type>
+          <declname>channel_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+          <declname>k_in</declname>
+          <defval><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" kindref="member">k1</ref></defval>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>iw_in</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="545" column="5" bodyfile="data_structures.hpp" bodystart="545" bodyend="553"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">iK</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/db2/structVertexInput_1aedad3a03674a56618fdb53d2b7284aea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+            <declname>k</declname>
+            <defname>k</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto VertexInput::get_freqs</definition>
+        <argsstring>() const</argsstring>
+        <name>get_freqs</name>
+        <qualifiedname>VertexInput::get_freqs</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="556" column="10" bodyfile="data_structures.hpp" bodystart="556" bodyend="577"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="d2/db2/structVertexInput_1a250f273f9a3993a6865ed039a2e0d2cd" compoundref="d7/d59/data__structures_8hpp" startline="538">v1</references>
+        <references refid="d2/db2/structVertexInput_1aa3570a6eba51c3323127a2256eba95a1" compoundref="d7/d59/data__structures_8hpp" startline="538">v2</references>
+        <references refid="d2/db2/structVertexInput_1a359ef2dec2bc859dc0154c840f0425cd" compoundref="d7/d59/data__structures_8hpp" startline="538">w</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/db2/structVertexInput_1a181dc6772f5264cb38e1e1041824ae40" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+            <declname>k</declname>
+            <defname>k</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto VertexInput::get_indices</definition>
+        <argsstring>() const</argsstring>
+        <name>get_indices</name>
+        <qualifiedname>VertexInput::get_indices</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="580" column="10" bodyfile="data_structures.hpp" bodystart="580" bodyend="615"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/db2/structVertexInput_1abc05b14c8e9017ae8456e1dfdc76fc7e" compoundref="d7/d59/data__structures_8hpp" startline="539">i_in</references>
+        <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">iK</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0ec64b43f2e4294da9b761c0e8b13e72" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::internal</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a6e324f30c27ae4137ff98a43ae712c0e" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::internal</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626aabef50eef7d4cc525c7fe4dde47c7e5d" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::internal</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a14be3f8ac0084cf0252ba0212a1e8398" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::internal</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a986e3d2a3161efd61e3cacab9fcf8d53" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::keldysh</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626ae72c53fbf956970e07867183ff146878" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::keldysh</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a15d300f357fcce31b953e451001a1965" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::keldysh</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0e8f8c5700d73a66191a72ea5eba2082" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::spin</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a0e00d54b522305dc57d86ce8f43d5d86" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::spin</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626af17587ce564f9ea54432c297f8b7e1c8" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::spin</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a243c27209bb0519793b3abe88418a158" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::spin</references>
+        <references refid="d2/db2/structVertexInput_1a1d771b43454581ec99290380e35a477d" compoundref="d7/d59/data__structures_8hpp" startline="540">spin</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>auxiliary struct that contains all input variables of vertices <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: integer from 0 to 15 (Keldysh indices expressed as one integer) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w.v1</parametername>
+<parametername>v2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: frequency arguments </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: additional internal index (currently unused) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>spin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: 0 or 1 for the two comfigurations (0 for V, 1 for V^) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: &apos;a&apos;, &apos;t&apos; or &apos;p&apos;, or &apos;f&apos; </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>IndicesSymmetryTransformations</label>
+        <link refid="da/d93/structIndicesSymmetryTransformations"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>VertexInput</label>
+        <link refid="d2/db2/structVertexInput"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="6">
+        <label>K_class</label>
+      </node>
+      <node id="1">
+        <label>VertexInput</label>
+        <link refid="d2/db2/structVertexInput"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+iK</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+v1</edgelabel>
+          <edgelabel>+v2</edgelabel>
+          <edgelabel>+w</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+i_in</edgelabel>
+          <edgelabel>+iw_r</edgelabel>
+          <edgelabel>+spin</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+channel_bubble</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+kClass_aim</edgelabel>
+        </childnode>
+      </node>
+      <node id="5">
+        <label>char</label>
+      </node>
+      <node id="3">
+        <label>double</label>
+      </node>
+      <node id="2">
+        <label>int</label>
+      </node>
+      <node id="4">
+        <label>size_t</label>
+      </node>
+    </collaborationgraph>
+    <location file="data_structures.hpp" line="536" column="1" bodyfile="data_structures.hpp" bodystart="536" bodyend="616"/>
+    <listofallmembers>
+      <member refid="d2/db2/structVertexInput_1a9acedf0c5af6839894c86a76e0f30e32" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>channel_bubble</name></member>
+      <member refid="d2/db2/structVertexInput_1aedad3a03674a56618fdb53d2b7284aea" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>get_freqs</name></member>
+      <member refid="d2/db2/structVertexInput_1a181dc6772f5264cb38e1e1041824ae40" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>get_indices</name></member>
+      <member refid="d2/db2/structVertexInput_1abc05b14c8e9017ae8456e1dfdc76fc7e" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>i_in</name></member>
+      <member refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>iK</name></member>
+      <member refid="d2/db2/structVertexInput_1a34563c83610453083ffffb9394e76045" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>iw_r</name></member>
+      <member refid="d2/db2/structVertexInput_1a96f889d7d07dccc13be12107f275416d" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>kClass_aim</name></member>
+      <member refid="d2/db2/structVertexInput_1a1d771b43454581ec99290380e35a477d" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>spin</name></member>
+      <member refid="d2/db2/structVertexInput_1a250f273f9a3993a6865ed039a2e0d2cd" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>v1</name></member>
+      <member refid="d2/db2/structVertexInput_1aa3570a6eba51c3323127a2256eba95a1" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>v2</name></member>
+      <member refid="d2/db2/structVertexInput_1ac15c49e9861b144225d0b239b3ffb901" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>VertexInput</name></member>
+      <member refid="d2/db2/structVertexInput_1a359ef2dec2bc859dc0154c840f0425cd" prot="public" virt="non-virtual"><scope>VertexInput</scope><name>w</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

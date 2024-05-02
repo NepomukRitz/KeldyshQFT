@@ -1,0 +1,738 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d6/d91/InterpolatorSpline2D_8hpp" kind="file" language="C++">
+    <compoundname>InterpolatorSpline2D.hpp</compoundname>
+    <includes local="no">cstdio</includes>
+    <includes local="no">cassert</includes>
+    <includes local="no">cmath</includes>
+    <includes local="no">vector</includes>
+    <includedby refid="dc/d80/data__buffer_8hpp" local="yes">data_buffer.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>InterpolatorSpline2D.hpp</label>
+        <link refid="d6/d91/InterpolatorSpline2D_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>cassert</label>
+      </node>
+      <node id="4">
+        <label>cmath</label>
+      </node>
+      <node id="2">
+        <label>cstdio</label>
+      </node>
+      <node id="5">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="32">
+        <label>ODE_solvers.c++</label>
+        <link refid="de/dd8/ODE__solvers_8c_09_09"/>
+      </node>
+      <node id="31">
+        <label>ODE_solvers.hpp</label>
+        <link refid="da/dc3/ODE__solvers_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="36">
+        <label>old_solvers.hpp</label>
+        <link refid="dd/df7/old__solvers_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>bubble_corrections.c++</label>
+        <link refid="d7/d3a/bubble__corrections_8c_09_09"/>
+      </node>
+      <node id="19">
+        <label>bubble_corrections.hpp</label>
+        <link refid="dd/dea/bubble__corrections_8hpp"/>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>correction_functions.hpp</label>
+        <link refid="d2/df0/correction__functions_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>loop_corrections.c++</label>
+        <link refid="d7/df0/loop__corrections_8c_09_09"/>
+      </node>
+      <node id="26">
+        <label>loop_corrections.hpp</label>
+        <link refid="d0/d0e/loop__corrections_8hpp"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>bubble.hpp</label>
+        <link refid="d0/dac/bubble_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>bubble_function.hpp</label>
+        <link refid="de/de8/bubble__function_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>integrand.hpp</label>
+        <link refid="df/d83/integrand_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>r_vertex.hpp</label>
+        <link refid="d3/d22/r__vertex_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>vertex.hpp</label>
+        <link refid="d1/d2d/vertex_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>data_buffer.hpp</label>
+        <link refid="dc/d80/data__buffer_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>state.hpp</label>
+        <link refid="da/d3b/state_8hpp"/>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="42">
+        <label>propagator.c++</label>
+        <link refid="de/d5d/propagator_8c_09_09"/>
+      </node>
+      <node id="41">
+        <label>propagator.hpp</label>
+        <link refid="d5/df7/propagator_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="39">
+        <label>selfenergy.hpp</label>
+        <link refid="d6/d2d/selfenergy_8hpp"/>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>InterpolatorSpline2D.hpp</label>
+        <link refid="d6/d91/InterpolatorSpline2D_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>integrandSE.hpp</label>
+        <link refid="de/d65/integrandSE_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>loop.c++</label>
+        <link refid="d5/dae/loop_8c_09_09"/>
+      </node>
+      <node id="24">
+        <label>loop.hpp</label>
+        <link refid="d8/d1d/loop_8hpp"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
+      </node>
+      <node id="9">
+        <label>flow.c++</label>
+        <link refid="d4/dde/flow_8c_09_09"/>
+      </node>
+      <node id="8">
+        <label>flow.hpp</label>
+        <link refid="d5/d21/flow_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>right_hand_sides.hpp</label>
+        <link refid="d8/dea/right__hand__sides_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>hartree_term.c++</label>
+        <link refid="d4/d92/hartree__term_8c_09_09"/>
+      </node>
+      <node id="40">
+        <label>hartree_term.hpp</label>
+        <link refid="d1/db3/hartree__term_8hpp"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>parquet_solver.c++</label>
+        <link refid="d5/d94/parquet__solver_8c_09_09"/>
+      </node>
+      <node id="7">
+        <label>parquet_solver.hpp</label>
+        <link refid="dd/d0a/parquet__solver_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>perturbation_theory.hpp</label>
+        <link refid="d5/d0d/perturbation__theory_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>KramersKronig.c++</label>
+        <link refid="d7/d43/KramersKronig_8c_09_09"/>
+      </node>
+      <node id="29">
+        <label>KramersKronig.hpp</label>
+        <link refid="d1/db3/KramersKronig_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>causality_FDT_checks.c++</label>
+        <link refid="d8/dca/causality__FDT__checks_8c_09_09"/>
+      </node>
+      <node id="34">
+        <label>causality_FDT_checks.hpp</label>
+        <link refid="d1/d75/causality__FDT__checks_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>main_postproc.cpp</label>
+        <link refid="dd/d00/main__postproc_8cpp"/>
+      </node>
+      <node id="16">
+        <label>postprocessing.c++</label>
+        <link refid="d9/dae/postprocessing_8c_09_09"/>
+      </node>
+      <node id="15">
+        <label>postprocessing.hpp</label>
+        <link refid="d4/d81/postprocessing_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>sanity_check.hpp</label>
+        <link refid="d2/d3f/sanity__check_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="33">
+        <label>anderson_acceleration.hpp</label>
+        <link refid="d6/d7b/anderson__acceleration_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>hdf5_routines.c++</label>
+        <link refid="d5/d4f/hdf5__routines_8c_09_09"/>
+      </node>
+      <node id="37">
+        <label>hdf5_routines.hpp</label>
+        <link refid="d5/de4/hdf5__routines_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4" prot="public">Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>FPP_MFRG_INTERPOLATORSPLINE2D_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FPP_MFRG_INTERPOLATORSPLINE2D_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cstdio&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cassert&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">//<sp/>not<sp/>ideal<sp/>but<sp/>disable<sp/>unused-function<sp/>warnings</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//<sp/>(we<sp/>get<sp/>them<sp/>because<sp/>we<sp/>have<sp/>implementations<sp/>in<sp/>the<sp/>header<sp/>file,</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/>and<sp/>this<sp/>is<sp/>because<sp/>we<sp/>want<sp/>to<sp/>be<sp/>able<sp/>to<sp/>quickly<sp/>separate<sp/>them</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">//<sp/>into<sp/>a<sp/>cpp<sp/>file<sp/>if<sp/>necessary)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">//<sp/>unnamed<sp/>namespace<sp/>only<sp/>because<sp/>the<sp/>implementation<sp/>is<sp/>in<sp/>this</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">//<sp/>header<sp/>file<sp/>and<sp/>we<sp/>don&apos;t<sp/>want<sp/>to<sp/>export<sp/>symbols<sp/>to<sp/>the<sp/>obj<sp/>files</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">//namespace</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">//{</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>rank,<sp/>my_index_t<sp/>numberFrequencyDims,<sp/>my_index_t<sp/>pos_first_freq_index,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DataContainer&gt;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="d1/de6/classSpline" kindref="compound">Spline</ref>;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>rank,<sp/>my_index_t<sp/>pos_first_freq_index,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DataContainer&gt;</highlight></codeline>
+<codeline lineno="32" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="d1/de6/classSpline" kindref="compound">Spline</ref>&lt;Q,rank,2,<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freq_index</ref>,<ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref>&gt;<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref></highlight></codeline>
+<codeline lineno="33"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//mutable<sp/>Eigen::Matrix&lt;double,16,16&gt;<sp/>A;<sp/><sp/><sp/><sp/>//<sp/>For<sp/>fixed-size<sp/>vectorizable<sp/>Eigen-object<sp/>--&gt;<sp/>beware<sp/>of<sp/>alignment<sp/>of<sp/>issues</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" kindref="member">coeffs_type</ref><sp/>=<sp/>Eigen::Matrix&lt;Q,<sp/>Eigen::Dynamic,16&gt;;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a015f68bd9a84eb9d567ff97019a9406a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>initialized<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="41" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" kindref="member">index_type</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="d3/dd8/classDataContainer_1aa90e46686ddc3e125a74c0fe8cf1d171" kindref="member">DataContainer::index_type</ref>;<sp/><sp/></highlight><highlight class="comment">//<sp/>type<sp/>for<sp/>multi-index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a7dd1f280f9290b67080267041b4acd6c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a7dd1f280f9290b67080267041b4acd6c" kindref="member">frequencies_type</ref><sp/>=<sp/>std::array&lt;double,<sp/>2&gt;;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>type<sp/>for<sp/>array<sp/>of<sp/>frequencies</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="46" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa02741d1cf3a2457ed516ddf5b8f93a9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>n=0;</highlight></codeline>
+<codeline lineno="47" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a653275609e3a3a043f55474b02f70f06" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;Q&gt;</ref><sp/>m_deriv_x<sp/>=<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;Q&gt;</ref>(n),m_deriv_y=<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;Q&gt;</ref>(n),m_deriv_xy=<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;Q&gt;</ref>(n);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>SplineK2<sp/>coefficients</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ae2cb197435afc4d583cb30f23338ceaa" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" kindref="member">coeffs_type</ref><sp/>all_coefficients<sp/>=<sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" kindref="member">coeffs_type</ref><sp/>(n,16);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//Q<sp/>m_c0;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>for<sp/>left<sp/>extrapolation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ac5ad43296160f361548396c2c6ec2817" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="de/dbb/math__utils_8hpp_1a0ef73218caee5307f4a2a59464d1b5ac" kindref="member">bd_type</ref><sp/>m_left<sp/>=<sp/><ref refid="de/dbb/math__utils_8hpp_1a0ef73218caee5307f4a2a59464d1b5acab78b588f4010075281c6a8487a30173e" kindref="member">third_deriv</ref>,<sp/>m_right<sp/>=<sp/><ref refid="de/dbb/math__utils_8hpp_1a0ef73218caee5307f4a2a59464d1b5acab78b588f4010075281c6a8487a30173e" kindref="member">third_deriv</ref>;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="51" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1af80ff021a401c8f01f52c5c629854658" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Q<sp/><sp/>m_left_value<sp/>=<sp/>0.0,<sp/>m_right_value<sp/>=<sp/>0.0;<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//bool<sp/>m_made_monotonic<sp/>=<sp/>false;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>get_coeffs_from_derivs()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//const<sp/>index_type&amp;<sp/>indices,<sp/>double<sp/>dw,<sp/>double<sp/>dv)<sp/>const;<sp/><sp/>//<sp/>calculate<sp/>c_i,<sp/>d_i<sp/>from<sp/>b_i</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="55" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a04dc260edf9c688b557b329a4ff979fd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a04dc260edf9c688b557b329a4ff979fd" kindref="member">Spline</ref>()<sp/>:<sp/>initialized(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref>)<sp/>{};</highlight></codeline>
+<codeline lineno="56" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1af7c231ff89ea01542d721cf9a5e6c6b4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">explicit</highlight><highlight class="normal"><sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1af7c231ff89ea01542d721cf9a5e6c6b4" kindref="member">Spline</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Lambda,<sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" kindref="member">index_type</ref><sp/>dims)</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><sp/><sp/><ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref>(Lambda,<sp/>dims),<sp/>n(<ref refid="de/dbb/math__utils_8hpp_1a0bb20dce81d05d42cbea49416726ad27" kindref="member">getFlatSize</ref>(<ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref>::get_dims()))</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//this-&gt;initializeK2();</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>initInterpolator()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="64" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a004cc6a621d502495ace6343a43e1fc3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a004cc6a621d502495ace6343a43e1fc3" kindref="member">set_initializedInterpol</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_init</ref>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{initialized<sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_init</ref>;}</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;Q,16,1&gt;<sp/>get_weights<sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::array&lt;my_index_t,2&gt;&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">freq_idx</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::array&lt;double,2&gt;&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw_normalized</ref>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>evaluates<sp/>the<sp/>SplineK2<sp/>at<sp/>point<sp/>x</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>result_type&gt;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/>result_type<sp/>interpolate_spline<sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>frequencies_type&amp;<sp/>frequencies,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>index_type&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">indices</ref>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>rank,<sp/>my_index_t<sp/>pos_first_freq_index,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DataContainer&gt;</highlight></codeline>
+<codeline lineno="77" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a247f6deabff508e96fcd36956153e41d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d1/de6/classSpline" kindref="compound">Spline&lt;Q,rank,2,pos_first_freq_index,DataContainer&gt;::get_coeffs_from_derivs</ref>()<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref><sp/></highlight><highlight class="comment">//<sp/>const<sp/>index_type&amp;<sp/>indices,<sp/>const<sp/>double<sp/>dw,<sp/>const<sp/>double<sp/>dv)<sp/>const</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;double,16,16&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">A</ref>;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">A</ref><sp/>&lt;&lt;<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-3,<sp/><sp/>3,<sp/><sp/>0,<sp/><sp/>0,<sp/>-2,<sp/>-1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>2,<sp/>-2,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/>-3,<sp/><sp/>3,<sp/><sp/>0,<sp/><sp/>0,<sp/>-2,<sp/>-1,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>2,<sp/>-2,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-3,<sp/><sp/>0,<sp/><sp/>3,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/>-2,<sp/><sp/>0,<sp/>-1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/>-3,<sp/><sp/>0,<sp/><sp/>3,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/>-2,<sp/><sp/>0,<sp/>-1,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>9,<sp/>-9,<sp/>-9,<sp/><sp/>9,<sp/><sp/>6,<sp/><sp/>3,<sp/>-6,<sp/>-3,<sp/><sp/>6,<sp/>-6,<sp/><sp/>3,<sp/>-3,<sp/><sp/>4,<sp/><sp/>2,<sp/><sp/>2,<sp/><sp/>1,</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-6,<sp/><sp/>6,<sp/><sp/>6,<sp/>-6,<sp/>-3,<sp/>-3,<sp/><sp/>3,<sp/><sp/>3,<sp/>-4,<sp/><sp/>4,<sp/>-2,<sp/><sp/>2,<sp/>-2,<sp/>-2,<sp/>-1,<sp/>-1,</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>2,<sp/><sp/>0,<sp/>-2,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>2,<sp/><sp/>0,<sp/>-2,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>0,<sp/><sp/>1,<sp/><sp/>0,</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-6,<sp/><sp/>6,<sp/><sp/>6,<sp/>-6,<sp/>-4,<sp/>-2,<sp/><sp/>4,<sp/><sp/>2,<sp/>-3,<sp/><sp/>3,<sp/>-3,<sp/><sp/>3,<sp/>-2,<sp/>-1,<sp/>-2,<sp/>-1,</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>4,<sp/>-4,<sp/>-4,<sp/><sp/>4,<sp/><sp/>2,<sp/><sp/>2,<sp/>-2,<sp/>-2,<sp/><sp/>2,<sp/>-2,<sp/><sp/>2,<sp/>-2,<sp/><sp/>1,<sp/><sp/>1,<sp/><sp/>1,<sp/><sp/>1;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_x</ref><sp/>=<sp/><ref refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" kindref="member">DataContainer::frequencies</ref>.<sp/><sp/>primary_grid.number_of_gridpoints;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>=<sp/><ref refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" kindref="member">DataContainer::frequencies</ref>.secondary_grid.number_of_gridpoints;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_nonx</ref><sp/>=<sp/>n/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_x</ref>/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref>;</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref><sp/>=<sp/>0;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref><sp/>&lt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_nonx</ref>;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>++)<sp/>{</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref><sp/>=<sp/>0;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref><sp/>&lt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_x</ref>-1;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>++)<sp/>{</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/>=<sp/>0;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/>&lt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref>-1;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>++)<sp/>{</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref><sp/>=<sp/><ref refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" kindref="member">DataContainer::frequencies</ref>.<sp/><sp/>primary_grid.get_auxiliary_gridpoint(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>+1)<sp/>-<sp/><ref refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" kindref="member">DataContainer::frequencies</ref>.<sp/><sp/>primary_grid.get_auxiliary_gridpoint(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>);</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>=<sp/><ref refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" kindref="member">DataContainer::frequencies</ref>.secondary_grid.get_auxiliary_gridpoint(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>+1)<sp/>-<sp/><ref refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" kindref="member">DataContainer::frequencies</ref>.secondary_grid.get_auxiliary_gridpoint(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_base</ref><sp/>=<sp/><ref refid="de/dbb/math__utils_8hpp_1af09f658145737a528e92348ccf9cd949" kindref="member">::rotateFlatIndex</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_x</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref><sp/><sp/>)*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/><sp/>,<sp/><ref refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" kindref="member">DataContainer::get_dims</ref>(),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freq_index</ref>+1);</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_base</ref><sp/>=<sp/><ref refid="de/dbb/math__utils_8hpp_1af09f658145737a528e92348ccf9cd949" kindref="member">::rotateFlatIndex</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_x</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>+1)*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref><sp/><sp/>,<sp/><ref refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" kindref="member">DataContainer::get_dims</ref>(),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freq_index</ref>+1);</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_plus</ref><sp/>=<sp/><ref refid="de/dbb/math__utils_8hpp_1af09f658145737a528e92348ccf9cd949" kindref="member">::rotateFlatIndex</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_x</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref><sp/><sp/>)*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>+1,<sp/><ref refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" kindref="member">DataContainer::get_dims</ref>(),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freq_index</ref>+1);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_plus</ref><sp/>=<sp/><ref refid="de/dbb/math__utils_8hpp_1af09f658145737a528e92348ccf9cd949" kindref="member">::rotateFlatIndex</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_x</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>+1)*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_y</ref><sp/>+<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>+1,<sp/><ref refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" kindref="member">DataContainer::get_dims</ref>(),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freq_index</ref>+1);</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;Q,16,1&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">_fs</ref>;</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">_fs</ref><sp/>&lt;&lt;<sp/><ref refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" kindref="member">DataContainer::data</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_base</ref>],<sp/><ref refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" kindref="member">DataContainer::data</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_base</ref>],<sp/><ref refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" kindref="member">DataContainer::data</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_plus</ref>],<sp/><ref refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" kindref="member">DataContainer::data</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_plus</ref>],</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref><sp/>*<sp/>m_deriv_x[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_base</ref>],<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref><sp/>*<sp/>m_deriv_x[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_base</ref>],<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref><sp/>*<sp/>m_deriv_x[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_plus</ref>],<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref><sp/>*<sp/>m_deriv_x[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_plus</ref>],</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_y[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_base</ref>],<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_y[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_base</ref>],<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_y[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_plus</ref>],<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_y[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_plus</ref>],</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_xy[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_base</ref>],<sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_xy[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_base</ref>],<sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_xy[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_plus</ref>],<sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref><sp/>*<sp/>m_deriv_xy[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_plus_plus</ref>];</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>all_coefficients.row(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_base</ref>)<sp/>=<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">A</ref><sp/>*<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">_fs</ref>).<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">transpose</ref>();</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i1</ref><sp/>=<sp/>0;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i1</ref><sp/>&lt;<sp/>4;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i1</ref>++)<sp/>{</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i2<sp/>=<sp/>0;<sp/>i2<sp/>&lt;<sp/>4;<sp/>i2++)<sp/>{</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>all_coefficients(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idx_base_base</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i1</ref><sp/>*<sp/>4<sp/>+<sp/>i2)<sp/>/=<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pow</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dv</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i1</ref>)<sp/>*<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pow</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dw</ref>,<sp/>i2));</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//int<sp/>ispin<sp/>=<sp/>indices[my_defs::K2::spin];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//int<sp/>iw<sp/>=<sp/>indices[my_defs::K2::omega];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//int<sp/>iv<sp/>=<sp/>indices[my_defs::K2::nu];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//int<sp/>iK<sp/>=<sp/>indices[my_defs::K2::keldysh];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//int<sp/>i_in<sp/>=<sp/>indices[my_defs::K2::internal];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>vec&lt;Q&gt;<sp/>fs<sp/>=<sp/>{</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DataContainer::data[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DataContainer::data[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DataContainer::data[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DataContainer::data[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw<sp/>*<sp/>m_deriv_x[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw<sp/>*<sp/>m_deriv_x[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw<sp/>*<sp/>m_deriv_x[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw<sp/>*<sp/>m_deriv_x[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dv<sp/>*<sp/>m_deriv_y[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dv<sp/>*<sp/>m_deriv_y[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dv<sp/>*<sp/>m_deriv_y[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dv<sp/>*<sp/>m_deriv_y[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw*dv<sp/>*<sp/>m_deriv_xy[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw*dv<sp/>*<sp/>m_deriv_xy[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/><sp/><sp/><sp/>,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw*dv<sp/>*<sp/>m_deriv_xy[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/><sp/><sp/><sp/>,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dw*dv<sp/>*<sp/>m_deriv_xy[::getFlatIndex&lt;5,int,int,int,int,int&gt;(ispin,<sp/>iw<sp/>+<sp/>1,<sp/>iv<sp/>+<sp/>1,<sp/>iK,<sp/>i_in,<sp/>DataContainer::get_dims())],</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//};</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//vec&lt;Q&gt;<sp/>coeffs<sp/>=<sp/>vec&lt;Q&gt;<sp/>(16);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//for<sp/>(int<sp/>i<sp/>=<sp/>0;<sp/>i&lt;16;<sp/>i++)<sp/>{</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>coeffs[i]<sp/>=<sp/>0.;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>for<sp/>(int<sp/>j<sp/>=<sp/>0;<sp/>j&lt;16;<sp/>j++)<sp/>{</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>coeffs[i]<sp/>+=<sp/>A[i][j]<sp/>*<sp/>fs[j];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Same<sp/>as<sp/>double<sp/>for-loop<sp/>above<sp/>(matrix-vector<sp/>multiplication):</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//vec&lt;Q&gt;<sp/>coeffs<sp/>=<sp/>{</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fs[0]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>fs[4]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>3.*(-fs[0]+fs[1])<sp/>-2.*fs[4]<sp/>-fs[5]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>2.*(fs[0]-fs[1])<sp/>+fs[4]<sp/>+fs[5]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>fs[8]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>fs[12]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>-3.*(fs[8]-fs[9])<sp/>-2.*fs[12]<sp/>-fs[13]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>2.*(fs[8]-fs[9])<sp/>+fs[12]<sp/>+fs[13]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>-3.*(fs[0]-fs[2])<sp/>-2.*fs[8]<sp/>-fs[10]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>-3.*(fs[4]-fs[6])<sp/>-2.*fs[12]<sp/>-fs[14]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>9.*(fs[0]-fs[1]-fs[2]+fs[3])<sp/>+<sp/>6.*(fs[4]-fs[6]+fs[8]-fs[9])<sp/>+<sp/>3.*(fs[5]-fs[7]+fs[10]-fs[11])<sp/>+<sp/>4.*fs[12]<sp/>+<sp/>2.*(fs[13]+fs[14])<sp/>+<sp/>fs[15]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>6.*(-fs[0]+fs[1]+fs[2]-fs[3])<sp/>+3.*(-fs[4]-fs[5]+fs[6]+fs[7])<sp/>+4.*(-fs[8]+fs[9])<sp/>+2.*(-fs[10]+fs[11]-fs[12]-fs[13])<sp/>+(-fs[14]-fs[15])</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>2.*(fs[0]-fs[2])<sp/>+fs[8]<sp/>+fs[10]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>2.*(fs[4]-fs[6])<sp/>+fs[12]<sp/>+fs[14]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>6.*(-fs[0]+fs[1]+fs[2]-fs[3])<sp/>+4.*(-fs[4]+fs[6])<sp/>+2.*(-fs[5]+fs[7]-fs[12]-fs[14])<sp/>+3.*(-fs[8]+fs[9]-fs[10]+fs[11])<sp/>+(-fs[13]-fs[15])</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>4.*(fs[0]-fs[1]-fs[2]+fs[3])<sp/>+2.*(fs[4]+fs[5]-fs[6]-fs[7]+fs[8]-fs[9]+fs[10]-fs[11])<sp/>+<sp/>fs[12]+fs[13]+fs[14]+fs[15]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//};</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//return<sp/>coeffs;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>rank,<sp/>my_index_t<sp/>pos_first_freq_index,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DataContainer&gt;</highlight></codeline>
+<codeline lineno="184" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab2a08aa7bd6789c97411697e91dcf300" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d1/de6/classSpline" kindref="compound">Spline&lt;Q,rank,2,pos_first_freq_index,DataContainer&gt;::initInterpolator</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="185"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"></highlight></codeline>
+<codeline lineno="187"><highlight class="normal"></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d3f/classmultidimensional_1_1multiarray" kindref="compound">multidimensional::multiarray&lt;Q,rank&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref><sp/>=<sp/><ref refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" kindref="member">DataContainer::get_deriv_x</ref>();</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/>m_deriv_x<sp/>=<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;Q&gt;</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref>.begin(),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref>.end());</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref><sp/>=<sp/><ref refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" kindref="member">DataContainer::get_deriv_y</ref>();</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/>m_deriv_y<sp/>=<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;Q&gt;</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref>.begin(),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref>.end());</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref><sp/>=<sp/><ref refid="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" kindref="member">DataContainer::get_deriv_xy</ref>();</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/>m_deriv_xy<sp/>=<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;Q&gt;</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref>.begin(),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">temp</ref>.end());</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/>all_coefficients<sp/>=<sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" kindref="member">coeffs_type</ref>(n,16);</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/>get_coeffs_from_derivs();</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"></highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/>initialized<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="200"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>rank,<sp/>my_index_t<sp/>pos_first_freq_index,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DataContainer&gt;</highlight></codeline>
+<codeline lineno="204" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a996f57ec574fcd0cdd97658aa5d8f0c1" refkind="member"><highlight class="normal">Eigen::Matrix&lt;Q,16,1&gt;<sp/><ref refid="d1/de6/classSpline" kindref="compound">Spline&lt;Q,rank,2,pos_first_freq_index,DataContainer&gt;::get_weights</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::array&lt;my_index_t,2&gt;&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">freq_idx</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::array&lt;double,2&gt;&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dt_unnormalized</ref>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>double<sp/>dw<sp/>=<sp/>DataContainer::frequencies.<sp/><sp/>primary_grid.get_auxiliary_gridpoint(iw+1)<sp/>-<sp/>DataContainer::frequencies.<sp/><sp/>primary_grid.get_auxiliary_gridpoint(iw);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>double<sp/>dv<sp/>=<sp/>DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv+1)<sp/>-<sp/>DataContainer::frequencies.secondary_grid.get_auxiliary_gridpoint(iv);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hw</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dt_unnormalized</ref>[0];</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hv</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dt_unnormalized</ref>[1];</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"></highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;Q,16,1&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">weights</ref>;</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dwpow</ref>[4]<sp/>=<sp/>{1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hw</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hw</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hw</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hw</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hw</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hw</ref>};</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dvpow</ref>[4]<sp/>=<sp/>{1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hv</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hv</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hv</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hv</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hv</ref>*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">hv</ref>};</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref><sp/>=<sp/>0;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>&lt;4;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>++)<sp/>{</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref><sp/>=<sp/>0;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>&lt;4;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>++)<sp/>{</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">weights</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>*4+<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>)<sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dvpow</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i</ref>]<sp/>*<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dwpow</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">j</ref>];</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">weights</ref>.allFinite());</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">weights</ref>;</highlight></codeline>
+<codeline lineno="221"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"></highlight></codeline>
+<codeline lineno="223"><highlight class="normal"></highlight></codeline>
+<codeline lineno="224"><highlight class="normal"></highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>rank,<sp/>my_index_t<sp/>pos_first_freq_index,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DataContainer&gt;</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>result_type&gt;</highlight></codeline>
+<codeline lineno="227" refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a9929ed45115e5545302fade3b8ecafb2" refkind="member"><highlight class="normal">result_type<sp/><ref refid="d1/de6/classSpline" kindref="compound">Spline&lt;Q,rank,2,pos_first_freq_index,DataContainer&gt;::interpolate_spline</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a7dd1f280f9290b67080267041b4acd6c" kindref="member">frequencies_type</ref>&amp;<sp/>frequencies,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" kindref="member">index_type</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">indices</ref>)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="228"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(initialized);</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>int<sp/>iK,<sp/>const<sp/>int<sp/>spin,<sp/>const<sp/>double<sp/>w,<sp/>const<sp/>double<sp/>v,<sp/>const<sp/>int<sp/>i_in</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;my_index_t,2&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">freq_idx</ref>;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>frequency<sp/>indices<sp/>of<sp/>nearest<sp/>smaller<sp/>gridpoints</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;double,2&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dt_unnormalized</ref>;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>distance<sp/>to<sp/>nearest<sp/>smaller<sp/>gridpoint</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" kindref="member">DataContainer::frequencies</ref>.get_auxgrid_index_unnormalized(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">freq_idx</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dt_unnormalized</ref>,<sp/>frequencies);</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"></highlight></codeline>
+<codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//double<sp/>tw;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>size_t<sp/>iw=DataContainer::frequencies.<sp/><sp/>primary_grid.get_grid_index(tw,<sp/>frequencies[0]);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//double<sp/>tv;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>size_t<sp/>iv=DataContainer::frequencies.secondary_grid.get_grid_index(tv,<sp/>frequencies[1]);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" kindref="member">index_type</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">index_temp</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">indices</ref>;</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">index_temp</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freq_index</ref><sp/><sp/>]<sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">freq_idx</ref>[0];</highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">index_temp</ref>[<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freq_index</ref>+1]<sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">freq_idx</ref>[1];</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i_row</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">getFlatIndex&lt;rank&gt;</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">index_temp</ref>,<sp/><ref refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" kindref="member">DataContainer::get_dims</ref>());</highlight></codeline>
+<codeline lineno="246"><highlight class="normal"></highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;Q,16,1&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">weights</ref><sp/>=<sp/>get_weights(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">freq_idx</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dt_unnormalized</ref>);</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"></highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(std::is_same_v&lt;result_type,Q&gt;)<sp/>{</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Q<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>;</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//vec&lt;Q&gt;<sp/>coeffs<sp/>=<sp/>get_coeffs_from_derivs(index_temp,<sp/>dw,<sp/>dv);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//Q<sp/>result<sp/>=<sp/>0.;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>std::array&lt;size_t,2&gt;<sp/>dims<sp/>=<sp/>{4,4};</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>double<sp/>dwpow[4]<sp/>=<sp/>{1,<sp/>hw,<sp/>hw*hw,<sp/>hw*hw*hw};</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//const<sp/>double<sp/>dvpow[4]<sp/>=<sp/>{1,<sp/>hv,<sp/>hv*hv,<sp/>hv*hv*hv};</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//for<sp/>(int<sp/>i<sp/>=<sp/>0;<sp/>i&lt;4;<sp/>i++)<sp/>{</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="258"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>for<sp/>(int<sp/>j<sp/>=<sp/>0;<sp/>j&lt;4;<sp/>j++)<sp/>{</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>result<sp/>+=<sp/>dvpow[i]<sp/>*<sp/>coeffs[::getFlatIndex&lt;2,int,int&gt;(i,<sp/>j,<sp/>dims)]<sp/>*<sp/>dwpow[j];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="261"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="262"><highlight class="normal"></highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;Q,<sp/>1,<sp/>16&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">values</ref><sp/>=<sp/>all_coefficients.row(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i_row</ref>);</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref><sp/>=<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">values</ref><sp/>*<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">weights</ref>).<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">eval</ref>()[0];</highlight></codeline>
+<codeline lineno="265"><highlight class="normal"></highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(isfinite(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>));</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>;</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(std::is_same_v&lt;result_type,Eigen::Matrix&lt;Q,result_type::RowsAtCompileTime,1&gt;&gt;){</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;Q,result_type::RowsAtCompileTime,1&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>;</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Eigen::Matrix&lt;Q,<sp/>result_type::RowsAtCompileTime,<sp/>16&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">values</ref><sp/>=<sp/>all_coefficients.template<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">block&lt;result_type::RowsAtCompileTime,16&gt;</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">i_row</ref>,0);</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref><sp/>=<sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">values</ref><sp/>*<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">weights</ref>).<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">eval</ref>();</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>.allFinite());</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>;</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(</highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>result_type<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>;</highlight></codeline>
+<codeline lineno="280"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>;</highlight></codeline>
+<codeline lineno="281"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="282"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="283"><highlight class="normal"></highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight></codeline>
+<codeline lineno="285"><highlight class="normal"></highlight></codeline>
+<codeline lineno="286"><highlight class="normal"></highlight></codeline>
+<codeline lineno="287"><highlight class="normal"></highlight></codeline>
+<codeline lineno="288"><highlight class="normal"></highlight></codeline>
+<codeline lineno="289"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//FPP_MFRG_INTERPOLATORSPLINE2D_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="interpolations/InterpolatorSpline2D.hpp"/>
+  </compounddef>
+</doxygen>

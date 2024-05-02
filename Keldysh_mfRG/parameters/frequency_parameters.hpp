@@ -22,15 +22,15 @@ constexpr bool shift_fgrids_woPHS = false;      /// determines whether frequency
 // Number of bosonic and fermionic frequency points.
 // Good production values for Keldysh: nBOS = nFER = 401, nBOS2 = nFER2 = 201, nBOS3 = nFER3 = 51
 #if KELDYSH_FORMALISM
-constexpr int nBOS = 401;
-constexpr int nFER = 401 - (KELDYSH_FORMALISM ? 0 : 1);
+constexpr int nBOS = 401;                                                       ///< Number of bosonic frequency points for the K1 vertex class.
+constexpr int nFER = 401 - (KELDYSH_FORMALISM ? 0 : 1);                         ///< Number of fermionic frequency points for the self-energy.
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 201;//nBOS;
-constexpr int nFER2 = 201 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);//nFER;
-constexpr int nBOS3 = 51; //nBOS;
-constexpr int nFER3 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1); //nFER;
+constexpr int nBOS2 = 201;                                                      ///< Number of bosonic frequency points for the K2 and K2' vertex classes.
+constexpr int nFER2 = 201 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);           ///< Number of fermionic frequency points for the K2 and K2' vertex classes.
+constexpr int nBOS3 = 51;                                                       ///< Number of bosonic frequency points for the K3 vertex class.
+constexpr int nFER3 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);            ///< Number of fermionic frequency points for the K3 vertex class.
 
-const int COUNT = 4;
+const int COUNT = 4;                                ///< Used to set the number of frequency points in the MF. For details, see the definitions in the file frequency_parameters.hpp
 #else
 constexpr int nBOS = COUNT *  4 * 2 * 16 + 1;
 constexpr int nFER = COUNT * 32 * 2 * 2;
@@ -42,12 +42,12 @@ constexpr int nFER3 = COUNT * 2 * 2; //nFER;
 const int POSINTRANGE = 64  * COUNT;
 
 
-const double Delta_factor_K1 = 5.;
-const double Delta_factor_SE = 10.;
-const double Delta_factor_K2_w = 15.;
-const double Delta_factor_K2_v = 20.;
-const double Delta_factor_K3_w = 10.;
-const double Delta_factor_K3_v = 10.;
+const double Delta_factor_K1 = 5.;      ///< Scale factor for the frequency grid of the K1 vertex class.
+const double Delta_factor_SE = 10.;     ///< Scale factor for the frequency grid of the self-energy.
+const double Delta_factor_K2_w = 15.;   ///< Scale factor for the frequency grid of the bosonic frequency of the K2 and K2' vertex classes.
+const double Delta_factor_K2_v = 20.;   ///< Scale factor for the frequency grid of the fermionic frequency of the K2 and K2' vertex classes.
+const double Delta_factor_K3_w = 10.;   ///< Scale factor for the frequency grid of the bosonic frequency of the K3 vertex class.
+const double Delta_factor_K3_v = 10.;   ///< Scale factor for the frequency grid of the fermionic frequencies of the K3 vertex class.
 
 
 

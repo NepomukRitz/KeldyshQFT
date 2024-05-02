@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dd/da7/structmfRG__stats" kind="struct" language="C++" prot="public">
+    <compoundname>mfRG_stats</compoundname>
+    <includes refid="d8/dea/right__hand__sides_8hpp" local="no">right_hand_sides.hpp</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="dd/da7/structmfRG__stats_1a14193eaef49805c52d60c016188ca805" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int mfRG_stats::number_of_SE_iterations</definition>
+        <argsstring></argsstring>
+        <name>number_of_SE_iterations</name>
+        <qualifiedname>mfRG_stats::number_of_SE_iterations</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="134" column="9" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="134" bodyend="-1"/>
+        <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">write_to_hdf</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="dd/da7/structmfRG__stats_1aa0283b00595ba77a0cc5033e653c9844" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double mfRG_stats::time</definition>
+        <argsstring></argsstring>
+        <name>time</name>
+        <qualifiedname>mfRG_stats::time</qualifiedname>
+        <initializer>= 0.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="135" column="12" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="135" bodyend="-1"/>
+        <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">write_to_hdf</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="dd/da7/structmfRG__stats_1ad9f64007410a48760308b5d67e098fac" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int mfRG_stats::RKattempts</definition>
+        <argsstring></argsstring>
+        <name>RKattempts</name>
+        <qualifiedname>mfRG_stats::RKattempts</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="136" column="9" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="136" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void mfRG_stats::write_to_hdf</definition>
+        <argsstring>(const std::string &amp;filename, const fRG_config &amp;config, const int Lambda_it) const</argsstring>
+        <name>write_to_hdf</name>
+        <qualifiedname>mfRG_stats::write_to_hdf</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>Lambda_it</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="138" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="138" bodyend="157"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
+        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
+        <references refid="dd/da7/structmfRG__stats_1a14193eaef49805c52d60c016188ca805" compoundref="d8/dea/right__hand__sides_8hpp" startline="134">number_of_SE_iterations</references>
+        <references refid="d5/d4f/hdf5__routines_8c_09_09_1a924110dbdaccbbc744def3ca0838cb4c" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="21" endline="30">open_hdf_file_readWrite</references>
+        <references refid="dd/da7/structmfRG__stats_1aa0283b00595ba77a0cc5033e653c9844" compoundref="d8/dea/right__hand__sides_8hpp" startline="135">time</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" compoundref="d1/df8/master__parameters_8hpp" startline="118" endline="122">U_NRG</references>
+        <references refid="d5/de4/hdf5__routines_8hpp_1a4a896bffba9072fda2acceb9bffe1eff" compoundref="d5/de4/hdf5__routines_8hpp" startline="462" endline="466">write_to_hdf_LambdaLayer</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="3">
+        <label>double</label>
+      </node>
+      <node id="2">
+        <label>int</label>
+      </node>
+      <node id="1">
+        <label>mfRG_stats</label>
+        <link refid="dd/da7/structmfRG__stats"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+RKattempts</edgelabel>
+          <edgelabel>+number_of_SE_iterations</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+time</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="mfRG_flow/right_hand_sides.hpp" line="133" column="1" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="133" bodyend="158"/>
+    <listofallmembers>
+      <member refid="dd/da7/structmfRG__stats_1a14193eaef49805c52d60c016188ca805" prot="public" virt="non-virtual"><scope>mfRG_stats</scope><name>number_of_SE_iterations</name></member>
+      <member refid="dd/da7/structmfRG__stats_1ad9f64007410a48760308b5d67e098fac" prot="public" virt="non-virtual"><scope>mfRG_stats</scope><name>RKattempts</name></member>
+      <member refid="dd/da7/structmfRG__stats_1aa0283b00595ba77a0cc5033e653c9844" prot="public" virt="non-virtual"><scope>mfRG_stats</scope><name>time</name></member>
+      <member refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" prot="public" virt="non-virtual"><scope>mfRG_stats</scope><name>write_to_hdf</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

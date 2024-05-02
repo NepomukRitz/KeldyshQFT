@@ -1,0 +1,5 @@
+Propagator
+==========
+
+.. doxygenclass:: Propagator
+   :members:

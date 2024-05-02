@@ -77,7 +77,7 @@ class FrequencyGrid<eliasGrid> {
 public:
     /// essential grid parameters:
     int number_of_gridpoints;
-    freqType w_upper;             // lower bound of frequency grid
+    freqType w_upper;             // upper bound of frequency grid
     freqType w_lower;             // lower bound of frequency grid
     freqType W_scale;             // non-linearity of t_from_frequency()
     freqType w_center = 0;        // symmetry point of frequency grid

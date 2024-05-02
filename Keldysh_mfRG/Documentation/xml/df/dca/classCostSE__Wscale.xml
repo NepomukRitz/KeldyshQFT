@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="df/dca/classCostSE__Wscale" kind="class" language="C++" prot="public">
+    <compoundname>CostSE_Wscale</compoundname>
+    <includes refid="d6/d2d/selfenergy_8hpp" local="no">selfenergy.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" prot="private" static="no" mutable="no">
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt;Q&gt; CostSE_Wscale&lt; Q &gt;::selfEnergy_backup</definition>
+        <argsstring></argsstring>
+        <name>selfEnergy_backup</name>
+        <qualifiedname>CostSE_Wscale::selfEnergy_backup</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="271" column="16" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="271" bodyend="-1"/>
+        <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="275" endline="289">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
+        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="291" endline="310">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="df/dca/classCostSE__Wscale_1a37c62acf0d846d2e02be9dfdee1cd412" prot="private" static="no" mutable="no">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool CostSE_Wscale&lt; Q &gt;::verbose</definition>
+        <argsstring></argsstring>
+        <name>verbose</name>
+        <qualifiedname>CostSE_Wscale::verbose</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="272" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="272" bodyend="-1"/>
+        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="291" endline="310">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" prot="public" static="no" mutable="no">
+        <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+        <definition>SelfEnergy&lt;Q&gt; CostSE_Wscale&lt; Q &gt;::selfEnergy</definition>
+        <argsstring></argsstring>
+        <name>selfEnergy</name>
+        <qualifiedname>CostSE_Wscale::selfEnergy</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="274" column="16" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="274" bodyend="-1"/>
+        <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="275" endline="289">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
+        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="291" endline="310">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</definition>
+        <argsstring>(SelfEnergy&lt; Q &gt; SE_in, bool verbose)</argsstring>
+        <name>CostSE_Wscale</name>
+        <qualifiedname>CostSE_Wscale::CostSE_Wscale</qualifiedname>
+        <param>
+          <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
+          <declname>SE_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="275" column="14" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="275" bodyend="289"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
+        <references refid="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" compoundref="d6/d2d/selfenergy_8hpp" startline="274">CostSE_Wscale&lt; Q &gt;::selfEnergy</references>
+        <references refid="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" compoundref="d6/d2d/selfenergy_8hpp" startline="271">CostSE_Wscale&lt; Q &gt;::selfEnergy_backup</references>
+      </memberdef>
+      <memberdef kind="function" id="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto CostSE_Wscale&lt; Q &gt;::operator()</definition>
+        <argsstring>(double wscale_test) -&gt; double</argsstring>
+        <name>operator()</name>
+        <qualifiedname>CostSE_Wscale::operator()</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>wscale_test</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="291" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="291" bodyend="310"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" compoundref="d6/d2d/selfenergy_8hpp" startline="274">CostSE_Wscale&lt; Q &gt;::selfEnergy</references>
+        <references refid="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" compoundref="d6/d2d/selfenergy_8hpp" startline="271">CostSE_Wscale&lt; Q &gt;::selfEnergy_backup</references>
+        <references refid="df/dca/classCostSE__Wscale_1a37c62acf0d846d2e02be9dfdee1cd412" compoundref="d6/d2d/selfenergy_8hpp" startline="272">CostSE_Wscale&lt; Q &gt;::verbose</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>CostSE_Wscale&lt; Q &gt;</label>
+        <link refid="df/dca/classCostSE__Wscale"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+selfEnergy</edgelabel>
+          <edgelabel>-selfEnergy_backup</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>-verbose</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>SelfEnergy&lt; Q &gt;</label>
+      </node>
+      <node id="3">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/two_point/selfenergy.hpp" line="270" column="1" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="270" bodyend="312"/>
+    <listofallmembers>
+      <member refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" prot="public" virt="non-virtual"><scope>CostSE_Wscale</scope><name>CostSE_Wscale</name></member>
+      <member refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" prot="public" virt="non-virtual"><scope>CostSE_Wscale</scope><name>operator()</name></member>
+      <member refid="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" prot="public" virt="non-virtual"><scope>CostSE_Wscale</scope><name>selfEnergy</name></member>
+      <member refid="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" prot="private" virt="non-virtual"><scope>CostSE_Wscale</scope><name>selfEnergy_backup</name></member>
+      <member refid="df/dca/classCostSE__Wscale_1a37c62acf0d846d2e02be9dfdee1cd412" prot="private" virt="non-virtual"><scope>CostSE_Wscale</scope><name>verbose</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

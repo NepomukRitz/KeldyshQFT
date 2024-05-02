@@ -1,0 +1,375 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d4/dda/mpi__setup_8c_09_09" kind="file" language="C++">
+    <compoundname>mpi_setup.c++</compoundname>
+    <includes refid="db/de0/mpi__setup_8hpp" local="yes">mpi_setup.hpp</includes>
+    <incdepgraph>
+      <node id="3">
+        <label>../data_structures.hpp</label>
+        <link refid="d7/d59/data__structures_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>frequency_parameters.hpp</label>
+        <link refid="d3/d3c/frequency__parameters_8hpp"/>
+      </node>
+      <node id="11">
+        <label>parameters/master_parameters.hpp</label>
+        <link refid="d1/df8/master__parameters_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>technical_parameters.hpp</label>
+        <link refid="d9/d3a/technical__parameters_8hpp"/>
+      </node>
+      <node id="1">
+        <label>mpi_setup.c++</label>
+        <link refid="d4/dda/mpi__setup_8c_09_09"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>mpi_setup.hpp</label>
+        <link refid="db/de0/mpi__setup_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>Eigen/Dense</label>
+      </node>
+      <node id="13">
+        <label>array</label>
+      </node>
+      <node id="9">
+        <label>cassert</label>
+      </node>
+      <node id="5">
+        <label>cmath</label>
+      </node>
+      <node id="4">
+        <label>complex</label>
+      </node>
+      <node id="8">
+        <label>functional</label>
+      </node>
+      <node id="7">
+        <label>initializer_list</label>
+      </node>
+      <node id="17">
+        <label>mpi.h</label>
+      </node>
+      <node id="10">
+        <label>numeric</label>
+      </node>
+      <node id="12">
+        <label>string</label>
+      </node>
+      <node id="6">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int mpi_world_rank</definition>
+        <argsstring>()</argsstring>
+        <name>mpi_world_rank</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Functions for handling MPI parallelization: initializing buffers, distributing results between MPI processes etc. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/mpi_setup.c++" line="3" column="5" bodyfile="utilities/mpi_setup.c++" bodystart="3" bodyend="7"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" compoundref="d9/d3a/technical__parameters_8hpp" startline="13">MPI_FLAG</references>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de" compoundref="d6/d2d/selfenergy_8hpp" startline="325" endline="342">SelfEnergy&lt; Q &gt;::analyze_tails</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a606c80931936bca1dd8e667722f8c682" compoundref="d1/d2d/vertex_8hpp" startline="1950" endline="1968">fullvert&lt; Q &gt;::analyze_tails_K1</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a2f700872916d51ec1a80d4be0bb51094" compoundref="d1/d2d/vertex_8hpp" startline="1989" endline="2007">fullvert&lt; Q &gt;::analyze_tails_K2v</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1adfcc2581efbd3f9e56cddf42ef239204" compoundref="d1/d2d/vertex_8hpp" startline="1970" endline="1988">fullvert&lt; Q &gt;::analyze_tails_K2w</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a123ed0e257960dd9ac040a840381ce71" compoundref="d1/d2d/vertex_8hpp" startline="2027" endline="2045">fullvert&lt; Q &gt;::analyze_tails_K3v</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a543f0402a93173c8c9731f3d141c3712" compoundref="d1/d2d/vertex_8hpp" startline="2046" endline="2064">fullvert&lt; Q &gt;::analyze_tails_K3vp</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a06add5d9f75612bf44c42d6b5a612577" compoundref="d1/d2d/vertex_8hpp" startline="2008" endline="2026">fullvert&lt; Q &gt;::analyze_tails_K3w</referencedby>
+        <referencedby refid="d6/d7b/anderson__acceleration_8hpp_1a88e79b4550a392a79d60d8bf6557461c" compoundref="d6/d7b/anderson__acceleration_8hpp" startline="57" endline="125">anderson_update</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="622" endline="907">rvert&lt; Q &gt;::check_symmetries</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1ae9703efe9daa0b11b6c308880d77f36a" compoundref="d1/d2d/vertex_8hpp" startline="1938" endline="1948">fullvert&lt; Q &gt;::check_vertex_resolution</referencedby>
+        <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</referencedby>
+        <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a6dbc5795d6adf4e9aca38307ca541ffa" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="6" endline="15">create_hdf_file</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a5020e8df3fe9af5189eb7170db07439f" compoundref="d6/d35/util_8c_09_09" startline="48" endline="61">utils::get_cpu_hours</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1ad1ca0a486000556d9fdc97756c66c04b" compoundref="d1/d2d/vertex_8hpp" startline="1881" endline="1898">fullvert&lt; Q &gt;::get_curvature_max_K1</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1ac9554744d904dad0b283b5f5d43b29b2" compoundref="d1/d2d/vertex_8hpp" startline="1900" endline="1917">fullvert&lt; Q &gt;::get_curvature_max_K2</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1aa0ee67c25d589f105e85b8a2efc63e32" compoundref="d1/d2d/vertex_8hpp" startline="1919" endline="1936">fullvert&lt; Q &gt;::get_curvature_max_K3</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1ab65f67d9fcf903f929d3188fd66b3fce" compoundref="d6/d2d/selfenergy_8hpp" startline="380" endline="394">SelfEnergy&lt; Q &gt;::get_curvature_maxSE</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1ac52ee4d5099c17b5f3244402c9fe44f9" compoundref="d1/d2d/vertex_8hpp" startline="1824" endline="1841">fullvert&lt; Q &gt;::get_deriv_max_K1</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1af9f1a6fbbf6f26d8f72fa941d83b14f1" compoundref="d1/d2d/vertex_8hpp" startline="1843" endline="1860">fullvert&lt; Q &gt;::get_deriv_max_K2</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a8d666b9578ec079f8da540aa53bb7579" compoundref="d1/d2d/vertex_8hpp" startline="1862" endline="1879">fullvert&lt; Q &gt;::get_deriv_max_K3</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1ad47166569063f3ab50c934ae27d8cedd" compoundref="d6/d2d/selfenergy_8hpp" startline="367" endline="379">SelfEnergy&lt; Q &gt;::get_deriv_maxSE</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a543aa24c499f82fc7ffb5dab99a06cda" compoundref="d6/d35/util_8c_09_09" startline="29" endline="46">utils::get_time</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a782e4fcd0ce2ae9a576049387bfd125b" compoundref="d6/d35/util_8c_09_09" startline="63" endline="98">utils::get_time</referencedby>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1a58b67ba50cbb4f7de77e1cefc97ab1d9" compoundref="da/dc3/ODE__solvers_8hpp" startline="723" endline="820">boost::numeric::odeint::detail::integrate_adaptive_check</referencedby>
+        <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1afbf101e814fc65a748987878efb4f4e1" compoundref="da/dc3/ODE__solvers_8hpp" startline="663" endline="720">boost::numeric::odeint::detail::integrate_nonadaptive</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a8b15a47f6cc62f31f2fe1323cabba6ae" compoundref="d6/d35/util_8c_09_09" startline="100" endline="113">utils::makedir</referencedby>
+        <referencedby refid="d4/d21/minimizer_8hpp_1a4cf1f8fcc0a66dfcb227b42a1f615375" compoundref="d4/d21/minimizer_8hpp" startline="39" endline="154">minimizer</referencedby>
+        <referencedby refid="d4/d21/minimizer_8hpp_1ae9b809f8f55070fd8160cf3085bed020" compoundref="d4/d21/minimizer_8hpp" startline="170" endline="243">minimizer_nD</referencedby>
+        <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
+        <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a924110dbdaccbbc744def3ca0838cb4c" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="21" endline="30">open_hdf_file_readWrite</referencedby>
+        <referencedby refid="dc/d7a/classdataBuffer_1addda1eff16406b44ee3b8d4020882821" compoundref="dc/d80/data__buffer_8hpp" startline="725" endline="811">dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::optimize_grid</referencedby>
+        <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a25d39c53617762d79e28672d687d596c" compoundref="d0/d3f/util_8hpp" startline="73" endline="83">utils::print</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1af58fcdc4d462dffeb4077f69117602ad" compoundref="d0/d3f/util_8hpp" startline="57" endline="70">utils::print</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a2a0d518b6978ef082ad105e45924212c" compoundref="d0/d3f/util_8hpp" startline="102" endline="115">utils::print</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" compoundref="d0/d3f/util_8hpp" startline="42" endline="53">utils::print_add</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a5183148a15dd0f1da4adf8959cd36e59" compoundref="d0/d3f/util_8hpp" startline="87" endline="98">utils::print_add</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a741dd4848af2d430724c854c14b6d0d2" compoundref="d0/d3f/util_8hpp" startline="119" endline="130">utils::print_add</referencedby>
+        <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
+        <referencedby refid="d8/da5/namespaceode__solver__impl_1ae8d7c77b57d20b001caefe7dcdeaf812" compoundref="da/dc3/ODE__solvers_8hpp" startline="377" endline="497">ode_solver_impl::rkqs</referencedby>
+        <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="250" endline="271">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="399" endline="462">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
+        <referencedby refid="d9/d8b/write__data2file_8c_09_09_1abd0d8b79c1ecb624fb7517fd81c37d86" compoundref="d9/d8b/write__data2file_8c_09_09" startline="3" endline="12">write_dat_rvecs</referencedby>
+        <referencedby refid="d9/d8b/write__data2file_8c_09_09_1a9992b4a1a01038cb7f3f462bb3c2e63c" compoundref="d9/d8b/write__data2file_8c_09_09" startline="19" endline="37">write_h5_rvecs</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</referencedby>
+        <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">mfRG_stats::write_to_hdf</referencedby>
+        <referencedby refid="d3/d22/r__vertex_8hpp_1a3642c9fe84de001565a9267dba94c63b" compoundref="d5/de4/hdf5__routines_8hpp" startline="444" endline="458">write_to_hdf</referencedby>
+        <referencedby refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1ac7c8549ea372987b9a958f0b50d408d6" compoundref="d5/de4/hdf5__routines_8hpp" startline="367" endline="405">write_to_hdf</referencedby>
+        <referencedby refid="d3/d22/r__vertex_8hpp_1a5404ae2c765c0e192ba8bf5be41b8308" compoundref="d5/de4/hdf5__routines_8hpp" startline="408" endline="422">write_to_hdf</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int mpi_world_size</definition>
+        <argsstring>()</argsstring>
+        <name>mpi_world_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/mpi_setup.c++" line="9" column="5" bodyfile="utilities/mpi_setup.c++" bodystart="9" bodyend="13"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" compoundref="d9/d3a/technical__parameters_8hpp" startline="13">MPI_FLAG</references>
+        <referencedby refid="d6/d84/namespaceutils_1a5020e8df3fe9af5189eb7170db07439f" compoundref="d6/d35/util_8c_09_09" startline="48" endline="61">utils::get_cpu_hours</referencedby>
+        <referencedby refid="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" compoundref="d4/dda/mpi__setup_8c_09_09" startline="15" endline="19">mpi_collect</referencedby>
+        <referencedby refid="d4/dda/mpi__setup_8c_09_09_1ab9a68279c5dff1e5b6e9af8480da99fe" compoundref="d4/dda/mpi__setup_8c_09_09" startline="21" endline="26">mpi_collect</referencedby>
+        <referencedby refid="db/de0/mpi__setup_8hpp_1af7fb8d710a983d5621755871b6ddb516" compoundref="db/de0/mpi__setup_8hpp" startline="28" endline="32">mpi_initialize_buffer</referencedby>
+        <referencedby refid="db/de0/mpi__setup_8hpp_1a670dc9ecada8f8e0374a4fe296518311" compoundref="db/de0/mpi__setup_8hpp" startline="43" endline="47">mpi_initialize_result</referencedby>
+        <referencedby refid="db/de0/mpi__setup_8hpp_1a9488f953e45dc6429ee1c03a0e09c616" compoundref="db/de0/mpi__setup_8hpp" startline="77" endline="95">mpi_reorder_result</referencedby>
+        <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void mpi_collect</definition>
+        <argsstring>(vec&lt; comp &gt; &amp;buffer, vec&lt; comp &gt; &amp;result, int n_mpi, int n_omp)</argsstring>
+        <name>mpi_collect</name>
+        <param>
+          <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1a407c4f6cd09a6f2bf296c8cf21a76aca" kindref="member">comp</ref> &gt; &amp;</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1a407c4f6cd09a6f2bf296c8cf21a76aca" kindref="member">comp</ref> &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_mpi</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_omp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>distribute results between all MPI processes, using MPI_Allgather (for data type comp) <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>buffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: buffer vector containing the results of the current process </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: buffer vector in which the results of all processes are written </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_mpi</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: # of MPI tasks (# of grid points for external variable(s) in which we do MPI parallelization) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_omp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: # of OMP tasks (# of grid points for external variable(s) in which we do OMP parallelization) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/mpi_setup.c++" line="15" column="6" bodyfile="utilities/mpi_setup.c++" bodystart="15" bodyend="19"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" compoundref="d4/dda/mpi__setup_8c_09_09" startline="9" endline="13">mpi_world_size</references>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" compoundref="de/de8/bubble__function_8hpp" startline="264" endline="313">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_bubble_function</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d4/dda/mpi__setup_8c_09_09_1ab9a68279c5dff1e5b6e9af8480da99fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void mpi_collect</definition>
+        <argsstring>(vec&lt; double &gt; &amp;buffer, vec&lt; double &gt; &amp;result, int n_mpi, int n_omp)</argsstring>
+        <name>mpi_collect</name>
+        <param>
+          <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; double &gt; &amp;</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; double &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_mpi</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_omp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>distribute results between all MPI processes, using MPI_Allgather (for data type double) <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>buffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: buffer vector containing the results of the current process </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: buffer vector in which the results of all processes are written </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_mpi</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: # of MPI tasks (# of grid points for external variable(s) in which we do MPI parallelization) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_omp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: # of OMP tasks (# of grid points for external variable(s) in which we do OMP parallelization) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/mpi_setup.c++" line="21" column="6" bodyfile="utilities/mpi_setup.c++" bodystart="21" bodyend="26"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" compoundref="d4/dda/mpi__setup_8c_09_09" startline="9" endline="13">mpi_world_size</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;<ref refid="db/de0/mpi__setup_8hpp" kindref="compound">mpi_setup.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USE_MPI</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3" refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" kindref="member">mpi_world_rank</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_rank</ref>=<sp/>0;</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(<ref refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" kindref="member">MPI_FLAG</ref>)<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_Comm_rank</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_COMM_WORLD</ref>,<sp/>&amp;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_rank</ref>);</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_rank</ref>;</highlight></codeline>
+<codeline lineno="7"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9" refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" kindref="member">mpi_world_size</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref><sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(<ref refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" kindref="member">MPI_FLAG</ref>)<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_Comm_size</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_COMM_WORLD</ref>,<sp/>&amp;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref>);</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref>;</highlight></codeline>
+<codeline lineno="13"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15" refid="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" kindref="member">mpi_collect</ref>(<ref refid="d9/d2a/classvec" kindref="compound">vec&lt;comp&gt;</ref>&amp;<sp/>buffer,<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;comp&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref><sp/>=<sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" kindref="member">mpi_world_size</ref>();</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_Allgather</ref>(&amp;buffer[0],<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(2*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>*(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref>+1)),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_COMPLEX</ref>,</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>[0],<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(2*<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>*(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref>+1)),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_COMPLEX</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_COMM_WORLD</ref>);</highlight></codeline>
+<codeline lineno="19"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="d4/dda/mpi__setup_8c_09_09_1ab9a68279c5dff1e5b6e9af8480da99fe" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" kindref="member">mpi_collect</ref>(<ref refid="d9/d2a/classvec" kindref="compound">vec&lt;double&gt;</ref>&amp;<sp/>buffer,<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;double&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref><sp/>=<sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" kindref="member">mpi_world_size</ref>();</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_Allgather</ref>(&amp;buffer[0],<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>*(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref>+1)),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_DOUBLE</ref>,</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>[0],<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>*(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>/<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">world_size</ref>+1)),<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_DOUBLE</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">MPI_COMM_WORLD</ref>);</highlight></codeline>
+<codeline lineno="26"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" kindref="member">mpi_world_rank</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" kindref="member">mpi_world_size</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" kindref="member">mpi_collect</ref>(<ref refid="d9/d2a/classvec" kindref="compound">vec&lt;comp&gt;</ref>&amp;<sp/>buffer,<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;comp&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref><sp/>=<sp/>buffer;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" kindref="member">mpi_collect</ref>(<ref refid="d9/d2a/classvec" kindref="compound">vec&lt;double&gt;</ref>&amp;<sp/>buffer,<sp/><ref refid="d9/d2a/classvec" kindref="compound">vec&lt;double&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_mpi</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_omp</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">result</ref><sp/>=<sp/>buffer;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="utilities/mpi_setup.c++"/>
+  </compounddef>
+</doxygen>

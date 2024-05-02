@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Self-Energy &mdash; KeldyshDiag 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="State" href="state.html" />
+    <link rel="prev" title="Correlation Functions" href="correlationfunctions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KeldyshDiag
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Self-Energy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0E10SelfEnergy"><code class="docutils literal notranslate"><span class="pre">SelfEnergy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy13freqGrid_typeE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::freqGrid_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11buffer_typeE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::buffer_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy16frequencies_typeE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::frequencies_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10index_typeE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::index_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10SelfEnergyEdRK10fRG_config"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::SelfEnergy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10SelfEnergyERK13freqGrid_type"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::SelfEnergy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10initializeE1Q1Q"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::initialize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy3valEiii"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy9valsmoothEidi"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::valsmooth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy7setselfEiii1Q"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::setself()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy7addselfEiii1Q"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::addself()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy3accEi"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::acc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10direct_setEi1Q"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::direct_set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy18set_frequency_gridEK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::set_frequency_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy4normEi"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::norm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy4normEv"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::norm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy16rel_deviation_toERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::rel_deviation_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy34get_selfenergy_vector_incl_hartreeEv"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::get_selfenergy_vector_incl_hartree()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11update_gridEdRK10fRG_config"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::update_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::update_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::update_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy16findBestFreqGridEb"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::findBestFreqGrid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy15shrink_freq_boxEd"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::shrink_freq_box()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy13analyze_tailsEb"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::analyze_tails()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy15get_deriv_maxSEEb"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::get_deriv_maxSE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy19get_curvature_maxSEEb"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::get_curvature_maxSE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergypLERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator+=()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0EN10SelfEnergypLE10SelfEnergyI1QE4Qfac"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator+=()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0EN10SelfEnergymLE10SelfEnergyI1QE4Qfac"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator*=()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergymIERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator-=()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergydVERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator/=()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy16check_resolutionEv"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::check_resolution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy16check_symmetriesEv"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::check_symmetries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy5SigmaE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::Sigma</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11asymp_val_RE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::asymp_val_R</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergyplE10SelfEnergyI1QERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator+()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator+()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator+()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator*()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator*()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergymiE10SelfEnergyI1QERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator-()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergydvE10SelfEnergyI1QERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator/()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="propagator.html">Propagator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bubble.html">Bubble</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">Post processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="miscellaneous.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KeldyshDiag</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="correlationfunctions.html">Correlation Functions</a></li>
+      <li class="breadcrumb-item active">Self-Energy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/selfenergy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="self-energy">
+<h1>Self-Energy<a class="headerlink" href="#self-energy" title="Link to this heading"></a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0E10SelfEnergy">
+<span id="_CPPv3I0E10SelfEnergy"></span><span id="_CPPv2I0E10SelfEnergy"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SelfEnergy</span></span></span><a class="headerlink" href="#_CPPv4I0E10SelfEnergy" title="Link to this definition"></a><br /></dt>
+<dd><p>TODO: Use Vertex buffer for self-energy. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy13freqGrid_typeE">
+<span id="_CPPv3N10SelfEnergy13freqGrid_typeE"></span><span id="_CPPv2N10SelfEnergy13freqGrid_typeE"></span><span class="target" id="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">freqGrid_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">bufferFrequencyGrid</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">selfenergy</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergy13freqGrid_typeE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11buffer_typeE">
+<span id="_CPPv3N10SelfEnergy11buffer_typeE"></span><span id="_CPPv2N10SelfEnergy11buffer_typeE"></span><span class="target" id="d5/df6/classSelfEnergy_1a7d7fd9f86a8d29fefd6146f6415fef40"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">buffer_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">dataBuffer</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">selfenergy</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">SE_config</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">SE_config</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">num_freqs</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">SE_config</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">position_first_freq_index</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10SelfEnergy13freqGrid_typeE" title="SelfEnergy::freqGrid_type"><span class="n"><span class="pre">freqGrid_type</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">INTERPOLATION</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergy11buffer_typeE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy16frequencies_typeE">
+<span id="_CPPv3N10SelfEnergy16frequencies_typeE"></span><span id="_CPPv2N10SelfEnergy16frequencies_typeE"></span><span class="target" id="d5/df6/classSelfEnergy_1aec678602c2dbbe4c981f436fa8ea5ba8"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">frequencies_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergy16frequencies_typeE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10index_typeE">
+<span id="_CPPv3N10SelfEnergy10index_typeE"></span><span id="_CPPv2N10SelfEnergy10index_typeE"></span><span class="target" id="d5/df6/classSelfEnergy_1a205b1475f5cdf9fb14b799ec9e97ab9a"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">index_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">my_index_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">SE_config</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergy10index_typeE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10SelfEnergyEdRK10fRG_config">
+<span id="_CPPv3N10SelfEnergy10SelfEnergyEdRK10fRG_config"></span><span id="_CPPv2N10SelfEnergy10SelfEnergyEdRK10fRG_config"></span><span id="SelfEnergy::SelfEnergy__double.fRG_configCR"></span><span class="target" id="d5/df6/classSelfEnergy_1ad760943d50481dd1425adbddb3d504bc"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SelfEnergy</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy10SelfEnergyEdRK10fRG_config" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10SelfEnergyERK13freqGrid_type">
+<span id="_CPPv3N10SelfEnergy10SelfEnergyERK13freqGrid_type"></span><span id="_CPPv2N10SelfEnergy10SelfEnergyERK13freqGrid_type"></span><span id="SelfEnergy::SelfEnergy__freqGrid_typeCR"></span><span class="target" id="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SelfEnergy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10SelfEnergy13freqGrid_typeE" title="SelfEnergy::freqGrid_type"><span class="n"><span class="pre">freqGrid_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frequencies_in</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy10SelfEnergyERK13freqGrid_type" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10initializeE1Q1Q">
+<span id="_CPPv3N10SelfEnergy10initializeE1Q1Q"></span><span id="_CPPv2N10SelfEnergy10initializeE1Q1Q"></span><span id="SelfEnergy::initialize__Q.Q"></span><span class="target" id="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">valR</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">valK</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy10initializeE1Q1Q" title="Link to this definition"></a><br /></dt>
+<dd><p>Function initializes the Retarded and Keldysh components of the self-energy </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – : Type of values (usually comp) </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>valR</strong> – : Value for the constant Retarded self-energy </p></li>
+<li><p><strong>valK</strong> – : Value for the constant Keldysh self-energy </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy3valEiii">
+<span id="_CPPv3NK10SelfEnergy3valEiii"></span><span id="_CPPv2NK10SelfEnergy3valEiii"></span><span id="SelfEnergy::val__i.i.iC"></span><span class="target" id="d5/df6/classSelfEnergy_1a44226621aee89d2ee5e5eff112dfd5f2"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">val</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iK</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10SelfEnergy3valEiii" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns the saved value of the self-energy </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – : Type of values (usually comp) </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>iK</strong> – : Keldysh index (either 0 or 1) </p></li>
+<li><p><strong>iv</strong> – : Frequency index </p></li>
+<li><p><strong>i_in</strong> – : Internal structure index </p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The value of SigmaR/K at the chosen indices </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy9valsmoothEidi">
+<span id="_CPPv3NK10SelfEnergy9valsmoothEidi"></span><span id="_CPPv2NK10SelfEnergy9valsmoothEidi"></span><span id="SelfEnergy::valsmooth__i.double.iC"></span><span class="target" id="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">valsmooth</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iK</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10SelfEnergy9valsmoothEidi" title="Link to this definition"></a><br /></dt>
+<dd><p>Linear interpolating function returning the value of the Retarded or Keldysh self-energy at freq v </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – : Type of values (usually comp) </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>iK</strong> – : Keldysh index (either 0 or 1) </p></li>
+<li><p><strong>v</strong> – : Frequency </p></li>
+<li><p><strong>i_in</strong> – : Internal index </p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>: Interpolated value using the saved values as basis </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy7setselfEiii1Q">
+<span id="_CPPv3N10SelfEnergy7setselfEiii1Q"></span><span id="_CPPv2N10SelfEnergy7setselfEiii1Q"></span><span id="SelfEnergy::setself__i.i.i.Q"></span><span class="target" id="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setself</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iK</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy7setselfEiii1Q" title="Link to this definition"></a><br /></dt>
+<dd><p>Sets the value of the self-energy to a specific value at the specified location </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – : Type of values (usually comp) </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>iK</strong> – : Keldysh index (either 0 or 1) </p></li>
+<li><p><strong>iv</strong> – : Frequency index </p></li>
+<li><p><strong>i_in</strong> – : Internal index </p></li>
+<li><p><strong>val</strong> – : Value of the self-energy at this given point </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy7addselfEiii1Q">
+<span id="_CPPv3N10SelfEnergy7addselfEiii1Q"></span><span id="_CPPv2N10SelfEnergy7addselfEiii1Q"></span><span id="SelfEnergy::addself__i.i.i.Q"></span><span class="target" id="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">addself</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iK</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy7addselfEiii1Q" title="Link to this definition"></a><br /></dt>
+<dd><p>Adds the given value at the specified location </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – : Type of values (usually comp) </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>iK</strong> – : Keldysh index (either 0 or 1) </p></li>
+<li><p><strong>iv</strong> – : Frequency index </p></li>
+<li><p><strong>i_in</strong> – : Internal index </p></li>
+<li><p><strong>val</strong> – : Value of the self-energy at this given point </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy3accEi">
+<span id="_CPPv3NK10SelfEnergy3accEi"></span><span id="_CPPv2NK10SelfEnergy3accEi"></span><span id="SelfEnergy::acc__iC"></span><span class="target" id="d5/df6/classSelfEnergy_1aa7d75d4c76a9e99f37d89cb8fd479392"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10SelfEnergy3accEi" title="Link to this definition"></a><br /></dt>
+<dd><p>Access function to element i (hdf5-relevant) </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – : Type of values (usually comp) </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>i</strong> – : Index </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sigma[i] </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10direct_setEi1Q">
+<span id="_CPPv3N10SelfEnergy10direct_setEi1Q"></span><span id="_CPPv2N10SelfEnergy10direct_setEi1Q"></span><span id="SelfEnergy::direct_set__i.Q"></span><span class="target" id="d5/df6/classSelfEnergy_1a40d554dd455b33c9ac8ccc3442d0fb36"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">direct_set</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy10direct_setEi1Q" title="Link to this definition"></a><br /></dt>
+<dd><p>Set value of self-energy at index i </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – : Type of values (usually comp) </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>i</strong> – : Index </p></li>
+<li><p><strong>val</strong> – Value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy18set_frequency_gridEK10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergy18set_frequency_gridEK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergy18set_frequency_gridEK10SelfEnergyI1QE"></span><span id="SelfEnergy::set_frequency_grid__SelfEnergy:Q:C"></span><span class="target" id="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_frequency_grid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">selfEnergy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy18set_frequency_gridEK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy4normEi">
+<span id="_CPPv3NK10SelfEnergy4normEi"></span><span id="_CPPv2NK10SelfEnergy4normEi"></span><span id="SelfEnergy::norm__iC"></span><span class="target" id="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">norm</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy4normEi" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy4normEv">
+<span id="_CPPv3NK10SelfEnergy4normEv"></span><span id="_CPPv2NK10SelfEnergy4normEv"></span><span id="SelfEnergy::normC"></span><span class="target" id="d5/df6/classSelfEnergy_1a73153e76cf9a7a9d57b1027705cda53d"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">norm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy4normEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy16rel_deviation_toERK10SelfEnergyI1QE">
+<span id="_CPPv3NK10SelfEnergy16rel_deviation_toERK10SelfEnergyI1QE"></span><span id="_CPPv2NK10SelfEnergy16rel_deviation_toERK10SelfEnergyI1QE"></span><span id="SelfEnergy::rel_deviation_to__SelfEnergy:Q:CRC"></span><span class="target" id="d5/df6/classSelfEnergy_1a1478fc6f27e0d03e0df937d5cbeffbf9"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rel_deviation_to</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">base</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy16rel_deviation_toERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy34get_selfenergy_vector_incl_hartreeEv">
+<span id="_CPPv3NK10SelfEnergy34get_selfenergy_vector_incl_hartreeEv"></span><span id="_CPPv2NK10SelfEnergy34get_selfenergy_vector_incl_hartreeEv"></span><span id="SelfEnergy::get_selfenergy_vector_incl_hartreeC"></span><span class="target" id="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_selfenergy_vector_incl_hartree</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><span class="n"><span class="pre">Eigen</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Array</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">Eigen</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Dynamic</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy34get_selfenergy_vector_incl_hartreeEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11update_gridEdRK10fRG_config">
+<span id="_CPPv3N10SelfEnergy11update_gridEdRK10fRG_config"></span><span id="_CPPv2N10SelfEnergy11update_gridEdRK10fRG_config"></span><span id="SelfEnergy::update_grid__double.fRG_configCR"></span><span class="target" id="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update_grid</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy11update_gridEdRK10fRG_config" title="Link to this definition"></a><br /></dt>
+<dd><p>Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type">
+<span id="_CPPv3N10SelfEnergy11update_gridERK13freqGrid_type"></span><span id="_CPPv2N10SelfEnergy11update_gridERK13freqGrid_type"></span><span id="SelfEnergy::update_grid__freqGrid_typeCR"></span><span class="target" id="d5/df6/classSelfEnergy_1aaf5b4b1c92f967082630cf69af72c2c5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update_grid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10SelfEnergy13freqGrid_typeE" title="SelfEnergy::freqGrid_type"><span class="n"><span class="pre">freqGrid_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frequencies_new</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type" title="Link to this definition"></a><br /></dt>
+<dd><p>Interpolate self-energy to input grid. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE"></span><span id="SelfEnergy::update_grid__freqGrid_typeCR.SelfEnergy:Q:"></span><span class="target" id="d5/df6/classSelfEnergy_1a44806c0df9dfc5dd5e0eeb37a19f90f7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update_grid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10SelfEnergy13freqGrid_typeE" title="SelfEnergy::freqGrid_type"><span class="n"><span class="pre">freqGrid_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frequencies_new</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">selfEnergy4Sigma</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd><p>Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy16findBestFreqGridEb">
+<span id="_CPPv3N10SelfEnergy16findBestFreqGridEb"></span><span id="_CPPv2N10SelfEnergy16findBestFreqGridEb"></span><span id="SelfEnergy::findBestFreqGrid__b"></span><span class="target" id="d5/df6/classSelfEnergy_1a48b989837676cebb7043a4f14ae02203"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">findBestFreqGrid</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy16findBestFreqGridEb" title="Link to this definition"></a><br /></dt>
+<dd><p>finds optimal grid parameters with minimizer()</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy15shrink_freq_boxEd">
+<span id="_CPPv3NK10SelfEnergy15shrink_freq_boxEd"></span><span id="_CPPv2NK10SelfEnergy15shrink_freq_boxEd"></span><span id="SelfEnergy::shrink_freq_box__doubleC"></span><span class="target" id="d5/df6/classSelfEnergy_1acf675ff02b328e7022dd997422327d8f"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">shrink_freq_box</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rel_tail_threshold</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10SelfEnergy13freqGrid_typeE" title="SelfEnergy::freqGrid_type"><span class="n"><span class="pre">freqGrid_type</span></span></a><a class="headerlink" href="#_CPPv4NK10SelfEnergy15shrink_freq_boxEd" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy13analyze_tailsEb">
+<span id="_CPPv3NK10SelfEnergy13analyze_tailsEb"></span><span id="_CPPv2NK10SelfEnergy13analyze_tailsEb"></span><span id="SelfEnergy::analyze_tails__bC"></span><span class="target" id="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">analyze_tails</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy13analyze_tailsEb" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy15get_deriv_maxSEEb">
+<span id="_CPPv3NK10SelfEnergy15get_deriv_maxSEEb"></span><span id="_CPPv2NK10SelfEnergy15get_deriv_maxSEEb"></span><span id="SelfEnergy::get_deriv_maxSE__bC"></span><span class="target" id="d5/df6/classSelfEnergy_1ad47166569063f3ab50c934ae27d8cedd"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_deriv_maxSE</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy15get_deriv_maxSEEb" title="Link to this definition"></a><br /></dt>
+<dd><p>computes finite differences of Sigma </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy19get_curvature_maxSEEb">
+<span id="_CPPv3NK10SelfEnergy19get_curvature_maxSEEb"></span><span id="_CPPv2NK10SelfEnergy19get_curvature_maxSEEb"></span><span id="SelfEnergy::get_curvature_maxSE__bC"></span><span class="target" id="d5/df6/classSelfEnergy_1ab65f67d9fcf903f929d3188fd66b3fce"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_curvature_maxSE</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy19get_curvature_maxSEEb" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergypLERK10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergypLERK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergypLERK10SelfEnergyI1QE"></span><span id="SelfEnergy::add-assign-operator__SelfEnergy:Q:CR"></span><span class="target" id="d5/df6/classSelfEnergy_1aee1d547bf449180cfad2a0027d04164a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">+=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">self1</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergypLERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10SelfEnergypLE10SelfEnergyI1QE4Qfac">
+<span id="_CPPv3I0EN10SelfEnergypLE4Qfac"></span><span id="_CPPv2I0EN10SelfEnergypLE4Qfac"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qfac</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy_1a09bd75350e2ef6c26956fe56cff5f2b1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">+=</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN10SelfEnergypLE10SelfEnergyI1QE4Qfac" title="SelfEnergy::operator+=::Qfac"><span class="n"><span class="pre">Qfac</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">alpha</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN10SelfEnergypLE10SelfEnergyI1QE4Qfac" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10SelfEnergymLE10SelfEnergyI1QE4Qfac">
+<span id="_CPPv3I0EN10SelfEnergymLE4Qfac"></span><span id="_CPPv2I0EN10SelfEnergymLE4Qfac"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qfac</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy_1a7cc1dbbb0a956e6c34c8c3ff7af1ada1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">*=</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN10SelfEnergymLE10SelfEnergyI1QE4Qfac" title="SelfEnergy::operator*=::Qfac"><span class="n"><span class="pre">Qfac</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">alpha</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN10SelfEnergymLE10SelfEnergyI1QE4Qfac" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergymIERK10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergymIERK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergymIERK10SelfEnergyI1QE"></span><span id="SelfEnergy::sub-assign-operator__SelfEnergy:Q:CR"></span><span class="target" id="d5/df6/classSelfEnergy_1a4c3ef6eb5fcde3e4a069a6f934761c92"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">-=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">self1</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergymIERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergydVERK10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergydVERK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergydVERK10SelfEnergyI1QE"></span><span id="SelfEnergy::div-assign-operator__SelfEnergy:Q:CR"></span><span class="target" id="d5/df6/classSelfEnergy_1ad8cbafc3e1bda57e185bd591f0471d4c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">/=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">self1</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergydVERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd><p>Elementwise division (needed for error estimate of adaptive ODE solvers) </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy16check_resolutionEv">
+<span id="_CPPv3NK10SelfEnergy16check_resolutionEv"></span><span id="_CPPv2NK10SelfEnergy16check_resolutionEv"></span><span id="SelfEnergy::check_resolutionC"></span><span class="target" id="d5/df6/classSelfEnergy_1aee3fd67f3e3418a7e1be2b60fc93c980"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">check_resolution</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy16check_resolutionEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy16check_symmetriesEv">
+<span id="_CPPv3NK10SelfEnergy16check_symmetriesEv"></span><span id="_CPPv2NK10SelfEnergy16check_symmetriesEv"></span><span id="SelfEnergy::check_symmetriesC"></span><span class="target" id="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">check_symmetries</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy16check_symmetriesEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy5SigmaE">
+<span id="_CPPv3N10SelfEnergy5SigmaE"></span><span id="_CPPv2N10SelfEnergy5SigmaE"></span><span id="SelfEnergy::Sigma__buffer_type"></span><span class="target" id="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956"></span><a class="reference internal" href="#_CPPv4N10SelfEnergy11buffer_typeE" title="SelfEnergy::buffer_type"><span class="n"><span class="pre">buffer_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Sigma</span></span></span><a class="headerlink" href="#_CPPv4N10SelfEnergy5SigmaE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11asymp_val_RE">
+<span id="_CPPv3N10SelfEnergy11asymp_val_RE"></span><span id="_CPPv2N10SelfEnergy11asymp_val_RE"></span><span id="SelfEnergy::asymp_val_R__Q"></span><span class="target" id="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558"></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">asymp_val_R</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergy11asymp_val_RE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-friends">Friends</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergyplE10SelfEnergyI1QERK10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergyplE10SelfEnergyI1QERK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergyplE10SelfEnergyI1QERK10SelfEnergyI1QE"></span><span id="SelfEnergy::add-operator__SelfEnergy:Q:.SelfEnergy:Q:CR"></span><span class="target" id="d5/df6/classSelfEnergy_1aa90f29a78622daaaf78dd2fc3169cd8e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">+</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lhs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergyplE10SelfEnergyI1QERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac">
+<span id="_CPPv3I0EN10SelfEnergyplE10SelfEnergyI1QERK4Qfac"></span><span id="_CPPv2I0EN10SelfEnergyplE10SelfEnergyI1QERK4Qfac"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qfac</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy_1a5f679a53ec9986d94933e3eebd2375dd"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">+</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lhs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac" title="SelfEnergy::operator+::Qfac"><span class="n"><span class="pre">Qfac</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE">
+<span id="_CPPv3I0EN10SelfEnergyplERK4Qfac10SelfEnergyI1QE"></span><span id="_CPPv2I0EN10SelfEnergyplERK4Qfac10SelfEnergyI1QE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qfac</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy_1ab4474a85c8c4b4491fbc34bbe85d8dc9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">+</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE" title="SelfEnergy::operator+::Qfac"><span class="n"><span class="pre">Qfac</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10SelfEnergyplE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac">
+<span id="_CPPv3I0EN10SelfEnergymlE10SelfEnergyI1QERK4Qfac"></span><span id="_CPPv2I0EN10SelfEnergymlE10SelfEnergyI1QERK4Qfac"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qfac</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy_1a76b9436f81bb209afa766a9a961382d2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">*</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lhs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac" title="SelfEnergy::operator*::Qfac"><span class="n"><span class="pre">Qfac</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QE10SelfEnergyI1QERK4Qfac" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE">
+<span id="_CPPv3I0EN10SelfEnergymlERK4Qfac10SelfEnergyI1QE"></span><span id="_CPPv2I0EN10SelfEnergymlERK4Qfac10SelfEnergyI1QE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qfac</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy_1a42b9663d92a8fab80fde07dbdcdf8368"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">*</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE" title="SelfEnergy::operator*::Qfac"><span class="n"><span class="pre">Qfac</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10SelfEnergymlE10SelfEnergyI1QERK4Qfac10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergymiE10SelfEnergyI1QERK10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergymiE10SelfEnergyI1QERK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergymiE10SelfEnergyI1QERK10SelfEnergyI1QE"></span><span id="SelfEnergy::sub-operator__SelfEnergy:Q:.SelfEnergy:Q:CR"></span><span class="target" id="d5/df6/classSelfEnergy_1a66cab3961eb707dc079278b26514cea4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">-</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lhs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergymiE10SelfEnergyI1QERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergydvE10SelfEnergyI1QERK10SelfEnergyI1QE">
+<span id="_CPPv3N10SelfEnergydvE10SelfEnergyI1QERK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergydvE10SelfEnergyI1QERK10SelfEnergyI1QE"></span><span id="SelfEnergy::div-operator__SelfEnergy:Q:.SelfEnergy:Q:CR"></span><span class="target" id="d5/df6/classSelfEnergy_1a32e9f66a8d928ac70178c07159ed8616"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">/</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lhs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergydvE10SelfEnergyI1QERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="correlationfunctions.html" class="btn btn-neutral float-left" title="Correlation Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="state.html" class="btn btn-neutral float-right" title="State" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nepomuk Ritz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
