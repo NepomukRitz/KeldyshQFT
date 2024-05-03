@@ -831,7 +831,17 @@ namespace hdf5_impl {
 
 }
 
-/// Create file with fixed number of Lambda layers and save state to first Lambda layer
+/**
+ * Create an output file with a fixed number of Lambda layers and save a given state to the first layer.
+ * @tparam Q Template parameter specifying the type of the data.
+ * @tparam diff Template parameter specifying whether the state to be saved is a differentiated one or not.
+ * @param FILE_NAME String of the filename.
+ * @param Lambda_i Initial value for Λ. (Deprecated by now.)
+ * @param Lambda_size Number of layers to be included in the file.
+ * @param state_in State to be stored into the first layer.
+ * @param verbose If true, output is written into the log file about the process of saving the file.
+ * @param is_converged Specifies if the state to be stored is the final result of a converged parquet or mfRG computation.
+ */
 template <typename Q, bool diff>
 void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State<Q,diff>& state_in, const bool verbose=true, const bool is_converged=false) {
 #ifdef USE_MPI
@@ -847,7 +857,17 @@ void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int
     }
 }
 
-/// Open file and save state to a specified Lambda layer
+
+/**
+ * Open an output file and save a given state to a specified layer.
+ * @tparam Q Template parameter specifying the type of the data.
+ * @tparam diff Template parameter specifying whether the state to be saved is a differentiated one or not.
+ * @param FILE_NAME String of the filename.
+ * @param Lambda_it Number of the Λ layer into which the state shall be stored.
+ * @param state_in State to be stored.
+ * @param is_converged Specifies if the state to be stored is the final result of a converged parquet or mfRG computation.
+ * @param verbose If true, output is written into the log file about the process of saving the file.
+ */
 template <typename Q, bool diff>
 void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q,diff>& state_in, const bool is_converged=false, const bool verbose=true) {
 #ifdef USE_MPI
@@ -874,7 +894,12 @@ void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State<Q
     }
 }
 
-/// Read state from specified Lambda layer of hdf file
+/**
+ * Read a state from a specified Lambda layer of a given hdf file.
+ * @param filename String of the filename.
+ * @param Lambda_it Number of the Λ layer from which the state shall be read.
+ * @return State that has been read out.
+ */
 State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, int Lambda_it) ;
 bool check_convergence_hdf(const H5std_string& filename, int& Lambda_it);
 

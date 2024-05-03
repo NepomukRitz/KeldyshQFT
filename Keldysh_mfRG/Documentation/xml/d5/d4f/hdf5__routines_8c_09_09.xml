@@ -659,7 +659,7 @@
         <location file="utilities/hdf5_routines.c++" line="21" column="12" bodyfile="utilities/hdf5_routines.c++" bodystart="21" bodyend="30"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
-        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
         <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">mfRG_stats::write_to_hdf</referencedby>
       </memberdef>
@@ -751,13 +751,32 @@
           <declname>filename</declname>
         </param>
         <param>
-          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <type>int</type>
           <declname>Lambda_it</declname>
         </param>
         <briefdescription>
-<para>Read state from specified Lambda layer of hdf file. </para>
         </briefdescription>
         <detaileddescription>
+<para>Read a state from a specified Lambda layer of a given hdf file. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String of the filename. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of the Λ layer from which the state shall be read. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="d7/d97/classState" kindref="compound">State</ref> that has been read out. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
 <para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>
@@ -873,11 +892,11 @@
         <inbodydescription>
         </inbodydescription>
         <location file="utilities/hdf5_routines.c++" line="345" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="345" bodyend="389"/>
-        <references refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</references>
+        <references refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</references>
+        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
       </memberdef>
       <memberdef kind="function" id="d5/d4f/hdf5__routines_8c_09_09_1af0c3383efb10d59e26e11c17219f19ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref></type>

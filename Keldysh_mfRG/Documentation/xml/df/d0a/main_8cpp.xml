@@ -1171,7 +1171,7 @@
         <references refid="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4" compoundref="d5/d0d/perturbation__theory_8hpp" startline="156" endline="177">sopt_state</references>
         <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="651">fRG_config::T</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</references>
+        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
       </memberdef>
     </sectiondef>

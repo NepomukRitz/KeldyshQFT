@@ -889,21 +889,34 @@
         </inbodydescription>
         <location file="postprocessing/postprocessing.hpp" line="102" column="6" declfile="postprocessing/postprocessing.hpp" declline="102" declcolumn="6"/>
       </memberdef>
-      <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ab67d7d4ba1acc5297a2e2b2867559291" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
         <definition>double sum_rule_spectrum</definition>
-        <argsstring>(const State&lt; state_datatype &gt; &amp;)</argsstring>
+        <argsstring>(const State&lt; state_datatype &gt; &amp;state)</argsstring>
         <name>sum_rule_spectrum</name>
         <param>
           <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt; &amp;</type>
+          <declname>state</declname>
         </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Function to compute the sum rule for the spectral function, \int d\nu A(\nu) = 1. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reference to an input state whose self-energy shall be used. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of the integral, which should be 1. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="118" column="8" declfile="postprocessing/postprocessing.hpp" declline="118" declcolumn="8"/>
+        <location file="postprocessing/postprocessing.hpp" line="123" column="8" declfile="postprocessing/postprocessing.hpp" declline="123" declcolumn="8"/>
         <referencedby refid="d2/d3f/sanity__check_8hpp_1a884fca24faf1e006b285fcce3ddd0299" compoundref="d2/d3f/sanity__check_8hpp" startline="10" endline="23">sanity_check</referencedby>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -922,7 +935,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="125" column="6" declfile="postprocessing/postprocessing.hpp" declline="125" declcolumn="6"/>
+        <location file="postprocessing/postprocessing.hpp" line="130" column="6" declfile="postprocessing/postprocessing.hpp" declline="130" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -936,12 +949,12 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Take hdf5 file, compute the susceptibilities from it and save them to the hdf5 file. Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0) This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0 (zero K2&apos; or K3) <parameterlist kind="param"><parameteritem>
+<para>Take hdf5 file, iterate through all layers, and compute the susceptibilities from it and save them to the hdf5 file. Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0) This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0 (zero K2&apos; or K3) <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>filename</parametername>
 </parameternamelist>
 <parameterdescription>
-<para></para>
+<para>Reference to a filename with the data that shall be processed. </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
@@ -949,7 +962,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="133" column="6" declfile="postprocessing/postprocessing.hpp" declline="133" declcolumn="6"/>
+        <location file="postprocessing/postprocessing.hpp" line="138" column="6" declfile="postprocessing/postprocessing.hpp" declline="138" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -966,7 +979,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="134" column="6" declfile="postprocessing/postprocessing.hpp" declline="134" declcolumn="6"/>
+        <location file="postprocessing/postprocessing.hpp" line="139" column="6" declfile="postprocessing/postprocessing.hpp" declline="139" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -984,10 +997,28 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Take hdf5 file, iterate through all layers, evaluate the full vertex Γ in the t-channel parametrization for ω_t = 0 in the (ν_t, ν&apos;_t) plane for all Keldysh components a given spin, and write the results back into the file. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reference to a filename with the data that shall be processed. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ispin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spin component that shall be computed. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="137" column="6" declfile="postprocessing/postprocessing.hpp" declline="137" declcolumn="6"/>
+        <location file="postprocessing/postprocessing.hpp" line="147" column="6" declfile="postprocessing/postprocessing.hpp" declline="147" declcolumn="6"/>
         <referencedby refid="dd/d00/main__postproc_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="dd/d00/main__postproc_8cpp" startline="17" endline="126">main</referencedby>
       </memberdef>
       <memberdef kind="function" id="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1009,7 +1040,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="postprocessing/postprocessing.hpp" line="139" column="6" declfile="postprocessing/postprocessing.hpp" declline="139" declcolumn="6"/>
+        <location file="postprocessing/postprocessing.hpp" line="149" column="6" declfile="postprocessing/postprocessing.hpp" declline="149" declcolumn="6"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -1134,21 +1165,20 @@
 <codeline lineno="115"><highlight class="normal"></highlight></codeline>
 <codeline lineno="116"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="117"><highlight class="normal"></highlight></codeline>
-<codeline lineno="118" refid="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" kindref="member">sum_rule_spectrum</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref>&amp;);</highlight></codeline>
-<codeline lineno="119"><highlight class="normal"></highlight></codeline>
-<codeline lineno="120"><highlight class="normal"></highlight></codeline>
-<codeline lineno="125" refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" kindref="member">check_Kramers_Kronig</ref>(std::string<sp/>filename);</highlight></codeline>
-<codeline lineno="126"><highlight class="normal"></highlight></codeline>
-<codeline lineno="133" refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" kindref="member">compute_postprocessed_susceptibilities</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
-<codeline lineno="134" refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" kindref="member">compute_proprocessed_susceptibilities_PT2</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
-<codeline lineno="135"><highlight class="normal"></highlight></codeline>
-<codeline lineno="136"><highlight class="normal"></highlight></codeline>
-<codeline lineno="137" refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
-<codeline lineno="138"><highlight class="normal"></highlight></codeline>
-<codeline lineno="139" refid="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" kindref="member">check_FDTs_for_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
+<codeline lineno="123" refid="d4/d81/postprocessing_8hpp_1ab67d7d4ba1acc5297a2e2b2867559291" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ab67d7d4ba1acc5297a2e2b2867559291" kindref="member">sum_rule_spectrum</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state</ref>);</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130" refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" kindref="member">check_Kramers_Kronig</ref>(std::string<sp/>filename);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138" refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" kindref="member">compute_postprocessed_susceptibilities</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
+<codeline lineno="139" refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" kindref="member">compute_proprocessed_susceptibilities_PT2</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename);</highlight></codeline>
 <codeline lineno="140"><highlight class="normal"></highlight></codeline>
-<codeline lineno="141"><highlight class="normal"></highlight></codeline>
-<codeline lineno="142"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//KELDYSH_MFRG_TESTING_POSTPROCESSING_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147" refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908" kindref="member">save_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149" refid="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d4/d81/postprocessing_8hpp_1a66107afbd23739b7150716154c0cd9fa" kindref="member">check_FDTs_for_slices_through_fullvertex</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">ispin</ref>);</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//KELDYSH_MFRG_TESTING_POSTPROCESSING_H</highlight><highlight class="normal"></highlight></codeline>
     </programlisting>
     <location file="postprocessing/postprocessing.hpp"/>
   </compounddef>

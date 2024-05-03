@@ -90,19 +90,65 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb">
 <span id="_CPPv3I0_bE18write_state_to_hdfK12H5std_stringdKiRK5StateI1Q4diffEKbKb"></span><span id="_CPPv2I0_bE18write_state_to_hdfK12H5std_stringdKiRK5StateI1Q4diffEKbKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">diff</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_state_to_hdf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">H5std_string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">FILE_NAME</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda_i</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda_size</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb" title="write_state_to_hdf::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb" title="write_state_to_hdf::diff"><span class="n"><span class="pre">diff</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">is_converged</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb" title="Link to this definition"></a><br /></dt>
-<dd><p>Create file with fixed number of Lambda layers and save state to first Lambda layer. </p>
+<dd><p>Create an output file with a fixed number of Lambda layers and save a given state to the first layer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Q</strong> – Template parameter specifying the type of the data. </p></li>
+<li><p><strong>diff</strong> – Template parameter specifying whether the state to be saved is a differentiated one or not. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FILE_NAME</strong> – String of the filename. </p></li>
+<li><p><strong>Lambda_i</strong> – Initial value for Λ. (Deprecated by now.) </p></li>
+<li><p><strong>Lambda_size</strong> – Number of layers to be included in the file. </p></li>
+<li><p><strong>state_in</strong> – <a class="reference internal" href="state.html#d7/d97/classState"><span class="std std-ref">State</span></a> to be stored into the first layer. </p></li>
+<li><p><strong>verbose</strong> – If true, output is written into the log file about the process of saving the file. </p></li>
+<li><p><strong>is_converged</strong> – Specifies if the state to be stored is the final result of a converged parquet or mfRG computation. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0_bE16add_state_to_hdfvK12H5std_stringiRK5StateI1Q4diffEKbKb">
 <span id="_CPPv3I0_bE16add_state_to_hdfK12H5std_stringiRK5StateI1Q4diffEKbKb"></span><span id="_CPPv2I0_bE16add_state_to_hdfK12H5std_stringiRK5StateI1Q4diffEKbKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">diff</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">add_state_to_hdf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">H5std_string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">FILE_NAME</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda_it</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0_bE16add_state_to_hdfvK12H5std_stringiRK5StateI1Q4diffEKbKb" title="add_state_to_hdf::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_bE16add_state_to_hdfvK12H5std_stringiRK5StateI1Q4diffEKbKb" title="add_state_to_hdf::diff"><span class="n"><span class="pre">diff</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">is_converged</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0_bE16add_state_to_hdfvK12H5std_stringiRK5StateI1Q4diffEKbKb" title="Link to this definition"></a><br /></dt>
-<dd><p>Open file and save state to a specified Lambda layer. </p>
+<dd><p>Open an output file and save a given state to a specified layer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Q</strong> – Template parameter specifying the type of the data. </p></li>
+<li><p><strong>diff</strong> – Template parameter specifying whether the state to be saved is a differentiated one or not. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FILE_NAME</strong> – String of the filename. </p></li>
+<li><p><strong>Lambda_it</strong> – Number of the Λ layer into which the state shall be stored. </p></li>
+<li><p><strong>state_in</strong> – <a class="reference internal" href="state.html#d7/d97/classState"><span class="std std-ref">State</span></a> to be stored. </p></li>
+<li><p><strong>is_converged</strong> – Specifies if the state to be stored is the final result of a converged parquet or mfRG computation. </p></li>
+<li><p><strong>verbose</strong> – If true, output is written into the log file about the process of saving the file. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv419read_state_from_hdfRK12H5std_stringi">
 <span id="_CPPv319read_state_from_hdfRK12H5std_stringi"></span><span id="_CPPv219read_state_from_hdfRK12H5std_stringi"></span><span id="read_state_from_hdf__H5std_stringCR.i"></span><span class="target" id="d5/de4/hdf5__routines_8hpp_1a1d7f982aef791adb4072cb8ecf3aabf2"></span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">state_datatype</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_state_from_hdf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">H5std_string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">filename</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda_it</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419read_state_from_hdfRK12H5std_stringi" title="Link to this definition"></a><br /></dt>
-<dd><p>Read state from specified Lambda layer of hdf file. </p>
+<dd><p>Read a state from a specified Lambda layer of a given hdf file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – String of the filename. </p></li>
+<li><p><strong>Lambda_it</strong> – Number of the Λ layer from which the state shall be read. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="state.html#d7/d97/classState"><span class="std std-ref">State</span></a> that has been read out. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

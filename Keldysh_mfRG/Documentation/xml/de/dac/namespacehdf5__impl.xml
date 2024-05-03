@@ -499,8 +499,8 @@
         <references refid="d5/de4/hdf5__routines_8hpp_1a9a02bb311149745160c7983f8aa7215d">SELF_LIST</references>
         <references refid="de/dac/namespacehdf5__impl_1ac77e56ba9f320721c5cfc26f6709c9e1" compoundref="d5/de4/hdf5__routines_8hpp" startline="531" endline="562">write_freqparams_to_hdf_LambdaLayer</references>
         <references refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</references>
-        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</referencedby>
-        <referencedby refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</referencedby>
       </memberdef>
     </sectiondef>
     <briefdescription>

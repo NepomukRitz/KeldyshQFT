@@ -9,3 +9,4 @@ Post processing
 
 .. doxygenfunction:: compute_postprocessed_susceptibilities(const std::string& filename)
 
+.. doxygenfunction:: save_slices_through_fullvertex(const std::string& filename, const int ispin)

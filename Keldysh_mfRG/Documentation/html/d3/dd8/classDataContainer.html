@@ -269,7 +269,6 @@ Friends</h2></td></tr>
 <tr class="memitem:a16a92e686f898a8009a453837e59fa45"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">void</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a16a92e686f898a8009a453837e59fa45">check_FDTs</a> (<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../d7/d97/classState.html">State</a>&lt; T, <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">false</a> &gt; &amp;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">state</a>, <a class="el" href="../../d9/db9/classbool.html">bool</a> verbose)</td></tr>
 <tr class="separator:a16a92e686f898a8009a453837e59fa45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0ab8d27e7ed5ce3762582c2416a9b45" id="r_aa0ab8d27e7ed5ce3762582c2416a9b45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d7/d97/classState.html">State</a>&lt; <a class="el" href="../../d7/d59/data__structures_8hpp.html#aa06c6e6918506d71503662b864204749">state_datatype</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">false</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0ab8d27e7ed5ce3762582c2416a9b45">read_state_from_hdf</a> (<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">H5std_string</a> &amp;filename, <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> int <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">Lambda_it</a>)</td></tr>
-<tr class="memdesc:aa0ab8d27e7ed5ce3762582c2416a9b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read state from specified Lambda layer of hdf file.  <br /></td></tr>
 <tr class="separator:aa0ab8d27e7ed5ce3762582c2416a9b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -1285,8 +1284,14 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Read state from specified Lambda layer of hdf file. </p>
+<p>Read a state from a specified Lambda layer of a given hdf file. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>String of the filename. </td></tr>
+    <tr><td class="paramname">Lambda_it</td><td>Number of the Λ layer from which the state shall be read. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="../../d7/d97/classState.html">State</a> that has been read out. </dd></dl>
 <p>check whether parameters in HDF file agree with <a class="el" href="../../d1/df8/master__parameters_8hpp.html">parameters/master_parameters.hpp</a></p>
 <p>Write used parameters for documentation purpose</p>
 <p>check whether parameters in HDF file agree with <a class="el" href="../../d1/df8/master__parameters_8hpp.html">parameters/master_parameters.hpp</a></p>
@@ -1611,7 +1616,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d3/dd8/classDataContainer.html">DataContainer</a></li>
-    <li class="footer">Generated on Thu May 2 2024 15:38:23 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

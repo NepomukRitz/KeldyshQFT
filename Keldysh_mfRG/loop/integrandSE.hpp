@@ -24,6 +24,15 @@ namespace selfenergy_loop {
  * Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index
  * @tparam Q Type in which the integrand takes values, usually comp
  */
+
+/**
+ * Class for the integrand of a loop calculation. Invoked by LoopCalculator.
+ * @tparam Q Type of the data.
+ * @tparam vertType Type of the vertex to be used.
+ * @tparam all_spins Compute all spin components?
+ * @tparam return_type Type of the data of the result. Typically = Q.
+ * @tparam version Version of the self-energy loop. See documentation for LoopFunctionCalculator.
+ */
 template <typename Q, typename vertType, bool all_spins, typename return_type, bool version>
 class IntegrandSE {
 #if KELDYSH_FORMALISM
@@ -62,11 +71,24 @@ class IntegrandSE {
     auto evaluate_vertex_vectorized(const double vp) const -> buffertype_vertex;
 
 public:
-    /// type:   determines Keldysh components (always type = 0 for MF)
-    // is the element in Sigma matrix   0  1    ___     K  A
-    //                                  2  3            R  0
-    // type = 0   -> Keldysh component
-    // type = 2   -> Retarded component
+
+    /**
+     *
+     * @param type_in determines Keldysh components (always type = 0 for MF) is the element in Sigma matrix to be computed:
+     * ```
+     *    0  1    ___     K  A
+     *    2  3            R  0
+     * ```
+     * For example: \n
+     *      type = 0 -> Keldysh component \n
+     *      type = 2 -> Retarded component
+     * @param vertex_in Reference to the input vertex.
+     * @param prop_in Reference to the input propagator.
+     * @param iK_in Keldysh index
+     * @param i_spin_in spin index
+     * @param v_in external fermionic frequency index
+     * @param i_in_in internal index (trivially 0 most of the time)
+     */
     IntegrandSE(const int type_in, const vertType& vertex_in, const Propagator<Q>& prop_in,
                 const int iK_in, const int i_spin_in, const double v_in, const int i_in_in)
                 :type(type_in), vertex(vertex_in), propagator(prop_in), iK(iK_in), v(v_in), i_in(i_in_in), i_spin(i_spin_in),
@@ -82,6 +104,11 @@ public:
         }
     }
 
+    /**
+     * Call operator:
+     * @param vp frequency at which to evaluate integrand (to be integrated over)
+     * @return value of the integrand object evaluated at frequency vp
+     */
     auto operator()(double vp) const -> return_type;
 
     void save_integrand() const;

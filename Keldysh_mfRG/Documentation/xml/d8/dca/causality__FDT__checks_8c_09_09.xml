@@ -637,7 +637,7 @@
         </inbodydescription>
         <location file="postprocessing/causality_FDT_checks.c++" line="3" column="6" bodyfile="postprocessing/causality_FDT_checks.c++" bodystart="3" bodyend="13"/>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1a0f3795e3b03f3c010cc3befa1c153054" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="194" endline="213">check_convergence_hdf</references>
-        <references refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</references>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1acdf68c5ce2f557fb2d456a799f7d6358" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="217" endline="256">read_Lambdas_from_hdf</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>

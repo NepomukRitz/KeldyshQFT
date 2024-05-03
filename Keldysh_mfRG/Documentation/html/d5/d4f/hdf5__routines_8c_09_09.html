@@ -117,7 +117,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a892df4e01d44d08d11da36e48e0da331" id="r_a892df4e01d44d08d11da36e48e0da331"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">hsize_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a892df4e01d44d08d11da36e48e0da331">h5_cast</a> (int <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">dim</a>)</td></tr>
 <tr class="separator:a892df4e01d44d08d11da36e48e0da331"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0ab8d27e7ed5ce3762582c2416a9b45" id="r_aa0ab8d27e7ed5ce3762582c2416a9b45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d7/d97/classState.html">State</a>&lt; <a class="el" href="../../d7/d59/data__structures_8hpp.html#aa06c6e6918506d71503662b864204749">state_datatype</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">false</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0ab8d27e7ed5ce3762582c2416a9b45">read_state_from_hdf</a> (<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">H5std_string</a> &amp;filename, <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> int <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">Lambda_it</a>)</td></tr>
-<tr class="memdesc:aa0ab8d27e7ed5ce3762582c2416a9b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read state from specified Lambda layer of hdf file.  <br /></td></tr>
 <tr class="separator:aa0ab8d27e7ed5ce3762582c2416a9b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f3795e3b03f3c010cc3befa1c153054" id="r_a0f3795e3b03f3c010cc3befa1c153054"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/db9/classbool.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f3795e3b03f3c010cc3befa1c153054">check_convergence_hdf</a> (<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">H5std_string</a> &amp;filename, int &amp;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">Lambda_it</a>)</td></tr>
 <tr class="separator:a0f3795e3b03f3c010cc3befa1c153054"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -393,7 +392,7 @@ Functions</h2></td></tr>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, and <a class="el" href="../../d4/dda/mpi__setup_8c_09_09_source.html#l00003">mpi_world_rank()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00852">add_state_to_hdf()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00659">parquet_solver()</a>, and <a class="el" href="../../d8/dea/right__hand__sides_8hpp_source.html#l00138">mfRG_stats::write_to_hdf()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00872">add_state_to_hdf()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00659">parquet_solver()</a>, and <a class="el" href="../../d8/dea/right__hand__sides_8hpp_source.html#l00138">mfRG_stats::write_to_hdf()</a>.</p>
 
 </div>
 </div>
@@ -544,12 +543,18 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> int</td>          <td class="paramname"><span class="paramname"><em>Lambda_it</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>Lambda_it</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Read state from specified Lambda layer of hdf file. </p>
+<p>Read a state from a specified Lambda layer of a given hdf file. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>String of the filename. </td></tr>
+    <tr><td class="paramname">Lambda_it</td><td>Number of the Λ layer from which the state shall be read. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="../../d7/d97/classState.html">State</a> that has been read out. </dd></dl>
 <p>check whether parameters in HDF file agree with <a class="el" href="../../d1/df8/master__parameters_8hpp.html">parameters/master_parameters.hpp</a></p>
 <p>Write used parameters for documentation purpose</p>
 
@@ -914,11 +919,11 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  387</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">passed</a>;</div>
 <div class="line"><span class="lineno">  388</span> </div>
 <div class="line"><span class="lineno">  389</span>}</div>
-<div class="ttc" id="ahdf5__routines_8c_09_09_html_aa0ab8d27e7ed5ce3762582c2416a9b45"><div class="ttname"><a href="#aa0ab8d27e7ed5ce3762582c2416a9b45">read_state_from_hdf</a></div><div class="ttdeci">State&lt; state_datatype, false &gt; read_state_from_hdf(const H5std_string &amp;filename, const int Lambda_it)</div><div class="ttdoc">Read state from specified Lambda layer of hdf file.</div><div class="ttdef"><b>Definition</b> <a href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00061">hdf5_routines.c++:61</a></div></div>
-<div class="ttc" id="ahdf5__routines_8hpp_html_ab7f115126010e4b017eb9e12cd1c29d9"><div class="ttname"><a href="../../d5/de4/hdf5__routines_8hpp.html#ab7f115126010e4b017eb9e12cd1c29d9">write_state_to_hdf</a></div><div class="ttdeci">void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State&lt; Q, diff &gt; &amp;state_in, const bool verbose=true, const bool is_converged=false)</div><div class="ttdoc">Create file with fixed number of Lambda layers and save state to first Lambda layer.</div><div class="ttdef"><b>Definition</b> <a href="../../d5/de4/hdf5__routines_8hpp_source.html#l00836">hdf5_routines.hpp:836</a></div></div>
-<div class="ttc" id="ahdf5__routines_8hpp_html_afcbe2c8a768f64e576f593516262d476"><div class="ttname"><a href="../../d5/de4/hdf5__routines_8hpp.html#afcbe2c8a768f64e576f593516262d476">add_state_to_hdf</a></div><div class="ttdeci">void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State&lt; Q, diff &gt; &amp;state_in, const bool is_converged=false, const bool verbose=true)</div><div class="ttdoc">Open file and save state to a specified Lambda layer.</div><div class="ttdef"><b>Definition</b> <a href="../../d5/de4/hdf5__routines_8hpp_source.html#l00852">hdf5_routines.hpp:852</a></div></div>
+<div class="ttc" id="ahdf5__routines_8c_09_09_html_aa0ab8d27e7ed5ce3762582c2416a9b45"><div class="ttname"><a href="#aa0ab8d27e7ed5ce3762582c2416a9b45">read_state_from_hdf</a></div><div class="ttdeci">State&lt; state_datatype, false &gt; read_state_from_hdf(const H5std_string &amp;filename, const int Lambda_it)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00061">hdf5_routines.c++:61</a></div></div>
+<div class="ttc" id="ahdf5__routines_8hpp_html_ab7f115126010e4b017eb9e12cd1c29d9"><div class="ttname"><a href="../../d5/de4/hdf5__routines_8hpp.html#ab7f115126010e4b017eb9e12cd1c29d9">write_state_to_hdf</a></div><div class="ttdeci">void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State&lt; Q, diff &gt; &amp;state_in, const bool verbose=true, const bool is_converged=false)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/de4/hdf5__routines_8hpp_source.html#l00846">hdf5_routines.hpp:846</a></div></div>
+<div class="ttc" id="ahdf5__routines_8hpp_html_afcbe2c8a768f64e576f593516262d476"><div class="ttname"><a href="../../d5/de4/hdf5__routines_8hpp.html#afcbe2c8a768f64e576f593516262d476">add_state_to_hdf</a></div><div class="ttdeci">void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State&lt; Q, diff &gt; &amp;state_in, const bool is_converged=false, const bool verbose=true)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/de4/hdf5__routines_8hpp_source.html#l00872">hdf5_routines.hpp:872</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00852">add_state_to_hdf()</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../d0/d3f/util_8hpp_source.html#l00025">utils::print()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00061">read_state_from_hdf()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00836">write_state_to_hdf()</a>.</p>
+<p class="reference">References <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00872">add_state_to_hdf()</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../d0/d3f/util_8hpp_source.html#l00025">utils::print()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00061">read_state_from_hdf()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00846">write_state_to_hdf()</a>.</p>
 
 </div>
 </div>
@@ -928,7 +933,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_df38b2a5d584e0f6066b4518b95c638b.html">utilities</a></li><li class="navelem"><a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09.html">hdf5_routines.c++</a></li>
-    <li class="footer">Generated on Thu May 2 2024 15:38:23 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

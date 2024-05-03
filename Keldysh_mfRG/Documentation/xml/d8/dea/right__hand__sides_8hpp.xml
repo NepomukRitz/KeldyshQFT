@@ -1163,7 +1163,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="575" column="6" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="575" bodyend="605" declfile="mfRG_flow/right_hand_sides.hpp" declline="23" declcolumn="20"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
@@ -1247,7 +1247,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="612" column="6" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="612" bodyend="638" declfile="mfRG_flow/right_hand_sides.hpp" declline="27" declcolumn="20"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
@@ -1292,7 +1292,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="642" column="6" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="642" bodyend="662" declfile="mfRG_flow/right_hand_sides.hpp" declline="28" declcolumn="20"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
@@ -1337,7 +1337,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="746" column="6" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="746" bodyend="778" declfile="mfRG_flow/right_hand_sides.hpp" declline="29" declcolumn="20"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
         <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
@@ -1382,7 +1382,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="781" column="6" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="781" bodyend="823" declfile="mfRG_flow/right_hand_sides.hpp" declline="31" declcolumn="20"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
@@ -1486,7 +1486,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="39" column="22" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="39" bodyend="65"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1562,7 +1562,7 @@
         <references refid="d8/dea/right__hand__sides_8hpp_1aef23a88dfab42354e830b78f48bf92a7" compoundref="d8/dea/right__hand__sides_8hpp" startline="746" endline="778">calculate_dGammaC_right_insertion</references>
         <references refid="d8/dea/right__hand__sides_8hpp_1ab8a6c68ec3c73efba030aee4816dd18b" compoundref="d8/dea/right__hand__sides_8hpp" startline="612" endline="638">calculate_dGammaL</references>
         <references refid="d8/dea/right__hand__sides_8hpp_1a72caad1ac1ebcb7f63c2096567157933" compoundref="d8/dea/right__hand__sides_8hpp" startline="642" endline="662">calculate_dGammaR</references>
-        <references refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</references>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" compoundref="d1/df8/master__parameters_8hpp" startline="159">data_dir</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>

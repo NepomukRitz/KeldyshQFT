@@ -866,7 +866,7 @@
         <location file="correlation_functions/state.hpp" line="200" column="7" bodyfile="correlation_functions/state.hpp" bodystart="200" bodyend="203"/>
         <references refid="d7/d97/classState_1af8d534b130171535c9fbfb0cdb2ea0e5" compoundref="da/d3b/state_8hpp" startline="112" endline="119">State&lt; Q, differentiated &gt;::abs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" compoundref="de/de8/bubble__function_8hpp" startline="825" endline="887">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" compoundref="de/de8/bubble__function_8hpp" startline="833" endline="895">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a1e26b17d6ce68bbd4a4cc2031722a433" compoundref="de/dbb/math__utils_8hpp" startline="973" endline="983">maxabs</referencedby>
         <referencedby refid="d8/da5/namespaceode__solver__impl_1a3c57cdacfa861db25e7720e774f4be07" compoundref="da/dc3/ODE__solvers_8hpp" startline="296" endline="361">ode_solver_impl::rk_step</referencedby>
       </memberdef>

@@ -1054,7 +1054,7 @@
 <para>TODO: Better reorder both at once</para>
         </inbodydescription>
         <location file="correlation_functions/four_point/vertex.hpp" line="256" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1695" bodyend="1733"/>
-        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</references>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
       </memberdef>

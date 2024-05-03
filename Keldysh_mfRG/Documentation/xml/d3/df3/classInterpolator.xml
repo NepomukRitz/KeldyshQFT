@@ -248,7 +248,7 @@
         </inbodydescription>
         <location file="correlation_functions/n_point/data_buffer.hpp" line="42" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="42" bodyend="42"/>
         <references refid="d3/df3/classInterpolator_1a67e07c1e4ad28745ebc847a70eb08096" compoundref="dc/d80/data__buffer_8hpp" startline="39">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::initialized</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
       </memberdef>

@@ -80,7 +80,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="correlation_functions/two_point/selfenergy.hpp" line="31" column="17" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="31" bodyend="-1"/>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
@@ -102,7 +102,7 @@
         </inbodydescription>
         <location file="correlation_functions/two_point/selfenergy.hpp" line="32" column="7" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="32" bodyend="-1"/>
         <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
-        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
@@ -263,7 +263,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="correlation_functions/two_point/selfenergy.hpp" line="38" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="167" bodyend="169"/>
-        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -331,7 +331,7 @@
         <references refid="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28" compoundref="d9/d3a/technical__parameters_8hpp" startline="18">inter_tol</references>
         <references refid="d6/dfc/namespacemy__defs_1_1SE_1a8bb0a6e36cdfe570fba3110d9322df26ada6fc27d34344cd3c471e707201131f4" compoundref="d7/d59/data__structures_8hpp" startline="492">my_defs::SE::internal</references>
         <references refid="d6/dfc/namespacemy__defs_1_1SE_1a8bb0a6e36cdfe570fba3110d9322df26a1de5b20eff06ae484ded79a5ea8fa6c6" compoundref="d7/d59/data__structures_8hpp" startline="492">my_defs::SE::keldysh</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
         <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -406,9 +406,9 @@
         <inbodydescription>
         </inbodydescription>
         <location file="correlation_functions/two_point/selfenergy.hpp" line="40" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="230" bodyend="232"/>
-        <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="127" endline="439">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
-        <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="473" endline="496">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
-        <referencedby refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" compoundref="d8/d1d/loop_8hpp" startline="442" endline="470">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_zeroT</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="129" endline="441">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="475" endline="498">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" compoundref="d8/d1d/loop_8hpp" startline="444" endline="472">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_zeroT</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -482,8 +482,8 @@
         <inbodydescription>
         </inbodydescription>
         <location file="correlation_functions/two_point/selfenergy.hpp" line="41" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="242" bodyend="244"/>
-        <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="127" endline="439">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
-        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="129" endline="441">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1aa7d75d4c76a9e99f37d89cb8fd479392" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -615,7 +615,7 @@
         </inbodydescription>
         <location file="correlation_functions/two_point/selfenergy.hpp" line="45" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="346" bodyend="356"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="85" endline="125">check_FDTs_selfenergy</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a73153e76cf9a7a9d57b1027705cda53d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">

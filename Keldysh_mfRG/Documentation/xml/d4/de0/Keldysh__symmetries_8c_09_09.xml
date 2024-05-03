@@ -330,8 +330,8 @@
         <references refid="d4/de0/Keldysh__symmetries_8c_09_09_1aa68ac407814b8b823c4982c2441fc9bd" compoundref="d4/de0/Keldysh__symmetries_8c_09_09" startline="4" endline="18">iK_to_alphas</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <referencedby refid="d2/df0/correction__functions_8hpp_1ac617baabe863b35d7652e62c345a3400" compoundref="d2/df0/correction__functions_8hpp" startline="54" endline="349">asymp_corrections_bubble</referencedby>
-        <referencedby refid="d1/d9f/classIntegrand_1a01835f6b66667febddc5b264ba4ea117" compoundref="df/d83/integrand_8hpp" startline="455" endline="535">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::compute_vertices</referencedby>
-        <referencedby refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" compoundref="df/d83/integrand_8hpp" startline="284" endline="335">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1a01835f6b66667febddc5b264ba4ea117" compoundref="df/d83/integrand_8hpp" startline="468" endline="548">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::compute_vertices</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" compoundref="df/d83/integrand_8hpp" startline="297" endline="348">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</referencedby>
       </memberdef>
     </sectiondef>
     <briefdescription>

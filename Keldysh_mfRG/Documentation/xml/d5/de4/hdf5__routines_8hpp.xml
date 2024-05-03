@@ -1227,7 +1227,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="utilities/hdf5_routines.hpp" line="70" column="19" declfile="utilities/hdf5_routines.hpp" declline="70" declcolumn="19"/>
-        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</referencedby>
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114" compoundref="da/dc3/ODE__solvers_8hpp" startline="529" endline="648">ode_solver</referencedby>
         <referencedby refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" compoundref="d5/de4/hdf5__routines_8hpp" startline="621" endline="830">hdf5_impl::write_state_to_hdf_LambdaLayer</referencedby>
       </memberdef>
@@ -1857,7 +1857,7 @@
         <location file="utilities/hdf5_routines.hpp" line="121" column="12" bodyfile="utilities/hdf5_routines.c++" bodystart="21" bodyend="30" declfile="utilities/hdf5_routines.hpp" declline="121" declcolumn="12"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
-        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
         <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">mfRG_stats::write_to_hdf</referencedby>
       </memberdef>
@@ -2016,7 +2016,7 @@
         <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="622" endline="907">rvert&lt; Q &gt;::check_symmetries</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1ad9258c4214b31ccef74aad6764dc4db5" compoundref="dd/d0a/parquet__solver_8hpp" startline="494" endline="535">compute_diff_SDE</referencedby>
         <referencedby refid="d4/dbd/classrvert_1a2d3fc37d2aebdb138df02e3d846b11e3" compoundref="d3/d22/r__vertex_8hpp" startline="1056" endline="1075">rvert&lt; Q &gt;::save_expanded</referencedby>
-        <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="250" endline="271">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
+        <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="277" endline="298">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
         <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="77" endline="118">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a348299423b50e44dd3a672875fdeb1a5" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="259" endline="342">test_read_write_data_hdf</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a4ed165c426f1f02c659b95cca2be40d6" compoundref="d4/d92/hartree__term_8c_09_09" startline="157" endline="180">Hartree_Solver::write_out_propagators</referencedby>
@@ -2416,20 +2416,86 @@
           <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></defval>
         </param>
         <briefdescription>
-<para>Create file with fixed number of Lambda layers and save state to first Lambda layer. </para>
         </briefdescription>
         <detaileddescription>
+<para>Create an output file with a fixed number of Lambda layers and save a given state to the first layer. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Template parameter specifying the type of the data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>diff</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Template parameter specifying whether the state to be saved is a differentiated one or not. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>FILE_NAME</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String of the filename. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_i</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Initial value for Λ. (Deprecated by now.) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of layers to be included in the file. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>state_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="d7/d97/classState" kindref="compound">State</ref> to be stored into the first layer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>verbose</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If true, output is written into the log file about the process of saving the file. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>is_converged</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Specifies if the state to be stored is the final result of a converged parquet or mfRG computation. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="836" column="6" bodyfile="utilities/hdf5_routines.hpp" bodystart="836" bodyend="848"/>
+        <location file="utilities/hdf5_routines.hpp" line="846" column="6" bodyfile="utilities/hdf5_routines.hpp" bodystart="846" bodyend="858"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" compoundref="d0/d3f/util_8hpp" startline="42" endline="53">utils::print_add</references>
         <references refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" compoundref="d5/de4/hdf5__routines_8hpp" startline="621" endline="830">hdf5_impl::write_state_to_hdf_LambdaLayer</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a2ad9fde94cddf669f941f8405a461ae2" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="913" endline="929">compare_with_FDTs</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a2ad9fde94cddf669f941f8405a461ae2" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="920" endline="936">compare_with_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
@@ -2474,13 +2540,71 @@
           <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
         </param>
         <briefdescription>
-<para>Open file and save state to a specified Lambda layer. </para>
         </briefdescription>
         <detaileddescription>
+<para>Open an output file and save a given state to a specified layer. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Template parameter specifying the type of the data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>diff</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Template parameter specifying whether the state to be saved is a differentiated one or not. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>FILE_NAME</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String of the filename. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of the Λ layer into which the state shall be stored. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>state_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="d7/d97/classState" kindref="compound">State</ref> to be stored. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>is_converged</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Specifies if the state to be stored is the final result of a converged parquet or mfRG computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>verbose</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If true, output is written into the log file about the process of saving the file. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="852" column="6" bodyfile="utilities/hdf5_routines.hpp" bodystart="852" bodyend="875"/>
+        <location file="utilities/hdf5_routines.hpp" line="872" column="6" bodyfile="utilities/hdf5_routines.hpp" bodystart="872" bodyend="895"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1aa3e184a5a9d2466af831b13169261de2">LAMBDA_LIST</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
@@ -2488,8 +2612,8 @@
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" compoundref="d0/d3f/util_8hpp" startline="42" endline="53">utils::print_add</references>
         <references refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" compoundref="d5/de4/hdf5__routines_8hpp" startline="621" endline="830">hdf5_impl::write_state_to_hdf_LambdaLayer</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a2ad9fde94cddf669f941f8405a461ae2" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="913" endline="929">compare_with_FDTs</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a2ad9fde94cddf669f941f8405a461ae2" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="920" endline="936">compare_with_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a97f702e04f1c5d26a95211570c003781" compoundref="dd/d0a/parquet__solver_8hpp" startline="73" endline="87">compute_BSE</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
@@ -2511,9 +2635,28 @@
           <declname>Lambda_it</declname>
         </param>
         <briefdescription>
-<para>Read state from specified Lambda layer of hdf file. </para>
         </briefdescription>
         <detaileddescription>
+<para>Read a state from a specified Lambda layer of a given hdf file. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String of the filename. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of the Λ layer from which the state shall be read. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="d7/d97/classState" kindref="compound">State</ref> that has been read out. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
 <para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>
@@ -2521,7 +2664,7 @@
 <para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>
 <para>Write used parameters for documentation purpose</para>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="878" column="7" bodyfile="utilities/hdf5_routines.c++" bodystart="61" bodyend="191" declfile="utilities/hdf5_routines.hpp" declline="878" declcolumn="7"/>
+        <location file="utilities/hdf5_routines.hpp" line="903" column="7" bodyfile="utilities/hdf5_routines.c++" bodystart="61" bodyend="191" declfile="utilities/hdf5_routines.hpp" declline="903" declcolumn="7"/>
         <referencedby refid="d8/dca/causality__FDT__checks_8c_09_09_1aa63e0266511b6c4db70efa67918ee795" compoundref="d8/dca/causality__FDT__checks_8c_09_09" startline="3" endline="13">compare_flow_with_FDTs</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
@@ -2546,7 +2689,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="879" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="194" bodyend="213" declfile="utilities/hdf5_routines.hpp" declline="879" declcolumn="6"/>
+        <location file="utilities/hdf5_routines.hpp" line="904" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="194" bodyend="213" declfile="utilities/hdf5_routines.hpp" declline="904" declcolumn="6"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1a31b4dbbf41f3faf7898b472c1035b558">IS_CONVERGED</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1a5f6a575ad9a575289e8d4ec6a609f062">PARAM_LIST</references>
@@ -2583,7 +2726,7 @@
         <inbodydescription>
 <para>load data into buffer</para>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="888" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="217" bodyend="256" declfile="utilities/hdf5_routines.hpp" declline="888" declcolumn="6"/>
+        <location file="utilities/hdf5_routines.hpp" line="913" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="217" bodyend="256" declfile="utilities/hdf5_routines.hpp" declline="913" declcolumn="6"/>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1a8e761cba4ac842504c408dfe71037413" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="16" endline="20">open_hdf_file_readOnly</references>
@@ -2605,7 +2748,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="889" column="12" bodyfile="utilities/hdf5_routines.c++" bodystart="392" bodyend="421" declfile="utilities/hdf5_routines.hpp" declline="889" declcolumn="12"/>
+        <location file="utilities/hdf5_routines.hpp" line="914" column="12" bodyfile="utilities/hdf5_routines.c++" bodystart="392" bodyend="421" declfile="utilities/hdf5_routines.hpp" declline="914" declcolumn="12"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
         <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
@@ -2632,7 +2775,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="893" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="259" bodyend="342" declfile="utilities/hdf5_routines.hpp" declline="893" declcolumn="6"/>
+        <location file="utilities/hdf5_routines.hpp" line="918" column="6" bodyfile="utilities/hdf5_routines.c++" bodystart="259" bodyend="342" declfile="utilities/hdf5_routines.hpp" declline="918" declcolumn="6"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1a6dbc5795d6adf4e9aca38307ca541ffa" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="6" endline="15">create_hdf_file</references>
         <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
@@ -2661,12 +2804,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="utilities/hdf5_routines.hpp" line="897" column="17" bodyfile="utilities/hdf5_routines.hpp" bodystart="897" bodyend="940"/>
-        <references refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</references>
+        <location file="utilities/hdf5_routines.hpp" line="922" column="17" bodyfile="utilities/hdf5_routines.hpp" bodystart="922" bodyend="965"/>
+        <references refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1a1d7f982aef791adb4072cb8ecf3aabf2" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
-        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</references>
+        <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -3484,106 +3627,107 @@
 <codeline lineno="831"><highlight class="normal"></highlight></codeline>
 <codeline lineno="832"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="833"><highlight class="normal"></highlight></codeline>
-<codeline lineno="835"><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>diff&gt;</highlight></codeline>
-<codeline lineno="836" refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Lambda_i,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,diff&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose=</highlight><highlight class="keyword">true</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>=</highlight><highlight class="keyword">false</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
-<codeline lineno="837"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USE_MPI</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="838"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" kindref="member">mpi_world_rank</ref>()<sp/>==<sp/>0)<sp/><sp/></highlight><highlight class="comment">//<sp/>only<sp/>the<sp/>process<sp/>with<sp/>ID<sp/>0<sp/>writes<sp/>into<sp/>file<sp/>to<sp/>avoid<sp/>collisions</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="839"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="840"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
-<codeline lineno="841"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" kindref="member">hdf5_impl::write_state_to_hdf_LambdaLayer</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/>0,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>,<sp/></highlight><highlight class="stringliteral">&quot;w&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>);</highlight></codeline>
-<codeline lineno="842"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(verbose)<sp/>{</highlight></codeline>
-<codeline lineno="843"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Successfully<sp/>saved<sp/>in<sp/>hdf5<sp/>file:<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
-<codeline lineno="844"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;<sp/>in<sp/>Lambda-layer<sp/>&quot;</highlight><highlight class="normal">,<sp/>0,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="845"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="846"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="847"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="848"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="849"><highlight class="normal"></highlight></codeline>
-<codeline lineno="851"><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>diff&gt;</highlight></codeline>
-<codeline lineno="852" refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" kindref="member">add_state_to_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,diff&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>=</highlight><highlight class="keyword">false</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose=</highlight><highlight class="keyword">true</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
-<codeline lineno="853"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USE_MPI</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="854"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" kindref="member">mpi_world_rank</ref>()<sp/>==<sp/>0)<sp/><sp/></highlight><highlight class="comment">//<sp/>only<sp/>the<sp/>process<sp/>with<sp/>ID<sp/>0<sp/>writes<sp/>into<sp/>file<sp/>to<sp/>avoid<sp/>collisions</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="855"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="856"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
-<codeline lineno="857"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d7/d3f/classmultidimensional_1_1multiarray" kindref="compound">multidimensional::multiarray&lt;double,2&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambdas</ref>;</highlight></codeline>
-<codeline lineno="858"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>H5::H5File<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file_out</ref><sp/>=<sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a924110dbdaccbbc744def3ca0838cb4c" kindref="member">open_hdf_file_readWrite</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
-<codeline lineno="859"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">read_from_hdf&lt;double&gt;</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file_out</ref>,<sp/><ref refid="d5/de4/hdf5__routines_8hpp_1aa3e184a5a9d2466af831b13169261de2" kindref="member">LAMBDA_LIST</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambdas</ref>);</highlight></codeline>
-<codeline lineno="860"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file_out</ref>.close();</highlight></codeline>
-<codeline lineno="861"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::size_t<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambdas</ref>.size();</highlight></codeline>
-<codeline lineno="862"><highlight class="normal"></highlight></codeline>
-<codeline lineno="863"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/>&lt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>)<sp/>{</highlight></codeline>
-<codeline lineno="864"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" kindref="member">hdf5_impl::write_state_to_hdf_LambdaLayer</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>,<sp/></highlight><highlight class="stringliteral">&quot;rw&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>);</highlight></codeline>
-<codeline lineno="865"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(verbose)<sp/>{</highlight></codeline>
-<codeline lineno="866"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Successfully<sp/>saved<sp/>in<sp/>hdf5<sp/>file:<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
-<codeline lineno="867"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;<sp/>in<sp/>Lambda-layer<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="868"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="869"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="870"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline lineno="871"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;\t\t<sp/><sp/>ERROR:<sp/>Cannot<sp/>write<sp/>to<sp/>file<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>since<sp/>Lambda<sp/>layer&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,</highlight></codeline>
-<codeline lineno="872"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;<sp/>is<sp/>out<sp/>of<sp/>range.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="873"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="874"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="875"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="876"><highlight class="normal"></highlight></codeline>
-<codeline lineno="878"><highlight class="normal"><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype,false&gt;</ref><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a1d7f982aef791adb4072cb8ecf3aabf2" kindref="member">read_state_from_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref>&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>)<sp/>;</highlight></codeline>
-<codeline lineno="879"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a0f3795e3b03f3c010cc3befa1c153054" kindref="member">check_convergence_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref>&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>);</highlight></codeline>
-<codeline lineno="880"><highlight class="normal"></highlight></codeline>
-<codeline lineno="882"></codeline>
-<codeline lineno="888"><highlight class="normal"><ref refid="d9/d2a/classvec" kindref="compound">rvec</ref><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1aded99d185f90edc01746d5ce89157281" kindref="member">read_Lambdas_from_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
-<codeline lineno="889"><highlight class="normal"><ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a5d5b21aa119d7d040be63d41d5be943c" kindref="member">read_config_from_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
-<codeline lineno="890"><highlight class="normal"></highlight></codeline>
-<codeline lineno="891"><highlight class="normal"></highlight></codeline>
-<codeline lineno="893"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a348299423b50e44dd3a672875fdeb1a5" kindref="member">test_read_write_data_hdf</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose);</highlight></codeline>
-<codeline lineno="894"><highlight class="normal"></highlight><highlight class="comment">//bool<sp/>test_read_write_state_hdf(bool<sp/>verbose);</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="895"><highlight class="normal"></highlight></codeline>
+<codeline lineno="845"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>diff&gt;</highlight></codeline>
+<codeline lineno="846" refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Lambda_i,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,diff&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose=</highlight><highlight class="keyword">true</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>=</highlight><highlight class="keyword">false</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="847"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USE_MPI</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="848"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" kindref="member">mpi_world_rank</ref>()<sp/>==<sp/>0)<sp/><sp/></highlight><highlight class="comment">//<sp/>only<sp/>the<sp/>process<sp/>with<sp/>ID<sp/>0<sp/>writes<sp/>into<sp/>file<sp/>to<sp/>avoid<sp/>collisions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="849"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="850"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="851"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" kindref="member">hdf5_impl::write_state_to_hdf_LambdaLayer</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/>0,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>,<sp/></highlight><highlight class="stringliteral">&quot;w&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>);</highlight></codeline>
+<codeline lineno="852"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(verbose)<sp/>{</highlight></codeline>
+<codeline lineno="853"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Successfully<sp/>saved<sp/>in<sp/>hdf5<sp/>file:<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
+<codeline lineno="854"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;<sp/>in<sp/>Lambda-layer<sp/>&quot;</highlight><highlight class="normal">,<sp/>0,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="855"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="856"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="857"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="858"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="859"><highlight class="normal"></highlight></codeline>
+<codeline lineno="860"><highlight class="normal"></highlight></codeline>
+<codeline lineno="871"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>diff&gt;</highlight></codeline>
+<codeline lineno="872" refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" kindref="member">add_state_to_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,diff&gt;</ref>&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>=</highlight><highlight class="keyword">false</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose=</highlight><highlight class="keyword">true</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="873"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USE_MPI</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="874"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" kindref="member">mpi_world_rank</ref>()<sp/>==<sp/>0)<sp/><sp/></highlight><highlight class="comment">//<sp/>only<sp/>the<sp/>process<sp/>with<sp/>ID<sp/>0<sp/>writes<sp/>into<sp/>file<sp/>to<sp/>avoid<sp/>collisions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="875"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="876"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="877"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d7/d3f/classmultidimensional_1_1multiarray" kindref="compound">multidimensional::multiarray&lt;double,2&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambdas</ref>;</highlight></codeline>
+<codeline lineno="878"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>H5::H5File<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file_out</ref><sp/>=<sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a924110dbdaccbbc744def3ca0838cb4c" kindref="member">open_hdf_file_readWrite</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
+<codeline lineno="879"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">read_from_hdf&lt;double&gt;</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file_out</ref>,<sp/><ref refid="d5/de4/hdf5__routines_8hpp_1aa3e184a5a9d2466af831b13169261de2" kindref="member">LAMBDA_LIST</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambdas</ref>);</highlight></codeline>
+<codeline lineno="880"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">file_out</ref>.close();</highlight></codeline>
+<codeline lineno="881"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::size_t<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambdas</ref>.size();</highlight></codeline>
+<codeline lineno="882"><highlight class="normal"></highlight></codeline>
+<codeline lineno="883"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/>&lt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="884"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" kindref="member">hdf5_impl::write_state_to_hdf_LambdaLayer</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_in</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_size</ref>,<sp/></highlight><highlight class="stringliteral">&quot;rw&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_converged</ref>);</highlight></codeline>
+<codeline lineno="885"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(verbose)<sp/>{</highlight></codeline>
+<codeline lineno="886"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Successfully<sp/>saved<sp/>in<sp/>hdf5<sp/>file:<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
+<codeline lineno="887"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;<sp/>in<sp/>Lambda-layer<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="888"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" kindref="member">utils::print_add</ref>(</highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="889"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="890"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="891"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;\t\t<sp/><sp/>ERROR:<sp/>Cannot<sp/>write<sp/>to<sp/>file<sp/>&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>since<sp/>Lambda<sp/>layer&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>,</highlight></codeline>
+<codeline lineno="892"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;<sp/>is<sp/>out<sp/>of<sp/>range.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="893"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="894"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="895"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="896"><highlight class="normal"></highlight></codeline>
-<codeline lineno="897" refid="d5/de4/hdf5__routines_8hpp_1a34592f658687bd456883caf141f617f7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q&gt;<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a34592f658687bd456883caf141f617f7" kindref="member">test_read_write_state_hdf</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose)<sp/>{</highlight></codeline>
-<codeline lineno="898"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//if<sp/>(verbose)<sp/>utils::print(&quot;Testing<sp/>HDF<sp/>input<sp/>and<sp/>output<sp/>of<sp/>states:&quot;,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="899"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Lambda<sp/>=<sp/>1.;</highlight></codeline>
-<codeline lineno="900"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/>=<sp/>1;</highlight></codeline>
-<codeline lineno="901"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberLambdaLayers</ref><sp/>=<sp/>10;</highlight></codeline>
-<codeline lineno="902"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,false&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>(Lambda);</highlight></codeline>
-<codeline lineno="903"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>.initialize();</highlight></codeline>
-<codeline lineno="904"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref><sp/>+<sp/>1.;</highlight></codeline>
+<codeline lineno="903"><highlight class="normal"><ref refid="d7/d97/classState" kindref="compound">State&lt;state_datatype,false&gt;</ref><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a1d7f982aef791adb4072cb8ecf3aabf2" kindref="member">read_state_from_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref>&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>)<sp/>;</highlight></codeline>
+<codeline lineno="904"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a0f3795e3b03f3c010cc3befa1c153054" kindref="member">check_convergence_hdf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref>&amp;<sp/>filename,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>);</highlight></codeline>
 <codeline lineno="905"><highlight class="normal"></highlight></codeline>
-<codeline lineno="906"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/>0.<sp/>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberLambdaLayers</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>);</highlight></codeline>
-<codeline lineno="907"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//utils::print(&quot;Written<sp/>state&quot;,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="908"><highlight class="normal"></highlight></codeline>
-<codeline lineno="909"><highlight class="normal"></highlight></codeline>
-<codeline lineno="910"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,false&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref><sp/>=<sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a1d7f982aef791adb4072cb8ecf3aabf2" kindref="member">read_state_from_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/>0);</highlight></codeline>
-<codeline lineno="911"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//utils::print(&quot;Read<sp/>state&quot;,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="912"><highlight class="normal"></highlight></codeline>
-<codeline lineno="913"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,false&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref><sp/>-<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref>;</highlight></codeline>
-<codeline lineno="914"><highlight class="normal"></highlight></codeline>
-<codeline lineno="915"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" kindref="member">add_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/><sp/>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>*2);</highlight></codeline>
-<codeline lineno="916"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" kindref="member">add_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>+1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref>);</highlight></codeline>
-<codeline lineno="917"><highlight class="normal"></highlight></codeline>
-<codeline lineno="918"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_statediff.h5&quot;</highlight><highlight class="normal">,<sp/>0.,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberLambdaLayers</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref>);</highlight></codeline>
-<codeline lineno="919"><highlight class="normal"></highlight></codeline>
-<codeline lineno="920"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref><sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="907"></codeline>
+<codeline lineno="913"><highlight class="normal"><ref refid="d9/d2a/classvec" kindref="compound">rvec</ref><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1aded99d185f90edc01746d5ce89157281" kindref="member">read_Lambdas_from_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
+<codeline lineno="914"><highlight class="normal"><ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a5d5b21aa119d7d040be63d41d5be943c" kindref="member">read_config_from_hdf</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">FILE_NAME</ref>);</highlight></codeline>
+<codeline lineno="915"><highlight class="normal"></highlight></codeline>
+<codeline lineno="916"><highlight class="normal"></highlight></codeline>
+<codeline lineno="918"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a348299423b50e44dd3a672875fdeb1a5" kindref="member">test_read_write_data_hdf</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose);</highlight></codeline>
+<codeline lineno="919"><highlight class="normal"></highlight><highlight class="comment">//bool<sp/>test_read_write_state_hdf(bool<sp/>verbose);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="920"><highlight class="normal"></highlight></codeline>
 <codeline lineno="921"><highlight class="normal"></highlight></codeline>
-<codeline lineno="922"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(verbose)<sp/>{</highlight></codeline>
-<codeline lineno="923"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref>.norm()<sp/>&lt;<sp/>1e-10)<sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Read<sp/>/<sp/>write<sp/>of<sp/>state<sp/>data<sp/>to<sp/>LambdaLayer<sp/>of<sp/>HDF<sp/>file<sp/>successful.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="924"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline lineno="925"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
-<codeline lineno="926"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;PROBLEM<sp/>during<sp/>read<sp/>/<sp/>write<sp/>of<sp/>state<sp/>data<sp/>to<sp/>LambdaLayer<sp/>of<sp/>HDF<sp/>file.<sp/>deviation<sp/>:<sp/>&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline lineno="927"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref>.norm(),<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="928"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="929"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>((<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>.selfenergy.Sigma.frequencies.<sp/><sp/>primary_grid.get_all_frequencies()<sp/>-</highlight></codeline>
-<codeline lineno="930"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref>.selfenergy.Sigma.frequencies.<sp/><sp/>primary_grid.get_all_frequencies()).max_norm()<sp/>&lt;<sp/>1e-10)</highlight></codeline>
-<codeline lineno="931"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Read<sp/>/<sp/>write<sp/>of<sp/>frequency<sp/>grid<sp/>to<sp/>LambdaLayer<sp/>of<sp/>HDF<sp/>file<sp/>successful.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="932"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline lineno="933"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
-<codeline lineno="934"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;PROBLEM<sp/>during<sp/>read<sp/>/<sp/>write<sp/>of<sp/>frequency<sp/>grid<sp/>to<sp/>LambdaLayer<sp/>to<sp/>HDF<sp/>file.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="935"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="936"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="922" refid="d5/de4/hdf5__routines_8hpp_1a34592f658687bd456883caf141f617f7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Q&gt;<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a34592f658687bd456883caf141f617f7" kindref="member">test_read_write_state_hdf</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>verbose)<sp/>{</highlight></codeline>
+<codeline lineno="923"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//if<sp/>(verbose)<sp/>utils::print(&quot;Testing<sp/>HDF<sp/>input<sp/>and<sp/>output<sp/>of<sp/>states:&quot;,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="924"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Lambda<sp/>=<sp/>1.;</highlight></codeline>
+<codeline lineno="925"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="926"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberLambdaLayers</ref><sp/>=<sp/>10;</highlight></codeline>
+<codeline lineno="927"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,false&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>(Lambda);</highlight></codeline>
+<codeline lineno="928"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>.initialize();</highlight></codeline>
+<codeline lineno="929"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref><sp/>+<sp/>1.;</highlight></codeline>
+<codeline lineno="930"><highlight class="normal"></highlight></codeline>
+<codeline lineno="931"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/>0.<sp/>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberLambdaLayers</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>);</highlight></codeline>
+<codeline lineno="932"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//utils::print(&quot;Written<sp/>state&quot;,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="933"><highlight class="normal"></highlight></codeline>
+<codeline lineno="934"><highlight class="normal"></highlight></codeline>
+<codeline lineno="935"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,false&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref><sp/>=<sp/><ref refid="d5/de4/hdf5__routines_8hpp_1a1d7f982aef791adb4072cb8ecf3aabf2" kindref="member">read_state_from_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/>0);</highlight></codeline>
+<codeline lineno="936"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//utils::print(&quot;Read<sp/>state&quot;,<sp/>true);</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="937"><highlight class="normal"></highlight></codeline>
-<codeline lineno="938"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref>;</highlight></codeline>
+<codeline lineno="938"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d97/classState" kindref="compound">State&lt;Q,false&gt;</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref><sp/>-<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref>;</highlight></codeline>
 <codeline lineno="939"><highlight class="normal"></highlight></codeline>
-<codeline lineno="940"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="941"><highlight class="normal"></highlight></codeline>
+<codeline lineno="940"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" kindref="member">add_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref><sp/><sp/>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>*2);</highlight></codeline>
+<codeline lineno="941"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" kindref="member">add_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_state.h5&quot;</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Lambda_it</ref>+1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref>);</highlight></codeline>
 <codeline lineno="942"><highlight class="normal"></highlight></codeline>
-<codeline lineno="943"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//KELDYSH_MFRG_HDF5_ROUTINES_HPP</highlight></codeline>
+<codeline lineno="943"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" kindref="member">write_state_to_hdf</ref>(</highlight><highlight class="stringliteral">&quot;test_statediff.h5&quot;</highlight><highlight class="normal">,<sp/>0.,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberLambdaLayers</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref>);</highlight></codeline>
+<codeline lineno="944"><highlight class="normal"></highlight></codeline>
+<codeline lineno="945"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref><sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="946"><highlight class="normal"></highlight></codeline>
+<codeline lineno="947"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(verbose)<sp/>{</highlight></codeline>
+<codeline lineno="948"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref>.norm()<sp/>&lt;<sp/>1e-10)<sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Read<sp/>/<sp/>write<sp/>of<sp/>state<sp/>data<sp/>to<sp/>LambdaLayer<sp/>of<sp/>HDF<sp/>file<sp/>successful.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="949"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="950"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="951"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;PROBLEM<sp/>during<sp/>read<sp/>/<sp/>write<sp/>of<sp/>state<sp/>data<sp/>to<sp/>LambdaLayer<sp/>of<sp/>HDF<sp/>file.<sp/>deviation<sp/>:<sp/>&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="952"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_diff</ref>.norm(),<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="953"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="954"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>((<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_output</ref>.selfenergy.Sigma.frequencies.<sp/><sp/>primary_grid.get_all_frequencies()<sp/>-</highlight></codeline>
+<codeline lineno="955"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">state_input</ref>.selfenergy.Sigma.frequencies.<sp/><sp/>primary_grid.get_all_frequencies()).max_norm()<sp/>&lt;<sp/>1e-10)</highlight></codeline>
+<codeline lineno="956"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;Read<sp/>/<sp/>write<sp/>of<sp/>frequency<sp/>grid<sp/>to<sp/>LambdaLayer<sp/>of<sp/>HDF<sp/>file<sp/>successful.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="957"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="958"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="959"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" kindref="member">utils::print</ref>(</highlight><highlight class="stringliteral">&quot;PROBLEM<sp/>during<sp/>read<sp/>/<sp/>write<sp/>of<sp/>frequency<sp/>grid<sp/>to<sp/>LambdaLayer<sp/>to<sp/>HDF<sp/>file.&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="960"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="961"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="962"><highlight class="normal"></highlight></codeline>
+<codeline lineno="963"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">passed</ref>;</highlight></codeline>
+<codeline lineno="964"><highlight class="normal"></highlight></codeline>
+<codeline lineno="965"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="966"><highlight class="normal"></highlight></codeline>
+<codeline lineno="967"><highlight class="normal"></highlight></codeline>
+<codeline lineno="968"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//KELDYSH_MFRG_HDF5_ROUTINES_HPP</highlight></codeline>
     </programlisting>
     <location file="utilities/hdf5_routines.hpp"/>
   </compounddef>

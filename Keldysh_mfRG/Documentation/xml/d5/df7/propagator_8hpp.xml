@@ -768,7 +768,7 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="df/d31/math__utils_8c_09_09_1ae36d92596d8ec0a89dfa3bdc9ab693f7" compoundref="df/d31/math__utils_8c_09_09" startline="21" endline="23">sgn</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
         <referencedby refid="de/d5d/propagator_8c_09_09_1ad4ac30553ec90ced0033be4512c3ffd9" compoundref="de/d5d/propagator_8c_09_09" startline="19" endline="22">Eff_fac</referencedby>
         <referencedby refid="d6/d4b/classIntegrand__Phi__tilde_1a42fc283e8dc5a1454ea59e8b56c44152" compoundref="d4/d81/postprocessing_8hpp" startline="25" endline="31">Integrand_Phi_tilde&lt; Q &gt;::operator()</referencedby>
       </memberdef>
@@ -822,8 +822,8 @@
         <references refid="de/d5d/propagator_8c_09_09_1a82ecb2fda37c3bedbb8dd4cfa1aa47cf" compoundref="de/d5d/propagator_8c_09_09" startline="9" endline="12">Fermi_fac</references>
         <references refid="d1/df8/master__parameters_8hpp_1a18e4694bb937d4a6e8e55f3f795518a0" compoundref="d1/df8/master__parameters_8hpp" startline="62">glb_mu</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8229a287d8546a0bdb5c5d19e2cd3d23" compoundref="d1/df8/master__parameters_8hpp" startline="64">glb_V</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="129" endline="170">check_FDTs_K1</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="85" endline="125">check_FDTs_selfenergy</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
       </memberdef>

@@ -72,7 +72,7 @@ var searchData=
   ['sum_5fover_5finternal_5fscalar_69',['sum_over_internal_scalar',['../d1/d9f/classIntegrand.html#a5cacb2ec1f4cd798b60eac55dadebab0',1,'Integrand']]],
   ['sum_5fover_5finternal_5fvectorized_70',['sum_over_internal_vectorized',['../d1/d9f/classIntegrand.html#a2fdf2dd038946c34d123cb3999189cbf',1,'Integrand']]],
   ['sum_5frule_5fk1tk_71',['sum_rule_K1tK',['../d4/d81/postprocessing_8hpp.html#ac7415fe2ab8f68dbdd25510af0a86a4d',1,'postprocessing.hpp']]],
-  ['sum_5frule_5fspectrum_72',['sum_rule_spectrum',['../d4/d81/postprocessing_8hpp.html#ae8f89cb81e8e43544e37d7077b1f4b3d',1,'postprocessing.hpp']]],
+  ['sum_5frule_5fspectrum_72',['sum_rule_spectrum',['../d4/d81/postprocessing_8hpp.html#ab67d7d4ba1acc5297a2e2b2867559291',1,'postprocessing.hpp']]],
   ['susceptibilities_5fpostprocessing_73',['susceptibilities_postprocessing',['../dd/d0a/parquet__solver_8hpp.html#a997236aea73d9935839d4dc8c8fd06af',1,'parquet_solver.hpp']]],
   ['swap_5fvanishing_5fcomponent_5fchannel_5fa_5fand_5ft_74',['swap_vanishing_component_channel_a_and_t',['../d2/d4a/classGeneralVertex.html#a5d8cc30ab164e0d65f110c36c64f8974',1,'GeneralVertex']]],
   ['switch2bosonicfreqs_75',['switch2bosonicFreqs',['../de/dbb/math__utils_8hpp.html#a93453abd12c30f9f4fef36b8c9e89a0d',1,'math_utils.hpp']]],

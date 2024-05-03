@@ -1148,9 +1148,9 @@
         <inbodydescription>
         </inbodydescription>
         <location file="data_structures.hpp" line="27" column="16" declfile="data_structures.hpp" declline="27" declcolumn="16"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a66832383adea26f0073cb95cdf0ecc6c" compoundref="de/de8/bubble__function_8hpp" startline="980" endline="983">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::bubble_value_prefactor</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="129" endline="170">check_FDTs_K1</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="85" endline="125">check_FDTs_selfenergy</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a66832383adea26f0073cb95cdf0ecc6c" compoundref="de/de8/bubble__function_8hpp" startline="988" endline="991">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::bubble_value_prefactor</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a1e83d35428712f6118c420c988d7d6a1" compoundref="dd/dea/bubble__corrections_8hpp" startline="169" endline="291">correctionFunctionBubble_REG3_Matsubara_PHS_nondiff</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a953ef9c563839845b036756ae03748b7" compoundref="dd/dea/bubble__corrections_8hpp" startline="25" endline="41">correctionFunctionBubbleAT_REG2_Keldysh</referencedby>
@@ -1171,7 +1171,7 @@
         <referencedby refid="dd/d1f/integrator_8hpp_1aa15b0ce88379febc7dc7adb5303008b9" compoundref="dd/d1f/integrator_8hpp" startline="49" endline="86">integrator_gsl_qag_tails</referencedby>
         <referencedby refid="dd/d1f/integrator_8hpp_1acf0416abd871040c11f90468397f2f57" compoundref="dd/d1f/integrator_8hpp" startline="89" endline="127">integrator_gsl_qag_v2</referencedby>
         <referencedby refid="dd/d1f/integrator_8hpp_1a876ad873e6c0706ca3bbc4aff9b59a0b" compoundref="dd/d1f/integrator_8hpp" startline="130" endline="170">integrator_gsl_qagp_v2</referencedby>
-        <referencedby refid="df/dc8/classLoopCalculator_1ab938f38116a7fe9d804769656487ea6a" compoundref="d8/d1d/loop_8hpp" startline="103" endline="109">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::Keldysh_prefactor</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1ab938f38116a7fe9d804769656487ea6a" compoundref="d8/d1d/loop_8hpp" startline="105" endline="111">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::Keldysh_prefactor</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" compoundref="d4/d92/hartree__term_8c_09_09" startline="104" endline="141">Hartree_Solver::operator()</referencedby>
         <referencedby refid="d9/ddc/classIntegrandBubble_1a1c24d31ffd89a0bffcb1416215710903" compoundref="df/d83/integrand_8hpp" startline="58" endline="80">IntegrandBubble&lt; Q &gt;::operator()</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
@@ -1320,7 +1320,7 @@
         </inbodydescription>
         <location file="data_structures.hpp" line="94" column="13" bodyfile="data_structures.hpp" bodystart="94" bodyend="94"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
         <referencedby refid="dd/d1f/integrator_8hpp_1aed7287dc747e45cafe8d41d1964aad4f" compoundref="dd/d1f/integrator_8hpp" startline="16" endline="21">f_real</referencedby>
         <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
       </memberdef>
@@ -1366,9 +1366,9 @@
         </inbodydescription>
         <location file="data_structures.hpp" line="98" column="13" bodyfile="data_structures.hpp" bodystart="98" bodyend="98"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="129" endline="170">check_FDTs_K1</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="85" endline="125">check_FDTs_selfenergy</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a68009e2fa03e67e5101fcd3a184b8b41" compoundref="d5/df7/propagator_8hpp" startline="800" endline="805">Propagator&lt; Q &gt;::diff_Sigma_K_REG5</referencedby>
         <referencedby refid="dd/d1f/integrator_8hpp_1aabde158977796a9478701aa84303a497" compoundref="dd/d1f/integrator_8hpp" startline="25" endline="29">f_imag</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
@@ -1419,8 +1419,8 @@
         <location file="data_structures.hpp" line="102" column="13" bodyfile="data_structures.hpp" bodystart="102" bodyend="102"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" compoundref="d6/d2d/selfenergy_8hpp" startline="407" endline="423">SelfEnergy&lt; Q &gt;::check_symmetries</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
-        <referencedby refid="d8/d2c/classIntegrandSE_1a60ce205e5413c94ff37f40972f80ea7d" compoundref="de/d65/integrandSE_8hpp" startline="337" endline="355">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::evaluate_propagator</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d8/d2c/classIntegrandSE_1a60ce205e5413c94ff37f40972f80ea7d" compoundref="de/d65/integrandSE_8hpp" startline="364" endline="382">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::evaluate_propagator</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914" compoundref="d5/df7/propagator_8hpp" startline="274" endline="283">Propagator&lt; Q &gt;::Katanin_K</referencedby>
         <referencedby refid="d4/dbd/classrvert_1a8e9446837a4a9308c720370ccbaa1445" compoundref="d3/d22/r__vertex_8hpp" startline="460" endline="472">rvert&lt; Q &gt;::read_symmetryreduced_rvert</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="43" endline="129">Bubble&lt; Q &gt;::value</referencedby>

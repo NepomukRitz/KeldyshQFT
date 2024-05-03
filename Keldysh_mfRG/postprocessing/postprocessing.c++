@@ -89,7 +89,6 @@ void sum_rule_K1tK(const std::string filename) {
 }
 
 
-
 double sum_rule_spectrum(const State<state_datatype>& state) {
     Integrand_sum_rule_spectrum integrand (state.Lambda, state.selfenergy, state.config);                   // initialize integrand object
     double wmax = state.selfenergy.Sigma.get_VertexFreqGrid().primary_grid.w_upper;   // upper integration boundary

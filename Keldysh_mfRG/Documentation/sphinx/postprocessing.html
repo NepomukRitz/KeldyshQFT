@@ -54,6 +54,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv4I0E21check_FDTs_selfenergy10SelfEnergyI1QERK10SelfEnergyI1QEKdKb"><code class="docutils literal notranslate"><span class="pre">check_FDTs_selfenergy()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv417sum_rule_spectrumRK5StateI14state_datatypeE"><code class="docutils literal notranslate"><span class="pre">sum_rule_spectrum()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv438compute_postprocessed_susceptibilitiesRKNSt6stringE"><code class="docutils literal notranslate"><span class="pre">compute_postprocessed_susceptibilities()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv430save_slices_through_fullvertexRKNSt6stringEKi"><code class="docutils literal notranslate"><span class="pre">save_slices_through_fullvertex()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
@@ -91,27 +92,73 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E18check_SE_causalityvRK10SelfEnergyI1QE">
 <span id="_CPPv3I0E18check_SE_causalityRK10SelfEnergyI1QE"></span><span id="_CPPv2I0E18check_SE_causalityRK10SelfEnergyI1QE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">check_SE_causality</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="selfenergy.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E18check_SE_causalityvRK10SelfEnergyI1QE" title="check_SE_causality::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">selfEnergy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E18check_SE_causalityvRK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
-<dd><p>Function that checks causality of self-energy: Im(Sigma^R)&lt;=0. </p>
+<dd><p>Function that checks causality of self-energy Im(Sigma^R)&lt;=0, and writes the result into the log file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Template parameter specifying the type of the data. </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>selfEnergy</strong> – Reference to a self-energy that shall be checked. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E21check_FDTs_selfenergy10SelfEnergyI1QERK10SelfEnergyI1QEKdKb">
 <span id="_CPPv3I0E21check_FDTs_selfenergyRK10SelfEnergyI1QEKdKb"></span><span id="_CPPv2I0E21check_FDTs_selfenergyRK10SelfEnergyI1QEKdKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5"></span><a class="reference internal" href="selfenergy.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E21check_FDTs_selfenergy10SelfEnergyI1QERK10SelfEnergyI1QEKdKb" title="check_FDTs_selfenergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">check_FDTs_selfenergy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="selfenergy.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E21check_FDTs_selfenergy10SelfEnergyI1QERK10SelfEnergyI1QEKdKb" title="check_FDTs_selfenergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">selfenergy</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">T</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E21check_FDTs_selfenergy10SelfEnergyI1QERK10SelfEnergyI1QEKdKb" title="Link to this definition"></a><br /></dt>
-<dd><p>Function that checks FDTs for self-energy and K1 in all channels for given input state: </p>
+<dd><p>Function that checks FDTs for a given self-energy. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Template parameter specifying the type of the data. </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>selfenergy</strong> – Reference to a self-energy that shall be checked. </p></li>
+<li><p><strong>T</strong> – Temperature at which the FDT shall be evaluated </p></li>
+<li><p><strong>verbose</strong> – If true, the result of the check is written into the log file </p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Self-energy with the Keldysh component evaluated using the FDT. Can then be compared to the input self-energy. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv417sum_rule_spectrumRK5StateI14state_datatypeE">
-<span id="_CPPv317sum_rule_spectrumRK5StateI14state_datatypeE"></span><span id="_CPPv217sum_rule_spectrumRK5StateI14state_datatypeE"></span><span id="sum_rule_spectrum__State:state_datatype:CR"></span><span class="target" id="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sum_rule_spectrum</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">state_datatype</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417sum_rule_spectrumRK5StateI14state_datatypeE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<span id="_CPPv317sum_rule_spectrumRK5StateI14state_datatypeE"></span><span id="_CPPv217sum_rule_spectrumRK5StateI14state_datatypeE"></span><span id="sum_rule_spectrum__State:state_datatype:CR"></span><span class="target" id="d4/d81/postprocessing_8hpp_1ab67d7d4ba1acc5297a2e2b2867559291"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sum_rule_spectrum</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="state.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">state_datatype</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417sum_rule_spectrumRK5StateI14state_datatypeE" title="Link to this definition"></a><br /></dt>
+<dd><p>Function to compute the sum rule for the spectral function, \int d\nu A(\nu) = 1. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – Reference to an input state whose self-energy shall be used. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Result of the integral, which should be 1. </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv438compute_postprocessed_susceptibilitiesRKNSt6stringE">
 <span id="_CPPv338compute_postprocessed_susceptibilitiesRKNSt6stringE"></span><span id="_CPPv238compute_postprocessed_susceptibilitiesRKNSt6stringE"></span><span id="compute_postprocessed_susceptibilities__ssCR"></span><span class="target" id="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_postprocessed_susceptibilities</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">filename</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv438compute_postprocessed_susceptibilitiesRKNSt6stringE" title="Link to this definition"></a><br /></dt>
-<dd><p>Take hdf5 file, compute the susceptibilities from it and save them to the hdf5 file. Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0) This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0 (zero K2’ or K3) </p>
+<dd><p>Take hdf5 file, iterate through all layers, and compute the susceptibilities from it and save them to the hdf5 file. Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0) This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0 (zero K2’ or K3) </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> – </p>
+<dd class="field-odd"><p><strong>filename</strong> – Reference to a filename with the data that shall be processed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv430save_slices_through_fullvertexRKNSt6stringEKi">
+<span id="_CPPv330save_slices_through_fullvertexRKNSt6stringEKi"></span><span id="_CPPv230save_slices_through_fullvertexRKNSt6stringEKi"></span><span id="save_slices_through_fullvertex__ssCR.iC"></span><span class="target" id="d4/d81/postprocessing_8hpp_1ac32b68835cd73d7ac41aa26ba7c2d908"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">save_slices_through_fullvertex</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">filename</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ispin</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430save_slices_through_fullvertexRKNSt6stringEKi" title="Link to this definition"></a><br /></dt>
+<dd><p>Take hdf5 file, iterate through all layers, evaluate the full vertex Γ in the t-channel parametrization for ω_t = 0 in the (ν_t, ν’_t) plane for all Keldysh components a given spin, and write the results back into the file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – Reference to a filename with the data that shall be processed. </p></li>
+<li><p><strong>ispin</strong> – Spin component that shall be computed. </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

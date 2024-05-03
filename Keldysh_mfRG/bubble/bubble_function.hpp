@@ -14,7 +14,15 @@
 #include "bubble.hpp"
 #include "integrand.hpp"
 
-
+/**
+ * Class that actually performs the bubble computation. Invoked by the bubble_function.
+ * @tparam channel Two-particle channel of the computation. Can be a, p, or t.
+ * @tparam Q Template parameter specifying the type of the data.
+ * @tparam vertexType_result Type of the vertex that results in the bubble computation.
+ * @tparam vertexType_left Type of the vertex that enters as the left part of the computation.
+ * @tparam vertexType_right Type of the vertex that enters as the right part of the computation.
+ * @tparam Bubble_Object Type of the Bubble object to connect the two vertices
+ */
 template <char channel,
         typename Q,
         typename vertexType_result,
@@ -1009,7 +1017,27 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 }
 
 
-// bubble_function using the new class BubbleFunctionCalculator
+
+/**
+ * Function to connect two vertices with a Bubble, i.e. a propagator pair.
+ * Graphically in the `a` channel:
+ * ```
+ *   -->--|-----|--->---|-----|-->--
+ *        | Γ_1 |   Π   | Γ_2 |
+ *   --<--|-----|---<---|-----|--<--
+ * ```
+ * @tparam vertexType_result Type of the vertex that results in the bubble computation.
+ * @tparam vertexType_left Type of the vertex that enters as the left part of the computation.
+ * @tparam vertexType_right Type of the vertex that enters as the right part of the computation.
+ * @tparam Bubble_Object Type of the Bubble object to connect the two vertices
+ * @param dgamma Reference to the vertex that the result of the computation shall be added to.
+ * @param vertex1 Reference to the left input vertex.
+ * @param vertex2 Reference to the right input vertex.
+ * @param Pi Reference to the Bubble.
+ * @param channel Two-particle channel of the computation. Can be a, p, or t.
+ * @param config Struct with essential parameters.
+ * @param tobecomputed Array of three booleans, specifying what diagrammatic classes shall be computed.
+ */
 template <
         typename vertexType_result,
         typename vertexType_left,
@@ -1042,7 +1070,22 @@ void bubble_function(vertexType_result& dgamma,
 
 }
 
-/// Overload for bubble_function in case no Bubble object has been initialized yet. ONLY WORKS FOR SIAM!!
+/**
+ * Overload of the bubble_function in case no Bubble object has been initialized yet.
+ * @tparam Q Template parameter specifying the type of the data.
+ * @tparam vertexType_result Type of the vertex that results in the bubble computation.
+ * @tparam vertexType_left Type of the vertex that enters as the left part of the computation.
+ * @tparam vertexType_right Type of the vertex that enters as the right part of the computation.
+ * @param dgamma Reference to the vertex that the result of the computation shall be added to.
+ * @param vertex1 Reference to the left input vertex.
+ * @param vertex2 Reference to the right input vertex.
+ * @param G Propagator to be used for the Bubble.
+ * @param S Single-scale propagator to be used for the Bubble. Only used if diff=true.
+ * @param channel Two-particle channel of the computation. Can be a, p, or t.
+ * @param diff Boolean specifying whether the Bubble is differentiated or not.
+ * @param config Struct with essential parameters.
+ * @param tobecomputed Array of three booleans, specifying what diagrammatic classes shall be computed.
+ */
 template <typename Q,
         typename vertexType_result,
         typename vertexType_left,

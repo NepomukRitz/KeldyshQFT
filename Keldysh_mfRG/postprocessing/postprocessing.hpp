@@ -115,6 +115,11 @@ public:
 
 };
 
+/**
+ * Function to compute the sum rule for the spectral function, \int d\nu A(\nu) = 1.
+ * @param state Reference to an input state whose self-energy shall be used.
+ * @return Result of the integral, which should be 1.
+ */
 double sum_rule_spectrum(const State<state_datatype>& state);
 
 
@@ -125,15 +130,20 @@ double sum_rule_spectrum(const State<state_datatype>& state);
 void check_Kramers_Kronig(std::string filename);
 
 /**
- * Take hdf5 file, compute the susceptibilities from it and save them to the hdf5 file.
+ * Take hdf5 file, iterate through all layers, and compute the susceptibilities from it and save them to the hdf5 file.
  * Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0)
  *     This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0   (zero K2' or K3)
- * @param filename
+ * @param filename Reference to a filename with the data that shall be processed.
  */
 void compute_postprocessed_susceptibilities(const std::string& filename);
 void compute_proprocessed_susceptibilities_PT2(const std::string& filename);
 
-
+/**
+ * Take hdf5 file, iterate through all layers, evaluate the full vertex Γ in the t-channel parametrization
+ * for ω_t = 0 in the (ν_t, ν'_t) plane for all Keldysh components a given spin, and write the results back into the file.
+ * @param filename Reference to a filename with the data that shall be processed.
+ * @param ispin Spin component that shall be computed.
+ */
 void save_slices_through_fullvertex(const std::string& filename, const int ispin);
 
 void check_FDTs_for_slices_through_fullvertex(const std::string& filename, int ispin);

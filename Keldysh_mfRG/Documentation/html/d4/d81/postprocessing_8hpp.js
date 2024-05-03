@@ -11,5 +11,5 @@ var postprocessing_8hpp =
     [ "compute_proprocessed_susceptibilities_PT2", "d4/d81/postprocessing_8hpp.html#af1e2a562265def3e9c99c1e0b2d0fb3b", null ],
     [ "save_slices_through_fullvertex", "d4/d81/postprocessing_8hpp.html#ac32b68835cd73d7ac41aa26ba7c2d908", null ],
     [ "sum_rule_K1tK", "d4/d81/postprocessing_8hpp.html#ac7415fe2ab8f68dbdd25510af0a86a4d", null ],
-    [ "sum_rule_spectrum", "d4/d81/postprocessing_8hpp.html#ae8f89cb81e8e43544e37d7077b1f4b3d", null ]
+    [ "sum_rule_spectrum", "d4/d81/postprocessing_8hpp.html#ab67d7d4ba1acc5297a2e2b2867559291", null ]
 ];

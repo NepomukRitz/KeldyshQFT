@@ -840,6 +840,14 @@
     <member refid="de/d7f/classflowgrid_1_1log__parametrization_1adf4cd09e06d304ab687e5696505c336c" kind="function"><name>dlambda_dt</name></member>
   </compound>
   <compound refid="df/dc8/classLoopCalculator" kind="class"><name>LoopCalculator</name>
+    <member refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" kind="function"><name>set_v_limits</name></member>
+    <member refid="df/dc8/classLoopCalculator_1a137760f611007b6261903f9c5da158c2" kind="function"><name>set_prefactor</name></member>
+    <member refid="df/dc8/classLoopCalculator_1ab938f38116a7fe9d804769656487ea6a" kind="function"><name>Keldysh_prefactor</name></member>
+    <member refid="df/dc8/classLoopCalculator_1a205e8a326ef4578c70170d3d25dc2fb9" kind="function"><name>Matsubara_prefactor</name></member>
+    <member refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" kind="function"><name>compute_Keldysh</name></member>
+    <member refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" kind="function"><name>compute_Matsubara_zeroT</name></member>
+    <member refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" kind="function"><name>compute_Matsubara_finiteT</name></member>
+    <member refid="df/dc8/classLoopCalculator_1a49d0591f1fbf479522e35b5669b1cfcc" kind="function"><name>perform_computation</name></member>
     <member refid="df/dc8/classLoopCalculator_1a04b71e2db57b7efc7db1fc8d3f24b6f5" kind="variable"><name>self</name></member>
     <member refid="df/dc8/classLoopCalculator_1ad1438ad50b060e3b43ed57f5afbe66ad" kind="variable"><name>fullvertex</name></member>
     <member refid="df/dc8/classLoopCalculator_1a0290fa71489a614932092a7e491e7187" kind="variable"><name>prop</name></member>
@@ -855,15 +863,7 @@
     <member refid="df/dc8/classLoopCalculator_1a86e27620c52d10ac45d71be3ed48e66b" kind="variable"><name>prefactor</name></member>
     <member refid="df/dc8/classLoopCalculator_1a4455e9fdce6314c03dd8b67cecdcc58d" kind="variable"><name>integratedR</name></member>
     <member refid="df/dc8/classLoopCalculator_1a67fa83fe176919505421fd442df4b5c1" kind="variable"><name>integratedK</name></member>
-    <member refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" kind="function"><name>set_v_limits</name></member>
-    <member refid="df/dc8/classLoopCalculator_1a137760f611007b6261903f9c5da158c2" kind="function"><name>set_prefactor</name></member>
-    <member refid="df/dc8/classLoopCalculator_1ab938f38116a7fe9d804769656487ea6a" kind="function"><name>Keldysh_prefactor</name></member>
-    <member refid="df/dc8/classLoopCalculator_1a205e8a326ef4578c70170d3d25dc2fb9" kind="function"><name>Matsubara_prefactor</name></member>
-    <member refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" kind="function"><name>compute_Keldysh</name></member>
-    <member refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" kind="function"><name>compute_Matsubara_zeroT</name></member>
-    <member refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" kind="function"><name>compute_Matsubara_finiteT</name></member>
     <member refid="df/dc8/classLoopCalculator_1aca844a623ba7eac57c4f51e1cf29926d" kind="function"><name>LoopCalculator</name></member>
-    <member refid="df/dc8/classLoopCalculator_1a49d0591f1fbf479522e35b5669b1cfcc" kind="function"><name>perform_computation</name></member>
   </compound>
   <compound refid="d7/dbe/structmfRG__record" kind="struct"><name>mfRG_record</name>
     <member refid="d7/dbe/structmfRG__record_1a97091e7e3e8e684f3f40201346b211fe" kind="variable"><name>dPsi_1loop</name></member>
@@ -2033,7 +2033,7 @@
   <compound refid="d4/d81/postprocessing_8hpp" kind="file"><name>postprocessing.hpp</name>
     <member refid="d4/d81/postprocessing_8hpp_1acb6bef2d27448a2775a1fe9e74597580" kind="function"><name>compute_Phi_tilde</name></member>
     <member refid="d4/d81/postprocessing_8hpp_1ac7415fe2ab8f68dbdd25510af0a86a4d" kind="function"><name>sum_rule_K1tK</name></member>
-    <member refid="d4/d81/postprocessing_8hpp_1ae8f89cb81e8e43544e37d7077b1f4b3d" kind="function"><name>sum_rule_spectrum</name></member>
+    <member refid="d4/d81/postprocessing_8hpp_1ab67d7d4ba1acc5297a2e2b2867559291" kind="function"><name>sum_rule_spectrum</name></member>
     <member refid="d4/d81/postprocessing_8hpp_1aa7950df9223061794bae82bef4bed8c7" kind="function"><name>check_Kramers_Kronig</name></member>
     <member refid="d4/d81/postprocessing_8hpp_1ad7795529aa43acc4d8c7b94cdcd493db" kind="function"><name>compute_postprocessed_susceptibilities</name></member>
     <member refid="d4/d81/postprocessing_8hpp_1af1e2a562265def3e9c99c1e0b2d0fb3b" kind="function"><name>compute_proprocessed_susceptibilities_PT2</name></member>

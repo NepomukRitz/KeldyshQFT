@@ -240,9 +240,28 @@
           <declname>Lambda_it</declname>
         </param>
         <briefdescription>
-<para>Read state from specified Lambda layer of hdf file. </para>
         </briefdescription>
         <detaileddescription>
+<para>Read a state from a specified Lambda layer of a given hdf file. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String of the filename. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of the Λ layer from which the state shall be read. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="d7/d97/classState" kindref="compound">State</ref> that has been read out. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
 <para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>

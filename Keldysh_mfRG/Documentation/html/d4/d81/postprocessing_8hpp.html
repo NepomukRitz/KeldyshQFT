@@ -125,8 +125,8 @@ Functions</h2></td></tr>
 <tr class="separator:acb6bef2d27448a2775a1fe9e74597580"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7415fe2ab8f68dbdd25510af0a86a4d" id="r_ac7415fe2ab8f68dbdd25510af0a86a4d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7415fe2ab8f68dbdd25510af0a86a4d">sum_rule_K1tK</a> (std::string filename)</td></tr>
 <tr class="separator:ac7415fe2ab8f68dbdd25510af0a86a4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8f89cb81e8e43544e37d7077b1f4b3d" id="r_ae8f89cb81e8e43544e37d7077b1f4b3d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8f89cb81e8e43544e37d7077b1f4b3d">sum_rule_spectrum</a> (<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../d7/d97/classState.html">State</a>&lt; <a class="el" href="../../d7/d59/data__structures_8hpp.html#aa06c6e6918506d71503662b864204749">state_datatype</a> &gt; &amp;)</td></tr>
-<tr class="separator:ae8f89cb81e8e43544e37d7077b1f4b3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab67d7d4ba1acc5297a2e2b2867559291" id="r_ab67d7d4ba1acc5297a2e2b2867559291"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab67d7d4ba1acc5297a2e2b2867559291">sum_rule_spectrum</a> (<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../d7/d97/classState.html">State</a>&lt; <a class="el" href="../../d7/d59/data__structures_8hpp.html#aa06c6e6918506d71503662b864204749">state_datatype</a> &gt; &amp;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">state</a>)</td></tr>
+<tr class="separator:ab67d7d4ba1acc5297a2e2b2867559291"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7950df9223061794bae82bef4bed8c7" id="r_aa7950df9223061794bae82bef4bed8c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7950df9223061794bae82bef4bed8c7">check_Kramers_Kronig</a> (std::string filename)</td></tr>
 <tr class="separator:aa7950df9223061794bae82bef4bed8c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7795529aa43acc4d8c7b94cdcd493db" id="r_ad7795529aa43acc4d8c7b94cdcd493db"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7795529aa43acc4d8c7b94cdcd493db">compute_postprocessed_susceptibilities</a> (<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> std::string &amp;filename)</td></tr>
@@ -209,9 +209,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Take hdf5 file, compute the susceptibilities from it and save them to the hdf5 file. Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0) This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0 (zero K2' or K3) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Take hdf5 file, iterate through all layers, and compute the susceptibilities from it and save them to the hdf5 file. Postprocessed K1: K1r = Γ0∘Π_r∘Γ0 + Γ0∘Π_r∘Γ∘Π_r∘Γ_0 = Γ0∘Π_r∘(Γ0 + Γ∘Π_r∘Γ_0) This works because K1r+K2r ∈ Γ∘Π_r∘Γ_0 (zero K2' or K3) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filename</td><td></td></tr>
+    <tr><td class="paramname">filename</td><td>Reference to a filename with the data that shall be processed. </td></tr>
   </table>
   </dd>
 </dl>
@@ -253,6 +253,13 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Take hdf5 file, iterate through all layers, evaluate the full vertex Γ in the t-channel parametrization for ω_t = 0 in the (ν_t, ν'_t) plane for all Keldysh components a given spin, and write the results back into the file. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Reference to a filename with the data that shall be processed. </td></tr>
+    <tr><td class="paramname">ispin</td><td>Spin component that shall be computed. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="reference">Referenced by <a class="el" href="../../dd/d00/main__postproc_8cpp_source.html#l00017">main()</a>.</p>
 
@@ -275,8 +282,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae8f89cb81e8e43544e37d7077b1f4b3d" name="ae8f89cb81e8e43544e37d7077b1f4b3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8f89cb81e8e43544e37d7077b1f4b3d">&#9670;&#160;</a></span>sum_rule_spectrum()</h2>
+<a id="ab67d7d4ba1acc5297a2e2b2867559291" name="ab67d7d4ba1acc5297a2e2b2867559291"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab67d7d4ba1acc5297a2e2b2867559291">&#9670;&#160;</a></span>sum_rule_spectrum()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -284,11 +291,18 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">double sum_rule_spectrum </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../d7/d97/classState.html">State</a>&lt; <a class="el" href="../../d7/d59/data__structures_8hpp.html#aa06c6e6918506d71503662b864204749">state_datatype</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">const</a> <a class="el" href="../../d7/d97/classState.html">State</a>&lt; <a class="el" href="../../d7/d59/data__structures_8hpp.html#aa06c6e6918506d71503662b864204749">state_datatype</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>state</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Function to compute the sum rule for the spectral function, \int d\nu A(\nu) = 1. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Reference to an input state whose self-energy shall be used. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Result of the integral, which should be 1. </dd></dl>
 
 <p class="reference">Referenced by <a class="el" href="../../d2/d3f/sanity__check_8hpp_source.html#l00010">sanity_check()</a>.</p>
 
@@ -300,7 +314,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_e4f1ce5319e85c7908e8df0e328b8d80.html">postprocessing</a></li><li class="navelem"><a class="el" href="../../d4/d81/postprocessing_8hpp.html">postprocessing.hpp</a></li>
-    <li class="footer">Generated on Thu May 2 2024 15:38:23 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

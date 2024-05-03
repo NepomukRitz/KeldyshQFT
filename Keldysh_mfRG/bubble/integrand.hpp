@@ -82,6 +82,18 @@ public:
 
 
 /// Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class
+
+/**
+ * Integrand invoked by the BubbleFunctionCalculator class for every combination of external arguments.
+ * @tparam diag_class Diagrammatic class to be computed (K1, K2, K2' or K3).
+ * @tparam channel Two-particle channel of the computation. Can be a, p, or t.
+ * @tparam spin Spin index to be computed.
+ * @tparam Q Type of the data.
+ * @tparam vertexType_left Type of the vertex that enters as the left part of the computation.
+ * @tparam vertexType_right Type of the vertex that enters as the right part of the computation.
+ * @tparam Bubble_Object Type of the Bubble object to connect the two vertices.
+ * @tparam return_type Type of the data that is produced by the integral. Typically = Q.
+ */
 template <K_class diag_class, char channel, int spin, typename Q,
         typename vertexType_left,
         typename vertexType_right,
@@ -140,6 +152,7 @@ private:
     Q sum_over_internal_scalar(freqType vpp) const;
     return_type sum_over_internal_vectorized(freqType vpp) const;
         public:
+
     /**
      * Constructor for asymptotic class Ki:
      * @param vertex1_in : left vertex
@@ -148,7 +161,7 @@ private:
      * @param i0_in      : index specifying the (external) Keldysh component of integrand object; i0_in = [0, .. nK_Ki]
      *                     where nK_Ki is the number of symmetry-reduced Keldysh components in the result
      *                     (converted into actual Keldysh index i0 within the constructor)
-     * @param w_in       : external bosonic frequency \omega
+     * @param w_in       : external bosonic frequency ω
      * @param i_in_in    : external index for internal structure
      * @param ch_in      : diagrammatic channel ('a', 'p', 't')
      * @param diff_in    : determines whether to compute differentiated or non-differentiated bubble

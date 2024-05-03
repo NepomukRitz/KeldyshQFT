@@ -813,7 +813,7 @@
         <location file="utilities/mpi_setup.hpp" line="14" column="5" bodyfile="utilities/mpi_setup.c++" bodystart="3" bodyend="7" declfile="utilities/mpi_setup.hpp" declline="14" declcolumn="5"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" compoundref="d9/d3a/technical__parameters_8hpp" startline="13">MPI_FLAG</references>
-        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="852" endline="875">add_state_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de" compoundref="d6/d2d/selfenergy_8hpp" startline="325" endline="342">SelfEnergy&lt; Q &gt;::analyze_tails</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a606c80931936bca1dd8e667722f8c682" compoundref="d1/d2d/vertex_8hpp" startline="1950" endline="1968">fullvert&lt; Q &gt;::analyze_tails_K1</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a2f700872916d51ec1a80d4be0bb51094" compoundref="d1/d2d/vertex_8hpp" startline="1989" endline="2007">fullvert&lt; Q &gt;::analyze_tails_K2v</referencedby>
@@ -825,7 +825,7 @@
         <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="622" endline="907">rvert&lt; Q &gt;::check_symmetries</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1ae9703efe9daa0b11b6c308880d77f36a" compoundref="d1/d2d/vertex_8hpp" startline="1938" endline="1948">fullvert&lt; Q &gt;::check_vertex_resolution</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1afe0475193af36ddf563126885ac60199" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="32" endline="36">close_hdf_file</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="849" endline="907">compare_with_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a6dbc5795d6adf4e9aca38307ca541ffa" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="6" endline="15">create_hdf_file</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a5020e8df3fe9af5189eb7170db07439f" compoundref="d6/d35/util_8c_09_09" startline="48" endline="61">utils::get_cpu_hours</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1ad1ca0a486000556d9fdc97756c66c04b" compoundref="d1/d2d/vertex_8hpp" startline="1881" endline="1898">fullvert&lt; Q &gt;::get_curvature_max_K1</referencedby>
@@ -856,11 +856,11 @@
         <referencedby refid="d6/d84/namespaceutils_1a741dd4848af2d430724c854c14b6d0d2" compoundref="d0/d3f/util_8hpp" startline="119" endline="130">utils::print_add</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
         <referencedby refid="d8/da5/namespaceode__solver__impl_1ae8d7c77b57d20b001caefe7dcdeaf812" compoundref="da/dc3/ODE__solvers_8hpp" startline="377" endline="497">ode_solver_impl::rkqs</referencedby>
-        <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="250" endline="271">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
+        <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="277" endline="298">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
         <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="399" endline="462">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
         <referencedby refid="d9/d8b/write__data2file_8c_09_09_1abd0d8b79c1ecb624fb7517fd81c37d86" compoundref="d9/d8b/write__data2file_8c_09_09" startline="3" endline="12">write_dat_rvecs</referencedby>
         <referencedby refid="d9/d8b/write__data2file_8c_09_09_1a9992b4a1a01038cb7f3f462bb3c2e63c" compoundref="d9/d8b/write__data2file_8c_09_09" startline="19" endline="37">write_h5_rvecs</referencedby>
-        <referencedby refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="836" endline="848">write_state_to_hdf</referencedby>
+        <referencedby refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</referencedby>
         <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">mfRG_stats::write_to_hdf</referencedby>
         <referencedby refid="d3/d22/r__vertex_8hpp_1a3642c9fe84de001565a9267dba94c63b" compoundref="d5/de4/hdf5__routines_8hpp" startline="444" endline="458">write_to_hdf</referencedby>
         <referencedby refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</referencedby>
@@ -1067,7 +1067,7 @@
         <location file="utilities/mpi_setup.hpp" line="56" column="6" bodyfile="utilities/mpi_setup.c++" bodystart="15" bodyend="19" declfile="utilities/mpi_setup.hpp" declline="56" declcolumn="6"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" compoundref="d4/dda/mpi__setup_8c_09_09" startline="9" endline="13">mpi_world_size</references>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" compoundref="de/de8/bubble__function_8hpp" startline="264" endline="313">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_bubble_function</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" compoundref="de/de8/bubble__function_8hpp" startline="272" endline="321">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_bubble_function</referencedby>
       </memberdef>
       <memberdef kind="function" id="db/de0/mpi__setup_8hpp_1ab9a68279c5dff1e5b6e9af8480da99fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1202,7 +1202,7 @@
         <location file="utilities/mpi_setup.hpp" line="77" column="5" bodyfile="utilities/mpi_setup.hpp" bodystart="77" bodyend="95"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="db/de0/mpi__setup_8hpp_1a67ee780d3ab18a648c6ba0fdc734209f" compoundref="d4/dda/mpi__setup_8c_09_09" startline="9" endline="13">mpi_world_size</references>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" compoundref="de/de8/bubble__function_8hpp" startline="264" endline="313">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_bubble_function</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" compoundref="de/de8/bubble__function_8hpp" startline="272" endline="321">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_bubble_function</referencedby>
       </memberdef>
     </sectiondef>
     <briefdescription>

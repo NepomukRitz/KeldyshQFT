@@ -49,7 +49,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="110" column="5" bodyfile="bubble/integrand.hpp" bodystart="110" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="122" column="5" bodyfile="bubble/integrand.hpp" bodystart="122" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="d1/d9f/classIntegrand_1acec445da8d5b0a0809e6a44e09e6a4ee" prot="private" static="no">
         <type>Eigen::Matrix&lt; Q, 4, <ref refid="d7/d59/data__structures_8hpp_1a084db757c851a2c804cb57464b288a5a" kindref="member">myColsAtCompileTime</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">return_type</ref> &gt;()&gt;</type>
@@ -63,7 +63,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="111" column="5" bodyfile="bubble/integrand.hpp" bodystart="111" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="123" column="5" bodyfile="bubble/integrand.hpp" bodystart="123" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-attrib">
@@ -79,7 +79,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="92" column="27" bodyfile="bubble/integrand.hpp" bodystart="92" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="104" column="27" bodyfile="bubble/integrand.hpp" bodystart="104" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a73e56b450345842474bf196fd0a64fa5" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref> &amp;</type>
@@ -93,7 +93,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="93" column="28" bodyfile="bubble/integrand.hpp" bodystart="93" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="105" column="28" bodyfile="bubble/integrand.hpp" bodystart="105" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a5658d4ab76395d7eb9805af218847644" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref> &amp;</type>
@@ -107,7 +107,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="94" column="25" bodyfile="bubble/integrand.hpp" bodystart="94" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="106" column="25" bodyfile="bubble/integrand.hpp" bodystart="106" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1ae9586f4f4537e739ae0882da06a4babb" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -121,7 +121,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="95" column="9" bodyfile="bubble/integrand.hpp" bodystart="95" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="107" column="9" bodyfile="bubble/integrand.hpp" bodystart="107" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a35287b219b97a67cb82f7cc710e9c009" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -136,7 +136,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="96" column="9" bodyfile="bubble/integrand.hpp" bodystart="96" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="108" column="9" bodyfile="bubble/integrand.hpp" bodystart="108" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a4aea281a06d125e44647569da5d909a5" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -150,7 +150,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="97" column="9" bodyfile="bubble/integrand.hpp" bodystart="97" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="109" column="9" bodyfile="bubble/integrand.hpp" bodystart="109" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a5c898c38ea725a906a2a0de293ab3b4b" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -164,7 +164,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="98" column="9" bodyfile="bubble/integrand.hpp" bodystart="98" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="110" column="9" bodyfile="bubble/integrand.hpp" bodystart="110" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a3f1303ef430d6a9aab172b32eb990e84" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
@@ -178,7 +178,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="99" column="15" bodyfile="bubble/integrand.hpp" bodystart="99" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="111" column="15" bodyfile="bubble/integrand.hpp" bodystart="111" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1ae9c5865d65830cce3d269a078119f785" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
@@ -193,7 +193,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="100" column="15" bodyfile="bubble/integrand.hpp" bodystart="100" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="112" column="15" bodyfile="bubble/integrand.hpp" bodystart="112" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a3978478a5ff1bb38658c556431f4dbf3" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
@@ -207,7 +207,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="101" column="20" bodyfile="bubble/integrand.hpp" bodystart="101" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="113" column="20" bodyfile="bubble/integrand.hpp" bodystart="113" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1acb315474d1b69dcd56bf796a1025af01" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
@@ -222,7 +222,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="101" column="22" bodyfile="bubble/integrand.hpp" bodystart="101" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="113" column="22" bodyfile="bubble/integrand.hpp" bodystart="113" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1aca0bfefa0013cc9d53f258616494b813" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
@@ -237,7 +237,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="101" column="25" bodyfile="bubble/integrand.hpp" bodystart="101" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="113" column="25" bodyfile="bubble/integrand.hpp" bodystart="113" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1ac2d0d99fae8f56d90efb3b379fad6bd0" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
@@ -251,7 +251,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="102" column="15" bodyfile="bubble/integrand.hpp" bodystart="102" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="114" column="15" bodyfile="bubble/integrand.hpp" bodystart="114" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1ac655ce96d35d1f059f91d212d46cadbc" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
@@ -265,7 +265,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="103" column="15" bodyfile="bubble/integrand.hpp" bodystart="103" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="115" column="15" bodyfile="bubble/integrand.hpp" bodystart="115" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a78633258b73e81b1ff93b4a0eba9fdf4" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -279,7 +279,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="104" column="16" bodyfile="bubble/integrand.hpp" bodystart="104" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="116" column="16" bodyfile="bubble/integrand.hpp" bodystart="116" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1af841be7d8a25cc5af872989264e096f9" prot="private" static="no" mutable="no">
         <type>Q</type>
@@ -293,7 +293,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="119" column="7" bodyfile="bubble/integrand.hpp" bodystart="119" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="131" column="7" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1aa2477dd3314a04147d263b19c68d92c7" prot="private" static="no" mutable="no">
         <type>Q</type>
@@ -307,7 +307,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="119" column="23" bodyfile="bubble/integrand.hpp" bodystart="119" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="131" column="23" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a872d61899536c7fae0e4c4cc02539409" prot="private" static="no" mutable="no">
         <type>Q</type>
@@ -321,7 +321,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="119" column="39" bodyfile="bubble/integrand.hpp" bodystart="119" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="131" column="39" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a214f7dfc632a1e4e288e030a1394fabf" prot="private" static="no" mutable="no">
         <type>Q</type>
@@ -335,7 +335,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="119" column="58" bodyfile="bubble/integrand.hpp" bodystart="119" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="131" column="58" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-attrib">
@@ -351,7 +351,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="106" column="23" bodyfile="bubble/integrand.hpp" bodystart="106" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="118" column="23" bodyfile="bubble/integrand.hpp" bodystart="118" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1a8501a1ece4e35819056b0998338afac3" prot="public" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Eigen::Matrix&lt; Q, 4, 4 &gt;</type>
@@ -366,7 +366,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="213" column="25" bodyfile="bubble/integrand.hpp" bodystart="213" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="226" column="25" bodyfile="bubble/integrand.hpp" bodystart="226" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="d1/d9f/classIntegrand_1aef4874035fc569a090afc46cdb60eb12" prot="public" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Eigen::Matrix&lt; Q, 4, 4 &gt;</type>
@@ -381,7 +381,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="214" column="25" bodyfile="bubble/integrand.hpp" bodystart="214" bodyend="-1"/>
+        <location file="bubble/integrand.hpp" line="227" column="25" bodyfile="bubble/integrand.hpp" bodystart="227" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -401,12 +401,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="121" column="10" bodyfile="bubble/integrand.hpp" bodystart="220" bodyend="271"/>
+        <location file="bubble/integrand.hpp" line="133" column="10" bodyfile="bubble/integrand.hpp" bodystart="233" bodyend="284"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
-        <referencedby refid="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" compoundref="df/d83/integrand_8hpp" startline="156" endline="166">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Integrand</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" compoundref="df/d83/integrand_8hpp" startline="169" endline="179">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Integrand</referencedby>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1ac21c72a31c78a6f4329d98abbfc2716a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -424,7 +424,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="122" column="10" bodyfile="bubble/integrand.hpp" bodystart="276" bodyend="281"/>
+        <location file="bubble/integrand.hpp" line="134" column="10" bodyfile="bubble/integrand.hpp" bodystart="289" bodyend="294"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -439,11 +439,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="123" column="10" bodyfile="bubble/integrand.hpp" bodystart="284" bodyend="335"/>
+        <location file="bubble/integrand.hpp" line="135" column="10" bodyfile="bubble/integrand.hpp" bodystart="297" bodyend="348"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="d4/de0/Keldysh__symmetries_8c_09_09_1a8ce5883bf24e8dbb17eb7e2cf3c51afe" compoundref="d4/de0/Keldysh__symmetries_8c_09_09" startline="35" endline="59">indices_sum</references>
-        <referencedby refid="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" compoundref="df/d83/integrand_8hpp" startline="156" endline="166">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Integrand</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" compoundref="df/d83/integrand_8hpp" startline="169" endline="179">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Integrand</referencedby>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1a5802e73a7b5ecd936d1efe50a75b48e7" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -457,7 +457,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="125" column="10" bodyfile="bubble/integrand.hpp" bodystart="421" bodyend="452"/>
+        <location file="bubble/integrand.hpp" line="137" column="10" bodyfile="bubble/integrand.hpp" bodystart="434" bodyend="465"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
@@ -494,7 +494,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="127" column="10" bodyfile="bubble/integrand.hpp" bodystart="455" bodyend="535"/>
+        <location file="bubble/integrand.hpp" line="139" column="10" bodyfile="bubble/integrand.hpp" bodystart="468" bodyend="548"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/de0/Keldysh__symmetries_8c_09_09_1a8ce5883bf24e8dbb17eb7e2cf3c51afe" compoundref="d4/de0/Keldysh__symmetries_8c_09_09" startline="35" endline="59">indices_sum</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
@@ -529,7 +529,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="129" column="21" bodyfile="bubble/integrand.hpp" bodystart="539" bodyend="595"/>
+        <location file="bubble/integrand.hpp" line="141" column="21" bodyfile="bubble/integrand.hpp" bodystart="552" bodyend="608"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">VertexInput::iK</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
@@ -563,7 +563,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="130" column="21" bodyfile="bubble/integrand.hpp" bodystart="599" bodyend="651"/>
+        <location file="bubble/integrand.hpp" line="142" column="21" bodyfile="bubble/integrand.hpp" bodystart="612" bodyend="664"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">VertexInput::iK</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
@@ -597,7 +597,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="131" column="21" bodyfile="bubble/integrand.hpp" bodystart="656" bodyend="672"/>
+        <location file="bubble/integrand.hpp" line="143" column="21" bodyfile="bubble/integrand.hpp" bodystart="669" bodyend="685"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
@@ -630,7 +630,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="132" column="21" bodyfile="bubble/integrand.hpp" bodystart="677" bodyend="694"/>
+        <location file="bubble/integrand.hpp" line="144" column="21" bodyfile="bubble/integrand.hpp" bodystart="690" bodyend="707"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
@@ -652,7 +652,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="140" column="7"/>
+        <location file="bubble/integrand.hpp" line="152" column="7"/>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1a2fdf2dd038946c34d123cb3999189cbf" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">return_type</ref></type>
@@ -670,7 +670,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="141" column="17"/>
+        <location file="bubble/integrand.hpp" line="153" column="17"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
@@ -690,7 +690,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="135" column="10"/>
+        <location file="bubble/integrand.hpp" line="147" column="10"/>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1acef7d02cec1ab245aabefa541cb8ac43" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -708,7 +708,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="136" column="10"/>
+        <location file="bubble/integrand.hpp" line="148" column="10"/>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1af58ff31eded38038aa1281c190a583fe" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -726,7 +726,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="137" column="10"/>
+        <location file="bubble/integrand.hpp" line="149" column="10"/>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -822,7 +822,7 @@
 <parametername>w_in</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>: external bosonic frequency \omega </para>
+<para>: external bosonic frequency ω </para>
 </parameterdescription>
 </parameteritem>
 <parameteritem>
@@ -854,11 +854,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="156" column="5" bodyfile="bubble/integrand.hpp" bodystart="156" bodyend="166"/>
+        <location file="bubble/integrand.hpp" line="169" column="5" bodyfile="bubble/integrand.hpp" bodystart="169" bodyend="179"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
-        <references refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" compoundref="df/d83/integrand_8hpp" startline="284" endline="335">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</references>
-        <references refid="d1/d9f/classIntegrand_1a685b69574a038c85744dcc88c59a160c" compoundref="df/d83/integrand_8hpp" startline="220" endline="271">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::set_Keldysh_index_i0</references>
+        <references refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" compoundref="df/d83/integrand_8hpp" startline="297" endline="348">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</references>
+        <references refid="d1/d9f/classIntegrand_1a685b69574a038c85744dcc88c59a160c" compoundref="df/d83/integrand_8hpp" startline="233" endline="284">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::set_Keldysh_index_i0</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1a3da64e671a674d821f5fcaef1d3d312a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
@@ -891,7 +891,7 @@
 <para>TODO: fix conflict with sum over internal spins</para>
 <para>comment in to test vectorized access</para>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="173" column="10" bodyfile="bubble/integrand.hpp" bodystart="338" bodyend="418"/>
+        <location file="bubble/integrand.hpp" line="186" column="10" bodyfile="bubble/integrand.hpp" bodystart="351" bodyend="431"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
       </memberdef>
@@ -907,7 +907,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="175" column="10"/>
+        <location file="bubble/integrand.hpp" line="188" column="10"/>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1af526be63b76a6b5666dc98abbd8f2b7f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -929,7 +929,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="176" column="10"/>
+        <location file="bubble/integrand.hpp" line="189" column="10"/>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1a0192be56603d53e4426ff3bb8d63f068" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -963,7 +963,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="177" column="10"/>
+        <location file="bubble/integrand.hpp" line="190" column="10"/>
       </memberdef>
       <memberdef kind="function" id="d1/d9f/classIntegrand_1a0432254ce6d1360cec1969bd5ce5d7cc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -977,7 +977,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="179" column="10" bodyfile="bubble/integrand.hpp" bodystart="179" bodyend="195"/>
+        <location file="bubble/integrand.hpp" line="192" column="10" bodyfile="bubble/integrand.hpp" bodystart="192" bodyend="208"/>
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
@@ -993,7 +993,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/integrand.hpp" line="196" column="10" bodyfile="bubble/integrand.hpp" bodystart="196" bodyend="212"/>
+        <location file="bubble/integrand.hpp" line="209" column="10" bodyfile="bubble/integrand.hpp" bodystart="209" bodyend="225"/>
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
@@ -1002,6 +1002,72 @@
 <para>Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class. </para>
     </briefdescription>
     <detaileddescription>
+<para><ref refid="d1/d9f/classIntegrand" kindref="compound">Integrand</ref> invoked by the <ref refid="de/d96/classBubbleFunctionCalculator" kindref="compound">BubbleFunctionCalculator</ref> class for every combination of external arguments. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>diag_class</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Diagrammatic class to be computed (K1, K2, K2&apos; or K3). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Two-particle channel of the computation. Can be a, p, or t. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>spin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spin index to be computed. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_left</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the left part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_right</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the right part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Bubble_Object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the <ref refid="d8/d6e/classBubble" kindref="compound">Bubble</ref> object to connect the two vertices. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>return_type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data that is produced by the integral. Typically = Q. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
     </detaileddescription>
     <collaborationgraph>
       <node id="1">
@@ -1106,7 +1172,7 @@
         <label>size_t</label>
       </node>
     </collaborationgraph>
-    <location file="bubble/integrand.hpp" line="90" column="1" bodyfile="bubble/integrand.hpp" bodystart="90" bodyend="216"/>
+    <location file="bubble/integrand.hpp" line="102" column="1" bodyfile="bubble/integrand.hpp" bodystart="102" bodyend="229"/>
     <listofallmembers>
       <member refid="d1/d9f/classIntegrand_1a6c1f479f7eebd04cc2b2ed5a170c14fe" prot="private" virt="non-virtual"><scope>Integrand</scope><name>buffer_type_vertex_l</name></member>
       <member refid="d1/d9f/classIntegrand_1acec445da8d5b0a0809e6a44e09e6a4ee" prot="private" virt="non-virtual"><scope>Integrand</scope><name>buffer_type_vertex_r</name></member>

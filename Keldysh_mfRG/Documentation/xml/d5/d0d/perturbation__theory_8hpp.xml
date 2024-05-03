@@ -917,7 +917,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="perturbation_theory_and_parquet/perturbation_theory.hpp" line="27" column="6" bodyfile="perturbation_theory_and_parquet/perturbation_theory.hpp" bodystart="27" bodyend="40"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" compoundref="d0/d3f/util_8hpp" startline="42" endline="53">utils::print_add</references>
@@ -956,7 +956,7 @@
 <para>evaluate the Hartree diagram once with the SOPT SE in the propagator:</para>
         </inbodydescription>
         <location file="perturbation_theory_and_parquet/perturbation_theory.hpp" line="43" column="6" bodyfile="perturbation_theory_and_parquet/perturbation_theory.hpp" bodystart="43" bodyend="69"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
@@ -1002,7 +1002,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="perturbation_theory_and_parquet/perturbation_theory.hpp" line="72" column="6" bodyfile="perturbation_theory_and_parquet/perturbation_theory.hpp" bodystart="72" bodyend="104"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1ab3aeb6b5a7765364c4eee56626986f2c" compoundref="d5/d0d/perturbation__theory_8hpp" startline="214" endline="246">fopt_state</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1af63b4846dcd291f54d67b00384d29ae3" compoundref="d5/d0d/perturbation__theory_8hpp" startline="185" endline="210">topt_state</referencedby>
@@ -1043,7 +1043,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="perturbation_theory_and_parquet/perturbation_theory.hpp" line="108" column="6" bodyfile="perturbation_theory_and_parquet/perturbation_theory.hpp" bodystart="108" bodyend="130"/>
-        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1018" endline="1043">bubble_function</references>
+        <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1ab3aeb6b5a7765364c4eee56626986f2c" compoundref="d5/d0d/perturbation__theory_8hpp" startline="214" endline="246">fopt_state</referencedby>
       </memberdef>

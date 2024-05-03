@@ -858,7 +858,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="8" column="9" bodyfile="parameters/frequency_parameters.hpp" bodystart="8" bodyend="-1"/>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1af8d15aa3b1c20600949eba3423835cbd" compoundref="df/d31/math__utils_8c_09_09" startline="184" endline="203">K2_convert2internalFreqs</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1a5b1bfeebec25bd9a9463b436378bdfa6" compoundref="df/d31/math__utils_8c_09_09" startline="204" endline="219">K2_convert2naturalFreqs</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1a5315c219f92f27815ac56da467fab9ec" compoundref="df/d31/math__utils_8c_09_09" startline="222" endline="244">K3_convert2internalFreqs</referencedby>
@@ -956,13 +956,13 @@
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="36" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="36" bodyend="-1"/>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="14" endline="70">check_SE_causality</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" compoundref="d6/d2d/selfenergy_8hpp" startline="407" endline="423">SelfEnergy&lt; Q &gt;::check_symmetries</referencedby>
         <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="275" endline="289">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
         <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
-        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
         <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
       </memberdef>
@@ -999,7 +999,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="38" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="38" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="376" endline="563">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="384" endline="571">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
@@ -1044,7 +1044,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="40" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="40" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="376" endline="563">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="384" endline="571">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1a87f09a2469ee10ae86f414b975066e0e" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="427" endline="493">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters</referencedby>
@@ -1063,10 +1063,10 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="42" column="11" bodyfile="parameters/frequency_parameters.hpp" bodystart="42" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="376" endline="563">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="384" endline="571">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1ac5e8d2fd2f8d7b542aa387e3fa8a1679" compoundref="d4/d92/hartree__term_8c_09_09" startline="5" endline="23">Hartree_Solver::compute_filling_oneshot</referencedby>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" compoundref="de/de8/bubble__function_8hpp" startline="191" endline="213">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</referencedby>
-        <referencedby refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" compoundref="d8/d1d/loop_8hpp" startline="76" endline="93">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" compoundref="de/de8/bubble__function_8hpp" startline="199" endline="221">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" compoundref="d8/d1d/loop_8hpp" startline="78" endline="95">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a6ea138cf1b23526993fe12f3add4ff35" prot="public" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
@@ -1177,7 +1177,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="55" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="55" bodyend="-1"/>
-        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a98a9c7b110f336bae9c31792defaef9d" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
@@ -1417,7 +1417,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="79" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="79" bodyend="-1"/>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a483d20f988a997b877b2ec030b1473d2" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
@@ -1432,7 +1432,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="80" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="80" bodyend="-1"/>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a2879cadca110991e27d2a6f77e1ff0c1" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
@@ -1447,7 +1447,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="81" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="81" bodyend="-1"/>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a9a140833a7b3ece20810a2e2af1c1bfe" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
@@ -1462,7 +1462,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="82" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="82" bodyend="-1"/>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1aab46ca0c8af88445d37b8b93dc8428de" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
@@ -1477,7 +1477,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="83" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="83" bodyend="-1"/>
-        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</referencedby>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</referencedby>
       </memberdef>
     </sectiondef>
     <briefdescription>

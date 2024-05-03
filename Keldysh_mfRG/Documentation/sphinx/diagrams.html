@@ -65,6 +65,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00_b_bE14LoopCalculator"><code class="docutils literal notranslate"><span class="pre">LoopCalculator</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00_b0_bE11IntegrandSE"><code class="docutils literal notranslate"><span class="pre">IntegrandSE</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11IntegrandSE11IntegrandSEEKiRK8vertTypeRK10PropagatorI1QEKiKiKdKi"><code class="docutils literal notranslate"><span class="pre">IntegrandSE::IntegrandSE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11IntegrandSEclEd"><code class="docutils literal notranslate"><span class="pre">IntegrandSE::operator()()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -110,23 +111,101 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbXL3EEEE">
 <span id="_CPPv3I0000E15bubble_functionR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbXL3EEEE"></span><span id="_CPPv2I0000E15bubble_functionR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbX3EEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_result</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_left</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_right</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bubble_Object</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bubble_function</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::vertexType_result"><span class="n"><span class="pre">vertexType_result</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">dgamma</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::vertexType_left"><span class="n"><span class="pre">vertexType_left</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">vertex1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::vertexType_right"><span class="n"><span class="pre">vertexType_right</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">vertex2</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::Bubble_Object"><span class="n"><span class="pre">Bubble_Object</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Pi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">channel</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">bool</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tobecomputed</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK13Bubble_ObjectKcRK10fRG_configKNSt5arrayIbXL3EEEE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Function to connect two vertices with a <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a>, i.e. a propagator pair. Graphically in the <code class="docutils literal notranslate"><span class="pre">a</span></code> channel: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--&gt;--|-----|---&gt;---|-----|--&gt;--</span>
+     <span class="o">|</span> <span class="n">Γ_1</span> <span class="o">|</span>   <span class="n">Π</span>   <span class="o">|</span> <span class="n">Γ_2</span> <span class="o">|</span>
+<span class="o">--&lt;--|-----|---&lt;---|-----|--&lt;--</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertexType_result</strong> – Type of the vertex that results in the bubble computation. </p></li>
+<li><p><strong>vertexType_left</strong> – Type of the vertex that enters as the left part of the computation. </p></li>
+<li><p><strong>vertexType_right</strong> – Type of the vertex that enters as the right part of the computation. </p></li>
+<li><p><strong>Bubble_Object</strong> – Type of the <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object to connect the two vertices </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>dgamma</strong> – Reference to the vertex that the result of the computation shall be added to. </p></li>
+<li><p><strong>vertex1</strong> – Reference to the left input vertex. </p></li>
+<li><p><strong>vertex2</strong> – Reference to the right input vertex. </p></li>
+<li><p><strong>Pi</strong> – Reference to the <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a>. </p></li>
+<li><p><strong>channel</strong> – Two-particle channel of the computation. Can be a, p, or t. </p></li>
+<li><p><strong>config</strong> – Struct with essential parameters. </p></li>
+<li><p><strong>tobecomputed</strong> – Array of three booleans, specifying what diagrammatic classes shall be computed. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE">
 <span id="_CPPv3I0000E15bubble_functionR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE"></span><span id="_CPPv2I0000E15bubble_functionR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbX3EEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_result</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_left</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_right</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="de/de8/bubble__function_8hpp_1a4624cd6adf33803f8312cffc361e1d47"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bubble_function</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::vertexType_result"><span class="n"><span class="pre">vertexType_result</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">dgamma</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::vertexType_left"><span class="n"><span class="pre">vertexType_left</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">vertex1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::vertexType_right"><span class="n"><span class="pre">vertexType_right</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">vertex2</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="propagator.html#_CPPv4I0E10Propagator" title="Propagator"><span class="n"><span class="pre">Propagator</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">G</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="propagator.html#_CPPv4I0E10Propagator" title="Propagator"><span class="n"><span class="pre">Propagator</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE" title="bubble_function::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">S</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">channel</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">diff</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">bool</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tobecomputed</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000E15bubble_functionvR17vertexType_resultRK15vertexType_leftRK16vertexType_rightRK10PropagatorI1QERK10PropagatorI1QEKcKbRK10fRG_configKNSt5arrayIbXL3EEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Overload for bubble_function in case no <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object has been initialized yet. ONLY WORKS FOR SIAM!! </p>
+<dd><p>Overload of the bubble_function in case no <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object has been initialized yet. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Q</strong> – Template parameter specifying the type of the data. </p></li>
+<li><p><strong>vertexType_result</strong> – Type of the vertex that results in the bubble computation. </p></li>
+<li><p><strong>vertexType_left</strong> – Type of the vertex that enters as the left part of the computation. </p></li>
+<li><p><strong>vertexType_right</strong> – Type of the vertex that enters as the right part of the computation. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>dgamma</strong> – Reference to the vertex that the result of the computation shall be added to. </p></li>
+<li><p><strong>vertex1</strong> – Reference to the left input vertex. </p></li>
+<li><p><strong>vertex2</strong> – Reference to the right input vertex. </p></li>
+<li><p><strong>G</strong> – <a class="reference internal" href="propagator.html#d2/d34/classPropagator"><span class="std std-ref">Propagator</span></a> to be used for the <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a>. </p></li>
+<li><p><strong>S</strong> – Single-scale propagator to be used for the <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a>. Only used if diff=true. </p></li>
+<li><p><strong>channel</strong> – Two-particle channel of the computation. Can be a, p, or t. </p></li>
+<li><p><strong>diff</strong> – Boolean specifying whether the <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> is differentiated or not. </p></li>
+<li><p><strong>config</strong> – Struct with essential parameters. </p></li>
+<li><p><strong>tobecomputed</strong> – Array of three booleans, specifying what diagrammatic classes shall be computed. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I_c00000E24BubbleFunctionCalculator">
 <span id="_CPPv3I_c00000E24BubbleFunctionCalculator"></span><span id="_CPPv2I_c00000E24BubbleFunctionCalculator"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">channel</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_result</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_left</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_right</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bubble_Object</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="de/d96/classBubbleFunctionCalculator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BubbleFunctionCalculator</span></span></span><a class="headerlink" href="#_CPPv4I_c00000E24BubbleFunctionCalculator" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Class that actually performs the bubble computation. Invoked by the bubble_function. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel</strong> – Two-particle channel of the computation. Can be a, p, or t. </p></li>
+<li><p><strong>Q</strong> – Template parameter specifying the type of the data. </p></li>
+<li><p><strong>vertexType_result</strong> – Type of the vertex that results in the bubble computation. </p></li>
+<li><p><strong>vertexType_left</strong> – Type of the vertex that enters as the left part of the computation. </p></li>
+<li><p><strong>vertexType_right</strong> – Type of the vertex that enters as the right part of the computation. </p></li>
+<li><p><strong>Bubble_Object</strong> – Type of the <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object to connect the two vertices </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I_7K_class_c_i00000E9Integrand">
 <span id="_CPPv3I_7K_class_c_i00000E9Integrand"></span><span id="_CPPv2I_7K_class_c_i00000E9Integrand"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">K_class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">diag_class</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">channel</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">spin</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_left</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexType_right</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bubble_Object</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">return_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I_7K_class_c_i00000E9Integrand" title="Integrand::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d1/d9f/classIntegrand"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Integrand</span></span></span><a class="headerlink" href="#_CPPv4I_7K_class_c_i00000E9Integrand" title="Link to this definition"></a><br /></dt>
 <dd><p>Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class. </p>
+<p><a class="reference internal" href="#d1/d9f/classIntegrand"><span class="std std-ref">Integrand</span></a> invoked by the <a class="reference internal" href="#de/d96/classBubbleFunctionCalculator"><span class="std std-ref">BubbleFunctionCalculator</span></a> class for every combination of external arguments. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diag_class</strong> – Diagrammatic class to be computed (K1, K2, K2’ or K3). </p></li>
+<li><p><strong>channel</strong> – Two-particle channel of the computation. Can be a, p, or t. </p></li>
+<li><p><strong>spin</strong> – Spin index to be computed. </p></li>
+<li><p><strong>Q</strong> – Type of the data. </p></li>
+<li><p><strong>vertexType_left</strong> – Type of the vertex that enters as the left part of the computation. </p></li>
+<li><p><strong>vertexType_right</strong> – Type of the vertex that enters as the right part of the computation. </p></li>
+<li><p><strong>Bubble_Object</strong> – Type of the <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object to connect the two vertices. </p></li>
+<li><p><strong>return_type</strong> – Type of the data that is produced by the integral. Typically = Q. </p></li>
+</ul>
+</dd>
+</dl>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
@@ -140,7 +219,7 @@
 <li><p><strong>vertex2_in</strong> – : right vertex </p></li>
 <li><p><strong>Pi_in</strong> – : <a class="reference internal" href="bubble.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object connecting the left and right vertex </p></li>
 <li><p><strong>i0_in</strong> – : index specifying the (external) Keldysh component of integrand object; i0_in = [0, .. nK_Ki] where nK_Ki is the number of symmetry-reduced Keldysh components in the result (converted into actual Keldysh index i0 within the constructor) </p></li>
-<li><p><strong>w_in</strong> – : external bosonic frequency \omega </p></li>
+<li><p><strong>w_in</strong> – : external bosonic frequency ω </p></li>
 <li><p><strong>i_in_in</strong> – : external index for internal structure </p></li>
 <li><p><strong>ch_in</strong> – : diagrammatic channel (‘a’, ‘p’, ‘t’) </p></li>
 <li><p><strong>diff_in</strong> – : determines whether to compute differentiated or non-differentiated bubble </p></li>
@@ -172,20 +251,27 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I_b_b00E4loopvR10SelfEnergyI1QERK8vertTypeRK10PropagatorI1QE">
 <span id="_CPPv3I_b_b00E4loopR10SelfEnergyI1QERK8vertTypeRK10PropagatorI1QE"></span><span id="_CPPv2I_b_b00E4loopR10SelfEnergyI1QERK8vertTypeRK10PropagatorI1QE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">all_spins</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">loop</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="selfenergy.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_b_b00E4loopvR10SelfEnergyI1QERK8vertTypeRK10PropagatorI1QE" title="loop::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I_b_b00E4loopvR10SelfEnergyI1QERK8vertTypeRK10PropagatorI1QE" title="loop::vertType"><span class="n"><span class="pre">vertType</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">fullvertex</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="propagator.html#_CPPv4I0E10Propagator" title="Propagator"><span class="n"><span class="pre">Propagator</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_b_b00E4loopvR10SelfEnergyI1QERK8vertTypeRK10PropagatorI1QE" title="loop::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">prop</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_b_b00E4loopvR10SelfEnergyI1QERK8vertTypeRK10PropagatorI1QE" title="Link to this definition"></a><br /></dt>
-<dd><p><p>Loop function for calculating the self energy</p>
-<p>1 –&gt; symmetry_expand vertex in ‘a’ channel and close the loop RIGHT</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="o">&gt;</span><span class="n">_______</span><span class="o">/</span> \ <span class="n">prop</span>
-    <span class="o">|</span>  <span class="n">Γ</span> <span class="o">|</span>    <span class="o">|</span>
-  <span class="o">&lt;</span><span class="n">_</span><span class="o">|</span><span class="n">____</span><span class="o">|</span><span class="n">_</span>   <span class="n">v</span>
-           \ <span class="o">/</span>
-</pre></div>
-</div>
- </p>
+<dd><p>Loop function for calculating the self energy </p>
 <dl class="field-list simple">
 <dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>all_spins</strong> – sum over spins in loop? </p></li>
-<li><p><strong>version</strong> – : 0 –&gt; symmetry_expand vertex in ‘t’ channel and close the loop ABOVE ___&lt;___ prop / \ _______/ | Γ | &lt;_|____|_&lt;</p></li>
+<li><p><strong>version</strong> – : 0 –&gt; symmetry_expand vertex in ‘t’ channel and close the loop ABOVE <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">___</span><span class="o">&lt;</span><span class="n">___</span> <span class="n">prop</span>
+    <span class="o">/</span>       \
+    \       <span class="o">/</span>
+     <span class="o">|-----|</span>
+     <span class="o">|</span>  <span class="n">Γ</span>  <span class="o">|</span>
+<span class="o">--&lt;--|-----|--&lt;--</span>
+</pre></div>
+</div>
+ 1 –&gt; symmetry_expand vertex in ‘a’ channel and close the loop RIGHT <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>            <span class="o">/---</span>\
+<span class="o">--&gt;--|-----|</span>     <span class="o">|</span>  <span class="n">prop</span>
+     <span class="o">|</span>  <span class="n">Γ</span>  <span class="o">|</span>     <span class="n">v</span>
+<span class="o">--&lt;--|-----|</span>     <span class="o">|</span>
+            \<span class="o">---/</span>
+</pre></div>
+</div>
+</p></li>
 <li><p><strong>Q</strong> – : Type of the elements of the vertex, usually comp </p></li>
 </ul>
 </dd>
@@ -203,8 +289,32 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I00_b_bE14LoopCalculator">
 <span id="_CPPv3I00_b_bE14LoopCalculator"></span><span id="_CPPv2I00_b_bE14LoopCalculator"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertType</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">all_spins</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="df/dc8/classLoopCalculator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LoopCalculator</span></span></span><a class="headerlink" href="#_CPPv4I00_b_bE14LoopCalculator" title="Link to this definition"></a><br /></dt>
-<dd><p>Class to actually calculate the loop integral for a given external fermionic frequency and internal index. </p>
-<p>Self-energy loop The selfenergy loop can be closed in two different versions: version 0: close the loop above with propagator G^{3|1} =&gt; parametrize vertex in t-channel convention with w=0 version 1: close the loop right with propagator G^{2|1} =&gt; parametrize vertex in a-channel convention with w=0 3 -&gt; _____ -&gt; 1 | | 0 &lt;-|____|&lt;- 2 Note: the vertices in versions 0 and 1 are related by crossing symmetry, hence we expect the results to be identical in both versions </p>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-unnamed-group">Unnamed Group</p>
+<p>Self-energy loop Class to actually calculate the loop integral for a given external fermionic frequency and internal index. Invoked by the loop function. Note: the vertices in versions 0 and 1 are related by crossing symmetry, hence we expect the results to be identical in both versions <dl class="field-list simple">
+<dt class="field-odd">tparam Q<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Type of the data. </p>
+</dd>
+<dt class="field-even">tparam vertType<span class="colon">:</span></dt>
+<dd class="field-even"><p>Type of the vertex used. </p>
+</dd>
+<dt class="field-odd">tparam all_spins<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Compute all spin contributions? </p>
+</dd>
+<dt class="field-even">tparam version<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>The self-energy loop can be closed in two different versions:</p>
+<p>version 0: close the loop above with propagator G^{3|1} =&gt; parametrize vertex in t-channel convention with w=0</p>
+
+ version 1: close the loop right with propagator G^{2|1} =&gt; parametrize vertex in a-channel convention with w=0 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">3</span> <span class="o">--&gt;--|-----|--&gt;--</span> <span class="mi">1</span>
+       <span class="o">|</span>  <span class="n">Γ</span>  <span class="o">|</span>
+<span class="mi">0</span> <span class="o">--&lt;--|-----|--&lt;--</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</p>
+</div>
 </dd></dl>
 
 <dl class="cpp class">
@@ -213,7 +323,14 @@
 <dd><p>Class for the integrand of the Retarded <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a> Requires a fullvertex (ref), a propagator(ref), an input frequency and an internal structure index </p>
 <dl class="field-list simple">
 <dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Q</strong> – Type in which the integrand takes values, usually comp </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Q</strong> – Type in which the integrand takes values, usually comp Class for the integrand of a loop calculation. Invoked by <a class="reference internal" href="#df/dc8/classLoopCalculator"><span class="std std-ref">LoopCalculator</span></a>. </p></li>
+<li><p><strong>Q</strong> – Type of the data. </p></li>
+<li><p><strong>vertType</strong> – Type of the vertex to be used. </p></li>
+<li><p><strong>all_spins</strong> – Compute all spin components? </p></li>
+<li><p><strong>return_type</strong> – Type of the data of the result. Typically = Q. </p></li>
+<li><p><strong>version</strong> – Version of the self-energy loop. See documentation for LoopFunctionCalculator. </p></li>
+</ul>
 </dd>
 </dl>
 <div class="breathe-sectiondef docutils container">
@@ -221,7 +338,40 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N11IntegrandSE11IntegrandSEEKiRK8vertTypeRK10PropagatorI1QEKiKiKdKi">
 <span id="_CPPv3N11IntegrandSE11IntegrandSEEKiRK8vertTypeRK10PropagatorI1QEKiKiKdKi"></span><span id="_CPPv2N11IntegrandSE11IntegrandSEEKiRK8vertTypeRK10PropagatorI1QEKiKiKdKi"></span><span id="IntegrandSE::IntegrandSE__iC.vertTypeCR.Propagator:Q:CR.iC.iC.doubleC.iC"></span><span class="target" id="d8/d2c/classIntegrandSE_1ad2fbb082e879d192ef8e85cc002a4b01"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntegrandSE</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">type_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00_b0_bE11IntegrandSE" title="IntegrandSE::vertType"><span class="n"><span class="pre">vertType</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">vertex_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="propagator.html#_CPPv4I0E10Propagator" title="Propagator"><span class="n"><span class="pre">Propagator</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00_b0_bE11IntegrandSE" title="IntegrandSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">prop_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iK_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_spin_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in_in</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11IntegrandSE11IntegrandSEEKiRK8vertTypeRK10PropagatorI1QEKiKiKdKi" title="Link to this definition"></a><br /></dt>
-<dd><p>type: determines Keldysh components (always type = 0 for MF) </p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type_in</strong> – determines Keldysh components (always type = 0 for MF) is the element in Sigma matrix to be computed: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>  <span class="mi">1</span>    <span class="n">___</span>     <span class="n">K</span>  <span class="n">A</span>
+<span class="mi">2</span>  <span class="mi">3</span>            <span class="n">R</span>  <span class="mi">0</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<p>type = 0 -&gt; Keldysh component</p>
+
+ type = 2 -&gt; Retarded component </p></li>
+<li><p><strong>vertex_in</strong> – Reference to the input vertex. </p></li>
+<li><p><strong>prop_in</strong> – Reference to the input propagator. </p></li>
+<li><p><strong>iK_in</strong> – Keldysh index </p></li>
+<li><p><strong>i_spin_in</strong> – spin index </p></li>
+<li><p><strong>v_in</strong> – external fermionic frequency index </p></li>
+<li><p><strong>i_in_in</strong> – internal index (trivially 0 most of the time) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11IntegrandSEclEd">
+<span id="_CPPv3NK11IntegrandSEclEd"></span><span id="_CPPv2NK11IntegrandSEclEd"></span><span id="IntegrandSE::call-operator__doubleC"></span><span class="target" id="d8/d2c/classIntegrandSE_1a56ffbc9eabac2af2c608652c3e3741fa"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">vp</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00_b0_bE11IntegrandSE" title="IntegrandSE::return_type"><span class="n"><span class="pre">return_type</span></span></a><a class="headerlink" href="#_CPPv4NK11IntegrandSEclEd" title="Link to this definition"></a><br /></dt>
+<dd><p>Call operator: </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vp</strong> – frequency at which to evaluate integrand (to be integrated over) </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>value of the integrand object evaluated at frequency vp </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

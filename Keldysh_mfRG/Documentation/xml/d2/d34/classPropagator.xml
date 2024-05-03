@@ -157,10 +157,10 @@
         <inbodydescription>
         </inbodydescription>
         <location file="correlation_functions/two_point/propagator.hpp" line="40" column="18" bodyfile="correlation_functions/two_point/propagator.hpp" bodystart="40" bodyend="-1"/>
-        <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="473" endline="496">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="475" endline="498">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
-        <referencedby refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" compoundref="d8/d1d/loop_8hpp" startline="76" endline="93">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</referencedby>
+        <referencedby refid="df/dc8/classLoopCalculator_1a8db52fb8f797b4a80be60f003994840d" compoundref="d8/d1d/loop_8hpp" startline="78" endline="95">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::set_v_limits</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
       </memberdef>
     </sectiondef>
@@ -1423,7 +1423,7 @@
         <references refid="d2/d34/classPropagator_1aba5a069e5a411988a7e2ae736405b6fb" compoundref="d5/df7/propagator_8hpp" startline="36">Propagator&lt; Q &gt;::diff_selfenergy</references>
         <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="35">Propagator&lt; Q &gt;::selfenergy</references>
         <references refid="d2/d34/classPropagator_1a31d81f345df1e2eb6e4349e6d52252fb" compoundref="d5/df7/propagator_8hpp" startline="37">Propagator&lt; Q &gt;::type</references>
-        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="522" endline="549">loop</referencedby>
+        <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d34/classPropagator_1a9c4b156ab3bcad3d51b1a17ee65193bd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>

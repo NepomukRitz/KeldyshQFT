@@ -38,7 +38,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="25" column="5" bodyfile="bubble/bubble_function.hpp" bodystart="25" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="33" column="5" bodyfile="bubble/bubble_function.hpp" bodystart="33" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-attrib">
@@ -54,7 +54,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="27" column="23" bodyfile="bubble/bubble_function.hpp" bodystart="27" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="35" column="23" bodyfile="bubble/bubble_function.hpp" bodystart="35" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1aed74056e1050e0d548f0a30e1db5dbe1" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref></type>
@@ -68,8 +68,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="29" column="27" bodyfile="bubble/bubble_function.hpp" bodystart="29" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="37" column="27" bodyfile="bubble/bubble_function.hpp" bodystart="37" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ae04e25d11acbdca08e9ea07b6097b5a9" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref></type>
@@ -84,8 +84,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="30" column="28" bodyfile="bubble/bubble_function.hpp" bodystart="30" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="38" column="28" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a55556ec461a25b2ca5cbb24966e078c6" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref> &amp;</type>
@@ -100,7 +100,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="32" column="25" bodyfile="bubble/bubble_function.hpp" bodystart="32" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="40" column="25" bodyfile="bubble/bubble_function.hpp" bodystart="40" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ad3090b83103f39dddc2ee26d03fabc77" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -115,7 +115,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="33" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="33" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="41" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="41" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ac29d93d3ebecea159b546ffffce9677e" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
@@ -130,7 +130,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="35" column="18" bodyfile="bubble/bubble_function.hpp" bodystart="35" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="43" column="18" bodyfile="bubble/bubble_function.hpp" bodystart="43" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a47b31ec55d0cf8a869536977c8b23b10" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -145,7 +145,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="38" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="46" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a444b516e9971551e3c37edbf66c1c564" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -160,7 +160,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="38" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="46" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a48d0b44a7919d3c848e98aa820d016a3" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -175,7 +175,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="38" column="23" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="46" column="23" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a8f6db94fee9253428eb9bab4e7851bba" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -190,7 +190,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="38" column="30" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="46" column="30" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a516598b92a46628ac7d2e6076f30992b" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -205,7 +205,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="38" column="37" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="46" column="37" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a89b55ab9d50ba7f9aef73fed8a334784" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -220,7 +220,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="38" column="44" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="46" column="44" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1af0a02d1d2c60431685ee1c6811cba55e" prot="private" static="no" mutable="no">
         <type>Q</type>
@@ -235,7 +235,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="39" column="7" bodyfile="bubble/bubble_function.hpp" bodystart="39" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="47" column="7" bodyfile="bubble/bubble_function.hpp" bodystart="47" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ad6336c704bf8d12954158fb7931fce40" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -249,7 +249,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="41" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="41" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="49" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="49" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ae8b920860d8274c754a92faaaac2e5cd" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -264,7 +264,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="42" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="42" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="50" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="50" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a49d0df162b5682fc9a03f9d1f965a75c" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -279,7 +279,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="43" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="43" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="51" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="51" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1aa4fdc911c5229a66cbda5ed9ac3539e2" prot="private" static="no" mutable="no">
         <type>std::array&lt; std::size_t, <ref refid="db/d58/namespacemy__defs_1_1K1_1af3eb9f515e992d38e5149aedcaad357c" kindref="member">my_defs::K1::rank</ref> &gt;</type>
@@ -293,8 +293,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="44" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="44" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="52" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="52" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a0fcbc47a399e2425ae9d5a24550dd872" prot="private" static="no" mutable="no">
         <type>std::array&lt; std::size_t, <ref refid="d9/dc5/namespacemy__defs_1_1K2_1a46ec13991a21d90576fab44dc1320d16" kindref="member">my_defs::K2::rank</ref> &gt;</type>
@@ -308,8 +308,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="45" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="45" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="53" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="53" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a06618b55ba44aeb007430623e1eb61d7" prot="private" static="no" mutable="no">
         <type>std::array&lt; std::size_t, <ref refid="db/d3d/namespacemy__defs_1_1K3_1ab056cdf9a6ae965fdbcdbfb137878cff" kindref="member">my_defs::K3::rank</ref> &gt;</type>
@@ -323,8 +323,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="46" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="54" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="54" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a95a17d594f7e564494109436fe14430b" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -338,8 +338,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="47" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="47" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="55" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="55" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ac8effb336d5e64f1cc971bd2fa3ba867" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -353,8 +353,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="47" column="25" bodyfile="bubble/bubble_function.hpp" bodystart="47" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="55" column="25" bodyfile="bubble/bubble_function.hpp" bodystart="55" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a3fd1d771ae0f8fffd65ac2f880c2360f" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -368,8 +368,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="47" column="38" bodyfile="bubble/bubble_function.hpp" bodystart="47" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="55" column="38" bodyfile="bubble/bubble_function.hpp" bodystart="55" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a2029389dabd198955af1f502f84ad448" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -383,8 +383,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="48" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="48" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="56" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ac4a662a57b7979c04d39decd0da8a34f" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -398,8 +398,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="48" column="31" bodyfile="bubble/bubble_function.hpp" bodystart="48" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="56" column="31" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a2217ebd22b70efa811da8184f9170acf" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -413,8 +413,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="48" column="50" bodyfile="bubble/bubble_function.hpp" bodystart="48" bodyend="-1"/>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <location file="bubble/bubble_function.hpp" line="56" column="50" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ad6e110723574bff14f956486aa43baf4" prot="private" static="no" mutable="no">
         <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
@@ -429,7 +429,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="53" column="14" bodyfile="bubble/bubble_function.hpp" bodystart="53" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="61" column="14" bodyfile="bubble/bubble_function.hpp" bodystart="61" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a53fcca313617e95ab91ca5f1594b7dd4" prot="private" static="no" mutable="no">
         <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
@@ -444,7 +444,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="53" column="20" bodyfile="bubble/bubble_function.hpp" bodystart="53" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="61" column="20" bodyfile="bubble/bubble_function.hpp" bodystart="61" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a138c2cda02f5d075f3fde7c87f3c2c98" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -458,7 +458,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="54" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="54" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="62" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="62" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a8dc738001f1eaa6530d72c25bb70d34a" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -472,7 +472,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="54" column="14" bodyfile="bubble/bubble_function.hpp" bodystart="54" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="62" column="14" bodyfile="bubble/bubble_function.hpp" bodystart="62" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a1fb4ae46106b715ba0779bd8109f3a9f" prot="private" static="no" mutable="no">
         <type>double</type>
@@ -487,7 +487,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="56" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="64" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="64" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a3f4c775b9646004bf5c3359040d39e5a" prot="private" static="no" mutable="no">
         <type>double</type>
@@ -502,7 +502,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="56" column="17" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="64" column="17" bodyfile="bubble/bubble_function.hpp" bodystart="64" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1abb6d2ff8764f5462e7308754da485a27" prot="private" static="no" mutable="no">
         <type>double</type>
@@ -517,7 +517,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="56" column="22" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="64" column="22" bodyfile="bubble/bubble_function.hpp" bodystart="64" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1aa437217d9dfe405724d14736399e4899" prot="private" static="no" mutable="no">
         <type>std::array&lt; <ref refid="d9/db9/classbool" kindref="compound">bool</ref>, 3 &gt;</type>
@@ -531,7 +531,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="58" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="58" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="66" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="66" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a7059c902056342447ef9dd316fe070f6" prot="private" static="no" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -546,7 +546,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="96" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="96" bodyend="-1"/>
+        <location file="bubble/bubble_function.hpp" line="104" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="104" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -562,7 +562,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="60" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="991" bodyend="1009"/>
+        <location file="bubble/bubble_function.hpp" line="68" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="999" bodyend="1017"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a3a41b66df84d0e75680d9d2359f63ef5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -577,14 +577,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="61" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="175" bodyend="187"/>
+        <location file="bubble/bubble_function.hpp" line="69" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="183" bodyend="195"/>
         <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a304fd85e3afacf7639b3649c9f5fa5a8" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::nu</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a5e2253f2f931ce77217a8b5c1077233a" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nu</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a9e5671fd4724b9146863e5da178f0d4b" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nup</references>
         <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a388adf559598d1f87dd0a5cd80843d0a" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::omega</references>
         <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a8146dcfcbe23167ac60edaf9191ad73a" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::omega</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a86e3bd74dc6981efec4e1bf7b3bca9d4" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::omega</references>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -598,13 +598,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="62" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="191" bodyend="213"/>
+        <location file="bubble/bubble_function.hpp" line="70" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="199" bodyend="221"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="42">POSINTRANGE</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
-        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="101" endline="168">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -625,7 +625,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="64" column="21" bodyfile="bubble/bubble_function.hpp" bodystart="264" bodyend="313"/>
+        <location file="bubble/bubble_function.hpp" line="72" column="21" bodyfile="bubble/bubble_function.hpp" bodystart="272" bodyend="321"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
@@ -668,7 +668,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="65" column="27"/>
+        <location file="bubble/bubble_function.hpp" line="73" column="27"/>
       </memberdef>
       <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -725,7 +725,7 @@
 <para>determine integral of the integrand&apos;s tails via formula:</para>
 <para>write integration_result into value</para>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="66" column="22" bodyfile="bubble/bubble_function.hpp" bodystart="376" bodyend="563"/>
+        <location file="bubble/bubble_function.hpp" line="74" column="22" bodyfile="bubble/bubble_function.hpp" bodystart="384" bodyend="571"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="d2/d1a/Keldysh__symmetries_8hpp_1ad13f63de44ed03c446f501a518be3129">glb_non_zero_Keldysh_bubble</references>
@@ -765,7 +765,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="68" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="570" bodyend="589"/>
+        <location file="bubble/bubble_function.hpp" line="76" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="578" bodyend="597"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
@@ -788,7 +788,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="69" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="595" bodyend="602"/>
+        <location file="bubble/bubble_function.hpp" line="77" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="603" bodyend="610"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
       </memberdef>
@@ -808,8 +808,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="70" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="608" bodyend="618"/>
-        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</references>
+        <location file="bubble/bubble_function.hpp" line="78" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="616" bodyend="626"/>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
       </memberdef>
@@ -829,7 +829,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="71" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="625" bodyend="628"/>
+        <location file="bubble/bubble_function.hpp" line="79" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="633" bodyend="636"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1addecd120bccc2c0faf65cdfec3f50953" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -848,8 +848,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="72" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="635" bodyend="644"/>
-        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="196" endline="752">compute_components_through_FDTs</references>
+        <location file="bubble/bubble_function.hpp" line="80" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="643" bodyend="652"/>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
       </memberdef>
@@ -882,7 +882,7 @@
         <inbodydescription>
 <para>The computation of the vertex components of dgamma.Ki (i = 1, 2, 2&apos;, 3) can be parallelized parallelization is achieved via... ... MPI --&gt; distribute over multiple nodes (n_mpi = maximal number of MPI processes) ... OMP --&gt; distribute over multiple threads within the same node (n_omp = number of ... vectorization --&gt; use efficient matrix routines If vectorization is used (*this)-&gt;<ref refid="de/d96/classBubbleFunctionCalculator_1a473d70b9ba7357e61087b8e26ed6384c" kindref="member">get_value()</ref> returns a vector with the components over which we vectorize and in (*this)-&gt;<ref refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" kindref="member">calculate_bubble_function()</ref> we need to loop over the remaining dimensions (these are given in dimsK1, dimsK2 and dimsK3)</para>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="74" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="650" bodyend="686"/>
+        <location file="bubble/bubble_function.hpp" line="82" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="658" bodyend="694"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
@@ -940,7 +940,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="76" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="692" bodyend="707"/>
+        <location file="bubble/bubble_function.hpp" line="84" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="700" bodyend="715"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0ec64b43f2e4294da9b761c0e8b13e72" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::internal</references>
         <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
@@ -1003,7 +1003,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="78" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="713" bodyend="729"/>
+        <location file="bubble/bubble_function.hpp" line="86" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="721" bodyend="737"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a6e324f30c27ae4137ff98a43ae712c0e" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::internal</references>
         <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a986e3d2a3161efd61e3cacab9fcf8d53" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::keldysh</references>
@@ -1067,7 +1067,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="81" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="736" bodyend="752"/>
+        <location file="bubble/bubble_function.hpp" line="89" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="744" bodyend="760"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626aabef50eef7d4cc525c7fe4dde47c7e5d" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::internal</references>
         <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626ae72c53fbf956970e07867183ff146878" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::keldysh</references>
@@ -1139,7 +1139,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="84" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="759" bodyend="776"/>
+        <location file="bubble/bubble_function.hpp" line="92" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="767" bodyend="784"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a14be3f8ac0084cf0252ba0212a1e8398" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::internal</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a15d300f357fcce31b953e451001a1965" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::keldysh</references>
@@ -1168,7 +1168,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="88" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="783" bodyend="819"/>
+        <location file="bubble/bubble_function.hpp" line="96" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="791" bodyend="827"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
@@ -1199,7 +1199,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="89" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="825" bodyend="887"/>
+        <location file="bubble/bubble_function.hpp" line="97" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="833" bodyend="895"/>
         <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="200" endline="203">abs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
@@ -1238,7 +1238,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="90" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="893" bodyend="958"/>
+        <location file="bubble/bubble_function.hpp" line="98" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="901" bodyend="966"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6" compoundref="d1/df8/master__parameters_8hpp" startline="65">EQUILIBRIUM</references>
@@ -1272,7 +1272,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="92" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="964" bodyend="974"/>
+        <location file="bubble/bubble_function.hpp" line="100" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="972" bodyend="982"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28" compoundref="d9/d3a/technical__parameters_8hpp" startline="18">inter_tol</references>
       </memberdef>
@@ -1288,7 +1288,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="94" column="7" bodyfile="bubble/bubble_function.hpp" bodystart="980" bodyend="983"/>
+        <location file="bubble/bubble_function.hpp" line="102" column="7" bodyfile="bubble/bubble_function.hpp" bodystart="988" bodyend="991"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
@@ -1307,7 +1307,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="99" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="219" bodyend="257"/>
+        <location file="bubble/bubble_function.hpp" line="107" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="227" bodyend="265"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" compoundref="d6/d35/util_8c_09_09" startline="21" endline="27">utils::get_time</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
@@ -1349,31 +1349,31 @@
         <inbodydescription>
 <para>TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble, i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud). The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.</para>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="101" column="5" bodyfile="bubble/bubble_function.hpp" bodystart="101" bodyend="168"/>
+        <location file="bubble/bubble_function.hpp" line="109" column="5" bodyfile="bubble/bubble_function.hpp" bodystart="109" bodyend="176"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1a95a17d594f7e564494109436fe14430b" compoundref="de/de8/bubble__function_8hpp" startline="47">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K1</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1ac8effb336d5e64f1cc971bd2fa3ba867" compoundref="de/de8/bubble__function_8hpp" startline="47">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K2</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1a3fd1d771ae0f8fffd65ac2f880c2360f" compoundref="de/de8/bubble__function_8hpp" startline="47">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K3</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1aa4fdc911c5229a66cbda5ed9ac3539e2" compoundref="de/de8/bubble__function_8hpp" startline="44">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK1</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1a0fcbc47a399e2425ae9d5a24550dd872" compoundref="de/de8/bubble__function_8hpp" startline="45">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK2</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1a06618b55ba44aeb007430623e1eb61d7" compoundref="de/de8/bubble__function_8hpp" startline="46">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK3</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" compoundref="de/de8/bubble__function_8hpp" startline="191" endline="213">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a95a17d594f7e564494109436fe14430b" compoundref="de/de8/bubble__function_8hpp" startline="55">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1ac8effb336d5e64f1cc971bd2fa3ba867" compoundref="de/de8/bubble__function_8hpp" startline="55">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K2</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a3fd1d771ae0f8fffd65ac2f880c2360f" compoundref="de/de8/bubble__function_8hpp" startline="55">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K3</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1aa4fdc911c5229a66cbda5ed9ac3539e2" compoundref="de/de8/bubble__function_8hpp" startline="52">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a0fcbc47a399e2425ae9d5a24550dd872" compoundref="de/de8/bubble__function_8hpp" startline="53">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK2</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a06618b55ba44aeb007430623e1eb61d7" compoundref="de/de8/bubble__function_8hpp" startline="54">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK3</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" compoundref="de/de8/bubble__function_8hpp" startline="199" endline="221">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</references>
         <references refid="de/dbb/math__utils_8hpp_1a0bb20dce81d05d42cbea49416726ad27" compoundref="de/dbb/math__utils_8hpp" startline="106" endline="110">getFlatSize</references>
         <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
         <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a986e3d2a3161efd61e3cacab9fcf8d53" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::keldysh</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a15d300f357fcce31b953e451001a1965" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::keldysh</references>
         <references refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" compoundref="d1/df8/master__parameters_8hpp" startline="19">KELDYSH_FORMALISM</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1a2029389dabd198955af1f502f84ad448" compoundref="de/de8/bubble__function_8hpp" startline="48">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K1</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1ac4a662a57b7979c04d39decd0da8a34f" compoundref="de/de8/bubble__function_8hpp" startline="48">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K2</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1a2217ebd22b70efa811da8184f9170acf" compoundref="de/de8/bubble__function_8hpp" startline="48">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K3</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a2029389dabd198955af1f502f84ad448" compoundref="de/de8/bubble__function_8hpp" startline="56">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1ac4a662a57b7979c04d39decd0da8a34f" compoundref="de/de8/bubble__function_8hpp" startline="56">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K2</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a2217ebd22b70efa811da8184f9170acf" compoundref="de/de8/bubble__function_8hpp" startline="56">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K3</references>
         <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a304fd85e3afacf7639b3649c9f5fa5a8" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::nu</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a5e2253f2f931ce77217a8b5c1077233a" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nu</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a9e5671fd4724b9146863e5da178f0d4b" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nup</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1a3a41b66df84d0e75680d9d2359f63ef5" compoundref="de/de8/bubble__function_8hpp" startline="175" endline="187">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::set_channel_specific_freq_ranges_and_prefactor</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a3a41b66df84d0e75680d9d2359f63ef5" compoundref="de/de8/bubble__function_8hpp" startline="183" endline="195">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::set_channel_specific_freq_ranges_and_prefactor</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1aed74056e1050e0d548f0a30e1db5dbe1" compoundref="de/de8/bubble__function_8hpp" startline="29">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex1</references>
-        <references refid="de/d96/classBubbleFunctionCalculator_1ae04e25d11acbdca08e9ea07b6097b5a9" compoundref="de/de8/bubble__function_8hpp" startline="30">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex2</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1aed74056e1050e0d548f0a30e1db5dbe1" compoundref="de/de8/bubble__function_8hpp" startline="37">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1ae04e25d11acbdca08e9ea07b6097b5a9" compoundref="de/de8/bubble__function_8hpp" startline="38">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex2</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
       </memberdef>
       <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a8bfd9754031987d8a87e6e276950ec67" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1411,7 +1411,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bubble/bubble_function.hpp" line="320" column="2" bodyfile="bubble/bubble_function.hpp" bodystart="320" bodyend="369"/>
+        <location file="bubble/bubble_function.hpp" line="328" column="2" bodyfile="bubble/bubble_function.hpp" bodystart="328" bodyend="377"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
@@ -1426,6 +1426,56 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
+<para>Class that actually performs the bubble computation. Invoked by the bubble_function. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Two-particle channel of the computation. Can be a, p, or t. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Template parameter specifying the type of the data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that results in the bubble computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_left</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the left part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_right</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the right part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Bubble_Object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the <ref refid="d8/d6e/classBubble" kindref="compound">Bubble</ref> object to connect the two vertices </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
     </detaileddescription>
     <collaborationgraph>
       <node id="1">
@@ -1569,7 +1619,7 @@
         <label>vertexType_result &amp;</label>
       </node>
     </collaborationgraph>
-    <location file="bubble/bubble_function.hpp" line="24" column="1" bodyfile="bubble/bubble_function.hpp" bodystart="24" bodyend="169"/>
+    <location file="bubble/bubble_function.hpp" line="32" column="1" bodyfile="bubble/bubble_function.hpp" bodystart="32" bodyend="177"/>
     <listofallmembers>
       <member refid="de/d96/classBubbleFunctionCalculator_1a66832383adea26f0073cb95cdf0ecc6c" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>bubble_value_prefactor</name></member>
       <member refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" prot="public" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>BubbleFunctionCalculator</name></member>

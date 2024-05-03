@@ -8,8 +8,10 @@
 #include "../utilities/hdf5_routines.hpp"
 
 /**
-* Function that checks causality of self-energy: Im(Sigma^R)<=0.
-*/
+ * Function that checks causality of self-energy Im(Sigma^R)<=0, and writes the result into the log file.
+ * @tparam Q Template parameter specifying the type of the data.
+ * @param selfEnergy Reference to a self-energy that shall be checked.
+ */
 template <typename Q>
 void check_SE_causality(const SelfEnergy<Q>& selfEnergy) {
     if (KELDYSH) {
@@ -79,7 +81,12 @@ template <typename Q>
 void check_SE_causality(const Q& selfEnergy) {}
 
 /**
- * Function that checks FDTs for self-energy and K1 in all channels for given input state:
+ * Function that checks FDTs for a given self-energy.
+ * @tparam Q Template parameter specifying the type of the data.
+ * @param selfenergy Reference to a self-energy that shall be checked.
+ * @param T Temperature at which the FDT shall be evaluated
+ * @param verbose If true, the result of the check is written into the log file
+ * @return Self-energy with the Keldysh component evaluated using the FDT. Can then be compared to the input self-energy.
  */
 template <typename Q>
 SelfEnergy<Q> check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const double T, const bool verbose) {

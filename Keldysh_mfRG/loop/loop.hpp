@@ -17,16 +17,20 @@
 #include "../utilities/hdf5_routines.hpp"
 
 /**
- * The selfenergy loop can be closed in two different versions:
- *      version 0: close the loop above with propagator G^{3|1}  =>  parametrize vertex in t-channel convention with w=0
- *      version 1: close the loop right with propagator G^{2|1}  =>  parametrize vertex in a-channel convention with w=0
- *      3 -> _____ -> 1
- *          |    |
- *      0 <-|____|<- 2
- *  Note: the vertices in versions 0 and 1 are related by crossing symmetry, hence we expect the results to be identical in both versions
+ * Class to actually calculate the loop integral for a given external fermionic frequency and internal index. Invoked by the loop function.
+ * Note: the vertices in versions 0 and 1 are related by crossing symmetry, hence we expect the results to be identical in both versions
+ * @tparam Q Type of the data.
+ * @tparam vertType Type of the vertex used.
+ * @tparam all_spins Compute all spin contributions?
+ * @tparam version The self-energy loop can be closed in two different versions: \n
+ *     version 0: close the loop above with propagator G^{3|1}  =>  parametrize vertex in t-channel convention with w=0 \n
+ *     version 1: close the loop right with propagator G^{2|1}  =>  parametrize vertex in a-channel convention with w=0 \name
+ * ```
+ *     3 -->--|-----|-->-- 1
+ *            |  Γ  |
+ *     0 --<--|-----|--<-- 2
+ * ```
  */
-
-/// Class to actually calculate the loop integral for a given external fermionic frequency and internal index.
 template <typename Q, typename vertType, bool all_spins, bool version>
 class LoopCalculator{
     SelfEnergy<Q>& self;
@@ -45,8 +49,6 @@ class LoopCalculator{
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
     void set_v_limits();
 
-    // TODO(medium): There is a lot of redundancy and duplication here - unify the LoopCalculator and IntegrandSE class?
-    //  Note though: The integrator needs an integrand (template there).
 
     Q set_prefactor();
     Q Keldysh_prefactor();
@@ -500,18 +502,22 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() 
  * Loop function for calculating the self energy
  * @tparam all_spins: sum over spins in loop?
  * @tparam version  : 0 --> symmetry_expand vertex in 't' channel and close the loop ABOVE
+ * ```
  *                           ___<___ prop
  *                          /       \
- *                          \_______/
- *                           |  Γ |
- *                         <_|____|_<
- *
+ *                          \       /
+ *                           |-----|
+ *                           |  Γ  |
+ *                      --<--|-----|--<--
+ * ```
  *                   1 --> symmetry_expand vertex in 'a' channel and close the loop RIGHT
- *
- *                          >_______/ \ prop
- *                           |  Γ |    |
- *                         <_|____|_   v
- *                                  \ /
+ * ```
+ *                                  /---\
+*                       -->--|-----|     |  prop
+ *                           |  Γ  |     v
+ *                      --<--|-----|     |
+ *                                  \---/
+ * ```
  * @tparam Q        : Type of the elements of the vertex, usually comp
  * @param self      : SelfEnergy<Q> object of which the Retarded and Keldysh components will be updated in the loop
  * @param fullvertex: Vertex object for the calculation of the loop
