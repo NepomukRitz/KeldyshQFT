@@ -1,9 +1,7 @@
 #ifndef FPP_MFRG_VERTEX_DATA_CONTAINER_H
 #define FPP_MFRG_VERTEX_DATA_CONTAINER_H
 
-/**
- * This header contains a class which is responsible for saving and retrieving vertex data
- */
+// This header contains a class which is responsible for saving and retrieving vertex data
 
 #include "../../utilities/template_utils.hpp"
 #include "../../utilities/math_utils.hpp"
@@ -13,8 +11,6 @@
 #include "../../parameters/frequency_parameters.hpp"
 #include "../../grids/frequency_grid.hpp"
 #include "H5Cpp.h"
-
-/// TODO: treat VertexFrequencyGrid as member of vertexContainerBase via template?
 
 template <typename Q> class rvert; // forward declaration of rvert
 //template <typename Q> class fullvert; // forward declaration of fullvert

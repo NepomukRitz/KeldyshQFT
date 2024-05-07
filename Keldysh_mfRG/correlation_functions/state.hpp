@@ -14,6 +14,11 @@
 #include <boost/numeric/odeint.hpp>
 #include <string>
 
+/**
+ * Class used for the state Ψ = (Σ, Γ).
+ * @tparam Q Type of the data.
+ * @tparam differentiated Determines whether the state is differentiated.
+ */
 template <typename Q, bool differentiated=false>
 class State{
     friend State<state_datatype> n_loop_flow(const std::string outputFileName, bool save_intermediate_results);
@@ -31,19 +36,39 @@ public:
         //utils::print("Watch out! Use of default constructor for State<Q>!", true);
 #endif
     }
-    /// Initializes state with frequency grids corresponding to the given value of Lambda.
+    /**
+     * Constructor which generates a state with frequency grids corresponding to the given value of Lambda.
+     * @param Lambda Value of the regulator Λ.
+     * @param config_in Set of parameters.
+     * @param initialize Determines whether the state has to be initialized or not.
+     */
     explicit State(double Lambda, const fRG_config& config_in, bool initialize=false) : Lambda(Lambda), config(config_in), vertex(Lambda, config_in), selfenergy(Lambda, config_in) {
         if (initialize) this->initialize();
     };
 
-    /// Constructor, which gets a State (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!)
+    /**
+     * Constructor which takes a State whose frequency grid will be copied. The State itself won't be copied!
+     * @param state_in Input State.
+     * @param Lambda_in Value of the regulator Λ.
+     */
     State(const State<Q,false>& state_in, const double Lambda_in)
     : Lambda(Lambda_in), config(state_in.config),  vertex(differentiated ? Vertex<Q,differentiated> (Lambda, config, state_in.vertex) : Vertex<Q,differentiated> (0, config)), selfenergy(SelfEnergy<Q> (state_in.selfenergy.Sigma.frequencies)){vertex.set_frequency_grid(state_in.vertex);};
 
-    /// Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
+    /**
+     * Constructor which takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks.
+     * @param vertex_in Input vertex.
+     * @param selfenergy_in Input self-energy.
+     * @param config_in Set of parameters.
+     * @param Lambda_in Value of the regulator Λ.
+     */
     State(const Vertex<Q,differentiated>& vertex_in, const SelfEnergy<Q>& selfenergy_in, const fRG_config& config_in, const double Lambda_in)
     : Lambda(Lambda_in), config(config_in), vertex(vertex_in), selfenergy(selfenergy_in) {};
 
+    /**
+     * Initializes a state by setting the asymptotic value of the self-energy and the bare interaction appropriately.
+     * @param checks If true, a check of the Friedel sum rule of the Hartree term of the self-energy of the asymmetric SIAM is done.
+     * See the Hartree_Solver class.
+     */
     void initialize(bool checks=true);
     void update_grid(double Lambda);
     void findBestFreqGrid(bool verbose);
@@ -94,7 +119,7 @@ public:
         lhs -= rhs;
         return lhs;
     }
-    /// Element-wise division (needed for error estimate in ODE solver)
+    // Element-wise division (needed for error estimate in ODE solver)
     auto operator/= (const State& state) -> State {
         this->vertex /= state.vertex;
         this->selfenergy /= state.selfenergy;
@@ -206,7 +231,7 @@ namespace boost {
     namespace numeric {
         namespace odeint {
 
-            /// vector space infinity-norm for ODE solver of Boost
+            // vector space infinity-norm for ODE solver of Boost
             template<>
             struct vector_space_norm_inf< State<state_datatype> >
             {

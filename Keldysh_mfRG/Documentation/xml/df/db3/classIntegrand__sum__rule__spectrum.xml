@@ -82,7 +82,7 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
         <references refid="df/db3/classIntegrand__sum__rule__spectrum_1ae92644806964a19f842ecfe52638069b" compoundref="d4/d81/postprocessing_8hpp" startline="107">prop</references>
-        <references refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</references>
+        <references refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="316" endline="462">Propagator&lt; Q &gt;::valsmooth</references>
       </memberdef>
     </sectiondef>
     <briefdescription>

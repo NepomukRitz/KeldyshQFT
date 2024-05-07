@@ -863,12 +863,12 @@
         <location file="utilities/math_utils.hpp" line="24" column="6" bodyfile="utilities/math_utils.hpp" bodystart="24" bodyend="26"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="686" endline="699">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="614" endline="625">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="695" endline="708">Propagator&lt; Q &gt;::GM_REG2</referencedby>
         <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a72b8a5e3aa61d0d8caad62fcf6ded37c" compoundref="d5/dd1/flow__grid_8hpp" startline="88" endline="91">flowgrid::sqrt_parametrization::lambda_from_t</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1a28a474b34bb52e38453dfef3498d440e" compoundref="df/d31/math__utils_8c_09_09" startline="96" endline="100">round2bfreq</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1ae91f1ae4164410f29b627938634c30e0" compoundref="df/d31/math__utils_8c_09_09" startline="101" endline="105">round2ffreq</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="703" endline="711">Propagator&lt; Q &gt;::SM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="712" endline="720">Propagator&lt; Q &gt;::SM_REG2</referencedby>
         <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a6b06711db490eb74ae1ac55c560017c0" compoundref="d5/dd1/flow__grid_8hpp" startline="93" endline="96">flowgrid::sqrt_parametrization::t_from_lambda</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1a3d8486282b409e1338111b0285cf6259" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1008,10 +1008,10 @@
         </inbodydescription>
         <location file="utilities/math_utils.hpp" line="40" column="17" bodyfile="utilities/math_utils.hpp" bodystart="40" bodyend="48"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="622" endline="907">rvert&lt; Q &gt;::check_symmetries</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a539751c44e1f1b5a9f4922176e1a350e" compoundref="d3/d22/r__vertex_8hpp" startline="1869" endline="1920">rvert&lt; Q &gt;::enforce_freqsymmetriesK1</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1922" endline="1970">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1973" endline="2028">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="644" endline="929">rvert&lt; Q &gt;::check_symmetries</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a539751c44e1f1b5a9f4922176e1a350e" compoundref="d3/d22/r__vertex_8hpp" startline="1891" endline="1942">rvert&lt; Q &gt;::enforce_freqsymmetriesK1</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1944" endline="1992">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1995" endline="2050">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1ac8b5a048216868f66603aed1e5ae2a27" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -1069,11 +1069,11 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="df/d31/math__utils_8c_09_09_1ae9c1cfc85d7b2761e26116e1f4c59fa6" compoundref="df/d31/math__utils_8c_09_09" startline="37" endline="49">integer_division_floor</references>
         <referencedby refid="d3/dbd/classoneBubble_1a73479e7b964b3f335b2480a305252457" compoundref="d8/dea/right__hand__sides_8hpp" startline="711" endline="720">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="188" endline="197">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="200" endline="209">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
         <referencedby refid="d3/dbd/classoneBubble_1a7b36904640b3abcf187cf860383888bb" compoundref="d8/dea/right__hand__sides_8hpp" startline="722" endline="731">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="199" endline="208">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1af50518ef7856c9c37e8e9377fb7fc7a1" compoundref="d3/d22/r__vertex_8hpp" startline="1686" endline="1837">rvert&lt; Q &gt;::transfToR</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="161" endline="185">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="211" endline="220">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1af50518ef7856c9c37e8e9377fb7fc7a1" compoundref="d3/d22/r__vertex_8hpp" startline="1708" endline="1859">rvert&lt; Q &gt;::transfToR</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="173" endline="197">Bubble&lt; Q &gt;::value</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1a404f033047bb360574bd4a4f17c522e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -1094,10 +1094,10 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="df/d31/math__utils_8c_09_09_1a35b83639777224e5578f691c7f1cf87c" compoundref="df/d31/math__utils_8c_09_09" startline="25" endline="35">integer_division_ceil</references>
         <referencedby refid="d3/dbd/classoneBubble_1a73479e7b964b3f335b2480a305252457" compoundref="d8/dea/right__hand__sides_8hpp" startline="711" endline="720">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="188" endline="197">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="200" endline="209">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
         <referencedby refid="d3/dbd/classoneBubble_1a7b36904640b3abcf187cf860383888bb" compoundref="d8/dea/right__hand__sides_8hpp" startline="722" endline="731">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="199" endline="208">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="161" endline="185">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="211" endline="220">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="173" endline="197">Bubble&lt; Q &gt;::value</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1aa0745a18e072563df8d531b5d3d84e77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -1193,8 +1193,8 @@
         <location file="utilities/math_utils.hpp" line="70" column="6" bodyfile="utilities/math_utils.c++" bodystart="107" bodyend="115" declfile="utilities/math_utils.hpp" declline="70" declcolumn="6"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="df/d31/math__utils_8c_09_09_1aa8c8683a92f6dbb9abd5fd9feb592372" compoundref="df/d31/math__utils_8c_09_09" startline="117" endline="126">signFlipCorrection_MF_int</references>
-        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1922" endline="1970">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1973" endline="2028">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1944" endline="1992">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1995" endline="2050">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" compoundref="de/de8/bubble__function_8hpp" startline="833" endline="895">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" compoundref="de/de8/bubble__function_8hpp" startline="901" endline="966">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K3</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a8bfd9754031987d8a87e6e276950ec67" compoundref="de/de8/bubble__function_8hpp" startline="328" endline="377">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_value</referencedby>
@@ -1329,18 +1329,18 @@
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="622" endline="907">rvert&lt; Q &gt;::check_symmetries</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a78f7fa255ef4894d8d7f249ad027b607" compoundref="d3/d22/r__vertex_8hpp" startline="1077" endline="1207">rvert&lt; Q &gt;::combine_SBE_to_K2</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1ac32a9b3b909f75c0aef757052e436ed4" compoundref="d3/d22/r__vertex_8hpp" startline="1210" endline="1334">rvert&lt; Q &gt;::combine_SBE_to_K2b</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a1e67e572b3a4f4919d70995d82162688" compoundref="d3/d22/r__vertex_8hpp" startline="1337" endline="1474">rvert&lt; Q &gt;::combine_SBE_to_K3_SBE</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="644" endline="929">rvert&lt; Q &gt;::check_symmetries</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a78f7fa255ef4894d8d7f249ad027b607" compoundref="d3/d22/r__vertex_8hpp" startline="1099" endline="1229">rvert&lt; Q &gt;::combine_SBE_to_K2</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1ac32a9b3b909f75c0aef757052e436ed4" compoundref="d3/d22/r__vertex_8hpp" startline="1232" endline="1356">rvert&lt; Q &gt;::combine_SBE_to_K2b</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a1e67e572b3a4f4919d70995d82162688" compoundref="d3/d22/r__vertex_8hpp" startline="1359" endline="1496">rvert&lt; Q &gt;::combine_SBE_to_K3_SBE</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a27746b9b8800ef78734dc630b029f990" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="765" endline="849">compute_components_through_FDTs</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a539751c44e1f1b5a9f4922176e1a350e" compoundref="d3/d22/r__vertex_8hpp" startline="1869" endline="1920">rvert&lt; Q &gt;::enforce_freqsymmetriesK1</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1922" endline="1970">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1973" endline="2028">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a539751c44e1f1b5a9f4922176e1a350e" compoundref="d3/d22/r__vertex_8hpp" startline="1891" endline="1942">rvert&lt; Q &gt;::enforce_freqsymmetriesK1</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1944" endline="1992">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1995" endline="2050">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a736d3a5d01a734a6830c58d51e04b785" compoundref="de/dbb/math__utils_8hpp" startline="775" endline="788">get_slice</referencedby>
         <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1a49c016ebdac7ec19db87d454020d0bb6" compoundref="dd/df3/ranged__view_8hpp" startline="115" endline="124">multidimensional::BlockView&lt; T, depth &gt;::get_vec</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a7387e2c9cc91f8ff52731338f1fd21f2" compoundref="de/dbb/math__utils_8hpp" startline="793" endline="822">partial_deriv</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="915" endline="1053">rvert&lt; Q &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="937" endline="1075">rvert&lt; Q &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1a76da961d788897891b9f4f536aca3563" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1546,7 +1546,7 @@
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
         <referencedby refid="d2/d1a/Keldysh__symmetries_8hpp_1ab3ef98f1e58c31aca1a8bc57a7690b25" compoundref="d2/d1a/Keldysh__symmetries_8hpp" startline="254" endline="272">get_i0_left_right</referencedby>
-        <referencedby refid="d3/d22/r__vertex_8hpp_1a964f73f365d9b11ead964c54da7d4662" compoundref="d3/d22/r__vertex_8hpp" startline="548" endline="615">is_zero_due_to_FDTs</referencedby>
+        <referencedby refid="d3/d22/r__vertex_8hpp_1a964f73f365d9b11ead964c54da7d4662" compoundref="d3/d22/r__vertex_8hpp" startline="570" endline="637">is_zero_due_to_FDTs</referencedby>
         <referencedby refid="d2/d1a/Keldysh__symmetries_8hpp_1a7c2b62b33ed4c06a68f72af936839df8" compoundref="d2/d1a/Keldysh__symmetries_8hpp" startline="275" endline="320">rotate_Keldysh_matrix</referencedby>
         <referencedby refid="d2/d1a/Keldysh__symmetries_8hpp_1a23dfafa221f5c5eaf4fbe2ffa11ff842" compoundref="d2/d1a/Keldysh__symmetries_8hpp" startline="322" endline="367">unrotate_Keldysh_matrix</referencedby>
       </memberdef>
@@ -2180,8 +2180,8 @@
         </inbodydescription>
         <location file="utilities/math_utils.hpp" line="957" column="16" bodyfile="utilities/math_utils.hpp" bodystart="957" bodyend="966"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="296" endline="338">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
-        <referencedby refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" compoundref="da/dbc/data__container_8hpp" startline="269" endline="295">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="292" endline="334">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" compoundref="da/dbc/data__container_8hpp" startline="265" endline="291">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1ab9d441edc8ec14a9619d2181dacfe416" compoundref="de/dbb/math__utils_8hpp" startline="968" endline="970">power2</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1ab9d441edc8ec14a9619d2181dacfe416" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -2250,12 +2250,12 @@
         </inbodydescription>
         <location file="utilities/math_utils.hpp" line="973" column="18" bodyfile="utilities/math_utils.hpp" bodystart="973" bodyend="983"/>
         <references refid="d9/d2a/classvec_1a9eee6ef2df34517880ba13d527763111" compoundref="d7/d59/data__structures_8hpp" startline="361" endline="368">vec&lt; T &gt;::abs</references>
-        <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="200" endline="203">abs</references>
+        <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="225" endline="228">abs</references>
         <references refid="de/dbb/math__utils_8hpp_1af6ccbb8eb63535016aaa2f4496f6e065" compoundref="de/dbb/math__utils_8hpp" startline="838" endline="883">collapse</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de" compoundref="d6/d2d/selfenergy_8hpp" startline="325" endline="342">SelfEnergy&lt; Q &gt;::analyze_tails</referencedby>
-        <referencedby refid="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" compoundref="da/dbc/data__container_8hpp" startline="209" endline="215">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::analyze_tails</referencedby>
-        <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="399" endline="462">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de" compoundref="d6/d2d/selfenergy_8hpp" startline="338" endline="355">SelfEnergy&lt; Q &gt;::analyze_tails</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" compoundref="da/dbc/data__container_8hpp" startline="205" endline="211">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::analyze_tails</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="395" endline="458">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a348299423b50e44dd3a672875fdeb1a5" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="259" endline="342">test_read_write_data_hdf</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1a562a53ddc7418efed23325265f4a8e71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">

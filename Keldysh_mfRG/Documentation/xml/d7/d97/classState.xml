@@ -27,8 +27,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="23" column="12" bodyfile="correlation_functions/state.hpp" bodystart="23" bodyend="-1"/>
-        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <location file="correlation_functions/state.hpp" line="28" column="12" bodyfile="correlation_functions/state.hpp" bodystart="28" bodyend="-1"/>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
         <referencedby refid="d7/dbe/structmfRG__record_1a93b8fefd8136bbebcfe993f76d281ff7" compoundref="d8/dea/right__hand__sides_8hpp" startline="76" endline="128">mfRG_record&lt; Q &gt;::save_states</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" prot="public" static="no" mutable="no">
@@ -43,10 +43,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="24" column="16" bodyfile="correlation_functions/state.hpp" bodystart="24" bodyend="-1"/>
-        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <location file="correlation_functions/state.hpp" line="29" column="16" bodyfile="correlation_functions/state.hpp" bodystart="29" bodyend="-1"/>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
         <referencedby refid="d7/dbe/structmfRG__record_1a93b8fefd8136bbebcfe993f76d281ff7" compoundref="d8/dea/right__hand__sides_8hpp" startline="76" endline="128">mfRG_record&lt; Q &gt;::save_states</referencedby>
-        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
+        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="180" endline="184">State&lt; Q, differentiated &gt;::update_grid</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" prot="public" static="no" mutable="no">
         <type><ref refid="d1/d2d/vertex_8hpp_1a6fe6fa5dc5814b2f7b53f9d7af277c62" kindref="member">Vertex</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -60,13 +60,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="25" column="12" bodyfile="correlation_functions/state.hpp" bodystart="25" bodyend="-1"/>
-        <referencedby refid="d7/d97/classState_1a504a0b837e47e37e3cc638555a3fca63" compoundref="da/d3b/state_8hpp" startline="172" endline="177">State&lt; Q, differentiated &gt;::analyze_tails</referencedby>
-        <referencedby refid="d7/d97/classState_1aff40007121488153c21f0432e1cadf36" compoundref="da/d3b/state_8hpp" startline="167" endline="170">State&lt; Q, differentiated &gt;::check_resolution</referencedby>
-        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
-        <referencedby refid="d7/d97/classState_1ac507d44949f78a583a7bed16fa9fcde9" compoundref="da/d3b/state_8hpp" startline="180" endline="185">State&lt; Q, differentiated &gt;::norm</referencedby>
+        <location file="correlation_functions/state.hpp" line="30" column="12" bodyfile="correlation_functions/state.hpp" bodystart="30" bodyend="-1"/>
+        <referencedby refid="d7/d97/classState_1a504a0b837e47e37e3cc638555a3fca63" compoundref="da/d3b/state_8hpp" startline="197" endline="202">State&lt; Q, differentiated &gt;::analyze_tails</referencedby>
+        <referencedby refid="d7/d97/classState_1aff40007121488153c21f0432e1cadf36" compoundref="da/d3b/state_8hpp" startline="192" endline="195">State&lt; Q, differentiated &gt;::check_resolution</referencedby>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <referencedby refid="d7/d97/classState_1ac507d44949f78a583a7bed16fa9fcde9" compoundref="da/d3b/state_8hpp" startline="205" endline="210">State&lt; Q, differentiated &gt;::norm</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
-        <referencedby refid="d7/d97/classState_1a6d532d97650453f6f56bdc581a346b36" compoundref="da/d3b/state_8hpp" startline="40" endline="41">State&lt; Q, differentiated &gt;::State</referencedby>
+        <referencedby refid="d7/d97/classState_1a6d532d97650453f6f56bdc581a346b36" compoundref="da/d3b/state_8hpp" startline="54" endline="55">State&lt; Q, differentiated &gt;::State</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" prot="public" static="no" mutable="no">
         <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
@@ -80,14 +80,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="26" column="16" bodyfile="correlation_functions/state.hpp" bodystart="26" bodyend="-1"/>
-        <referencedby refid="d7/d97/classState_1af8d534b130171535c9fbfb0cdb2ea0e5" compoundref="da/d3b/state_8hpp" startline="112" endline="119">State&lt; Q, differentiated &gt;::abs</referencedby>
-        <referencedby refid="d7/d97/classState_1a504a0b837e47e37e3cc638555a3fca63" compoundref="da/d3b/state_8hpp" startline="172" endline="177">State&lt; Q, differentiated &gt;::analyze_tails</referencedby>
-        <referencedby refid="d7/d97/classState_1aff40007121488153c21f0432e1cadf36" compoundref="da/d3b/state_8hpp" startline="167" endline="170">State&lt; Q, differentiated &gt;::check_resolution</referencedby>
+        <location file="correlation_functions/state.hpp" line="31" column="16" bodyfile="correlation_functions/state.hpp" bodystart="31" bodyend="-1"/>
+        <referencedby refid="d7/d97/classState_1af8d534b130171535c9fbfb0cdb2ea0e5" compoundref="da/d3b/state_8hpp" startline="137" endline="144">State&lt; Q, differentiated &gt;::abs</referencedby>
+        <referencedby refid="d7/d97/classState_1a504a0b837e47e37e3cc638555a3fca63" compoundref="da/d3b/state_8hpp" startline="197" endline="202">State&lt; Q, differentiated &gt;::analyze_tails</referencedby>
+        <referencedby refid="d7/d97/classState_1aff40007121488153c21f0432e1cadf36" compoundref="da/d3b/state_8hpp" startline="192" endline="195">State&lt; Q, differentiated &gt;::check_resolution</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a2ad9fde94cddf669f941f8405a461ae2" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="920" endline="936">compare_with_FDTs</referencedby>
-        <referencedby refid="d7/d97/classState_1ac507d44949f78a583a7bed16fa9fcde9" compoundref="da/d3b/state_8hpp" startline="180" endline="185">State&lt; Q, differentiated &gt;::norm</referencedby>
+        <referencedby refid="d7/d97/classState_1ac507d44949f78a583a7bed16fa9fcde9" compoundref="da/d3b/state_8hpp" startline="205" endline="210">State&lt; Q, differentiated &gt;::norm</referencedby>
         <referencedby refid="d7/dbe/structmfRG__record_1a93b8fefd8136bbebcfe993f76d281ff7" compoundref="d8/dea/right__hand__sides_8hpp" startline="76" endline="128">mfRG_record&lt; Q &gt;::save_states</referencedby>
-        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
+        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="180" endline="184">State&lt; Q, differentiated &gt;::update_grid</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d7/d97/classState_1ab065bd3e423a153db72513997aa374eb" prot="public" static="no" mutable="no">
         <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -102,7 +102,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="27" column="10" bodyfile="correlation_functions/state.hpp" bodystart="27" bodyend="-1"/>
+        <location file="correlation_functions/state.hpp" line="32" column="10" bodyfile="correlation_functions/state.hpp" bodystart="32" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="friend">
@@ -126,7 +126,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="19" column="18"/>
+        <location file="correlation_functions/state.hpp" line="24" column="18"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1a1c726a8cf958e5253a4a871b1ddea67c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -157,7 +157,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="20" column="29"/>
+        <location file="correlation_functions/state.hpp" line="25" column="29"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1aa571f1fa98d97b8886fa827165578ae9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -179,7 +179,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="58" column="18" bodyfile="correlation_functions/state.hpp" bodystart="58" bodyend="61"/>
+        <location file="correlation_functions/state.hpp" line="83" column="18" bodyfile="correlation_functions/state.hpp" bodystart="83" bodyend="86"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1a16248a96ef07cce9233033a78c99ca14" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -201,7 +201,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="67" column="18" bodyfile="correlation_functions/state.hpp" bodystart="67" bodyend="70"/>
+        <location file="correlation_functions/state.hpp" line="92" column="18" bodyfile="correlation_functions/state.hpp" bodystart="92" bodyend="95"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1a771d4f846e96da303b18575fdab3f92f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -223,7 +223,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="71" column="18" bodyfile="correlation_functions/state.hpp" bodystart="71" bodyend="74"/>
+        <location file="correlation_functions/state.hpp" line="96" column="18" bodyfile="correlation_functions/state.hpp" bodystart="96" bodyend="99"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1ac2f8d0d41d43adbfd784e7679202aa7c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -245,7 +245,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="80" column="18" bodyfile="correlation_functions/state.hpp" bodystart="80" bodyend="83"/>
+        <location file="correlation_functions/state.hpp" line="105" column="18" bodyfile="correlation_functions/state.hpp" bodystart="105" bodyend="108"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1a5f6e5e422424afb07f5971624afce984" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -267,7 +267,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="84" column="18" bodyfile="correlation_functions/state.hpp" bodystart="84" bodyend="87"/>
+        <location file="correlation_functions/state.hpp" line="109" column="18" bodyfile="correlation_functions/state.hpp" bodystart="109" bodyend="112"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1afb8c6f45132d5ace493863f6efb5e0d8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -289,7 +289,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="93" column="18" bodyfile="correlation_functions/state.hpp" bodystart="93" bodyend="96"/>
+        <location file="correlation_functions/state.hpp" line="118" column="18" bodyfile="correlation_functions/state.hpp" bodystart="118" bodyend="121"/>
       </memberdef>
       <memberdef kind="friend" id="d7/d97/classState_1ab532470735bf6ff419fa1c4c33f856ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -311,7 +311,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="103" column="18" bodyfile="correlation_functions/state.hpp" bodystart="103" bodyend="106"/>
+        <location file="correlation_functions/state.hpp" line="128" column="18" bodyfile="correlation_functions/state.hpp" bodystart="128" bodyend="131"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
@@ -327,7 +327,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="29" column="5" bodyfile="correlation_functions/state.hpp" bodystart="29" bodyend="33"/>
+        <location file="correlation_functions/state.hpp" line="34" column="5" bodyfile="correlation_functions/state.hpp" bodystart="34" bodyend="38"/>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a33aa01d752071307a5680a52d333b249" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -349,14 +349,39 @@
           <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></defval>
         </param>
         <briefdescription>
-<para>Initializes state with frequency grids corresponding to the given value of Lambda. </para>
         </briefdescription>
         <detaileddescription>
+<para>Constructor which generates a state with frequency grids corresponding to the given value of Lambda. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>Lambda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value of the regulator Λ. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>config_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of parameters. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>initialize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Determines whether the state has to be initialized or not. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="35" column="14" bodyfile="correlation_functions/state.hpp" bodystart="35" bodyend="37"/>
-        <references refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</references>
+        <location file="correlation_functions/state.hpp" line="45" column="14" bodyfile="correlation_functions/state.hpp" bodystart="45" bodyend="47"/>
+        <references refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a6d532d97650453f6f56bdc581a346b36" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -373,15 +398,32 @@
           <declname>Lambda_in</declname>
         </param>
         <briefdescription>
-<para>Constructor, which gets a <ref refid="d7/d97/classState" kindref="compound">State</ref> (whose frequency grid will be copied) and Lambda (NO COPYING OF DATA!) </para>
         </briefdescription>
         <detaileddescription>
+<para>Constructor which takes a <ref refid="d7/d97/classState" kindref="compound">State</ref> whose frequency grid will be copied. The <ref refid="d7/d97/classState" kindref="compound">State</ref> itself won&apos;t be copied! <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>state_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input <ref refid="d7/d97/classState" kindref="compound">State</ref>. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value of the regulator Λ. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="40" column="5" bodyfile="correlation_functions/state.hpp" bodystart="40" bodyend="41"/>
+        <location file="correlation_functions/state.hpp" line="54" column="5" bodyfile="correlation_functions/state.hpp" bodystart="54" bodyend="55"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="25">State&lt; Q, differentiated &gt;::vertex</references>
+        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="30">State&lt; Q, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a036493f1c5bca2ea04c17372658f895e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -406,13 +448,46 @@
           <declname>Lambda_in</declname>
         </param>
         <briefdescription>
-<para>Takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks. </para>
         </briefdescription>
         <detaileddescription>
+<para>Constructor which takes a single vertex and a single self-energy and puts them together into a new state. Needed for the parquet checks. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input vertex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>selfenergy_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input self-energy. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>config_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of parameters. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value of the regulator Λ. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="44" column="5" bodyfile="correlation_functions/state.hpp" bodystart="44" bodyend="45"/>
+        <location file="correlation_functions/state.hpp" line="64" column="5" bodyfile="correlation_functions/state.hpp" bodystart="64" bodyend="65"/>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -428,23 +503,33 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Initializes a state by setting the asymptotic value of the self-energy and the bare interaction appropriately. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>checks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If true, a check of the Friedel sum rule of the Hartree term of the self-energy of the asymmetric SIAM is done. See the <ref refid="d2/d75/classHartree__Solver" kindref="compound">Hartree_Solver</ref> class. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="47" column="10" bodyfile="correlation_functions/state.hpp" bodystart="125" bodyend="147"/>
-        <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="24">State&lt; Q, differentiated &gt;::config</references>
+        <location file="correlation_functions/state.hpp" line="72" column="10" bodyfile="correlation_functions/state.hpp" bodystart="150" bodyend="172"/>
+        <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="29">State&lt; Q, differentiated &gt;::config</references>
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
-        <references refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="967" endline="970">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</references>
-        <references refid="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513" compoundref="d6/d2d/selfenergy_8hpp" startline="153" endline="157">SelfEnergy&lt; Q &gt;::initialize</references>
+        <references refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="1041" endline="1044">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</references>
+        <references refid="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513" compoundref="d6/d2d/selfenergy_8hpp" startline="166" endline="170">SelfEnergy&lt; Q &gt;::initialize</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
-        <references refid="d7/d97/classState_1a9e862ceeb13ad0e25034e81e87459265" compoundref="da/d3b/state_8hpp" startline="23">State&lt; Q, differentiated &gt;::Lambda</references>
+        <references refid="d7/d97/classState_1a9e862ceeb13ad0e25034e81e87459265" compoundref="da/d3b/state_8hpp" startline="28">State&lt; Q, differentiated &gt;::Lambda</references>
         <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="17">shift_fgrids_woPHS</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
-        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="25">State&lt; Q, differentiated &gt;::vertex</references>
-        <referencedby refid="d7/d97/classState_1a33aa01d752071307a5680a52d333b249" compoundref="da/d3b/state_8hpp" startline="35" endline="37">State&lt; Q, differentiated &gt;::State</referencedby>
+        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="30">State&lt; Q, differentiated &gt;::vertex</references>
+        <referencedby refid="d7/d97/classState_1a33aa01d752071307a5680a52d333b249" compoundref="da/d3b/state_8hpp" startline="45" endline="47">State&lt; Q, differentiated &gt;::State</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -462,15 +547,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="48" column="10" bodyfile="correlation_functions/state.hpp" bodystart="155" bodyend="159"/>
-        <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="24">State&lt; Q, differentiated &gt;::config</references>
+        <location file="correlation_functions/state.hpp" line="73" column="10" bodyfile="correlation_functions/state.hpp" bodystart="180" bodyend="184"/>
+        <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="29">State&lt; Q, differentiated &gt;::config</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
         <references refid="d7/d59/data__structures_8hpp_1a5b6ea4ce336353d3b6af014581c163a5" compoundref="d7/d59/data__structures_8hpp" startline="94" endline="94">myreal</references>
-        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="26">State&lt; Q, differentiated &gt;::selfenergy</references>
+        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="17">shift_fgrids_woPHS</references>
-        <references refid="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" compoundref="d6/d2d/selfenergy_8hpp" startline="250" endline="253">SelfEnergy&lt; Q &gt;::update_grid</references>
-        <references refid="d2/d4a/classGeneralVertex_1a388a400c48885ac12f13aaa3864c0b89" compoundref="d1/d2d/vertex_8hpp" startline="950" endline="953">GeneralVertex&lt; Q, symmtype, differentiated &gt;::update_grid</references>
+        <references refid="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" compoundref="d6/d2d/selfenergy_8hpp" startline="263" endline="266">SelfEnergy&lt; Q &gt;::update_grid</references>
+        <references refid="d2/d4a/classGeneralVertex_1a388a400c48885ac12f13aaa3864c0b89" compoundref="d1/d2d/vertex_8hpp" startline="1024" endline="1027">GeneralVertex&lt; Q, symmtype, differentiated &gt;::update_grid</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a85527803dbcedce85301a0831b1c473d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -488,9 +573,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="49" column="10" bodyfile="correlation_functions/state.hpp" bodystart="162" bodyend="165"/>
-        <references refid="d5/df6/classSelfEnergy_1a48b989837676cebb7043a4f14ae02203" compoundref="d6/d2d/selfenergy_8hpp" startline="314" endline="317">SelfEnergy&lt; Q &gt;::findBestFreqGrid</references>
-        <references refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="783" endline="783">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</references>
+        <location file="correlation_functions/state.hpp" line="74" column="10" bodyfile="correlation_functions/state.hpp" bodystart="187" bodyend="190"/>
+        <references refid="d5/df6/classSelfEnergy_1a48b989837676cebb7043a4f14ae02203" compoundref="d6/d2d/selfenergy_8hpp" startline="327" endline="330">SelfEnergy&lt; Q &gt;::findBestFreqGrid</references>
+        <references refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="857" endline="857">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1aa5e0b0c02b861f0cd2555ef34a4584b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -508,10 +593,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="50" column="10" bodyfile="correlation_functions/state.hpp" bodystart="150" bodyend="153"/>
+        <location file="correlation_functions/state.hpp" line="75" column="10" bodyfile="correlation_functions/state.hpp" bodystart="175" bodyend="178"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a19ee736254b3fdbbdf13bb99af1bc2a4" compoundref="d1/d2d/vertex_8hpp" startline="945" endline="948">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_frequency_grid</references>
-        <references refid="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8" compoundref="d6/d2d/selfenergy_8hpp" startline="246" endline="248">SelfEnergy&lt; Q &gt;::set_frequency_grid</references>
+        <references refid="d2/d4a/classGeneralVertex_1a19ee736254b3fdbbdf13bb99af1bc2a4" compoundref="d1/d2d/vertex_8hpp" startline="1019" endline="1022">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_frequency_grid</references>
+        <references refid="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8" compoundref="d6/d2d/selfenergy_8hpp" startline="259" endline="261">SelfEnergy&lt; Q &gt;::set_frequency_grid</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1aceb570905ab47b961c43d16ac62a0dda" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -529,9 +614,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="53" column="10" bodyfile="correlation_functions/state.hpp" bodystart="53" bodyend="57"/>
+        <location file="correlation_functions/state.hpp" line="78" column="10" bodyfile="correlation_functions/state.hpp" bodystart="78" bodyend="82"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a54a61d0e029565105bfc668949ce6611" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -549,7 +634,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="62" column="10" bodyfile="correlation_functions/state.hpp" bodystart="62" bodyend="66"/>
+        <location file="correlation_functions/state.hpp" line="87" column="10" bodyfile="correlation_functions/state.hpp" bodystart="87" bodyend="91"/>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1aed5d7d555218849fbd9e03df0fc7e006" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -567,7 +652,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="75" column="10" bodyfile="correlation_functions/state.hpp" bodystart="75" bodyend="79"/>
+        <location file="correlation_functions/state.hpp" line="100" column="10" bodyfile="correlation_functions/state.hpp" bodystart="100" bodyend="104"/>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1afecbd00b0fda604abb85ecf3d8423cc0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -585,9 +670,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="88" column="10" bodyfile="correlation_functions/state.hpp" bodystart="88" bodyend="92"/>
+        <location file="correlation_functions/state.hpp" line="113" column="10" bodyfile="correlation_functions/state.hpp" bodystart="113" bodyend="117"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a26e54b23b72447a7cc0b120c72af3180" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -600,15 +685,14 @@
           <declname>state</declname>
         </param>
         <briefdescription>
-<para>Element-wise division (needed for error estimate in ODE solver) </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="98" column="10" bodyfile="correlation_functions/state.hpp" bodystart="98" bodyend="102"/>
+        <location file="correlation_functions/state.hpp" line="123" column="10" bodyfile="correlation_functions/state.hpp" bodystart="123" bodyend="127"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1aff40007121488153c21f0432e1cadf36" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -622,9 +706,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="108" column="10" bodyfile="correlation_functions/state.hpp" bodystart="167" bodyend="170"/>
-        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="26">State&lt; Q, differentiated &gt;::selfenergy</references>
-        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="25">State&lt; Q, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/state.hpp" line="133" column="10" bodyfile="correlation_functions/state.hpp" bodystart="192" bodyend="195"/>
+        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
+        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="30">State&lt; Q, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1a504a0b837e47e37e3cc638555a3fca63" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -638,10 +722,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="110" column="10" bodyfile="correlation_functions/state.hpp" bodystart="172" bodyend="177"/>
+        <location file="correlation_functions/state.hpp" line="135" column="10" bodyfile="correlation_functions/state.hpp" bodystart="197" bodyend="202"/>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
-        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="26">State&lt; Q, differentiated &gt;::selfenergy</references>
-        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="25">State&lt; Q, differentiated &gt;::vertex</references>
+        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
+        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="30">State&lt; Q, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1af8d534b130171535c9fbfb0cdb2ea0e5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -655,10 +739,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="112" column="10" bodyfile="correlation_functions/state.hpp" bodystart="112" bodyend="119"/>
+        <location file="correlation_functions/state.hpp" line="137" column="10" bodyfile="correlation_functions/state.hpp" bodystart="137" bodyend="144"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="26">State&lt; Q, differentiated &gt;::selfenergy</references>
-        <referencedby refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="200" endline="203">abs</referencedby>
+        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
+        <referencedby refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="225" endline="228">abs</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d97/classState_1ac507d44949f78a583a7bed16fa9fcde9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -672,17 +756,33 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/state.hpp" line="121" column="10" bodyfile="correlation_functions/state.hpp" bodystart="180" bodyend="185"/>
+        <location file="correlation_functions/state.hpp" line="146" column="10" bodyfile="correlation_functions/state.hpp" bodystart="205" bodyend="210"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="26">State&lt; Q, differentiated &gt;::selfenergy</references>
-        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="25">State&lt; Q, differentiated &gt;::vertex</references>
+        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
+        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="30">State&lt; Q, differentiated &gt;::vertex</references>
       </memberdef>
     </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Define a struct object which includes the self-energy and the vertex which are needed to evaluate the RHS of the flow equations.</para>
-<para>Define essential data types: comp : complex number (complex&lt;double&gt;) glb_i : imaginary unit vec : vector class with additional functionality such as element-wise operations, real/imag part etc. <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> : auxiliary struct that contains all input variables of vertices</para>
+<para>Define a struct object which includes the self-energy and the vertex which are needed to evaluate the RHS of the flow equations. Class used for the state Ψ = (Σ, Γ). <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>differentiated</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Determines whether the state is differentiated.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Define essential data types: comp : complex number (complex&lt;double&gt;) glb_i : imaginary unit vec : vector class with additional functionality such as element-wise operations, real/imag part etc. <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> : auxiliary struct that contains all input variables of vertices</para>
 <para>Functions to write/read a <ref refid="d7/d97/classState" kindref="compound">State</ref> object to/from an HDF5 file. </para>
     </detaileddescription>
     <inheritancegraph>
@@ -857,7 +957,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="correlation_functions/state.hpp" line="18" column="1" bodyfile="correlation_functions/state.hpp" bodystart="18" bodyend="122"/>
+    <location file="correlation_functions/state.hpp" line="23" column="1" bodyfile="correlation_functions/state.hpp" bodystart="23" bodyend="147"/>
     <listofallmembers>
       <member refid="d7/d97/classState_1af8d534b130171535c9fbfb0cdb2ea0e5" prot="public" virt="non-virtual"><scope>State</scope><name>abs</name></member>
       <member refid="d7/d97/classState_1a504a0b837e47e37e3cc638555a3fca63" prot="public" virt="non-virtual"><scope>State</scope><name>analyze_tails</name></member>

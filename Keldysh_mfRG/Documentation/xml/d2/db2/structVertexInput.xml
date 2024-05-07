@@ -40,12 +40,12 @@
         </inbodydescription>
         <location file="data_structures.hpp" line="538" column="14" bodyfile="data_structures.hpp" bodystart="538" bodyend="-1"/>
         <referencedby refid="d2/db2/structVertexInput_1aedad3a03674a56618fdb53d2b7284aea" compoundref="d7/d59/data__structures_8hpp" startline="556" endline="577">get_freqs</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a9c60e78db51bb564c5f5b48e361773fe" compoundref="d1/d2d/vertex_8hpp" startline="1258" endline="1295">fullvert&lt; Q &gt;::left_same_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a979ab081a5d2c7cf842864d4881eee58" compoundref="d1/d2d/vertex_8hpp" startline="1296" endline="1333">fullvert&lt; Q &gt;::left_same_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a21ba518424bd3c9b2575d9d8b6476c43" compoundref="d1/d2d/vertex_8hpp" startline="1543" endline="1596">fullvert&lt; Q &gt;::left_same_bare_symmetry_expanded</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a1517ecda5f1d20e6d934010cec48745e" compoundref="d1/d2d/vertex_8hpp" startline="1335" endline="1372">fullvert&lt; Q &gt;::right_same_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1af914c469c229333915893485a0105d15" compoundref="d1/d2d/vertex_8hpp" startline="1373" endline="1410">fullvert&lt; Q &gt;::right_same_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1af1efc317b029dcf0a0a03ff1f7d69d71" compoundref="d1/d2d/vertex_8hpp" startline="1597" endline="1650">fullvert&lt; Q &gt;::right_same_bare_symmetry_expanded</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a9c60e78db51bb564c5f5b48e361773fe" compoundref="d1/d2d/vertex_8hpp" startline="1332" endline="1369">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a979ab081a5d2c7cf842864d4881eee58" compoundref="d1/d2d/vertex_8hpp" startline="1370" endline="1407">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a21ba518424bd3c9b2575d9d8b6476c43" compoundref="d1/d2d/vertex_8hpp" startline="1617" endline="1670">fullvert&lt; Q &gt;::left_same_bare_symmetry_expanded</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a1517ecda5f1d20e6d934010cec48745e" compoundref="d1/d2d/vertex_8hpp" startline="1409" endline="1446">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1af914c469c229333915893485a0105d15" compoundref="d1/d2d/vertex_8hpp" startline="1447" endline="1484">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1af1efc317b029dcf0a0a03ff1f7d69d71" compoundref="d1/d2d/vertex_8hpp" startline="1671" endline="1724">fullvert&lt; Q &gt;::right_same_bare_symmetry_expanded</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/db2/structVertexInput_1a250f273f9a3993a6865ed039a2e0d2cd" prot="public" static="no" mutable="no">
         <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>

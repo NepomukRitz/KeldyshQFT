@@ -11,9 +11,13 @@
 #include "../../utilities/write_data2file.hpp"
 #include "../../interpolations/InterpolatorLinOrSloppy.hpp"
 
-/// TODO: Use Vertex buffer for self-energy
 
 /****************** CLASS FOR SELF-ENERGY *************/
+
+/**
+ * Class used for the 2-point self-energy Σ.
+ * @tparam Q Type of the data.
+ */
 template <typename Q>
 class SelfEnergy{
 public:
@@ -25,13 +29,21 @@ public:
 
 private:
 
-
-
 public:
     buffer_type Sigma;
     Q asymp_val_R = 0.;   //Asymptotic value for the Retarded SE
 
+    /**
+     * Constructor for a given regulator Λ and a set of parameters. The frequency grid is set accordingly.
+     * @param Lambda Value of the regulator Λ.
+     * @param config Set of parameters.
+     */
     explicit  SelfEnergy(double Lambda, const fRG_config& config) : Sigma(Lambda, SE_config.dims, config) {};
+
+    /**
+     * Constructor for a given frequency grid.
+     * @param frequencies_in Frequency grid.
+     */
     explicit  SelfEnergy(const freqGrid_type& frequencies_in) : Sigma(0, SE_config.dims, fRG_config()) {Sigma.set_VertexFreqGrid( frequencies_in);};
 
     void initialize(Q valR, Q valK);    //Initializes SE to given values
@@ -53,17 +65,17 @@ public:
         return result;
     }
 
-    /// Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2
+    // Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2
     void update_grid(double Lambda, const fRG_config& config);
-    /// Interpolate self-energy to input grid
+    // Interpolate self-energy to input grid
     void update_grid(const freqGrid_type&  frequencies_new);   // Interpolate self-energy to updated grid
-    /// Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma
+    // Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma
     void update_grid(const freqGrid_type&  frequencies_new, SelfEnergy<Q> selfEnergy4Sigma);
-    /// finds optimal grid parameters with minimizer()
+    // finds optimal grid parameters with minimizer()
     void findBestFreqGrid(bool verbose);       // optimize frequency grid parameters and update self-energy on new grid
     auto shrink_freq_box(double rel_tail_threshold) const -> freqGrid_type ;       // optimize frequency grid parameters and update self-energy on new grid
     double analyze_tails(bool verbose) const;
-    /// computes finite differences of Sigma
+    // computes finite differences of Sigma
     double get_deriv_maxSE(bool verbose) const;
     double get_curvature_maxSE(bool verbose) const;
 
@@ -125,7 +137,7 @@ public:
         lhs -= rhs;
         return lhs;
     }
-    /// Elementwise division (needed for error estimate of adaptive ODE solvers)
+    // Elementwise division (needed for error estimate of adaptive ODE solvers)
     auto operator/= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma /= self1.Sigma;
         this->asymp_val_R /= self1.asymp_val_R;
@@ -144,6 +156,7 @@ public:
 
 
 /*****************************************FUNCTIONS FOR SELF-ENERGY*****************************************************/
+
 /**
  * Function initializes the Retarded and Keldysh components of the self-energy
  * @tparam Q    : Type of values (usually comp)
@@ -198,10 +211,10 @@ template <typename Q> void SelfEnergy<Q>::direct_set(int i, Q val) {
  * @param i_in  : Internal index
  * @return      : Interpolated value using the saved values as basis
  */
-template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {//smoothly interpolates for values between discrete frequency values of mesh
+template <typename Q> auto SelfEnergy<Q>::valsmooth(int iK, double v, int i_in) const -> Q {// smoothly interpolates for values between discrete frequency values of mesh
 
-    if (std::abs(v) > Sigma.frequencies.get_wupper_b() + inter_tol)    //Check the range of frequency. If too large, return Sigma(\infty)
-        //Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
+    if (std::abs(v) > Sigma.frequencies.get_wupper_b() + inter_tol)    // Check the range of frequency. If too large, return Sigma(\infty)
+        // Returns asymptotic value (Hartree contribution for retarded and 0. for Keldysh component)
         return (1.-(double)iK)*(this->asymp_val_R);
     else {
     Q result;

@@ -963,7 +963,7 @@
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
         <references refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <references refid="d9/d8b/write__data2file_8c_09_09_1a9992b4a1a01038cb7f3f462bb3c2e63c" compoundref="d9/d8b/write__data2file_8c_09_09" startline="19" endline="37">write_h5_rvecs</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
       </memberdef>

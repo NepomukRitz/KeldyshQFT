@@ -243,10 +243,10 @@
         <location file="ODE_solvers/ODE_solvers.hpp" line="296" column="10" bodyfile="ODE_solvers/ODE_solvers.hpp" bodystart="296" bodyend="361"/>
         <references refid="d8/d66/structODE__solver__config_1a53e79394ef7c954a2bc546ed7e6a02fa" compoundref="de/d91/ODE__solver__config_8hpp" startline="63">ODE_solver_config::a_dState_dLambda</references>
         <references refid="d8/d66/structODE__solver__config_1a5b09f29d1e624a35e3276afb05065892" compoundref="de/d91/ODE__solver__config_8hpp" startline="62">ODE_solver_config::a_State</references>
-        <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="200" endline="203">abs</references>
+        <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="225" endline="228">abs</references>
         <references refid="d8/d66/structODE__solver__config_1a3a78a13774a6da9bd2adceaec2340352" compoundref="de/d91/ODE__solver__config_8hpp" startline="61">ODE_solver_config::absolute_error</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="da/d3b/state_8hpp_1afc2ea5398aa148505c631ee1a2345c71" compoundref="da/d3b/state_8hpp" startline="189" endline="197">max_rel_err</references>
+        <references refid="da/d3b/state_8hpp_1afc2ea5398aa148505c631ee1a2345c71" compoundref="da/d3b/state_8hpp" startline="214" endline="222">max_rel_err</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d8/d66/structODE__solver__config_1ad7cd18e32d999c84a2fa487af18ab08b" compoundref="de/d91/ODE__solver__config_8hpp" startline="60">ODE_solver_config::relative_error</references>
         <references refid="d1/df8/master__parameters_8hpp_1aaf458c464b2ca2a36803b018df2a927b" compoundref="d1/df8/master__parameters_8hpp" startline="97">REPARAMETRIZE_FLOWGRID</references>

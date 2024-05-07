@@ -170,10 +170,14 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">class</a> Q&gt;<br />
-class irreducible&lt; Q &gt;</div><p>Reducible vertex in channel r, split into diagrammatic classes K1, K2, K2b, K3. Member functions allow for access of values at arbitrary frequencies and in each channel-specific frequency representation. Possible (unit-)tests: [IMPLEMENTED in test_symmetries.c++] check read-out from symmetry-reduced sector and correctness of symmetry tables [MISSING] check conversion of frequency conventions</p>
-<p>Possible unit-tests Do the public functions return the correct vertex-contributions? </p>
+class irreducible&lt; Q &gt;</div><p>The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Q</td><td>Type of the data. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00019">19</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00020">20</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="ac82eac054c899bb5688b376a2b0cbeff" name="ac82eac054c899bb5688b376a2b0cbeff"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac82eac054c899bb5688b376a2b0cbeff">&#9670;&#160;</a></span>buffer_type</h2>
@@ -197,7 +201,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00021">21</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00022">22</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
 
 </div>
 </div>
@@ -247,14 +251,14 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01153">1153</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 1153</span>                                                               {</div>
-<div class="line"><span class="lineno"> 1154</span>   <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&gt;=0 &amp;&amp; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&lt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ad571a58ef74d80ea42ab143c7735b5fb">size</a>());</div>
-<div class="line"><span class="lineno"> 1155</span>   <span class="keywordflow">return</span> <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae95e38ba06e10e921ed2fe0101bf699f">flat_at</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>);</div>
-<div class="line"><span class="lineno"> 1156</span>   <span class="comment">//else {utils::print(&quot;ERROR: Tried to access value outside of range in irreducible vertex. Abort.&quot;); assert(false);}</span></div>
-<div class="line"><span class="lineno"> 1157</span>}</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01227">1227</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno"> 1227</span>                                                               {</div>
+<div class="line"><span class="lineno"> 1228</span>   <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&gt;=0 &amp;&amp; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&lt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ad571a58ef74d80ea42ab143c7735b5fb">size</a>());</div>
+<div class="line"><span class="lineno"> 1229</span>   <span class="keywordflow">return</span> <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae95e38ba06e10e921ed2fe0101bf699f">flat_at</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>);</div>
+<div class="line"><span class="lineno"> 1230</span>   <span class="comment">//else {utils::print(&quot;ERROR: Tried to access value outside of range in irreducible vertex. Abort.&quot;); assert(false);}</span></div>
+<div class="line"><span class="lineno"> 1231</span>}</div>
 <div class="ttc" id="abubble__corrections_8hpp_html_aff27784f97591f505f77ff0065ab57af"><div class="ttname"><a href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">correctionFunctionBubble_REG3_Matsubara_PHS_diff</a></div><div class="ttdeci">auto correctionFunctionBubble_REG3_Matsubara_PHS_diff(double w, double vmax, double Lambda, const double Delta)</div><div class="ttdef"><b>Definition</b> <a href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">bubble_corrections.hpp:295</a></div></div>
-<div class="ttc" id="aclassirreducible_html_af3459dcb9b9daab9df0dc33cd03b160d"><div class="ttname"><a href="#af3459dcb9b9daab9df0dc33cd03b160d">irreducible::bare</a></div><div class="ttdeci">buffer_type bare</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l00026">vertex.hpp:26</a></div></div>
+<div class="ttc" id="aclassirreducible_html_af3459dcb9b9daab9df0dc33cd03b160d"><div class="ttname"><a href="#af3459dcb9b9daab9df0dc33cd03b160d">irreducible::bare</a></div><div class="ttdeci">buffer_type bare</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l00027">vertex.hpp:27</a></div></div>
 <div class="ttc" id="aclassmultidimensional_1_1multiarray_html_ad571a58ef74d80ea42ab143c7735b5fb"><div class="ttname"><a href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ad571a58ef74d80ea42ab143c7735b5fb">multidimensional::multiarray::size</a></div><div class="ttdeci">size_type size() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="../../df/da4/multiarray_8hpp_source.html#l00558">multiarray.hpp:558</a></div></div>
 <div class="ttc" id="aclassmultidimensional_1_1multiarray_html_ae95e38ba06e10e921ed2fe0101bf699f"><div class="ttname"><a href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae95e38ba06e10e921ed2fe0101bf699f">multidimensional::multiarray::flat_at</a></div><div class="ttdeci">T &amp; flat_at(size_type i)</div><div class="ttdoc">flat access</div><div class="ttdef"><b>Definition</b> <a href="../../df/da4/multiarray_8hpp_source.html#l00363">multiarray.hpp:363</a></div></div>
 </div><!-- fragment -->
@@ -283,12 +287,12 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01159">1159</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 1159</span>                                                                    {</div>
-<div class="line"><span class="lineno"> 1160</span>    <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&gt;=0 &amp;&amp; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&lt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ad571a58ef74d80ea42ab143c7735b5fb">size</a>());</div>
-<div class="line"><span class="lineno"> 1161</span>    <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae95e38ba06e10e921ed2fe0101bf699f">flat_at</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>)=value;</div>
-<div class="line"><span class="lineno"> 1162</span>    <span class="comment">//else {utils::print(&quot;ERROR: Tried to access value outside of range in irreducible vertex. Abort.&quot;); assert(false);}</span></div>
-<div class="line"><span class="lineno"> 1163</span>}</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01233">1233</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno"> 1233</span>                                                                    {</div>
+<div class="line"><span class="lineno"> 1234</span>    <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&gt;=0 &amp;&amp; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>&lt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ad571a58ef74d80ea42ab143c7735b5fb">size</a>());</div>
+<div class="line"><span class="lineno"> 1235</span>    <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae95e38ba06e10e921ed2fe0101bf699f">flat_at</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>)=value;</div>
+<div class="line"><span class="lineno"> 1236</span>    <span class="comment">//else {utils::print(&quot;ERROR: Tried to access value outside of range in irreducible vertex. Abort.&quot;); assert(false);}</span></div>
+<div class="line"><span class="lineno"> 1237</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>.</p>
 
@@ -319,12 +323,12 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00022">22</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   22</span>                             {</div>
-<div class="line"><span class="lineno">   23</span>        <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#afab5195e3ffff420d211040e5672fcbe">KELDYSH</a>) <span class="keywordflow">return</span> <a class="code hl_typedef" href="#ac82eac054c899bb5688b376a2b0cbeff">buffer_type</a> ({16,<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>});</div>
-<div class="line"><span class="lineno">   24</span>        <span class="keywordflow">else</span> <span class="keywordflow">return</span> <a class="code hl_typedef" href="#ac82eac054c899bb5688b376a2b0cbeff">buffer_type</a> ({1, <a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>});</div>
-<div class="line"><span class="lineno">   25</span>    }</div>
-<div class="ttc" id="aclassirreducible_html_ac82eac054c899bb5688b376a2b0cbeff"><div class="ttname"><a href="#ac82eac054c899bb5688b376a2b0cbeff">irreducible::buffer_type</a></div><div class="ttdeci">multidimensional::multiarray&lt; Q, 2 &gt; buffer_type</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l00021">vertex.hpp:21</a></div></div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00023">23</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   23</span>                             {</div>
+<div class="line"><span class="lineno">   24</span>        <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#afab5195e3ffff420d211040e5672fcbe">KELDYSH</a>) <span class="keywordflow">return</span> <a class="code hl_typedef" href="#ac82eac054c899bb5688b376a2b0cbeff">buffer_type</a> ({16,<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>});</div>
+<div class="line"><span class="lineno">   25</span>        <span class="keywordflow">else</span> <span class="keywordflow">return</span> <a class="code hl_typedef" href="#ac82eac054c899bb5688b376a2b0cbeff">buffer_type</a> ({1, <a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>});</div>
+<div class="line"><span class="lineno">   26</span>    }</div>
+<div class="ttc" id="aclassirreducible_html_ac82eac054c899bb5688b376a2b0cbeff"><div class="ttname"><a href="#ac82eac054c899bb5688b376a2b0cbeff">irreducible::buffer_type</a></div><div class="ttdeci">multidimensional::multiarray&lt; Q, 2 &gt; buffer_type</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l00022">vertex.hpp:22</a></div></div>
 <div class="ttc" id="amaster__parameters_8hpp_html_a37f8dd24020d8c5bf068a780c61d1fb8"><div class="ttname"><a href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a></div><div class="ttdeci">constexpr int n_in</div><div class="ttdef"><b>Definition</b> <a href="../../d1/df8/master__parameters_8hpp_source.html#l00079">master_parameters.hpp:79</a></div></div>
 <div class="ttc" id="amaster__parameters_8hpp_html_afab5195e3ffff420d211040e5672fcbe"><div class="ttname"><a href="../../d1/df8/master__parameters_8hpp.html#afab5195e3ffff420d211040e5672fcbe">KELDYSH</a></div><div class="ttdeci">constexpr bool KELDYSH</div><div class="ttdoc">Set flags used in code; DO NOT TOUCH!!!///.</div><div class="ttdef"><b>Definition</b> <a href="../../d1/df8/master__parameters_8hpp_source.html#l00137">master_parameters.hpp:137</a></div></div>
 </div><!-- fragment -->
@@ -357,10 +361,10 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00043">43</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   43</span>{<span class="keywordflow">return</span> <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>;}</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00057">57</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   57</span>{<span class="keywordflow">return</span> <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>;}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00026">irreducible&lt; Q &gt;::bare</a>.</p>
+<p class="reference">References <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00027">irreducible&lt; Q &gt;::bare</a>.</p>
 
 </div>
 </div>
@@ -380,35 +384,41 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Initialize the irreducible vertex. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val</td><td>Value of the bare interaction. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01169">1169</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 1169</span>                                                           {</div>
-<div class="line"><span class="lineno"> 1170</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#afab5195e3ffff420d211040e5672fcbe">KELDYSH</a>){</div>
-<div class="line"><span class="lineno"> 1171</span>        <span class="keywordflow">if</span> (<a class="code hl_define" href="../../d1/df8/master__parameters_8hpp.html#a209c004ba9b216412cae0ca89758f1a9">CONTOUR_BASIS</a> != 1) {</div>
-<div class="line"><span class="lineno"> 1172</span>            <span class="comment">// Keldysh basis:</span></div>
-<div class="line"><span class="lineno"> 1173</span>            <span class="keywordflow">for</span> (<span class="keyword">auto</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>:<a class="code hl_function" href="../../d2/d1a/Keldysh__symmetries_8hpp.html#a619bef4c8f4c8b4e4e11ac1fc8a37676">odd_Keldysh</a>) {</div>
-<div class="line"><span class="lineno"> 1174</span>                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in=0; i_in&lt;<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++i_in) {</div>
-<div class="line"><span class="lineno"> 1175</span>                    this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>, i_in, <a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>);</div>
-<div class="line"><span class="lineno"> 1176</span>                }</div>
-<div class="line"><span class="lineno"> 1177</span>            }</div>
-<div class="line"><span class="lineno"> 1178</span>        }</div>
-<div class="line"><span class="lineno"> 1179</span>        <span class="keywordflow">else</span> {</div>
-<div class="line"><span class="lineno"> 1180</span>            <span class="comment">// Contour basis:</span></div>
-<div class="line"><span class="lineno"> 1181</span>            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in=0; i_in&lt;<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++i_in) {</div>
-<div class="line"><span class="lineno"> 1182</span>                this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>( 0, i_in, <a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>); <span class="comment">// for forward contour</span></div>
-<div class="line"><span class="lineno"> 1183</span>                this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>(15, i_in,-<a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>); <span class="comment">// for backward contour</span></div>
-<div class="line"><span class="lineno"> 1184</span>            }</div>
-<div class="line"><span class="lineno"> 1185</span>        }</div>
-<div class="line"><span class="lineno"> 1186</span>    }</div>
-<div class="line"><span class="lineno"> 1187</span>    <span class="keywordflow">else</span>{</div>
-<div class="line"><span class="lineno"> 1188</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in=0; i_in&lt;<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++i_in) {</div>
-<div class="line"><span class="lineno"> 1189</span>            this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>(0, i_in, <a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>);</div>
-<div class="line"><span class="lineno"> 1190</span>        }</div>
-<div class="line"><span class="lineno"> 1191</span>    }</div>
-<div class="line"><span class="lineno"> 1192</span>}</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01243">1243</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno"> 1243</span>                                                           {</div>
+<div class="line"><span class="lineno"> 1244</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#afab5195e3ffff420d211040e5672fcbe">KELDYSH</a>){</div>
+<div class="line"><span class="lineno"> 1245</span>        <span class="keywordflow">if</span> (<a class="code hl_define" href="../../d1/df8/master__parameters_8hpp.html#a209c004ba9b216412cae0ca89758f1a9">CONTOUR_BASIS</a> != 1) {</div>
+<div class="line"><span class="lineno"> 1246</span>            <span class="comment">// Keldysh basis:</span></div>
+<div class="line"><span class="lineno"> 1247</span>            <span class="keywordflow">for</span> (<span class="keyword">auto</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>:<a class="code hl_function" href="../../d2/d1a/Keldysh__symmetries_8hpp.html#a619bef4c8f4c8b4e4e11ac1fc8a37676">odd_Keldysh</a>) {</div>
+<div class="line"><span class="lineno"> 1248</span>                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in=0; i_in&lt;<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++i_in) {</div>
+<div class="line"><span class="lineno"> 1249</span>                    this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>, i_in, <a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>);</div>
+<div class="line"><span class="lineno"> 1250</span>                }</div>
+<div class="line"><span class="lineno"> 1251</span>            }</div>
+<div class="line"><span class="lineno"> 1252</span>        }</div>
+<div class="line"><span class="lineno"> 1253</span>        <span class="keywordflow">else</span> {</div>
+<div class="line"><span class="lineno"> 1254</span>            <span class="comment">// Contour basis:</span></div>
+<div class="line"><span class="lineno"> 1255</span>            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in=0; i_in&lt;<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++i_in) {</div>
+<div class="line"><span class="lineno"> 1256</span>                this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>( 0, i_in, <a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>); <span class="comment">// for forward contour</span></div>
+<div class="line"><span class="lineno"> 1257</span>                this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>(15, i_in,-<a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>); <span class="comment">// for backward contour</span></div>
+<div class="line"><span class="lineno"> 1258</span>            }</div>
+<div class="line"><span class="lineno"> 1259</span>        }</div>
+<div class="line"><span class="lineno"> 1260</span>    }</div>
+<div class="line"><span class="lineno"> 1261</span>    <span class="keywordflow">else</span>{</div>
+<div class="line"><span class="lineno"> 1262</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i_in=0; i_in&lt;<a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#a37f8dd24020d8c5bf068a780c61d1fb8">n_in</a>; ++i_in) {</div>
+<div class="line"><span class="lineno"> 1263</span>            this-&gt;<a class="code hl_function" href="#a327c7420e3103e5c5e22fe7ab37a4ffc">setvert</a>(0, i_in, <a class="code hl_function" href="#a9621a3ec926627a203e91004e99d53aa">val</a>);</div>
+<div class="line"><span class="lineno"> 1264</span>        }</div>
+<div class="line"><span class="lineno"> 1265</span>    }</div>
+<div class="line"><span class="lineno"> 1266</span>}</div>
 <div class="ttc" id="aKeldysh__symmetries_8hpp_html_a619bef4c8f4c8b4e4e11ac1fc8a37676"><div class="ttname"><a href="../../d2/d1a/Keldysh__symmetries_8hpp.html#a619bef4c8f4c8b4e4e11ac1fc8a37676">odd_Keldysh</a></div><div class="ttdeci">const std::vector&lt; int &gt; odd_Keldysh({1, 2, 4, 7, 8, 11, 13, 14})</div></div>
-<div class="ttc" id="aclassirreducible_html_a327c7420e3103e5c5e22fe7ab37a4ffc"><div class="ttname"><a href="#a327c7420e3103e5c5e22fe7ab37a4ffc">irreducible::setvert</a></div><div class="ttdeci">void setvert(int iK, int i_in, Q)</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l01165">vertex.hpp:1165</a></div></div>
-<div class="ttc" id="aclassirreducible_html_a9621a3ec926627a203e91004e99d53aa"><div class="ttname"><a href="#a9621a3ec926627a203e91004e99d53aa">irreducible::val</a></div><div class="ttdeci">auto val(my_index_t iK, my_index_t i_in, my_index_t spin) const -&gt; result_type</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l01114">vertex.hpp:1114</a></div></div>
+<div class="ttc" id="aclassirreducible_html_a327c7420e3103e5c5e22fe7ab37a4ffc"><div class="ttname"><a href="#a327c7420e3103e5c5e22fe7ab37a4ffc">irreducible::setvert</a></div><div class="ttdeci">void setvert(int iK, int i_in, Q)</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l01239">vertex.hpp:1239</a></div></div>
+<div class="ttc" id="aclassirreducible_html_a9621a3ec926627a203e91004e99d53aa"><div class="ttname"><a href="#a9621a3ec926627a203e91004e99d53aa">irreducible::val</a></div><div class="ttdeci">auto val(my_index_t iK, my_index_t i_in, my_index_t spin) const -&gt; result_type</div><div class="ttdef"><b>Definition</b> <a href="../../d1/d2d/vertex_8hpp_source.html#l01188">vertex.hpp:1188</a></div></div>
 <div class="ttc" id="amaster__parameters_8hpp_html_a209c004ba9b216412cae0ca89758f1a9"><div class="ttname"><a href="../../d1/df8/master__parameters_8hpp.html#a209c004ba9b216412cae0ca89758f1a9">CONTOUR_BASIS</a></div><div class="ttdeci">#define CONTOUR_BASIS</div><div class="ttdef"><b>Definition</b> <a href="../../d1/df8/master__parameters_8hpp_source.html#l00020">master_parameters.hpp:20</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../d1/df8/master__parameters_8hpp_source.html#l00020">CONTOUR_BASIS</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../d1/df8/master__parameters_8hpp_source.html#l00137">KELDYSH</a>, <a class="el" href="../../d1/df8/master__parameters_8hpp_source.html#l00079">n_in</a>, and <a class="el" href="../../d2/d1a/Keldysh__symmetries_8hpp.html#a619bef4c8f4c8b4e4e11ac1fc8a37676">odd_Keldysh()</a>.</p>
@@ -440,11 +450,11 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00068">68</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   68</span>                                                            {</div>
-<div class="line"><span class="lineno">   69</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> *=alpha;</div>
-<div class="line"><span class="lineno">   70</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">   71</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00082">82</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   82</span>                                                            {</div>
+<div class="line"><span class="lineno">   83</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> *=alpha;</div>
+<div class="line"><span class="lineno">   84</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">   85</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -473,11 +483,11 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00075">75</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   75</span>                                                                     {</div>
-<div class="line"><span class="lineno">   76</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> *= vertex.bare;</div>
-<div class="line"><span class="lineno">   77</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">   78</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00089">89</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   89</span>                                                                     {</div>
+<div class="line"><span class="lineno">   90</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> *= vertex.bare;</div>
+<div class="line"><span class="lineno">   91</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">   92</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -506,11 +516,11 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00061">61</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   61</span>                                                            {</div>
-<div class="line"><span class="lineno">   62</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> +=alpha;</div>
-<div class="line"><span class="lineno">   63</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">   64</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00075">75</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   75</span>                                                            {</div>
+<div class="line"><span class="lineno">   76</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> +=alpha;</div>
+<div class="line"><span class="lineno">   77</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">   78</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -539,11 +549,11 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00047">47</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   47</span>                                                                     {</div>
-<div class="line"><span class="lineno">   48</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> +=vertex.bare;</div>
-<div class="line"><span class="lineno">   49</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">   50</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00061">61</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   61</span>                                                                     {</div>
+<div class="line"><span class="lineno">   62</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> +=vertex.bare;</div>
+<div class="line"><span class="lineno">   63</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">   64</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -572,11 +582,11 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00054">54</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   54</span>                                                                     {</div>
-<div class="line"><span class="lineno">   55</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> -=vertex.bare;</div>
-<div class="line"><span class="lineno">   56</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">   57</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00068">68</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   68</span>                                                                     {</div>
+<div class="line"><span class="lineno">   69</span>        this-&gt;<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> -=vertex.bare;</div>
+<div class="line"><span class="lineno">   70</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">   71</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -605,11 +615,11 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00082">82</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   82</span>                                                                     {</div>
-<div class="line"><span class="lineno">   83</span>        <span class="comment">//his-&gt;bare /= vertex.bare;</span></div>
-<div class="line"><span class="lineno">   84</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">   85</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00096">96</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   96</span>                                                                     {</div>
+<div class="line"><span class="lineno">   97</span>        <span class="comment">//his-&gt;bare /= vertex.bare;</span></div>
+<div class="line"><span class="lineno">   98</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">   99</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -638,10 +648,10 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00044">44</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   44</span>{<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> = <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">bare_in</a>;}</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00058">58</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   58</span>{<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a> = <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">bare_in</a>;}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00026">irreducible&lt; Q &gt;::bare</a>, and <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>.</p>
+<p class="reference">References <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00027">irreducible&lt; Q &gt;::bare</a>, and <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>.</p>
 
 </div>
 </div>
@@ -670,11 +680,18 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Set the value of the bare interaction to Q. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iK</td><td>Keldysh index. </td></tr>
+    <tr><td class="paramname">i_in</td><td>Internal index </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01165">1165</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 1165</span>                                                                            {</div>
-<div class="line"><span class="lineno"> 1166</span>    <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae632dc0f9694fb2d585f53d007d97448">at</a>(iK, i_in) = value;</div>
-<div class="line"><span class="lineno"> 1167</span>}</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01239">1239</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno"> 1239</span>                                                                            {</div>
+<div class="line"><span class="lineno"> 1240</span>    <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae632dc0f9694fb2d585f53d007d97448">at</a>(iK, i_in) = value;</div>
+<div class="line"><span class="lineno"> 1241</span>}</div>
 <div class="ttc" id="aclassmultidimensional_1_1multiarray_html_ae632dc0f9694fb2d585f53d007d97448"><div class="ttname"><a href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae632dc0f9694fb2d585f53d007d97448">multidimensional::multiarray::at</a></div><div class="ttdeci">T &amp; at(const index_type &amp;index)</div><div class="ttdoc">=== public member functions ===</div><div class="ttdef"><b>Definition</b> <a href="../../df/da4/multiarray_8hpp_source.html#l00656">multiarray.hpp:656</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -706,46 +723,61 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns the value of the irreducible vertex. Just constants, if it is the bare vertex. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">result_type</td><td>Type of the result. Typically =Q. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iK</td><td>Keldysh index. </td></tr>
+    <tr><td class="paramname">i_in</td><td>Internal index. Always = 0 for the SIAM. </td></tr>
+    <tr><td class="paramname">spin</td><td>Spin index. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Value of the irreducible vertex. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01114">1114</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 1114</span>                                                                                                                                                                    {</div>
-<div class="line"><span class="lineno"> 1115</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span>(std::is_same_v&lt;result_type,Q&gt;) {</div>
-<div class="line"><span class="lineno"> 1116</span>        <span class="keywordflow">switch</span> (spin) {</div>
-<div class="line"><span class="lineno"> 1117</span>            <span class="keywordflow">case</span> 0:</div>
-<div class="line"><span class="lineno"> 1118</span>                <span class="keywordflow">return</span> <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae632dc0f9694fb2d585f53d007d97448">at</a>(iK, i_in);</div>
-<div class="line"><span class="lineno"> 1119</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno"> 1120</span>            <span class="keywordflow">case</span> 1:</div>
-<div class="line"><span class="lineno"> 1121</span>                <span class="keywordflow">return</span> -<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae632dc0f9694fb2d585f53d007d97448">at</a>(iK, i_in);</div>
-<div class="line"><span class="lineno"> 1122</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno"> 1123</span>            <span class="keywordflow">case</span> 2:</div>
-<div class="line"><span class="lineno"> 1124</span>                <span class="keywordflow">return</span> 0.;</div>
-<div class="line"><span class="lineno"> 1125</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno"> 1126</span>            <span class="keywordflow">default</span>:</div>
-<div class="line"><span class="lineno"> 1127</span>                <a class="code hl_function" href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a>(<span class="stringliteral">&quot;Problems in irred.val. Abort.&quot;</span>);</div>
-<div class="line"><span class="lineno"> 1128</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<span class="keyword">false</span>);</div>
-<div class="line"><span class="lineno"> 1129</span>                <span class="keywordflow">return</span> 0.;</div>
-<div class="line"><span class="lineno"> 1130</span>        }</div>
-<div class="line"><span class="lineno"> 1131</span>    }</div>
-<div class="line"><span class="lineno"> 1132</span>    <span class="keywordflow">else</span> {</div>
-<div class="line"><span class="lineno"> 1133</span>        result_type <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a>;</div>
-<div class="line"><span class="lineno"> 1134</span>        <span class="keyword">constexpr</span> <span class="keywordtype">int</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rows</a> = result_type::RowsAtCompileTime;</div>
-<div class="line"><span class="lineno"> 1135</span>        <span class="keywordflow">switch</span> (spin) {</div>
-<div class="line"><span class="lineno"> 1136</span>            <span class="keywordflow">case</span> 0:</div>
-<div class="line"><span class="lineno"> 1137</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a> = <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.template <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">at_vectorized&lt;0,0,rows&gt;</a>(iK,i_in);</div>
-<div class="line"><span class="lineno"> 1138</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno"> 1139</span>            <span class="keywordflow">case</span> 1:</div>
-<div class="line"><span class="lineno"> 1140</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a> = -<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.template <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">at_vectorized&lt;0,0,rows&gt;</a>(iK,i_in);</div>
-<div class="line"><span class="lineno"> 1141</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno"> 1142</span>            <span class="keywordflow">case</span> 2:</div>
-<div class="line"><span class="lineno"> 1143</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a> = <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">myzero&lt;result_type&gt;</a>();</div>
-<div class="line"><span class="lineno"> 1144</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno"> 1145</span>            <span class="keywordflow">default</span>:</div>
-<div class="line"><span class="lineno"> 1146</span>                <a class="code hl_function" href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a>(<span class="stringliteral">&quot;Problems in irred.val. Abort.&quot;</span>);</div>
-<div class="line"><span class="lineno"> 1147</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<span class="keyword">false</span>);</div>
-<div class="line"><span class="lineno"> 1148</span>        }</div>
-<div class="line"><span class="lineno"> 1149</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a>;</div>
-<div class="line"><span class="lineno"> 1150</span>    }</div>
-<div class="line"><span class="lineno"> 1151</span>}</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l01188">1188</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno"> 1188</span>                                                                                                                                                                    {</div>
+<div class="line"><span class="lineno"> 1189</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span>(std::is_same_v&lt;result_type,Q&gt;) {</div>
+<div class="line"><span class="lineno"> 1190</span>        <span class="keywordflow">switch</span> (spin) {</div>
+<div class="line"><span class="lineno"> 1191</span>            <span class="keywordflow">case</span> 0:</div>
+<div class="line"><span class="lineno"> 1192</span>                <span class="keywordflow">return</span> <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae632dc0f9694fb2d585f53d007d97448">at</a>(iK, i_in);</div>
+<div class="line"><span class="lineno"> 1193</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno"> 1194</span>            <span class="keywordflow">case</span> 1:</div>
+<div class="line"><span class="lineno"> 1195</span>                <span class="keywordflow">return</span> -<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.<a class="code hl_function" href="../../d7/d3f/classmultidimensional_1_1multiarray.html#ae632dc0f9694fb2d585f53d007d97448">at</a>(iK, i_in);</div>
+<div class="line"><span class="lineno"> 1196</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno"> 1197</span>            <span class="keywordflow">case</span> 2:</div>
+<div class="line"><span class="lineno"> 1198</span>                <span class="keywordflow">return</span> 0.;</div>
+<div class="line"><span class="lineno"> 1199</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno"> 1200</span>            <span class="keywordflow">default</span>:</div>
+<div class="line"><span class="lineno"> 1201</span>                <a class="code hl_function" href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a>(<span class="stringliteral">&quot;Problems in irred.val. Abort.&quot;</span>);</div>
+<div class="line"><span class="lineno"> 1202</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<span class="keyword">false</span>);</div>
+<div class="line"><span class="lineno"> 1203</span>                <span class="keywordflow">return</span> 0.;</div>
+<div class="line"><span class="lineno"> 1204</span>        }</div>
+<div class="line"><span class="lineno"> 1205</span>    }</div>
+<div class="line"><span class="lineno"> 1206</span>    <span class="keywordflow">else</span> {</div>
+<div class="line"><span class="lineno"> 1207</span>        result_type <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a>;</div>
+<div class="line"><span class="lineno"> 1208</span>        <span class="keyword">constexpr</span> <span class="keywordtype">int</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rows</a> = result_type::RowsAtCompileTime;</div>
+<div class="line"><span class="lineno"> 1209</span>        <span class="keywordflow">switch</span> (spin) {</div>
+<div class="line"><span class="lineno"> 1210</span>            <span class="keywordflow">case</span> 0:</div>
+<div class="line"><span class="lineno"> 1211</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a> = <a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.template <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">at_vectorized&lt;0,0,rows&gt;</a>(iK,i_in);</div>
+<div class="line"><span class="lineno"> 1212</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno"> 1213</span>            <span class="keywordflow">case</span> 1:</div>
+<div class="line"><span class="lineno"> 1214</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a> = -<a class="code hl_variable" href="#af3459dcb9b9daab9df0dc33cd03b160d">bare</a>.template <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">at_vectorized&lt;0,0,rows&gt;</a>(iK,i_in);</div>
+<div class="line"><span class="lineno"> 1215</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno"> 1216</span>            <span class="keywordflow">case</span> 2:</div>
+<div class="line"><span class="lineno"> 1217</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a> = <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">myzero&lt;result_type&gt;</a>();</div>
+<div class="line"><span class="lineno"> 1218</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno"> 1219</span>            <span class="keywordflow">default</span>:</div>
+<div class="line"><span class="lineno"> 1220</span>                <a class="code hl_function" href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a>(<span class="stringliteral">&quot;Problems in irred.val. Abort.&quot;</span>);</div>
+<div class="line"><span class="lineno"> 1221</span>                <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<span class="keyword">false</span>);</div>
+<div class="line"><span class="lineno"> 1222</span>        }</div>
+<div class="line"><span class="lineno"> 1223</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">result</a>;</div>
+<div class="line"><span class="lineno"> 1224</span>    }</div>
+<div class="line"><span class="lineno"> 1225</span>}</div>
 <div class="ttc" id="anamespaceutils_html_ad566cc1586ac4598d5823caa71620eb5"><div class="ttname"><a href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a></div><div class="ttdeci">void print(T s, bool endline)</div><div class="ttdef"><b>Definition</b> <a href="../../d0/d3f/util_8hpp_source.html#l00025">util.hpp:25</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, and <a class="el" href="../../d0/d3f/util_8hpp_source.html#l00025">utils::print()</a>.</p>
@@ -782,10 +814,10 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00072">72</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   72</span>                                                                           {</div>
-<div class="line"><span class="lineno">   73</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> *= <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
-<div class="line"><span class="lineno">   74</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00086">86</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   86</span>                                                                           {</div>
+<div class="line"><span class="lineno">   87</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> *= <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
+<div class="line"><span class="lineno">   88</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -818,10 +850,10 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00079">79</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   79</span>                                                                                   {</div>
-<div class="line"><span class="lineno">   80</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> *= <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
-<div class="line"><span class="lineno">   81</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00093">93</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   93</span>                                                                                   {</div>
+<div class="line"><span class="lineno">   94</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> *= <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
+<div class="line"><span class="lineno">   95</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -854,10 +886,10 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00065">65</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   65</span>                                                                           {</div>
-<div class="line"><span class="lineno">   66</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> += <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
-<div class="line"><span class="lineno">   67</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00079">79</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   79</span>                                                                           {</div>
+<div class="line"><span class="lineno">   80</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> += <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
+<div class="line"><span class="lineno">   81</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -890,10 +922,10 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00051">51</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   51</span>                                                                                   {</div>
-<div class="line"><span class="lineno">   52</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> += <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
-<div class="line"><span class="lineno">   53</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00065">65</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   65</span>                                                                                   {</div>
+<div class="line"><span class="lineno">   66</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> += <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
+<div class="line"><span class="lineno">   67</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -926,10 +958,10 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00058">58</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   58</span>                                                                                   {</div>
-<div class="line"><span class="lineno">   59</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> -= <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
-<div class="line"><span class="lineno">   60</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00072">72</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   72</span>                                                                                   {</div>
+<div class="line"><span class="lineno">   73</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a> -= <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">rhs</a>; <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
+<div class="line"><span class="lineno">   74</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -962,11 +994,11 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00086">86</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   86</span>                                                                                   {</div>
-<div class="line"><span class="lineno">   87</span>        <span class="comment">//lhs /= rhs;</span></div>
-<div class="line"><span class="lineno">   88</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
-<div class="line"><span class="lineno">   89</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00100">100</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  100</span>                                                                                   {</div>
+<div class="line"><span class="lineno">  101</span>        <span class="comment">//lhs /= rhs;</span></div>
+<div class="line"><span class="lineno">  102</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">lhs</a>;</div>
+<div class="line"><span class="lineno">  103</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -1139,7 +1171,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div class="line"><span class="lineno">  189</span> </div>
 <div class="line"><span class="lineno">  190</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">state</a>;</div>
 <div class="line"><span class="lineno">  191</span>}</div>
-<div class="ttc" id="aclassState_html"><div class="ttname"><a href="../../d7/d97/classState.html">State</a></div><div class="ttdef"><b>Definition</b> <a href="../../da/d3b/state_8hpp_source.html#l00018">state.hpp:18</a></div></div>
+<div class="ttc" id="aclassState_html"><div class="ttname"><a href="../../d7/d97/classState.html">State</a></div><div class="ttdef"><b>Definition</b> <a href="../../da/d3b/state_8hpp_source.html#l00023">state.hpp:23</a></div></div>
 <div class="ttc" id="aclassvec_html"><div class="ttname"><a href="../../d9/d2a/classvec.html">vec</a></div><div class="ttdoc">DECLARATIONS ///.</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00118">data_structures.hpp:118</a></div></div>
 <div class="ttc" id="afrequency__parameters_8hpp_html_ac389dbca21e58410d552988f3ec954c3"><div class="ttname"><a href="../../d3/d3c/frequency__parameters_8hpp.html#ac389dbca21e58410d552988f3ec954c3">GRID</a></div><div class="ttdeci">#define GRID</div><div class="ttdoc">Frequency grid parameters ///.</div><div class="ttdef"><b>Definition</b> <a href="../../d3/d3c/frequency__parameters_8hpp_source.html#l00008">frequency_parameters.hpp:8</a></div></div>
 <div class="ttc" id="ahdf5__routines_8c_09_09_html_a8e761cba4ac842504c408dfe71037413"><div class="ttname"><a href="../../d5/d4f/hdf5__routines_8c_09_09.html#a8e761cba4ac842504c408dfe71037413">open_hdf_file_readOnly</a></div><div class="ttdeci">H5::H5File open_hdf_file_readOnly(const std::string &amp;filename)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00016">hdf5_routines.c++:16</a></div></div>
@@ -1220,9 +1252,9 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00026">26</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00027">27</a> of file <a class="el" href="../../d1/d2d/vertex_8hpp_source.html">vertex.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00043">irreducible&lt; Q &gt;::get_vec()</a>, and <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00044">irreducible&lt; Q &gt;::set_vec()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00057">irreducible&lt; Q &gt;::get_vec()</a>, and <a class="el" href="../../d1/d2d/vertex_8hpp_source.html#l00058">irreducible&lt; Q &gt;::set_vec()</a>.</p>
 
 </div>
 </div>
@@ -1236,7 +1268,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../da/dbf/classirreducible.html">irreducible</a></li>
-    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue May 7 2024 11:51:28 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

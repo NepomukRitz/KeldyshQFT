@@ -930,15 +930,15 @@
 <para>problem with aliasing if self is identical to a member of prop</para>
         </inbodydescription>
         <location file="loop/loop.hpp" line="528" column="6" bodyfile="loop/loop.hpp" bodystart="528" bodyend="555"/>
-        <references refid="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" compoundref="d6/d2d/selfenergy_8hpp" startline="242" endline="244">SelfEnergy&lt; Q &gt;::addself</references>
-        <references refid="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" compoundref="d6/d2d/selfenergy_8hpp" startline="32">SelfEnergy&lt; Q &gt;::asymp_val_R</references>
+        <references refid="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" compoundref="d6/d2d/selfenergy_8hpp" startline="255" endline="257">SelfEnergy&lt; Q &gt;::addself</references>
+        <references refid="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" compoundref="d6/d2d/selfenergy_8hpp" startline="34">SelfEnergy&lt; Q &gt;::asymp_val_R</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d34/classPropagator_1a18327a87ffaaa6a830f5a316a77324b3" compoundref="d5/df7/propagator_8hpp" startline="809" endline="812">Propagator&lt; Q &gt;::initInterpolator</references>
+        <references refid="d2/d34/classPropagator_1a18327a87ffaaa6a830f5a316a77324b3" compoundref="d5/df7/propagator_8hpp" startline="818" endline="821">Propagator&lt; Q &gt;::initInterpolator</references>
         <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1ae2fbdf104305af49bfe5b3c0da204d9b" compoundref="d3/d3c/frequency__parameters_8hpp" startline="55">nSE</references>
         <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
-        <references refid="d5/df6/classSelfEnergy_1a44226621aee89d2ee5e5eff112dfd5f2" compoundref="d6/d2d/selfenergy_8hpp" startline="167" endline="169">SelfEnergy&lt; Q &gt;::val</references>
+        <references refid="d5/df6/classSelfEnergy_1a44226621aee89d2ee5e5eff112dfd5f2" compoundref="d6/d2d/selfenergy_8hpp" startline="180" endline="182">SelfEnergy&lt; Q &gt;::val</references>
       </memberdef>
     </sectiondef>
     <briefdescription>

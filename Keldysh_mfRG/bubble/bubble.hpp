@@ -13,13 +13,17 @@
 #include "../utilities/write_data2file.hpp"      // write vectors into hdf5 file
 
 
-/// Class combining two propagators, either GG or GS+SG
+/**
+ * Class combining two propagators, either GG or GS+SG
+ * @tparam Q Type of the data.
+ */
 template <typename Q>
 class Bubble{
 public:
     const Propagator<Q>& g; // Access needed when computing the full bubble
     const Propagator<Q>& s;
     const bool diff;
+
     /**
      * Constructor:
      * @param propagatorG : first propagator (always a standard one)
@@ -38,7 +42,7 @@ public:
      * @param v1    : frequency of first propagator
      * @param v2    : frequency of second propagator
      * @param i_in  : internal structure index
-     * @return comp : value of the bubble evaluated at (iK, v1, v2)
+     * @return      : value of the bubble evaluated at (iK, v1, v2)
      */
     auto value(int iK, freqType v1, freqType v2, int i_in) const -> Q{
         Q ans;
@@ -128,6 +132,14 @@ public:
         return ans;
     }
 
+    /**
+     * Call operator in the Matsubara formalism:
+     * @tparam ch_bubble channel index
+     * @param w bosonic frequency ω of the corresponding channel
+     * @param vpp fermionic bubble integration frequency ν'' of the corresponding channel
+     * @param i_in internal structure index
+     * @return value of the bubble evaluated at (ω, ν'').
+     */
     template<char ch_bubble>
     Q value_Matsubara(const freqType w, const freqType vpp, int i_in) const {
         Q result;
@@ -207,7 +219,9 @@ public:
         }
     }
 
-
+    /**
+     * Version of the value function used if vectorization over Keldysh indices is to be used.
+     */
     template<char ch_bubble>
     auto value_vectorized(const freqType w, const freqType vpp, const int i_in) const {
         if constexpr(KELDYSH) {

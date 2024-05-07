@@ -226,7 +226,7 @@
         <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
         <references refid="d9/ddc/classIntegrandBubble_1a1b273e1777d48bd3c82ba363e67625ea" compoundref="df/d83/integrand_8hpp" startline="36">IntegrandBubble&lt; Q &gt;::iK</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="43" endline="129">Bubble&lt; Q &gt;::value</references>
+        <references refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="47" endline="133">Bubble&lt; Q &gt;::value</references>
         <references refid="d9/ddc/classIntegrandBubble_1a4de500ad7b349711b654f1f2c86a7503" compoundref="df/d83/integrand_8hpp" startline="35">IntegrandBubble&lt; Q &gt;::w</references>
       </memberdef>
     </sectiondef>

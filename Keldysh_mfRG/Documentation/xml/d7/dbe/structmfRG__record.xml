@@ -136,7 +136,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="76" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="76" bodyend="128"/>
-        <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="24">State&lt; Q, differentiated &gt;::config</references>
+        <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="29">State&lt; Q, differentiated &gt;::config</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/dbe/structmfRG__record_1a54473587561f60feab2c4ae6e2115e58" compoundref="d8/dea/right__hand__sides_8hpp" startline="72" endline="72">mfRG_record&lt; Q &gt;::dGamma_Cl_nloop</references>
         <references refid="d7/dbe/structmfRG__record_1a42c8e75f47986b783a985b92aec30470" compoundref="d8/dea/right__hand__sides_8hpp" startline="73" endline="73">mfRG_record&lt; Q &gt;::dGamma_Cr_nloop</references>
@@ -144,9 +144,9 @@
         <references refid="d7/dbe/structmfRG__record_1a0f40418e03203bd9d15de1c7647f58b6" compoundref="d8/dea/right__hand__sides_8hpp" startline="71" endline="71">mfRG_record&lt; Q &gt;::dGamma_R_nloop</references>
         <references refid="d7/dbe/structmfRG__record_1a97091e7e3e8e684f3f40201346b211fe" compoundref="d8/dea/right__hand__sides_8hpp" startline="69">mfRG_record&lt; Q &gt;::dPsi_1loop</references>
         <references refid="d7/dbe/structmfRG__record_1a855d46f3255d86833755edbf794f435e" compoundref="d8/dea/right__hand__sides_8hpp" startline="74">mfRG_record&lt; Q &gt;::dSigma_correction</references>
-        <references refid="d7/d97/classState_1a9e862ceeb13ad0e25034e81e87459265" compoundref="da/d3b/state_8hpp" startline="23">State&lt; Q, differentiated &gt;::Lambda</references>
+        <references refid="d7/d97/classState_1a9e862ceeb13ad0e25034e81e87459265" compoundref="da/d3b/state_8hpp" startline="28">State&lt; Q, differentiated &gt;::Lambda</references>
         <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
-        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="26">State&lt; Q, differentiated &gt;::selfenergy</references>
+        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
         <references refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" compoundref="d1/df8/master__parameters_8hpp" startline="118" endline="122">U_NRG</references>
       </memberdef>
     </sectiondef>

@@ -21,7 +21,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="20" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="20" bodyend="-1"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="24" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="24" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="d5/df6/classSelfEnergy_1a7d7fd9f86a8d29fefd6146f6415fef40" prot="public" static="no">
         <type><ref refid="dc/d7a/classdataBuffer" kindref="compound">dataBuffer</ref>&lt; Q, <ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a925f6df3ecae5016cd0f312e087f611e" kindref="member">selfenergy</ref>, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, <ref refid="d5/df6/classSelfEnergy_1a9f55d0e7a79d65e71c66167369dc11df" kindref="member">freqGrid_type</ref>, <ref refid="d9/d3a/technical__parameters_8hpp_1a6b7445f4535a5480e56a9be7fbc10529" kindref="member">INTERPOLATION</ref> &gt;</type>
@@ -35,7 +35,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="21" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="21" bodyend="-1"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="25" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="25" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="d5/df6/classSelfEnergy_1aec678602c2dbbe4c981f436fa8ea5ba8" prot="public" static="no">
         <type>std::array&lt; double, 1 &gt;</type>
@@ -49,7 +49,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="22" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="22" bodyend="-1"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="26" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="26" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="d5/df6/classSelfEnergy_1a205b1475f5cdf9fb14b799ec9e97ab9a" prot="public" static="no">
         <type>std::array&lt; <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref>, SE_config.rank &gt;</type>
@@ -63,7 +63,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="23" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="23" bodyend="-1"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="27" column="5" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="27" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-attrib">
@@ -79,13 +79,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="31" column="17" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="31" bodyend="-1"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="33" column="17" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="33" bodyend="-1"/>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
-        <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="61" endline="66">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
-        <referencedby refid="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb" compoundref="d6/d2d/selfenergy_8hpp" startline="35" endline="35">SelfEnergy&lt; Q &gt;::SelfEnergy</referencedby>
-        <referencedby refid="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8" compoundref="d6/d2d/selfenergy_8hpp" startline="246" endline="248">SelfEnergy&lt; Q &gt;::set_frequency_grid</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb" compoundref="d6/d2d/selfenergy_8hpp" startline="47" endline="47">SelfEnergy&lt; Q &gt;::SelfEnergy</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1abf42878f8a0685afbd9b0f5813e7d9e8" compoundref="d6/d2d/selfenergy_8hpp" startline="259" endline="261">SelfEnergy&lt; Q &gt;::set_frequency_grid</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" prot="public" static="no" mutable="no">
         <type>Q</type>
@@ -100,8 +100,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="32" column="7" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="32" bodyend="-1"/>
-        <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="49" endline="54">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="34" column="7" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="34" bodyend="-1"/>
+        <referencedby refid="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" compoundref="d6/d2d/selfenergy_8hpp" startline="61" endline="66">SelfEnergy&lt; Q &gt;::get_selfenergy_vector_incl_hartree</referencedby>
         <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
     </sectiondef>
@@ -123,10 +123,28 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Constructor for a given regulator Λ and a set of parameters. The frequency grid is set accordingly. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>Lambda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value of the regulator Λ. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>config</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of parameters. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="34" column="15" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="34" bodyend="34"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="41" column="15" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="41" bodyend="41"/>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -141,12 +159,22 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Constructor for a given frequency grid. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>frequencies_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Frequency grid. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="35" column="15" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="35" bodyend="35"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="47" column="15" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="47" bodyend="47"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="31">SelfEnergy&lt; Q &gt;::Sigma</references>
+        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="33">SelfEnergy&lt; Q &gt;::Sigma</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -195,11 +223,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="37" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="153" bodyend="157"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="49" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="166" bodyend="170"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
-        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a44226621aee89d2ee5e5eff112dfd5f2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -262,7 +290,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="38" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="167" bodyend="169"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="50" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="180" bodyend="182"/>
         <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
@@ -326,7 +354,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="39" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="201" bodyend="220"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="51" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="214" bodyend="233"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28" compoundref="d9/d3a/technical__parameters_8hpp" startline="18">inter_tol</references>
         <references refid="d6/dfc/namespacemy__defs_1_1SE_1a8bb0a6e36cdfe570fba3110d9322df26ada6fc27d34344cd3c471e707201131f4" compoundref="d7/d59/data__structures_8hpp" startline="492">my_defs::SE::internal</references>
@@ -405,7 +433,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="40" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="230" bodyend="232"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="52" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="243" bodyend="245"/>
         <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="129" endline="441">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
         <referencedby refid="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" compoundref="d8/d1d/loop_8hpp" startline="475" endline="498">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_finiteT</referencedby>
         <referencedby refid="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" compoundref="d8/d1d/loop_8hpp" startline="444" endline="472">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Matsubara_zeroT</referencedby>
@@ -481,7 +509,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="41" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="242" bodyend="244"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="53" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="255" bodyend="257"/>
         <referencedby refid="df/dc8/classLoopCalculator_1a92e1b8bae469c8850f355f7516c6a713" compoundref="d8/d1d/loop_8hpp" startline="129" endline="441">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::compute_Keldysh</referencedby>
         <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
       </memberdef>
@@ -522,7 +550,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="42" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="177" bodyend="180"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="54" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="190" bodyend="193"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
       </memberdef>
@@ -573,7 +601,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="43" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="188" bodyend="191"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="55" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="201" bodyend="204"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
       </memberdef>
@@ -593,9 +621,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="44" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="246" bodyend="248"/>
-        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="31">SelfEnergy&lt; Q &gt;::Sigma</references>
-        <referencedby refid="d7/d97/classState_1aa5e0b0c02b861f0cd2555ef34a4584b5" compoundref="da/d3b/state_8hpp" startline="150" endline="153">State&lt; Q, differentiated &gt;::set_frequency_grid</referencedby>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="56" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="259" bodyend="261"/>
+        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="33">SelfEnergy&lt; Q &gt;::Sigma</references>
+        <referencedby refid="d7/d97/classState_1aa5e0b0c02b861f0cd2555ef34a4584b5" compoundref="da/d3b/state_8hpp" startline="175" endline="178">State&lt; Q, differentiated &gt;::set_frequency_grid</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -613,7 +641,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="45" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="346" bodyend="356"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="57" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="359" bodyend="369"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
@@ -630,7 +658,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="46" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="359" bodyend="361"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="58" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="372" bodyend="374"/>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a1478fc6f27e0d03e0df937d5cbeffbf9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -648,7 +676,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="47" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="362" bodyend="364"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="59" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="375" bodyend="377"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a82c32fac980f31caa31a605720fd7d36" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
@@ -663,11 +691,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="49" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="49" bodyend="54"/>
-        <references refid="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" compoundref="d6/d2d/selfenergy_8hpp" startline="32">SelfEnergy&lt; Q &gt;::asymp_val_R</references>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="61" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="61" bodyend="66"/>
+        <references refid="d5/df6/classSelfEnergy_1a8c962e14e202a889f9932adc8b205558" compoundref="d6/d2d/selfenergy_8hpp" startline="34">SelfEnergy&lt; Q &gt;::asymp_val_R</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
-        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="31">SelfEnergy&lt; Q &gt;::Sigma</references>
+        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="33">SelfEnergy&lt; Q &gt;::Sigma</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -684,15 +712,14 @@
           <declname>config</declname>
         </param>
         <briefdescription>
-<para>Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2. </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="57" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="250" bodyend="253"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="69" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="263" bodyend="266"/>
         <references refid="dc/d7a/classdataBuffer_1a74ad9cdfcb8e10219bb029e0af9df8ca" compoundref="dc/d80/data__buffer_8hpp" startline="691" endline="698">dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::update_grid</references>
-        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
+        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="180" endline="184">State&lt; Q, differentiated &gt;::update_grid</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1aaf5b4b1c92f967082630cf69af72c2c5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -705,13 +732,12 @@
           <declname>frequencies_new</declname>
         </param>
         <briefdescription>
-<para>Interpolate self-energy to input grid. </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="59" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="255" bodyend="259"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="71" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="268" bodyend="272"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a44806c0df9dfc5dd5e0eeb37a19f90f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -729,13 +755,12 @@
           <declname>selfEnergy4Sigma</declname>
         </param>
         <briefdescription>
-<para>Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma. </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="61" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="261" bodyend="265"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="73" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="274" bodyend="278"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a48b989837676cebb7043a4f14ae02203" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -749,14 +774,13 @@
           <declname>verbose</declname>
         </param>
         <briefdescription>
-<para>finds optimal grid parameters with <ref refid="d4/d21/minimizer_8hpp_1a4cf1f8fcc0a66dfcb227b42a1f615375" kindref="member">minimizer()</ref> </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="63" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="314" bodyend="317"/>
-        <referencedby refid="d7/d97/classState_1a85527803dbcedce85301a0831b1c473d" compoundref="da/d3b/state_8hpp" startline="162" endline="165">State&lt; Q, differentiated &gt;::findBestFreqGrid</referencedby>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="75" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="327" bodyend="330"/>
+        <referencedby refid="d7/d97/classState_1a85527803dbcedce85301a0831b1c473d" compoundref="da/d3b/state_8hpp" startline="187" endline="190">State&lt; Q, differentiated &gt;::findBestFreqGrid</referencedby>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1acf675ff02b328e7022dd997422327d8f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -774,7 +798,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="64" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="319" bodyend="322"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="76" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="332" bodyend="335"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1aaf6a296ef33ab224d9bf5231301bf3de" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
@@ -793,7 +817,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="65" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="325" bodyend="342"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="77" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="338" bodyend="355"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="de/dbb/math__utils_8hpp_1a1e26b17d6ce68bbd4a4cc2031722a433" compoundref="de/dbb/math__utils_8hpp" startline="973" endline="983">maxabs</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
@@ -809,13 +833,12 @@
           <declname>verbose</declname>
         </param>
         <briefdescription>
-<para>computes finite differences of Sigma </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="67" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="367" bodyend="379"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="79" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="380" bodyend="392"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
       </memberdef>
@@ -835,7 +858,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="68" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="380" bodyend="394"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="80" column="12" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="393" bodyend="407"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
       </memberdef>
@@ -855,7 +878,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="71" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="71" bodyend="75"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="83" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="83" bodyend="87"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a09bd75350e2ef6c26956fe56cff5f2b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -879,7 +902,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="81" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="81" bodyend="84"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="93" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="93" bodyend="96"/>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a7cc1dbbb0a956e6c34c8c3ff7af1ada1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -902,7 +925,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="96" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="96" bodyend="100"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="108" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="108" bodyend="112"/>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a4c3ef6eb5fcde3e4a069a6f934761c92" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -920,7 +943,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="119" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="119" bodyend="123"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="131" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="131" bodyend="135"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1ad8cbafc3e1bda57e185bd591f0471d4c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -934,13 +957,12 @@
           <declname>self1</declname>
         </param>
         <briefdescription>
-<para>Elementwise division (needed for error estimate of adaptive ODE solvers) </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="129" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="129" bodyend="133"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="141" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="141" bodyend="145"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1aee3fd67f3e3418a7e1be2b60fc93c980" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
@@ -956,7 +978,7 @@
         <inbodydescription>
 <para>TODO: dump state in file if certain thresholds are exceeded</para>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="140" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="397" bodyend="403"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="152" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="410" bodyend="416"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
@@ -971,7 +993,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="141" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="407" bodyend="423"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="153" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="420" bodyend="436"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a769c275d7647a628a4bad2041e0fc27f" compoundref="d7/d59/data__structures_8hpp" startline="102" endline="102">myconj</references>
         <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
@@ -1001,7 +1023,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="76" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="76" bodyend="79"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="88" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="88" bodyend="91"/>
       </memberdef>
       <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a5f679a53ec9986d94933e3eebd2375dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1028,7 +1050,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="86" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="86" bodyend="89"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="98" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="98" bodyend="101"/>
       </memberdef>
       <memberdef kind="friend" id="d5/df6/classSelfEnergy_1ab4474a85c8c4b4491fbc34bbe85d8dc9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1055,7 +1077,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="91" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="91" bodyend="94"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="103" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="103" bodyend="106"/>
       </memberdef>
       <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a76b9436f81bb209afa766a9a961382d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1082,7 +1104,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="102" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="102" bodyend="105"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="114" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="114" bodyend="117"/>
       </memberdef>
       <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a42b9663d92a8fab80fde07dbdcdf8368" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1109,7 +1131,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="107" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="107" bodyend="110"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="119" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="119" bodyend="122"/>
       </memberdef>
       <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a66cab3961eb707dc079278b26514cea4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
@@ -1131,7 +1153,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="124" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="124" bodyend="127"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="136" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="136" bodyend="139"/>
       </memberdef>
       <memberdef kind="friend" id="d5/df6/classSelfEnergy_1a32e9f66a8d928ac70178c07159ed8616" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; Q &gt;</type>
@@ -1153,13 +1175,22 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="134" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="134" bodyend="137"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="146" column="23" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="146" bodyend="149"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
-<para>TODO: Use Vertex buffer for self-energy. </para>
     </briefdescription>
     <detaileddescription>
+<para>Class used for the 2-point self-energy Σ. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
     </detaileddescription>
     <inheritancegraph>
       <node id="1">
@@ -1321,7 +1352,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="correlation_functions/two_point/selfenergy.hpp" line="18" column="1" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="18" bodyend="142"/>
+    <location file="correlation_functions/two_point/selfenergy.hpp" line="22" column="1" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="22" bodyend="154"/>
     <listofallmembers>
       <member refid="d5/df6/classSelfEnergy_1aa7d75d4c76a9e99f37d89cb8fd479392" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>acc</name></member>
       <member refid="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" prot="public" virt="non-virtual"><scope>SelfEnergy</scope><name>addself</name></member>

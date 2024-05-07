@@ -121,10 +121,10 @@ $(function(){initNavTree('d5/d4f/hdf5__routines_8c_09_09_source.html','../../');
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <span class="comment">// no problem with reading same file from different nodes</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    H5::H5File <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">outfile</a>(filename, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">H5F_ACC_RDONLY</a>);</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">outfile</a>;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="../../da/dbf/classirreducible.html#aa0ab8d27e7ed5ce3762582c2416a9b45">   20</a></span>}</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
 </div>
-<div class="foldopen" id="foldopen00021" data-start="{" data-end="}">
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="../../d5/d4f/hdf5__routines_8c_09_09.html#a924110dbdaccbbc744def3ca0838cb4c">   21</a></span>H5::H5File <a class="code hl_function" href="../../d5/d4f/hdf5__routines_8c_09_09.html#a924110dbdaccbbc744def3ca0838cb4c">open_hdf_file_readWrite</a>(<span class="keyword">const</span> std::string &amp; filename) {</div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="../../da/dbf/classirreducible.html#aa0ab8d27e7ed5ce3762582c2416a9b45">   21</a></span>H5::H5File <a class="code hl_function" href="../../d5/d4f/hdf5__routines_8c_09_09.html#a924110dbdaccbbc744def3ca0838cb4c">open_hdf_file_readWrite</a>(<span class="keyword">const</span> std::string &amp; filename) {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="../../d4/dda/mpi__setup_8c_09_09.html#a191972e98e51a56d90e8e5f750496c7d">mpi_world_rank</a>() == 0) {</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        H5::H5File <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">outfile</a>(filename, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">H5F_ACC_RDWR</a>);</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">outfile</a>;</div>
@@ -134,7 +134,6 @@ $(function(){initNavTree('d5/d4f/hdf5__routines_8c_09_09_source.html','../../');
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">file</a>;</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    }</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>}</div>
-</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
 <div class="foldopen" id="foldopen00032" data-start="{" data-end="}">
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="../../d5/d4f/hdf5__routines_8c_09_09.html#afe0475193af36ddf563126885ac60199">   32</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d5/d4f/hdf5__routines_8c_09_09.html#afe0475193af36ddf563126885ac60199">close_hdf_file</a>(H5::H5File &amp; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">file</a>) {</div>
@@ -293,17 +292,18 @@ $(function(){initNavTree('d5/d4f/hdf5__routines_8c_09_09_source.html','../../');
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                ,<span class="stringliteral">&quot;glb_V&quot;</span></div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                ,<span class="stringliteral">&quot;GRID&quot;</span></div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        };</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> = 0; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> &lt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">is_identical_parameter</a>.size(); <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>++){</div>
+<div class="foldopen" id="foldopen00182" data-start="{" data-end="};">
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno"><a class="line" href="../../d3/dd8/classDataContainer.html#aa0ab8d27e7ed5ce3762582c2416a9b45">  182</a></span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> = 0; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> &lt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">is_identical_parameter</a>.size(); <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>++){</div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>            <span class="keywordflow">if</span> (!<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">is_identical_parameter</a>[<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>]) <a class="code hl_function" href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a>(<span class="stringliteral">&quot;\t parameter &quot;</span>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">parameter_names</a>[<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>], <span class="stringliteral">&quot; is different.\n&quot;</span>);</div>
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        }</div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        <a class="code hl_function" href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a>(<span class="stringliteral">&quot;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n&quot;</span>);</div>
-<div class="foldopen" id="foldopen00186" data-start="{" data-end="};">
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno"><a class="line" href="../../d3/dd8/classDataContainer.html#aa0ab8d27e7ed5ce3762582c2416a9b45">  186</a></span>    }</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    }</div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">file_out</a>.close();</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">state</a>;</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>}</div>
+</div>
 </div>
 </div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
@@ -546,7 +546,7 @@ $(function(){initNavTree('d5/d4f/hdf5__routines_8c_09_09_source.html','../../');
 <div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>}</div>
 </div>
 <div class="ttc" id="abubble__corrections_8hpp_html_aff27784f97591f505f77ff0065ab57af"><div class="ttname"><a href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">correctionFunctionBubble_REG3_Matsubara_PHS_diff</a></div><div class="ttdeci">auto correctionFunctionBubble_REG3_Matsubara_PHS_diff(double w, double vmax, double Lambda, const double Delta)</div><div class="ttdef"><b>Definition</b> <a href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">bubble_corrections.hpp:295</a></div></div>
-<div class="ttc" id="aclassState_html"><div class="ttname"><a href="../../d7/d97/classState.html">State</a></div><div class="ttdef"><b>Definition</b> <a href="../../da/d3b/state_8hpp_source.html#l00018">state.hpp:18</a></div></div>
+<div class="ttc" id="aclassState_html"><div class="ttname"><a href="../../d7/d97/classState.html">State</a></div><div class="ttdef"><b>Definition</b> <a href="../../da/d3b/state_8hpp_source.html#l00023">state.hpp:23</a></div></div>
 <div class="ttc" id="aclassmultidimensional_1_1multiarray_html"><div class="ttname"><a href="../../d7/d3f/classmultidimensional_1_1multiarray.html">multidimensional::multiarray</a></div><div class="ttdef"><b>Definition</b> <a href="../../df/da4/multiarray_8hpp_source.html#l00040">multiarray.hpp:41</a></div></div>
 <div class="ttc" id="aclassvec_html"><div class="ttname"><a href="../../d9/d2a/classvec.html">vec</a></div><div class="ttdoc">DECLARATIONS ///.</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00118">data_structures.hpp:118</a></div></div>
 <div class="ttc" id="adata__structures_8hpp_html_a407c4f6cd09a6f2bf296c8cf21a76aca"><div class="ttname"><a href="../../d7/d59/data__structures_8hpp.html#a407c4f6cd09a6f2bf296c8cf21a76aca">comp</a></div><div class="ttdeci">std::complex&lt; double &gt; comp</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00025">data_structures.hpp:25</a></div></div>
@@ -640,7 +640,7 @@ $(function(){initNavTree('d5/d4f/hdf5__routines_8c_09_09_source.html','../../');
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_df38b2a5d584e0f6066b4518b95c638b.html">utilities</a></li><li class="navelem"><a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09.html">hdf5_routines.c++</a></li>
-    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue May 7 2024 11:51:28 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

@@ -1166,7 +1166,7 @@
         <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
-        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="871" endline="887">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
         <references refid="d1/df8/master__parameters_8hpp_1a808342a47e654eb0ea306a96b76ecc22" compoundref="d1/df8/master__parameters_8hpp" startline="36">USE_NEW_MFRG_EQS</references>
@@ -1207,7 +1207,7 @@
         </inbodydescription>
         <location file="mfRG_flow/right_hand_sides.hpp" line="831" column="6" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="831" bodyend="847" declfile="mfRG_flow/right_hand_sides.hpp" declline="25" declcolumn="18"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="34">Propagator&lt; Q &gt;::Lambda</references>
+        <references refid="d2/d34/classPropagator_1ad14d8669e7e3b6934df9ba2fa6168a75" compoundref="d5/df7/propagator_8hpp" startline="37">Propagator&lt; Q &gt;::Lambda</references>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
       </memberdef>
       <memberdef kind="function" id="d8/dea/right__hand__sides_8hpp_1ab8a6c68ec3c73efba030aee4816dd18b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1339,7 +1339,7 @@
         <location file="mfRG_flow/right_hand_sides.hpp" line="746" column="6" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="746" bodyend="778" declfile="mfRG_flow/right_hand_sides.hpp" declline="29" declcolumn="20"/>
         <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="871" endline="887">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
         <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
@@ -1385,7 +1385,7 @@
         <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
-        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="871" endline="887">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
         <references refid="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329" compoundref="d1/df8/master__parameters_8hpp" startline="109">Lambda_ini</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
@@ -1572,7 +1572,7 @@
         <references refid="d1/df8/master__parameters_8hpp_1ae1e66afdfad79dc008a71587caa9fade" compoundref="d1/df8/master__parameters_8hpp" startline="46">loop_tol_rel</references>
         <references refid="d6/d84/namespaceutils_1a8b15a47f6cc62f31f2fe1323cabba6ae" compoundref="d6/d35/util_8c_09_09" startline="100" endline="113">utils::makedir</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
-        <references refid="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158" compoundref="d6/d2d/selfenergy_8hpp" startline="346" endline="356">SelfEnergy&lt; Q &gt;::norm</references>
+        <references refid="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158" compoundref="d6/d2d/selfenergy_8hpp" startline="359" endline="369">SelfEnergy&lt; Q &gt;::norm</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d1/df8/master__parameters_8hpp_1a56eddb40f61b1b5d5984fa3048c09234" compoundref="d1/df8/master__parameters_8hpp" startline="41">SELF_ENERGY_FLOW_CORRECTIONS</references>
         <references refid="d8/dea/right__hand__sides_8hpp_1ad4c21683a4272299af7d4c7aabf14b20" compoundref="d8/dea/right__hand__sides_8hpp" startline="831" endline="847">selfEnergyFlowCorrections</references>
@@ -1581,8 +1581,8 @@
         <references refid="d1/df8/master__parameters_8hpp_1a3d880a4e99fd53c0480a9acab1001ebe" compoundref="d1/df8/master__parameters_8hpp" startline="44">tol_selfenergy_correction_rel</references>
         <references refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" compoundref="d1/df8/master__parameters_8hpp" startline="118" endline="122">U_NRG</references>
         <references refid="d1/df8/master__parameters_8hpp_1a789ba32fd34b3ceb54fce8a9b3958565" compoundref="d1/df8/master__parameters_8hpp" startline="13">VERBOSE</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="25">State&lt; Q, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="30">State&lt; Q, differentiated &gt;::vertex</references>
         <references refid="d8/dea/right__hand__sides_8hpp_1aa44996adc6f31dcfe0a85ff28f9ebf16" compoundref="d8/dea/right__hand__sides_8hpp" startline="575" endline="605">vertexOneLoopFlow</references>
       </memberdef>
       <memberdef kind="function" id="d8/dea/right__hand__sides_8hpp_1ad710859a48c70b772a414b9cc6c1cc2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">

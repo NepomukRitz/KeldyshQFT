@@ -35,6 +35,7 @@
           
           <a href="index.html" class="icon icon-home">
             KF_QFT
+              <img src="_static/SDE_no_background.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -108,18 +109,30 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I0E10Propagator">
 <span id="_CPPv3I0E10Propagator"></span><span id="_CPPv2I0E10Propagator"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d2/d34/classPropagator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Propagator</span></span></span><a class="headerlink" href="#_CPPv4I0E10Propagator" title="Link to this definition"></a><br /></dt>
-<dd><p><a class="reference internal" href="#d2/d34/classPropagator"><span class="std std-ref">Propagator</span></a> class ///. </p>
+<dd><p><a class="reference internal" href="#d2/d34/classPropagator"><span class="std std-ref">Propagator</span></a> class used for G, S, and the Katanin extension. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Type of the data. </p>
+</dd>
+</dl>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10Propagator10PropagatorEdcRK10fRG_config">
 <span id="_CPPv3N10Propagator10PropagatorEdcRK10fRG_config"></span><span id="_CPPv2N10Propagator10PropagatorEdcRK10fRG_config"></span><span id="Propagator::Propagator__double.c.fRG_configCR"></span><span class="target" id="d2/d34/classPropagator_1a878f3624c2c3df7c520b66fcbd8fdcb5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Propagator</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda_in</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">type_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10Propagator10PropagatorEdcRK10fRG_config" title="Link to this definition"></a><br /></dt>
-<dd><p>Free <a class="reference internal" href="#d2/d34/classPropagator"><span class="std std-ref">Propagator</span></a> object. <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a> and differentiated <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a> are zero </p>
+<dd><p>Free <a class="reference internal" href="#d2/d34/classPropagator"><span class="std std-ref">Propagator</span></a> object. <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a> and differentiated <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a> are zero. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Lambda_in</strong> – : Input scale </p></li>
-<li><p><strong>type_in</strong> – : Type of propagator being handled </p></li>
+<li><p><strong>Lambda_in</strong> – Value of the regulator Λ. </p></li>
+<li><p><strong>type_in</strong> – Type of the propagator: <ul>
+<li><p>‘g’ for a normal propagator</p></li>
+<li><p>’s’ for a single-scale propagator</p></li>
+<li><p>’e’ for the Katanin extension</p></li>
+<li><p>’k’ for a fully differentiated propagator ‘s’ + ‘e’. </p></li>
+</ul>
+</p></li>
+<li><p><strong>config</strong> – Set of parameters </p></li>
 </ul>
 </dd>
 </dl>

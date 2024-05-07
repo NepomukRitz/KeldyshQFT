@@ -27,7 +27,10 @@ auto Eff_fac(double v, const double T) -> double;
 double Fermi_distribution (double nu);
 
 
-/// Propagator class ///
+/**
+ * Propagator class used for G, S, and the Katanin extension.
+ * @tparam Q Type of the data.
+ */
 template <typename Q>
 class Propagator {
 public:
@@ -40,10 +43,16 @@ public:
     const double T;
 
 public:
+
     /**
-     * Free Propagator object. SelfEnergy and differentiated SelfEnergy are zero
-     * @param Lambda_in : Input scale
-     * @param type_in   : Type of propagator being handled
+     * Free Propagator object. SelfEnergy and differentiated SelfEnergy are zero.
+     * @param Lambda_in Value of the regulator Λ.
+     * @param type_in Type of the propagator: \n
+     * - 'g' for a normal propagator
+     * - 's' for a single-scale propagator
+     * - 'e' for the Katanin extension
+     * - 'k' for a fully differentiated propagator 's' + 'e'.
+     * @param config Set of parameters
      */
     Propagator(double Lambda_in, char type_in, const fRG_config& config)
             : Lambda(Lambda_in), selfenergy(SelfEnergy<Q> (Lambda_in, config)), diff_selfenergy(SelfEnergy<Q> (Lambda_in, config)), type(type_in),

@@ -112,7 +112,6 @@ $(function(){initNavTree('d3/d22/r__vertex_8hpp.html','../../'); initResizable()
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/dbd/classrvert.html">rvert&lt; Q &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TODO: treat VertexFrequencyGrid as member of vertexContainerBase via template?  <a href="../../d4/dbd/classrvert.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -170,75 +169,75 @@ template&lt;<a class="el" href="../../d7/d59/data__structures_8hpp.html#a82cbf94
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l00548">548</a> of file <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html">r_vertex.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  548</span>                                                                                                                                                  {</div>
-<div class="line"><span class="lineno">  549</span>    <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">k</a> != <a class="code hl_enumvalue" href="../../d7/d59/data__structures_8hpp.html#a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021">k2b</a>);</div>
-<div class="line"><span class="lineno">  550</span> </div>
-<div class="line"><span class="lineno">  551</span>    <span class="keyword">const</span> <span class="keywordtype">int</span> iK = <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">iK_symmreduced</a>;</div>
-<div class="line"><span class="lineno">  552</span>    <span class="comment">/*</span></div>
-<div class="line"><span class="lineno">  553</span><span class="comment">    int iK;</span></div>
-<div class="line"><span class="lineno">  554</span><span class="comment">    if constexpr (k == k1) {</span></div>
-<div class="line"><span class="lineno">  555</span><span class="comment">        switch (channel) {</span></div>
-<div class="line"><span class="lineno">  556</span><span class="comment">            case &#39;a&#39;:</span></div>
-<div class="line"><span class="lineno">  557</span><span class="comment">                iK = non_zero_Keldysh_K1a[iK_symmreduced];</span></div>
-<div class="line"><span class="lineno">  558</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  559</span><span class="comment">            case &#39;p&#39;:</span></div>
-<div class="line"><span class="lineno">  560</span><span class="comment">                iK = non_zero_Keldysh_K1p[iK_symmreduced];</span></div>
-<div class="line"><span class="lineno">  561</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  562</span><span class="comment">            case &#39;t&#39;:</span></div>
-<div class="line"><span class="lineno">  563</span><span class="comment">                iK = non_zero_Keldysh_K1t[iK_symmreduced];</span></div>
-<div class="line"><span class="lineno">  564</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  565</span><span class="comment">            default:</span></div>
-<div class="line"><span class="lineno">  566</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  567</span><span class="comment">        }</span></div>
-<div class="line"><span class="lineno">  568</span><span class="comment">    }</span></div>
-<div class="line"><span class="lineno">  569</span><span class="comment">    else if constexpr(k == k2) {</span></div>
-<div class="line"><span class="lineno">  570</span><span class="comment">        switch (channel) {</span></div>
-<div class="line"><span class="lineno">  571</span><span class="comment">            case &#39;a&#39;:</span></div>
-<div class="line"><span class="lineno">  572</span><span class="comment">                iK = non_zero_Keldysh_K2a[iK_symmreduced];</span></div>
-<div class="line"><span class="lineno">  573</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  574</span><span class="comment">            case &#39;p&#39;:</span></div>
-<div class="line"><span class="lineno">  575</span><span class="comment">                iK = non_zero_Keldysh_K2p[iK_symmreduced];</span></div>
-<div class="line"><span class="lineno">  576</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  577</span><span class="comment">            case &#39;t&#39;:</span></div>
-<div class="line"><span class="lineno">  578</span><span class="comment">                iK = non_zero_Keldysh_K2t[iK_symmreduced];</span></div>
-<div class="line"><span class="lineno">  579</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  580</span><span class="comment">            default:</span></div>
-<div class="line"><span class="lineno">  581</span><span class="comment">                break;</span></div>
-<div class="line"><span class="lineno">  582</span><span class="comment">        }</span></div>
-<div class="line"><span class="lineno">  583</span><span class="comment">    }</span></div>
-<div class="line"><span class="lineno">  584</span><span class="comment">    else {</span></div>
-<div class="line"><span class="lineno">  585</span><span class="comment">        iK = non_zero_Keldysh_K3[iK_symmreduced];</span></div>
-<div class="line"><span class="lineno">  586</span><span class="comment">    }</span></div>
-<div class="line"><span class="lineno">  587</span><span class="comment">    */</span></div>
-<div class="line"><span class="lineno">  588</span>    std::array&lt;int,4&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">dimsKeldysh</a> = {2,2,2,2};</div>
-<div class="line"><span class="lineno">  589</span>    std::array&lt;int,4&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">contourIndices</a>;</div>
-<div class="line"><span class="lineno">  590</span>    <a class="code hl_function" href="../../de/dbb/math__utils_8hpp.html#a44e5552f932a6d11b1ee87a7229f2e5d">getMultIndex</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">contourIndices</a>, iK, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">dimsKeldysh</a>);</div>
-<div class="line"><span class="lineno">  591</span> </div>
-<div class="line"><span class="lineno">  592</span>    std::array&lt;freqType,4&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a>;</div>
-<div class="line"><span class="lineno">  593</span>    <span class="keywordflow">switch</span> (channel) {</div>
-<div class="line"><span class="lineno">  594</span>        <span class="keywordflow">case</span> <span class="charliteral">&#39;a&#39;</span>:</div>
-<div class="line"><span class="lineno">  595</span>            <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a> = {v-w/2, vp+w/2, -(vp-w/2), -(v+w/2)};</div>
-<div class="line"><span class="lineno">  596</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno">  597</span>        <span class="keywordflow">case</span> <span class="charliteral">&#39;p&#39;</span>:</div>
-<div class="line"><span class="lineno">  598</span>            <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a> = {v+w/2, -v+w/2, -(vp+w/2), -(-vp+w/2)};</div>
-<div class="line"><span class="lineno">  599</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno">  600</span>        <span class="keywordflow">case</span> <span class="charliteral">&#39;t&#39;</span>:</div>
-<div class="line"><span class="lineno">  601</span>            <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a> = {vp+w/2, v-w/2, -(vp-w/2), -(v+w/2)};</div>
-<div class="line"><span class="lineno">  602</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno">  603</span>        <span class="keywordflow">default</span>:</div>
-<div class="line"><span class="lineno">  604</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><span class="lineno">  605</span>    }</div>
-<div class="line"><span class="lineno">  606</span> </div>
-<div class="line"><span class="lineno">  607</span>    <a class="code hl_typedef" href="../../d1/df8/master__parameters_8hpp.html#a509f74e58953ffbd5c00435ce600cd3e">freqType</a> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">freq_check</a> = 0;</div>
-<div class="line"><span class="lineno">  608</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> = 0; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> &lt; 4; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>++) {</div>
-<div class="line"><span class="lineno">  609</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">freq_check</a> += <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">contourIndices</a>[<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>] * <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a>[<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>];</div>
-<div class="line"><span class="lineno">  610</span>    }</div>
-<div class="line"><span class="lineno">  611</span> </div>
-<div class="line"><span class="lineno">  612</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">freq_check</a> &lt;1e-15 <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">and</a> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">not</a> (iK==0 <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">or</a> iK==15) <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">and</a> <a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#acc079412030119547ab769b82d3c37d1">ZERO_T</a>) <span class="keywordflow">return</span> <span class="keyword">true</span>; <span class="comment">// sets values at v=0 to zero; exclude cases where all Contour indices are identical</span></div>
-<div class="line"><span class="lineno">  613</span>    <span class="keywordflow">else</span> <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><span class="lineno">  614</span> </div>
-<div class="line"><span class="lineno">  615</span>}</div>
+<p class="definition">Definition at line <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l00570">570</a> of file <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html">r_vertex.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  570</span>                                                                                                                                                  {</div>
+<div class="line"><span class="lineno">  571</span>    <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">k</a> != <a class="code hl_enumvalue" href="../../d7/d59/data__structures_8hpp.html#a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021">k2b</a>);</div>
+<div class="line"><span class="lineno">  572</span> </div>
+<div class="line"><span class="lineno">  573</span>    <span class="keyword">const</span> <span class="keywordtype">int</span> iK = <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">iK_symmreduced</a>;</div>
+<div class="line"><span class="lineno">  574</span>    <span class="comment">/*</span></div>
+<div class="line"><span class="lineno">  575</span><span class="comment">    int iK;</span></div>
+<div class="line"><span class="lineno">  576</span><span class="comment">    if constexpr (k == k1) {</span></div>
+<div class="line"><span class="lineno">  577</span><span class="comment">        switch (channel) {</span></div>
+<div class="line"><span class="lineno">  578</span><span class="comment">            case &#39;a&#39;:</span></div>
+<div class="line"><span class="lineno">  579</span><span class="comment">                iK = non_zero_Keldysh_K1a[iK_symmreduced];</span></div>
+<div class="line"><span class="lineno">  580</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  581</span><span class="comment">            case &#39;p&#39;:</span></div>
+<div class="line"><span class="lineno">  582</span><span class="comment">                iK = non_zero_Keldysh_K1p[iK_symmreduced];</span></div>
+<div class="line"><span class="lineno">  583</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  584</span><span class="comment">            case &#39;t&#39;:</span></div>
+<div class="line"><span class="lineno">  585</span><span class="comment">                iK = non_zero_Keldysh_K1t[iK_symmreduced];</span></div>
+<div class="line"><span class="lineno">  586</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  587</span><span class="comment">            default:</span></div>
+<div class="line"><span class="lineno">  588</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  589</span><span class="comment">        }</span></div>
+<div class="line"><span class="lineno">  590</span><span class="comment">    }</span></div>
+<div class="line"><span class="lineno">  591</span><span class="comment">    else if constexpr(k == k2) {</span></div>
+<div class="line"><span class="lineno">  592</span><span class="comment">        switch (channel) {</span></div>
+<div class="line"><span class="lineno">  593</span><span class="comment">            case &#39;a&#39;:</span></div>
+<div class="line"><span class="lineno">  594</span><span class="comment">                iK = non_zero_Keldysh_K2a[iK_symmreduced];</span></div>
+<div class="line"><span class="lineno">  595</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  596</span><span class="comment">            case &#39;p&#39;:</span></div>
+<div class="line"><span class="lineno">  597</span><span class="comment">                iK = non_zero_Keldysh_K2p[iK_symmreduced];</span></div>
+<div class="line"><span class="lineno">  598</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  599</span><span class="comment">            case &#39;t&#39;:</span></div>
+<div class="line"><span class="lineno">  600</span><span class="comment">                iK = non_zero_Keldysh_K2t[iK_symmreduced];</span></div>
+<div class="line"><span class="lineno">  601</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  602</span><span class="comment">            default:</span></div>
+<div class="line"><span class="lineno">  603</span><span class="comment">                break;</span></div>
+<div class="line"><span class="lineno">  604</span><span class="comment">        }</span></div>
+<div class="line"><span class="lineno">  605</span><span class="comment">    }</span></div>
+<div class="line"><span class="lineno">  606</span><span class="comment">    else {</span></div>
+<div class="line"><span class="lineno">  607</span><span class="comment">        iK = non_zero_Keldysh_K3[iK_symmreduced];</span></div>
+<div class="line"><span class="lineno">  608</span><span class="comment">    }</span></div>
+<div class="line"><span class="lineno">  609</span><span class="comment">    */</span></div>
+<div class="line"><span class="lineno">  610</span>    std::array&lt;int,4&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">dimsKeldysh</a> = {2,2,2,2};</div>
+<div class="line"><span class="lineno">  611</span>    std::array&lt;int,4&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">contourIndices</a>;</div>
+<div class="line"><span class="lineno">  612</span>    <a class="code hl_function" href="../../de/dbb/math__utils_8hpp.html#a44e5552f932a6d11b1ee87a7229f2e5d">getMultIndex</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">contourIndices</a>, iK, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">dimsKeldysh</a>);</div>
+<div class="line"><span class="lineno">  613</span> </div>
+<div class="line"><span class="lineno">  614</span>    std::array&lt;freqType,4&gt; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a>;</div>
+<div class="line"><span class="lineno">  615</span>    <span class="keywordflow">switch</span> (channel) {</div>
+<div class="line"><span class="lineno">  616</span>        <span class="keywordflow">case</span> <span class="charliteral">&#39;a&#39;</span>:</div>
+<div class="line"><span class="lineno">  617</span>            <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a> = {v-w/2, vp+w/2, -(vp-w/2), -(v+w/2)};</div>
+<div class="line"><span class="lineno">  618</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  619</span>        <span class="keywordflow">case</span> <span class="charliteral">&#39;p&#39;</span>:</div>
+<div class="line"><span class="lineno">  620</span>            <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a> = {v+w/2, -v+w/2, -(vp+w/2), -(-vp+w/2)};</div>
+<div class="line"><span class="lineno">  621</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  622</span>        <span class="keywordflow">case</span> <span class="charliteral">&#39;t&#39;</span>:</div>
+<div class="line"><span class="lineno">  623</span>            <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a> = {vp+w/2, v-w/2, -(vp-w/2), -(v+w/2)};</div>
+<div class="line"><span class="lineno">  624</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  625</span>        <span class="keywordflow">default</span>:</div>
+<div class="line"><span class="lineno">  626</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  627</span>    }</div>
+<div class="line"><span class="lineno">  628</span> </div>
+<div class="line"><span class="lineno">  629</span>    <a class="code hl_typedef" href="../../d1/df8/master__parameters_8hpp.html#a509f74e58953ffbd5c00435ce600cd3e">freqType</a> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">freq_check</a> = 0;</div>
+<div class="line"><span class="lineno">  630</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> = 0; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a> &lt; 4; <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>++) {</div>
+<div class="line"><span class="lineno">  631</span>        <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">freq_check</a> += <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">contourIndices</a>[<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>] * <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">frequenciesFermionic</a>[<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i</a>];</div>
+<div class="line"><span class="lineno">  632</span>    }</div>
+<div class="line"><span class="lineno">  633</span> </div>
+<div class="line"><span class="lineno">  634</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">freq_check</a> &lt;1e-15 <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">and</a> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">not</a> (iK==0 <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">or</a> iK==15) <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">and</a> <a class="code hl_variable" href="../../d1/df8/master__parameters_8hpp.html#acc079412030119547ab769b82d3c37d1">ZERO_T</a>) <span class="keywordflow">return</span> <span class="keyword">true</span>; <span class="comment">// sets values at v=0 to zero; exclude cases where all Contour indices are identical</span></div>
+<div class="line"><span class="lineno">  635</span>    <span class="keywordflow">else</span> <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  636</span> </div>
+<div class="line"><span class="lineno">  637</span>}</div>
 <div class="ttc" id="abubble__corrections_8hpp_html_aff27784f97591f505f77ff0065ab57af"><div class="ttname"><a href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">correctionFunctionBubble_REG3_Matsubara_PHS_diff</a></div><div class="ttdeci">auto correctionFunctionBubble_REG3_Matsubara_PHS_diff(double w, double vmax, double Lambda, const double Delta)</div><div class="ttdef"><b>Definition</b> <a href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">bubble_corrections.hpp:295</a></div></div>
 <div class="ttc" id="adata__structures_8hpp_html_a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021"><div class="ttname"><a href="../../d7/d59/data__structures_8hpp.html#a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021">k2b</a></div><div class="ttdeci">@ k2b</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00480">data_structures.hpp:480</a></div></div>
 <div class="ttc" id="amaster__parameters_8hpp_html_a509f74e58953ffbd5c00435ce600cd3e"><div class="ttname"><a href="../../d1/df8/master__parameters_8hpp.html#a509f74e58953ffbd5c00435ce600cd3e">freqType</a></div><div class="ttdeci">double freqType</div><div class="ttdef"><b>Definition</b> <a href="../../d1/df8/master__parameters_8hpp_source.html#l00156">master_parameters.hpp:156</a></div></div>
@@ -359,7 +358,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../df/da4/multiarray_8hpp_source.html#l00563">multidimensional::multiarray&lt; T, depth &gt;::length()</a>, <a class="el" href="../../d4/dda/mpi__setup_8c_09_09_source.html#l00003">mpi_world_rank()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00172">hdf5_impl::write_data_to_Dataset()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l00622">rvert&lt; Q &gt;::check_symmetries()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00494">compute_diff_SDE()</a>, <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l01056">rvert&lt; Q &gt;::save_expanded()</a>, <a class="el" href="../../de/d65/integrandSE_8hpp_source.html#l00277">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand()</a>, <a class="el" href="../../d5/df7/propagator_8hpp_source.html#l00077">Propagator&lt; Q &gt;::save_propagator_values()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00259">test_read_write_data_hdf()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00157">Hartree_Solver::write_out_propagators()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00621">hdf5_impl::write_state_to_hdf_LambdaLayer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l00644">rvert&lt; Q &gt;::check_symmetries()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00494">compute_diff_SDE()</a>, <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l01078">rvert&lt; Q &gt;::save_expanded()</a>, <a class="el" href="../../de/d65/integrandSE_8hpp_source.html#l00277">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand()</a>, <a class="el" href="../../d5/df7/propagator_8hpp_source.html#l00086">Propagator&lt; Q &gt;::save_propagator_values()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00259">test_read_write_data_hdf()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00157">Hartree_Solver::write_out_propagators()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00621">hdf5_impl::write_state_to_hdf_LambdaLayer()</a>.</p>
 
 </div>
 </div>
@@ -423,7 +422,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_bafa75a8501ccb76a28f5bb43dc7d205.html">correlation_functions</a></li><li class="navelem"><a class="el" href="../../dir_a72b084b53bacf0443383119480745f4.html">four_point</a></li><li class="navelem"><a class="el" href="../../d3/d22/r__vertex_8hpp.html">r_vertex.hpp</a></li>
-    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue May 7 2024 11:51:28 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

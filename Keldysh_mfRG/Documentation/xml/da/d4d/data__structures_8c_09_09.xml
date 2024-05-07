@@ -110,9 +110,9 @@
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a8b82f59edcffae366dfd5732270821ce" compoundref="dd/dea/bubble__corrections_8hpp" startline="48" endline="70">correctionFunctionBubbleAT_REG2_Matsubara_PHS</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a577956afec9c428d5f85b35323fd23a9" compoundref="dd/dea/bubble__corrections_8hpp" startline="327" endline="340">correctionFunctionBubbleAT_REG3_Matsubara_PHS</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a3b6801846bb5cb11907d139037a490c1" compoundref="dd/dea/bubble__corrections_8hpp" startline="356" endline="369">correctionFunctionBubbleAT_REG4_Matsubara_PHS</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="605" endline="616">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="686" endline="699">Propagator&lt; Q &gt;::GM_REG2</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="718" endline="723">Propagator&lt; Q &gt;::GR_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="614" endline="625">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="695" endline="708">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="727" endline="732">Propagator&lt; Q &gt;::GR_REG3</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1accf972145186913d2ccaf053d34f99b7" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="10" endline="29">FrequencyGrid&lt; eliasGrid &gt;::initialize_grid</referencedby>
         <referencedby refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" compoundref="dc/d80/data__buffer_8hpp" startline="179" endline="423">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::interpolate_impl</referencedby>
         <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1abe049053b951a153eeafc7e38ef45967" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="105" endline="119">interpolate_lin1D</referencedby>
@@ -127,21 +127,21 @@
         <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1ae07941036397e55e91d7c971701798eb" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="293" endline="317">interpolate_sloppycubic1D</referencedby>
         <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a33ad7272ed2add395d22ebc25fbda18a" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="330" endline="354">interpolate_sloppycubic2D</referencedby>
         <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1a3ea7779aba6eee29610390e29196f9a6" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="366" endline="391">interpolate_sloppycubic3D</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a4903a387462011800d0bdf5f6cab80a0" compoundref="d1/d2d/vertex_8hpp" startline="1412" endline="1432">fullvert&lt; Q &gt;::left_diff_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a5764a575f836bbd99a6096c957706077" compoundref="d1/d2d/vertex_8hpp" startline="1433" endline="1454">fullvert&lt; Q &gt;::left_diff_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a4301a9ea991bdbe8abea9e56c88a1531" compoundref="d1/d2d/vertex_8hpp" startline="1651" endline="1671">fullvert&lt; Q &gt;::left_diff_bare_symmetry_expanded</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a9c60e78db51bb564c5f5b48e361773fe" compoundref="d1/d2d/vertex_8hpp" startline="1258" endline="1295">fullvert&lt; Q &gt;::left_same_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a979ab081a5d2c7cf842864d4881eee58" compoundref="d1/d2d/vertex_8hpp" startline="1296" endline="1333">fullvert&lt; Q &gt;::left_same_bare</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a8e9446837a4a9308c720370ccbaa1445" compoundref="d3/d22/r__vertex_8hpp" startline="460" endline="472">rvert&lt; Q &gt;::read_symmetryreduced_rvert</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a910c1f3d01af773982abfdfbdc44af08" compoundref="d1/d2d/vertex_8hpp" startline="1456" endline="1476">fullvert&lt; Q &gt;::right_diff_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a7097308dc80547ccfc4c4a8a3e735c62" compoundref="d1/d2d/vertex_8hpp" startline="1477" endline="1498">fullvert&lt; Q &gt;::right_diff_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a78ecf14103cf47c44635489ba21d615c" compoundref="d1/d2d/vertex_8hpp" startline="1672" endline="1693">fullvert&lt; Q &gt;::right_diff_bare_symmetry_expanded</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a1517ecda5f1d20e6d934010cec48745e" compoundref="d1/d2d/vertex_8hpp" startline="1335" endline="1372">fullvert&lt; Q &gt;::right_same_bare</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1af914c469c229333915893485a0105d15" compoundref="d1/d2d/vertex_8hpp" startline="1373" endline="1410">fullvert&lt; Q &gt;::right_same_bare</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="777" endline="785">Propagator&lt; Q &gt;::SM_REG4</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="43" endline="129">Bubble&lt; Q &gt;::value</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="161" endline="185">Bubble&lt; Q &gt;::value</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a1bf888805c3422916edce456cf079e37" compoundref="d0/dac/bubble_8hpp" startline="132" endline="150">Bubble&lt; Q &gt;::value_Matsubara</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a4903a387462011800d0bdf5f6cab80a0" compoundref="d1/d2d/vertex_8hpp" startline="1486" endline="1506">fullvert&lt; Q &gt;::left_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a5764a575f836bbd99a6096c957706077" compoundref="d1/d2d/vertex_8hpp" startline="1507" endline="1528">fullvert&lt; Q &gt;::left_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a4301a9ea991bdbe8abea9e56c88a1531" compoundref="d1/d2d/vertex_8hpp" startline="1725" endline="1745">fullvert&lt; Q &gt;::left_diff_bare_symmetry_expanded</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a9c60e78db51bb564c5f5b48e361773fe" compoundref="d1/d2d/vertex_8hpp" startline="1332" endline="1369">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a979ab081a5d2c7cf842864d4881eee58" compoundref="d1/d2d/vertex_8hpp" startline="1370" endline="1407">fullvert&lt; Q &gt;::left_same_bare</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a8e9446837a4a9308c720370ccbaa1445" compoundref="d3/d22/r__vertex_8hpp" startline="482" endline="494">rvert&lt; Q &gt;::read_symmetryreduced_rvert</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a910c1f3d01af773982abfdfbdc44af08" compoundref="d1/d2d/vertex_8hpp" startline="1530" endline="1550">fullvert&lt; Q &gt;::right_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a7097308dc80547ccfc4c4a8a3e735c62" compoundref="d1/d2d/vertex_8hpp" startline="1551" endline="1572">fullvert&lt; Q &gt;::right_diff_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a78ecf14103cf47c44635489ba21d615c" compoundref="d1/d2d/vertex_8hpp" startline="1746" endline="1767">fullvert&lt; Q &gt;::right_diff_bare_symmetry_expanded</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a1517ecda5f1d20e6d934010cec48745e" compoundref="d1/d2d/vertex_8hpp" startline="1409" endline="1446">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1af914c469c229333915893485a0105d15" compoundref="d1/d2d/vertex_8hpp" startline="1447" endline="1484">fullvert&lt; Q &gt;::right_same_bare</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="786" endline="794">Propagator&lt; Q &gt;::SM_REG4</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="47" endline="133">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="173" endline="197">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a1bf888805c3422916edce456cf079e37" compoundref="d0/dac/bubble_8hpp" startline="144" endline="162">Bubble&lt; Q &gt;::value_Matsubara</referencedby>
       </memberdef>
       <memberdef kind="function" id="da/d4d/data__structures_8c_09_09_1a81f1bef5a84a0e99516dd9a243e312d5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::ostream &amp;</type>

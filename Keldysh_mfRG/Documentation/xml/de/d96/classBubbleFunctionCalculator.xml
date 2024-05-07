@@ -1200,7 +1200,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="bubble/bubble_function.hpp" line="97" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="833" bodyend="895"/>
-        <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="200" endline="203">abs</references>
+        <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="225" endline="228">abs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6" compoundref="d1/df8/master__parameters_8hpp" startline="65">EQUILIBRIUM</references>

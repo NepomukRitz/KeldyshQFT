@@ -9,12 +9,13 @@
 #include "../../utilities/minimizer.hpp"
 #include "../n_point/data_buffer.hpp"
 
-/// Possible unit-tests
-/// Do the public functions return the correct vertex-contributions?
-
 /**************************** CLASSES FOR THE THREE REDUCIBLE AND THE IRREDUCIBLE VERTEX ******************************/
-//Irreducible
-//The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
+
+
+/**
+ * The irreducible part of the vertex. Working in the PA, it's just a set of 16 numbers, one per Keldysh component, of which at least half are always zero.
+ * @tparam Q Type of the data.
+ */
 template <class Q>
 class irreducible{
     friend State<state_datatype,false> read_state_from_hdf(const H5std_string& filename, const int Lambda_it);
@@ -27,17 +28,30 @@ class irreducible{
 public:
     irreducible() = default;;
 
-    // All three functions return the value of the bare vertex. Since this value is, this far, independent of everything,
-    // the third function stays the same. However, should count on having to adapt it if an internal structure should
-    // come forth where the bare interaction does not remain invariant throughout the system.
+    /**
+     * Returns the value of the irreducible vertex. Just constants, if it is the bare vertex.
+     * @tparam result_type Type of the result. Typically =Q.
+     * @param iK Keldysh index.
+     * @param i_in Internal index. Always = 0 for the SIAM.
+     * @param spin Spin index.
+     * @return Value of the irreducible vertex.
+     */
     template<typename result_type=Q> auto val(my_index_t iK, my_index_t i_in, my_index_t spin) const -> result_type;
 
     auto acc(int i) const -> Q;
     void direct_set(int i,Q value);
-    // Sets the value of the bare interaction to Q
+
+    /**
+     * Set the value of the bare interaction to Q.
+     * @param iK Keldysh index.
+     * @param i_in Internal index
+     */
     void setvert(int iK, int i_in, Q);
 
-    // Initialize irreducible vertex
+    /**
+     * Initialize the irreducible vertex.
+     * @param val Value of the bare interaction.
+     */
     void initialize(Q val);
 
     buffer_type get_vec() const {return bare;}
@@ -93,11 +107,14 @@ public:
 template <typename Q> class rvert;
 
 /**********************************************************************************************************************/
-/**The class fullvert
- * The class defining a vertex with full channel decomposition i.e. irreducible (bare) a, p and t channels
- * The fullvert in the standard configuration is the full vertex \Gamma with all components (only_same_channel=false and Ir=false)
- *      for Ir = true   it is an r-irreducible vertex I_r (r is the channel of the bubble)
- *      for only_same_channel   it only contains the r-reducible component
+
+/**
+ * The class fullvert defines a vertex in a full channel decomposition, i.e., it includes an irreducible (bare)
+ * contribution and a, p and t channel reducible contributions. \n
+ * In the standard configuration (only_same_channel=false and Ir=false), the fullvert is the full vertex Γ
+ * with all components. For Ir=true, it is an r-irreducible vertex I_r; for only_same_channel=true, it only
+ * contains the r-reducible component.
+ * @tparam Q Type of the data.
  */
 template <class Q>
 class fullvert {
@@ -114,10 +131,21 @@ public:
                                     // is needed for correct computation of the central part in multiloop contributions.
 
     fullvert() = default;
+
+    /**
+     * Constructor at regulator Λ with the standard configuration.
+     * @param Lambda Value of the regulator.
+     */
     explicit fullvert(const double Lambda) :
                               avertex('a', Lambda, fRG_config(), true),
                               pvertex('p', Lambda, fRG_config(), true),
                               tvertex('t', Lambda, fRG_config(), true) {}
+
+    /**
+     * Constructor at regulator Λ with a given configuration.
+     * @param Lambda Value of the regulator.
+     * @param config Set of parameters.
+     */
     explicit fullvert(const double Lambda, const fRG_config& config) :
                               avertex('a', Lambda, config, true),
                               pvertex('p', Lambda, config, true),
@@ -131,27 +159,68 @@ public:
     }
 
 private:
-    /// Returns \gamma_{\bar{r}} := the sum of the contributions of the diagrammatic classes r' =/= r
+
+    /**
+     * Returns \gamma_{\bar{r}} := the sum of the contributions of the diagrammatic classes r' =/= r
+     * @tparam ch_bubble Channel index r.
+     * @param input VertexInput struct for the set of arguments.
+     * @return Value of \gamma_{\bar{r}}.
+     */
     template<char ch_bubble> auto gammaRb(const VertexInput& input) const -> Q;
     template<char ch_bubble> auto gammaRb(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric_full vertex
 
 
 public:
-    /// Access to vertex values:
-    // Returns the value of the full vertex
+
+    /**
+     * Gives access to the data.
+     * @tparam ch_bubble Channel index r used for the parametrization.
+     * @tparam r_irred Determines whether the vertex is irreducible in channel r.
+     * @param input VertexInput struct for the set of arguments.
+     * @return Value of the full vertex
+     */
     template<char ch_bubble, bool r_irred> auto value(const VertexInput& input) const -> Q;
     template<char ch_bubble, bool r_irred> auto value(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric_full vertex
 
-    // Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
+    /**
+     * Combination of those diagrams that connect to the same bare vertex on the left side: Gamma0, K1, K2b
+     * @tparam ch_bubble Channel index r used for the parametrization.
+     * @tparam r_irred Determines whether the vertex is irreducible in channel r.
+     * @param input VertexInput struct for the set of arguments.
+     * @return Value of Gamma0 + K1 + K2b.
+     */
     template<char ch_bubble, bool r_irred> auto left_same_bare(const VertexInput& input) const -> Q;
     template<char ch_bubble, bool r_irred> auto left_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric_full vertex
-    // Combination of those diagrams that connect to the same bare vertex on the right side: Gamma0, K1, K2
+
+    /**
+     * Combination of those diagrams that connect to the same bare vertex on the right side: Gamma0, K1, K2
+     * @tparam ch_bubble Channel index r used for the parametrization.
+     * @tparam r_irred Determines whether the vertex is irreducible in channel r.
+     * @param input VertexInput struct for the set of arguments.
+     * @return Value of Gamma0 + K1 + K2
+     */
     template<char ch_bubble, bool r_irred> auto right_same_bare(const VertexInput& input) const -> Q;
     template<char ch_bubble, bool r_irred> auto right_same_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric_full vertex
-    // Combination of those diagrams that connect to the different bare vertices on the left side: K2, K3, gamma_bar{r}
+
+    /**
+     * Combination of those diagrams that connect to the different bare vertices on the left side: K2, K3, gamma_bar{r}
+     * @tparam ch_bubble Channel index r used for the parametrization.
+     * @tparam r_irred Determines whether the vertex is irreducible in channel r.
+     * @tparam only_channel_r If true, only the r-reducible part K2 + K3 is given.
+     * @param input VertexInput struct for the set of arguments.
+     * @return Value of K2 + K3 + gamma_bar{r}
+     */
     template<char ch_bubble, bool r_irred, bool only_channel_r> auto left_diff_bare(const VertexInput& input) const -> Q;
     template<char ch_bubble, bool r_irred, bool only_channel_r> auto left_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric_full vertex
-    // Combination of those diagrams that connect to the different bare vertices on the right side: K2b, K3, gamma_bar{r}
+
+    /**
+     * Combination of those diagrams that connect to the different bare vertices on the right side: K2b, K3, gamma_bar{r}
+     * @tparam ch_bubble Channel index r used for the parametrization.
+     * @tparam r_irred Determines whether the vertex is irreducible in channel r.
+     * @tparam only_channel_r If true, only the r-reducible part K2b + K3 is given.
+     * @param input VertexInput struct for the set of arguments.
+     * @return Value of K2b + K3 + gamma_bar{r}
+     */
     template<char ch_bubble, bool r_irred, bool only_channel_r> auto right_diff_bare(const VertexInput& input) const -> Q;
     template<char ch_bubble, bool r_irred, bool only_channel_r> auto right_diff_bare(const VertexInput& input, const fullvert<Q>& right_vertex) const -> Q; // for non-symmetric_full vertex
 
@@ -164,6 +233,11 @@ public:
     template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto left_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
     template<char ch_bubble, typename result_type, bool r_irred, bool only_channel_r> auto right_diff_bare_symmetry_expanded(const VertexInput& input) const -> result_type;
 
+    /**
+     * Returns the reducible part of the vertex in channel r.
+     * @tparam r channel index r
+     * @return rvert in channel r.
+     */
     template <char r> rvert<Q>& get_rvertex() {
         if constexpr(r == 'a') {
             return avertex;
@@ -252,14 +326,14 @@ public:
     void set_initializedInterpol(bool is_init) const;
 
 
-    /// Reorder the results of two asymmetric bubbles which are related by left-right symmetry
+    // Reorder the results of two asymmetric bubbles which are related by left-right symmetry
     void reorder_due2antisymmetry(fullvert<Q>& right_vertex);
 
-    /// Initialize bare vertex
+    // Initialize bare vertex
     void initialize(Q val);
 
 
-    /// Functions concerning frequency mesh:
+    // Functions concerning frequency mesh:
     void set_frequency_grid(const fullvert<Q>& vertex);
 
     // Interpolate vertex to updated grid
@@ -274,14 +348,14 @@ public:
     void findBestFreqGrid(bool verbose=true);
 
 
-    ///Norm of the vertex
+    // Norm of the vertex
     double sum_norm(int) const;
     double norm_K1(int) const ;
     double norm_K2(int) const ;
     double norm_K3(int) const ;
 
 
-    /// Various arithmetic operators for the fullvertex class
+    // Various arithmetic operators for the fullvertex class
     auto operator+= (const fullvert<Q>& vertex1) -> fullvert<Q> {
         this->irred   += vertex1.irred;
         this->avertex += vertex1.avertex;
@@ -352,7 +426,7 @@ public:
     }
 
 
-    /// Diagnostic functions:
+    // Diagnostic functions:
     double get_deriv_max_K1(bool verbose) const;
     double get_deriv_max_K2(bool verbose) const;
     double get_deriv_max_K3(bool verbose) const;

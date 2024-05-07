@@ -31,7 +31,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="383" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="383" bodyend="-1"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="457" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="457" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="d2/d4a/classGeneralVertex_1a3a1d5fa1853afe69bb2d4488f8afe3ea" prot="private" static="no">
         <type>std::conditional_t&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref>, <ref refid="d2/d4a/classGeneralVertex" kindref="compound">GeneralVertex</ref>&lt; Q, <ref refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" kindref="member">symmetric_full</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref> &gt;, double &gt;</type>
@@ -45,7 +45,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="386" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="386" bodyend="-1"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="460" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="460" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-type">
@@ -61,7 +61,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="754" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="754" bodyend="-1"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="828" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="828" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-attrib">
@@ -77,54 +77,54 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="382" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="382" bodyend="-1"/>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a791568d8a7b0cacf00079d69ec765bae" compoundref="d1/d2d/vertex_8hpp" startline="790" endline="790">GeneralVertex&lt; Q, symmtype, differentiated &gt;::avertex</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a6881eebb821d4df1815382d5f11c96f9" compoundref="d1/d2d/vertex_8hpp" startline="794" endline="794">GeneralVertex&lt; Q, symmtype, differentiated &gt;::avertex</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a39fcda7cd0a1b72d75253a4b5c4c9536" compoundref="d1/d2d/vertex_8hpp" startline="778" endline="780">GeneralVertex&lt; Q, symmtype, differentiated &gt;::center_frequency_grids</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ab40566da24b72737a041c9ada60dee7b" compoundref="d1/d2d/vertex_8hpp" startline="981" endline="985">GeneralVertex&lt; Q, symmtype, differentiated &gt;::check_symmetries</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="456" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="456" bodyend="-1"/>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a791568d8a7b0cacf00079d69ec765bae" compoundref="d1/d2d/vertex_8hpp" startline="864" endline="864">GeneralVertex&lt; Q, symmtype, differentiated &gt;::avertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a6881eebb821d4df1815382d5f11c96f9" compoundref="d1/d2d/vertex_8hpp" startline="868" endline="868">GeneralVertex&lt; Q, symmtype, differentiated &gt;::avertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a39fcda7cd0a1b72d75253a4b5c4c9536" compoundref="d1/d2d/vertex_8hpp" startline="852" endline="854">GeneralVertex&lt; Q, symmtype, differentiated &gt;::center_frequency_grids</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ab40566da24b72737a041c9ada60dee7b" compoundref="d1/d2d/vertex_8hpp" startline="1055" endline="1059">GeneralVertex&lt; Q, symmtype, differentiated &gt;::check_symmetries</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1" compoundref="dd/d0a/parquet__solver_8hpp" startline="28" endline="62">compute_BSE</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a975283a2a8d88b37c80ee3d2f39e68c3" compoundref="dd/d0a/parquet__solver_8hpp" startline="182" endline="200">compute_SDE_impl_v1</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a8bacf42c03131ff64e3ee071ad15aa00" compoundref="d1/d2d/vertex_8hpp" startline="543" endline="599">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_diff_K2</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a640ca4da04c75074e358824390e6a535" compoundref="d1/d2d/vertex_8hpp" startline="659" endline="718">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_diff_K2b</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1abe0ea295fcf74debfb518f4249985f5d" compoundref="d1/d2d/vertex_8hpp" startline="600" endline="658">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_diff_K3_SBE</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a0ebf2a611726608e8df4fb86bd3b89fa" compoundref="d1/d2d/vertex_8hpp" startline="390" endline="438">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_nondiff_K2</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a7a3772269ee6137752c66fedb70b3fce" compoundref="d1/d2d/vertex_8hpp" startline="490" endline="541">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_nondiff_K2b</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a162a208eeca9afe7bf95180572741059" compoundref="d1/d2d/vertex_8hpp" startline="439" endline="489">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_nondiff_K3_SBE</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a7a755b510537e327c8264c51611f2ef0" compoundref="d1/d2d/vertex_8hpp" startline="814" endline="830">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="783" endline="783">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a52a6484dc393261fbe7a555a73087e55" compoundref="d1/d2d/vertex_8hpp" startline="785" endline="785">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ad51364c943e2c162db31c65285520841" compoundref="d1/d2d/vertex_8hpp" startline="784" endline="784">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1af48dffabadf224b09b9bbc6ff499161a" compoundref="d1/d2d/vertex_8hpp" startline="786" endline="786">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="967" endline="970">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1afda3af30562380182fb9fc3bb7eacbbf" compoundref="d1/d2d/vertex_8hpp" startline="972" endline="975">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initializeInterpol</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a40d8373a0e32fce5e40ed3e69adb9511" compoundref="d1/d2d/vertex_8hpp" startline="789" endline="789">GeneralVertex&lt; Q, symmtype, differentiated &gt;::irred</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a439596d94363177bf2c25621ac9020ef" compoundref="d1/d2d/vertex_8hpp" startline="793" endline="793">GeneralVertex&lt; Q, symmtype, differentiated &gt;::irred</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a648192fe1e7499ccbb89a4f6c7365cec" compoundref="d1/d2d/vertex_8hpp" startline="845" endline="848">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_diff_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1af208f194cc39713472f053a6edc1ff96" compoundref="d1/d2d/vertex_8hpp" startline="837" endline="840">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_same_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a7c4edf330670ed73cdd306e508137c76" compoundref="d1/d2d/vertex_8hpp" startline="935" endline="938">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a66e3aa65eda2c853832d6a3942ec69e8" compoundref="d1/d2d/vertex_8hpp" startline="940" endline="940">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K1</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1af4cf7b1c6febf6128179141af0c7b4b3" compoundref="d1/d2d/vertex_8hpp" startline="941" endline="941">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K2</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a463c54e75b43e9aa43d76248275b011b" compoundref="d1/d2d/vertex_8hpp" startline="942" endline="942">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K3</referencedby>
-        <referencedby refid="d7/d97/classState_1aceb570905ab47b961c43d16ac62a0dda" compoundref="da/d3b/state_8hpp" startline="53" endline="57">State&lt; Q, differentiated &gt;::operator+=</referencedby>
-        <referencedby refid="d7/d97/classState_1afecbd00b0fda604abb85ecf3d8423cc0" compoundref="da/d3b/state_8hpp" startline="88" endline="92">State&lt; Q, differentiated &gt;::operator-=</referencedby>
-        <referencedby refid="d7/d97/classState_1a26e54b23b72447a7cc0b120c72af3180" compoundref="da/d3b/state_8hpp" startline="98" endline="102">State&lt; Q, differentiated &gt;::operator/=</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a8bacf42c03131ff64e3ee071ad15aa00" compoundref="d1/d2d/vertex_8hpp" startline="617" endline="673">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_diff_K2</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a640ca4da04c75074e358824390e6a535" compoundref="d1/d2d/vertex_8hpp" startline="733" endline="792">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_diff_K2b</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1abe0ea295fcf74debfb518f4249985f5d" compoundref="d1/d2d/vertex_8hpp" startline="674" endline="732">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_diff_K3_SBE</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a0ebf2a611726608e8df4fb86bd3b89fa" compoundref="d1/d2d/vertex_8hpp" startline="464" endline="512">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_nondiff_K2</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a7a3772269ee6137752c66fedb70b3fce" compoundref="d1/d2d/vertex_8hpp" startline="564" endline="615">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_nondiff_K2b</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a162a208eeca9afe7bf95180572741059" compoundref="d1/d2d/vertex_8hpp" startline="513" endline="563">GeneralVertex&lt; Q, symmtype, differentiated &gt;::construct_SBE_nondiff_K3_SBE</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a7a755b510537e327c8264c51611f2ef0" compoundref="d1/d2d/vertex_8hpp" startline="888" endline="904">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="871" endline="887">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="857" endline="857">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a52a6484dc393261fbe7a555a73087e55" compoundref="d1/d2d/vertex_8hpp" startline="859" endline="859">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ad51364c943e2c162db31c65285520841" compoundref="d1/d2d/vertex_8hpp" startline="858" endline="858">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1af48dffabadf224b09b9bbc6ff499161a" compoundref="d1/d2d/vertex_8hpp" startline="860" endline="860">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="1041" endline="1044">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1afda3af30562380182fb9fc3bb7eacbbf" compoundref="d1/d2d/vertex_8hpp" startline="1046" endline="1049">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initializeInterpol</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a40d8373a0e32fce5e40ed3e69adb9511" compoundref="d1/d2d/vertex_8hpp" startline="863" endline="863">GeneralVertex&lt; Q, symmtype, differentiated &gt;::irred</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a439596d94363177bf2c25621ac9020ef" compoundref="d1/d2d/vertex_8hpp" startline="867" endline="867">GeneralVertex&lt; Q, symmtype, differentiated &gt;::irred</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a648192fe1e7499ccbb89a4f6c7365cec" compoundref="d1/d2d/vertex_8hpp" startline="919" endline="922">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_diff_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1af208f194cc39713472f053a6edc1ff96" compoundref="d1/d2d/vertex_8hpp" startline="911" endline="914">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_same_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a7c4edf330670ed73cdd306e508137c76" compoundref="d1/d2d/vertex_8hpp" startline="1009" endline="1012">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a66e3aa65eda2c853832d6a3942ec69e8" compoundref="d1/d2d/vertex_8hpp" startline="1014" endline="1014">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K1</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1af4cf7b1c6febf6128179141af0c7b4b3" compoundref="d1/d2d/vertex_8hpp" startline="1015" endline="1015">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K2</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a463c54e75b43e9aa43d76248275b011b" compoundref="d1/d2d/vertex_8hpp" startline="1016" endline="1016">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K3</referencedby>
+        <referencedby refid="d7/d97/classState_1aceb570905ab47b961c43d16ac62a0dda" compoundref="da/d3b/state_8hpp" startline="78" endline="82">State&lt; Q, differentiated &gt;::operator+=</referencedby>
+        <referencedby refid="d7/d97/classState_1afecbd00b0fda604abb85ecf3d8423cc0" compoundref="da/d3b/state_8hpp" startline="113" endline="117">State&lt; Q, differentiated &gt;::operator-=</referencedby>
+        <referencedby refid="d7/d97/classState_1a26e54b23b72447a7cc0b120c72af3180" compoundref="da/d3b/state_8hpp" startline="123" endline="127">State&lt; Q, differentiated &gt;::operator/=</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1abec34975a70ef37a932b85ec566fc52b" compoundref="d1/d2d/vertex_8hpp" startline="791" endline="791">GeneralVertex&lt; Q, symmtype, differentiated &gt;::pvertex</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a3f68a76caf5c84cf9c32f5baa7bd79c2" compoundref="d1/d2d/vertex_8hpp" startline="795" endline="795">GeneralVertex&lt; Q, symmtype, differentiated &gt;::pvertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1abec34975a70ef37a932b85ec566fc52b" compoundref="d1/d2d/vertex_8hpp" startline="865" endline="865">GeneralVertex&lt; Q, symmtype, differentiated &gt;::pvertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a3f68a76caf5c84cf9c32f5baa7bd79c2" compoundref="d1/d2d/vertex_8hpp" startline="869" endline="869">GeneralVertex&lt; Q, symmtype, differentiated &gt;::pvertex</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1aa13763454fa35f06b317985ec1f2e30b" compoundref="d1/d2d/vertex_8hpp" startline="849" endline="852">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_diff_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a3b4b4d6de40f0fc82083f6e56669f817" compoundref="d1/d2d/vertex_8hpp" startline="841" endline="844">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_same_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a19ee736254b3fdbbdf13bb99af1bc2a4" compoundref="d1/d2d/vertex_8hpp" startline="945" endline="948">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_frequency_grid</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a142a228b92523b74a24c96a1e15c8ec7" compoundref="d1/d2d/vertex_8hpp" startline="976" endline="979">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_initializedInterpol</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1aed8132ff4fc8418ee884d39035153e9e" compoundref="d1/d2d/vertex_8hpp" startline="955" endline="958">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_Ir</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a6b0ef7b5e659254636f28dd97aab9a69" compoundref="d1/d2d/vertex_8hpp" startline="962" endline="965">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_only_same_channel</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1acaeb8f5e899ed8bb442316038024f591" compoundref="d1/d2d/vertex_8hpp" startline="939" endline="939">GeneralVertex&lt; Q, symmtype, differentiated &gt;::sum_norm</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1aa13763454fa35f06b317985ec1f2e30b" compoundref="d1/d2d/vertex_8hpp" startline="923" endline="926">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_diff_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a3b4b4d6de40f0fc82083f6e56669f817" compoundref="d1/d2d/vertex_8hpp" startline="915" endline="918">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_same_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a19ee736254b3fdbbdf13bb99af1bc2a4" compoundref="d1/d2d/vertex_8hpp" startline="1019" endline="1022">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_frequency_grid</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a142a228b92523b74a24c96a1e15c8ec7" compoundref="d1/d2d/vertex_8hpp" startline="1050" endline="1053">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_initializedInterpol</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1aed8132ff4fc8418ee884d39035153e9e" compoundref="d1/d2d/vertex_8hpp" startline="1029" endline="1032">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_Ir</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a6b0ef7b5e659254636f28dd97aab9a69" compoundref="d1/d2d/vertex_8hpp" startline="1036" endline="1039">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_only_same_channel</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1acaeb8f5e899ed8bb442316038024f591" compoundref="d1/d2d/vertex_8hpp" startline="1013" endline="1013">GeneralVertex&lt; Q, symmtype, differentiated &gt;::sum_norm</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a80b79fecedc9c2fb3f7e115dfc658b78" compoundref="d1/d2d/vertex_8hpp" startline="792" endline="792">GeneralVertex&lt; Q, symmtype, differentiated &gt;::tvertex</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1af9bb3a3520486b69dc41fc975381a0af" compoundref="d1/d2d/vertex_8hpp" startline="796" endline="796">GeneralVertex&lt; Q, symmtype, differentiated &gt;::tvertex</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a388a400c48885ac12f13aaa3864c0b89" compoundref="d1/d2d/vertex_8hpp" startline="950" endline="953">GeneralVertex&lt; Q, symmtype, differentiated &gt;::update_grid</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a0c8a4950f5baec1cfbdd8ddf3290543b" compoundref="d1/d2d/vertex_8hpp" startline="833" endline="836">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a80b79fecedc9c2fb3f7e115dfc658b78" compoundref="d1/d2d/vertex_8hpp" startline="866" endline="866">GeneralVertex&lt; Q, symmtype, differentiated &gt;::tvertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1af9bb3a3520486b69dc41fc975381a0af" compoundref="d1/d2d/vertex_8hpp" startline="870" endline="870">GeneralVertex&lt; Q, symmtype, differentiated &gt;::tvertex</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a388a400c48885ac12f13aaa3864c0b89" compoundref="d1/d2d/vertex_8hpp" startline="1024" endline="1027">GeneralVertex&lt; Q, symmtype, differentiated &gt;::update_grid</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a0c8a4950f5baec1cfbdd8ddf3290543b" compoundref="d1/d2d/vertex_8hpp" startline="907" endline="910">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" prot="private" static="no" mutable="no">
         <type><ref refid="d2/d4a/classGeneralVertex_1a214bc9e1ac53b08dbd00ef7d8bc7fdef" kindref="member">vertex_half2_t</ref></type>
@@ -138,22 +138,22 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="384" column="20" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="384" bodyend="-1"/>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ad51364c943e2c162db31c65285520841" compoundref="d1/d2d/vertex_8hpp" startline="784" endline="784">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1af48dffabadf224b09b9bbc6ff499161a" compoundref="d1/d2d/vertex_8hpp" startline="786" endline="786">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="967" endline="970">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1afda3af30562380182fb9fc3bb7eacbbf" compoundref="d1/d2d/vertex_8hpp" startline="972" endline="975">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initializeInterpol</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a648192fe1e7499ccbb89a4f6c7365cec" compoundref="d1/d2d/vertex_8hpp" startline="845" endline="848">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_diff_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1af208f194cc39713472f053a6edc1ff96" compoundref="d1/d2d/vertex_8hpp" startline="837" endline="840">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_same_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a7c4edf330670ed73cdd306e508137c76" compoundref="d1/d2d/vertex_8hpp" startline="935" endline="938">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1aa13763454fa35f06b317985ec1f2e30b" compoundref="d1/d2d/vertex_8hpp" startline="849" endline="852">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_diff_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a3b4b4d6de40f0fc82083f6e56669f817" compoundref="d1/d2d/vertex_8hpp" startline="841" endline="844">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_same_bare</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a19ee736254b3fdbbdf13bb99af1bc2a4" compoundref="d1/d2d/vertex_8hpp" startline="945" endline="948">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_frequency_grid</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a142a228b92523b74a24c96a1e15c8ec7" compoundref="d1/d2d/vertex_8hpp" startline="976" endline="979">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_initializedInterpol</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1aed8132ff4fc8418ee884d39035153e9e" compoundref="d1/d2d/vertex_8hpp" startline="955" endline="958">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_Ir</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a6b0ef7b5e659254636f28dd97aab9a69" compoundref="d1/d2d/vertex_8hpp" startline="962" endline="965">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_only_same_channel</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a388a400c48885ac12f13aaa3864c0b89" compoundref="d1/d2d/vertex_8hpp" startline="950" endline="953">GeneralVertex&lt; Q, symmtype, differentiated &gt;::update_grid</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a0c8a4950f5baec1cfbdd8ddf3290543b" compoundref="d1/d2d/vertex_8hpp" startline="833" endline="836">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="458" column="20" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="458" bodyend="-1"/>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ad51364c943e2c162db31c65285520841" compoundref="d1/d2d/vertex_8hpp" startline="858" endline="858">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1af48dffabadf224b09b9bbc6ff499161a" compoundref="d1/d2d/vertex_8hpp" startline="860" endline="860">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="1041" endline="1044">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1afda3af30562380182fb9fc3bb7eacbbf" compoundref="d1/d2d/vertex_8hpp" startline="1046" endline="1049">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initializeInterpol</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a648192fe1e7499ccbb89a4f6c7365cec" compoundref="d1/d2d/vertex_8hpp" startline="919" endline="922">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_diff_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1af208f194cc39713472f053a6edc1ff96" compoundref="d1/d2d/vertex_8hpp" startline="911" endline="914">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_same_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a7c4edf330670ed73cdd306e508137c76" compoundref="d1/d2d/vertex_8hpp" startline="1009" endline="1012">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1aa13763454fa35f06b317985ec1f2e30b" compoundref="d1/d2d/vertex_8hpp" startline="923" endline="926">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_diff_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a3b4b4d6de40f0fc82083f6e56669f817" compoundref="d1/d2d/vertex_8hpp" startline="915" endline="918">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_same_bare</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a19ee736254b3fdbbdf13bb99af1bc2a4" compoundref="d1/d2d/vertex_8hpp" startline="1019" endline="1022">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_frequency_grid</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a142a228b92523b74a24c96a1e15c8ec7" compoundref="d1/d2d/vertex_8hpp" startline="1050" endline="1053">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_initializedInterpol</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1aed8132ff4fc8418ee884d39035153e9e" compoundref="d1/d2d/vertex_8hpp" startline="1029" endline="1032">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_Ir</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a6b0ef7b5e659254636f28dd97aab9a69" compoundref="d1/d2d/vertex_8hpp" startline="1036" endline="1039">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_only_same_channel</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a388a400c48885ac12f13aaa3864c0b89" compoundref="d1/d2d/vertex_8hpp" startline="1024" endline="1027">GeneralVertex&lt; Q, symmtype, differentiated &gt;::update_grid</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a0c8a4950f5baec1cfbdd8ddf3290543b" compoundref="d1/d2d/vertex_8hpp" startline="907" endline="910">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d4a/classGeneralVertex_1a9ca8ce5087c45b474db6125b3e3bec18" prot="private" static="no" mutable="no">
         <type><ref refid="d2/d4a/classGeneralVertex_1a3a1d5fa1853afe69bb2d4488f8afe3ea" kindref="member">vertex_nondiff_t</ref></type>
@@ -167,10 +167,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="387" column="22" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="387" bodyend="-1"/>
-        <referencedby refid="d2/d4a/classGeneralVertex_1abb8396f63f5f6ea6c66371d9075bdc28" compoundref="d1/d2d/vertex_8hpp" startline="787" endline="787">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vertex_nondiff</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a0bd132aae99a0ecf94c22f6d2e018f0b" compoundref="d1/d2d/vertex_8hpp" startline="907" endline="932">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_w_r_value_symmetry_expanded_nondiff</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="461" column="22" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="461" bodyend="-1"/>
+        <referencedby refid="d2/d4a/classGeneralVertex_1abb8396f63f5f6ea6c66371d9075bdc28" compoundref="d1/d2d/vertex_8hpp" startline="861" endline="861">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vertex_nondiff</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a0bd132aae99a0ecf94c22f6d2e018f0b" compoundref="d1/d2d/vertex_8hpp" startline="981" endline="1006">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_w_r_value_symmetry_expanded_nondiff</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-attrib">
@@ -187,17 +187,17 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="760" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="760" bodyend="-1"/>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a0bd132aae99a0ecf94c22f6d2e018f0b" compoundref="d1/d2d/vertex_8hpp" startline="907" endline="932">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_w_r_value_symmetry_expanded_nondiff</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a2412ba5a81170ee3154f5b1fc17de99a" compoundref="d1/d2d/vertex_8hpp" startline="894" endline="899">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_diff_bare_symmetry_expanded</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1abca5a01e345bc8e6597249dd4befe811" compoundref="d1/d2d/vertex_8hpp" startline="872" endline="882">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_same_bare_symmetry_expanded</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae1a9e6edcbd2caaf370282c09dfe49e9" compoundref="d1/d2d/vertex_8hpp" startline="900" endline="905">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_diff_bare_symmetry_expanded</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a0f8b323ee69c0e53571ccfa4e43bae38" compoundref="d1/d2d/vertex_8hpp" startline="883" endline="893">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_same_bare_symmetry_expanded</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1aed220e3c9849b53e245e7062568b1b72" compoundref="d1/d2d/vertex_8hpp" startline="1041" endline="1045">GeneralVertex&lt; Q, symmtype, differentiated &gt;::save_expanded</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ac6753b0df5b70c8464c9c3586ac2e630" compoundref="d1/d2d/vertex_8hpp" startline="853" endline="858">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value_expanded</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1afd513d9a0ed6ddb9596801f951f30a8d" compoundref="d1/d2d/vertex_8hpp" startline="866" endline="871">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value_minus_gamma0_symmetry_expanded</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ac23702cd44aea114a2a55b81dbbc52d6" compoundref="d1/d2d/vertex_8hpp" startline="860" endline="865">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value_symmetry_expanded</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="834" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="834" bodyend="-1"/>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a0bd132aae99a0ecf94c22f6d2e018f0b" compoundref="d1/d2d/vertex_8hpp" startline="981" endline="1006">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_w_r_value_symmetry_expanded_nondiff</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a2412ba5a81170ee3154f5b1fc17de99a" compoundref="d1/d2d/vertex_8hpp" startline="968" endline="973">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_diff_bare_symmetry_expanded</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1abca5a01e345bc8e6597249dd4befe811" compoundref="d1/d2d/vertex_8hpp" startline="946" endline="956">GeneralVertex&lt; Q, symmtype, differentiated &gt;::left_same_bare_symmetry_expanded</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae1a9e6edcbd2caaf370282c09dfe49e9" compoundref="d1/d2d/vertex_8hpp" startline="974" endline="979">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_diff_bare_symmetry_expanded</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a0f8b323ee69c0e53571ccfa4e43bae38" compoundref="d1/d2d/vertex_8hpp" startline="957" endline="967">GeneralVertex&lt; Q, symmtype, differentiated &gt;::right_same_bare_symmetry_expanded</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1aed220e3c9849b53e245e7062568b1b72" compoundref="d1/d2d/vertex_8hpp" startline="1115" endline="1119">GeneralVertex&lt; Q, symmtype, differentiated &gt;::save_expanded</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ac6753b0df5b70c8464c9c3586ac2e630" compoundref="d1/d2d/vertex_8hpp" startline="927" endline="932">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value_expanded</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1afd513d9a0ed6ddb9596801f951f30a8d" compoundref="d1/d2d/vertex_8hpp" startline="940" endline="945">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value_minus_gamma0_symmetry_expanded</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ac23702cd44aea114a2a55b81dbbc52d6" compoundref="d1/d2d/vertex_8hpp" startline="934" endline="939">GeneralVertex&lt; Q, symmtype, differentiated &gt;::value_symmetry_expanded</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d4a/classGeneralVertex_1adb8112bdc5f8e012552d215c2a670eef" prot="public" static="no" mutable="yes">
         <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -212,9 +212,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="987" column="18" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="987" bodyend="-1"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1061" column="18" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1061" bodyend="-1"/>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1a17567ec5d9df767870c3a7489f64a1" compoundref="dd/d0a/parquet__solver_8hpp" startline="92" endline="178">compute_SDE_impl</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d4a/classGeneralVertex_1a6f9b827993bf82b1186f942fb5bb6576" prot="public" static="no" mutable="yes">
         <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
@@ -229,9 +229,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="988" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="988" bodyend="988"/>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="991" endline="996">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="997" endline="999">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1062" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1062" bodyend="1062"/>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="1065" endline="1070">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="1071" endline="1073">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d4a/classGeneralVertex_1afb66cd6c80c9be822e58cdd715db2c67" prot="public" static="no" mutable="yes">
         <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
@@ -246,8 +246,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="989" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="989" bodyend="989"/>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="991" endline="996">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1063" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1063" bodyend="1063"/>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="1065" endline="1070">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d4a/classGeneralVertex_1ac469c1ee429e44854198ceb403564e25" prot="public" static="no" mutable="yes">
         <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
@@ -262,9 +262,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="990" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="990" bodyend="990"/>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="991" endline="996">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="997" endline="999">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1064" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1064" bodyend="1064"/>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="1065" endline="1070">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="1071" endline="1073">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</referencedby>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -301,11 +301,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="390" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="390" bodyend="438"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="464" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="464" bodyend="512"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a162a208eeca9afe7bf95180572741059" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -340,11 +340,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="439" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="439" bodyend="489"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="513" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="513" bodyend="563"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a7a3772269ee6137752c66fedb70b3fce" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -379,11 +379,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="490" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="490" bodyend="541"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="564" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="564" bodyend="615"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a8bacf42c03131ff64e3ee071ad15aa00" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -422,11 +422,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="543" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="543" bodyend="599"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="617" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="617" bodyend="673"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1abe0ea295fcf74debfb518f4249985f5d" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -465,11 +465,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="600" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="600" bodyend="658"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="674" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="674" bodyend="732"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a640ca4da04c75074e358824390e6a535" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -508,11 +508,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="659" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="659" bodyend="718"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="733" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="733" bodyend="792"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a9ca8865623451dd698ed572a94ebdb94" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -551,9 +551,9 @@
         <inbodydescription>
 <para>construct up-up spin component:</para>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="720" column="23" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="720" bodyend="750"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="794" column="23" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="794" bodyend="824"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1afda3af30562380182fb9fc3bb7eacbbf" compoundref="d1/d2d/vertex_8hpp" startline="972" endline="975">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initializeInterpol</references>
+        <references refid="d2/d4a/classGeneralVertex_1afda3af30562380182fb9fc3bb7eacbbf" compoundref="d1/d2d/vertex_8hpp" startline="1046" endline="1049">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initializeInterpol</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a86d2c1bbd252aa5939c9d3382854e079" compoundref="d1/df8/master__parameters_8hpp" startline="77">n_spin_expanded</references>
       </memberdef>
@@ -571,7 +571,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="755" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="755" bodyend="755"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="829" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="829" bodyend="829"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a94619214dbe5a928ea5b186a97645a35" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
@@ -586,7 +586,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="762" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="762" bodyend="762"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="836" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="836" bodyend="836"/>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a15a482a8e08010cc884312f5b555f486" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -608,7 +608,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="763" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="763" bodyend="763"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="837" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="837" bodyend="837"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a4f02159ce4735c5bb40faabb72fa7576" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -635,7 +635,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="764" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="764" bodyend="764"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="838" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="838" bodyend="838"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a04adb155a134cf4ec69c7c8ee1b9b72b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
@@ -669,7 +669,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="766" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="766" bodyend="766"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="840" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="840" bodyend="840"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1acfbd3afb9eb8d34e6ec2844979c99200" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
@@ -688,7 +688,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="767" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="767" bodyend="769"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="841" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="841" bodyend="843"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
@@ -713,7 +713,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="771" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="771" bodyend="773"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="845" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="845" bodyend="847"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
@@ -742,7 +742,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="774" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="774" bodyend="776"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="848" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="848" bodyend="850"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
@@ -763,9 +763,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="778" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="778" bodyend="780"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="852" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="852" bodyend="854"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dc/d2d/classfullvert" kindref="compound">fullvert</ref>&lt; Q &gt; &amp;</type>
@@ -779,11 +779,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="783" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="783" bodyend="783"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="857" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="857" bodyend="857"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a947824a1a735bc2e9db735348ac9dd2c" compoundref="dd/d0a/parquet__solver_8hpp" startline="377" endline="408">compute_SDE_impl_v3</referencedby>
-        <referencedby refid="d7/d97/classState_1a85527803dbcedce85301a0831b1c473d" compoundref="da/d3b/state_8hpp" startline="162" endline="165">State&lt; Q, differentiated &gt;::findBestFreqGrid</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d7/d97/classState_1a85527803dbcedce85301a0831b1c473d" compoundref="da/d3b/state_8hpp" startline="187" endline="190">State&lt; Q, differentiated &gt;::findBestFreqGrid</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1ad51364c943e2c162db31c65285520841" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dc/d2d/classfullvert" kindref="compound">fullvert</ref>&lt; Q &gt; &amp;</type>
@@ -797,13 +797,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="784" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="784" bodyend="784"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="858" column="14" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="858" bodyend="858"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a52a6484dc393261fbe7a555a73087e55" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d2d/classfullvert" kindref="compound">fullvert</ref>&lt; Q &gt; &amp;</type>
@@ -817,8 +817,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="785" column="20" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="785" bodyend="785"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="859" column="20" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="859" bodyend="859"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1af48dffabadf224b09b9bbc6ff499161a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d2d/classfullvert" kindref="compound">fullvert</ref>&lt; Q &gt; &amp;</type>
@@ -832,12 +832,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="786" column="20" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="786" bodyend="786"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="860" column="20" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="860" bodyend="860"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1abb8396f63f5f6ea6c66371d9075bdc28" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/d4a/classGeneralVertex_1a3a1d5fa1853afe69bb2d4488f8afe3ea" kindref="member">vertex_nondiff_t</ref> &amp;</type>
@@ -851,8 +851,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="787" column="28" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="787" bodyend="787"/>
-        <references refid="d2/d4a/classGeneralVertex_1a9ca8ce5087c45b474db6125b3e3bec18" compoundref="d1/d2d/vertex_8hpp" startline="387">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_nondifferentiated</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="861" column="28" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="861" bodyend="861"/>
+        <references refid="d2/d4a/classGeneralVertex_1a9ca8ce5087c45b474db6125b3e3bec18" compoundref="d1/d2d/vertex_8hpp" startline="461">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_nondifferentiated</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a947824a1a735bc2e9db735348ac9dd2c" compoundref="dd/d0a/parquet__solver_8hpp" startline="377" endline="408">compute_SDE_impl_v3</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a40d8373a0e32fce5e40ed3e69adb9511" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -867,8 +867,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="789" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="789" bodyend="789"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="863" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="863" bodyend="863"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a791568d8a7b0cacf00079d69ec765bae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d4/dbd/classrvert" kindref="compound">rvert</ref>&lt; Q &gt; &amp;</type>
@@ -882,8 +882,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="790" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="790" bodyend="790"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="864" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="864" bodyend="864"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1abec34975a70ef37a932b85ec566fc52b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -898,8 +898,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="791" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="791" bodyend="791"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="865" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="865" bodyend="865"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a80b79fecedc9c2fb3f7e115dfc658b78" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -914,8 +914,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="792" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="792" bodyend="792"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="866" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="866" bodyend="866"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a439596d94363177bf2c25621ac9020ef" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
@@ -930,8 +930,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="793" column="23" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="793" bodyend="793"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="867" column="23" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="867" bodyend="867"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a6881eebb821d4df1815382d5f11c96f9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d4/dbd/classrvert" kindref="compound">rvert</ref>&lt; Q &gt; &amp;</type>
@@ -945,8 +945,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="794" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="794" bodyend="794"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="868" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="868" bodyend="868"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a3f68a76caf5c84cf9c32f5baa7bd79c2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d4/dbd/classrvert" kindref="compound">rvert</ref>&lt; Q &gt; &amp;</type>
@@ -960,8 +960,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="795" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="795" bodyend="795"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="869" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="869" bodyend="869"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1af9bb3a3520486b69dc41fc975381a0af" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d4/dbd/classrvert" kindref="compound">rvert</ref>&lt; Q &gt; &amp;</type>
@@ -975,8 +975,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="796" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="796" bodyend="796"/>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="870" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="870" bodyend="870"/>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d4/dbd/classrvert" kindref="compound">rvert</ref>&lt; Q &gt; &amp;</type>
@@ -994,12 +994,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="797" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="797" bodyend="813"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="871" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="871" bodyend="887"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a48c9bc7927321910eb024b7f1bc65afc" compoundref="d8/dea/right__hand__sides_8hpp" startline="781" endline="823">calculate_dGammaC_left_insertion</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1aef23a88dfab42354e830b78f48bf92a7" compoundref="d8/dea/right__hand__sides_8hpp" startline="746" endline="778">calculate_dGammaC_right_insertion</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1aa44996adc6f31dcfe0a85ff28f9ebf16" compoundref="d8/dea/right__hand__sides_8hpp" startline="575" endline="605">vertexOneLoopFlow</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a7a755b510537e327c8264c51611f2ef0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -1018,9 +1018,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="814" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="814" bodyend="830"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="888" column="11" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="888" bodyend="904"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a0c8a4950f5baec1cfbdd8ddf3290543b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1045,12 +1045,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="833" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="833" bodyend="836"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="907" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="907" bodyend="910"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1af208f194cc39713472f053a6edc1ff96" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1075,12 +1075,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="837" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="837" bodyend="840"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="911" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="911" bodyend="914"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a3b4b4d6de40f0fc82083f6e56669f817" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1105,12 +1105,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="841" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="841" bodyend="844"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="915" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="915" bodyend="918"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a648192fe1e7499ccbb89a4f6c7365cec" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1135,12 +1135,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="845" column="22" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="845" bodyend="848"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="919" column="22" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="919" bodyend="922"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1aa13763454fa35f06b317985ec1f2e30b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1165,12 +1165,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="849" column="22" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="849" bodyend="852"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="923" column="22" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="923" bodyend="926"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1ac6753b0df5b70c8464c9c3586ac2e630" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1203,9 +1203,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="853" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="853" bodyend="858"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="927" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="927" bodyend="932"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1ac23702cd44aea114a2a55b81dbbc52d6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1238,9 +1238,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="860" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="860" bodyend="865"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="934" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="934" bodyend="939"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1afd513d9a0ed6ddb9596801f951f30a8d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1273,9 +1273,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="866" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="866" bodyend="871"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="940" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="940" bodyend="945"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1abca5a01e345bc8e6597249dd4befe811" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1308,10 +1308,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="872" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="872" bodyend="882"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="946" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="946" bodyend="956"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a0f8b323ee69c0e53571ccfa4e43bae38" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1344,10 +1344,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="883" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="883" bodyend="893"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="957" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="957" bodyend="967"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a2412ba5a81170ee3154f5b1fc17de99a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1380,9 +1380,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="894" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="894" bodyend="899"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="968" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="968" bodyend="973"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1ae1a9e6edcbd2caaf370282c09dfe49e9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1415,9 +1415,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="900" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="900" bodyend="905"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="974" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="974" bodyend="979"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a0bd132aae99a0ecf94c22f6d2e018f0b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1460,13 +1460,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="907" column="30" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="907" bodyend="932"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="981" column="30" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="981" bodyend="1006"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a9ca8ce5087c45b474db6125b3e3bec18" compoundref="d1/d2d/vertex_8hpp" startline="387">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_nondifferentiated</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a9ca8ce5087c45b474db6125b3e3bec18" compoundref="d1/d2d/vertex_8hpp" startline="461">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_nondifferentiated</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a7c4edf330670ed73cdd306e508137c76" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>double</type>
@@ -1480,12 +1480,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="935" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="935" bodyend="938"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1009" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1009" bodyend="1012"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a9250b36413973e1a6d2cadce2991a731" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_full</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84acc3c49647cf98d5ae80e264e539e03d9" compoundref="d7/d59/data__structures_8hpp" startline="482">symmetric_r_irred</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1acaeb8f5e899ed8bb442316038024f591" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>double</type>
@@ -1503,9 +1503,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="939" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="939" bodyend="939"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1013" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1013" bodyend="1013"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a66e3aa65eda2c853832d6a3942ec69e8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>double</type>
@@ -1523,9 +1523,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="940" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="940" bodyend="940"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1014" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1014" bodyend="1014"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1" compoundref="dd/d0a/parquet__solver_8hpp" startline="28" endline="62">compute_BSE</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1af4cf7b1c6febf6128179141af0c7b4b3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -1544,9 +1544,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="941" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="941" bodyend="941"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1015" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1015" bodyend="1015"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a463c54e75b43e9aa43d76248275b011b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>double</type>
@@ -1564,9 +1564,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="942" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="942" bodyend="942"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1016" column="12" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1016" bodyend="1016"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a19ee736254b3fdbbdf13bb99af1bc2a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1584,13 +1584,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="945" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="945" bodyend="948"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1019" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1019" bodyend="1022"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
-        <referencedby refid="d7/d97/classState_1aa5e0b0c02b861f0cd2555ef34a4584b5" compoundref="da/d3b/state_8hpp" startline="150" endline="153">State&lt; Q, differentiated &gt;::set_frequency_grid</referencedby>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <referencedby refid="d7/d97/classState_1aa5e0b0c02b861f0cd2555ef34a4584b5" compoundref="da/d3b/state_8hpp" startline="175" endline="178">State&lt; Q, differentiated &gt;::set_frequency_grid</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a388a400c48885ac12f13aaa3864c0b89" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1616,13 +1616,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="950" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="950" bodyend="953"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1024" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1024" bodyend="1027"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
-        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="180" endline="184">State&lt; Q, differentiated &gt;::update_grid</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1aed8132ff4fc8418ee884d39035153e9e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1640,12 +1640,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="955" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="955" bodyend="958"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1029" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1029" bodyend="1032"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1" compoundref="dd/d0a/parquet__solver_8hpp" startline="28" endline="62">compute_BSE</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a6b0ef7b5e659254636f28dd97aab9a69" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -1664,12 +1664,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="962" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="962" bodyend="965"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1036" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1036" bodyend="1039"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1687,13 +1687,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="967" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="967" bodyend="970"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1041" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1041" bodyend="1044"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
-        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1afda3af30562380182fb9fc3bb7eacbbf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1707,13 +1707,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="972" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="972" bodyend="975"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1046" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1046" bodyend="1049"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a9ca8865623451dd698ed572a94ebdb94" compoundref="d1/d2d/vertex_8hpp" startline="720" endline="750">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand_impl</referencedby>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a9ca8865623451dd698ed572a94ebdb94" compoundref="d1/d2d/vertex_8hpp" startline="794" endline="824">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand_impl</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a142a228b92523b74a24c96a1e15c8ec7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1731,12 +1731,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="976" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="976" bodyend="979"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1050" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1050" bodyend="1053"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="384">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1acd5db6b73d2bc1316ffaeac6c18316c7" compoundref="d1/d2d/vertex_8hpp" startline="458">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_half2</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1ab40566da24b72737a041c9ada60dee7b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1754,9 +1754,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="981" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="981" bodyend="985"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1055" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1055" bodyend="1059"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt; &amp;</type>
@@ -1774,13 +1774,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="991" column="9" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="991" bodyend="996"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1065" column="9" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1065" bodyend="1070"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a6f9b827993bf82b1186f942fb5bb6576" compoundref="d1/d2d/vertex_8hpp" startline="988" endline="988">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_a</references>
-        <references refid="d2/d4a/classGeneralVertex_1afb66cd6c80c9be822e58cdd715db2c67" compoundref="d1/d2d/vertex_8hpp" startline="989" endline="989">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_p</references>
-        <references refid="d2/d4a/classGeneralVertex_1ac469c1ee429e44854198ceb403564e25" compoundref="d1/d2d/vertex_8hpp" startline="990" endline="990">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_t</references>
-        <referencedby refid="d2/d4a/classGeneralVertex_1a96e68c1d266c30dbcc1bd82fc506aced" compoundref="d1/d2d/vertex_8hpp" startline="1000" endline="1002">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_to_zero_in_integrand</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <references refid="d2/d4a/classGeneralVertex_1a6f9b827993bf82b1186f942fb5bb6576" compoundref="d1/d2d/vertex_8hpp" startline="1062" endline="1062">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_a</references>
+        <references refid="d2/d4a/classGeneralVertex_1afb66cd6c80c9be822e58cdd715db2c67" compoundref="d1/d2d/vertex_8hpp" startline="1063" endline="1063">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_p</references>
+        <references refid="d2/d4a/classGeneralVertex_1ac469c1ee429e44854198ceb403564e25" compoundref="d1/d2d/vertex_8hpp" startline="1064" endline="1064">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_t</references>
+        <referencedby refid="d2/d4a/classGeneralVertex_1a96e68c1d266c30dbcc1bd82fc506aced" compoundref="d1/d2d/vertex_8hpp" startline="1074" endline="1076">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_to_zero_in_integrand</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1794,9 +1794,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="997" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="997" bodyend="999"/>
-        <references refid="d2/d4a/classGeneralVertex_1a6f9b827993bf82b1186f942fb5bb6576" compoundref="d1/d2d/vertex_8hpp" startline="988" endline="988">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_a</references>
-        <references refid="d2/d4a/classGeneralVertex_1ac469c1ee429e44854198ceb403564e25" compoundref="d1/d2d/vertex_8hpp" startline="990" endline="990">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_t</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1071" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1071" bodyend="1073"/>
+        <references refid="d2/d4a/classGeneralVertex_1a6f9b827993bf82b1186f942fb5bb6576" compoundref="d1/d2d/vertex_8hpp" startline="1062" endline="1062">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_a</references>
+        <references refid="d2/d4a/classGeneralVertex_1ac469c1ee429e44854198ceb403564e25" compoundref="d1/d2d/vertex_8hpp" startline="1064" endline="1064">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_channel_t</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a5ab14a76538cdb69001c01f9ebf492ca" compoundref="dd/d0a/parquet__solver_8hpp" startline="346" endline="373">check_selfconsistency_of_K1K2</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1a17567ec5d9df767870c3a7489f64a1" compoundref="dd/d0a/parquet__solver_8hpp" startline="92" endline="178">compute_SDE_impl</referencedby>
       </memberdef>
@@ -1820,9 +1820,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1000" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1000" bodyend="1002"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1074" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1074" bodyend="1076"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="991" endline="996">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</references>
+        <references refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="1065" endline="1070">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1853,13 +1853,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1003" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1003" bodyend="1040"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1077" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1077" bodyend="1114"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="797" endline="813">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a43e6a0ce2b2669fa14cbd8a34d646059" compoundref="d1/d2d/vertex_8hpp" startline="871" endline="887">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_rvertex</references>
         <references refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" compoundref="d6/d35/util_8c_09_09" startline="21" endline="27">utils::get_time</references>
-        <references refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="991" endline="996">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</references>
-        <references refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="783" endline="783">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</references>
-        <references refid="d2/d4a/classGeneralVertex_1ad51364c943e2c162db31c65285520841" compoundref="d1/d2d/vertex_8hpp" startline="784" endline="784">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</references>
+        <references refid="d2/d4a/classGeneralVertex_1a1036e37abbfb582261fd0f4a694753ea" compoundref="d1/d2d/vertex_8hpp" startline="1065" endline="1070">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vanishing_component_channel_r</references>
+        <references refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="857" endline="857">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</references>
+        <references refid="d2/d4a/classGeneralVertex_1ad51364c943e2c162db31c65285520841" compoundref="d1/d2d/vertex_8hpp" startline="858" endline="858">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half2</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
@@ -1867,9 +1867,9 @@
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a2326000f2ce3b51e0f6cacb8378366f2" compoundref="d7/d59/data__structures_8hpp" startline="480">k3_sbe</references>
         <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1adb8112bdc5f8e012552d215c2a670eef" compoundref="d1/d2d/vertex_8hpp" startline="987">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_gamma0</references>
-        <references refid="d2/d4a/classGeneralVertex_1a9ca8ce5087c45b474db6125b3e3bec18" compoundref="d1/d2d/vertex_8hpp" startline="387">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_nondifferentiated</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1adb8112bdc5f8e012552d215c2a670eef" compoundref="d1/d2d/vertex_8hpp" startline="1061">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_gamma0</references>
+        <references refid="d2/d4a/classGeneralVertex_1a9ca8ce5087c45b474db6125b3e3bec18" compoundref="d1/d2d/vertex_8hpp" startline="461">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex_nondifferentiated</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1aed220e3c9849b53e245e7062568b1b72" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -1887,9 +1887,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1041" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1041" bodyend="1045"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1115" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1115" bodyend="1119"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="760">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
+        <references refid="d2/d4a/classGeneralVertex_1a56c4e3031c9cacbd790aa12f062e4e6e" compoundref="d1/d2d/vertex_8hpp" startline="834">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertices_bubbleintegrand</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d4a/classGeneralVertex_1a66cb2651b0aaf49243d351511a22a71f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -1908,7 +1908,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1048" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1048" bodyend="1052"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1122" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1122" bodyend="1126"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
@@ -1929,7 +1929,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1057" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1057" bodyend="1061"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1131" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1131" bodyend="1135"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
@@ -1950,7 +1950,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1066" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1066" bodyend="1070"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1140" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1140" bodyend="1144"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
@@ -1971,7 +1971,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1075" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1075" bodyend="1079"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1149" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1149" bodyend="1153"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
@@ -1992,7 +1992,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1084" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1084" bodyend="1088"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1158" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1158" bodyend="1162"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
@@ -2013,7 +2013,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1094" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1094" bodyend="1098"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1168" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1168" bodyend="1172"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a5776b7b2f7c54e9e294de5c9e3a96bb4" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffleft</references>
         <references refid="d7/d59/data__structures_8hpp_1a3931ffa7cd4a0005be369b34231a4b84a4756ea29f4631b5903ba9b7f42bd3174" compoundref="d7/d59/data__structures_8hpp" startline="482">non_symmetric_diffright</references>
@@ -2040,7 +2040,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1053" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1053" bodyend="1056"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1127" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1127" bodyend="1130"/>
       </memberdef>
       <memberdef kind="friend" id="d2/d4a/classGeneralVertex_1afc3309eac927ca1051a5b66b9e9a4baa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d2/d4a/classGeneralVertex" kindref="compound">GeneralVertex</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -2062,7 +2062,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1062" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1062" bodyend="1065"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1136" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1136" bodyend="1139"/>
       </memberdef>
       <memberdef kind="friend" id="d2/d4a/classGeneralVertex_1a3c3d158eeddc95f182e04029d6404e81" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d2/d4a/classGeneralVertex" kindref="compound">GeneralVertex</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -2084,7 +2084,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1071" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1071" bodyend="1074"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1145" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1145" bodyend="1148"/>
       </memberdef>
       <memberdef kind="friend" id="d2/d4a/classGeneralVertex_1a63d6629dc33ff2e85495474e3d4dcc27" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d2/d4a/classGeneralVertex" kindref="compound">GeneralVertex</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -2106,7 +2106,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1080" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1080" bodyend="1083"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1154" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1154" bodyend="1157"/>
       </memberdef>
       <memberdef kind="friend" id="d2/d4a/classGeneralVertex_1abaaecc362d0f14dd47e18c1de69aa0ed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d2/d4a/classGeneralVertex" kindref="compound">GeneralVertex</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -2128,7 +2128,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1089" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1089" bodyend="1092"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1163" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1163" bodyend="1166"/>
       </memberdef>
       <memberdef kind="friend" id="d2/d4a/classGeneralVertex_1a6f9d29f8587300271f6582dea2f75773" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="d2/d4a/classGeneralVertex" kindref="compound">GeneralVertex</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">symmtype</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">differentiated</ref> &gt;</type>
@@ -2150,7 +2150,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="1099" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1099" bodyend="1102"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="1173" column="26" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1173" bodyend="1176"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -2276,7 +2276,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="correlation_functions/four_point/vertex.hpp" line="381" column="1" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="381" bodyend="1103"/>
+    <location file="correlation_functions/four_point/vertex.hpp" line="455" column="1" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="455" bodyend="1177"/>
     <listofallmembers>
       <member refid="d2/d4a/classGeneralVertex_1a791568d8a7b0cacf00079d69ec765bae" prot="public" virt="non-virtual"><scope>GeneralVertex</scope><name>avertex</name></member>
       <member refid="d2/d4a/classGeneralVertex_1a6881eebb821d4df1815382d5f11c96f9" prot="public" virt="non-virtual"><scope>GeneralVertex</scope><name>avertex</name></member>

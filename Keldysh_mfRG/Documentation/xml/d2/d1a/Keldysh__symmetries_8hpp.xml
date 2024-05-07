@@ -797,7 +797,7 @@
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="39" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="39" bodyend="42"/>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="147" endline="158">rvert&lt; Q &gt;::rvert</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a852021a10ef1051ae13b34914948d5b0" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 4 &gt;</type>
@@ -815,7 +815,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="43" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="43" bodyend="46"/>
-        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="147" endline="158">rvert&lt; Q &gt;::rvert</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a05d78e86026731e5b48397216fb31155" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 5 &gt;</type>
@@ -833,7 +833,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="47" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="47" bodyend="50"/>
-        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="147" endline="158">rvert&lt; Q &gt;::rvert</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a583e6974e40b3a17bdbf6ebea3ae529e" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 5 &gt;</type>
@@ -851,7 +851,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="51" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="51" bodyend="54"/>
-        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="147" endline="158">rvert&lt; Q &gt;::rvert</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a17ac32e598bded52cdae2237454d13e5" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 6 &gt;</type>
@@ -870,7 +870,7 @@
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="55" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="55" bodyend="58"/>
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="147" endline="158">rvert&lt; Q &gt;::rvert</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a149f32fbbffe1dfc5361b8e7443b8fe8" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 3 &gt;</type>
@@ -905,7 +905,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="144" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="144" bodyend="147"/>
-        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="915" endline="1053">rvert&lt; Q &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="937" endline="1075">rvert&lt; Q &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1ae93e47de1a55e5577faaa1b74d8d7927" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 5 &gt;</type>
@@ -927,7 +927,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="148" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="148" bodyend="155"/>
-        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="915" endline="1053">rvert&lt; Q &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="937" endline="1075">rvert&lt; Q &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a4836c149ec08918a1737864f9ba7f425" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 6 &gt;</type>
@@ -949,7 +949,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="156" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="156" bodyend="163"/>
-        <referencedby refid="d4/dbd/classrvert_1a1e67e572b3a4f4919d70995d82162688" compoundref="d3/d22/r__vertex_8hpp" startline="1337" endline="1474">rvert&lt; Q &gt;::combine_SBE_to_K3_SBE</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a1e67e572b3a4f4919d70995d82162688" compoundref="d3/d22/r__vertex_8hpp" startline="1359" endline="1496">rvert&lt; Q &gt;::combine_SBE_to_K3_SBE</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1aab3b950cc6a1c759fb8f09121b83a27e" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 6 &gt;</type>
@@ -971,7 +971,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="164" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="164" bodyend="171"/>
-        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="915" endline="1053">rvert&lt; Q &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="937" endline="1075">rvert&lt; Q &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1abba9c469b7170e0e4e0ea440ba7e3e16" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
@@ -1035,7 +1035,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="symmetries/Keldysh_symmetries.hpp" line="216" column="19" declfile="symmetries/Keldysh_symmetries.hpp" declline="216" declcolumn="19"/>
-        <referencedby refid="da/dbf/classirreducible_1a808bca3689d1374634c3f74f28f70cc2" compoundref="d1/d2d/vertex_8hpp" startline="1169" endline="1192">irreducible&lt; Q &gt;::initialize</referencedby>
+        <referencedby refid="da/dbf/classirreducible_1a808bca3689d1374634c3f74f28f70cc2" compoundref="d1/d2d/vertex_8hpp" startline="1243" endline="1266">irreducible&lt; Q &gt;::initialize</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1ae8b6c7aba446997e0f0e0913277394b5" compoundref="db/d7d/symmetry__transformations_8hpp" startline="168" endline="196">Tph</referencedby>
       </memberdef>

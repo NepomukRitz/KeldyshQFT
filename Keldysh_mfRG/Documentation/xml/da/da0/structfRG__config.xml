@@ -85,7 +85,7 @@
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
-        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
@@ -161,11 +161,11 @@
         <referencedby refid="d2/d75/classHartree__Solver_1a671020485b79e01131f9f79bdfc8df85" compoundref="d4/d92/hartree__term_8c_09_09" startline="81" endline="96">Hartree_Solver::compute_Hartree_term_Friedel</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a2ec9d72693d8351fac847d28ef90fc09" compoundref="d4/d92/hartree__term_8c_09_09" startline="143" endline="155">Hartree_Solver::friedel_sum_rule_check</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
-        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="125" endline="147">State&lt; Q, differentiated &gt;::initialize</referencedby>
+        <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1af0c3383efb10d59e26e11c17219f19ec" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="392" endline="421">read_config_from_hdf</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
-        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="155" endline="159">State&lt; Q, differentiated &gt;::update_grid</referencedby>
+        <referencedby refid="d7/d97/classState_1a62a12cb0350fa1a06f9b68d257bbfa8c" compoundref="da/d3b/state_8hpp" startline="180" endline="184">State&lt; Q, differentiated &gt;::update_grid</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a4ed165c426f1f02c659b95cca2be40d6" compoundref="d4/d92/hartree__term_8c_09_09" startline="157" endline="180">Hartree_Solver::write_out_propagators</referencedby>
       </memberdef>
       <memberdef kind="variable" id="da/da0/structfRG__config_1ae93bc6e0d79e58cd7993545070f97daa" prot="public" static="no" mutable="no">

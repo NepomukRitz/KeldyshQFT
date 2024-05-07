@@ -533,8 +533,8 @@
         <references refid="d1/df8/master__parameters_8hpp_1a8229a287d8546a0bdb5c5d19e2cd3d23" compoundref="d1/df8/master__parameters_8hpp" startline="64">glb_V</references>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="194" endline="217">Propagator&lt; Q &gt;::GK</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="234" endline="266">Propagator&lt; Q &gt;::SK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="203" endline="226">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="243" endline="275">Propagator&lt; Q &gt;::SK</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/d5d/propagator_8c_09_09_1a5ac32276d18b22b867cfbc3805a6d223" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>

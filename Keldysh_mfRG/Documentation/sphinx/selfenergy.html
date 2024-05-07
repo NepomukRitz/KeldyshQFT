@@ -35,6 +35,7 @@
           
           <a href="index.html" class="icon icon-home">
             KF_QFT
+              <img src="_static/SDE_no_background.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,6 +52,8 @@
 <li class="toctree-l2"><a class="reference internal" href="vertices.html">Vertices</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Self-Energy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0E10SelfEnergy"><code class="docutils literal notranslate"><span class="pre">SelfEnergy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10SelfEnergyEdRK10fRG_config"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::SelfEnergy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10SelfEnergyERK13freqGrid_type"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::SelfEnergy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10initializeE1Q1Q"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::initialize()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy3valEiii"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::val()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy9valsmoothEidi"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::valsmooth()</span></code></a></li>
@@ -58,12 +61,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy7addselfEiii1Q"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::addself()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy3accEi"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::acc()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy10direct_setEi1Q"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::direct_set()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11update_gridEdRK10fRG_config"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::update_grid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::update_grid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::update_grid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergy16findBestFreqGridEb"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::findBestFreqGrid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10SelfEnergy15get_deriv_maxSEEb"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::get_deriv_maxSE()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10SelfEnergydVERK10SelfEnergyI1QE"><code class="docutils literal notranslate"><span class="pre">SelfEnergy::operator/=()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -111,9 +108,39 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I0E10SelfEnergy">
 <span id="_CPPv3I0E10SelfEnergy"></span><span id="_CPPv2I0E10SelfEnergy"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/df6/classSelfEnergy"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SelfEnergy</span></span></span><a class="headerlink" href="#_CPPv4I0E10SelfEnergy" title="Link to this definition"></a><br /></dt>
-<dd><p>TODO: Use Vertex buffer for self-energy. </p>
+<dd><p>Class used for the 2-point self-energy Σ. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Type of the data. </p>
+</dd>
+</dl>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10SelfEnergyEdRK10fRG_config">
+<span id="_CPPv3N10SelfEnergy10SelfEnergyEdRK10fRG_config"></span><span id="_CPPv2N10SelfEnergy10SelfEnergyEdRK10fRG_config"></span><span id="SelfEnergy::SelfEnergy__double.fRG_configCR"></span><span class="target" id="d5/df6/classSelfEnergy_1ad760943d50481dd1425adbddb3d504bc"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SelfEnergy</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy10SelfEnergyEdRK10fRG_config" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructor for a given regulator Λ and a set of parameters. The frequency grid is set accordingly. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Lambda</strong> – Value of the regulator Λ. </p></li>
+<li><p><strong>config</strong> – Set of parameters. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10SelfEnergyERK13freqGrid_type">
+<span id="_CPPv3N10SelfEnergy10SelfEnergyERK13freqGrid_type"></span><span id="_CPPv2N10SelfEnergy10SelfEnergyERK13freqGrid_type"></span><span id="SelfEnergy::SelfEnergy__freqGrid_typeCR"></span><span class="target" id="d5/df6/classSelfEnergy_1af3ec7b8137537c9e773e20667701e5cb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SelfEnergy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">freqGrid_type</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frequencies_in</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy10SelfEnergyERK13freqGrid_type" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructor for a given frequency grid. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frequencies_in</strong> – Frequency grid. </p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy10initializeE1Q1Q">
 <span id="_CPPv3N10SelfEnergy10initializeE1Q1Q"></span><span id="_CPPv2N10SelfEnergy10initializeE1Q1Q"></span><span id="SelfEnergy::initialize__Q.Q"></span><span class="target" id="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">valR</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">valK</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy10initializeE1Q1Q" title="Link to this definition"></a><br /></dt>
@@ -243,42 +270,6 @@
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11update_gridEdRK10fRG_config">
-<span id="_CPPv3N10SelfEnergy11update_gridEdRK10fRG_config"></span><span id="_CPPv2N10SelfEnergy11update_gridEdRK10fRG_config"></span><span id="SelfEnergy::update_grid__double.fRG_configCR"></span><span class="target" id="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update_grid</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">fRG_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy11update_gridEdRK10fRG_config" title="Link to this definition"></a><br /></dt>
-<dd><p>Interpolate self-energy to updated grid whose grid parameters are multiples of Delta = (Lambda + Gamma)/2. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type">
-<span id="_CPPv3N10SelfEnergy11update_gridERK13freqGrid_type"></span><span id="_CPPv2N10SelfEnergy11update_gridERK13freqGrid_type"></span><span id="SelfEnergy::update_grid__freqGrid_typeCR"></span><span class="target" id="d5/df6/classSelfEnergy_1aaf5b4b1c92f967082630cf69af72c2c5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update_grid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">freqGrid_type</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frequencies_new</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type" title="Link to this definition"></a><br /></dt>
-<dd><p>Interpolate self-energy to input grid. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE">
-<span id="_CPPv3N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE"></span><span id="SelfEnergy::update_grid__freqGrid_typeCR.SelfEnergy:Q:"></span><span class="target" id="d5/df6/classSelfEnergy_1a44806c0df9dfc5dd5e0eeb37a19f90f7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update_grid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">freqGrid_type</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frequencies_new</span></span>, <a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">selfEnergy4Sigma</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy11update_gridERK13freqGrid_type10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
-<dd><p>Interpolate self-energy to input grid with Sigma given by selfEnergy4Sigma. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergy16findBestFreqGridEb">
-<span id="_CPPv3N10SelfEnergy16findBestFreqGridEb"></span><span id="_CPPv2N10SelfEnergy16findBestFreqGridEb"></span><span id="SelfEnergy::findBestFreqGrid__b"></span><span class="target" id="d5/df6/classSelfEnergy_1a48b989837676cebb7043a4f14ae02203"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">findBestFreqGrid</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10SelfEnergy16findBestFreqGridEb" title="Link to this definition"></a><br /></dt>
-<dd><p>finds optimal grid parameters with minimizer()</p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK10SelfEnergy15get_deriv_maxSEEb">
-<span id="_CPPv3NK10SelfEnergy15get_deriv_maxSEEb"></span><span id="_CPPv2NK10SelfEnergy15get_deriv_maxSEEb"></span><span id="SelfEnergy::get_deriv_maxSE__bC"></span><span class="target" id="d5/df6/classSelfEnergy_1ad47166569063f3ab50c934ae27d8cedd"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_deriv_maxSE</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10SelfEnergy15get_deriv_maxSEEb" title="Link to this definition"></a><br /></dt>
-<dd><p>computes finite differences of Sigma </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N10SelfEnergydVERK10SelfEnergyI1QE">
-<span id="_CPPv3N10SelfEnergydVERK10SelfEnergyI1QE"></span><span id="_CPPv2N10SelfEnergydVERK10SelfEnergyI1QE"></span><span id="SelfEnergy::div-assign-operator__SelfEnergy:Q:CR"></span><span class="target" id="d5/df6/classSelfEnergy_1ad8cbafc3e1bda57e185bd591f0471d4c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">/=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">self1</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10SelfEnergy" title="SelfEnergy::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10SelfEnergydVERK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>
-<dd><p>Elementwise division (needed for error estimate of adaptive ODE solvers) </p>
 </dd></dl>
 
 </div>

@@ -257,7 +257,7 @@
         </inbodydescription>
         <location file="correlation_functions/n_point/data_buffer.hpp" line="691" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="691" bodyend="698"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" compoundref="d6/d2d/selfenergy_8hpp" startline="250" endline="253">SelfEnergy&lt; Q &gt;::update_grid</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" compoundref="d6/d2d/selfenergy_8hpp" startline="263" endline="266">SelfEnergy&lt; Q &gt;::update_grid</referencedby>
       </memberdef>
       <memberdef kind="function" id="dc/d7a/classdataBuffer_1a978c397aa9d3cd841f9d2d61a0862ec6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>

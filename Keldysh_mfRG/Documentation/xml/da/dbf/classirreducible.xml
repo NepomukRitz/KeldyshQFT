@@ -21,7 +21,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="21" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="21" bodyend="-1"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="22" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="22" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-attrib">
@@ -38,9 +38,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="26" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="26" bodyend="-1"/>
-        <referencedby refid="da/dbf/classirreducible_1a90ab21c4facaca8dbbc3d626effc2095" compoundref="d1/d2d/vertex_8hpp" startline="43" endline="43">irreducible&lt; Q &gt;::get_vec</referencedby>
-        <referencedby refid="da/dbf/classirreducible_1a759255e112055d592bc3e4d61efe827a" compoundref="d1/d2d/vertex_8hpp" startline="44" endline="44">irreducible&lt; Q &gt;::set_vec</referencedby>
+        <location file="correlation_functions/four_point/vertex.hpp" line="27" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="27" bodyend="-1"/>
+        <referencedby refid="da/dbf/classirreducible_1a90ab21c4facaca8dbbc3d626effc2095" compoundref="d1/d2d/vertex_8hpp" startline="57" endline="57">irreducible&lt; Q &gt;::get_vec</referencedby>
+        <referencedby refid="da/dbf/classirreducible_1a759255e112055d592bc3e4d61efe827a" compoundref="d1/d2d/vertex_8hpp" startline="58" endline="58">irreducible&lt; Q &gt;::set_vec</referencedby>
       </memberdef>
     </sectiondef>
     <sectiondef kind="friend">
@@ -86,7 +86,7 @@
 <para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>
 <para>Write used parameters for documentation purpose</para>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="20" column="18" bodyfile="utilities/hdf5_routines.c++" bodystart="61" bodyend="191"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="21" column="18" bodyfile="utilities/hdf5_routines.c++" bodystart="61" bodyend="191"/>
       </memberdef>
       <memberdef kind="friend" id="da/dbf/classirreducible_1afb11dc0950526efb10ba75aa7118e212" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
@@ -108,7 +108,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="51" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="51" bodyend="53"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="65" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="65" bodyend="67"/>
       </memberdef>
       <memberdef kind="friend" id="da/dbf/classirreducible_1af64273c1df9001e952aadd92386192c7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
@@ -130,7 +130,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="58" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="58" bodyend="60"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="72" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="72" bodyend="74"/>
       </memberdef>
       <memberdef kind="friend" id="da/dbf/classirreducible_1aa2f70c0e8b654c8564e50495e4c4d69e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
@@ -152,7 +152,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="65" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="65" bodyend="67"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="79" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="79" bodyend="81"/>
       </memberdef>
       <memberdef kind="friend" id="da/dbf/classirreducible_1a7b5af51fba7ff0a537c6cb03d648dee4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
@@ -174,7 +174,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="72" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="72" bodyend="74"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="86" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="86" bodyend="88"/>
       </memberdef>
       <memberdef kind="friend" id="da/dbf/classirreducible_1a21312dd38595732f63625b21422e98a3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
@@ -196,7 +196,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="79" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="79" bodyend="81"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="93" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="93" bodyend="95"/>
       </memberdef>
       <memberdef kind="friend" id="da/dbf/classirreducible_1a642b58493a885e17a05553e2fece45e6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
@@ -218,7 +218,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="86" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="86" bodyend="89"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="100" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="100" bodyend="103"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -234,7 +234,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="22" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="22" bodyend="25"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="23" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="23" bodyend="26"/>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
       </memberdef>
@@ -252,7 +252,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="28" column="5"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="29" column="5"/>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a9621a3ec926627a203e91004e99d53aa" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -281,10 +281,47 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Returns the value of the irreducible vertex. Just constants, if it is the bare vertex. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>result_type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the result. Typically =Q. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Keldysh index. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Internal index. Always = 0 for the SIAM. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>spin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spin index. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Value of the irreducible vertex. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="33" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1114" bodyend="1151"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="39" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1188" bodyend="1225"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
       </memberdef>
@@ -304,7 +341,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="35" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1153" bodyend="1157"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="41" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1227" bodyend="1231"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a4448249f11ee1d34431cf48212fbebe6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -327,7 +364,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="36" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1159" bodyend="1163"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="42" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1233" bodyend="1237"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a327c7420e3103e5c5e22fe7ab37a4ffc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -351,10 +388,28 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Set the value of the bare interaction to Q. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Keldysh index. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Internal index </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="38" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1165" bodyend="1167"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="49" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1239" bodyend="1241"/>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a808bca3689d1374634c3f74f28f70cc2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -369,10 +424,20 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Initialize the irreducible vertex. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value of the bare interaction. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="41" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1169" bodyend="1192"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="55" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1243" bodyend="1266"/>
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
@@ -391,8 +456,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="43" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="43" bodyend="43"/>
-        <references refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" compoundref="d1/d2d/vertex_8hpp" startline="26">irreducible&lt; Q &gt;::bare</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="57" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="57" bodyend="57"/>
+        <references refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" compoundref="d1/d2d/vertex_8hpp" startline="27">irreducible&lt; Q &gt;::bare</references>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a759255e112055d592bc3e4d61efe827a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -410,8 +475,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="44" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="44" bodyend="44"/>
-        <references refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" compoundref="d1/d2d/vertex_8hpp" startline="26">irreducible&lt; Q &gt;::bare</references>
+        <location file="correlation_functions/four_point/vertex.hpp" line="58" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="58" bodyend="58"/>
+        <references refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" compoundref="d1/d2d/vertex_8hpp" startline="27">irreducible&lt; Q &gt;::bare</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1af488ac21e4ba89124786bce72f658e26" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
@@ -430,7 +495,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="47" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="47" bodyend="50"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="61" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="61" bodyend="64"/>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a199f543a4e3856d3a50c9209ad2a3c9c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -448,7 +513,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="54" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="54" bodyend="57"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="68" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="68" bodyend="71"/>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a9c80e23fb35f326cf4c68bfef18d06c2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -466,7 +531,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="61" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="61" bodyend="64"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="75" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="75" bodyend="78"/>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a24f17f078cab751942038ab55596da6a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -484,7 +549,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="68" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="68" bodyend="71"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="82" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="82" bodyend="85"/>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a4bf9350ddf4d1dfda3cf3ad5ccfe1c47" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -502,7 +567,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="75" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="75" bodyend="78"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="89" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="89" bodyend="92"/>
       </memberdef>
       <memberdef kind="function" id="da/dbf/classirreducible_1a964195e00518477f73a82dc491a60126" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -520,14 +585,22 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/four_point/vertex.hpp" line="82" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="82" bodyend="85"/>
+        <location file="correlation_functions/four_point/vertex.hpp" line="96" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="96" bodyend="99"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Reducible vertex in channel r, split into diagrammatic classes K1, K2, K2b, K3. Member functions allow for access of values at arbitrary frequencies and in each channel-specific frequency representation. Possible (unit-)tests: [IMPLEMENTED in test_symmetries.c++] check read-out from symmetry-reduced sector and correctness of symmetry tables [MISSING] check conversion of frequency conventions</para>
-<para>Possible unit-tests Do the public functions return the correct vertex-contributions? </para>
+<para>The irreducible part of the vertex. Working in the PA, it&apos;s just a set of 16 numbers, one per Keldysh component, of which at least half are always zero. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
     </detaileddescription>
     <inheritancegraph>
       <node id="1">
@@ -604,7 +677,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="correlation_functions/four_point/vertex.hpp" line="19" column="1" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="19" bodyend="90"/>
+    <location file="correlation_functions/four_point/vertex.hpp" line="20" column="1" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="20" bodyend="104"/>
     <listofallmembers>
       <member refid="da/dbf/classirreducible_1a8647dcf6a154b2ffc52fd0b1d41f89fe" prot="public" virt="non-virtual"><scope>irreducible</scope><name>acc</name></member>
       <member refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" prot="private" virt="non-virtual"><scope>irreducible</scope><name>bare</name></member>

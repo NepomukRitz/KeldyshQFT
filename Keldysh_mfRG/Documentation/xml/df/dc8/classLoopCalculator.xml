@@ -79,7 +79,7 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="42">POSINTRANGE</references>
-        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="40">Propagator&lt; Q &gt;::T</references>
+        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="43">Propagator&lt; Q &gt;::T</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
         <referencedby refid="df/dc8/classLoopCalculator_1aca844a623ba7eac57c4f51e1cf29926d" compoundref="d8/d1d/loop_8hpp" startline="67" endline="72">LoopCalculator&lt; Q, vertType, all_spins, version &gt;::LoopCalculator</referencedby>
       </memberdef>
@@ -142,12 +142,12 @@
         <inbodydescription>
         </inbodydescription>
         <location file="loop/loop.hpp" line="62" column="10" bodyfile="loop/loop.hpp" bodystart="129" bodyend="441"/>
-        <references refid="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" compoundref="d6/d2d/selfenergy_8hpp" startline="242" endline="244">SelfEnergy&lt; Q &gt;::addself</references>
+        <references refid="d5/df6/classSelfEnergy_1a317467b818d620fa43d0f21cbdfe2b60" compoundref="d6/d2d/selfenergy_8hpp" startline="255" endline="257">SelfEnergy&lt; Q &gt;::addself</references>
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
         <references refid="dd/d1f/integrator_8hpp_1a7302c6b3faf870a9680b7a66f4c44bc4" compoundref="dd/d1f/integrator_8hpp" startline="425" endline="486">integrator_Matsubara_T0</references>
-        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="230" endline="232">SelfEnergy&lt; Q &gt;::setself</references>
+        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="243" endline="245">SelfEnergy&lt; Q &gt;::setself</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
       </memberdef>
       <memberdef kind="function" id="df/dc8/classLoopCalculator_1ae19558099f89265f434f971e7b05eed3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -165,7 +165,7 @@
         <location file="loop/loop.hpp" line="63" column="10" bodyfile="loop/loop.hpp" bodystart="444" bodyend="472"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="dd/d1f/integrator_8hpp_1a7302c6b3faf870a9680b7a66f4c44bc4" compoundref="dd/d1f/integrator_8hpp" startline="425" endline="486">integrator_Matsubara_T0</references>
-        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="230" endline="232">SelfEnergy&lt; Q &gt;::setself</references>
+        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="243" endline="245">SelfEnergy&lt; Q &gt;::setself</references>
       </memberdef>
       <memberdef kind="function" id="df/dc8/classLoopCalculator_1a6225bb22a2f04511a90406d021fc10b2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -182,8 +182,8 @@
         </inbodydescription>
         <location file="loop/loop.hpp" line="64" column="10" bodyfile="loop/loop.hpp" bodystart="475" bodyend="498"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="230" endline="232">SelfEnergy&lt; Q &gt;::setself</references>
-        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="40">Propagator&lt; Q &gt;::T</references>
+        <references refid="d5/df6/classSelfEnergy_1aa272cb82579db13c332fe5462dd9ed31" compoundref="d6/d2d/selfenergy_8hpp" startline="243" endline="245">SelfEnergy&lt; Q &gt;::setself</references>
+        <references refid="d2/d34/classPropagator_1a29b7997848627b5b3c1f72b12862d1e6" compoundref="d5/df7/propagator_8hpp" startline="43">Propagator&lt; Q &gt;::T</references>
       </memberdef>
       <memberdef kind="function" id="df/dc8/classLoopCalculator_1a49d0591f1fbf479522e35b5669b1cfcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>

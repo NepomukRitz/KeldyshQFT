@@ -245,7 +245,7 @@
         </inbodydescription>
         <location file="interpolations/InterpolatorSpline1D.hpp" line="51" column="18" bodyfile="interpolations/InterpolatorSpline1D.hpp" bodystart="262" bodyend="272"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="195">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
       </memberdef>
     </sectiondef>
     <sectiondef kind="protected-func">
@@ -266,9 +266,9 @@
         </inbodydescription>
         <location file="interpolations/InterpolatorSpline1D.hpp" line="69" column="10" bodyfile="interpolations/InterpolatorSpline1D.hpp" bodystart="106" bodyend="140"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="50">dataContainerBase&lt; Q, rank &gt;::data</references>
-        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="195">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
-        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="115" endline="115">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
         <references refid="de/dbb/math__utils_8hpp_1af09f658145737a528e92348ccf9cd949" compoundref="de/dbb/math__utils_8hpp" startline="287" endline="292">rotateFlatIndex</references>
       </memberdef>
     </sectiondef>
@@ -323,7 +323,7 @@
         </inbodydescription>
         <location file="interpolations/InterpolatorSpline1D.hpp" line="84" column="10" bodyfile="interpolations/InterpolatorSpline1D.hpp" bodystart="143" bodyend="205"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" compoundref="da/dbc/data__container_8hpp" startline="218" endline="221">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</references>
+        <references refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" compoundref="da/dbc/data__container_8hpp" startline="214" endline="217">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</references>
       </memberdef>
       <memberdef kind="function" id="d4/dde/classSpline_3_01Q_00_01rank_00_011_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab7b5d406ab52da6ebf3b0c27fecc8dba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -371,8 +371,8 @@
         </inbodydescription>
         <location file="interpolations/InterpolatorSpline1D.hpp" line="97" column="29" bodyfile="interpolations/InterpolatorSpline1D.hpp" bodystart="276" bodyend="316"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="195">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
-        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="115" endline="115">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
       </memberdef>
     </sectiondef>
     <briefdescription>

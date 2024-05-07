@@ -42,7 +42,7 @@
         <referencedby refid="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9" compoundref="d8/dea/right__hand__sides_8hpp" startline="167" endline="549">rhs_n_loop_flow</referencedby>
         <referencedby refid="dd/df1/namespaceold__ode__solvers_1aeb954768e9e969cbed9beb79669621c8" compoundref="dd/df7/old__solvers_8hpp" startline="51" endline="68">old_ode_solvers::RK4_step</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
-        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1003" endline="1040">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
+        <referencedby refid="d2/d4a/classGeneralVertex_1ae471e4243cd2284a840ee81406e44331" compoundref="d1/d2d/vertex_8hpp" startline="1077" endline="1114">GeneralVertex&lt; Q, symmtype, differentiated &gt;::symmetry_expand</referencedby>
       </memberdef>
       <memberdef kind="function" id="d6/d84/namespaceutils_1a543aa24c499f82fc7ffb5dab99a06cda" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -317,15 +317,15 @@
         <references refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" compoundref="d9/d3a/technical__parameters_8hpp" startline="13">MPI_FLAG</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
         <references refid="d6/d84/namespaceutils_1ac76a8cfe22f29cfa7738ebd9972f60c8" compoundref="d6/d35/util_8c_09_09" startline="6" endline="19">print_time_stamp</references>
-        <referencedby refid="d5/df6/classSelfEnergy_1aa7d75d4c76a9e99f37d89cb8fd479392" compoundref="d6/d2d/selfenergy_8hpp" startline="177" endline="180">SelfEnergy&lt; Q &gt;::acc</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1aa7d75d4c76a9e99f37d89cb8fd479392" compoundref="d6/d2d/selfenergy_8hpp" startline="190" endline="193">SelfEnergy&lt; Q &gt;::acc</referencedby>
         <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</referencedby>
         <referencedby refid="d6/d7b/anderson__acceleration_8hpp_1a88e79b4550a392a79d60d8bf6557461c" compoundref="d6/d7b/anderson__acceleration_8hpp" startline="57" endline="125">anderson_update</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" compoundref="de/de8/bubble__function_8hpp" startline="272" endline="321">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_bubble_function</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
-        <referencedby refid="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" compoundref="d6/d2d/selfenergy_8hpp" startline="407" endline="423">SelfEnergy&lt; Q &gt;::check_symmetries</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="622" endline="907">rvert&lt; Q &gt;::check_symmetries</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a645a33014165b522dff0b3234528ed4a" compoundref="d6/d2d/selfenergy_8hpp" startline="420" endline="436">SelfEnergy&lt; Q &gt;::check_symmetries</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="644" endline="929">rvert&lt; Q &gt;::check_symmetries</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1" compoundref="dd/d0a/parquet__solver_8hpp" startline="28" endline="62">compute_BSE</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a1d40db72d9ef0f9ac66a89215c7e5e48" compoundref="d4/d92/hartree__term_8c_09_09" startline="25" endline="42">Hartree_Solver::compute_Hartree_term</referencedby>
@@ -338,14 +338,14 @@
         <referencedby refid="d7/d3a/bubble__corrections_8c_09_09_1a016d301fe61f8485918bda50052b5974" compoundref="d7/d3a/bubble__corrections_8c_09_09" startline="31" endline="37">correctionFunctionBubbleP_REG2_Matsubara_NoPHS</referencedby>
         <referencedby refid="d7/df0/loop__corrections_8c_09_09_1afdee23842e10905731a7130f97f916ec" compoundref="d7/df0/loop__corrections_8c_09_09" startline="4" endline="8">correctionFunctionSelfEnergy_Keldysh</referencedby>
         <referencedby refid="d7/df0/loop__corrections_8c_09_09_1a0a12451375280c67b76f5f6fd79dd5e0" compoundref="d7/df0/loop__corrections_8c_09_09" startline="11" endline="15">correctionFunctionSelfEnergy_Matsubara_NoPHS</referencedby>
-        <referencedby refid="d5/df6/classSelfEnergy_1a40d554dd455b33c9ac8ccc3442d0fb36" compoundref="d6/d2d/selfenergy_8hpp" startline="188" endline="191">SelfEnergy&lt; Q &gt;::direct_set</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a40d554dd455b33c9ac8ccc3442d0fb36" compoundref="d6/d2d/selfenergy_8hpp" startline="201" endline="204">SelfEnergy&lt; Q &gt;::direct_set</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1ab3aeb6b5a7765364c4eee56626986f2c" compoundref="d5/d0d/perturbation__theory_8hpp" startline="214" endline="246">fopt_state</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a2ec9d72693d8351fac847d28ef90fc09" compoundref="d4/d92/hartree__term_8c_09_09" startline="143" endline="155">Hartree_Solver::friedel_sum_rule_check</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1a035fbc2de1393b0673bbd4a663598754" compoundref="d1/d2d/vertex_8hpp" startline="1222" endline="1238">fullvert&lt; Q &gt;::gammaRb</referencedby>
-        <referencedby refid="dc/d2d/classfullvert_1ad0dff3dc2aa5666c59584d111e4338bd" compoundref="d1/d2d/vertex_8hpp" startline="1239" endline="1256">fullvert&lt; Q &gt;::gammaRb</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a035fbc2de1393b0673bbd4a663598754" compoundref="d1/d2d/vertex_8hpp" startline="1296" endline="1312">fullvert&lt; Q &gt;::gammaRb</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1ad0dff3dc2aa5666c59584d111e4338bd" compoundref="d1/d2d/vertex_8hpp" startline="1313" endline="1330">fullvert&lt; Q &gt;::gammaRb</referencedby>
         <referencedby refid="d2/d34/classPropagator_1a9c4b156ab3bcad3d51b1a17ee65193bd" compoundref="de/d5d/propagator_8c_09_09" startline="38" endline="42">Propagator&lt; Q &gt;::GK</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="286" endline="293">Propagator&lt; Q &gt;::GM</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="181" endline="191">Propagator&lt; Q &gt;::GR</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="295" endline="302">Propagator&lt; Q &gt;::GM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="190" endline="200">Propagator&lt; Q &gt;::GR</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1ac868c960e917a080f09ef20123e977a6" compoundref="d6/d35/util_8c_09_09" startline="247" endline="255">hello_world</referencedby>
         <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1a58b67ba50cbb4f7de77e1cefc97ab1d9" compoundref="da/dc3/ODE__solvers_8hpp" startline="723" endline="820">boost::numeric::odeint::detail::integrate_adaptive_check</referencedby>
         <referencedby refid="db/d0d/namespaceboost_1_1numeric_1_1odeint_1_1detail_1afbf101e814fc65a748987878efb4f4e1" compoundref="da/dc3/ODE__solvers_8hpp" startline="663" endline="720">boost::numeric::odeint::detail::integrate_nonadaptive</referencedby>
@@ -368,17 +368,17 @@
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>
         <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="277" endline="298">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
         <referencedby refid="d2/d34/classPropagator_1add2b744a830010e306fd52443385c087" compoundref="de/d5d/propagator_8c_09_09" startline="45" endline="49">Propagator&lt; Q &gt;::SK</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="296" endline="303">Propagator&lt; Q &gt;::SM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="305" endline="312">Propagator&lt; Q &gt;::SM</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4" compoundref="d5/d0d/perturbation__theory_8hpp" startline="156" endline="177">sopt_state</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1ad3a00a8aa8e7ec50537f318bda4c7432" compoundref="d5/d0d/perturbation__theory_8hpp" startline="141" endline="152">sopt_state_impl</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="221" endline="231">Propagator&lt; Q &gt;::SR</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="230" endline="240">Propagator&lt; Q &gt;::SR</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a348299423b50e44dd3a672875fdeb1a5" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="259" endline="342">test_read_write_data_hdf</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1af51195eb9f07aad71215618c96d20a4e" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="345" endline="389">test_read_write_state_hdf</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a7e4a5a6fb04ec2ad44ce7448be60dbad" compoundref="db/d7d/symmetry__transformations_8hpp" startline="215" endline="307">Ti</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1af63b4846dcd291f54d67b00384d29ae3" compoundref="d5/d0d/perturbation__theory_8hpp" startline="185" endline="210">topt_state</referencedby>
-        <referencedby refid="da/dbf/classirreducible_1a9621a3ec926627a203e91004e99d53aa" compoundref="d1/d2d/vertex_8hpp" startline="1114" endline="1151">irreducible&lt; Q &gt;::val</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="307" endline="453">Propagator&lt; Q &gt;::valsmooth</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="458" endline="585">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+        <referencedby refid="da/dbf/classirreducible_1a9621a3ec926627a203e91004e99d53aa" compoundref="d1/d2d/vertex_8hpp" startline="1188" endline="1225">irreducible&lt; Q &gt;::val</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="316" endline="462">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="467" endline="594">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1a528cc117342e0fcca28edb8e28b48b2c" compoundref="d5/d0d/perturbation__theory_8hpp" startline="27" endline="40">vertexInSOPT</referencedby>
         <referencedby refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</referencedby>
       </memberdef>

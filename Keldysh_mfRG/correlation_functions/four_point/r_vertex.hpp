@@ -1,9 +1,3 @@
-/**
- * Reducible vertex in channel r, split into diagrammatic classes K1, K2, K2b, K3.
- * Member functions allow for access of values at arbitrary frequencies and in each channel-specific
- * frequency representation.
- */
-
 #ifndef KELDYSH_MFRG_R_VERTEX_HPP
 #define KELDYSH_MFRG_R_VERTEX_HPP
 
@@ -18,9 +12,6 @@
 #include "../n_point/data_buffer.hpp"
 //#include "../../utilities/hdf5_routines.hpp"
 
-/// Possible (unit-)tests:
-/// [IMPLEMENTED in test_symmetries.c++] check read-out from symmetry-reduced sector and correctness of symmetry tables
-/// [MISSING] check conversion of frequency conventions
 
 template <typename Q> class irreducible; // forward declaration of fullvert
 template <typename Q> class fullvert; // forward declaration of fullvert
@@ -30,8 +21,13 @@ template<typename Q, std::size_t depth, typename H5object> void write_to_hdf(H5o
 template<typename Q, typename H5object> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
 template<typename Q, typename H5object, int nrows, int ncols> void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,nrows, ncols>& data, const bool data_set_exists);
 
-template <typename Q>
-class rvert{
+/**
+ * Reducible vertex in channel r, split into diagrammatic classes K1, K2, K2b, K3. \n
+ * Member functions allow for access of values at arbitrary frequencies and in each channel-specific
+ * frequency representation.
+ * @tparam Q Type of the data.
+ */
+template <typename Q> class rvert{
 public:
     using freqGrid_type_K1 = bufferFrequencyGrid<k1>;
     using freqGrid_type_K2 = bufferFrequencyGrid<k2>;
@@ -41,8 +37,6 @@ public:
     using buffer_type_K2b= dataBuffer<Q, k2b,K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
     using buffer_type_K3 = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>;
     using buffer_type_K3_SBE= dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION>;
-
-
 
     char channel;                       // reducibility channel
 private:
@@ -54,9 +48,9 @@ public:
     FrequencyTransformations freq_transformations = FrequencyTransformations(channel);  // lists providing information on which transformations to apply on
                                                                                         // frequencies to relate them to the independent ones
 
-    /// When you add a vertex buffer, also adapt the following:
-    /// apply_unary_op_to_all_vertexBuffers()
-    /// apply_binary_op_to_all_vertexBuffers()
+    // When you add a vertex buffer, also adapt the following:
+    // apply_unary_op_to_all_vertexBuffers()
+    // apply_binary_op_to_all_vertexBuffers()
     buffer_type_K1 K1;
     mutable buffer_type_K1 K1_symmetry_expanded;
 
@@ -74,12 +68,12 @@ public:
     buffer_type_K3 K3;
     mutable buffer_type_K3 K3_symmetry_expanded;
 
+
     /**
      * Applies unary operator f to this rvert
-     * @tparam Func
-     * @param f             f can be given via a lambda expression (for an example see arithmetic operations)
-     * @param other_rvert
-     * @return              returns this
+     * @tparam Func Type of f.
+     * @param f f can be given via a lambda expression (for an example see arithmetic operations)
+     * @return returns this.
      */
     template <typename Func>
     auto apply_unary_op_to_all_vertexBuffers(Func&& f) {
@@ -92,12 +86,12 @@ public:
 
         return *this;
     }
+
     /**
      * Applies unary operator f to this rvert (const member function)
-     * @tparam Func
-     * @param f             f can be given via a lambda expression (for an example see arithmetic operations)
-     * @param other_rvert
-     * @return              returns this
+     * @tparam Func Type of f.
+     * @param f f can be given via a lambda expression (for an example see arithmetic operations)
+     * @return returns this.
      */
     template <typename Func>
     auto apply_unary_op_to_all_vertexBuffers(Func&& f) const {
@@ -113,10 +107,10 @@ public:
 
     /**
      * Applies binary operator f to this rvert and to another rvertex
-     * @tparam Func
-     * @param f             f can be given via a lambda expression (for an example see arithmetic operations)
-     * @param other_rvert
-     * @return              returns this
+     * @tparam Func Type of f.
+     * @param f f can be given via a lambda expression (for an example see arithmetic operations)
+     * @param other_rvert Other rvert.
+     * @return returns this
      */
     template <typename Func>
     auto apply_binary_op_to_all_vertexBuffers(Func&& f, const rvert<Q>& other_rvert) {
@@ -140,9 +134,11 @@ public:
     }
 
     /**
-     * Constructor
-     * @param channel_in
-     * @param Lambda
+     * Constructor for the rvert class.
+     * @param channel_in Channel index r.
+     * @param Lambda Value of the regulator Λ.
+     * @param config fRG_config struct, holding parameters.
+     * @param is_reserve If true, memory is allocated immediately. If false, the array is empty for the time being.
      */
     rvert(const char channel_in, const double Lambda, const fRG_config& config, const bool is_reserve)
     : channel(channel_in)
@@ -165,23 +161,44 @@ public:
 
     double max_norm() const;
 
-
     /**
      * Return the value of the reducible vertex in channel r = sum of all K_classes K1, K2, K2b and K3.
-     * This version of value() is used for the symmetric_full vertex
-     * @param input          : Combination of input arguments.
-     * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
-     *                         symmetry transformations that map between channels a <--> t.
+     * This version of value() is used for the symmetric_full vertex.
+     * @tparam ch_bubble Channel index r.
+     * @param input Combination of input arguments.
+     * @param rvert_crossing Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
+     * symmetry transformations that map between channels a <--> t.
+     * @return K1 + K2 + K2b + K3 in channel r.
      */
     template<char ch_bubble> auto value(VertexInput input, const rvert<Q>& rvert_crossing) const -> Q;
+
     /** Overload for accessing non-symmetric_full vertices, with
      * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
      *                       asymmetry_transform=true
      */
+
+    /**
+     * Overload of the value function for accessing a non-symmetric_full vertex.
+     * @tparam ch_bubble Channel index r.
+     * @param input Combination of input arguments. See VertexInput.
+     * @param rvert_crossing Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
+     * symmetry transformations that map between channels a <--> t.
+     * @param vertex_half2_samechannel Vertex related to the calling vertex by symmetry in the same channel.
+     * @param vertex_half2_switchedchannel Vertex related to the calling vertex by symmetry in the other channel.
+     * @return K1 + K2 + K2b + K3 in channel r.
+     */
     template<char ch_bubble> auto value(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
-    /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
-    /// This version is used for a symmetric_full vertex
+    /**
+     * Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations). \n
+     * This version is used for a symmetric_full vertex.
+     * @tparam k Asymptotic class.
+     * @param input Combination of input arguments. See VertexInput.
+     * @param indices Properties of the vertex. See IndicesSymmetryTransformations.
+     * @param rvert_this This instance of rvert. Only used for debugging purposes is DEBUG_SYMMETRIES is defined.
+     * @param rvert_crossing Related vertex by crossing symmetry.
+     * @return Symmetry reduced vertex.
+     */
     template <K_class k>
     const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices,
 #if DEBUG_SYMMETRIES
@@ -189,8 +206,17 @@ public:
 #endif
                                     const rvert<Q>& rvert_crossing) const;
 
-    /// Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations)
-    /// This version is used for an Asymmetric vertex
+    /**
+     * Returns the symmetry reduced vertex component and the information where to read it out (in IndicesSymmetryTransformations). \n
+     * This version is used for an asymmetric vertex.
+     * @tparam k Asymptotic class.
+     * @param input Combination of input arguments. See VertexInput.
+     * @param indices Properties of the vertex. See IndicesSymmetryTransformations.
+     * @param rvert_crossing Related vertex by crossing symmetry.
+     * @param vertex_half2_samechannel Vertex related to the calling vertex by symmetry in the same channel.
+     * @param vertex_half2_switchedchannel Vertex related to the calling vertex by symmetry in the other channel.
+     * @return Symmetry reduced vertex.
+     */
     template <K_class k>
     const rvert<Q>& symmetry_reduce(const VertexInput &input, IndicesSymmetryTransformations& indices, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const;
 
@@ -199,7 +225,7 @@ public:
      * @tparam k        K_class
      * @param indices   contains information for reading out the symmetry reduced vertex component
      * @param readMe    vertex to be read
-     * @return
+     * @return Value of the symmetry reduced vertex component.
      */
     template<K_class k>
     Q read_symmetryreduced_rvert(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const;
@@ -208,21 +234,25 @@ public:
     auto read_value(const IndicesSymmetryTransformations& indices, const rvert<Q>& readMe) const -> Q;
 
     /**
-     * Return the value of the vertex Ki in channel r.
-     * @param input          : Combination of input arguments.
-     * @param rvert_crossing : Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
-     *                         symmetry transformations that map between channels a <--> t.
+     * Return the value of the asymptotic class k of the vertex in channel r.
+     * @tparam k Asymptotic class
+     * @param input Combination of input arguments. See VertexInput.
+     * @param rvert_crossing Reducible vertex in the related channel (t,p,a) for r=(a,p,t), needed to apply
+     * symmetry transformations that map between channels a <--> t.
+     * @return Value of type Q.
      */
     template <K_class k>
     auto valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
 
-    /** Overload for accessing non-symmetric_full vertices, with
-     * @param vertex_half2 : vertex related to the calling vertex by symmetry, needed for transformations with
-     *                       asymmetry_transform=true */
+    /**
+     * Overload of value for accessing non-symmetric_full vertices with
+     * @param vertex_half2_samechannel Vertex related to the calling vertex by symmetry in the same channel.
+     * @param vertex_half2_switchedchannel Vertex related to the calling vertex by symmetry in the other channel.
+     */
     template <K_class k>
     auto valsmooth(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
-    /** Parts of the r vertex that connect to the same/different bare vertices on the left/right of an r bubble */
+    // Parts of the r vertex that connect to the same/different bare vertices on the left/right of an r bubble
     auto left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
     auto left_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
     auto right_same_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
@@ -232,20 +262,21 @@ public:
     auto right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing) const -> Q;
     auto right_diff_bare(const VertexInput& input, const rvert<Q>& rvert_crossing, const rvert<Q>& vertex_half2_samechannel, const rvert<Q>& vertex_half2_switchedchannel) const -> Q;
 
+
     /**
      * Transform the frequencies from the frequency convention of input.channel to the frequency convention of
      * this->channel. Necessary when accessing the r vertex from a different channel r'.
+     * @tparam ch_bubble Channel index r'
+     * @param input Input related to the starting channel r.
      */
     template<char ch_bubble> void transfToR(VertexInput& input) const;
 
-    /**
-     * Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
-     */
+    // Interpolate the vertex to updated grid when rescaling the grid to new flow parameter Lambda.
     void update_grid(double Lambda, std::array<double,3> shifts, const fRG_config& config);
 
     /**
      * Interpolate the vertex to updated grid.
-     * @tparam k
+     * @tparam k Asymptotic class.
      * @param frequencyGrid_in  new frequency grid
      * @param rvert4data        vertex to be interpolated
      *                          can be different from *this, so we can backup a vertex and interpolate the backup
@@ -253,31 +284,22 @@ public:
     template<K_class k, typename FGrid>
     void update_grid(const FGrid& frequencyGrid_in, rvert<Q>& rvert4data);
 
-    /**
-     * Optimizes the frequency grids and updates the grids accordingly
-     */
+    // Optimizes the frequency grids and updates the grids accordingly
     void findBestFreqGrid(bool verbose=true);
 
-    /** K1-functionality */
+    // K1-functionality:
 
-
-    /**
-     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
-     */
+    // Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
     void enforce_freqsymmetriesK1(const rvert<Q>& vertex_symmrelated);
 
-    /** K2 functionality */
+    // K2 functionality:
 
-    /**
-     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
-     */
+    // Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
     void enforce_freqsymmetriesK2(const rvert<Q>& vertex_symmrelated);
 
-    /** K3 functionality */
+    // K3 functionality:
 
-    /**
-     * Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
-     */
+    // Apply the frequency symmetry relations (for the independent components) to update the vertex after bubble integration.
     void enforce_freqsymmetriesK3(const rvert<Q>& vertex_symmrelated);
 
     void initInterpolator() const {
@@ -305,7 +327,7 @@ public:
     template<char channel_bubble, char channel_rvert, bool is_left_vertex> auto combine_SBE_to_K3_SBE(const rvert<Q> &rvert_for_K2, const rvert<Q> &rvert_for_lambda) const -> buffer_type_K3_SBE;
 
 
-    /// Arithmetric operators act on vertexBuffers:
+    // Arithmetric operators act on vertexBuffers:
     auto operator+= (const rvert<Q>& rhs) -> rvert<Q> {
         return apply_binary_op_to_all_vertexBuffers([&](auto&& left, auto&& right) -> void {left += right;}, rhs);
     }

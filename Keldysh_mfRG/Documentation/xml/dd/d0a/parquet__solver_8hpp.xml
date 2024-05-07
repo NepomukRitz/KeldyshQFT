@@ -1085,11 +1085,11 @@
         <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
-        <references refid="d2/d4a/classGeneralVertex_1a66e3aa65eda2c853832d6a3942ec69e8" compoundref="d1/d2d/vertex_8hpp" startline="940" endline="940">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K1</references>
+        <references refid="d2/d4a/classGeneralVertex_1a66e3aa65eda2c853832d6a3942ec69e8" compoundref="d1/d2d/vertex_8hpp" startline="1014" endline="1014">GeneralVertex&lt; Q, symmtype, differentiated &gt;::norm_K1</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b" compoundref="d1/df8/master__parameters_8hpp" startline="35">SBE_DECOMPOSITION</references>
-        <references refid="d2/d4a/classGeneralVertex_1aed8132ff4fc8418ee884d39035153e9e" compoundref="d1/d2d/vertex_8hpp" startline="955" endline="958">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_Ir</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1aed8132ff4fc8418ee884d39035153e9e" compoundref="d1/d2d/vertex_8hpp" startline="1029" endline="1032">GeneralVertex&lt; Q, symmtype, differentiated &gt;::set_Ir</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a97f702e04f1c5d26a95211570c003781" compoundref="dd/d0a/parquet__solver_8hpp" startline="73" endline="87">compute_BSE</referencedby>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1aad1680ae03adc0f566df945376e95234" compoundref="dd/d0a/parquet__solver_8hpp" startline="635" endline="645">parquet_iteration</referencedby>
@@ -1211,9 +1211,9 @@
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a2326000f2ce3b51e0f6cacb8378366f2" compoundref="d7/d59/data__structures_8hpp" startline="480">k3_sbe</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
-        <references refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="997" endline="999">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</references>
+        <references refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="1071" endline="1073">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
-        <references refid="d2/d4a/classGeneralVertex_1adb8112bdc5f8e012552d215c2a670eef" compoundref="d1/d2d/vertex_8hpp" startline="987">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_gamma0</references>
+        <references refid="d2/d4a/classGeneralVertex_1adb8112bdc5f8e012552d215c2a670eef" compoundref="d1/d2d/vertex_8hpp" startline="1061">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_gamma0</references>
       </memberdef>
       <memberdef kind="function" id="dd/d0a/parquet__solver_8hpp_1a975283a2a8d88b37c80ee3d2f39e68c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1260,7 +1260,7 @@
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a2326000f2ce3b51e0f6cacb8378366f2" compoundref="d7/d59/data__structures_8hpp" startline="480">k3_sbe</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
       </memberdef>
       <memberdef kind="function" id="dd/d0a/parquet__solver_8hpp_1a7e421b1e2c3e3c8fbaa9fe1600a2ef54" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1431,7 +1431,7 @@
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
-        <references refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="997" endline="999">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</references>
+        <references refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="1071" endline="1073">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
       </memberdef>
       <memberdef kind="function" id="dd/d0a/parquet__solver_8hpp_1a947824a1a735bc2e9db735348ac9dd2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1489,8 +1489,8 @@
         <location file="perturbation_theory_and_parquet/parquet_solver.hpp" line="377" column="12" bodyfile="perturbation_theory_and_parquet/parquet_solver.hpp" bodystart="377" bodyend="408"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
-        <references refid="d2/d4a/classGeneralVertex_1abb8396f63f5f6ea6c66371d9075bdc28" compoundref="d1/d2d/vertex_8hpp" startline="787" endline="787">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vertex_nondiff</references>
-        <references refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="783" endline="783">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</references>
+        <references refid="d2/d4a/classGeneralVertex_1abb8396f63f5f6ea6c66371d9075bdc28" compoundref="d1/d2d/vertex_8hpp" startline="861" endline="861">GeneralVertex&lt; Q, symmtype, differentiated &gt;::get_vertex_nondiff</references>
+        <references refid="d2/d4a/classGeneralVertex_1a914996279b86330de5331fb018eb3f60" compoundref="d1/d2d/vertex_8hpp" startline="857" endline="857">GeneralVertex&lt; Q, symmtype, differentiated &gt;::half1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
@@ -1742,14 +1742,14 @@
         <inbodydescription>
         </inbodydescription>
         <location file="perturbation_theory_and_parquet/parquet_solver.hpp" line="549" column="6" bodyfile="perturbation_theory_and_parquet/parquet_solver.hpp" bodystart="549" bodyend="617"/>
-        <references refid="d2/d4a/classGeneralVertex_1a791568d8a7b0cacf00079d69ec765bae" compoundref="d1/d2d/vertex_8hpp" startline="790" endline="790">GeneralVertex&lt; Q, symmtype, differentiated &gt;::avertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a791568d8a7b0cacf00079d69ec765bae" compoundref="d1/d2d/vertex_8hpp" startline="864" endline="864">GeneralVertex&lt; Q, symmtype, differentiated &gt;::avertex</references>
         <references refid="de/de8/bubble__function_8hpp_1af33e47ff22bc507b4226169779a87c95" compoundref="de/de8/bubble__function_8hpp" startline="1046" endline="1071">bubble_function</references>
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d2/d4a/classGeneralVertex_1abec34975a70ef37a932b85ec566fc52b" compoundref="d1/d2d/vertex_8hpp" startline="791" endline="791">GeneralVertex&lt; Q, symmtype, differentiated &gt;::pvertex</references>
-        <references refid="d2/d4a/classGeneralVertex_1a80b79fecedc9c2fb3f7e115dfc658b78" compoundref="d1/d2d/vertex_8hpp" startline="792" endline="792">GeneralVertex&lt; Q, symmtype, differentiated &gt;::tvertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1abec34975a70ef37a932b85ec566fc52b" compoundref="d1/d2d/vertex_8hpp" startline="865" endline="865">GeneralVertex&lt; Q, symmtype, differentiated &gt;::pvertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a80b79fecedc9c2fb3f7e115dfc658b78" compoundref="d1/d2d/vertex_8hpp" startline="866" endline="866">GeneralVertex&lt; Q, symmtype, differentiated &gt;::tvertex</references>
         <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
-        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="382">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
+        <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
       </memberdef>
       <memberdef kind="function" id="dd/d0a/parquet__solver_8hpp_1a7f8b92dc55360683f0e90bad965195a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1964,7 +1964,7 @@
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1aa0ab8d27e7ed5ce3762582c2416a9b45" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="61" endline="191">read_state_from_hdf</references>
         <references refid="d2/d3f/sanity__check_8hpp_1a884fca24faf1e006b285fcce3ddd0299" compoundref="d2/d3f/sanity__check_8hpp" startline="10" endline="23">sanity_check</references>
-        <references refid="d2/d4a/classGeneralVertex_1aed220e3c9849b53e245e7062568b1b72" compoundref="d1/d2d/vertex_8hpp" startline="1041" endline="1045">GeneralVertex&lt; Q, symmtype, differentiated &gt;::save_expanded</references>
+        <references refid="d2/d4a/classGeneralVertex_1aed220e3c9849b53e245e7062568b1b72" compoundref="d1/d2d/vertex_8hpp" startline="1115" endline="1119">GeneralVertex&lt; Q, symmtype, differentiated &gt;::save_expanded</references>
         <references refid="dd/d0a/parquet__solver_8hpp_1ade72d4c0a25548ba8cb4c0dcd8950b65" compoundref="dd/d0a/parquet__solver_8hpp" startline="65">SDE_counter</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</referencedby>

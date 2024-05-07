@@ -751,9 +751,9 @@
         <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="31">SelfEnergy&lt; Q &gt;::Sigma</references>
+        <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="33">SelfEnergy&lt; Q &gt;::Sigma</references>
         <references refid="de/dbb/math__utils_8hpp_1a0bb692dd2ccfca1d2a03544ff6b3c7c8" compoundref="de/dbb/math__utils_8hpp" startline="24" endline="26">sign</references>
-        <references refid="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" compoundref="d6/d2d/selfenergy_8hpp" startline="201" endline="220">SelfEnergy&lt; Q &gt;::valsmooth</references>
+        <references refid="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" compoundref="d6/d2d/selfenergy_8hpp" startline="214" endline="233">SelfEnergy&lt; Q &gt;::valsmooth</references>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a9cd8e1943168ef9eb6ba5190d5701929" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="76" endline="78">check_SE_causality</referencedby>
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1a35926ed20edc2503238326c955ab6ded" compoundref="da/dc3/ODE__solvers_8hpp" startline="26" endline="67">postRKstep_stuff</referencedby>
         <referencedby refid="dd/df1/namespaceold__ode__solvers_1aeb954768e9e969cbed9beb79669621c8" compoundref="dd/df7/old__solvers_8hpp" startline="51" endline="68">old_ode_solvers::RK4_step</referencedby>
@@ -878,7 +878,7 @@
         <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
         <references refid="d6/dfc/namespacemy__defs_1_1SE_1a8bb0a6e36cdfe570fba3110d9322df26a1de5b20eff06ae484ded79a5ea8fa6c6" compoundref="d7/d59/data__structures_8hpp" startline="492">my_defs::SE::keldysh</references>
         <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
-        <references refid="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158" compoundref="d6/d2d/selfenergy_8hpp" startline="346" endline="356">SelfEnergy&lt; Q &gt;::norm</references>
+        <references refid="d5/df6/classSelfEnergy_1a8b411698e78608f2d01c210493514158" compoundref="d6/d2d/selfenergy_8hpp" startline="359" endline="369">SelfEnergy&lt; Q &gt;::norm</references>
         <references refid="d6/dfc/namespacemy__defs_1_1SE_1a8bb0a6e36cdfe570fba3110d9322df26a818f7a082d51cafd697cde5a16159e21" compoundref="d7/d59/data__structures_8hpp" startline="492">my_defs::SE::nu</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" compoundref="d2/d1a/Keldysh__symmetries_8hpp" startline="35" endline="38">SE_config</references>
@@ -1036,7 +1036,7 @@
         <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0e8f8c5700d73a66191a72ea5eba2082" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::spin</references>
         <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a0e00d54b522305dc57d86ce8f43d5d86" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::spin</references>
         <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a243c27209bb0519793b3abe88418a158" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::spin</references>
-        <referencedby refid="dc/d2d/classfullvert_1a5072e97c8ff1a5940081e26256cd1ed2" compoundref="d1/d2d/vertex_8hpp" startline="1695" endline="1733">fullvert&lt; Q &gt;::reorder_due2antisymmetry</referencedby>
+        <referencedby refid="dc/d2d/classfullvert_1a5072e97c8ff1a5940081e26256cd1ed2" compoundref="d1/d2d/vertex_8hpp" startline="1769" endline="1807">fullvert&lt; Q &gt;::reorder_due2antisymmetry</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad723c59a2ce8220b426d1790ef6283ec" compoundref="de/de8/bubble__function_8hpp" startline="616" endline="626">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K2</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1addecd120bccc2c0faf65cdfec3f50953" compoundref="de/de8/bubble__function_8hpp" startline="643" endline="652">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K3</referencedby>
       </memberdef>
@@ -1194,7 +1194,7 @@
         <references refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" compoundref="d1/df8/master__parameters_8hpp" startline="159">data_dir</references>
-        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="26">State&lt; Q, differentiated &gt;::selfenergy</references>
+        <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
       </memberdef>
       <memberdef kind="function" id="d1/d75/causality__FDT__checks_8hpp_1a1f3c55ca67536a31e0601adb1db35c5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">

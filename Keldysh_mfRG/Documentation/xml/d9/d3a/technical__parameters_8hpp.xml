@@ -945,7 +945,7 @@
         <referencedby refid="df/dd5/classbufferFrequencyGrid_1a016e2aad5e723677c8dfde546d1a495f" compoundref="d5/d39/frequency__grid_8hpp" startline="429" endline="432">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
         <referencedby refid="df/dd5/classbufferFrequencyGrid_1acfb9ad9c9c37a6bedc49225d29aa214a" compoundref="d5/d39/frequency__grid_8hpp" startline="433" endline="446">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
         <referencedby refid="df/dd5/classbufferFrequencyGrid_1acc88c55d5f30e48f9db830bf29a65142" compoundref="d5/d39/frequency__grid_8hpp" startline="447" endline="451">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
-        <referencedby refid="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" compoundref="d6/d2d/selfenergy_8hpp" startline="201" endline="220">SelfEnergy&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" compoundref="d6/d2d/selfenergy_8hpp" startline="214" endline="233">SelfEnergy&lt; Q &gt;::valsmooth</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d9/d3a/technical__parameters_8hpp_1a6b7445f4535a5480e56a9be7fbc10529" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5" kindref="member">interpolMethod</ref></type>

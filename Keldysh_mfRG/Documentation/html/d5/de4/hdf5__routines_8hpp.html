@@ -1573,8 +1573,6 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div class="line"><span class="lineno">   29</span>    }</div>
 <div class="line"><span class="lineno">   30</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, and <a class="el" href="../../d4/dda/mpi__setup_8c_09_09_source.html#l00003">mpi_world_rank()</a>.</p>
-
 <p class="reference">Referenced by <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00872">add_state_to_hdf()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00659">parquet_solver()</a>, and <a class="el" href="../../d8/dea/right__hand__sides_8hpp_source.html#l00138">mfRG_stats::write_to_hdf()</a>.</p>
 
 </div>
@@ -1993,7 +1991,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <p>check whether parameters in HDF file agree with <a class="el" href="../../d1/df8/master__parameters_8hpp.html">parameters/master_parameters.hpp</a></p>
 <p>Write used parameters for documentation purpose</p>
 
-<p class="definition">Definition at line <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00020">20</a> of file <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html">hdf5_routines.c++</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00021">21</a> of file <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html">hdf5_routines.c++</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   61</span>                                                                                                   {</div>
 <div class="line"><span class="lineno">   62</span>    H5::H5File <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">file_out</a> = <a class="code hl_function" href="../../d5/d4f/hdf5__routines_8c_09_09.html#a8e761cba4ac842504c408dfe71037413">open_hdf_file_readOnly</a>(filename);</div>
 <div class="line"><span class="lineno">   63</span> </div>
@@ -2123,7 +2121,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div class="line"><span class="lineno">  189</span> </div>
 <div class="line"><span class="lineno">  190</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">state</a>;</div>
 <div class="line"><span class="lineno">  191</span>}</div>
-<div class="ttc" id="aclassState_html"><div class="ttname"><a href="../../d7/d97/classState.html">State</a></div><div class="ttdef"><b>Definition</b> <a href="../../da/d3b/state_8hpp_source.html#l00018">state.hpp:18</a></div></div>
+<div class="ttc" id="aclassState_html"><div class="ttname"><a href="../../d7/d97/classState.html">State</a></div><div class="ttdef"><b>Definition</b> <a href="../../da/d3b/state_8hpp_source.html#l00023">state.hpp:23</a></div></div>
 <div class="ttc" id="afrequency__parameters_8hpp_html_ac389dbca21e58410d552988f3ec954c3"><div class="ttname"><a href="../../d3/d3c/frequency__parameters_8hpp.html#ac389dbca21e58410d552988f3ec954c3">GRID</a></div><div class="ttdeci">#define GRID</div><div class="ttdoc">Frequency grid parameters ///.</div><div class="ttdef"><b>Definition</b> <a href="../../d3/d3c/frequency__parameters_8hpp_source.html#l00008">frequency_parameters.hpp:8</a></div></div>
 <div class="ttc" id="ahdf5__routines_8c_09_09_html_af0c3383efb10d59e26e11c17219f19ec"><div class="ttname"><a href="../../d5/d4f/hdf5__routines_8c_09_09.html#af0c3383efb10d59e26e11c17219f19ec">read_config_from_hdf</a></div><div class="ttdeci">fRG_config read_config_from_hdf(const H5std_string FILE_NAME)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00392">hdf5_routines.c++:392</a></div></div>
 <div class="ttc" id="ahdf5__routines_8hpp_html_a000928a93e5676eb68968c067d7dc98e"><div class="ttname"><a href="#a000928a93e5676eb68968c067d7dc98e">FFREQS_LIST</a></div><div class="ttdeci">const H5std_string FFREQS_LIST(&quot;ffreqs&quot;)</div></div>
@@ -2371,7 +2369,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div class="line"><span class="lineno">  963</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">passed</a>;</div>
 <div class="line"><span class="lineno">  964</span> </div>
 <div class="line"><span class="lineno">  965</span>}</div>
-<div class="ttc" id="ahdf5__routines_8hpp_html_a1d7f982aef791adb4072cb8ecf3aabf2"><div class="ttname"><a href="#a1d7f982aef791adb4072cb8ecf3aabf2">read_state_from_hdf</a></div><div class="ttdeci">State&lt; state_datatype, false &gt; read_state_from_hdf(const H5std_string &amp;filename, int Lambda_it)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00020">hdf5_routines.c++:61</a></div></div>
+<div class="ttc" id="ahdf5__routines_8hpp_html_a1d7f982aef791adb4072cb8ecf3aabf2"><div class="ttname"><a href="#a1d7f982aef791adb4072cb8ecf3aabf2">read_state_from_hdf</a></div><div class="ttdeci">State&lt; state_datatype, false &gt; read_state_from_hdf(const H5std_string &amp;filename, int Lambda_it)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00021">hdf5_routines.c++:61</a></div></div>
 <div class="ttc" id="ahdf5__routines_8hpp_html_ab7f115126010e4b017eb9e12cd1c29d9"><div class="ttname"><a href="#ab7f115126010e4b017eb9e12cd1c29d9">write_state_to_hdf</a></div><div class="ttdeci">void write_state_to_hdf(const H5std_string FILE_NAME, double Lambda_i, const int Lambda_size, const State&lt; Q, diff &gt; &amp;state_in, const bool verbose=true, const bool is_converged=false)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/de4/hdf5__routines_8hpp_source.html#l00846">hdf5_routines.hpp:846</a></div></div>
 <div class="ttc" id="ahdf5__routines_8hpp_html_afcbe2c8a768f64e576f593516262d476"><div class="ttname"><a href="#afcbe2c8a768f64e576f593516262d476">add_state_to_hdf</a></div><div class="ttdeci">void add_state_to_hdf(const H5std_string FILE_NAME, int Lambda_it, const State&lt; Q, diff &gt; &amp;state_in, const bool is_converged=false, const bool verbose=true)</div><div class="ttdef"><b>Definition</b> <a href="../../d5/de4/hdf5__routines_8hpp_source.html#l00872">hdf5_routines.hpp:872</a></div></div>
 </div><!-- fragment -->
@@ -2585,7 +2583,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../df/da4/multiarray_8hpp_source.html#l00563">multidimensional::multiarray&lt; T, depth &gt;::length()</a>, <a class="el" href="../../d4/dda/mpi__setup_8c_09_09_source.html#l00003">mpi_world_rank()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00172">hdf5_impl::write_data_to_Dataset()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l00622">rvert&lt; Q &gt;::check_symmetries()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00494">compute_diff_SDE()</a>, <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l01056">rvert&lt; Q &gt;::save_expanded()</a>, <a class="el" href="../../de/d65/integrandSE_8hpp_source.html#l00277">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand()</a>, <a class="el" href="../../d5/df7/propagator_8hpp_source.html#l00077">Propagator&lt; Q &gt;::save_propagator_values()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00259">test_read_write_data_hdf()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00157">Hartree_Solver::write_out_propagators()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00621">hdf5_impl::write_state_to_hdf_LambdaLayer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l00644">rvert&lt; Q &gt;::check_symmetries()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00494">compute_diff_SDE()</a>, <a class="el" href="../../d3/d22/r__vertex_8hpp_source.html#l01078">rvert&lt; Q &gt;::save_expanded()</a>, <a class="el" href="../../de/d65/integrandSE_8hpp_source.html#l00277">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand()</a>, <a class="el" href="../../d5/df7/propagator_8hpp_source.html#l00086">Propagator&lt; Q &gt;::save_propagator_values()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00259">test_read_write_data_hdf()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00157">Hartree_Solver::write_out_propagators()</a>, and <a class="el" href="../../d5/de4/hdf5__routines_8hpp_source.html#l00621">hdf5_impl::write_state_to_hdf_LambdaLayer()</a>.</p>
 
 </div>
 </div>
@@ -2954,7 +2952,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_df38b2a5d584e0f6066b4518b95c638b.html">utilities</a></li><li class="navelem"><a class="el" href="../../d5/de4/hdf5__routines_8hpp.html">hdf5_routines.hpp</a></li>
-    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue May 7 2024 11:51:28 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

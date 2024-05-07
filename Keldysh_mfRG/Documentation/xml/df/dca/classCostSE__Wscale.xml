@@ -21,9 +21,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="271" column="16" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="271" bodyend="-1"/>
-        <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="275" endline="289">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
-        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="291" endline="310">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="284" column="16" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="284" bodyend="-1"/>
+        <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="288" endline="302">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
+        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="304" endline="323">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
       </memberdef>
       <memberdef kind="variable" id="df/dca/classCostSE__Wscale_1a37c62acf0d846d2e02be9dfdee1cd412" prot="private" static="no" mutable="no">
         <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -37,8 +37,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="272" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="272" bodyend="-1"/>
-        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="291" endline="310">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="285" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="285" bodyend="-1"/>
+        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="304" endline="323">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-attrib">
@@ -54,9 +54,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="274" column="16" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="274" bodyend="-1"/>
-        <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="275" endline="289">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
-        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="291" endline="310">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="287" column="16" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="287" bodyend="-1"/>
+        <referencedby refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" compoundref="d6/d2d/selfenergy_8hpp" startline="288" endline="302">CostSE_Wscale&lt; Q &gt;::CostSE_Wscale</referencedby>
+        <referencedby refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" compoundref="d6/d2d/selfenergy_8hpp" startline="304" endline="323">CostSE_Wscale&lt; Q &gt;::operator()</referencedby>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
@@ -80,12 +80,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="275" column="14" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="275" bodyend="289"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="288" column="14" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="288" bodyend="302"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
-        <references refid="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" compoundref="d6/d2d/selfenergy_8hpp" startline="274">CostSE_Wscale&lt; Q &gt;::selfEnergy</references>
-        <references refid="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" compoundref="d6/d2d/selfenergy_8hpp" startline="271">CostSE_Wscale&lt; Q &gt;::selfEnergy_backup</references>
+        <references refid="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" compoundref="d6/d2d/selfenergy_8hpp" startline="287">CostSE_Wscale&lt; Q &gt;::selfEnergy</references>
+        <references refid="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" compoundref="d6/d2d/selfenergy_8hpp" startline="284">CostSE_Wscale&lt; Q &gt;::selfEnergy_backup</references>
       </memberdef>
       <memberdef kind="function" id="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -103,11 +103,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="correlation_functions/two_point/selfenergy.hpp" line="291" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="291" bodyend="310"/>
+        <location file="correlation_functions/two_point/selfenergy.hpp" line="304" column="10" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="304" bodyend="323"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" compoundref="d6/d2d/selfenergy_8hpp" startline="274">CostSE_Wscale&lt; Q &gt;::selfEnergy</references>
-        <references refid="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" compoundref="d6/d2d/selfenergy_8hpp" startline="271">CostSE_Wscale&lt; Q &gt;::selfEnergy_backup</references>
-        <references refid="df/dca/classCostSE__Wscale_1a37c62acf0d846d2e02be9dfdee1cd412" compoundref="d6/d2d/selfenergy_8hpp" startline="272">CostSE_Wscale&lt; Q &gt;::verbose</references>
+        <references refid="df/dca/classCostSE__Wscale_1a457d1689db322c6d8fd066800cc8ad87" compoundref="d6/d2d/selfenergy_8hpp" startline="287">CostSE_Wscale&lt; Q &gt;::selfEnergy</references>
+        <references refid="df/dca/classCostSE__Wscale_1aec9391bb4c87668dce77769c302be18b" compoundref="d6/d2d/selfenergy_8hpp" startline="284">CostSE_Wscale&lt; Q &gt;::selfEnergy_backup</references>
+        <references refid="df/dca/classCostSE__Wscale_1a37c62acf0d846d2e02be9dfdee1cd412" compoundref="d6/d2d/selfenergy_8hpp" startline="285">CostSE_Wscale&lt; Q &gt;::verbose</references>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -134,7 +134,7 @@
         <link refid="d9/db9/classbool"/>
       </node>
     </collaborationgraph>
-    <location file="correlation_functions/two_point/selfenergy.hpp" line="270" column="1" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="270" bodyend="312"/>
+    <location file="correlation_functions/two_point/selfenergy.hpp" line="283" column="1" bodyfile="correlation_functions/two_point/selfenergy.hpp" bodystart="283" bodyend="325"/>
     <listofallmembers>
       <member refid="df/dca/classCostSE__Wscale_1a385b4021f43ccb5892ae53db2f67857b" prot="public" virt="non-virtual"><scope>CostSE_Wscale</scope><name>CostSE_Wscale</name></member>
       <member refid="df/dca/classCostSE__Wscale_1ab67abef2e8eafa47662daf208def371d" prot="public" virt="non-virtual"><scope>CostSE_Wscale</scope><name>operator()</name></member>

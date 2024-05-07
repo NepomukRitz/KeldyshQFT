@@ -1855,8 +1855,6 @@
         <inbodydescription>
         </inbodydescription>
         <location file="utilities/hdf5_routines.hpp" line="121" column="12" bodyfile="utilities/hdf5_routines.c++" bodystart="21" bodyend="30" declfile="utilities/hdf5_routines.hpp" declline="121" declcolumn="12"/>
-        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
         <referencedby refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</referencedby>
         <referencedby refid="dd/da7/structmfRG__stats_1a4e41ea29df27f9e00d5666655a502287" compoundref="d8/dea/right__hand__sides_8hpp" startline="138" endline="157">mfRG_stats::write_to_hdf</referencedby>
@@ -2013,11 +2011,11 @@
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1aca0527dd01461a6b0e5979af8d399fc5" compoundref="df/da4/multiarray_8hpp" startline="563" endline="566">multidimensional::multiarray&lt; T, depth &gt;::length</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
         <references refid="de/dac/namespacehdf5__impl_1a2c81f521e97b68137709bb9b0719c9a7" compoundref="d5/de4/hdf5__routines_8hpp" startline="172" endline="180">hdf5_impl::write_data_to_Dataset</references>
-        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="622" endline="907">rvert&lt; Q &gt;::check_symmetries</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1ae76637197ea15b6eb0c6bf0cc02beb8b" compoundref="d3/d22/r__vertex_8hpp" startline="644" endline="929">rvert&lt; Q &gt;::check_symmetries</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1ad9258c4214b31ccef74aad6764dc4db5" compoundref="dd/d0a/parquet__solver_8hpp" startline="494" endline="535">compute_diff_SDE</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1a2d3fc37d2aebdb138df02e3d846b11e3" compoundref="d3/d22/r__vertex_8hpp" startline="1056" endline="1075">rvert&lt; Q &gt;::save_expanded</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a2d3fc37d2aebdb138df02e3d846b11e3" compoundref="d3/d22/r__vertex_8hpp" startline="1078" endline="1097">rvert&lt; Q &gt;::save_expanded</referencedby>
         <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="277" endline="298">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="77" endline="118">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="86" endline="127">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
         <referencedby refid="d5/d4f/hdf5__routines_8c_09_09_1a348299423b50e44dd3a672875fdeb1a5" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="259" endline="342">test_read_write_data_hdf</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a4ed165c426f1f02c659b95cca2be40d6" compoundref="d4/d92/hartree__term_8c_09_09" startline="157" endline="180">Hartree_Solver::write_out_propagators</referencedby>
         <referencedby refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" compoundref="d5/de4/hdf5__routines_8hpp" startline="621" endline="830">hdf5_impl::write_state_to_hdf_LambdaLayer</referencedby>

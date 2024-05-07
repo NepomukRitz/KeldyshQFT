@@ -341,11 +341,11 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="df/d31/math__utils_8c_09_09_1ae9c1cfc85d7b2761e26116e1f4c59fa6" compoundref="df/d31/math__utils_8c_09_09" startline="37" endline="49">integer_division_floor</references>
         <referencedby refid="d3/dbd/classoneBubble_1a73479e7b964b3f335b2480a305252457" compoundref="d8/dea/right__hand__sides_8hpp" startline="711" endline="720">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="188" endline="197">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="200" endline="209">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
         <referencedby refid="d3/dbd/classoneBubble_1a7b36904640b3abcf187cf860383888bb" compoundref="d8/dea/right__hand__sides_8hpp" startline="722" endline="731">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="199" endline="208">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1af50518ef7856c9c37e8e9377fb7fc7a1" compoundref="d3/d22/r__vertex_8hpp" startline="1686" endline="1837">rvert&lt; Q &gt;::transfToR</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="161" endline="185">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="211" endline="220">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1af50518ef7856c9c37e8e9377fb7fc7a1" compoundref="d3/d22/r__vertex_8hpp" startline="1708" endline="1859">rvert&lt; Q &gt;::transfToR</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="173" endline="197">Bubble&lt; Q &gt;::value</referencedby>
       </memberdef>
       <memberdef kind="function" id="df/d31/math__utils_8c_09_09_1ab50760bf22e7166c8827eed1b61c9e1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -366,10 +366,10 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="df/d31/math__utils_8c_09_09_1a35b83639777224e5578f691c7f1cf87c" compoundref="df/d31/math__utils_8c_09_09" startline="25" endline="35">integer_division_ceil</references>
         <referencedby refid="d3/dbd/classoneBubble_1a73479e7b964b3f335b2480a305252457" compoundref="d8/dea/right__hand__sides_8hpp" startline="711" endline="720">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="188" endline="197">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a001e82acb7de5c8c7f042e283a009fe6" compoundref="d0/dac/bubble_8hpp" startline="200" endline="209">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</referencedby>
         <referencedby refid="d3/dbd/classoneBubble_1a7b36904640b3abcf187cf860383888bb" compoundref="d8/dea/right__hand__sides_8hpp" startline="722" endline="731">oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="199" endline="208">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
-        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="161" endline="185">Bubble&lt; Q &gt;::value</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a172a71e651653012ec885891ef2db0ee" compoundref="d0/dac/bubble_8hpp" startline="211" endline="220">Bubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</referencedby>
+        <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="173" endline="197">Bubble&lt; Q &gt;::value</referencedby>
       </memberdef>
       <memberdef kind="function" id="df/d31/math__utils_8c_09_09_1a6c7b3cdd1dc1ff3b339f3d065112a3f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -465,8 +465,8 @@
         <location file="utilities/math_utils.c++" line="107" column="6" bodyfile="utilities/math_utils.c++" bodystart="107" bodyend="115"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="df/d31/math__utils_8c_09_09_1aa8c8683a92f6dbb9abd5fd9feb592372" compoundref="df/d31/math__utils_8c_09_09" startline="117" endline="126">signFlipCorrection_MF_int</references>
-        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1922" endline="1970">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
-        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1973" endline="2028">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a1dca660819da8560120edc1aacd735e1" compoundref="d3/d22/r__vertex_8hpp" startline="1944" endline="1992">rvert&lt; Q &gt;::enforce_freqsymmetriesK2</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1adcbf92ca555b877697535b6e4218fbf8" compoundref="d3/d22/r__vertex_8hpp" startline="1995" endline="2050">rvert&lt; Q &gt;::enforce_freqsymmetriesK3</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" compoundref="de/de8/bubble__function_8hpp" startline="833" endline="895">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" compoundref="de/de8/bubble__function_8hpp" startline="901" endline="966">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K3</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a8bfd9754031987d8a87e6e276950ec67" compoundref="de/de8/bubble__function_8hpp" startline="328" endline="377">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_value</referencedby>

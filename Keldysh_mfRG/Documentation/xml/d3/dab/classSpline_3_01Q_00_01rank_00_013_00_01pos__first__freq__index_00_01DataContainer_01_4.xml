@@ -298,9 +298,9 @@
         </inbodydescription>
         <location file="interpolations/InterpolatorSpline3D.hpp" line="38" column="10" bodyfile="interpolations/InterpolatorSpline3D.hpp" bodystart="60" bodyend="345"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="50">dataContainerBase&lt; Q, rank &gt;::data</references>
-        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="195">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
-        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="115" endline="115">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
         <references refid="de/dbb/math__utils_8hpp_1af09f658145737a528e92348ccf9cd949" compoundref="de/dbb/math__utils_8hpp" startline="287" endline="292">rotateFlatIndex</references>
       </memberdef>
     </sectiondef>
@@ -355,13 +355,13 @@
         </inbodydescription>
         <location file="interpolations/InterpolatorSpline3D.hpp" line="46" column="10" bodyfile="interpolations/InterpolatorSpline3D.hpp" bodystart="348" bodyend="370"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" compoundref="da/dbc/data__container_8hpp" startline="218" endline="221">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</references>
-        <references refid="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" compoundref="da/dbc/data__container_8hpp" startline="246" endline="250">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xy</references>
-        <references refid="d3/dd8/classDataContainer_1a7268a90acd9a25f59e478f2e0d5fd897" compoundref="da/dbc/data__container_8hpp" startline="262" endline="267">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xyz</references>
-        <references refid="d3/dd8/classDataContainer_1a35cf1d28e6d38966d84884732a5ee7f8" compoundref="da/dbc/data__container_8hpp" startline="251" endline="255">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xz</references>
-        <references refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" compoundref="da/dbc/data__container_8hpp" startline="222" endline="225">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_y</references>
-        <references refid="d3/dd8/classDataContainer_1a3247f2ace9abcbddcae61ae35556793d" compoundref="da/dbc/data__container_8hpp" startline="256" endline="260">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_yz</references>
-        <references refid="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" compoundref="da/dbc/data__container_8hpp" startline="226" endline="229">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_z</references>
+        <references refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" compoundref="da/dbc/data__container_8hpp" startline="214" endline="217">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</references>
+        <references refid="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" compoundref="da/dbc/data__container_8hpp" startline="242" endline="246">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xy</references>
+        <references refid="d3/dd8/classDataContainer_1a7268a90acd9a25f59e478f2e0d5fd897" compoundref="da/dbc/data__container_8hpp" startline="258" endline="263">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xyz</references>
+        <references refid="d3/dd8/classDataContainer_1a35cf1d28e6d38966d84884732a5ee7f8" compoundref="da/dbc/data__container_8hpp" startline="247" endline="251">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xz</references>
+        <references refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" compoundref="da/dbc/data__container_8hpp" startline="218" endline="221">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_y</references>
+        <references refid="d3/dd8/classDataContainer_1a3247f2ace9abcbddcae61ae35556793d" compoundref="da/dbc/data__container_8hpp" startline="252" endline="256">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_yz</references>
+        <references refid="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" compoundref="da/dbc/data__container_8hpp" startline="222" endline="225">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_z</references>
       </memberdef>
       <memberdef kind="function" id="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1acb3ae1f5de26a41b82b002579271fe95" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
@@ -432,8 +432,8 @@
         </inbodydescription>
         <location file="interpolations/InterpolatorSpline3D.hpp" line="53" column="17" bodyfile="interpolations/InterpolatorSpline3D.hpp" bodystart="399" bodyend="468"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="195">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
-        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="115" endline="115">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
       </memberdef>
     </sectiondef>
     <briefdescription>

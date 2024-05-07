@@ -830,8 +830,8 @@
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1af85d9a7c0b023aa5d911ff3fa9a3afd6" compoundref="df/da4/multiarray_8hpp" startline="75">multidimensional::multiarray&lt; T, depth &gt;::elements</references>
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1aad7e086f7c50fbd63b80dc62711581ba" compoundref="df/da4/multiarray_8hpp" startline="148" endline="151">multidimensional::multiarray&lt; T, depth &gt;::end</references>
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1a58de83e8e629b674274b88d588dfa6d3" compoundref="df/da4/multiarray_8hpp" startline="613" endline="623">multidimensional::multiarray&lt; T, depth &gt;::flat_index</references>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a8ab6ca579df1cff6717d9fc17c37cdc9" compoundref="da/dbc/data__container_8hpp" startline="157" endline="159">dataContainerBase&lt; Q, rank &gt;::eigen_segment</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a6d65f15d6b8115ba71c9ec5145e63302" compoundref="da/dbc/data__container_8hpp" startline="161" endline="163">dataContainerBase&lt; Q, rank &gt;::eigen_segment</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a8ab6ca579df1cff6717d9fc17c37cdc9" compoundref="da/dbc/data__container_8hpp" startline="153" endline="155">dataContainerBase&lt; Q, rank &gt;::eigen_segment</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a6d65f15d6b8115ba71c9ec5145e63302" compoundref="da/dbc/data__container_8hpp" startline="157" endline="159">dataContainerBase&lt; Q, rank &gt;::eigen_segment</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d3f/classmultidimensional_1_1multiarray_1adae0c97b216bcb79f4a3e4ddf6c55796" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
@@ -880,7 +880,7 @@
         <location file="multidimensional/multiarray.hpp" line="225" column="14" bodyfile="multidimensional/multiarray.hpp" bodystart="225" bodyend="227"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1affae78ea84a5f1c5fac842f4129c8149" compoundref="df/da4/multiarray_8hpp" startline="56">multidimensional::multiarray&lt; T, depth &gt;::m_length</references>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a72e6e78cae86e3036aea7d4f6b477401" compoundref="da/dbc/data__container_8hpp" startline="152" endline="155">dataContainerBase&lt; Q, rank &gt;::add_vec</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a72e6e78cae86e3036aea7d4f6b477401" compoundref="da/dbc/data__container_8hpp" startline="148" endline="151">dataContainerBase&lt; Q, rank &gt;::add_vec</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1af80f2fcb76848f68041ea648afb40c85" compoundref="df/da4/multiarray_8hpp" startline="451" endline="457">multidimensional::multiarray&lt; T, depth &gt;::operator*=</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a94db3f33eeef571b97f8256cacfd9163" compoundref="df/da4/multiarray_8hpp" startline="416" endline="422">multidimensional::multiarray&lt; T, depth &gt;::operator*=</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1ae4eff17b0716aeb165f15816cef47d8f" compoundref="df/da4/multiarray_8hpp" startline="433" endline="439">multidimensional::multiarray&lt; T, depth &gt;::operator+=</referencedby>
@@ -889,8 +889,8 @@
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a0425916e1a84ac717f6b3763de12ea31" compoundref="df/da4/multiarray_8hpp" startline="408" endline="414">multidimensional::multiarray&lt; T, depth &gt;::operator-=</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1ab3a274497f4dae5a938b4d67ff590725" compoundref="df/da4/multiarray_8hpp" startline="460" endline="466">multidimensional::multiarray&lt; T, depth &gt;::operator/=</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a9a8fd2e161ea650db0f3ba84632388ec" compoundref="df/da4/multiarray_8hpp" startline="424" endline="430">multidimensional::multiarray&lt; T, depth &gt;::operator/=</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a22ef70f4e159e8ff4cff0bf02a257c68" compoundref="da/dbc/data__container_8hpp" startline="136" endline="139">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a1cb357f678027c6170ae53ca8131c107" compoundref="da/dbc/data__container_8hpp" startline="131" endline="134">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a22ef70f4e159e8ff4cff0bf02a257c68" compoundref="da/dbc/data__container_8hpp" startline="132" endline="135">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a1cb357f678027c6170ae53ca8131c107" compoundref="da/dbc/data__container_8hpp" startline="127" endline="130">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d3f/classmultidimensional_1_1multiarray_1a5757d174bade77621dff6d192e8177de" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1119,14 +1119,14 @@
         </inbodydescription>
         <location file="multidimensional/multiarray.hpp" line="317" column="11" bodyfile="multidimensional/multiarray.hpp" bodystart="656" bodyend="667"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a57fc098f0ce433faa0c310ab412dafc7" compoundref="da/dbc/data__container_8hpp" startline="89" endline="89">dataContainerBase&lt; Q, rank &gt;::at</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a57fc098f0ce433faa0c310ab412dafc7" compoundref="da/dbc/data__container_8hpp" startline="85" endline="85">dataContainerBase&lt; Q, rank &gt;::at</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1aa97a456adb759b57b194617dd8a7d0ee" compoundref="df/da4/multiarray_8hpp" startline="324" endline="327">multidimensional::multiarray&lt; T, depth &gt;::at</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1ac2bf92d856e69dd8d14c57a51c9a7013" compoundref="df/da4/multiarray_8hpp" startline="330" endline="333">multidimensional::multiarray&lt; T, depth &gt;::at</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1aece079fe4fba332aa9b16511e94735c3" compoundref="df/da4/multiarray_8hpp" startline="336" endline="339">multidimensional::multiarray&lt; T, depth &gt;::operator()</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1af391bb83902677481ae0045c5a66db36" compoundref="df/da4/multiarray_8hpp" startline="342" endline="345">multidimensional::multiarray&lt; T, depth &gt;::operator()</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1aefc529ad1483b4bb631d586e105051d9" compoundref="da/dbc/data__container_8hpp" startline="108" endline="108">dataContainerBase&lt; Q, rank &gt;::setvert</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a4619283941f9095c26f409442c2431db" compoundref="da/dbc/data__container_8hpp" startline="106" endline="106">dataContainerBase&lt; Q, rank &gt;::setvert</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a3ef7520d345f57577a35ebe048897d0e" compoundref="da/dbc/data__container_8hpp" startline="83" endline="83">dataContainerBase&lt; Q, rank &gt;::val</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1aefc529ad1483b4bb631d586e105051d9" compoundref="da/dbc/data__container_8hpp" startline="104" endline="104">dataContainerBase&lt; Q, rank &gt;::setvert</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a4619283941f9095c26f409442c2431db" compoundref="da/dbc/data__container_8hpp" startline="102" endline="102">dataContainerBase&lt; Q, rank &gt;::setvert</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a3ef7520d345f57577a35ebe048897d0e" compoundref="da/dbc/data__container_8hpp" startline="79" endline="79">dataContainerBase&lt; Q, rank &gt;::val</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d3f/classmultidimensional_1_1multiarray_1a951e50bfec426e156ff016409b837e28" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> T &amp;</type>
@@ -1338,8 +1338,8 @@
         <location file="multidimensional/multiarray.hpp" line="363" column="11" bodyfile="multidimensional/multiarray.hpp" bodystart="363" bodyend="366"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1af85d9a7c0b023aa5d911ff3fa9a3afd6" compoundref="df/da4/multiarray_8hpp" startline="75">multidimensional::multiarray&lt; T, depth &gt;::elements</references>
-        <referencedby refid="d5/d5f/classdataContainerBase_1af8da5de4958e6394f3700dddba32956b" compoundref="da/dbc/data__container_8hpp" startline="67" endline="70">dataContainerBase&lt; Q, rank &gt;::acc</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a554ee3f67bf16bd9438c9f056bcd58a2" compoundref="da/dbc/data__container_8hpp" startline="72" endline="75">dataContainerBase&lt; Q, rank &gt;::direct_set</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1af8da5de4958e6394f3700dddba32956b" compoundref="da/dbc/data__container_8hpp" startline="63" endline="66">dataContainerBase&lt; Q, rank &gt;::acc</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a554ee3f67bf16bd9438c9f056bcd58a2" compoundref="da/dbc/data__container_8hpp" startline="68" endline="71">dataContainerBase&lt; Q, rank &gt;::direct_set</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1aa2b57a9ec50a1547ec10ddeb2c031ef0" compoundref="df/da4/multiarray_8hpp" startline="373" endline="376">multidimensional::multiarray&lt; T, depth &gt;::operator[]</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1a4f6e9bb8dcef8078e598d1ab9236c26a" compoundref="df/da4/multiarray_8hpp" startline="378" endline="381">multidimensional::multiarray&lt; T, depth &gt;::operator[]</referencedby>
       </memberdef>
@@ -1854,10 +1854,10 @@
         </inbodydescription>
         <location file="multidimensional/multiarray.hpp" line="534" column="16" bodyfile="multidimensional/multiarray.hpp" bodystart="534" bodyend="536"/>
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1a6ffc643bd6786cfd0a006fbaf7ac6c85" compoundref="df/da4/multiarray_8hpp" startline="524" endline="527">multidimensional::multiarray&lt; T, depth &gt;::maxabs</references>
-        <referencedby refid="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" compoundref="da/dbc/data__container_8hpp" startline="209" endline="215">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::analyze_tails</referencedby>
-        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="296" endline="338">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
-        <referencedby refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" compoundref="da/dbc/data__container_8hpp" startline="269" endline="295">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</referencedby>
-        <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="399" endline="462">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" compoundref="da/dbc/data__container_8hpp" startline="205" endline="211">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::analyze_tails</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="292" endline="334">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" compoundref="da/dbc/data__container_8hpp" startline="265" endline="291">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="395" endline="458">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d3f/classmultidimensional_1_1multiarray_1a85f7f82bfe38a4ae9ec84182c6d16266" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -1910,10 +1910,10 @@
         </inbodydescription>
         <location file="multidimensional/multiarray.hpp" line="558" column="19" bodyfile="multidimensional/multiarray.hpp" bodystart="558" bodyend="561"/>
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1af85d9a7c0b023aa5d911ff3fa9a3afd6" compoundref="df/da4/multiarray_8hpp" startline="75">multidimensional::multiarray&lt; T, depth &gt;::elements</references>
-        <referencedby refid="d5/d5f/classdataContainerBase_1af8da5de4958e6394f3700dddba32956b" compoundref="da/dbc/data__container_8hpp" startline="67" endline="70">dataContainerBase&lt; Q, rank &gt;::acc</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a94ed8cb0315262a605d076a7dd8a5782" compoundref="da/dbc/data__container_8hpp" startline="147" endline="150">dataContainerBase&lt; Q, rank &gt;::add_vec</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a554ee3f67bf16bd9438c9f056bcd58a2" compoundref="da/dbc/data__container_8hpp" startline="72" endline="75">dataContainerBase&lt; Q, rank &gt;::direct_set</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1ae76c4352d8dbe3fa86fc4394eb781334" compoundref="da/dbc/data__container_8hpp" startline="126" endline="129">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1af8da5de4958e6394f3700dddba32956b" compoundref="da/dbc/data__container_8hpp" startline="63" endline="66">dataContainerBase&lt; Q, rank &gt;::acc</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a94ed8cb0315262a605d076a7dd8a5782" compoundref="da/dbc/data__container_8hpp" startline="143" endline="146">dataContainerBase&lt; Q, rank &gt;::add_vec</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a554ee3f67bf16bd9438c9f056bcd58a2" compoundref="da/dbc/data__container_8hpp" startline="68" endline="71">dataContainerBase&lt; Q, rank &gt;::direct_set</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1ae76c4352d8dbe3fa86fc4394eb781334" compoundref="da/dbc/data__container_8hpp" startline="122" endline="125">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
       </memberdef>
       <memberdef kind="function" id="d7/d3f/classmultidimensional_1_1multiarray_1aca0527dd01461a6b0e5979af8d399fc5" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d3f/classmultidimensional_1_1multiarray_1adf01f1572984e9636a81839be5f3b6c6" kindref="member">dimensions_type</ref> &amp;</type>
@@ -1929,15 +1929,15 @@
         </inbodydescription>
         <location file="multidimensional/multiarray.hpp" line="563" column="41" bodyfile="multidimensional/multiarray.hpp" bodystart="563" bodyend="566"/>
         <references refid="d7/d3f/classmultidimensional_1_1multiarray_1affae78ea84a5f1c5fac842f4129c8149" compoundref="df/da4/multiarray_8hpp" startline="56">multidimensional::multiarray&lt; T, depth &gt;::m_length</references>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a94ed8cb0315262a605d076a7dd8a5782" compoundref="da/dbc/data__container_8hpp" startline="147" endline="150">dataContainerBase&lt; Q, rank &gt;::add_vec</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a94ed8cb0315262a605d076a7dd8a5782" compoundref="da/dbc/data__container_8hpp" startline="143" endline="146">dataContainerBase&lt; Q, rank &gt;::add_vec</referencedby>
         <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1ab8541a6759186032981a267f59e53adf" compoundref="dd/df3/ranged__view_8hpp" startline="54" endline="63">multidimensional::BlockView&lt; T, depth &gt;::BlockView</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1ad33f2cb2edb8133098b9e06731669f96" compoundref="df/da4/multiarray_8hpp" startline="385" endline="398">multidimensional::multiarray&lt; T, depth &gt;::elementwise_map_assign</referencedby>
         <referencedby refid="d7/d3f/classmultidimensional_1_1multiarray_1ad62ddf265ac9bcf7a13e24c98f36079b" compoundref="df/da4/multiarray_8hpp" startline="57" endline="64">multidimensional::multiarray&lt; T, depth &gt;::get_cumul_length</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="115" endline="115">dataContainerBase&lt; Q, rank &gt;::get_dims</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a736d3a5d01a734a6830c58d51e04b785" compoundref="de/dbb/math__utils_8hpp" startline="775" endline="788">get_slice</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a562a53ddc7418efed23325265f4a8e71" compoundref="de/dbb/math__utils_8hpp" startline="985" endline="988">maxabs</referencedby>
         <referencedby refid="de/dbb/math__utils_8hpp_1a7387e2c9cc91f8ff52731338f1fd21f2" compoundref="de/dbb/math__utils_8hpp" startline="793" endline="822">partial_deriv</referencedby>
-        <referencedby refid="d5/d5f/classdataContainerBase_1ae76c4352d8dbe3fa86fc4394eb781334" compoundref="da/dbc/data__container_8hpp" startline="126" endline="129">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
+        <referencedby refid="d5/d5f/classdataContainerBase_1ae76c4352d8dbe3fa86fc4394eb781334" compoundref="da/dbc/data__container_8hpp" startline="122" endline="125">dataContainerBase&lt; Q, rank &gt;::set_vec</referencedby>
         <referencedby refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</referencedby>
         <referencedby refid="d5/de4/hdf5__routines_8hpp_1a5140465955e9f914b13900b9a7382cef" compoundref="d5/de4/hdf5__routines_8hpp" startline="469" endline="473">write_to_hdf_LambdaLayer</referencedby>
       </memberdef>

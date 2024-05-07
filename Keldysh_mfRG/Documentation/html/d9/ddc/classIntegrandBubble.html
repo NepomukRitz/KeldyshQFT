@@ -179,8 +179,8 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 </div><div class="memdoc">
 <p>Constructor for the <a class="el" href="../../d9/ddc/classIntegrandBubble.html">IntegrandBubble</a> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">g1_in</td><td>: <a class="el" href="../../d2/d34/classPropagator.html" title="Propagator class ///.">Propagator</a> object for the lower (right) leg </td></tr>
-    <tr><td class="paramname">g2_in</td><td>: <a class="el" href="../../d2/d34/classPropagator.html" title="Propagator class ///.">Propagator</a> object for the upper (left) leg </td></tr>
+    <tr><td class="paramname">g1_in</td><td>: <a class="el" href="../../d2/d34/classPropagator.html">Propagator</a> object for the lower (right) leg </td></tr>
+    <tr><td class="paramname">g2_in</td><td>: <a class="el" href="../../d2/d34/classPropagator.html">Propagator</a> object for the upper (left) leg </td></tr>
     <tr><td class="paramname">diff_in</td><td>: Boolean defining whether bubble is differentiated or not </td></tr>
     <tr><td class="paramname">w_in</td><td>: Transfer frequency at which the bubble should be integrated </td></tr>
     <tr><td class="paramname">iK_in</td><td>: Keldysh index to be taken </td></tr>
@@ -258,12 +258,12 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div class="line"><span class="lineno">   78</span>        <span class="comment">//Make reference to the Bubble object of the actual code, making this into a useful test of code correctnes and compliance</span></div>
 <div class="line"><span class="lineno">   79</span>        <span class="keywordflow">return</span> Pi.value(<a class="code hl_variable" href="#a1b273e1777d48bd3c82ba363e67625ea">iK</a>, v1, v2, 0)/(2.*<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">M_PI</a>*<a class="code hl_function" href="../../d7/d59/data__structures_8hpp.html#ae0c8f095bd2588bb4d374b002c94a90d">glb_i</a>);</div>
 <div class="line"><span class="lineno">   80</span>    }</div>
-<div class="ttc" id="aclassBubble_html"><div class="ttname"><a href="../../d8/d6e/classBubble.html">Bubble</a></div><div class="ttdoc">Class combining two propagators, either GG or GS+SG.</div><div class="ttdef"><b>Definition</b> <a href="../../d0/dac/bubble_8hpp_source.html#l00018">bubble.hpp:18</a></div></div>
+<div class="ttc" id="aclassBubble_html"><div class="ttname"><a href="../../d8/d6e/classBubble.html">Bubble</a></div><div class="ttdef"><b>Definition</b> <a href="../../d0/dac/bubble_8hpp_source.html#l00021">bubble.hpp:21</a></div></div>
 <div class="ttc" id="adata__structures_8hpp_html_ae0c8f095bd2588bb4d374b002c94a90d"><div class="ttname"><a href="../../d7/d59/data__structures_8hpp.html#ae0c8f095bd2588bb4d374b002c94a90d">glb_i</a></div><div class="ttdeci">constexpr comp glb_i(0., 1.)</div></div>
 <div class="ttc" id="amaster__parameters_8hpp_html_a509f74e58953ffbd5c00435ce600cd3e"><div class="ttname"><a href="../../d1/df8/master__parameters_8hpp.html#a509f74e58953ffbd5c00435ce600cd3e">freqType</a></div><div class="ttdeci">double freqType</div><div class="ttdef"><b>Definition</b> <a href="../../d1/df8/master__parameters_8hpp_source.html#l00156">master_parameters.hpp:156</a></div></div>
 <div class="ttc" id="anamespaceutils_html_ad566cc1586ac4598d5823caa71620eb5"><div class="ttname"><a href="../../d6/d84/namespaceutils.html#ad566cc1586ac4598d5823caa71620eb5">utils::print</a></div><div class="ttdeci">void print(T s, bool endline)</div><div class="ttdef"><b>Definition</b> <a href="../../d0/d3f/util_8hpp_source.html#l00025">util.hpp:25</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00037">IntegrandBubble&lt; Q &gt;::channel</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00034">IntegrandBubble&lt; Q &gt;::diff</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00032">IntegrandBubble&lt; Q &gt;::g1</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00033">IntegrandBubble&lt; Q &gt;::g2</a>, <a class="el" href="../../d7/d59/data__structures_8hpp.html#ae0c8f095bd2588bb4d374b002c94a90d">glb_i()</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00036">IntegrandBubble&lt; Q &gt;::iK</a>, <a class="el" href="../../d0/d3f/util_8hpp_source.html#l00025">utils::print()</a>, <a class="el" href="../../d0/dac/bubble_8hpp_source.html#l00043">Bubble&lt; Q &gt;::value()</a>, and <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00035">IntegrandBubble&lt; Q &gt;::w</a>.</p>
+<p class="reference">References <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00037">IntegrandBubble&lt; Q &gt;::channel</a>, <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00034">IntegrandBubble&lt; Q &gt;::diff</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00032">IntegrandBubble&lt; Q &gt;::g1</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00033">IntegrandBubble&lt; Q &gt;::g2</a>, <a class="el" href="../../d7/d59/data__structures_8hpp.html#ae0c8f095bd2588bb4d374b002c94a90d">glb_i()</a>, <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00036">IntegrandBubble&lt; Q &gt;::iK</a>, <a class="el" href="../../d0/d3f/util_8hpp_source.html#l00025">utils::print()</a>, <a class="el" href="../../d0/dac/bubble_8hpp_source.html#l00047">Bubble&lt; Q &gt;::value()</a>, and <a class="el" href="../../df/d83/integrand_8hpp_source.html#l00035">IntegrandBubble&lt; Q &gt;::w</a>.</p>
 
 </div>
 </div>
@@ -445,7 +445,7 @@ template&lt;<a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d9/ddc/classIntegrandBubble.html">IntegrandBubble</a></li>
-    <li class="footer">Generated on Fri May 3 2024 14:07:43 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue May 7 2024 11:51:28 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>
