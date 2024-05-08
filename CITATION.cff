@@ -1,0 +1,51 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  KeldyshDiagrammatics: A C++ Codebase for real-frequency
+  multiloop functional renormalization group and parquet
+  computations for the single impurity Anderson model
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Nepomuk
+    family-names: Ritz
+    email: nepomuk.ritz@physik.uni-muenchen.de
+    affiliation: LMU Munich
+    orcid: 'https://orcid.org/0009-0006-5173-5201'
+  - given-names: Anxiang
+    family-names: Ge
+    email: anxiang.ge@physik.uni-muenchen.de
+    affiliation: LMU Munich
+    orcid: 'https://orcid.org/0009-0002-6603-4310'
+repository-code: 'https://github.com/NepomukRitz/KeldyshDiagrammatics'
+url: 'https://nepomukritz.github.io/KeldyshDiagrammatics/'
+abstract: >-
+  This code is our computational framework designed for the
+  accurate calculation of real-frequency dynamical
+  correlation functions of the single-impurity Anderson
+  model (AM) in the regime of weak to intermediate coupling.
+  Utilizing quantum field theory within the Keldysh
+  formalism to directly access the self-energy and dynamical
+  susceptibilities along the real-frequency axis, the
+  primary challenge we address is the computationally
+  demanding task of obtaining the full three-dimensional
+  real-frequency dependence of the four-point vertex.
+
+  Our codebase provides a fully MPI+OpenMP parallelized
+  implementation of the functional renormalization group
+  (fRG), and, independently, the solution of the
+  self-consistent parquet equations within the parquet
+  approximation. It leverages vectorization to handle the
+  additional complexity imposed by the Keldysh formalism,
+  using optimized data structures and highly performant
+  integration routines. The code includes functionality to
+  perform fRG calculations in the multiloop framework, at
+  arbitrary loop order, including self-consistent
+  self-energy iterations. Moreover, implementations of
+  various regulators, such as hybridization, interaction,
+  frequency and even temperature are supplied.
+license: MIT
