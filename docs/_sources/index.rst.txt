@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-A C++ Codebase for real-frequency multiloop functional renormalization group and parquet computations for the single impurity Anderson model
-============================================================================================================================================
+Keldysh_Diagrammatics:
+======================
+**A C++ Codebase for real-frequency multiloop functional renormalization group and parquet computations for the single impurity Anderson model**
+
 
 TODO: Add introductory paragraph
 
@@ -30,21 +32,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-.. [TODO: remove] Docs
-.. ===================
-.. 
-.. .. doxygenstruct:: fRG_config
-..    :members:
-.. 
-.. .. doxygenclass:: Hartree_Solver
-..    :members:
-.. 
-.. .. doxygendefine:: KELDYSH_FORMALISM
-.. 
-.. .. doxygenfunction:: run_parquet(const fRG_config &config, const std::vector<double> &U_NRG_list, const int version, const bool overwrite_old_results)
-.. 
-.. .. doxygenfunction:: sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const State<Q>& bareState)
-.. 
-.. .. doxygennamespace:: utils
