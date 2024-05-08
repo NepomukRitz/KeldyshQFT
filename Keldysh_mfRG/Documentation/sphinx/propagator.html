@@ -57,13 +57,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10Propagator10PropagatorEdcRK10fRG_config"><code class="docutils literal notranslate"><span class="pre">Propagator::Propagator()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10Propagator10PropagatorEdRK10SelfEnergyI1QEcRK10fRG_config"><code class="docutils literal notranslate"><span class="pre">Propagator::Propagator()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N10Propagator10PropagatorEdRK10SelfEnergyI1QERK10SelfEnergyI1QEcRK10fRG_config"><code class="docutils literal notranslate"><span class="pre">Propagator::Propagator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator9valsmoothEi8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::valsmooth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0ENK10Propagator20valsmooth_vectorizedE11return_type8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::valsmooth_vectorized()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator2GREdi"><code class="docutils literal notranslate"><span class="pre">Propagator::GR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator2GKEdi"><code class="docutils literal notranslate"><span class="pre">Propagator::GK()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator2SREdi"><code class="docutils literal notranslate"><span class="pre">Propagator::SR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator2SKEdi"><code class="docutils literal notranslate"><span class="pre">Propagator::SK()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator9Katanin_REdi"><code class="docutils literal notranslate"><span class="pre">Propagator::Katanin_R()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator7G0M_invE8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::G0M_inv()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator7GR_REG1E8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::GR_REG1()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator7GR_REG2E8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::GR_REG2()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator7GR_REG3E8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::GR_REG3()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator7GR_REG4E8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::GR_REG4()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator7GR_REG5E8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::GR_REG5()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator9Katanin_KEdi"><code class="docutils literal notranslate"><span class="pre">Propagator::Katanin_K()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator2GME8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::GM()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK10Propagator2SME8freqTypei"><code class="docutils literal notranslate"><span class="pre">Propagator::SM()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -132,7 +135,7 @@
 <li><p>’k’ for a fully differentiated propagator ‘s’ + ‘e’. </p></li>
 </ul>
 </p></li>
-<li><p><strong>config</strong> – Set of parameters </p></li>
+<li><p><strong>config</strong> – Set of parameters. </p></li>
 </ul>
 </dd>
 </dl>
@@ -145,9 +148,10 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Lambda_in</strong> – : Input scale </p></li>
-<li><p><strong>self_in</strong> – : <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a></p></li>
-<li><p><strong>type_in</strong> – : Type of propagator being handled </p></li>
+<li><p><strong>Lambda_in</strong> – Value of the regulator Λ. </p></li>
+<li><p><strong>self_in</strong> – Input <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a>. </p></li>
+<li><p><strong>type_in</strong> – Type of the propagator: ‘g’, ‘s’, ‘e’ or ‘k’ </p></li>
+<li><p><strong>config</strong> – Set of parameters. </p></li>
 </ul>
 </dd>
 </dl>
@@ -160,58 +164,122 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Lambda_in</strong> – : Input scale </p></li>
-<li><p><strong>self_in</strong> – : <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a></p></li>
-<li><p><strong>diffSelf_in</strong> – : Differential <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a></p></li>
-<li><p><strong>type_in</strong> – : Type of propagator being handled </p></li>
+<li><p><strong>Lambda_in</strong> – Value of the regulator Λ. </p></li>
+<li><p><strong>self_in</strong> – Input <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a>. </p></li>
+<li><p><strong>diffSelf_in</strong> – Input differentiated <a class="reference internal" href="selfenergy.html#d5/df6/classSelfEnergy"><span class="std std-ref">SelfEnergy</span></a>. </p></li>
+<li><p><strong>type_in</strong> – Type of the propagator: ‘g’, ‘s’, ‘e’ or ‘k’ </p></li>
+<li><p><strong>config</strong> – Set of parameters. </p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator9valsmoothEi8freqTypei">
+<span id="_CPPv3NK10Propagator9valsmoothEi8freqTypei"></span><span id="_CPPv2NK10Propagator9valsmoothEi8freqTypei"></span><span id="Propagator::valsmooth__i.freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1ad239e223fd3bcbc0b27fcfdac040886a"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">valsmooth</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">iK</span></span>, <span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10Propagator9valsmoothEi8freqTypei" title="Link to this definition"></a><br /></dt>
+<dd><p>Function to smoothly interpolate the propagator on the frequency grid of the underlying self-energy. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iK</strong> – Keldysh index </p></li>
+<li><p><strong>v</strong> – fermionic frequency </p></li>
+<li><p><strong>i_in</strong> – internal structure index </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value of the propagator at the given input. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENK10Propagator20valsmooth_vectorizedE11return_type8freqTypei">
+<span id="_CPPv3I0ENK10Propagator20valsmooth_vectorizedE8freqTypei"></span><span id="_CPPv2I0ENK10Propagator20valsmooth_vectorizedE8freqTypei"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">return_type</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d2/d34/classPropagator_1a733b1350a65543d3126d187dd670c3b8"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">valsmooth_vectorized</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0ENK10Propagator20valsmooth_vectorizedE11return_type8freqTypei" title="Propagator::valsmooth_vectorized::return_type"><span class="n"><span class="pre">return_type</span></span></a><a class="headerlink" href="#_CPPv4I0ENK10Propagator20valsmooth_vectorizedE11return_type8freqTypei" title="Link to this definition"></a><br /></dt>
+<dd><p>Version of the valsmooth function when vectorization over Keldysh indices is used </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>return_type</strong> – Type of the result. </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>v</strong> – fermionic frequency </p></li>
+<li><p><strong>i_in</strong> – internal structure index </p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value of the propagator at the given input. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator2GREdi">
+<span id="_CPPv3NK10Propagator2GREdi"></span><span id="_CPPv2NK10Propagator2GREdi"></span><span id="Propagator::GR__double.iC"></span><span class="target" id="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GR</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10Propagator2GREdi" title="Link to this definition"></a><br /></dt>
+<dd><p>Retarded component of the propagator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> – fermionic frequency </p></li>
+<li><p><strong>i_in</strong> – internal structure index </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value of the retarded component at the given input. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator2GKEdi">
+<span id="_CPPv3NK10Propagator2GKEdi"></span><span id="_CPPv2NK10Propagator2GKEdi"></span><span id="Propagator::GK__double.iC"></span><span class="target" id="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GK</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10Propagator2GKEdi" title="Link to this definition"></a><br /></dt>
+<dd><p>Keldysh component of the propagator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator2SREdi">
+<span id="_CPPv3NK10Propagator2SREdi"></span><span id="_CPPv2NK10Propagator2SREdi"></span><span id="Propagator::SR__double.iC"></span><span class="target" id="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SR</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10Propagator2SREdi" title="Link to this definition"></a><br /></dt>
+<dd><p>Retarded component of the single-scale propagator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator2SKEdi">
+<span id="_CPPv3NK10Propagator2SKEdi"></span><span id="_CPPv2NK10Propagator2SKEdi"></span><span id="Propagator::SK__double.iC"></span><span class="target" id="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SK</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10Propagator2SKEdi" title="Link to this definition"></a><br /></dt>
+<dd><p>Keldysh component of the single-scale propagator. </p>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK10Propagator9Katanin_REdi">
 <span id="_CPPv3NK10Propagator9Katanin_REdi"></span><span id="_CPPv2NK10Propagator9Katanin_REdi"></span><span id="Propagator::Katanin_R__double.iC"></span><span class="target" id="d2/d34/classPropagator_1a821a892d54207fc495a9adb970b476dd"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Katanin_R</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator9Katanin_REdi" title="Link to this definition"></a><br /></dt>
-<dd><p>Katanin extension. </p>
+<dd><p>Retarded component of the Katanin extension G^R \dot{Σ}^R G^R. </p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator7G0M_invE8freqTypei">
-<span id="_CPPv3NK10Propagator7G0M_invE8freqTypei"></span><span id="_CPPv2NK10Propagator7G0M_invE8freqTypei"></span><span id="Propagator::G0M_inv__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">G0M_inv</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator7G0M_invE8freqTypei" title="Link to this definition"></a><br /></dt>
-<dd><p>model-specific bare propagators </p>
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator9Katanin_KEdi">
+<span id="_CPPv3NK10Propagator9Katanin_KEdi"></span><span id="_CPPv2NK10Propagator9Katanin_KEdi"></span><span id="Propagator::Katanin_K__double.iC"></span><span class="target" id="d2/d34/classPropagator_1a05c87261fbbdb3a2ccf1b5f6a6014914"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Katanin_K</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator9Katanin_KEdi" title="Link to this definition"></a><br /></dt>
+<dd><p>Keldysh component of the Katanin extension G^R \dot{Σ}^R G^K + G^R \dot{Σ}^K G^A + G^K \dot{Σ}^A G^A. </p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator7GR_REG1E8freqTypei">
-<span id="_CPPv3NK10Propagator7GR_REG1E8freqTypei"></span><span id="_CPPv2NK10Propagator7GR_REG1E8freqTypei"></span><span id="Propagator::GR_REG1__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1a4fab2f7c3852ba97041c20b4601e380e"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GR_REG1</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator7GR_REG1E8freqTypei" title="Link to this definition"></a><br /></dt>
-<dd><p>propagators for REG == 1 </p>
-<p>G_0^Λ(v) = θ(|v| - Λ) G_0(v) </p>
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator2GME8freqTypei">
+<span id="_CPPv3NK10Propagator2GME8freqTypei"></span><span id="_CPPv2NK10Propagator2GME8freqTypei"></span><span id="Propagator::GM__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GM</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10Propagator2GME8freqTypei" title="Link to this definition"></a><br /></dt>
+<dd><p>Matsubara propagator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> – fermionic Matsubara frequency </p></li>
+<li><p><strong>i_in</strong> – internal structure index </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value of the Matsubara propagator at the given input. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator7GR_REG2E8freqTypei">
-<span id="_CPPv3NK10Propagator7GR_REG2E8freqTypei"></span><span id="_CPPv2NK10Propagator7GR_REG2E8freqTypei"></span><span id="Propagator::GR_REG2__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1afc124b80502bc51f16422bf23fb94238"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GR_REG2</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator7GR_REG2E8freqTypei" title="Link to this definition"></a><br /></dt>
-<dd><p>propagators for REG == 2 </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator7GR_REG3E8freqTypei">
-<span id="_CPPv3NK10Propagator7GR_REG3E8freqTypei"></span><span id="_CPPv2NK10Propagator7GR_REG3E8freqTypei"></span><span id="Propagator::GR_REG3__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GR_REG3</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator7GR_REG3E8freqTypei" title="Link to this definition"></a><br /></dt>
-<dd><p>propagators for REG == 3 </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator7GR_REG4E8freqTypei">
-<span id="_CPPv3NK10Propagator7GR_REG4E8freqTypei"></span><span id="_CPPv2NK10Propagator7GR_REG4E8freqTypei"></span><span id="Propagator::GR_REG4__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1ac5d014e3176022a797269f2a4792c7f5"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GR_REG4</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator7GR_REG4E8freqTypei" title="Link to this definition"></a><br /></dt>
-<dd><p>propagators for REG == 3 </p>
-<p>REG == 4: ( interaction flow ) </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator7GR_REG5E8freqTypei">
-<span id="_CPPv3NK10Propagator7GR_REG5E8freqTypei"></span><span id="_CPPv2NK10Propagator7GR_REG5E8freqTypei"></span><span id="Propagator::GR_REG5__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1a50f24f1dcea3718f52849344fc6ac024"></span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GR_REG5</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK10Propagator7GR_REG5E8freqTypei" title="Link to this definition"></a><br /></dt>
-<dd><p>propagators for REG == 5 </p>
-<p>REG == 5: (temperature flow) </p>
+<dt class="sig sig-object cpp" id="_CPPv4NK10Propagator2SME8freqTypei">
+<span id="_CPPv3NK10Propagator2SME8freqTypei"></span><span id="_CPPv2NK10Propagator2SME8freqTypei"></span><span id="Propagator::SM__freqType.iC"></span><span class="target" id="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SM</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">freqType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_in</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0E10Propagator" title="Propagator::Q"><span class="n"><span class="pre">Q</span></span></a><a class="headerlink" href="#_CPPv4NK10Propagator2SME8freqTypei" title="Link to this definition"></a><br /></dt>
+<dd><p>Matsubara single-scale propagator. </p>
 </dd></dl>
 
 </div>

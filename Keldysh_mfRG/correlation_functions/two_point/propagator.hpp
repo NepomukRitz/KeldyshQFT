@@ -52,36 +52,53 @@ public:
      * - 's' for a single-scale propagator
      * - 'e' for the Katanin extension
      * - 'k' for a fully differentiated propagator 's' + 'e'.
-     * @param config Set of parameters
+     * @param config Set of parameters.
      */
     Propagator(double Lambda_in, char type_in, const fRG_config& config)
             : Lambda(Lambda_in), selfenergy(SelfEnergy<Q> (Lambda_in, config)), diff_selfenergy(SelfEnergy<Q> (Lambda_in, config)), type(type_in),
               epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
 
-
     /**
      * Dressed propagator for non-flowing calculations, i,e, no differential SelfEnergy is needed and is set to the undifferentiated self-energy.
-     * @param Lambda_in : Input scale
-     * @param self_in   : SelfEnergy
-     * @param type_in   : Type of propagator being handled
+     * @param Lambda_in Value of the regulator Λ.
+     * @param self_in Input SelfEnergy.
+     * @param type_in Type of the propagator: 'g', 's', 'e' or 'k'
+     * @param config Set of parameters.
      */
     Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, char type_in, const fRG_config& config)
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(self_in), type(type_in),
             epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
 
+
     /**
      * Dressed propagator for flows. Needs both a SelfEnergy and a Differential SelfEnergy
-     * @param Lambda_in     : Input scale
-     * @param self_in       : SelfEnergy
-     * @param diffSelf_in   : Differential SelfEnergy
-     * @param type_in       : Type of propagator being handled
+     * @param Lambda_in Value of the regulator Λ.
+     * @param self_in Input SelfEnergy.
+     * @param diffSelf_in Input differentiated SelfEnergy.
+     * @param type_in Type of the propagator: 'g', 's', 'e' or 'k'
+     * @param config Set of parameters.
      */
     Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, const SelfEnergy<Q>& diffSelf_in, char type_in, const fRG_config& config)
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in),
              epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
 
-    auto valsmooth(int, freqType , int i_in) const -> Q;
-    template <typename return_type> auto valsmooth_vectorized(freqType, int i_in) const -> return_type;
+     /**
+      * Function to smoothly interpolate the propagator on the frequency grid of the underlying self-energy.
+      * @param iK Keldysh index
+      * @param v fermionic frequency
+      * @param i_in internal structure index
+      * @return Value of the propagator at the given input.
+      */
+    auto valsmooth(int iK, freqType v, int i_in) const -> Q;
+
+    /**
+     * Version of the valsmooth function when vectorization over Keldysh indices is used
+     * @tparam return_type Type of the result.
+     * @param v fermionic frequency
+     * @param i_in internal structure index
+     * @return Value of the propagator at the given input.
+     */
+    template <typename return_type> auto valsmooth_vectorized(freqType v, int i_in) const -> return_type;
 
     void save_propagator_values(const std::string& filename, const rvec& frequencies) const {
         using buffer_type = multidimensional::multiarray<Q, 3>;
@@ -126,23 +143,60 @@ public:
 
     }
 
-    // Keldysh propagators
+    // Keldysh propagators:
+
+    /**
+     * Retarded component of the propagator.
+     * @param v fermionic frequency
+     * @param i_in internal structure index
+     * @return Value of the retarded component at the given input.
+     */
     auto GR(double v, int i_in) const -> Q;
+
+    /**
+     * Keldysh component of the propagator.
+     */
     auto GK(double v, int i_in) const -> Q;
+
+    /**
+     * Retarded component of the single-scale propagator.
+     */
     auto SR(double v, int i_in) const -> Q;
+
+    /**
+     * Keldysh component of the single-scale propagator.
+     */
     auto SK(double v, int i_in) const -> Q;
 
-    /// Katanin extension
+    /**
+     * Retarded component of the Katanin extension G^R \\dot{Σ}^R G^R.
+     */
     Q Katanin_R(double v, int i_in) const;
+
+    /**
+     * Keldysh component of the Katanin extension G^R \\dot{Σ}^R G^K + G^R \\dot{Σ}^K G^A + G^K \\dot{Σ}^A G^A.
+     */
     Q Katanin_K(double v, int i_in) const;
 
-    // Matsubara propagators
+    // Matsubara propagators:
+
+    /**
+     * Matsubara propagator.
+     * @param v fermionic Matsubara frequency
+     * @param i_in internal structure index
+     * @return Value of the Matsubara propagator at the given input.
+     */
     auto GM(freqType v, int i_in) const -> Q;
+
+    /**
+     * Matsubara single-scale propagator.
+     */
     auto SM(freqType v, int i_in) const -> Q;
 
     auto norm() const -> double;
 
-    /// model-specific bare propagators
+    // Model-specific bare propagators:
+
     // Matsubara propagators (inverse bare):
     Q G0M_inv(freqType v, int i_in) const;
     Q G0M_inv_SIAM(freqType v, int i_in) const;
@@ -151,7 +205,7 @@ public:
     Q G0R_inv(freqType v, int i_in) const;
     Q G0R_inv_SIAM(freqType v, int i_in) const;
 
-    /// propagators for REG == 1
+    // propagators for REG == 1
     Q GR_REG1(freqType v, int i_in) const;
     Q SR_REG1(freqType v, int i_in) const;
     Q GM_REG1(freqType v, int i_in) const;
@@ -159,25 +213,25 @@ public:
 
     Q SM_REG1_FPP(double v, double ksquared, int i_in) const;
 
-    /// propagators for REG == 2
+    // propagators for REG == 2
     Q GR_REG2(freqType v, int i_in) const;
     Q SR_REG2(freqType v, int i_in) const;
     Q GM_REG2(freqType v, int i_in) const;
     Q SM_REG2(freqType v, int i_in) const;
 
-    /// propagators for REG == 3
+    // propagators for REG == 3
     Q GR_REG3(freqType v, int i_in) const;
     Q SR_REG3(freqType v, int i_in) const;
     Q GM_REG3(freqType v, int i_in) const;
     Q SM_REG3(freqType v, int i_in) const;
 
-    /// propagators for REG == 3
+    // propagators for REG == 3
     Q GR_REG4(freqType v, int i_in) const;
     Q SR_REG4(freqType v, int i_in) const;
     Q GM_REG4(freqType v, int i_in) const;
     Q SM_REG4(freqType v, int i_in) const;
 
-    /// propagators for REG == 5
+    // propagators for REG == 5
     Q GR_REG5(freqType v, int i_in) const;
     Q SR_REG5(freqType v, int i_in) const;
     Q diff_Sigma_K_REG5(freqType v, int i_in) const;     // \dot{Σ}^K as obtained from FDT
@@ -636,7 +690,7 @@ auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
 
 
 /******* PROPAGATOR FUNCTIONS for sharp frequency-cutoff regulator ***********/
-/// G_0^Λ(v) = θ(|v| - Λ) G_0(v)
+// G_0^Λ(v) = θ(|v| - Λ) G_0(v)
 
 
 template <typename Q>
@@ -758,7 +812,7 @@ auto Propagator<Q>::SM_REG3(const freqType v, const int i_in) const -> Q {
 }
 
 
-///     REG == 4: ( interaction flow )
+//    REG == 4: ( interaction flow )
 
 template <typename Q>
 auto Propagator<Q>::GR_REG4(const freqType v, const int i_in) const -> Q {
@@ -794,7 +848,7 @@ auto Propagator<Q>::SM_REG4(const freqType v, const int i_in) const -> Q {
 }
 
 
-/// REG == 5: (temperature flow)
+// REG == 5: (temperature flow)
 
 template <typename Q>
 auto Propagator<Q>::GR_REG5(const freqType v, const int i_in) const -> Q {

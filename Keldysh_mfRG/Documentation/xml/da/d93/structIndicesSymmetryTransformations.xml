@@ -18,7 +18,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="623" column="12" bodyfile="data_structures.hpp" bodystart="623" bodyend="-1"/>
+        <location file="data_structures.hpp" line="628" column="12" bodyfile="data_structures.hpp" bodystart="628" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="da/d93/structIndicesSymmetryTransformations_1aa031ba566f451387cb64778981013aa6" prot="public" static="no" mutable="no">
         <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="624" column="10" bodyfile="data_structures.hpp" bodystart="624" bodyend="-1"/>
+        <location file="data_structures.hpp" line="629" column="10" bodyfile="data_structures.hpp" bodystart="629" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="da/d93/structIndicesSymmetryTransformations_1a09194893d546ad4ce2995eb0aee7b815" prot="public" static="no" mutable="no">
         <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
@@ -48,7 +48,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="625" column="10" bodyfile="data_structures.hpp" bodystart="625" bodyend="-1"/>
+        <location file="data_structures.hpp" line="630" column="10" bodyfile="data_structures.hpp" bodystart="630" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="da/d93/structIndicesSymmetryTransformations_1a51b0a53f7417196e7c1eaf95d4659257" prot="public" static="no" mutable="no">
         <type>char</type>
@@ -62,7 +62,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="630" column="10" bodyfile="data_structures.hpp" bodystart="630" bodyend="-1"/>
+        <location file="data_structures.hpp" line="635" column="10" bodyfile="data_structures.hpp" bodystart="635" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
@@ -118,7 +118,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="632" column="5" bodyfile="data_structures.hpp" bodystart="632" bodyend="634"/>
+        <location file="data_structures.hpp" line="637" column="5" bodyfile="data_structures.hpp" bodystart="637" bodyend="639"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">VertexInput::iK</references>
       </memberdef>
@@ -142,7 +142,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="636" column="5" bodyfile="data_structures.hpp" bodystart="636" bodyend="638"/>
+        <location file="data_structures.hpp" line="641" column="5" bodyfile="data_structures.hpp" bodystart="641" bodyend="643"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">VertexInput::iK</references>
       </memberdef>
@@ -166,7 +166,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="639" column="5" bodyfile="data_structures.hpp" bodystart="639" bodyend="641"/>
+        <location file="data_structures.hpp" line="644" column="5" bodyfile="data_structures.hpp" bodystart="644" bodyend="646"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">VertexInput::iK</references>
       </memberdef>
@@ -174,7 +174,13 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation) </para>
+<para>Specifies the diagrammatic contribution, including modifications by prefactors, complex conjugation, etc.<itemizedlist>
+<listitem><para>prefactor: fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)</para>
+</listitem><listitem><para>conjugate: complex conjugation?</para>
+</listitem><listitem><para>asymmetry_transform</para>
+</listitem><listitem><para>channel_rvert: channel of the reducible vertex </para>
+</listitem></itemizedlist>
+</para>
     </detaileddescription>
     <inheritancegraph>
       <node id="1">
@@ -248,7 +254,7 @@
         <label>size_t</label>
       </node>
     </collaborationgraph>
-    <location file="data_structures.hpp" line="621" column="1" bodyfile="data_structures.hpp" bodystart="621" bodyend="642"/>
+    <location file="data_structures.hpp" line="626" column="1" bodyfile="data_structures.hpp" bodystart="626" bodyend="647"/>
     <listofallmembers>
       <member refid="da/d93/structIndicesSymmetryTransformations_1a09194893d546ad4ce2995eb0aee7b815" prot="public" virt="non-virtual"><scope>IndicesSymmetryTransformations</scope><name>asymmetry_transform</name></member>
       <member refid="d2/db2/structVertexInput_1a9acedf0c5af6839894c86a76e0f30e32" prot="public" virt="non-virtual"><scope>IndicesSymmetryTransformations</scope><name>channel_bubble</name></member>

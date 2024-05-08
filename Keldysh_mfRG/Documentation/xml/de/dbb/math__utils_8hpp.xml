@@ -863,12 +863,12 @@
         <location file="utilities/math_utils.hpp" line="24" column="6" bodyfile="utilities/math_utils.hpp" bodystart="24" bodyend="26"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="614" endline="625">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="695" endline="708">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="668" endline="679">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="749" endline="762">Propagator&lt; Q &gt;::GM_REG2</referencedby>
         <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a72b8a5e3aa61d0d8caad62fcf6ded37c" compoundref="d5/dd1/flow__grid_8hpp" startline="88" endline="91">flowgrid::sqrt_parametrization::lambda_from_t</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1a28a474b34bb52e38453dfef3498d440e" compoundref="df/d31/math__utils_8c_09_09" startline="96" endline="100">round2bfreq</referencedby>
         <referencedby refid="df/d31/math__utils_8c_09_09_1ae91f1ae4164410f29b627938634c30e0" compoundref="df/d31/math__utils_8c_09_09" startline="101" endline="105">round2ffreq</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="712" endline="720">Propagator&lt; Q &gt;::SM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="766" endline="774">Propagator&lt; Q &gt;::SM_REG2</referencedby>
         <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a6b06711db490eb74ae1ac55c560017c0" compoundref="d5/dd1/flow__grid_8hpp" startline="93" endline="96">flowgrid::sqrt_parametrization::t_from_lambda</referencedby>
       </memberdef>
       <memberdef kind="function" id="de/dbb/math__utils_8hpp_1a3d8486282b409e1338111b0285cf6259" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">

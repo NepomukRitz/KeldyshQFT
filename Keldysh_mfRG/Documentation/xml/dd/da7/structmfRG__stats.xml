@@ -80,7 +80,7 @@
         <location file="mfRG_flow/right_hand_sides.hpp" line="138" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="138" bodyend="157"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
-        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
+        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="662">fRG_config::nODE_</references>
         <references refid="dd/da7/structmfRG__stats_1a14193eaef49805c52d60c016188ca805" compoundref="d8/dea/right__hand__sides_8hpp" startline="134">number_of_SE_iterations</references>
         <references refid="d5/d4f/hdf5__routines_8c_09_09_1a924110dbdaccbbc744def3ca0838cb4c" compoundref="d5/d4f/hdf5__routines_8c_09_09" startline="21" endline="30">open_hdf_file_readWrite</references>
         <references refid="dd/da7/structmfRG__stats_1aa0283b00595ba77a0cc5033e653c9844" compoundref="d8/dea/right__hand__sides_8hpp" startline="135">time</references>

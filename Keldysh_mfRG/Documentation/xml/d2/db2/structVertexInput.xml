@@ -19,9 +19,9 @@
         </inbodydescription>
         <location file="data_structures.hpp" line="537" column="9" bodyfile="data_structures.hpp" bodystart="537" bodyend="-1"/>
         <referencedby refid="d2/db2/structVertexInput_1a181dc6772f5264cb38e1e1041824ae40" compoundref="d7/d59/data__structures_8hpp" startline="580" endline="615">get_indices</referencedby>
-        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1aec33b77df1a63bd679f357f2bf803352" compoundref="d7/d59/data__structures_8hpp" startline="632" endline="634">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
-        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1acbfacc2104e5cd75fc2318a6a7c874d3" compoundref="d7/d59/data__structures_8hpp" startline="639" endline="641">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
-        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1af88595f7a45faa9fb9e2bb51d1662402" compoundref="d7/d59/data__structures_8hpp" startline="636" endline="638">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
+        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1aec33b77df1a63bd679f357f2bf803352" compoundref="d7/d59/data__structures_8hpp" startline="637" endline="639">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
+        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1acbfacc2104e5cd75fc2318a6a7c874d3" compoundref="d7/d59/data__structures_8hpp" startline="644" endline="646">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
+        <referencedby refid="da/d93/structIndicesSymmetryTransformations_1af88595f7a45faa9fb9e2bb51d1662402" compoundref="d7/d59/data__structures_8hpp" startline="641" endline="643">IndicesSymmetryTransformations::IndicesSymmetryTransformations</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1a6a596ed7bf95a10c45fd7aef6983d640" compoundref="df/d83/integrand_8hpp" startline="552" endline="608">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_left_scalar</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1af4ae177dec9b129329eda2511b301e22" compoundref="df/d83/integrand_8hpp" startline="612" endline="664">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_right_scalar</referencedby>
         <referencedby refid="d2/db2/structVertexInput_1ac15c49e9861b144225d0b239b3ffb901" compoundref="d7/d59/data__structures_8hpp" startline="545" endline="553">VertexInput</referencedby>
@@ -281,48 +281,13 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>auxiliary struct that contains all input variables of vertices <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>iK</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>: integer from 0 to 15 (Keldysh indices expressed as one integer) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>w.v1</parametername>
-<parametername>v2</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>: frequency arguments </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>i_in</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>: additional internal index (currently unused) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>spin</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>: 0 or 1 for the two comfigurations (0 for V, 1 for V^) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>channel</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>: &apos;a&apos;, &apos;t&apos; or &apos;p&apos;, or &apos;f&apos; </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
+<para>Auxiliary struct that contains all input variables of vertices.<itemizedlist>
+<listitem><para>iK : integer from 0 to 15 (Keldysh indices expressed as one integer)</para>
+</listitem><listitem><para>w, v1, v2 : frequency arguments</para>
+</listitem><listitem><para>i_in : additional internal index (currently unused)</para>
+</listitem><listitem><para>spin : 0 or 1 for the two comfigurations (0 for V, 1 for V^)</para>
+</listitem><listitem><para>channel_bubble : &apos;a&apos;, &apos;t&apos; or &apos;p&apos;, or &apos;f&apos; </para>
+</listitem></itemizedlist>
 </para>
     </detaileddescription>
     <inheritancegraph>

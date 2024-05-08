@@ -69,6 +69,12 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-structs">Useful structs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv410fRG_config"><code class="docutils literal notranslate"><span class="pre">fRG_config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv411VertexInput"><code class="docutils literal notranslate"><span class="pre">VertexInput</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv430IndicesSymmetryTransformations"><code class="docutils literal notranslate"><span class="pre">IndicesSymmetryTransformations</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters</a></li>
@@ -139,6 +145,53 @@
 </dd></dl>
 
 </div>
+</dd></dl>
+
+</section>
+<section id="useful-structs">
+<h2>Useful structs<a class="headerlink" href="#useful-structs" title="Link to this heading"></a></h2>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv410fRG_config">
+<span id="_CPPv310fRG_config"></span><span id="_CPPv210fRG_config"></span><span id="fRG_config"></span><span class="target" id="da/da0/structfRG__config"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fRG_config</span></span></span><a class="headerlink" href="#_CPPv410fRG_config" title="Link to this definition"></a><br /></dt>
+<dd><p>Struct that holds all essential parameters that are not defined globally. Overrides global parameters, if required.<ul class="simple">
+<li><p>nODE_: Maximal number of steps that the ODE solver shall do minus number of checkpoints.</p></li>
+<li><p>epsODE_abs_: absolute accuracy of the ODE solver</p></li>
+<li><p>epsODE_rel_: relative accuracy of the ODE solver</p></li>
+<li><p>U: impurity on-site interaction strength. Recommendation: set to 1.0</p></li>
+<li><p>T: temperature</p></li>
+<li><p>Gamma: hybridization strength</p></li>
+<li><p>epsilon: Impurity on-site energy</p></li>
+<li><p>save_intermediateResults: determines whether intermediate results during individual steps of the ODE solver shall be saved or not.</p></li>
+<li><p>nloops: maximal loop order to be computed during the fRG flow</p></li>
+<li><p>number_of_nodes: number of nodes to be used during the computation </p></li>
+</ul>
+</p>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv411VertexInput">
+<span id="_CPPv311VertexInput"></span><span id="_CPPv211VertexInput"></span><span id="VertexInput"></span><span class="target" id="d2/db2/structVertexInput"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VertexInput</span></span></span><a class="headerlink" href="#_CPPv411VertexInput" title="Link to this definition"></a><br /></dt>
+<dd><p>Auxiliary struct that contains all input variables of vertices.<ul class="simple">
+<li><p>iK : integer from 0 to 15 (Keldysh indices expressed as one integer)</p></li>
+<li><p>w, v1, v2 : frequency arguments</p></li>
+<li><p>i_in : additional internal index (currently unused)</p></li>
+<li><p>spin : 0 or 1 for the two comfigurations (0 for V, 1 for V^)</p></li>
+<li><p>channel_bubble : ‘a’, ‘t’ or ‘p’, or ‘f’ </p></li>
+</ul>
+</p>
+<p>Subclassed by <a class="reference internal" href="#da/d93/structIndicesSymmetryTransformations"><span class="std std-ref">IndicesSymmetryTransformations</span></a></p>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv430IndicesSymmetryTransformations">
+<span id="_CPPv330IndicesSymmetryTransformations"></span><span id="_CPPv230IndicesSymmetryTransformations"></span><span id="IndicesSymmetryTransformations"></span><span class="target" id="da/d93/structIndicesSymmetryTransformations"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IndicesSymmetryTransformations</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv411VertexInput" title="VertexInput"><span class="n"><span class="pre">VertexInput</span></span></a><a class="headerlink" href="#_CPPv430IndicesSymmetryTransformations" title="Link to this definition"></a><br /></dt>
+<dd><p>Specifies the diagrammatic contribution, including modifications by prefactors, complex conjugation, etc.<ul class="simple">
+<li><p>prefactor: fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)</p></li>
+<li><p>conjugate: complex conjugation?</p></li>
+<li><p>asymmetry_transform</p></li>
+<li><p>channel_rvert: channel of the reducible vertex </p></li>
+</ul>
+</p>
 </dd></dl>
 
 </section>

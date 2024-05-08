@@ -1212,7 +1212,7 @@
         <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a2326000f2ce3b51e0f6cacb8378366f2" compoundref="d7/d59/data__structures_8hpp" startline="480">k3_sbe</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="1071" endline="1073">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d2/d4a/classGeneralVertex_1adb8112bdc5f8e012552d215c2a670eef" compoundref="d1/d2d/vertex_8hpp" startline="1061">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vanishing_component_gamma0</references>
       </memberdef>
       <memberdef kind="function" id="dd/d0a/parquet__solver_8hpp_1a975283a2a8d88b37c80ee3d2f39e68c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -1432,7 +1432,7 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d2/d4a/classGeneralVertex_1a5d8cc30ab164e0d65f110c36c64f8974" compoundref="d1/d2d/vertex_8hpp" startline="1071" endline="1073">GeneralVertex&lt; Q, symmtype, differentiated &gt;::swap_vanishing_component_channel_a_and_t</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
       </memberdef>
       <memberdef kind="function" id="dd/d0a/parquet__solver_8hpp_1a947824a1a735bc2e9db735348ac9dd2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1748,7 +1748,7 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/d4a/classGeneralVertex_1abec34975a70ef37a932b85ec566fc52b" compoundref="d1/d2d/vertex_8hpp" startline="865" endline="865">GeneralVertex&lt; Q, symmtype, differentiated &gt;::pvertex</references>
         <references refid="d2/d4a/classGeneralVertex_1a80b79fecedc9c2fb3f7e115dfc658b78" compoundref="d1/d2d/vertex_8hpp" startline="866" endline="866">GeneralVertex&lt; Q, symmtype, differentiated &gt;::tvertex</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d2/d4a/classGeneralVertex_1a2b9b73449a3d78f260cb929b0be99977" compoundref="d1/d2d/vertex_8hpp" startline="456">GeneralVertex&lt; Q, symmtype, differentiated &gt;::vertex</references>
         <referencedby refid="d5/d94/parquet__solver_8c_09_09_1a9abfea4a26adefdf395729c7604b5842" compoundref="d5/d94/parquet__solver_8c_09_09" startline="3" endline="97">parquet_checks</referencedby>
       </memberdef>
@@ -2033,8 +2033,8 @@
         <location file="perturbation_theory_and_parquet/parquet_solver.hpp" line="811" column="6" bodyfile="perturbation_theory_and_parquet/parquet_solver.c++" bodystart="106" bodyend="134" declfile="perturbation_theory_and_parquet/parquet_solver.hpp" declline="811" declcolumn="6"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" compoundref="d1/df8/master__parameters_8hpp" startline="159">data_dir</references>
-        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
-        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
+        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="668">fRG_config::epsilon</references>
+        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="667">fRG_config::Gamma</references>
         <references refid="d6/d84/namespaceutils_1a5020e8df3fe9af5189eb7170db07439f" compoundref="d6/d35/util_8c_09_09" startline="48" endline="61">utils::get_cpu_hours</references>
         <references refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" compoundref="d6/d8d/flow__grid_8c_09_09" startline="14" endline="30">flowgrid::get_Lambda_checkpoints</references>
         <references refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" compoundref="d6/d35/util_8c_09_09" startline="21" endline="27">utils::get_time</references>
@@ -2044,8 +2044,8 @@
         <references refid="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73" compoundref="dd/d0a/parquet__solver_8hpp" startline="659" endline="808">parquet_solver</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4" compoundref="d5/d0d/perturbation__theory_8hpp" startline="156" endline="177">sopt_state</references>
-        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="651">fRG_config::T</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="666">fRG_config::T</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
       </memberdef>

@@ -24,6 +24,3 @@ Loops
 
 .. doxygenclass:: IntegrandSE
     :members:
-
-Asymptotic corrections
-++++++++++++++++++++++

@@ -982,7 +982,7 @@
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" compoundref="de/de8/bubble__function_8hpp" startline="901" endline="966">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K3</referencedby>
         <referencedby refid="df/dd5/classbufferFrequencyGrid_1acfb9ad9c9c37a6bedc49225d29aa214a" compoundref="d5/d39/frequency__grid_8hpp" startline="433" endline="446">bufferFrequencyGrid&lt; k &gt;::is_in_box</referencedby>
         <referencedby refid="d8/d2c/classIntegrandSE_1aca23488440006e8d204109650aa0a170" compoundref="de/d65/integrandSE_8hpp" startline="277" endline="298">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::save_integrand</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="86" endline="127">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" compoundref="d5/df7/propagator_8hpp" startline="103" endline="144">Propagator&lt; Q &gt;::save_propagator_values</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1aec10c7c2fae276227544e207cbd802d0" compoundref="db/d7d/symmetry__transformations_8hpp" startline="17" endline="64">T1</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a689a60d7c45398774777d3cba59a88d9" compoundref="db/d7d/symmetry__transformations_8hpp" startline="66" endline="100">T2</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
@@ -1015,8 +1015,8 @@
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a997236aea73d9935839d4dc8c8fd06af" compoundref="dd/d0a/parquet__solver_8hpp" startline="549" endline="617">susceptibilities_postprocessing</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1ae8b6c7aba446997e0f0e0913277394b5" compoundref="db/d7d/symmetry__transformations_8hpp" startline="168" endline="196">Tph</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="316" endline="462">Propagator&lt; Q &gt;::valsmooth</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="467" endline="594">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad239e223fd3bcbc0b27fcfdac040886a" compoundref="d5/df7/propagator_8hpp" startline="370" endline="516">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a733b1350a65543d3126d187dd670c3b8" compoundref="d5/df7/propagator_8hpp" startline="521" endline="648">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
       </memberdef>
       <memberdef kind="define" id="d1/df8/master__parameters_8hpp_1a2428b0f27a9cc2786d9454e71820f2e9" prot="public" static="no">
         <name>SWITCH_SUM_N_INTEGRAL</name>
@@ -1281,18 +1281,18 @@
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a4e88a279f0af637927028dd867835538" compoundref="dd/dea/bubble__corrections_8hpp" startline="389" endline="420">correctionFunctionBubbleAT</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1ab5e1b7834b38d7f2c0257913e5c333ce" compoundref="dd/dea/bubble__corrections_8hpp" startline="424" endline="455">correctionFunctionBubbleP</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a1998a1c7f8941816fe6706838b16ca26" compoundref="d6/d35/util_8c_09_09" startline="161" endline="186">utils::generate_data_directory</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="203" endline="226">Propagator&lt; Q &gt;::GK</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="295" endline="302">Propagator&lt; Q &gt;::GM</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="190" endline="200">Propagator&lt; Q &gt;::GR</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="257" endline="280">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="349" endline="356">Propagator&lt; Q &gt;::GM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="244" endline="254">Propagator&lt; Q &gt;::GR</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
         <referencedby refid="da/dc3/ODE__solvers_8hpp_1a35926ed20edc2503238326c955ab6ded" compoundref="da/dc3/ODE__solvers_8hpp" startline="26" endline="67">postRKstep_stuff</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="dd/df1/namespaceold__ode__solvers_1aeb954768e9e969cbed9beb79669621c8" compoundref="dd/df7/old__solvers_8hpp" startline="51" endline="68">old_ode_solvers::RK4_step</referencedby>
         <referencedby refid="d2/d3f/sanity__check_8hpp_1a884fca24faf1e006b285fcce3ddd0299" compoundref="d2/d3f/sanity__check_8hpp" startline="10" endline="23">sanity_check</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="243" endline="275">Propagator&lt; Q &gt;::SK</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="305" endline="312">Propagator&lt; Q &gt;::SM</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="230" endline="240">Propagator&lt; Q &gt;::SR</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="297" endline="329">Propagator&lt; Q &gt;::SK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="359" endline="366">Propagator&lt; Q &gt;::SM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="284" endline="294">Propagator&lt; Q &gt;::SR</referencedby>
         <referencedby refid="de/dac/namespacehdf5__impl_1a468934d31943e2ac5607091266a2e5a0" compoundref="d5/de4/hdf5__routines_8hpp" startline="621" endline="830">hdf5_impl::write_state_to_hdf_LambdaLayer</referencedby>
       </memberdef>
       <memberdef kind="define" id="d1/df8/master__parameters_8hpp_1aaf458c464b2ca2a36803b018df2a927b" prot="public" static="no">
@@ -1480,12 +1480,12 @@
         <referencedby refid="de/d5d/propagator_8c_09_09_1ad4ac30553ec90ced0033be4512c3ffd9" compoundref="de/d5d/propagator_8c_09_09" startline="19" endline="22">Eff_fac</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" compoundref="de/de8/bubble__function_8hpp" startline="833" endline="895">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" compoundref="de/de8/bubble__function_8hpp" startline="901" endline="966">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K3</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="203" endline="226">Propagator&lt; Q &gt;::GK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="257" endline="280">Propagator&lt; Q &gt;::GK</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a8e764be956104783f002f8c525617038" compoundref="d1/db3/hartree__term_8hpp" startline="36" endline="42">Hartree_Solver::Hartree_Solver</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver::Hartree_Solver</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a86bda86b4b35d79187a6fb3687401ae1" compoundref="d1/db3/hartree__term_8hpp" startline="44" endline="49">Hartree_Solver::Hartree_Solver</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="243" endline="275">Propagator&lt; Q &gt;::SK</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="467" endline="594">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="297" endline="329">Propagator&lt; Q &gt;::SK</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a733b1350a65543d3126d187dd670c3b8" compoundref="d5/df7/propagator_8hpp" startline="521" endline="648">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
@@ -1678,8 +1678,8 @@
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a318d3b59151ed5f5ad7efdc05c916c8c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="238" endline="251">FrequencyGrid&lt; eliasGrid &gt;::frequency_from_t</referencedby>
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a81f16a90aa69246ba97dacc79364e20c" compoundref="d5/d39/frequency__grid_8hpp" startline="329" endline="337">FrequencyGrid&lt; angularGrid &gt;::FrequencyGrid</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af2267533329d0f003dab2b04f6ce7115" compoundref="d5/d39/frequency__grid_8hpp" startline="237" endline="243">FrequencyGrid&lt; hybridGrid &gt;::FrequencyGrid</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="609" endline="612">Propagator&lt; Q &gt;::G0M_inv</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="614" endline="625">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aba29e36fde20d197f7fbb545848b186e" compoundref="d5/df7/propagator_8hpp" startline="663" endline="666">Propagator&lt; Q &gt;::G0M_inv</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="668" endline="679">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" compoundref="de/de8/bubble__function_8hpp" startline="833" endline="895">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" compoundref="de/de8/bubble__function_8hpp" startline="901" endline="966">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K3</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a8bfd9754031987d8a87e6e276950ec67" compoundref="de/de8/bubble__function_8hpp" startline="328" endline="377">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_value</referencedby>
@@ -1698,7 +1698,7 @@
         <referencedby refid="d1/d9f/classIntegrand_1abe45c78d4ef5dcc6b53e4e0cfab6d041" compoundref="df/d83/integrand_8hpp" startline="669" endline="685">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_left_vectorized</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1af4ae177dec9b129329eda2511b301e22" compoundref="df/d83/integrand_8hpp" startline="612" endline="664">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_right_scalar</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1a8da1bca02209084c25fbbb9a29f8e615" compoundref="df/d83/integrand_8hpp" startline="690" endline="707">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_right_vectorized</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="598" endline="605">Propagator&lt; Q &gt;::norm</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="652" endline="659">Propagator&lt; Q &gt;::norm</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" compoundref="d4/d92/hartree__term_8c_09_09" startline="104" endline="141">Hartree_Solver::operator()</referencedby>
         <referencedby refid="d8/d2c/classIntegrandSE_1a56ffbc9eabac2af2c608652c3e3741fa" compoundref="de/d65/integrandSE_8hpp" startline="225" endline="228">IntegrandSE&lt; Q, vertType, all_spins, return_type, version &gt;::operator()</referencedby>
         <referencedby refid="d1/d9f/classIntegrand_1a3da64e671a674d821f5fcaef1d3d312a" compoundref="df/d83/integrand_8hpp" startline="351" endline="431">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::operator()</referencedby>
@@ -1724,8 +1724,8 @@
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a1ff6ce969efd86c4361a29f381fea032" compoundref="db/d7d/symmetry__transformations_8hpp" startline="197" endline="214">TR</referencedby>
         <referencedby refid="db/d06/structTransformations_1af95fcfb631c1bc86e7688b4274b5c9f1" compoundref="d3/d77/symmetry__table_8hpp" startline="930" endline="959">Transformations::Transformations</referencedby>
         <referencedby refid="d4/dbd/classrvert_1af50518ef7856c9c37e8e9377fb7fc7a1" compoundref="d3/d22/r__vertex_8hpp" startline="1708" endline="1859">rvert&lt; Q &gt;::transfToR</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" compoundref="d5/df7/propagator_8hpp" startline="316" endline="462">Propagator&lt; Q &gt;::valsmooth</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" compoundref="d5/df7/propagator_8hpp" startline="467" endline="594">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad239e223fd3bcbc0b27fcfdac040886a" compoundref="d5/df7/propagator_8hpp" startline="370" endline="516">Propagator&lt; Q &gt;::valsmooth</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a733b1350a65543d3126d187dd670c3b8" compoundref="d5/df7/propagator_8hpp" startline="521" endline="648">Propagator&lt; Q &gt;::valsmooth_vectorized</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="47" endline="133">Bubble&lt; Q &gt;::value</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="173" endline="197">Bubble&lt; Q &gt;::value</referencedby>
         <referencedby refid="d8/d6e/classBubble_1ace75a10008d3e977583f43562fd440b9" compoundref="d0/dac/bubble_8hpp" startline="226" endline="294">Bubble&lt; Q &gt;::value_vectorized</referencedby>
@@ -1766,7 +1766,7 @@
         <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a81f16a90aa69246ba97dacc79364e20c" compoundref="d5/d39/frequency__grid_8hpp" startline="329" endline="337">FrequencyGrid&lt; angularGrid &gt;::FrequencyGrid</referencedby>
         <referencedby refid="d9/dd0/classFrequencyGrid_3_01hybridGrid_01_4_1af2267533329d0f003dab2b04f6ce7115" compoundref="d5/d39/frequency__grid_8hpp" startline="237" endline="243">FrequencyGrid&lt; hybridGrid &gt;::FrequencyGrid</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a2ec9d72693d8351fac847d28ef90fc09" compoundref="d4/d92/hartree__term_8c_09_09" startline="143" endline="155">Hartree_Solver::friedel_sum_rule_check</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="614" endline="625">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="668" endline="679">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" compoundref="de/de8/bubble__function_8hpp" startline="833" endline="895">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" compoundref="de/de8/bubble__function_8hpp" startline="901" endline="966">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K3</referencedby>
         <referencedby refid="de/d96/classBubbleFunctionCalculator_1a8bfd9754031987d8a87e6e276950ec67" compoundref="de/de8/bubble__function_8hpp" startline="328" endline="377">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_value</referencedby>
@@ -1807,9 +1807,9 @@
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a4e88a279f0af637927028dd867835538" compoundref="dd/dea/bubble__corrections_8hpp" startline="389" endline="420">correctionFunctionBubbleAT</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1ab5e1b7834b38d7f2c0257913e5c333ce" compoundref="dd/dea/bubble__corrections_8hpp" startline="424" endline="455">correctionFunctionBubbleP</referencedby>
         <referencedby refid="d0/d0e/loop__corrections_8hpp_1abbe7409d3b32cbd812c187aa89745a83" compoundref="d0/d0e/loop__corrections_8hpp" startline="83" endline="90">correctionFunctionSelfEnergy</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="614" endline="625">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="668" endline="679">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="695" endline="708">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="749" endline="762">Propagator&lt; Q &gt;::GM_REG2</referencedby>
         <referencedby refid="d7/d97/classState_1a976ebaeffdb650be4c8a5b6f4c8479bd" compoundref="da/d3b/state_8hpp" startline="150" endline="172">State&lt; Q, differentiated &gt;::initialize</referencedby>
         <referencedby refid="d8/d1d/loop_8hpp_1aa4154b9b6c780472c89bc83590d73b6e" compoundref="d8/d1d/loop_8hpp" startline="528" endline="555">loop</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
@@ -1817,7 +1817,7 @@
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
         <referencedby refid="d4/dbd/classrvert_1a8e9446837a4a9308c720370ccbaa1445" compoundref="d3/d22/r__vertex_8hpp" startline="482" endline="494">rvert&lt; Q &gt;::read_symmetryreduced_rvert</referencedby>
         <referencedby refid="d5/d0d/perturbation__theory_8hpp_1a6336ef3f9900b878dba73ab9792cb60c" compoundref="d5/d0d/perturbation__theory_8hpp" startline="43" endline="69">selfEnergyInSOPT</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="712" endline="720">Propagator&lt; Q &gt;::SM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1aad695fd9766074c68418ba30bb86434e" compoundref="d5/df7/propagator_8hpp" startline="766" endline="774">Propagator&lt; Q &gt;::SM_REG2</referencedby>
         <referencedby refid="db/d7d/symmetry__transformations_8hpp_1ae8b6c7aba446997e0f0e0913277394b5" compoundref="db/d7d/symmetry__transformations_8hpp" startline="168" endline="196">Tph</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="47" endline="133">Bubble&lt; Q &gt;::value</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a1bf888805c3422916edce456cf079e37" compoundref="d0/dac/bubble_8hpp" startline="144" endline="162">Bubble&lt; Q &gt;::value_Matsubara</referencedby>

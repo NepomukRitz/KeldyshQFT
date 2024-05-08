@@ -526,12 +526,12 @@ namespace my_defs {
 
 
 
-/** auxiliary struct that contains all input variables of vertices
- * @param iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
- * @param w.v1,v2  :   frequency arguments
- * @param i_in     :   additional internal index (currently unused)
- * @param spin     :   0 or 1 for the two comfigurations (0 for V, 1 for V^)
- * @param channel  :   'a', 't' or 'p', or 'f'
+/** Auxiliary struct that contains all input variables of vertices.
+ * - iK       :   integer from 0 to 15 (Keldysh indices expressed as one integer)
+ * - w, v1, v2  :   frequency arguments
+ * - i_in     :   additional internal index (currently unused)
+ * - spin     :   0 or 1 for the two comfigurations (0 for V, 1 for V^)
+ * - channel_bubble  :   'a', 't' or 'p', or 'f'
  * */
 struct VertexInput{
     int iK;
@@ -615,12 +615,17 @@ struct VertexInput{
     }
 };
 
+
 /**
- * specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation)
+ * Specifies the diagrammatic contribution, including modifications by prefactors, complex conjugation, etc.
+ * - prefactor: fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)
+ * - conjugate: complex conjugation?
+ * - asymmetry_transform
+ * - channel_rvert: channel of the reducible vertex
  */
 struct IndicesSymmetryTransformations: VertexInput{
     //int iK;
-    double prefactor = 1.; // fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)
+    double prefactor = 1.;
     bool conjugate = false;
     bool asymmetry_transform = false;
     //int spin;
@@ -641,20 +646,30 @@ struct IndicesSymmetryTransformations: VertexInput{
     {assert(iK < 16);}
 };
 
-
-
+/** Struct that holds all essential parameters that are not defined globally. Overrides global parameters, if required.
+ * - nODE_: Maximal number of steps that the ODE solver shall do minus number of checkpoints.
+ * - epsODE_abs_: absolute accuracy of the ODE solver
+ * - epsODE_rel_: relative accuracy of the ODE solver
+ * - U: impurity on-site interaction strength. Recommendation: set to 1.0
+ * - T: temperature
+ * - Gamma: hybridization strength
+ * - epsilon: Impurity on-site energy
+ * - save_intermediateResults: determines whether intermediate results during individual steps of the ODE solver shall be saved or not.
+ * - nloops: maximal loop order to be computed during the fRG flow
+ * - number_of_nodes: number of nodes to be used during the computation
+ */
 struct fRG_config {
-    int nODE_;                               ///< Maximal number of steps that the ODE solver shall do minus number of checkpoints.
-    double epsODE_abs_;                      ///< absolute accuracy of the ODE solver
-    double epsODE_rel_;                      ///< relative accuracy of the ODE solver
-    double U = 1.;                           ///< impurity on-site interaction strength. Recommendation: set to 1.0
-    double T = 1.;                           ///< temperature
-    double Gamma = 1.;                       ///< hybridization strength
-    double epsilon = -0.5 * U;               ///< Impurity on-site energy
-    bool save_intermediateResults = false;   ///< determines whether intermediate results during individual steps of the ODE solver shall be saved or not.
-    int nloops=1;                            ///< maximal loop order to be computed during the fRG flow
-    int number_of_nodes=1;                   ///< number of nodes to be used during the computation
-};                                           ///< config struct to specify parameters need for an fRG run.
+    int nODE_;
+    double epsODE_abs_;
+    double epsODE_rel_;
+    double U = 1.;
+    double T = 1.;
+    double Gamma = 1.;
+    double epsilon = -0.5 * U;
+    bool save_intermediateResults = false;
+    int nloops=1;
+    int number_of_nodes=1;
+};
 
 
 

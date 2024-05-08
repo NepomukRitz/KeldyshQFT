@@ -159,9 +159,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a34563c83610453083ffffb9394e76045 inherit pub_attribs_structVertexInput"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>specifies the diagrammatic contribution ( + modifications by prefactor, complex conjugation) </p>
+<div class="textblock"><p>Specifies the diagrammatic contribution, including modifications by prefactors, complex conjugation, etc.</p><ul>
+<li>prefactor: fermionic sign factor; comes in effect for T1, T2 (and sometimes Tc)</li>
+<li>conjugate: complex conjugation?</li>
+<li>asymmetry_transform</li>
+<li>channel_rvert: channel of the reducible vertex </li>
+</ul>
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00621">621</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00626">626</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aec33b77df1a63bd679f357f2bf803352" name="aec33b77df1a63bd679f357f2bf803352"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aec33b77df1a63bd679f357f2bf803352">&#9670;&#160;</a></span>IndicesSymmetryTransformations() <span class="overload">[1/3]</span></h2>
@@ -230,11 +235,11 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00632">632</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  633</span>            : <a class="code hl_function" href="../../d2/db2/structVertexInput.html#ac15c49e9861b144225d0b239b3ffb901">VertexInput</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">iK_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">spin_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">w_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">v1_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">v2_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i_in_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_bubble_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">k_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">iw_in</a>), <a class="code hl_variable" href="#a51b0a53f7417196e7c1eaf95d4659257">channel_rvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_rvert_in</a>)</div>
-<div class="line"><span class="lineno">  634</span>    {<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_variable" href="../../d2/db2/structVertexInput.html#a684579699d39336f2454b926829e013b">iK</a> &lt; 16);}</div>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00637">637</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  638</span>            : <a class="code hl_function" href="../../d2/db2/structVertexInput.html#ac15c49e9861b144225d0b239b3ffb901">VertexInput</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">iK_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">spin_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">w_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">v1_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">v2_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">i_in_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_bubble_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">k_in</a>, <a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">iw_in</a>), <a class="code hl_variable" href="#a51b0a53f7417196e7c1eaf95d4659257">channel_rvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_rvert_in</a>)</div>
+<div class="line"><span class="lineno">  639</span>    {<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_variable" href="../../d2/db2/structVertexInput.html#a684579699d39336f2454b926829e013b">iK</a> &lt; 16);}</div>
 <div class="ttc" id="abubble__corrections_8hpp_html_aff27784f97591f505f77ff0065ab57af"><div class="ttname"><a href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">correctionFunctionBubble_REG3_Matsubara_PHS_diff</a></div><div class="ttdeci">auto correctionFunctionBubble_REG3_Matsubara_PHS_diff(double w, double vmax, double Lambda, const double Delta)</div><div class="ttdef"><b>Definition</b> <a href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">bubble_corrections.hpp:295</a></div></div>
-<div class="ttc" id="astructIndicesSymmetryTransformations_html_a51b0a53f7417196e7c1eaf95d4659257"><div class="ttname"><a href="#a51b0a53f7417196e7c1eaf95d4659257">IndicesSymmetryTransformations::channel_rvert</a></div><div class="ttdeci">char channel_rvert</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00630">data_structures.hpp:630</a></div></div>
+<div class="ttc" id="astructIndicesSymmetryTransformations_html_a51b0a53f7417196e7c1eaf95d4659257"><div class="ttname"><a href="#a51b0a53f7417196e7c1eaf95d4659257">IndicesSymmetryTransformations::channel_rvert</a></div><div class="ttdeci">char channel_rvert</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00635">data_structures.hpp:635</a></div></div>
 <div class="ttc" id="astructVertexInput_html_a684579699d39336f2454b926829e013b"><div class="ttname"><a href="../../d2/db2/structVertexInput.html#a684579699d39336f2454b926829e013b">VertexInput::iK</a></div><div class="ttdeci">int iK</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00537">data_structures.hpp:537</a></div></div>
 <div class="ttc" id="astructVertexInput_html_ac15c49e9861b144225d0b239b3ffb901"><div class="ttname"><a href="../../d2/db2/structVertexInput.html#ac15c49e9861b144225d0b239b3ffb901">VertexInput::VertexInput</a></div><div class="ttdeci">VertexInput(int iK_in, my_index_t spin_in, freqType w_in, freqType v1_in, freqType v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)</div><div class="ttdef"><b>Definition</b> <a href="../../d7/d59/data__structures_8hpp_source.html#l00545">data_structures.hpp:545</a></div></div>
 </div><!-- fragment -->
@@ -269,9 +274,9 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00636">636</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  637</span>            : <a class="code hl_function" href="../../d2/db2/structVertexInput.html#ac15c49e9861b144225d0b239b3ffb901">VertexInput</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">input</a>), <a class="code hl_variable" href="#a51b0a53f7417196e7c1eaf95d4659257">channel_rvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_in</a>)</div>
-<div class="line"><span class="lineno">  638</span>    {<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_variable" href="../../d2/db2/structVertexInput.html#a684579699d39336f2454b926829e013b">iK</a> &lt; 16);}</div>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00641">641</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  642</span>            : <a class="code hl_function" href="../../d2/db2/structVertexInput.html#ac15c49e9861b144225d0b239b3ffb901">VertexInput</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">input</a>), <a class="code hl_variable" href="#a51b0a53f7417196e7c1eaf95d4659257">channel_rvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_in</a>)</div>
+<div class="line"><span class="lineno">  643</span>    {<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_variable" href="../../d2/db2/structVertexInput.html#a684579699d39336f2454b926829e013b">iK</a> &lt; 16);}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, and <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00537">VertexInput::iK</a>.</p>
 
@@ -304,9 +309,9 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00639">639</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  640</span>            : <a class="code hl_function" href="../../d2/db2/structVertexInput.html#ac15c49e9861b144225d0b239b3ffb901">VertexInput</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">input</a>), <a class="code hl_variable" href="#a51b0a53f7417196e7c1eaf95d4659257">channel_rvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_in</a>)</div>
-<div class="line"><span class="lineno">  641</span>    {<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_variable" href="../../d2/db2/structVertexInput.html#a684579699d39336f2454b926829e013b">iK</a> &lt; 16);}</div>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00644">644</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  645</span>            : <a class="code hl_function" href="../../d2/db2/structVertexInput.html#ac15c49e9861b144225d0b239b3ffb901">VertexInput</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">input</a>), <a class="code hl_variable" href="#a51b0a53f7417196e7c1eaf95d4659257">channel_rvert</a>(<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">channel_in</a>)</div>
+<div class="line"><span class="lineno">  646</span>    {<a class="code hl_function" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">assert</a>(<a class="code hl_variable" href="../../d2/db2/structVertexInput.html#a684579699d39336f2454b926829e013b">iK</a> &lt; 16);}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="../../dd/dea/bubble__corrections_8hpp_source.html#l00295">correctionFunctionBubble_REG3_Matsubara_PHS_diff()</a>, and <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00537">VertexInput::iK</a>.</p>
 
@@ -325,7 +330,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00625">625</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00630">630</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 </div>
 </div>
@@ -341,7 +346,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00630">630</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00635">635</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 </div>
 </div>
@@ -357,7 +362,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00624">624</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00629">629</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 </div>
 </div>
@@ -373,7 +378,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00623">623</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00628">628</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 </div>
 </div>
@@ -386,7 +391,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../da/d93/structIndicesSymmetryTransformations.html">IndicesSymmetryTransformations</a></li>
-    <li class="footer">Generated on Tue May 7 2024 11:51:28 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue May 7 2024 12:59:24 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

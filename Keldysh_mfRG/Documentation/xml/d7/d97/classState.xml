@@ -520,14 +520,14 @@
         <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="29">State&lt; Q, differentiated &gt;::config</references>
         <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
+        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="668">fRG_config::epsilon</references>
         <references refid="d2/d4a/classGeneralVertex_1ab3e7f4b48064e39f60605037fa5c0a6a" compoundref="d1/d2d/vertex_8hpp" startline="1041" endline="1044">GeneralVertex&lt; Q, symmtype, differentiated &gt;::initialize</references>
         <references refid="d5/df6/classSelfEnergy_1a1f2c67cf8175e9bb23e8570d92661513" compoundref="d6/d2d/selfenergy_8hpp" startline="166" endline="170">SelfEnergy&lt; Q &gt;::initialize</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d7/d97/classState_1a9e862ceeb13ad0e25034e81e87459265" compoundref="da/d3b/state_8hpp" startline="28">State&lt; Q, differentiated &gt;::Lambda</references>
         <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="17">shift_fgrids_woPHS</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d7/d97/classState_1aa4c9989ea29c6f441ed84ce50334013d" compoundref="da/d3b/state_8hpp" startline="30">State&lt; Q, differentiated &gt;::vertex</references>
         <referencedby refid="d7/d97/classState_1a33aa01d752071307a5680a52d333b249" compoundref="da/d3b/state_8hpp" startline="45" endline="47">State&lt; Q, differentiated &gt;::State</referencedby>
       </memberdef>
@@ -550,7 +550,7 @@
         <location file="correlation_functions/state.hpp" line="73" column="10" bodyfile="correlation_functions/state.hpp" bodystart="180" bodyend="184"/>
         <references refid="d7/d97/classState_1ac71a138762ca873d09d4aa8de65791fd" compoundref="da/d3b/state_8hpp" startline="29">State&lt; Q, differentiated &gt;::config</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
+        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="668">fRG_config::epsilon</references>
         <references refid="d7/d59/data__structures_8hpp_1a5b6ea4ce336353d3b6af014581c163a5" compoundref="d7/d59/data__structures_8hpp" startline="94" endline="94">myreal</references>
         <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="17">shift_fgrids_woPHS</references>

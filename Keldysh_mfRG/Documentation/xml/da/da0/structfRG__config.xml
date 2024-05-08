@@ -11,13 +11,12 @@
         <name>nODE_</name>
         <qualifiedname>fRG_config::nODE_</qualifiedname>
         <briefdescription>
-<para>Maximal number of steps that the ODE solver shall do minus number of checkpoints. </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="647" column="9" bodyfile="data_structures.hpp" bodystart="647" bodyend="-1"/>
+        <location file="data_structures.hpp" line="662" column="9" bodyfile="data_structures.hpp" bodystart="662" bodyend="-1"/>
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</referencedby>
@@ -32,13 +31,12 @@
         <name>epsODE_abs_</name>
         <qualifiedname>fRG_config::epsODE_abs_</qualifiedname>
         <briefdescription>
-<para>absolute accuracy of the ODE solver </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="648" column="12" bodyfile="data_structures.hpp" bodystart="648" bodyend="-1"/>
+        <location file="data_structures.hpp" line="663" column="12" bodyfile="data_structures.hpp" bodystart="663" bodyend="-1"/>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
       </memberdef>
       <memberdef kind="variable" id="da/da0/structfRG__config_1a7d612a661f06e043fb5e1bae19825dc5" prot="public" static="no" mutable="no">
@@ -48,13 +46,12 @@
         <name>epsODE_rel_</name>
         <qualifiedname>fRG_config::epsODE_rel_</qualifiedname>
         <briefdescription>
-<para>relative accuracy of the ODE solver </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="649" column="12" bodyfile="data_structures.hpp" bodystart="649" bodyend="-1"/>
+        <location file="data_structures.hpp" line="664" column="12" bodyfile="data_structures.hpp" bodystart="664" bodyend="-1"/>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
       </memberdef>
       <memberdef kind="variable" id="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" prot="public" static="no" mutable="no">
@@ -65,13 +62,12 @@
         <qualifiedname>fRG_config::U</qualifiedname>
         <initializer>= 1.</initializer>
         <briefdescription>
-<para>impurity on-site interaction strength. Recommendation: set to 1.0 </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="650" column="12" bodyfile="data_structures.hpp" bodystart="650" bodyend="-1"/>
+        <location file="data_structures.hpp" line="665" column="12" bodyfile="data_structures.hpp" bodystart="665" bodyend="-1"/>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
         <referencedby refid="dd/d0a/parquet__solver_8hpp_1a5ab14a76538cdb69001c01f9ebf492ca" compoundref="dd/d0a/parquet__solver_8hpp" startline="346" endline="373">check_selfconsistency_of_K1K2</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a1d40db72d9ef0f9ac66a89215c7e5e48" compoundref="d4/d92/hartree__term_8c_09_09" startline="25" endline="42">Hartree_Solver::compute_Hartree_term</referencedby>
@@ -102,13 +98,12 @@
         <qualifiedname>fRG_config::T</qualifiedname>
         <initializer>= 1.</initializer>
         <briefdescription>
-<para>temperature </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="651" column="12" bodyfile="data_structures.hpp" bodystart="651" bodyend="-1"/>
+        <location file="data_structures.hpp" line="666" column="12" bodyfile="data_structures.hpp" bodystart="666" bodyend="-1"/>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
         <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a1f36d604808ac5fde507c3cca3e5315a" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="856" endline="914">compare_with_FDTs</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1ac5e8d2fd2f8d7b542aa387e3fa8a1679" compoundref="d4/d92/hartree__term_8c_09_09" startline="5" endline="23">Hartree_Solver::compute_filling_oneshot</referencedby>
@@ -127,13 +122,12 @@
         <qualifiedname>fRG_config::Gamma</qualifiedname>
         <initializer>= 1.</initializer>
         <briefdescription>
-<para>hybridization strength </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="652" column="12" bodyfile="data_structures.hpp" bodystart="652" bodyend="-1"/>
+        <location file="data_structures.hpp" line="667" column="12" bodyfile="data_structures.hpp" bodystart="667" bodyend="-1"/>
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
         <referencedby refid="d4/d5e/namespaceflowgrid_1ab85047ef8b48a23fc3b5683801788952" compoundref="d6/d8d/flow__grid_8c_09_09" startline="14" endline="30">flowgrid::get_Lambda_checkpoints</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1a63fedecb55acd79fa86ea399dfe1f11c" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="38" endline="132">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters</referencedby>
@@ -150,13 +144,12 @@
         <qualifiedname>fRG_config::epsilon</qualifiedname>
         <initializer>= -0.5 * <ref refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" kindref="member">U</ref></initializer>
         <briefdescription>
-<para>Impurity on-site energy. </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="653" column="12" bodyfile="data_structures.hpp" bodystart="653" bodyend="-1"/>
+        <location file="data_structures.hpp" line="668" column="12" bodyfile="data_structures.hpp" bodystart="668" bodyend="-1"/>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a671020485b79e01131f9f79bdfc8df85" compoundref="d4/d92/hartree__term_8c_09_09" startline="81" endline="96">Hartree_Solver::compute_Hartree_term_Friedel</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1a2ec9d72693d8351fac847d28ef90fc09" compoundref="d4/d92/hartree__term_8c_09_09" startline="143" endline="155">Hartree_Solver::friedel_sum_rule_check</referencedby>
@@ -176,13 +169,12 @@
         <qualifiedname>fRG_config::save_intermediateResults</qualifiedname>
         <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></initializer>
         <briefdescription>
-<para>determines whether intermediate results during individual steps of the ODE solver shall be saved or not. </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="654" column="10" bodyfile="data_structures.hpp" bodystart="654" bodyend="-1"/>
+        <location file="data_structures.hpp" line="669" column="10" bodyfile="data_structures.hpp" bodystart="669" bodyend="-1"/>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
       </memberdef>
       <memberdef kind="variable" id="da/da0/structfRG__config_1a51d3e7a345c3007c371a06c7db4c1bfa" prot="public" static="no" mutable="no">
@@ -193,13 +185,12 @@
         <qualifiedname>fRG_config::nloops</qualifiedname>
         <initializer>=1</initializer>
         <briefdescription>
-<para>maximal loop order to be computed during the fRG flow </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="655" column="9" bodyfile="data_structures.hpp" bodystart="655" bodyend="-1"/>
+        <location file="data_structures.hpp" line="670" column="9" bodyfile="data_structures.hpp" bodystart="670" bodyend="-1"/>
         <referencedby refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</referencedby>
         <referencedby refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</referencedby>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
@@ -213,20 +204,31 @@
         <qualifiedname>fRG_config::number_of_nodes</qualifiedname>
         <initializer>=1</initializer>
         <briefdescription>
-<para>number of nodes to be used during the computation </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="data_structures.hpp" line="656" column="9" bodyfile="data_structures.hpp" bodystart="656" bodyend="-1"/>
+        <location file="data_structures.hpp" line="671" column="9" bodyfile="data_structures.hpp" bodystart="671" bodyend="-1"/>
         <referencedby refid="df/d0a/main_8cpp_1a7114aa2dd6837734db57667a298dfcc4" compoundref="df/d0a/main_8cpp" startline="24" endline="131">main</referencedby>
       </memberdef>
     </sectiondef>
     <briefdescription>
-<para>config struct to specify parameters need for an fRG run. </para>
     </briefdescription>
     <detaileddescription>
+<para>Struct that holds all essential parameters that are not defined globally. Overrides global parameters, if required.<itemizedlist>
+<listitem><para>nODE_: Maximal number of steps that the ODE solver shall do minus number of checkpoints.</para>
+</listitem><listitem><para>epsODE_abs_: absolute accuracy of the ODE solver</para>
+</listitem><listitem><para>epsODE_rel_: relative accuracy of the ODE solver</para>
+</listitem><listitem><para>U: impurity on-site interaction strength. Recommendation: set to 1.0</para>
+</listitem><listitem><para>T: temperature</para>
+</listitem><listitem><para>Gamma: hybridization strength</para>
+</listitem><listitem><para>epsilon: Impurity on-site energy</para>
+</listitem><listitem><para>save_intermediateResults: determines whether intermediate results during individual steps of the ODE solver shall be saved or not.</para>
+</listitem><listitem><para>nloops: maximal loop order to be computed during the fRG flow</para>
+</listitem><listitem><para>number_of_nodes: number of nodes to be used during the computation </para>
+</listitem></itemizedlist>
+</para>
     </detaileddescription>
     <collaborationgraph>
       <node id="4">
@@ -260,7 +262,7 @@
         <label>int</label>
       </node>
     </collaborationgraph>
-    <location file="data_structures.hpp" line="646" column="1" bodyfile="data_structures.hpp" bodystart="646" bodyend="657"/>
+    <location file="data_structures.hpp" line="661" column="1" bodyfile="data_structures.hpp" bodystart="661" bodyend="672"/>
     <listofallmembers>
       <member refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" prot="public" virt="non-virtual"><scope>fRG_config</scope><name>epsilon</name></member>
       <member refid="da/da0/structfRG__config_1a7105806d089345d509624aad24ed0e52" prot="public" virt="non-virtual"><scope>fRG_config</scope><name>epsODE_abs_</name></member>

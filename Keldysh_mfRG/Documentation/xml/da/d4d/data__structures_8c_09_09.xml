@@ -110,9 +110,9 @@
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a8b82f59edcffae366dfd5732270821ce" compoundref="dd/dea/bubble__corrections_8hpp" startline="48" endline="70">correctionFunctionBubbleAT_REG2_Matsubara_PHS</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a577956afec9c428d5f85b35323fd23a9" compoundref="dd/dea/bubble__corrections_8hpp" startline="327" endline="340">correctionFunctionBubbleAT_REG3_Matsubara_PHS</referencedby>
         <referencedby refid="dd/dea/bubble__corrections_8hpp_1a3b6801846bb5cb11907d139037a490c1" compoundref="dd/dea/bubble__corrections_8hpp" startline="356" endline="369">correctionFunctionBubbleAT_REG4_Matsubara_PHS</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="614" endline="625">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="695" endline="708">Propagator&lt; Q &gt;::GM_REG2</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="727" endline="732">Propagator&lt; Q &gt;::GR_REG3</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a6f6a776e3b8f774a3309aac0f8e1bcfc" compoundref="d5/df7/propagator_8hpp" startline="668" endline="679">Propagator&lt; Q &gt;::G0M_inv_SIAM</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a221cf170483ff4f0ce3fdaf1fd876db7" compoundref="d5/df7/propagator_8hpp" startline="749" endline="762">Propagator&lt; Q &gt;::GM_REG2</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1ad58766e9d35e717c0a7c2a7d3986e4a8" compoundref="d5/df7/propagator_8hpp" startline="781" endline="786">Propagator&lt; Q &gt;::GR_REG3</referencedby>
         <referencedby refid="df/d83/classFrequencyGrid_3_01eliasGrid_01_4_1accf972145186913d2ccaf053d34f99b7" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="10" endline="29">FrequencyGrid&lt; eliasGrid &gt;::initialize_grid</referencedby>
         <referencedby refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" compoundref="dc/d80/data__buffer_8hpp" startline="179" endline="423">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::interpolate_impl</referencedby>
         <referencedby refid="d3/d17/InterpolatorLinOrSloppy_8hpp_1abe049053b951a153eeafc7e38ef45967" compoundref="d3/d17/InterpolatorLinOrSloppy_8hpp" startline="105" endline="119">interpolate_lin1D</referencedby>
@@ -138,7 +138,7 @@
         <referencedby refid="dc/d2d/classfullvert_1a78ecf14103cf47c44635489ba21d615c" compoundref="d1/d2d/vertex_8hpp" startline="1746" endline="1767">fullvert&lt; Q &gt;::right_diff_bare_symmetry_expanded</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1a1517ecda5f1d20e6d934010cec48745e" compoundref="d1/d2d/vertex_8hpp" startline="1409" endline="1446">fullvert&lt; Q &gt;::right_same_bare</referencedby>
         <referencedby refid="dc/d2d/classfullvert_1af914c469c229333915893485a0105d15" compoundref="d1/d2d/vertex_8hpp" startline="1447" endline="1484">fullvert&lt; Q &gt;::right_same_bare</referencedby>
-        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="786" endline="794">Propagator&lt; Q &gt;::SM_REG4</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a2f92f73cd7fb9345d5271022b6e0bd07" compoundref="d5/df7/propagator_8hpp" startline="840" endline="848">Propagator&lt; Q &gt;::SM_REG4</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a4fcc4f7ef56aaf42e4050afb9e27a2e7" compoundref="d0/dac/bubble_8hpp" startline="47" endline="133">Bubble&lt; Q &gt;::value</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a25d4247e974401c26756506a00ce8d76" compoundref="d0/dac/bubble_8hpp" startline="173" endline="197">Bubble&lt; Q &gt;::value</referencedby>
         <referencedby refid="d8/d6e/classBubble_1a1bf888805c3422916edce456cf079e37" compoundref="d0/dac/bubble_8hpp" startline="144" endline="162">Bubble&lt; Q &gt;::value_Matsubara</referencedby>

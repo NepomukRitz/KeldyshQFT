@@ -331,7 +331,7 @@
         </inbodydescription>
         <location file="grids/frequency_grid.hpp" line="206" column="10" bodyfile="grids/frequency_grid.c++" bodystart="427" bodyend="493"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
+        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="667">fRG_config::Gamma</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="35">nBOS</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="37">nBOS2</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" compoundref="d3/d3c/frequency__parameters_8hpp" startline="39">nBOS3</references>

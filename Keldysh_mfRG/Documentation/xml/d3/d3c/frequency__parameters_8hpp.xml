@@ -1192,7 +1192,7 @@
         <inbodydescription>
         </inbodydescription>
         <location file="parameters/frequency_parameters.hpp" line="56" column="15" bodyfile="parameters/frequency_parameters.hpp" bodystart="56" bodyend="-1"/>
-        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="598" endline="605">Propagator&lt; Q &gt;::norm</referencedby>
+        <referencedby refid="d2/d34/classPropagator_1a90c3d7f002b491a30d2d23ad1ae388e6" compoundref="d5/df7/propagator_8hpp" startline="652" endline="659">Propagator&lt; Q &gt;::norm</referencedby>
       </memberdef>
       <memberdef kind="variable" id="d3/d3c/frequency__parameters_8hpp_1a45672349f0fe09504c9bdb610de3244a" prot="public" static="no" constexpr="yes" mutable="no">
         <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>

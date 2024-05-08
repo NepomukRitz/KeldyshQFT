@@ -1009,8 +1009,8 @@
     <member refid="d2/d34/classPropagator_1a878f3624c2c3df7c520b66fcbd8fdcb5" kind="function"><name>Propagator</name></member>
     <member refid="d2/d34/classPropagator_1a8fedbdc63cad1a3952de98354587dffb" kind="function"><name>Propagator</name></member>
     <member refid="d2/d34/classPropagator_1a14d2c483bdd806b4f5d3473a6b1f9202" kind="function"><name>Propagator</name></member>
-    <member refid="d2/d34/classPropagator_1a4cb4d8dd3bc37a818c67d7e2859fe631" kind="function"><name>valsmooth</name></member>
-    <member refid="d2/d34/classPropagator_1a86e91327f6ae47e00aa04e7544a5a512" kind="function"><name>valsmooth_vectorized</name></member>
+    <member refid="d2/d34/classPropagator_1ad239e223fd3bcbc0b27fcfdac040886a" kind="function"><name>valsmooth</name></member>
+    <member refid="d2/d34/classPropagator_1a733b1350a65543d3126d187dd670c3b8" kind="function"><name>valsmooth_vectorized</name></member>
     <member refid="d2/d34/classPropagator_1ac839deb3d533ad677354d0ef15342a72" kind="function"><name>save_propagator_values</name></member>
     <member refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" kind="function"><name>GR</name></member>
     <member refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" kind="function"><name>GK</name></member>

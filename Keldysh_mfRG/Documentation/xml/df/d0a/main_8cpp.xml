@@ -1147,10 +1147,10 @@
         <references refid="d6/d84/namespaceutils_1a8d114e75fc9ba4f8d0eb984183e2bd88" compoundref="d6/d35/util_8c_09_09" startline="115" endline="159">utils::check_input</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" compoundref="d1/df8/master__parameters_8hpp" startline="159">data_dir</references>
-        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
-        <references refid="da/da0/structfRG__config_1a7105806d089345d509624aad24ed0e52" compoundref="d7/d59/data__structures_8hpp" startline="648">fRG_config::epsODE_abs_</references>
-        <references refid="da/da0/structfRG__config_1a7d612a661f06e043fb5e1bae19825dc5" compoundref="d7/d59/data__structures_8hpp" startline="649">fRG_config::epsODE_rel_</references>
-        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="652">fRG_config::Gamma</references>
+        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="668">fRG_config::epsilon</references>
+        <references refid="da/da0/structfRG__config_1a7105806d089345d509624aad24ed0e52" compoundref="d7/d59/data__structures_8hpp" startline="663">fRG_config::epsODE_abs_</references>
+        <references refid="da/da0/structfRG__config_1a7d612a661f06e043fb5e1bae19825dc5" compoundref="d7/d59/data__structures_8hpp" startline="664">fRG_config::epsODE_rel_</references>
+        <references refid="da/da0/structfRG__config_1a424d2ec952ccad62dca3f2333a614541" compoundref="d7/d59/data__structures_8hpp" startline="667">fRG_config::Gamma</references>
         <references refid="d6/d84/namespaceutils_1a1998a1c7f8941816fe6706838b16ca26" compoundref="d6/d35/util_8c_09_09" startline="161" endline="186">utils::generate_data_directory</references>
         <references refid="d6/d84/namespaceutils_1aa0afd0ad2d9e0302051051c6d1d3f1d1" compoundref="d6/d35/util_8c_09_09" startline="188" endline="216">utils::generate_filename</references>
         <references refid="d6/d84/namespaceutils_1a5020e8df3fe9af5189eb7170db07439f" compoundref="d6/d35/util_8c_09_09" startline="48" endline="61">utils::get_cpu_hours</references>
@@ -1159,18 +1159,18 @@
         <references refid="d9/d3a/technical__parameters_8hpp_1af3b424ed200ed63675284e121781a5a2" compoundref="d9/d3a/technical__parameters_8hpp" startline="13">MPI_FLAG</references>
         <references refid="d5/d21/flow_8hpp_1af65e6bb08f81c973893971c898e28298">n_loop_flow</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" compoundref="d3/d3c/frequency__parameters_8hpp" startline="35">nBOS</references>
-        <references refid="da/da0/structfRG__config_1a51d3e7a345c3007c371a06c7db4c1bfa" compoundref="d7/d59/data__structures_8hpp" startline="655">fRG_config::nloops</references>
-        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
-        <references refid="da/da0/structfRG__config_1ad127f84271c1288ef938d2a5379fe74f" compoundref="d7/d59/data__structures_8hpp" startline="656">fRG_config::number_of_nodes</references>
+        <references refid="da/da0/structfRG__config_1a51d3e7a345c3007c371a06c7db4c1bfa" compoundref="d7/d59/data__structures_8hpp" startline="670">fRG_config::nloops</references>
+        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="662">fRG_config::nODE_</references>
+        <references refid="da/da0/structfRG__config_1ad127f84271c1288ef938d2a5379fe74f" compoundref="d7/d59/data__structures_8hpp" startline="671">fRG_config::number_of_nodes</references>
         <references refid="d1/df8/master__parameters_8hpp_1ac209459b6113297c093b5c50febc47ad" compoundref="d1/df8/master__parameters_8hpp" startline="148">PARTICLE_HOLE_SYMMETRY</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d6/d84/namespaceutils_1a921ff00edf18d90a206858b694b76d7f" compoundref="d6/d35/util_8c_09_09" startline="218" endline="245">utils::print_job_info</references>
         <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
         <references refid="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425" compoundref="d5/d94/parquet__solver_8c_09_09" startline="106" endline="134">run_parquet</references>
-        <references refid="da/da0/structfRG__config_1ae93bc6e0d79e58cd7993545070f97daa" compoundref="d7/d59/data__structures_8hpp" startline="654">fRG_config::save_intermediateResults</references>
+        <references refid="da/da0/structfRG__config_1ae93bc6e0d79e58cd7993545070f97daa" compoundref="d7/d59/data__structures_8hpp" startline="669">fRG_config::save_intermediateResults</references>
         <references refid="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4" compoundref="d5/d0d/perturbation__theory_8hpp" startline="156" endline="177">sopt_state</references>
-        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="651">fRG_config::T</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="666">fRG_config::T</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9" compoundref="d5/de4/hdf5__routines_8hpp" startline="846" endline="858">write_state_to_hdf</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
       </memberdef>

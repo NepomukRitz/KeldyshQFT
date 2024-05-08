@@ -145,7 +145,7 @@
         <references refid="d7/dbe/structmfRG__record_1a97091e7e3e8e684f3f40201346b211fe" compoundref="d8/dea/right__hand__sides_8hpp" startline="69">mfRG_record&lt; Q &gt;::dPsi_1loop</references>
         <references refid="d7/dbe/structmfRG__record_1a855d46f3255d86833755edbf794f435e" compoundref="d8/dea/right__hand__sides_8hpp" startline="74">mfRG_record&lt; Q &gt;::dSigma_correction</references>
         <references refid="d7/d97/classState_1a9e862ceeb13ad0e25034e81e87459265" compoundref="da/d3b/state_8hpp" startline="28">State&lt; Q, differentiated &gt;::Lambda</references>
-        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="647">fRG_config::nODE_</references>
+        <references refid="da/da0/structfRG__config_1a020eced075df0c4404e203c251098e46" compoundref="d7/d59/data__structures_8hpp" startline="662">fRG_config::nODE_</references>
         <references refid="d7/d97/classState_1ac676b4cfa39fb1439b345466ed92113f" compoundref="da/d3b/state_8hpp" startline="31">State&lt; Q, differentiated &gt;::selfenergy</references>
         <references refid="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9" compoundref="d1/df8/master__parameters_8hpp" startline="118" endline="122">U_NRG</references>
       </memberdef>

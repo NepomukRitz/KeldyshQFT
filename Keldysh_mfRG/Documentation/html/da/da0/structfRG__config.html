@@ -98,48 +98,46 @@ $(function(){initNavTree('da/da0/structfRG__config.html','../../'); initResizabl
 </div><!--header-->
 <div class="contents">
 
-<p>config struct to specify parameters need for an fRG run.  
- <a href="#details">More...</a></p>
-
 <p><code>#include &lt;<a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a020eced075df0c4404e203c251098e46" id="r_a020eced075df0c4404e203c251098e46"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a020eced075df0c4404e203c251098e46">nODE_</a></td></tr>
-<tr class="memdesc:a020eced075df0c4404e203c251098e46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximal number of steps that the ODE solver shall do minus number of checkpoints.  <br /></td></tr>
 <tr class="separator:a020eced075df0c4404e203c251098e46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7105806d089345d509624aad24ed0e52" id="r_a7105806d089345d509624aad24ed0e52"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7105806d089345d509624aad24ed0e52">epsODE_abs_</a></td></tr>
-<tr class="memdesc:a7105806d089345d509624aad24ed0e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">absolute accuracy of the ODE solver  <br /></td></tr>
 <tr class="separator:a7105806d089345d509624aad24ed0e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d612a661f06e043fb5e1bae19825dc5" id="r_a7d612a661f06e043fb5e1bae19825dc5"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7d612a661f06e043fb5e1bae19825dc5">epsODE_rel_</a></td></tr>
-<tr class="memdesc:a7d612a661f06e043fb5e1bae19825dc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">relative accuracy of the ODE solver  <br /></td></tr>
 <tr class="separator:a7d612a661f06e043fb5e1bae19825dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9afaf64e087c69bc4f16e49c132b592" id="r_ad9afaf64e087c69bc4f16e49c132b592"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad9afaf64e087c69bc4f16e49c132b592">U</a> = 1.</td></tr>
-<tr class="memdesc:ad9afaf64e087c69bc4f16e49c132b592"><td class="mdescLeft">&#160;</td><td class="mdescRight">impurity on-site interaction strength. Recommendation: set to 1.0  <br /></td></tr>
 <tr class="separator:ad9afaf64e087c69bc4f16e49c132b592"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a650ac47628d97c0bd647de9aef8a7504" id="r_a650ac47628d97c0bd647de9aef8a7504"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a650ac47628d97c0bd647de9aef8a7504">T</a> = 1.</td></tr>
-<tr class="memdesc:a650ac47628d97c0bd647de9aef8a7504"><td class="mdescLeft">&#160;</td><td class="mdescRight">temperature  <br /></td></tr>
 <tr class="separator:a650ac47628d97c0bd647de9aef8a7504"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a424d2ec952ccad62dca3f2333a614541" id="r_a424d2ec952ccad62dca3f2333a614541"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a424d2ec952ccad62dca3f2333a614541">Gamma</a> = 1.</td></tr>
-<tr class="memdesc:a424d2ec952ccad62dca3f2333a614541"><td class="mdescLeft">&#160;</td><td class="mdescRight">hybridization strength  <br /></td></tr>
 <tr class="separator:a424d2ec952ccad62dca3f2333a614541"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a612c073aced64bd84466bbb875ff3f" id="r_a4a612c073aced64bd84466bbb875ff3f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a612c073aced64bd84466bbb875ff3f">epsilon</a> = -0.5 * <a class="el" href="#ad9afaf64e087c69bc4f16e49c132b592">U</a></td></tr>
-<tr class="memdesc:a4a612c073aced64bd84466bbb875ff3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Impurity on-site energy.  <br /></td></tr>
 <tr class="separator:a4a612c073aced64bd84466bbb875ff3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae93bc6e0d79e58cd7993545070f97daa" id="r_ae93bc6e0d79e58cd7993545070f97daa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/db9/classbool.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae93bc6e0d79e58cd7993545070f97daa">save_intermediateResults</a> = <a class="el" href="../../dd/dea/bubble__corrections_8hpp.html#aff27784f97591f505f77ff0065ab57af">false</a></td></tr>
-<tr class="memdesc:ae93bc6e0d79e58cd7993545070f97daa"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines whether intermediate results during individual steps of the ODE solver shall be saved or not.  <br /></td></tr>
 <tr class="separator:ae93bc6e0d79e58cd7993545070f97daa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51d3e7a345c3007c371a06c7db4c1bfa" id="r_a51d3e7a345c3007c371a06c7db4c1bfa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51d3e7a345c3007c371a06c7db4c1bfa">nloops</a> =1</td></tr>
-<tr class="memdesc:a51d3e7a345c3007c371a06c7db4c1bfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">maximal loop order to be computed during the fRG flow  <br /></td></tr>
 <tr class="separator:a51d3e7a345c3007c371a06c7db4c1bfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad127f84271c1288ef938d2a5379fe74f" id="r_ad127f84271c1288ef938d2a5379fe74f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad127f84271c1288ef938d2a5379fe74f">number_of_nodes</a> =1</td></tr>
-<tr class="memdesc:ad127f84271c1288ef938d2a5379fe74f"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of nodes to be used during the computation  <br /></td></tr>
 <tr class="separator:ad127f84271c1288ef938d2a5379fe74f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>config struct to specify parameters need for an fRG run. </p>
+<div class="textblock"><p>Struct that holds all essential parameters that are not defined globally. Overrides global parameters, if required.</p><ul>
+<li>nODE_: Maximal number of steps that the ODE solver shall do minus number of checkpoints.</li>
+<li>epsODE_abs_: absolute accuracy of the ODE solver</li>
+<li>epsODE_rel_: relative accuracy of the ODE solver</li>
+<li>U: impurity on-site interaction strength. Recommendation: set to 1.0</li>
+<li>T: temperature</li>
+<li>Gamma: hybridization strength</li>
+<li>epsilon: Impurity on-site energy</li>
+<li>save_intermediateResults: determines whether intermediate results during individual steps of the ODE solver shall be saved or not.</li>
+<li>nloops: maximal loop order to be computed during the fRG flow</li>
+<li>number_of_nodes: number of nodes to be used during the computation </li>
+</ul>
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00646">646</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00661">661</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a4a612c073aced64bd84466bbb875ff3f" name="a4a612c073aced64bd84466bbb875ff3f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4a612c073aced64bd84466bbb875ff3f">&#9670;&#160;</a></span>epsilon</h2>
@@ -153,9 +151,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Impurity on-site energy. </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00653">653</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00668">668</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00115">utils::check_input()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00081">Hartree_Solver::compute_Hartree_term_Friedel()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00143">Hartree_Solver::friedel_sum_rule_check()</a>, <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00188">utils::generate_filename()</a>, <a class="el" href="../../da/d3b/state_8hpp_source.html#l00150">State&lt; Q, differentiated &gt;::initialize()</a>, <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00392">read_config_from_hdf()</a>, <a class="el" href="../../d5/d94/parquet__solver_8c_09_09_source.html#l00106">run_parquet()</a>, <a class="el" href="../../da/d3b/state_8hpp_source.html#l00180">State&lt; Q, differentiated &gt;::update_grid()</a>, and <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00157">Hartree_Solver::write_out_propagators()</a>.</p>
 
@@ -173,9 +169,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>absolute accuracy of the ODE solver </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00648">648</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00663">663</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>.</p>
 
@@ -193,9 +187,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>relative accuracy of the ODE solver </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00649">649</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00664">664</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>.</p>
 
@@ -213,9 +205,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>hybridization strength </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00652">652</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00667">667</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00188">utils::generate_filename()</a>, <a class="el" href="../../d6/d8d/flow__grid_8c_09_09_source.html#l00014">flowgrid::get_Lambda_checkpoints()</a>, <a class="el" href="../../d5/d3d/frequency__grid_8c_09_09_source.html#l00038">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters()</a>, <a class="el" href="../../d5/d3d/frequency__grid_8c_09_09_source.html#l00427">FrequencyGrid&lt; hybridGrid &gt;::guess_essential_parameters()</a>, <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00392">read_config_from_hdf()</a>, and <a class="el" href="../../d5/d94/parquet__solver_8c_09_09_source.html#l00106">run_parquet()</a>.</p>
 
@@ -233,9 +223,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>maximal loop order to be computed during the fRG flow </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00655">655</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00670">670</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00115">utils::check_input()</a>, <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00188">utils::generate_filename()</a>, <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>, and <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00392">read_config_from_hdf()</a>.</p>
 
@@ -253,9 +241,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Maximal number of steps that the ODE solver shall do minus number of checkpoints. </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00647">647</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00662">662</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00188">utils::generate_filename()</a>, <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>, <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00218">utils::print_job_info()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00392">read_config_from_hdf()</a>, <a class="el" href="../../d8/dea/right__hand__sides_8hpp_source.html#l00076">mfRG_record&lt; Q &gt;::save_states()</a>, and <a class="el" href="../../d8/dea/right__hand__sides_8hpp_source.html#l00138">mfRG_stats::write_to_hdf()</a>.</p>
 
@@ -273,9 +259,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>number of nodes to be used during the computation </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00656">656</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00671">671</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>.</p>
 
@@ -293,9 +277,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>determines whether intermediate results during individual steps of the ODE solver shall be saved or not. </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00654">654</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00669">669</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>.</p>
 
@@ -313,9 +295,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>temperature </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00651">651</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00666">666</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00115">utils::check_input()</a>, <a class="el" href="../../d1/d75/causality__FDT__checks_8hpp_source.html#l00856">compare_with_FDTs()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00005">Hartree_Solver::compute_filling_oneshot()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00182">Hartree_Solver::fermi_distribution()</a>, <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00188">utils::generate_filename()</a>, <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>, <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00218">utils::print_job_info()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00392">read_config_from_hdf()</a>, and <a class="el" href="../../d5/d94/parquet__solver_8c_09_09_source.html#l00106">run_parquet()</a>.</p>
 
@@ -333,9 +313,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>impurity on-site interaction strength. Recommendation: set to 1.0 </p>
-
-<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00650">650</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d7/d59/data__structures_8hpp_source.html#l00665">665</a> of file <a class="el" href="../../d7/d59/data__structures_8hpp_source.html">data_structures.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00115">utils::check_input()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00346">check_selfconsistency_of_K1K2()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00025">Hartree_Solver::compute_Hartree_term()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00044">Hartree_Solver::compute_Hartree_term_bracketing()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00081">Hartree_Solver::compute_Hartree_term_Friedel()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00100">Hartree_Solver::compute_Hartree_term_oneshot()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00092">compute_SDE_impl()</a>, <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00143">Hartree_Solver::friedel_sum_rule_check()</a>, <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00188">utils::generate_filename()</a>, <a class="el" href="../../d6/d8d/flow__grid_8c_09_09_source.html#l00014">flowgrid::get_Lambda_checkpoints()</a>, <a class="el" href="../../d5/d3d/frequency__grid_8c_09_09_source.html#l00038">FrequencyGrid&lt; eliasGrid &gt;::guess_essential_parameters()</a>, <a class="el" href="../../d1/db3/hartree__term_8hpp_source.html#l00036">Hartree_Solver::Hartree_Solver()</a>, <a class="el" href="../../d1/db3/hartree__term_8hpp_source.html#l00051">Hartree_Solver::Hartree_Solver()</a>, <a class="el" href="../../da/d3b/state_8hpp_source.html#l00150">State&lt; Q, differentiated &gt;::initialize()</a>, <a class="el" href="../../df/d0a/main_8cpp_source.html#l00024">main()</a>, <a class="el" href="../../d5/d94/parquet__solver_8c_09_09_source.html#l00003">parquet_checks()</a>, <a class="el" href="../../d6/d35/util_8c_09_09_source.html#l00218">utils::print_job_info()</a>, <a class="el" href="../../d5/d4f/hdf5__routines_8c_09_09_source.html#l00392">read_config_from_hdf()</a>, <a class="el" href="../../d5/d94/parquet__solver_8c_09_09_source.html#l00106">run_parquet()</a>, <a class="el" href="../../dd/d0a/parquet__solver_8hpp_source.html#l00549">susceptibilities_postprocessing()</a>, and <a class="el" href="../../d4/d92/hartree__term_8c_09_09_source.html#l00157">Hartree_Solver::write_out_propagators()</a>.</p>
 
@@ -350,7 +328,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../da/da0/structfRG__config.html">fRG_config</a></li>
-    <li class="footer">Generated on Tue May 7 2024 11:51:28 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue May 7 2024 12:59:24 for SIAM-Keldysh-mfRG by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

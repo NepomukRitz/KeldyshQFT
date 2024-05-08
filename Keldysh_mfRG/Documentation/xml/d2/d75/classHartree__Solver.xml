@@ -207,7 +207,7 @@
         <location file="perturbation_theory_and_parquet/hartree_term.hpp" line="32" column="12" bodyfile="perturbation_theory_and_parquet/hartree_term.c++" bodystart="182" bodyend="194"/>
         <references refid="d2/d75/classHartree__Solver_1acd8bb906b38a1b472ffe40f1341f687c" compoundref="d1/db3/hartree__term_8hpp" startline="19">config</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
-        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="651">fRG_config::T</references>
+        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="666">fRG_config::T</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
       </memberdef>
     </sectiondef>
@@ -242,7 +242,7 @@
         <references refid="d3/df3/classInterpolator_1a26f6d3b803b2279d27484071988e7b55" compoundref="dc/d80/data__buffer_8hpp" startline="42" endline="42">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::initInterpolator</references>
         <references refid="d2/d75/classHartree__Solver_1acbc52a294302d511b506476ac40a22d3" compoundref="d1/db3/hartree__term_8hpp" startline="34">selfEnergy</references>
         <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="33">SelfEnergy&lt; Q &gt;::Sigma</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
       </memberdef>
       <memberdef kind="function" id="d2/d75/classHartree__Solver_1a86bda86b4b35d79187a6fb3687401ae1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -319,7 +319,7 @@
         <references refid="d5/df6/classSelfEnergy_1ac0be622ed99ea87af0e3a03e23df4956" compoundref="d6/d2d/selfenergy_8hpp" startline="33">SelfEnergy&lt; Q &gt;::Sigma</references>
         <references refid="d2/d75/classHartree__Solver_1a7c77b42c30e1071ce681bdbddaeaa64a" compoundref="d1/db3/hartree__term_8hpp" startline="29">test_different_Keldysh_component</references>
         <references refid="d2/d75/classHartree__Solver_1ae183b2ef06a76619c578253c12982dbc" compoundref="d1/db3/hartree__term_8hpp" startline="30">test_Keldysh_component</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
       </memberdef>
       <memberdef kind="function" id="d2/d75/classHartree__Solver_1ac5e8d2fd2f8d7b542aa387e3fa8a1679" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
@@ -340,7 +340,7 @@
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
         <references refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="42">POSINTRANGE</references>
         <references refid="d2/d75/classHartree__Solver_1a1f01f6cf7ac0c258e53108e96952bcc6" compoundref="d1/db3/hartree__term_8hpp" startline="27">prop_type</references>
-        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="651">fRG_config::T</references>
+        <references refid="da/da0/structfRG__config_1a650ac47628d97c0bd647de9aef8a7504" compoundref="d7/d59/data__structures_8hpp" startline="666">fRG_config::T</references>
         <references refid="d2/d75/classHartree__Solver_1a851521b6503372af7c863b9aeed7a097" compoundref="d1/db3/hartree__term_8hpp" startline="24">v_lower</references>
         <references refid="d2/d75/classHartree__Solver_1aebd3f814e95203d68822e66e910a55d5" compoundref="d1/db3/hartree__term_8hpp" startline="25">v_upper</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
@@ -375,7 +375,7 @@
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" compoundref="d0/d3f/util_8hpp" startline="42" endline="53">utils::print_add</references>
         <references refid="d2/d75/classHartree__Solver_1acbc52a294302d511b506476ac40a22d3" compoundref="d1/db3/hartree__term_8hpp" startline="34">selfEnergy</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
       </memberdef>
       <memberdef kind="function" id="d2/d75/classHartree__Solver_1ae2d914bd8a937dc7eabd1033b8100d5d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
@@ -414,7 +414,7 @@
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
         <references refid="d6/d84/namespaceutils_1abc69e50b2a20892c52c84cee55052ffe" compoundref="d0/d3f/util_8hpp" startline="42" endline="53">utils::print_add</references>
         <references refid="d2/d75/classHartree__Solver_1acbc52a294302d511b506476ac40a22d3" compoundref="d1/db3/hartree__term_8hpp" startline="34">selfEnergy</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d75/classHartree__Solver_1a671020485b79e01131f9f79bdfc8df85" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -438,8 +438,8 @@
         <references refid="d2/d75/classHartree__Solver_1acd8bb906b38a1b472ffe40f1341f687c" compoundref="d1/db3/hartree__term_8hpp" startline="19">config</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/d75/classHartree__Solver_1a87bd118da5e6996a60516a70d5a4ab33" compoundref="d1/db3/hartree__term_8hpp" startline="20">Delta</references>
-        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="668">fRG_config::epsilon</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
       </memberdef>
       <memberdef kind="function" id="d2/d75/classHartree__Solver_1a81f76908acbe7c69cfb06a34611a192e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -457,7 +457,7 @@
         <location file="perturbation_theory_and_parquet/hartree_term.hpp" line="90" column="12" bodyfile="perturbation_theory_and_parquet/hartree_term.c++" bodystart="100" bodyend="102"/>
         <references refid="d2/d75/classHartree__Solver_1ac5e8d2fd2f8d7b542aa387e3fa8a1679" compoundref="d4/d92/hartree__term_8c_09_09" startline="5" endline="23">compute_filling_oneshot</references>
         <references refid="d2/d75/classHartree__Solver_1acd8bb906b38a1b472ffe40f1341f687c" compoundref="d1/db3/hartree__term_8hpp" startline="19">config</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <referencedby refid="d2/d75/classHartree__Solver_1a401fc5a73008a43b96f23b7af958db7f" compoundref="d1/db3/hartree__term_8hpp" startline="51" endline="82">Hartree_Solver</referencedby>
       </memberdef>
       <memberdef kind="function" id="d2/d75/classHartree__Solver_1a6a8890e00ddebaf50cd2c2a985e9c361" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
@@ -480,12 +480,12 @@
         <location file="perturbation_theory_and_parquet/hartree_term.hpp" line="91" column="10" bodyfile="perturbation_theory_and_parquet/hartree_term.c++" bodystart="104" bodyend="141"/>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
-        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="295" endline="302">Propagator&lt; Q &gt;::GM</references>
-        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="190" endline="200">Propagator&lt; Q &gt;::GR</references>
+        <references refid="d2/d34/classPropagator_1a04e05adfaa5846f1ba8fdb3ac26ba2b0" compoundref="d5/df7/propagator_8hpp" startline="349" endline="356">Propagator&lt; Q &gt;::GM</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="244" endline="254">Propagator&lt; Q &gt;::GR</references>
         <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
-        <references refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="243" endline="275">Propagator&lt; Q &gt;::SK</references>
-        <references refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="305" endline="312">Propagator&lt; Q &gt;::SM</references>
-        <references refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="230" endline="240">Propagator&lt; Q &gt;::SR</references>
+        <references refid="d2/d34/classPropagator_1a6287870a3e08981dd190b7b5f6a4cb55" compoundref="d5/df7/propagator_8hpp" startline="297" endline="329">Propagator&lt; Q &gt;::SK</references>
+        <references refid="d2/d34/classPropagator_1ad14c4283d9317e25b7454ed6115497df" compoundref="d5/df7/propagator_8hpp" startline="359" endline="366">Propagator&lt; Q &gt;::SM</references>
+        <references refid="d2/d34/classPropagator_1aa98f8e50066433690e258358defad021" compoundref="d5/df7/propagator_8hpp" startline="284" endline="294">Propagator&lt; Q &gt;::SR</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
       </memberdef>
       <memberdef kind="function" id="d2/d75/classHartree__Solver_1a2ec9d72693d8351fac847d28ef90fc09" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
@@ -504,10 +504,10 @@
         <references refid="d2/d75/classHartree__Solver_1acd8bb906b38a1b472ffe40f1341f687c" compoundref="d1/db3/hartree__term_8hpp" startline="19">config</references>
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d2/d75/classHartree__Solver_1a87bd118da5e6996a60516a70d5a4ab33" compoundref="d1/db3/hartree__term_8hpp" startline="20">Delta</references>
-        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
+        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="668">fRG_config::epsilon</references>
         <references refid="d2/d75/classHartree__Solver_1aa01174ca46f60cbbc2465b7b6e84e211" compoundref="d1/db3/hartree__term_8hpp" startline="22">filling</references>
         <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
         <referencedby refid="d2/d75/classHartree__Solver_1a1d40db72d9ef0f9ac66a89215c7e5e48" compoundref="d4/d92/hartree__term_8c_09_09" startline="25" endline="42">compute_Hartree_term</referencedby>
         <referencedby refid="d2/d75/classHartree__Solver_1ae2d914bd8a937dc7eabd1033b8100d5d" compoundref="d4/d92/hartree__term_8c_09_09" startline="44" endline="78">compute_Hartree_term_bracketing</referencedby>
@@ -529,13 +529,13 @@
         <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
         <references refid="d1/df8/master__parameters_8hpp_1a1b384aea75d8da97c90c700d40dc19d2" compoundref="d1/df8/master__parameters_8hpp" startline="159">data_dir</references>
         <references refid="d2/d75/classHartree__Solver_1a87bd118da5e6996a60516a70d5a4ab33" compoundref="d1/db3/hartree__term_8hpp" startline="20">Delta</references>
-        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="653">fRG_config::epsilon</references>
-        <references refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="203" endline="226">Propagator&lt; Q &gt;::GK</references>
-        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="190" endline="200">Propagator&lt; Q &gt;::GR</references>
+        <references refid="da/da0/structfRG__config_1a4a612c073aced64bd84466bbb875ff3f" compoundref="d7/d59/data__structures_8hpp" startline="668">fRG_config::epsilon</references>
+        <references refid="d2/d34/classPropagator_1a7ba0e8319f75d4d7b2006b23a62da6e7" compoundref="d5/df7/propagator_8hpp" startline="257" endline="280">Propagator&lt; Q &gt;::GK</references>
+        <references refid="d2/d34/classPropagator_1a919bf81b77f569c10b00457cddce1ac4" compoundref="d5/df7/propagator_8hpp" startline="244" endline="254">Propagator&lt; Q &gt;::GR</references>
         <references refid="d2/d75/classHartree__Solver_1a3d5d3eba1e09b2c1fc90293a3c5180c1" compoundref="d1/db3/hartree__term_8hpp" startline="18">Lambda</references>
         <references refid="d2/d34/classPropagator_1a3c6ea2e6484393ae6b8dae0e93b52ada" compoundref="d5/df7/propagator_8hpp" startline="38">Propagator&lt; Q &gt;::selfenergy</references>
         <references refid="d2/d75/classHartree__Solver_1acbc52a294302d511b506476ac40a22d3" compoundref="d1/db3/hartree__term_8hpp" startline="34">selfEnergy</references>
-        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="650">fRG_config::U</references>
+        <references refid="da/da0/structfRG__config_1ad9afaf64e087c69bc4f16e49c132b592" compoundref="d7/d59/data__structures_8hpp" startline="665">fRG_config::U</references>
         <references refid="d9/d8b/write__data2file_8c_09_09_1a9992b4a1a01038cb7f3f462bb3c2e63c" compoundref="d9/d8b/write__data2file_8c_09_09" startline="19" endline="37">write_h5_rvecs</references>
         <references refid="d3/d22/r__vertex_8hpp_1a2337339bdea1a060b1205e7bcba3bb20" compoundref="d5/de4/hdf5__routines_8hpp" startline="425" endline="440">write_to_hdf</references>
       </memberdef>

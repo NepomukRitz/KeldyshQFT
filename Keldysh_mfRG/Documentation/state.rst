@@ -1,5 +1,0 @@
-State
-=====
-
-.. doxygenclass:: State
-   :members:
