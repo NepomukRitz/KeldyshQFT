@@ -161,7 +161,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 find_package(Sphinx REQUIRED)
 
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/Documentation)
-set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/../Documentation/sphinx)
+set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/../../docs)
 
 add_custom_target(Sphinx ALL
                   COMMAND

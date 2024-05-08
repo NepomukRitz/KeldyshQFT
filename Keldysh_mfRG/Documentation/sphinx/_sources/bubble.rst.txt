@@ -1,5 +1,0 @@
-Bubble
-======
-
-.. doxygenclass:: Bubble
-   :members:
