@@ -8,4 +8,4 @@ Published under the [MIT license](LICENSE.md).
 
 # How to cite
 
-If you wish to cite this software, please use the metadata provided in the [citation file](CITATION.cff)
+If you wish to cite this software, please use the metadata provided in the [citation file](CITATION.cff).

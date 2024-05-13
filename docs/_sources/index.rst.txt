@@ -25,10 +25,6 @@ TODO: Add introductory paragraph
    algorithms
 
 
-
-Indices and tables
-==================
+----------------
 
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
