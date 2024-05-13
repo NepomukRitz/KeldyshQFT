@@ -1,0 +1,711 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dd/de3/template__utils_8hpp" kind="file" language="C++">
+    <compoundname>template_utils.hpp</compoundname>
+    <includedby refid="da/dbc/data__container_8hpp" local="yes">data_container.hpp</includedby>
+    <includedby refid="de/dbb/math__utils_8hpp" local="yes">math_utils.hpp</includedby>
+    <includedby refid="df/da4/multiarray_8hpp" local="yes">multiarray.hpp</includedby>
+    <invincdepgraph>
+      <node id="31">
+        <label>ODE_solvers.c++</label>
+        <link refid="de/dd8/ODE__solvers_8c_09_09"/>
+      </node>
+      <node id="30">
+        <label>ODE_solvers.hpp</label>
+        <link refid="da/dc3/ODE__solvers_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>old_solvers.hpp</label>
+        <link refid="dd/df7/old__solvers_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>bubble_corrections.c++</label>
+        <link refid="d7/d3a/bubble__corrections_8c_09_09"/>
+      </node>
+      <node id="18">
+        <label>bubble_corrections.hpp</label>
+        <link refid="dd/dea/bubble__corrections_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>correction_functions.hpp</label>
+        <link refid="d2/df0/correction__functions_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>loop_corrections.c++</label>
+        <link refid="d7/df0/loop__corrections_8c_09_09"/>
+      </node>
+      <node id="25">
+        <label>loop_corrections.hpp</label>
+        <link refid="d0/d0e/loop__corrections_8hpp"/>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>bubble.hpp</label>
+        <link refid="d0/dac/bubble_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>bubble_function.hpp</label>
+        <link refid="de/de8/bubble__function_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>integrand.hpp</label>
+        <link refid="df/d83/integrand_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>r_vertex.hpp</label>
+        <link refid="d3/d22/r__vertex_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>vertex.hpp</label>
+        <link refid="d1/d2d/vertex_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>data_buffer.hpp</label>
+        <link refid="dc/d80/data__buffer_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>data_container.hpp</label>
+        <link refid="da/dbc/data__container_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>state.hpp</label>
+        <link refid="da/d3b/state_8hpp"/>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="41">
+        <label>propagator.c++</label>
+        <link refid="de/d5d/propagator_8c_09_09"/>
+      </node>
+      <node id="40">
+        <label>propagator.hpp</label>
+        <link refid="d5/df7/propagator_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>selfenergy.hpp</label>
+        <link refid="d6/d2d/selfenergy_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
+        <label>flow_grid.c++</label>
+        <link refid="d6/d8d/flow__grid_8c_09_09"/>
+      </node>
+      <node id="43">
+        <label>flow_grid.hpp</label>
+        <link refid="d5/dd1/flow__grid_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="51">
+        <label>frequency_grid.c++</label>
+        <link refid="d5/d3d/frequency__grid_8c_09_09"/>
+      </node>
+      <node id="45">
+        <label>frequency_grid.hpp</label>
+        <link refid="d5/d39/frequency__grid_8hpp"/>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="54">
+        <label>integrator.c++</label>
+        <link refid="d7/d61/integrator_8c_09_09"/>
+      </node>
+      <node id="53">
+        <label>integrator.hpp</label>
+        <link refid="dd/d1f/integrator_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="55">
+        <label>old_integrators.c++</label>
+        <link refid="de/d11/old__integrators_8c_09_09"/>
+      </node>
+      <node id="52">
+        <label>old_integrators.hpp</label>
+        <link refid="d7/d65/old__integrators_8hpp"/>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+      </node>
+      <node id="46">
+        <label>InterpolatorLinOrSloppy.hpp</label>
+        <link refid="d3/d17/InterpolatorLinOrSloppy_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>integrandSE.hpp</label>
+        <link refid="de/d65/integrandSE_8hpp"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>loop.c++</label>
+        <link refid="d5/dae/loop_8c_09_09"/>
+      </node>
+      <node id="23">
+        <label>loop.hpp</label>
+        <link refid="d8/d1d/loop_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
+      </node>
+      <node id="9">
+        <label>flow.hpp</label>
+        <link refid="d5/d21/flow_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>right_hand_sides.hpp</label>
+        <link refid="d8/dea/right__hand__sides_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="58">
+        <label>multiarray.hpp</label>
+        <link refid="df/da4/multiarray_8hpp"/>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="57">
+        <label>ranged_view.hpp</label>
+        <link refid="dd/df3/ranged__view_8hpp"/>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>hartree_term.c++</label>
+        <link refid="d4/d92/hartree__term_8c_09_09"/>
+      </node>
+      <node id="39">
+        <label>hartree_term.hpp</label>
+        <link refid="d1/db3/hartree__term_8hpp"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>parquet_solver.c++</label>
+        <link refid="d5/d94/parquet__solver_8c_09_09"/>
+      </node>
+      <node id="8">
+        <label>parquet_solver.hpp</label>
+        <link refid="dd/d0a/parquet__solver_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>perturbation_theory.hpp</label>
+        <link refid="d5/d0d/perturbation__theory_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>KramersKronig.c++</label>
+        <link refid="d7/d43/KramersKronig_8c_09_09"/>
+      </node>
+      <node id="28">
+        <label>KramersKronig.hpp</label>
+        <link refid="d1/db3/KramersKronig_8hpp"/>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="34">
+        <label>causality_FDT_checks.c++</label>
+        <link refid="d8/dca/causality__FDT__checks_8c_09_09"/>
+      </node>
+      <node id="33">
+        <label>causality_FDT_checks.hpp</label>
+        <link refid="d1/d75/causality__FDT__checks_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>main_postproc.cpp</label>
+        <link refid="dd/d00/main__postproc_8cpp"/>
+      </node>
+      <node id="15">
+        <label>postprocessing.hpp</label>
+        <link refid="d4/d81/postprocessing_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>sanity_check.hpp</label>
+        <link refid="d2/d3f/sanity__check_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="48">
+        <label>Keldysh_symmetries.c++</label>
+        <link refid="d4/de0/Keldysh__symmetries_8c_09_09"/>
+      </node>
+      <node id="47">
+        <label>Keldysh_symmetries.hpp</label>
+        <link refid="d2/d1a/Keldysh__symmetries_8hpp"/>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
+      <node id="50">
+        <label>symmetry_transformations.c++</label>
+        <link refid="d5/def/symmetry__transformations_8c_09_09"/>
+      </node>
+      <node id="49">
+        <label>symmetry_transformations.hpp</label>
+        <link refid="db/d7d/symmetry__transformations_8hpp"/>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+      </node>
+      <node id="32">
+        <label>anderson_acceleration.hpp</label>
+        <link refid="d6/d7b/anderson__acceleration_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>hdf5_routines.c++</label>
+        <link refid="d5/d4f/hdf5__routines_8c_09_09"/>
+      </node>
+      <node id="36">
+        <label>hdf5_routines.hpp</label>
+        <link refid="d5/de4/hdf5__routines_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="56">
+        <label>math_utils.c++</label>
+        <link refid="df/d31/math__utils_8c_09_09"/>
+      </node>
+      <node id="42">
+        <label>math_utils.hpp</label>
+        <link refid="de/dbb/math__utils_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>template_utils.hpp</label>
+        <link refid="dd/de3/template__utils_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>bool...</type>
+            <declname>bs</declname>
+            <defname>bs</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">std::is_same</ref>&lt; <ref refid="d6/de5/structbool__pack" kindref="compound">bool_pack</ref>&lt; bs..., <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref> &gt;, <ref refid="d6/de5/structbool__pack" kindref="compound">bool_pack</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref>, bs... &gt; &gt;</type>
+        <definition>using all_true =  std::is_same&lt;bool_pack&lt;bs..., true&gt;, bool_pack&lt;true, bs...&gt;&gt;</definition>
+        <argsstring></argsstring>
+        <name>all_true</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/template_utils.hpp" line="7" column="1" bodyfile="utilities/template_utils.hpp" bodystart="7" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="dd/de3/template__utils_8hpp_1a0ac09345c826fb8f02936a52f0704860" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>class...</type>
+            <declname>Ts</declname>
+            <defname>Ts</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" kindref="member">all_true</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">std::is_integral</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Ts</ref> &gt;::value... &gt;</type>
+        <definition>using are_all_integral =  all_true&lt;std::is_integral&lt;Ts&gt;::value...&gt;</definition>
+        <argsstring></argsstring>
+        <name>are_all_integral</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/template_utils.hpp" line="10" column="1" bodyfile="utilities/template_utils.hpp" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="dd/de3/template__utils_8hpp_1a088881b0b099138346e00903286e4f2b" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>class...</type>
+            <declname>Ts</declname>
+            <defname>Ts</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" kindref="member">all_true</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">std::is_signed</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Ts</ref> &gt;::value... &gt;</type>
+        <definition>using are_all_signed =  all_true&lt;std::is_signed&lt;Ts&gt;::value...&gt;</definition>
+        <argsstring></argsstring>
+        <name>are_all_signed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/template_utils.hpp" line="14" column="1" bodyfile="utilities/template_utils.hpp" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="dd/de3/template__utils_8hpp_1a482112a8e4d5ac3b805a73f5c7ad1b6a" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>class...</type>
+            <declname>Ts</declname>
+            <defname>Ts</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" kindref="member">all_true</ref>&lt;(!<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">std::is_signed</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Ts</ref> &gt;::value)... &gt;</type>
+        <definition>using are_all_unsigned =  all_true&lt;(!std::is_signed&lt;Ts&gt;::value)...&gt;</definition>
+        <argsstring></argsstring>
+        <name>are_all_unsigned</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/template_utils.hpp" line="18" column="1" bodyfile="utilities/template_utils.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>FPP_MFRG_TEMPLATE_UTILS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FPP_MFRG_TEMPLATE_UTILS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5" refid="d6/de5/structbool__pack" refkind="compound"><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal">...&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="d6/de5/structbool__pack" kindref="compound">bool_pack</ref>;</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal">...<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">bs</ref>&gt;</highlight></codeline>
+<codeline lineno="7" refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" kindref="member">all_true</ref><sp/>=<sp/>std::is_same&lt;<ref refid="d6/de5/structbool__pack" kindref="compound">bool_pack</ref>&lt;<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">bs</ref>...,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">&gt;,<sp/><ref refid="d6/de5/structbool__pack" kindref="compound">bool_pack</ref>&lt;</highlight><highlight class="keyword">true</highlight><highlight class="normal">,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">bs</ref>...&gt;&gt;;</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal">...<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Ts</ref>&gt;</highlight></codeline>
+<codeline lineno="10" refid="dd/de3/template__utils_8hpp_1a0ac09345c826fb8f02936a52f0704860" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/de3/template__utils_8hpp_1a0ac09345c826fb8f02936a52f0704860" kindref="member">are_all_integral</ref><sp/>=<sp/><ref refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" kindref="member">all_true&lt;std::is_integral&lt;Ts&gt;::value</ref>...&gt;;</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal">...<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Ts</ref>&gt;</highlight></codeline>
+<codeline lineno="14" refid="dd/de3/template__utils_8hpp_1a088881b0b099138346e00903286e4f2b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/de3/template__utils_8hpp_1a088881b0b099138346e00903286e4f2b" kindref="member">are_all_signed</ref><sp/>=<sp/><ref refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" kindref="member">all_true&lt;std::is_signed&lt;Ts&gt;::value</ref>...&gt;;</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal">...<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Ts</ref>&gt;</highlight></codeline>
+<codeline lineno="18" refid="dd/de3/template__utils_8hpp_1a482112a8e4d5ac3b805a73f5c7ad1b6a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dd/de3/template__utils_8hpp_1a482112a8e4d5ac3b805a73f5c7ad1b6a" kindref="member">are_all_unsigned</ref><sp/>=<sp/><ref refid="dd/de3/template__utils_8hpp_1a26a4d52f42cc97ada21d6b30d378d93d" kindref="member">all_true</ref>&lt;(!std::is_signed&lt;Ts&gt;::value)...&gt;;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//FPP_MFRG_TEMPLATE_UTILS_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="utilities/template_utils.hpp"/>
+  </compounddef>
+</doxygen>

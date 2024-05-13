@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dir_bafa75a8501ccb76a28f5bb43dc7d205" kind="dir">
+    <compoundname>correlation_functions</compoundname>
+    <innerdir refid="dir_a72b084b53bacf0443383119480745f4">four_point</innerdir>
+    <innerdir refid="dir_efa6b4a5e7d0d01a3f262703590ac64f">n_point</innerdir>
+    <innerdir refid="dir_6bc8cba28bc7fc883a476196b9b2a964">two_point</innerdir>
+    <innerfile refid="da/d3b/state_8hpp">state.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="correlation_functions/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dir_6bc8cba28bc7fc883a476196b9b2a964" kind="dir">
+    <compoundname>two_point</compoundname>
+    <innerfile refid="de/d5d/propagator_8c_09_09">propagator.c++</innerfile>
+    <innerfile refid="d5/df7/propagator_8hpp">propagator.hpp</innerfile>
+    <innerfile refid="d6/d2d/selfenergy_8hpp">selfenergy.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="correlation_functions/two_point/"/>
+  </compounddef>
+</doxygen>

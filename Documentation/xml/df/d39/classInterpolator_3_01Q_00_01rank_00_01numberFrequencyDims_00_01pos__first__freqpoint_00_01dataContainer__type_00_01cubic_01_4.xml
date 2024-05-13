@@ -1,0 +1,288 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4" kind="class" language="C++" prot="public">
+    <compoundname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</compoundname>
+    <basecompoundref refid="d1/de6/classSpline" prot="public" virt="non-virtual">Spline&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type &gt;</basecompoundref>
+    <includes refid="dc/d80/data__buffer_8hpp" local="no">data_buffer.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>rank</declname>
+        <defname>rank</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>numberFrequencyDims</declname>
+        <defname>numberFrequencyDims</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>pos_first_freqpoint</declname>
+        <defname>pos_first_freqpoint</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="db/dbf/classdataContainer__type" kindref="compound">dataContainer_type</ref></type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a604d6651fa6d7455e61109b76593b96a" prot="private" static="no">
+        <type><ref refid="d1/de6/classSpline" kindref="compound">Spline</ref>&lt; Q, rank, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>, <ref refid="db/dbf/classdataContainer__type" kindref="compound">dataContainer_type</ref> &gt;</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::base_class =  Spline&lt;Q,rank,numberFrequencyDims,pos_first_freqpoint,dataContainer_type&gt;</definition>
+        <argsstring></argsstring>
+        <name>base_class</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::base_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="498" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="498" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1ac49793030ceecaf3727b18421e7d37cc" prot="private" static="no">
+        <type><ref refid="d3/df3/classInterpolator" kindref="compound">Interpolator</ref>&lt; Q, rank, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>, <ref refid="d2/d1a/Keldysh__symmetries_8hpp_1abba9c469b7170e0e4e0ea440ba7e3e16" kindref="member">pos_first_freq</ref>, <ref refid="db/dbf/classdataContainer__type" kindref="compound">dataContainer_type</ref>, <ref refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5acbf80121500507c24dac0e575046c210" kindref="member">cubic</ref> &gt;</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::this_class =  Interpolator&lt;Q, rank, numberFrequencyDims, pos_first_freq, dataContainer_type, cubic&gt;</definition>
+        <argsstring></argsstring>
+        <name>this_class</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::this_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="499" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="499" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a00291b3b89954954527c078483874d9c" prot="private" static="no">
+        <type>std::array&lt; double, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref> &gt;</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::frequencies_type =  std::array&lt;double, numberFrequencyDims&gt;</definition>
+        <argsstring></argsstring>
+        <name>frequencies_type</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::frequencies_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="501" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="501" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a60d97a605d849ccc57bcf49560a77d0b" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> dataContainer_type::index_type</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::index_type =  typename dataContainer_type::index_type</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="515" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="515" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1aba02740491dfaa7fc2b215e0f4cb1ea4" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> dataContainer_type::dimensions_type</type>
+        <definition>using Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::dimensions_type =  typename dataContainer_type::dimensions_type</definition>
+        <argsstring></argsstring>
+        <name>dimensions_type</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::dimensions_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="516" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="516" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a8de1a0bd77e0b05f3fd261b2b686c873" prot="private" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>static constexpr my_index_t Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::numSamples</definition>
+        <argsstring>()</argsstring>
+        <name>numSamples</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::numSamples</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="503" column="33" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="503" bodyend="505"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1ada8435123b6073d3ce4a996691a773e5" prot="private" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>static constexpr my_index_t Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::numSamples_half</definition>
+        <argsstring>()</argsstring>
+        <name>numSamples_half</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::numSamples_half</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="506" column="33" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="506" bodyend="508"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1ad1b536b45480122002c4de0cde5b2a6c" compoundref="de/dbb/math__utils_8hpp" startline="13" endline="17">my_integer_pow</references>
+      </memberdef>
+      <memberdef kind="function" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1aeb0c1b53062314d4d86864f81ec2910a" prot="private" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> result_type</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>static constexpr my_index_t Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::get_vecsize</definition>
+        <argsstring>()</argsstring>
+        <name>get_vecsize</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::get_vecsize</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="510" column="33" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="510" bodyend="513"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1ac4c25bd4c430cfb4fca71350379e160f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::Interpolator</definition>
+        <argsstring>()=default</argsstring>
+        <name>Interpolator</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::Interpolator</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="518" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a37427ddcf7b25c7b051b8083c555d072" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::Interpolator</definition>
+        <argsstring>(double Lambda, dimensions_type dims, const fRG_config &amp;config)</argsstring>
+        <name>Interpolator</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::Interpolator</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1aba02740491dfaa7fc2b215e0f4cb1ea4" kindref="member">dimensions_type</ref></type>
+          <declname>dims</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="519" column="14" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="519" bodyend="519"/>
+      </memberdef>
+      <memberdef kind="function" id="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a26f25ba753f58d0439989c2118689be8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> result_type</type>
+            <defval>Q</defval>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> std::enable_if_t&lt;(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>+<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt; rank) <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">and</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt;=3), <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
+            <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::interpolate_impl</definition>
+        <argsstring>(const frequencies_type &amp;frequencies, index_type indices) const -&gt; result_type</argsstring>
+        <name>interpolate_impl</name>
+        <qualifiedname>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;::interpolate_impl</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a00291b3b89954954527c078483874d9c" kindref="member">frequencies_type</ref> &amp;</type>
+          <declname>frequencies</declname>
+        </param>
+        <param>
+          <type><ref refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a60d97a605d849ccc57bcf49560a77d0b" kindref="member">index_type</ref></type>
+          <declname>indices</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="523" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="523" bodyend="548"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</label>
+        <link refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Spline&lt; Q, rank, numberFrequencyDims, pos_first_freq_index, DataContainer &gt;</label>
+        <link refid="d1/de6/classSpline"/>
+      </node>
+      <node id="2">
+        <label>Spline&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type &gt;</label>
+        <link refid="d1/de6/classSpline"/>
+        <childnode refid="3" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</label>
+        <link refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Spline&lt; Q, rank, numberFrequencyDims, pos_first_freq_index, DataContainer &gt;</label>
+        <link refid="d1/de6/classSpline"/>
+      </node>
+      <node id="2">
+        <label>Spline&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type &gt;</label>
+        <link refid="d1/de6/classSpline"/>
+        <childnode refid="3" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type &gt;</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/n_point/data_buffer.hpp" line="497" column="1" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="497" bodyend="552"/>
+    <listofallmembers>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a604d6651fa6d7455e61109b76593b96a" prot="private" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>base_class</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1aba02740491dfaa7fc2b215e0f4cb1ea4" prot="public" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>dimensions_type</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a00291b3b89954954527c078483874d9c" prot="private" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>frequencies_type</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1aeb0c1b53062314d4d86864f81ec2910a" prot="private" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>get_vecsize</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a60d97a605d849ccc57bcf49560a77d0b" prot="public" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>index_type</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a26f25ba753f58d0439989c2118689be8" prot="public" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>interpolate_impl</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1ac4c25bd4c430cfb4fca71350379e160f" prot="public" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>Interpolator</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a37427ddcf7b25c7b051b8083c555d072" prot="public" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>Interpolator</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1a8de1a0bd77e0b05f3fd261b2b686c873" prot="private" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>numSamples</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1ada8435123b6073d3ce4a996691a773e5" prot="private" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>numSamples_half</name></member>
+      <member refid="df/d39/classInterpolator_3_01Q_00_01rank_00_01numberFrequencyDims_00_01pos__first__freqpoint_00_01dataContainer__type_00_01cubic_01_4_1ac49793030ceecaf3727b18421e7d37cc" prot="private" virt="non-virtual"><scope>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic &gt;</scope><name>this_class</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

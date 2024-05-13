@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dir_de9b10064118dc9f2c9648c6ecc35a96" kind="dir">
+    <compoundname>bubble</compoundname>
+    <innerfile refid="d0/dac/bubble_8hpp">bubble.hpp</innerfile>
+    <innerfile refid="de/de8/bubble__function_8hpp">bubble_function.hpp</innerfile>
+    <innerfile refid="df/d83/integrand_8hpp">integrand.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="bubble/"/>
+  </compounddef>
+</doxygen>

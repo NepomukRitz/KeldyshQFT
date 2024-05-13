@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dd/df1/namespaceold__ode__solvers" kind="namespace" language="C++">
+    <compoundname>old_ode_solvers</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="dd/df1/namespaceold__ode__solvers_1a98a7c97d9a18a4af97f23c8b8f78d471" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">System</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void old_ode_solvers::RK4_step</definition>
+        <argsstring>(T &amp;y_run, double &amp;x_run, const double dx, const System &amp;rhs, bool save_intermediate_results, rvec &amp;x_vals, const std::string &amp;filename, const int iteration)</argsstring>
+        <name>RK4_step</name>
+        <qualifiedname>old_ode_solvers::RK4_step</qualifiedname>
+        <param>
+          <type>T &amp;</type>
+          <declname>y_run</declname>
+        </param>
+        <param>
+          <type>double &amp;</type>
+          <declname>x_run</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>dx</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">System</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>save_intermediate_results</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+          <declname>x_vals</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>iteration</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Perform one Runge-Kutta-4 step </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/old_solvers.hpp" line="16" column="10" bodyfile="ODE_solvers/old_solvers.hpp" bodystart="16" bodyend="47"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="dd/df1/namespaceold__ode__solvers_1aeb954768e9e969cbed9beb79669621c8" compoundref="dd/df7/old__solvers_8hpp" startline="51" endline="68">RK4_step</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="dd/df1/namespaceold__ode__solvers_1aeb954768e9e969cbed9beb79669621c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">System</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void old_ode_solvers::RK4_step</definition>
+        <argsstring>(T &amp;y_run, double &amp;x_run, const double dx, const System &amp;rhs, rvec &amp;x_vals, std::string filename, const int iteration, bool save_intermediate_states)</argsstring>
+        <name>RK4_step</name>
+        <qualifiedname>old_ode_solvers::RK4_step</qualifiedname>
+        <param>
+          <type>T &amp;</type>
+          <declname>y_run</declname>
+        </param>
+        <param>
+          <type>double &amp;</type>
+          <declname>x_run</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>dx</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">System</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+          <declname>x_vals</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>filename</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>iteration</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>save_intermediate_states</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Perform Runge-Kutta-4 step and write result into output file in a specified Lambda layer, and print info to log </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="ODE_solvers/old_solvers.hpp" line="51" column="10" bodyfile="ODE_solvers/old_solvers.hpp" bodystart="51" bodyend="68"/>
+        <references refid="d5/de4/hdf5__routines_8hpp_1afcbe2c8a768f64e576f593516262d476" compoundref="d5/de4/hdf5__routines_8hpp" startline="872" endline="895">add_state_to_hdf</references>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a6e71610e223d517d2087c2e6a53617af" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="181" endline="186">check_FDTs</references>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="16" endline="72">check_SE_causality</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" compoundref="d6/d35/util_8c_09_09" startline="21" endline="27">utils::get_time</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+        <references refid="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0" compoundref="d1/df8/master__parameters_8hpp" startline="87">REG</references>
+        <references refid="dd/df1/namespaceold__ode__solvers_1a98a7c97d9a18a4af97f23c8b8f78d471" compoundref="dd/df7/old__solvers_8hpp" startline="16" endline="47">RK4_step</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="ODE_solvers/old_solvers.hpp" line="13" column="1"/>
+  </compounddef>
+</doxygen>

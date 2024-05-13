@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d9/d72/classflowgrid_1_1sqrt__parametrization" kind="class" language="C++" prot="public">
+    <compoundname>flowgrid::sqrt_parametrization</compoundname>
+    <includes refid="d5/dd1/flow__grid_8hpp" local="no">flow_grid.hpp</includes>
+    <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="d9/d72/classflowgrid_1_1sqrt__parametrization_1a2dba82a7d852cf6c3767d890057bcac7" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> double</type>
+        <definition>constexpr double flowgrid::sqrt_parametrization::a</definition>
+        <argsstring></argsstring>
+        <name>a</name>
+        <qualifiedname>flowgrid::sqrt_parametrization::a</qualifiedname>
+        <initializer>= 5.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="86" column="33" bodyfile="grids/flow_grid.hpp" bodystart="86" bodyend="-1"/>
+        <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a4556d172b65be55721c97d88f400ad3b" compoundref="d5/dd1/flow__grid_8hpp" startline="98" endline="102">dlambda_dt</referencedby>
+        <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a72b8a5e3aa61d0d8caad62fcf6ded37c" compoundref="d5/dd1/flow__grid_8hpp" startline="88" endline="91">lambda_from_t</referencedby>
+        <referencedby refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a6b06711db490eb74ae1ac55c560017c0" compoundref="d5/dd1/flow__grid_8hpp" startline="93" endline="96">t_from_lambda</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="d9/d72/classflowgrid_1_1sqrt__parametrization_1a72b8a5e3aa61d0d8caad62fcf6ded37c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::sqrt_parametrization::lambda_from_t</definition>
+        <argsstring>(double t)</argsstring>
+        <name>lambda_from_t</name>
+        <qualifiedname>flowgrid::sqrt_parametrization::lambda_from_t</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="88" column="30" bodyfile="grids/flow_grid.hpp" bodystart="88" bodyend="91"/>
+        <references refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a2dba82a7d852cf6c3767d890057bcac7" compoundref="d5/dd1/flow__grid_8hpp" startline="86">a</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1a0bb692dd2ccfca1d2a03544ff6b3c7c8" compoundref="de/dbb/math__utils_8hpp" startline="24" endline="26">sign</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d72/classflowgrid_1_1sqrt__parametrization_1a6b06711db490eb74ae1ac55c560017c0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::sqrt_parametrization::t_from_lambda</definition>
+        <argsstring>(double Lambda)</argsstring>
+        <name>t_from_lambda</name>
+        <qualifiedname>flowgrid::sqrt_parametrization::t_from_lambda</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="93" column="30" bodyfile="grids/flow_grid.hpp" bodystart="93" bodyend="96"/>
+        <references refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a2dba82a7d852cf6c3767d890057bcac7" compoundref="d5/dd1/flow__grid_8hpp" startline="86">a</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1a0bb692dd2ccfca1d2a03544ff6b3c7c8" compoundref="de/dbb/math__utils_8hpp" startline="24" endline="26">sign</references>
+      </memberdef>
+      <memberdef kind="function" id="d9/d72/classflowgrid_1_1sqrt__parametrization_1a4556d172b65be55721c97d88f400ad3b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::sqrt_parametrization::dlambda_dt</definition>
+        <argsstring>(double t)</argsstring>
+        <name>dlambda_dt</name>
+        <qualifiedname>flowgrid::sqrt_parametrization::dlambda_dt</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="98" column="30" bodyfile="grids/flow_grid.hpp" bodystart="98" bodyend="102"/>
+        <references refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a2dba82a7d852cf6c3767d890057bcac7" compoundref="d5/dd1/flow__grid_8hpp" startline="86">a</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>double</label>
+      </node>
+      <node id="1">
+        <label>flowgrid::sqrt_parametrization</label>
+        <link refid="d9/d72/classflowgrid_1_1sqrt__parametrization"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-a</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="grids/flow_grid.hpp" line="84" column="5" bodyfile="grids/flow_grid.hpp" bodystart="85" bodyend="103"/>
+    <listofallmembers>
+      <member refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a2dba82a7d852cf6c3767d890057bcac7" prot="private" virt="non-virtual"><scope>flowgrid::sqrt_parametrization</scope><name>a</name></member>
+      <member refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a4556d172b65be55721c97d88f400ad3b" prot="public" virt="non-virtual"><scope>flowgrid::sqrt_parametrization</scope><name>dlambda_dt</name></member>
+      <member refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a72b8a5e3aa61d0d8caad62fcf6ded37c" prot="public" virt="non-virtual"><scope>flowgrid::sqrt_parametrization</scope><name>lambda_from_t</name></member>
+      <member refid="d9/d72/classflowgrid_1_1sqrt__parametrization_1a6b06711db490eb74ae1ac55c560017c0" prot="public" virt="non-virtual"><scope>flowgrid::sqrt_parametrization</scope><name>t_from_lambda</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

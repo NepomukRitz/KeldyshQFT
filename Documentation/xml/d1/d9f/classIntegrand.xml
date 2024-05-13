@@ -1,0 +1,1224 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d1/d9f/classIntegrand" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>Integrand</compoundname>
+    <includes refid="df/d83/integrand_8hpp" local="no">integrand.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+        <declname>diag_class</declname>
+        <defname>diag_class</defname>
+      </param>
+      <param>
+        <type>char</type>
+        <declname>channel</declname>
+        <defname>channel</defname>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>spin</declname>
+        <defname>spin</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref></type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref></type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">class</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref></type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">return_type</ref></type>
+        <defval>Q</defval>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="d1/d9f/classIntegrand_1a6c1f479f7eebd04cc2b2ed5a170c14fe" prot="private" static="no">
+        <type>Eigen::Matrix&lt; Q, <ref refid="d7/d59/data__structures_8hpp_1afbc49b36f6fe6c48be853221eb135460" kindref="member">myRowsAtCompileTime</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">return_type</ref> &gt;(), 4 &gt;</type>
+        <definition>using Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::buffer_type_vertex_l =  Eigen::Matrix&lt;Q,myRowsAtCompileTime&lt;return_type&gt;(),4&gt;</definition>
+        <argsstring></argsstring>
+        <name>buffer_type_vertex_l</name>
+        <qualifiedname>Integrand::buffer_type_vertex_l</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="122" column="5" bodyfile="bubble/integrand.hpp" bodystart="122" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d1/d9f/classIntegrand_1acec445da8d5b0a0809e6a44e09e6a4ee" prot="private" static="no">
+        <type>Eigen::Matrix&lt; Q, 4, <ref refid="d7/d59/data__structures_8hpp_1a084db757c851a2c804cb57464b288a5a" kindref="member">myColsAtCompileTime</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">return_type</ref> &gt;()&gt;</type>
+        <definition>using Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::buffer_type_vertex_r =  Eigen::Matrix&lt;Q,4,myColsAtCompileTime&lt;return_type&gt;()&gt;</definition>
+        <argsstring></argsstring>
+        <name>buffer_type_vertex_r</name>
+        <qualifiedname>Integrand::buffer_type_vertex_r</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="123" column="5" bodyfile="bubble/integrand.hpp" bodystart="123" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1add475708b5dbe298928c0c4a351a8a69" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref> &amp;</type>
+        <definition>const vertexType_left&amp; Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::vertex1</definition>
+        <argsstring></argsstring>
+        <name>vertex1</name>
+        <qualifiedname>Integrand::vertex1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="104" column="27" bodyfile="bubble/integrand.hpp" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a73e56b450345842474bf196fd0a64fa5" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref> &amp;</type>
+        <definition>const vertexType_right&amp; Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::vertex2</definition>
+        <argsstring></argsstring>
+        <name>vertex2</name>
+        <qualifiedname>Integrand::vertex2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="105" column="28" bodyfile="bubble/integrand.hpp" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a5658d4ab76395d7eb9805af218847644" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref> &amp;</type>
+        <definition>const Bubble_Object&amp; Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Pi</definition>
+        <argsstring></argsstring>
+        <name>Pi</name>
+        <qualifiedname>Integrand::Pi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="106" column="25" bodyfile="bubble/integrand.hpp" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1ae9586f4f4537e739ae0882da06a4babb" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::i0_symmred</definition>
+        <argsstring></argsstring>
+        <name>i0_symmred</name>
+        <qualifiedname>Integrand::i0_symmred</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="107" column="9" bodyfile="bubble/integrand.hpp" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a35287b219b97a67cb82f7cc710e9c009" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::i0</definition>
+        <argsstring></argsstring>
+        <name>i0</name>
+        <qualifiedname>Integrand::i0</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="108" column="9" bodyfile="bubble/integrand.hpp" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a4aea281a06d125e44647569da5d909a5" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::i0_left</definition>
+        <argsstring></argsstring>
+        <name>i0_left</name>
+        <qualifiedname>Integrand::i0_left</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="109" column="9" bodyfile="bubble/integrand.hpp" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a5c898c38ea725a906a2a0de293ab3b4b" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::i0_right</definition>
+        <argsstring></argsstring>
+        <name>i0_right</name>
+        <qualifiedname>Integrand::i0_right</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="110" column="9" bodyfile="bubble/integrand.hpp" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a3f1303ef430d6a9aab172b32eb990e84" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::i2</definition>
+        <argsstring></argsstring>
+        <name>i2</name>
+        <qualifiedname>Integrand::i2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="111" column="15" bodyfile="bubble/integrand.hpp" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1ae9c5865d65830cce3d269a078119f785" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::iw</definition>
+        <argsstring></argsstring>
+        <name>iw</name>
+        <qualifiedname>Integrand::iw</qualifiedname>
+        <initializer>=0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="112" column="15" bodyfile="bubble/integrand.hpp" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a3978478a5ff1bb38658c556431f4dbf3" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>const freqType Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::w</definition>
+        <argsstring></argsstring>
+        <name>w</name>
+        <qualifiedname>Integrand::w</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="113" column="20" bodyfile="bubble/integrand.hpp" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1acb315474d1b69dcd56bf796a1025af01" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>const freqType Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::v</definition>
+        <argsstring></argsstring>
+        <name>v</name>
+        <qualifiedname>Integrand::v</qualifiedname>
+        <initializer>= 0.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="113" column="22" bodyfile="bubble/integrand.hpp" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1aca0bfefa0013cc9d53f258616494b813" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>const freqType Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::vp</definition>
+        <argsstring></argsstring>
+        <name>vp</name>
+        <qualifiedname>Integrand::vp</qualifiedname>
+        <initializer>= 0.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="113" column="25" bodyfile="bubble/integrand.hpp" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1ac2d0d99fae8f56d90efb3b379fad6bd0" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::i_in</definition>
+        <argsstring></argsstring>
+        <name>i_in</name>
+        <qualifiedname>Integrand::i_in</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="114" column="15" bodyfile="bubble/integrand.hpp" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1ac655ce96d35d1f059f91d212d46cadbc" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::i_spin</definition>
+        <argsstring></argsstring>
+        <name>i_spin</name>
+        <qualifiedname>Integrand::i_spin</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="115" column="15" bodyfile="bubble/integrand.hpp" bodystart="115" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a78633258b73e81b1ff93b4a0eba9fdf4" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>const bool Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::diff</definition>
+        <argsstring></argsstring>
+        <name>diff</name>
+        <qualifiedname>Integrand::diff</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="116" column="16" bodyfile="bubble/integrand.hpp" bodystart="116" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1af841be7d8a25cc5af872989264e096f9" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::res_l_V_initial</definition>
+        <argsstring></argsstring>
+        <name>res_l_V_initial</name>
+        <qualifiedname>Integrand::res_l_V_initial</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="131" column="7" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1aa2477dd3314a04147d263b19c68d92c7" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::res_r_V_initial</definition>
+        <argsstring></argsstring>
+        <name>res_r_V_initial</name>
+        <qualifiedname>Integrand::res_r_V_initial</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="131" column="23" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a872d61899536c7fae0e4c4cc02539409" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::res_l_Vhat_initial</definition>
+        <argsstring></argsstring>
+        <name>res_l_Vhat_initial</name>
+        <qualifiedname>Integrand::res_l_Vhat_initial</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="131" column="39" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a214f7dfc632a1e4e288e030a1394fabf" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::res_r_Vhat_initial</definition>
+        <argsstring></argsstring>
+        <name>res_r_Vhat_initial</name>
+        <qualifiedname>Integrand::res_r_Vhat_initial</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="131" column="58" bodyfile="bubble/integrand.hpp" bodystart="131" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a983022441b4f53bbacf1577ff7f31a73" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref></type>
+        <definition>const VertexInput Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::input_external</definition>
+        <argsstring></argsstring>
+        <name>input_external</name>
+        <qualifiedname>Integrand::input_external</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="118" column="23" bodyfile="bubble/integrand.hpp" bodystart="118" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1a8501a1ece4e35819056b0998338afac3" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Eigen::Matrix&lt; Q, 4, 4 &gt;</type>
+        <definition>const Eigen::Matrix&lt;Q,4,4&gt; Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::projection_lambdaBar</definition>
+        <argsstring></argsstring>
+        <name>projection_lambdaBar</name>
+        <qualifiedname>Integrand::projection_lambdaBar</qualifiedname>
+        <initializer>= <ref refid="d1/d9f/classIntegrand_1a0432254ce6d1360cec1969bd5ce5d7cc" kindref="member">get_projection_lambdaBar</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="226" column="25" bodyfile="bubble/integrand.hpp" bodystart="226" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d1/d9f/classIntegrand_1aef4874035fc569a090afc46cdb60eb12" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Eigen::Matrix&lt; Q, 4, 4 &gt;</type>
+        <definition>const Eigen::Matrix&lt;Q,4,4&gt; Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::projection_lambda</definition>
+        <argsstring></argsstring>
+        <name>projection_lambda</name>
+        <qualifiedname>Integrand::projection_lambda</qualifiedname>
+        <initializer>= <ref refid="d1/d9f/classIntegrand_1a5fafeab7d356165c51f96aab6b65e6a5" kindref="member">get_projection_lambda</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="227" column="25" bodyfile="bubble/integrand.hpp" bodystart="227" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a685b69574a038c85744dcc88c59a160c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::set_Keldysh_index_i0</definition>
+        <argsstring>(int i0_in)</argsstring>
+        <name>set_Keldysh_index_i0</name>
+        <qualifiedname>Integrand::set_Keldysh_index_i0</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i0_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="133" column="10" bodyfile="bubble/integrand.hpp" bodystart="233" bodyend="284"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+        <referencedby refid="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" compoundref="df/d83/integrand_8hpp" startline="169" endline="179">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Integrand</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1ac21c72a31c78a6f4329d98abbfc2716a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::set_Keldysh_index_i0_left_right</definition>
+        <argsstring>(int i0_in)</argsstring>
+        <name>set_Keldysh_index_i0_left_right</name>
+        <qualifiedname>Integrand::set_Keldysh_index_i0_left_right</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i0_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="134" column="10" bodyfile="bubble/integrand.hpp" bodystart="289" bodyend="294"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</definition>
+        <argsstring>()</argsstring>
+        <name>precompute_vertices</name>
+        <qualifiedname>Integrand::precompute_vertices</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="135" column="10" bodyfile="bubble/integrand.hpp" bodystart="297" bodyend="348"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+        <references refid="d4/de0/Keldysh__symmetries_8c_09_09_1a8ce5883bf24e8dbb17eb7e2cf3c51afe" compoundref="d4/de0/Keldysh__symmetries_8c_09_09" startline="35" endline="59">indices_sum</references>
+        <referencedby refid="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" compoundref="df/d83/integrand_8hpp" startline="169" endline="179">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Integrand</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a5802e73a7b5ecd936d1efe50a75b48e7" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::case_always_has_to_be_zero</definition>
+        <argsstring>() const</argsstring>
+        <name>case_always_has_to_be_zero</name>
+        <qualifiedname>Integrand::case_always_has_to_be_zero</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="137" column="10" bodyfile="bubble/integrand.hpp" bodystart="434" bodyend="465"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a01835f6b66667febddc5b264ba4ea117" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::compute_vertices</definition>
+        <argsstring>(freqType vpp, Q &amp;res_l_V, Q &amp;res_r_V, Q &amp;res_l_Vhat, Q &amp;res_r_Vhat) const</argsstring>
+        <name>compute_vertices</name>
+        <qualifiedname>Integrand::compute_vertices</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>vpp</declname>
+        </param>
+        <param>
+          <type>Q &amp;</type>
+          <declname>res_l_V</declname>
+        </param>
+        <param>
+          <type>Q &amp;</type>
+          <declname>res_r_V</declname>
+        </param>
+        <param>
+          <type>Q &amp;</type>
+          <declname>res_l_Vhat</declname>
+        </param>
+        <param>
+          <type>Q &amp;</type>
+          <declname>res_r_Vhat</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="139" column="10" bodyfile="bubble/integrand.hpp" bodystart="468" bodyend="548"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/de0/Keldysh__symmetries_8c_09_09_1a8ce5883bf24e8dbb17eb7e2cf3c51afe" compoundref="d4/de0/Keldysh__symmetries_8c_09_09" startline="35" endline="59">indices_sum</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a6a596ed7bf95a10c45fd7aef6983d640" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ispin</declname>
+            <defname>ispin</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_left_scalar</definition>
+        <argsstring>(buffer_type_vertex_l &amp;values_vertex, const VertexInput &amp;input) const</argsstring>
+        <name>load_vertex_keldyshComponents_left_scalar</name>
+        <qualifiedname>Integrand::load_vertex_keldyshComponents_left_scalar</qualifiedname>
+        <param>
+          <type><ref refid="d1/d9f/classIntegrand_1a6c1f479f7eebd04cc2b2ed5a170c14fe" kindref="member">buffer_type_vertex_l</ref> &amp;</type>
+          <declname>values_vertex</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="141" column="21" bodyfile="bubble/integrand.hpp" bodystart="552" bodyend="608"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">VertexInput::iK</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1af4ae177dec9b129329eda2511b301e22" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ispin</declname>
+            <defname>ispin</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_right_scalar</definition>
+        <argsstring>(buffer_type_vertex_r &amp;values_vertex, const VertexInput &amp;input) const</argsstring>
+        <name>load_vertex_keldyshComponents_right_scalar</name>
+        <qualifiedname>Integrand::load_vertex_keldyshComponents_right_scalar</qualifiedname>
+        <param>
+          <type><ref refid="d1/d9f/classIntegrand_1acec445da8d5b0a0809e6a44e09e6a4ee" kindref="member">buffer_type_vertex_r</ref> &amp;</type>
+          <declname>values_vertex</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="142" column="21" bodyfile="bubble/integrand.hpp" bodystart="612" bodyend="664"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d2/db2/structVertexInput_1a684579699d39336f2454b926829e013b" compoundref="d7/d59/data__structures_8hpp" startline="537">VertexInput::iK</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1abe45c78d4ef5dcc6b53e4e0cfab6d041" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ispin</declname>
+            <defname>ispin</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_left_vectorized</definition>
+        <argsstring>(buffer_type_vertex_l &amp;values_vertex, const VertexInput &amp;input) const</argsstring>
+        <name>load_vertex_keldyshComponents_left_vectorized</name>
+        <qualifiedname>Integrand::load_vertex_keldyshComponents_left_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="d1/d9f/classIntegrand_1a6c1f479f7eebd04cc2b2ed5a170c14fe" kindref="member">buffer_type_vertex_l</ref> &amp;</type>
+          <declname>values_vertex</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="143" column="21" bodyfile="bubble/integrand.hpp" bodystart="669" bodyend="685"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a8da1bca02209084c25fbbb9a29f8e615" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ispin</declname>
+            <defname>ispin</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldyshComponents_right_vectorized</definition>
+        <argsstring>(buffer_type_vertex_r &amp;values_vertex, const VertexInput &amp;input) const</argsstring>
+        <name>load_vertex_keldyshComponents_right_vectorized</name>
+        <qualifiedname>Integrand::load_vertex_keldyshComponents_right_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="d1/d9f/classIntegrand_1acec445da8d5b0a0809e6a44e09e6a4ee" kindref="member">buffer_type_vertex_r</ref> &amp;</type>
+          <declname>values_vertex</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="144" column="21" bodyfile="bubble/integrand.hpp" bodystart="690" bodyend="707"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a5cacb2ec1f4cd798b60eac55dadebab0" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>Q Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::sum_over_internal_scalar</definition>
+        <argsstring>(freqType vpp) const</argsstring>
+        <name>sum_over_internal_scalar</name>
+        <qualifiedname>Integrand::sum_over_internal_scalar</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>vpp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="152" column="7"/>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a2fdf2dd038946c34d123cb3999189cbf" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">return_type</ref></type>
+        <definition>return_type Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::sum_over_internal_vectorized</definition>
+        <argsstring>(freqType vpp) const</argsstring>
+        <name>sum_over_internal_vectorized</name>
+        <qualifiedname>Integrand::sum_over_internal_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>vpp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="153" column="17"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1aa3302a2a7ed0f3038f44c7e660f25e1d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldysh_and_spin_Components_left_vectorized</definition>
+        <argsstring>(const VertexInput &amp;input) const -&gt; Eigen::Matrix&lt; Q, 1,(channel==&apos;t&apos; and spin==0) or(channel</argsstring>
+        <name>load_vertex_keldysh_and_spin_Components_left_vectorized</name>
+        <qualifiedname>Integrand::load_vertex_keldysh_and_spin_Components_left_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="147" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1acef7d02cec1ab245aabefa541cb8ac43" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_vertex_keldysh_and_spin_Components_right_vectorized</definition>
+        <argsstring>(const VertexInput &amp;input) const -&gt; Eigen::Matrix&lt; Q,(channel==&apos;t&apos; and spin==0) or(channel</argsstring>
+        <name>load_vertex_keldysh_and_spin_Components_right_vectorized</name>
+        <qualifiedname>Integrand::load_vertex_keldysh_and_spin_Components_right_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="148" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1af58ff31eded38038aa1281c190a583fe" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::load_Pi_keldysh_and_spin_Components_vectorized</definition>
+        <argsstring>(const freqType input) const -&gt; Eigen::Matrix&lt; Q,(channel==&apos;t&apos; and spin==0) or(channel</argsstring>
+        <name>load_Pi_keldysh_and_spin_Components_vectorized</name>
+        <qualifiedname>Integrand::load_Pi_keldysh_and_spin_Components_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="149" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::Integrand</definition>
+        <argsstring>(const vertexType_left &amp;vertex1_in, const vertexType_right &amp;vertex2_in, const Bubble_Object &amp;Pi_in, int i0_in, int i2_in, const int iw_in, const freqType w_in, const freqType v_in, const freqType vp_in, const int i_in_in, const int i_spin_in, const bool diff_in)</argsstring>
+        <name>Integrand</name>
+        <qualifiedname>Integrand::Integrand</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref> &amp;</type>
+          <declname>vertex1_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref> &amp;</type>
+          <declname>vertex2_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref> &amp;</type>
+          <declname>Pi_in</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i0_in</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i2_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>iw_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>vp_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_in_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_spin_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>diff_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor for asymptotic class Ki: <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vertex1_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: left vertex </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertex2_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: right vertex </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Pi_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: <ref refid="d8/d6e/classBubble" kindref="compound">Bubble</ref> object connecting the left and right vertex </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i0_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: index specifying the (external) Keldysh component of integrand object; i0_in = [0, .. nK_Ki] where nK_Ki is the number of symmetry-reduced Keldysh components in the result (converted into actual Keldysh index i0 within the constructor) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: external bosonic frequency ω </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: external index for internal structure </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ch_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: diagrammatic channel (&apos;a&apos;, &apos;p&apos;, &apos;t&apos;) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>diff_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: determines whether to compute differentiated or non-differentiated bubble </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="169" column="5" bodyfile="bubble/integrand.hpp" bodystart="169" bodyend="179"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
+        <references refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" compoundref="df/d83/integrand_8hpp" startline="297" endline="348">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</references>
+        <references refid="d1/d9f/classIntegrand_1a685b69574a038c85744dcc88c59a160c" compoundref="df/d83/integrand_8hpp" startline="233" endline="284">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::set_Keldysh_index_i0</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a3da64e671a674d821f5fcaef1d3d312a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::operator()</definition>
+        <argsstring>(freqType vpp) const -&gt; return_type</argsstring>
+        <name>operator()</name>
+        <qualifiedname>Integrand::operator()</qualifiedname>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>vpp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Call operator: <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vpp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: frequency at which to evaluate integrand (to be integrated over) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Q : value of the integrand object evaluated at frequency vpp (comp or double) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+<para>TODO: fix conflict with sum over internal spins</para>
+<para>comment in to test vectorized access</para>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="186" column="10" bodyfile="bubble/integrand.hpp" bodystart="351" bodyend="431"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a4dcd9a0f27ad6d6ec3b8fda07225badf" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::save_integrand</definition>
+        <argsstring>() const</argsstring>
+        <name>save_integrand</name>
+        <qualifiedname>Integrand::save_integrand</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="188" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1af526be63b76a6b5666dc98abbd8f2b7f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::save_integrand</definition>
+        <argsstring>(const rvec &amp;freqs, const std::string &amp;filename_prefix) const</argsstring>
+        <name>save_integrand</name>
+        <qualifiedname>Integrand::save_integrand</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+          <declname>freqs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::string &amp;</type>
+          <declname>filename_prefix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="189" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a0192be56603d53e4426ff3bb8d63f068" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::get_integrand_vals</definition>
+        <argsstring>(const rvec &amp;freqs, Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;integrand_vals, Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;Pivals, Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;vertex_vals1, Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;vertex_vals2) const</argsstring>
+        <name>get_integrand_vals</name>
+        <qualifiedname>Integrand::get_integrand_vals</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+          <declname>freqs</declname>
+        </param>
+        <param>
+          <type>Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;</type>
+          <declname>integrand_vals</declname>
+        </param>
+        <param>
+          <type>Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;</type>
+          <declname>Pivals</declname>
+        </param>
+        <param>
+          <type>Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;</type>
+          <declname>vertex_vals1</declname>
+        </param>
+        <param>
+          <type>Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;</type>
+          <declname>vertex_vals2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="190" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a0432254ce6d1360cec1969bd5ce5d7cc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::get_projection_lambdaBar</definition>
+        <argsstring>() const -&gt; Eigen::Matrix&lt; Q, 4, 4 &gt;</argsstring>
+        <name>get_projection_lambdaBar</name>
+        <qualifiedname>Integrand::get_projection_lambdaBar</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="192" column="10" bodyfile="bubble/integrand.hpp" bodystart="192" bodyend="208"/>
+        <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d1/d9f/classIntegrand_1a5fafeab7d356165c51f96aab6b65e6a5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::get_projection_lambda</definition>
+        <argsstring>() const -&gt; Eigen::Matrix&lt; Q, 4, 4 &gt;</argsstring>
+        <name>get_projection_lambda</name>
+        <qualifiedname>Integrand::get_projection_lambda</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/integrand.hpp" line="209" column="10" bodyfile="bubble/integrand.hpp" bodystart="209" bodyend="225"/>
+        <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Refactoring of the classes Integrand_K1, Integrand_K2, Integrand_K3 into one single class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="d1/d9f/classIntegrand" kindref="compound">Integrand</ref> invoked by the <ref refid="de/d96/classBubbleFunctionCalculator" kindref="compound">BubbleFunctionCalculator</ref> class for every combination of external arguments. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>diag_class</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Diagrammatic class to be computed (K1, K2, K2&apos; or K3). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Two-particle channel of the computation. Can be a, p, or t. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>spin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spin index to be computed. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_left</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the left part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_right</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the right part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Bubble_Object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the <ref refid="d8/d6e/classBubble" kindref="compound">Bubble</ref> object to connect the two vertices. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>return_type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data that is produced by the integral. Typically = Q. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;</label>
+        <link refid="d1/d9f/classIntegrand"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-vertex1</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>-vertex2</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>-Pi</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>-i0</edgelabel>
+          <edgelabel>-i0_left</edgelabel>
+          <edgelabel>-i0_right</edgelabel>
+          <edgelabel>-i0_symmred</edgelabel>
+          <edgelabel>-i2</edgelabel>
+          <edgelabel>-i_in</edgelabel>
+          <edgelabel>-i_spin</edgelabel>
+          <edgelabel>-iw</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>-v</edgelabel>
+          <edgelabel>-vp</edgelabel>
+          <edgelabel>-w</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>-diff</edgelabel>
+        </childnode>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+input_external</edgelabel>
+        </childnode>
+        <childnode refid="12" relation="usage">
+          <edgelabel>-res_l_V_initial</edgelabel>
+          <edgelabel>-res_l_Vhat_initial</edgelabel>
+          <edgelabel>-res_r_V_initial</edgelabel>
+          <edgelabel>-res_r_Vhat_initial</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="usage">
+          <edgelabel>+projection_lambda</edgelabel>
+          <edgelabel>+projection_lambdaBar</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>K_class</label>
+      </node>
+      <node id="12">
+        <label>Q</label>
+      </node>
+      <node id="8">
+        <label>VertexInput</label>
+        <link refid="d2/db2/structVertexInput"/>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+iK</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+v1</edgelabel>
+          <edgelabel>+v2</edgelabel>
+          <edgelabel>+w</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+i_in</edgelabel>
+          <edgelabel>+iw_r</edgelabel>
+          <edgelabel>+spin</edgelabel>
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+channel_bubble</edgelabel>
+        </childnode>
+        <childnode refid="11" relation="usage">
+          <edgelabel>+kClass_aim</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="10">
+        <label>char</label>
+      </node>
+      <node id="4">
+        <label>const Bubble_Object &amp;</label>
+      </node>
+      <node id="13">
+        <label>Matrix&lt; Q, 4, 4 &gt;</label>
+      </node>
+      <node id="2">
+        <label>const vertexType_left &amp;</label>
+      </node>
+      <node id="3">
+        <label>const vertexType_right &amp;</label>
+      </node>
+      <node id="6">
+        <label>double</label>
+      </node>
+      <node id="5">
+        <label>int</label>
+      </node>
+      <node id="9">
+        <label>size_t</label>
+      </node>
+    </collaborationgraph>
+    <location file="bubble/integrand.hpp" line="102" column="1" bodyfile="bubble/integrand.hpp" bodystart="102" bodyend="229"/>
+    <listofallmembers>
+      <member refid="d1/d9f/classIntegrand_1a6c1f479f7eebd04cc2b2ed5a170c14fe" prot="private" virt="non-virtual"><scope>Integrand</scope><name>buffer_type_vertex_l</name></member>
+      <member refid="d1/d9f/classIntegrand_1acec445da8d5b0a0809e6a44e09e6a4ee" prot="private" virt="non-virtual"><scope>Integrand</scope><name>buffer_type_vertex_r</name></member>
+      <member refid="d1/d9f/classIntegrand_1a5802e73a7b5ecd936d1efe50a75b48e7" prot="private" virt="non-virtual"><scope>Integrand</scope><name>case_always_has_to_be_zero</name></member>
+      <member refid="d1/d9f/classIntegrand_1a01835f6b66667febddc5b264ba4ea117" prot="private" virt="non-virtual"><scope>Integrand</scope><name>compute_vertices</name></member>
+      <member refid="d1/d9f/classIntegrand_1a78633258b73e81b1ff93b4a0eba9fdf4" prot="private" virt="non-virtual"><scope>Integrand</scope><name>diff</name></member>
+      <member refid="d1/d9f/classIntegrand_1a0192be56603d53e4426ff3bb8d63f068" prot="public" virt="non-virtual"><scope>Integrand</scope><name>get_integrand_vals</name></member>
+      <member refid="d1/d9f/classIntegrand_1a5fafeab7d356165c51f96aab6b65e6a5" prot="public" virt="non-virtual"><scope>Integrand</scope><name>get_projection_lambda</name></member>
+      <member refid="d1/d9f/classIntegrand_1a0432254ce6d1360cec1969bd5ce5d7cc" prot="public" virt="non-virtual"><scope>Integrand</scope><name>get_projection_lambdaBar</name></member>
+      <member refid="d1/d9f/classIntegrand_1a35287b219b97a67cb82f7cc710e9c009" prot="private" virt="non-virtual"><scope>Integrand</scope><name>i0</name></member>
+      <member refid="d1/d9f/classIntegrand_1a4aea281a06d125e44647569da5d909a5" prot="private" virt="non-virtual"><scope>Integrand</scope><name>i0_left</name></member>
+      <member refid="d1/d9f/classIntegrand_1a5c898c38ea725a906a2a0de293ab3b4b" prot="private" virt="non-virtual"><scope>Integrand</scope><name>i0_right</name></member>
+      <member refid="d1/d9f/classIntegrand_1ae9586f4f4537e739ae0882da06a4babb" prot="private" virt="non-virtual"><scope>Integrand</scope><name>i0_symmred</name></member>
+      <member refid="d1/d9f/classIntegrand_1a3f1303ef430d6a9aab172b32eb990e84" prot="private" virt="non-virtual"><scope>Integrand</scope><name>i2</name></member>
+      <member refid="d1/d9f/classIntegrand_1ac2d0d99fae8f56d90efb3b379fad6bd0" prot="private" virt="non-virtual"><scope>Integrand</scope><name>i_in</name></member>
+      <member refid="d1/d9f/classIntegrand_1ac655ce96d35d1f059f91d212d46cadbc" prot="private" virt="non-virtual"><scope>Integrand</scope><name>i_spin</name></member>
+      <member refid="d1/d9f/classIntegrand_1a983022441b4f53bbacf1577ff7f31a73" prot="public" virt="non-virtual"><scope>Integrand</scope><name>input_external</name></member>
+      <member refid="d1/d9f/classIntegrand_1a424a5391dad4c3393a2454b94913b8d4" prot="public" virt="non-virtual"><scope>Integrand</scope><name>Integrand</name></member>
+      <member refid="d1/d9f/classIntegrand_1ae9c5865d65830cce3d269a078119f785" prot="private" virt="non-virtual"><scope>Integrand</scope><name>iw</name></member>
+      <member refid="d1/d9f/classIntegrand_1af58ff31eded38038aa1281c190a583fe" prot="public" virt="pure-virtual"><scope>Integrand</scope><name>load_Pi_keldysh_and_spin_Components_vectorized</name></member>
+      <member refid="d1/d9f/classIntegrand_1aa3302a2a7ed0f3038f44c7e660f25e1d" prot="public" virt="pure-virtual"><scope>Integrand</scope><name>load_vertex_keldysh_and_spin_Components_left_vectorized</name></member>
+      <member refid="d1/d9f/classIntegrand_1acef7d02cec1ab245aabefa541cb8ac43" prot="public" virt="pure-virtual"><scope>Integrand</scope><name>load_vertex_keldysh_and_spin_Components_right_vectorized</name></member>
+      <member refid="d1/d9f/classIntegrand_1a6a596ed7bf95a10c45fd7aef6983d640" prot="private" virt="non-virtual"><scope>Integrand</scope><name>load_vertex_keldyshComponents_left_scalar</name></member>
+      <member refid="d1/d9f/classIntegrand_1abe45c78d4ef5dcc6b53e4e0cfab6d041" prot="private" virt="non-virtual"><scope>Integrand</scope><name>load_vertex_keldyshComponents_left_vectorized</name></member>
+      <member refid="d1/d9f/classIntegrand_1af4ae177dec9b129329eda2511b301e22" prot="private" virt="non-virtual"><scope>Integrand</scope><name>load_vertex_keldyshComponents_right_scalar</name></member>
+      <member refid="d1/d9f/classIntegrand_1a8da1bca02209084c25fbbb9a29f8e615" prot="private" virt="non-virtual"><scope>Integrand</scope><name>load_vertex_keldyshComponents_right_vectorized</name></member>
+      <member refid="d1/d9f/classIntegrand_1a3da64e671a674d821f5fcaef1d3d312a" prot="public" virt="non-virtual"><scope>Integrand</scope><name>operator()</name></member>
+      <member refid="d1/d9f/classIntegrand_1a5658d4ab76395d7eb9805af218847644" prot="private" virt="non-virtual"><scope>Integrand</scope><name>Pi</name></member>
+      <member refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" prot="private" virt="non-virtual"><scope>Integrand</scope><name>precompute_vertices</name></member>
+      <member refid="d1/d9f/classIntegrand_1aef4874035fc569a090afc46cdb60eb12" prot="public" virt="non-virtual"><scope>Integrand</scope><name>projection_lambda</name></member>
+      <member refid="d1/d9f/classIntegrand_1a8501a1ece4e35819056b0998338afac3" prot="public" virt="non-virtual"><scope>Integrand</scope><name>projection_lambdaBar</name></member>
+      <member refid="d1/d9f/classIntegrand_1af841be7d8a25cc5af872989264e096f9" prot="private" virt="non-virtual"><scope>Integrand</scope><name>res_l_V_initial</name></member>
+      <member refid="d1/d9f/classIntegrand_1a872d61899536c7fae0e4c4cc02539409" prot="private" virt="non-virtual"><scope>Integrand</scope><name>res_l_Vhat_initial</name></member>
+      <member refid="d1/d9f/classIntegrand_1aa2477dd3314a04147d263b19c68d92c7" prot="private" virt="non-virtual"><scope>Integrand</scope><name>res_r_V_initial</name></member>
+      <member refid="d1/d9f/classIntegrand_1a214f7dfc632a1e4e288e030a1394fabf" prot="private" virt="non-virtual"><scope>Integrand</scope><name>res_r_Vhat_initial</name></member>
+      <member refid="d1/d9f/classIntegrand_1a4dcd9a0f27ad6d6ec3b8fda07225badf" prot="public" virt="non-virtual"><scope>Integrand</scope><name>save_integrand</name></member>
+      <member refid="d1/d9f/classIntegrand_1af526be63b76a6b5666dc98abbd8f2b7f" prot="public" virt="non-virtual"><scope>Integrand</scope><name>save_integrand</name></member>
+      <member refid="d1/d9f/classIntegrand_1a685b69574a038c85744dcc88c59a160c" prot="private" virt="non-virtual"><scope>Integrand</scope><name>set_Keldysh_index_i0</name></member>
+      <member refid="d1/d9f/classIntegrand_1ac21c72a31c78a6f4329d98abbfc2716a" prot="private" virt="non-virtual"><scope>Integrand</scope><name>set_Keldysh_index_i0_left_right</name></member>
+      <member refid="d1/d9f/classIntegrand_1a5cacb2ec1f4cd798b60eac55dadebab0" prot="private" virt="non-virtual"><scope>Integrand</scope><name>sum_over_internal_scalar</name></member>
+      <member refid="d1/d9f/classIntegrand_1a2fdf2dd038946c34d123cb3999189cbf" prot="private" virt="non-virtual"><scope>Integrand</scope><name>sum_over_internal_vectorized</name></member>
+      <member refid="d1/d9f/classIntegrand_1acb315474d1b69dcd56bf796a1025af01" prot="private" virt="non-virtual"><scope>Integrand</scope><name>v</name></member>
+      <member refid="d1/d9f/classIntegrand_1add475708b5dbe298928c0c4a351a8a69" prot="private" virt="non-virtual"><scope>Integrand</scope><name>vertex1</name></member>
+      <member refid="d1/d9f/classIntegrand_1a73e56b450345842474bf196fd0a64fa5" prot="private" virt="non-virtual"><scope>Integrand</scope><name>vertex2</name></member>
+      <member refid="d1/d9f/classIntegrand_1aca0bfefa0013cc9d53f258616494b813" prot="private" virt="non-virtual"><scope>Integrand</scope><name>vp</name></member>
+      <member refid="d1/d9f/classIntegrand_1a3978478a5ff1bb38658c556431f4dbf3" prot="private" virt="non-virtual"><scope>Integrand</scope><name>w</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,649 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4" kind="class" language="C++" prot="public">
+    <compoundname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</compoundname>
+    <basecompoundref refid="d3/dd8/classDataContainer" prot="public" virt="non-virtual">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</basecompoundref>
+    <includes refid="d6/d91/InterpolatorSpline2D_8hpp" local="no">InterpolatorSpline2D.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>rank</declname>
+        <defname>rank</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>pos_first_freq_index</declname>
+        <defname>pos_first_freq_index</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">class</ref> <ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref></type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" prot="private" static="no">
+        <type>Eigen::Matrix&lt; Q, Eigen::Dynamic, 16 &gt;</type>
+        <definition>using Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::coeffs_type =  Eigen::Matrix&lt;Q, Eigen::Dynamic,16&gt;</definition>
+        <argsstring></argsstring>
+        <name>coeffs_type</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::coeffs_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="37" column="5" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="d3/dd8/classDataContainer_1aa90e46686ddc3e125a74c0fe8cf1d171" kindref="member">DataContainer::index_type</ref></type>
+        <definition>using Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::index_type =  typename DataContainer::index_type</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="41" column="5" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a7dd1f280f9290b67080267041b4acd6c" prot="public" static="no">
+        <type>std::array&lt; double, 2 &gt;</type>
+        <definition>using Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::frequencies_type =  std::array&lt;double, 2&gt;</definition>
+        <argsstring></argsstring>
+        <name>frequencies_type</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::frequencies_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="42" column="5" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a015f68bd9a84eb9d567ff97019a9406a" prot="public" static="no" mutable="yes">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::initialized</definition>
+        <argsstring></argsstring>
+        <name>initialized</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::initialized</qualifiedname>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="40" column="18" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa02741d1cf3a2457ed516ddf5b8f93a9" prot="protected" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::n</definition>
+        <argsstring></argsstring>
+        <name>n</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::n</qualifiedname>
+        <initializer>=0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="46" column="12" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a653275609e3a3a043f55474b02f70f06" prot="protected" static="no" mutable="yes">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt;</type>
+        <definition>vec&lt;Q&gt; Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_deriv_x</definition>
+        <argsstring></argsstring>
+        <name>m_deriv_x</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_deriv_x</qualifiedname>
+        <initializer>= <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt;Q&gt;(<ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa02741d1cf3a2457ed516ddf5b8f93a9" kindref="member">n</ref>)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="47" column="17" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a94be8b134b72e4aa72ae18ee341110e5" prot="protected" static="no" mutable="no">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt;</type>
+        <definition>vec&lt;Q&gt; Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_deriv_y</definition>
+        <argsstring></argsstring>
+        <name>m_deriv_y</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_deriv_y</qualifiedname>
+        <initializer>= <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt;Q&gt;(<ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa02741d1cf3a2457ed516ddf5b8f93a9" kindref="member">n</ref>)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="47" column="27" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a28949fb35d07a8fe033d76d7d32f135b" prot="protected" static="no" mutable="no">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt;</type>
+        <definition>vec&lt;Q&gt; Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_deriv_xy</definition>
+        <argsstring></argsstring>
+        <name>m_deriv_xy</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_deriv_xy</qualifiedname>
+        <initializer>= <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt;Q&gt;(<ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa02741d1cf3a2457ed516ddf5b8f93a9" kindref="member">n</ref>)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="47" column="36" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ae2cb197435afc4d583cb30f23338ceaa" prot="protected" static="no" mutable="yes">
+        <type><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" kindref="member">coeffs_type</ref></type>
+        <definition>coeffs_type Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::all_coefficients</definition>
+        <argsstring></argsstring>
+        <name>all_coefficients</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::all_coefficients</qualifiedname>
+        <initializer>= <ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" kindref="member">coeffs_type</ref> (<ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa02741d1cf3a2457ed516ddf5b8f93a9" kindref="member">n</ref>,16)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="48" column="25" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ac5ad43296160f361548396c2c6ec2817" prot="protected" static="no" mutable="no">
+        <type><ref refid="de/dbb/math__utils_8hpp_1a0ef73218caee5307f4a2a59464d1b5ac" kindref="member">bd_type</ref></type>
+        <definition>bd_type Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_left</definition>
+        <argsstring></argsstring>
+        <name>m_left</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_left</qualifiedname>
+        <initializer>= <ref refid="de/dbb/math__utils_8hpp_1a0ef73218caee5307f4a2a59464d1b5acab78b588f4010075281c6a8487a30173e" kindref="member">third_deriv</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="50" column="13" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a45a3934022863196fd1a4f81f0cabdd3" prot="protected" static="no" mutable="no">
+        <type><ref refid="de/dbb/math__utils_8hpp_1a0ef73218caee5307f4a2a59464d1b5ac" kindref="member">bd_type</ref></type>
+        <definition>bd_type Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_right</definition>
+        <argsstring></argsstring>
+        <name>m_right</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_right</qualifiedname>
+        <initializer>= <ref refid="de/dbb/math__utils_8hpp_1a0ef73218caee5307f4a2a59464d1b5acab78b588f4010075281c6a8487a30173e" kindref="member">third_deriv</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="50" column="21" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1af80ff021a401c8f01f52c5c629854658" prot="protected" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_left_value</definition>
+        <argsstring></argsstring>
+        <name>m_left_value</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_left_value</qualifiedname>
+        <initializer>= 0.0</initializer>
+        <briefdescription>
+<para>set const? </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="51" column="8" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab5164a936b58e0d6290b66736cb9f47f" prot="protected" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_right_value</definition>
+        <argsstring></argsstring>
+        <name>m_right_value</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::m_right_value</qualifiedname>
+        <initializer>= 0.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="51" column="22" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="protected-func">
+      <memberdef kind="function" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a247f6deabff508e96fcd36956153e41d" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::get_coeffs_from_derivs</definition>
+        <argsstring>() const</argsstring>
+        <name>get_coeffs_from_derivs</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::get_coeffs_from_derivs</qualifiedname>
+        <briefdescription>
+<para>known values of first or second derivative (corresponding to bd_type) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="53" column="10" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="77" bodyend="181"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
+        <references refid="de/dbb/math__utils_8hpp_1af09f658145737a528e92348ccf9cd949" compoundref="de/dbb/math__utils_8hpp" startline="287" endline="292">rotateFlatIndex</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a04dc260edf9c688b557b329a4ff979fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::Spline</definition>
+        <argsstring>()</argsstring>
+        <name>Spline</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::Spline</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="55" column="5" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="55" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1af7c231ff89ea01542d721cf9a5e6c6b4" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::Spline</definition>
+        <argsstring>(double Lambda, index_type dims)</argsstring>
+        <name>Spline</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::Spline</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" kindref="member">index_type</ref></type>
+          <declname>dims</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="56" column="14" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="56" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="function" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab2a08aa7bd6789c97411697e91dcf300" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::initInterpolator</definition>
+        <argsstring>() const</argsstring>
+        <name>initInterpolator</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::initInterpolator</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="63" column="10" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="184" bodyend="200"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" compoundref="da/dbc/data__container_8hpp" startline="214" endline="217">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</references>
+        <references refid="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" compoundref="da/dbc/data__container_8hpp" startline="242" endline="246">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xy</references>
+        <references refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" compoundref="da/dbc/data__container_8hpp" startline="218" endline="221">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_y</references>
+      </memberdef>
+      <memberdef kind="function" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a004cc6a621d502495ace6343a43e1fc3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::set_initializedInterpol</definition>
+        <argsstring>(bool is_init) const</argsstring>
+        <name>set_initializedInterpol</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::set_initializedInterpol</qualifiedname>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>is_init</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="64" column="10" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="64" bodyend="64"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a996f57ec574fcd0cdd97658aa5d8f0c1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::Matrix&lt; Q, 16, 1 &gt;</type>
+        <definition>Eigen::Matrix&lt; Q, 16, 1 &gt; Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::get_weights</definition>
+        <argsstring>(const std::array&lt; my_index_t, 2 &gt; &amp;freq_idx, const std::array&lt; double, 2 &gt; &amp;dw_normalized) const</argsstring>
+        <name>get_weights</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::get_weights</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::array&lt; <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref>, 2 &gt; &amp;</type>
+          <declname>freq_idx</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::array&lt; double, 2 &gt; &amp;</type>
+          <declname>dw_normalized</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="66" column="19" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="204" bodyend="221"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a9929ed45115e5545302fade3b8ecafb2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> result_type</type>
+          </param>
+        </templateparamlist>
+        <type>result_type</type>
+        <definition>result_type Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::interpolate_spline</definition>
+        <argsstring>(const frequencies_type &amp;frequencies, const index_type &amp;indices) const</argsstring>
+        <name>interpolate_spline</name>
+        <qualifiedname>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::interpolate_spline</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a7dd1f280f9290b67080267041b4acd6c" kindref="member">frequencies_type</ref> &amp;</type>
+          <declname>frequencies</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" kindref="member">index_type</ref> &amp;</type>
+          <declname>indices</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="interpolations/InterpolatorSpline2D.hpp" line="70" column="17" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="227" bodyend="282"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>SplineK2 interpolation <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>rank</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of dimensions (of dataContainer) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pos_first_freq_index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>position of first frequency index (second frequency index is as position pos_first_freq_index+1) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>contains vertex data and frequency grids frequencies. primary_grid and frequencies.secondary_grid computes partial derivative of data in x, y and x&amp;y direction </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>double or comp </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</label>
+        <link refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+        <childnode refid="12" relation="usage">
+          <edgelabel>+frequencies</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>Array&lt; Q, Eigen::Dynamic, 1 &gt;</label>
+        <link refid="d2/dc9/classEigen_1_1Array_3_01Q_00_01Eigen_1_1Dynamic_00_011_01_4"/>
+      </node>
+      <node id="11">
+        <label>Array&lt; T, Eigen::Dynamic, 1 &gt;</label>
+      </node>
+      <node id="19">
+        <label>Matrix&lt; Q, Eigen::Dynamic, 16 &gt;</label>
+      </node>
+      <node id="21">
+        <label>Q</label>
+      </node>
+      <node id="1">
+        <label>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</label>
+        <link refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="13" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+        <childnode refid="14" relation="usage">
+          <edgelabel>#n</edgelabel>
+        </childnode>
+        <childnode refid="15" relation="usage">
+          <edgelabel>#m_deriv_x</edgelabel>
+          <edgelabel>#m_deriv_xy</edgelabel>
+          <edgelabel>#m_deriv_y</edgelabel>
+        </childnode>
+        <childnode refid="19" relation="usage">
+          <edgelabel>#all_coefficients</edgelabel>
+        </childnode>
+        <childnode refid="20" relation="usage">
+          <edgelabel>#m_left</edgelabel>
+          <edgelabel>#m_right</edgelabel>
+        </childnode>
+        <childnode refid="21" relation="usage">
+          <edgelabel>#m_left_value</edgelabel>
+          <edgelabel>#m_right_value</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>T</label>
+      </node>
+      <node id="5">
+        <label>std::array&lt; size_type, depth &gt;</label>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="template-instance">
+          <edgelabel>&lt; size_type, depth &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="20">
+        <label>bd_type</label>
+      </node>
+      <node id="13">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="3">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+        <childnode refid="4" relation="usage">
+          <edgelabel>#data</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>frequencyGrid_type</label>
+      </node>
+      <node id="4">
+        <label>multidimensional::multiarray&lt; Q, rank &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="5" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="10" relation="template-instance">
+          <edgelabel>&lt; Q, rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="10">
+        <label>multidimensional::multiarray&lt; T, depth &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="5" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="11" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>size_t</label>
+      </node>
+      <node id="6">
+        <label>size_type</label>
+      </node>
+      <node id="7">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="18">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="17">
+        <label>vec&lt; T &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="18" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>vec&lt; Q &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="16" relation="public-inheritance">
+        </childnode>
+        <childnode refid="17" relation="template-instance">
+          <edgelabel>&lt; Q &gt;</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="interpolations/InterpolatorSpline2D.hpp" line="32" column="1" bodyfile="interpolations/InterpolatorSpline2D.hpp" bodystart="33" bodyend="73"/>
+    <listofallmembers>
+      <member refid="d5/d5f/classdataContainerBase_1af8da5de4958e6394f3700dddba32956b" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>acc</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a94ed8cb0315262a605d076a7dd8a5782" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>add_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a72e6e78cae86e3036aea7d4f6b477401" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>add_vec</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ae2cb197435afc4d583cb30f23338ceaa" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>all_coefficients</name></member>
+      <member refid="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>analyze_tails</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a57fc098f0ce433faa0c310ab412dafc7" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>at</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3c7e249068ce71f411ab0e4dfaad939d" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>base_class</name></member>
+      <member refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>buffer_type</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a543f84d325b0aeb58beb4f20c342f4d7" prot="private" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>coeffs_type</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>data</name></member>
+      <member refid="d3/dd8/classDataContainer_1a13c674249912f45fa6daf9008c9d826b" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>DataContainer</name></member>
+      <member refid="d3/dd8/classDataContainer_1a782bfeb8044945935e022f73c64854b3" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>DataContainer</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a598a780596e0e8ff406ef06e3214d82f" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a0ff8fce064842266103959a8802f23b4" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a8a8a5f6d85f2534dd223a31da7390019" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1af0ae1996f1eb63afc64e2146d241dba8" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>dataContainerBase</name></member>
+      <member refid="d3/dd8/classDataContainer_1acc14ed86a6795835b9a2c05ee6ae5996" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>dimensions_type</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a554ee3f67bf16bd9438c9f056bcd58a2" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>direct_set</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a8ab6ca579df1cff6717d9fc17c37cdc9" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>eigen_segment</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6d65f15d6b8115ba71c9ec5145e63302" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>eigen_segment</name></member>
+      <member refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>frequencies</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a7dd1f280f9290b67080267041b4acd6c" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>frequencies_type</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a247f6deabff508e96fcd36956153e41d" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_coeffs_from_derivs</name></member>
+      <member refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_curvature_max</name></member>
+      <member refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_max</name></member>
+      <member refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_x</name></member>
+      <member refid="d3/dd8/classDataContainer_1a681c9f64ff0fcde1c1b2184eea000aee" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_xx</name></member>
+      <member refid="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_xy</name></member>
+      <member refid="d3/dd8/classDataContainer_1a7268a90acd9a25f59e478f2e0d5fd897" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_xyz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a35cf1d28e6d38966d84884732a5ee7f8" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_xz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_y</name></member>
+      <member refid="d3/dd8/classDataContainer_1abf64e95d9bb01aedbe9cf5821519d2d6" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_yy</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3247f2ace9abcbddcae61ae35556793d" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_yz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_z</name></member>
+      <member refid="d3/dd8/classDataContainer_1a990e1b7ce1069428c4ec6775e594c826" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_deriv_zz</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_dims</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6e5a70b0d2f29185cbd4f51a5e66782a" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_values</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1abcd2e5c8b272ee7a933d18869fa850e3" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_vec</name></member>
+      <member refid="d3/dd8/classDataContainer_1aab0412d13aea8ee95ed5bda2fea2350b" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_VertexFreqGrid</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a996f57ec574fcd0cdd97658aa5d8f0c1" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>get_weights</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa2471bf6aaa36d056b22eaf5e05585d5" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>index_type</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a015f68bd9a84eb9d567ff97019a9406a" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>initialized</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab2a08aa7bd6789c97411697e91dcf300" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>initInterpolator</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a9929ed45115e5545302fade3b8ecafb2" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>interpolate_spline</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a653275609e3a3a043f55474b02f70f06" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>m_deriv_x</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a28949fb35d07a8fe033d76d7d32f135b" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>m_deriv_xy</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a94be8b134b72e4aa72ae18ee341110e5" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>m_deriv_y</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ac5ad43296160f361548396c2c6ec2817" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>m_left</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1af80ff021a401c8f01f52c5c629854658" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>m_left_value</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a45a3934022863196fd1a4f81f0cabdd3" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>m_right</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab5164a936b58e0d6290b66736cb9f47f" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>m_right_value</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1aa02741d1cf3a2457ed516ddf5b8f93a9" prot="protected" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>n</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a004cc6a621d502495ace6343a43e1fc3" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>set_initializedInterpol</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1ae76c4352d8dbe3fa86fc4394eb781334" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>set_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a1cb357f678027c6170ae53ca8131c107" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>set_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a22ef70f4e159e8ff4cff0bf02a257c68" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>set_vec</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3c2988bac759ed2d22a7655a5342648d" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>set_VertexFreqGrid</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a4619283941f9095c26f409442c2431db" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>setvert</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1aefc529ad1483b4bb631d586e105051d9" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>setvert</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a627e34de6a12e83dcef094393f113c61" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>setvert_vectorized</name></member>
+      <member refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>shrink_freq_box</name></member>
+      <member refid="d3/dd8/classDataContainer_1a94e9f1cfa874bd2056aca270a646b24e" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>shrink_freq_box_impl</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a04dc260edf9c688b557b329a4ff979fd" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>Spline</name></member>
+      <member refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1af7c231ff89ea01542d721cf9a5e6c6b4" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>Spline</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6a12aa5133b4e718e71022aaa72fe819" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>val</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a3ef7520d345f57577a35ebe048897d0e" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>val</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6db8027ec05f0675c5795c5a6db81909" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>val_vectorized</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a562fde9ddb3882bd794e5ab5b6b1e191" prot="public" virt="non-virtual"><scope>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</scope><name>val_vectorized</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

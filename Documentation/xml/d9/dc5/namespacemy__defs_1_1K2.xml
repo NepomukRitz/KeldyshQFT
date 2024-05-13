@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d9/dc5/namespacemy__defs_1_1K2" kind="namespace" language="C++">
+    <compoundname>my_defs::K2</compoundname>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566" prot="public" static="no" strong="no">
+        <type></type>
+        <name>names</name>
+        <qualifiedname>my_defs::K2::names</qualifiedname>
+        <enumvalue id="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a0e00d54b522305dc57d86ce8f43d5d86" prot="public">
+          <name>spin</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a8146dcfcbe23167ac60edaf9191ad73a" prot="public">
+          <name>omega</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a304fd85e3afacf7639b3649c9f5fa5a8" prot="public">
+          <name>nu</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a986e3d2a3161efd61e3cacab9fcf8d53" prot="public">
+          <name>keldysh</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a6e324f30c27ae4137ff98a43ae712c0e" prot="public">
+          <name>internal</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="506" column="9" bodyfile="data_structures.hpp" bodystart="506" bodyend="506"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="d9/dc5/namespacemy__defs_1_1K2_1ae197e68c9f27d384fea94864d6fa25d2" prot="public" static="no">
+        <type>std::array&lt; <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref>, <ref refid="d9/dc5/namespacemy__defs_1_1K2_1a46ec13991a21d90576fab44dc1320d16" kindref="member">rank</ref> &gt;</type>
+        <definition>using my_defs::K2::index_type =  std::array&lt;my_index_t, rank&gt;</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>my_defs::K2::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="507" column="9" bodyfile="data_structures.hpp" bodystart="507" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d9/dc5/namespacemy__defs_1_1K2_1a76d7d5616a76e5c0ff919722754ffe19" prot="public" static="no">
+        <type>std::array&lt; <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref>, <ref refid="d9/dc5/namespacemy__defs_1_1K2_1a46ec13991a21d90576fab44dc1320d16" kindref="member">rank</ref> &gt;</type>
+        <definition>using my_defs::K2::dimensions_type =  std::array&lt;my_index_t, rank&gt;</definition>
+        <argsstring></argsstring>
+        <name>dimensions_type</name>
+        <qualifiedname>my_defs::K2::dimensions_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="508" column="9" bodyfile="data_structures.hpp" bodystart="508" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d9/dc5/namespacemy__defs_1_1K2_1a01e8384cb8bc8f38658375f908227fbb" prot="public" static="no">
+        <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, 2 &gt;</type>
+        <definition>using my_defs::K2::frequencies_type =  std::array&lt;freqType, 2&gt;</definition>
+        <argsstring></argsstring>
+        <name>frequencies_type</name>
+        <qualifiedname>my_defs::K2::frequencies_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="509" column="9" bodyfile="data_structures.hpp" bodystart="509" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="d9/dc5/namespacemy__defs_1_1K2_1a46ec13991a21d90576fab44dc1320d16" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <definition>constexpr my_index_t my_defs::K2::rank</definition>
+        <argsstring></argsstring>
+        <name>rank</name>
+        <qualifiedname>my_defs::K2::rank</qualifiedname>
+        <initializer>= 5</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="data_structures.hpp" line="505" column="30" bodyfile="data_structures.hpp" bodystart="505" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="data_structures.hpp" line="504" column="5"/>
+  </compounddef>
+</doxygen>

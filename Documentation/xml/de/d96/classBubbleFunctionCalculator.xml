@@ -1,0 +1,1685 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="de/d96/classBubbleFunctionCalculator" kind="class" language="C++" prot="public">
+    <compoundname>BubbleFunctionCalculator</compoundname>
+    <includes refid="de/de8/bubble__function_8hpp" local="no">bubble_function.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>char</type>
+        <declname>channel</declname>
+        <defname>channel</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref></type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref></type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref></type>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">class</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref></type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="de/d96/classBubbleFunctionCalculator_1aca374f6919f32b9965df773f6438d3cd" prot="private" static="no">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt;</type>
+        <definition>using BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::value_type =  vec&lt;Q&gt;</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <qualifiedname>BubbleFunctionCalculator::value_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="33" column="5" bodyfile="bubble/bubble_function.hpp" bodystart="33" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a1bd08ca7d1eaefd1ec390d11df50545c" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref> &amp;</type>
+        <definition>vertexType_result&amp; BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dgamma</definition>
+        <argsstring></argsstring>
+        <name>dgamma</name>
+        <qualifiedname>BubbleFunctionCalculator::dgamma</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="35" column="23" bodyfile="bubble/bubble_function.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1aed74056e1050e0d548f0a30e1db5dbe1" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref></type>
+        <definition>const vertexType_left BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex1</definition>
+        <argsstring></argsstring>
+        <name>vertex1</name>
+        <qualifiedname>BubbleFunctionCalculator::vertex1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="37" column="27" bodyfile="bubble/bubble_function.hpp" bodystart="37" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ae04e25d11acbdca08e9ea07b6097b5a9" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref></type>
+        <definition>const vertexType_right BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex2</definition>
+        <argsstring></argsstring>
+        <name>vertex2</name>
+        <qualifiedname>BubbleFunctionCalculator::vertex2</qualifiedname>
+        <briefdescription>
+<para>THIS IS A COPY; needed for symmetry-expansion. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="38" column="28" bodyfile="bubble/bubble_function.hpp" bodystart="38" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a55556ec461a25b2ca5cbb24966e078c6" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref> &amp;</type>
+        <definition>const Bubble_Object&amp; BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::Pi</definition>
+        <argsstring></argsstring>
+        <name>Pi</name>
+        <qualifiedname>BubbleFunctionCalculator::Pi</qualifiedname>
+        <briefdescription>
+<para>THIS IS A COPY; needed for symmetry-expansion. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="40" column="25" bodyfile="bubble/bubble_function.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ad3090b83103f39dddc2ee26d03fabc77" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>const bool BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::diff</definition>
+        <argsstring></argsstring>
+        <name>diff</name>
+        <qualifiedname>BubbleFunctionCalculator::diff</qualifiedname>
+        <initializer>= Pi.diff</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="41" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ac29d93d3ebecea159b546ffffce9677e" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+        <definition>const double BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::Delta</definition>
+        <argsstring></argsstring>
+        <name>Delta</name>
+        <qualifiedname>BubbleFunctionCalculator::Delta</qualifiedname>
+        <initializer>= (Pi.g.Lambda + Pi.g.Gamma) / 2.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="43" column="18" bodyfile="bubble/bubble_function.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a47b31ec55d0cf8a869536977c8b23b10" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::nw1_w</definition>
+        <argsstring></argsstring>
+        <name>nw1_w</name>
+        <qualifiedname>BubbleFunctionCalculator::nw1_w</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="46" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a444b516e9971551e3c37edbf66c1c564" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::nw2_w</definition>
+        <argsstring></argsstring>
+        <name>nw2_w</name>
+        <qualifiedname>BubbleFunctionCalculator::nw2_w</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="46" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a48d0b44a7919d3c848e98aa820d016a3" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::nw2_v</definition>
+        <argsstring></argsstring>
+        <name>nw2_v</name>
+        <qualifiedname>BubbleFunctionCalculator::nw2_v</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="46" column="23" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a8f6db94fee9253428eb9bab4e7851bba" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::nw3_w</definition>
+        <argsstring></argsstring>
+        <name>nw3_w</name>
+        <qualifiedname>BubbleFunctionCalculator::nw3_w</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="46" column="30" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a516598b92a46628ac7d2e6076f30992b" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::nw3_v</definition>
+        <argsstring></argsstring>
+        <name>nw3_v</name>
+        <qualifiedname>BubbleFunctionCalculator::nw3_v</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="46" column="37" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a89b55ab9d50ba7f9aef73fed8a334784" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::nw3_v_p</definition>
+        <argsstring></argsstring>
+        <name>nw3_v_p</name>
+        <qualifiedname>BubbleFunctionCalculator::nw3_v_p</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="46" column="44" bodyfile="bubble/bubble_function.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1af0a02d1d2c60431685ee1c6811cba55e" prot="private" static="no" mutable="no">
+        <type>Q</type>
+        <definition>Q BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::prefactor</definition>
+        <argsstring></argsstring>
+        <name>prefactor</name>
+        <qualifiedname>BubbleFunctionCalculator::prefactor</qualifiedname>
+        <initializer>= 1.</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="47" column="7" bodyfile="bubble/bubble_function.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ad6336c704bf8d12954158fb7931fce40" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::number_of_nodes</definition>
+        <argsstring></argsstring>
+        <name>number_of_nodes</name>
+        <qualifiedname>BubbleFunctionCalculator::number_of_nodes</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="49" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ae8b920860d8274c754a92faaaac2e5cd" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::mpi_size</definition>
+        <argsstring></argsstring>
+        <name>mpi_size</name>
+        <qualifiedname>BubbleFunctionCalculator::mpi_size</qualifiedname>
+        <initializer>= <ref refid="d4/dda/mpi__setup_8c_09_09_1a67ee780d3ab18a648c6ba0fdc734209f" kindref="member">mpi_world_size</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="50" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a49d0df162b5682fc9a03f9d1f965a75c" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::mpi_rank</definition>
+        <argsstring></argsstring>
+        <name>mpi_rank</name>
+        <qualifiedname>BubbleFunctionCalculator::mpi_rank</qualifiedname>
+        <initializer>= <ref refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" kindref="member">mpi_world_rank</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="51" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1aa4fdc911c5229a66cbda5ed9ac3539e2" prot="private" static="no" mutable="no">
+        <type>std::array&lt; std::size_t, <ref refid="db/d58/namespacemy__defs_1_1K1_1af3eb9f515e992d38e5149aedcaad357c" kindref="member">my_defs::K1::rank</ref> &gt;</type>
+        <definition>std::array&lt;std::size_t,my_defs::K1::rank&gt; BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK1</definition>
+        <argsstring></argsstring>
+        <name>dimsK1</name>
+        <qualifiedname>BubbleFunctionCalculator::dimsK1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="52" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="52" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a0fcbc47a399e2425ae9d5a24550dd872" prot="private" static="no" mutable="no">
+        <type>std::array&lt; std::size_t, <ref refid="d9/dc5/namespacemy__defs_1_1K2_1a46ec13991a21d90576fab44dc1320d16" kindref="member">my_defs::K2::rank</ref> &gt;</type>
+        <definition>std::array&lt;std::size_t,my_defs::K2::rank&gt; BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK2</definition>
+        <argsstring></argsstring>
+        <name>dimsK2</name>
+        <qualifiedname>BubbleFunctionCalculator::dimsK2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="53" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="53" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a06618b55ba44aeb007430623e1eb61d7" prot="private" static="no" mutable="no">
+        <type>std::array&lt; std::size_t, <ref refid="db/d3d/namespacemy__defs_1_1K3_1ab056cdf9a6ae965fdbcdbfb137878cff" kindref="member">my_defs::K3::rank</ref> &gt;</type>
+        <definition>std::array&lt;std::size_t,my_defs::K3::rank&gt; BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK3</definition>
+        <argsstring></argsstring>
+        <name>dimsK3</name>
+        <qualifiedname>BubbleFunctionCalculator::dimsK3</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="54" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="54" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a95a17d594f7e564494109436fe14430b" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K1</definition>
+        <argsstring></argsstring>
+        <name>dims_flat_K1</name>
+        <qualifiedname>BubbleFunctionCalculator::dims_flat_K1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="55" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="55" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ac8effb336d5e64f1cc971bd2fa3ba867" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K2</definition>
+        <argsstring></argsstring>
+        <name>dims_flat_K2</name>
+        <qualifiedname>BubbleFunctionCalculator::dims_flat_K2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="55" column="25" bodyfile="bubble/bubble_function.hpp" bodystart="55" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a3fd1d771ae0f8fffd65ac2f880c2360f" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K3</definition>
+        <argsstring></argsstring>
+        <name>dims_flat_K3</name>
+        <qualifiedname>BubbleFunctionCalculator::dims_flat_K3</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="55" column="38" bodyfile="bubble/bubble_function.hpp" bodystart="55" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a2029389dabd198955af1f502f84ad448" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K1</definition>
+        <argsstring></argsstring>
+        <name>n_vectorization_K1</name>
+        <qualifiedname>BubbleFunctionCalculator::n_vectorization_K1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="56" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ac4a662a57b7979c04d39decd0da8a34f" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K2</definition>
+        <argsstring></argsstring>
+        <name>n_vectorization_K2</name>
+        <qualifiedname>BubbleFunctionCalculator::n_vectorization_K2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="56" column="31" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a2217ebd22b70efa811da8184f9170acf" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K3</definition>
+        <argsstring></argsstring>
+        <name>n_vectorization_K3</name>
+        <qualifiedname>BubbleFunctionCalculator::n_vectorization_K3</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="56" column="50" bodyfile="bubble/bubble_function.hpp" bodystart="56" bodyend="-1"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1ad6e110723574bff14f956486aa43baf4" prot="private" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vmin</definition>
+        <argsstring></argsstring>
+        <name>vmin</name>
+        <qualifiedname>BubbleFunctionCalculator::vmin</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="61" column="14" bodyfile="bubble/bubble_function.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a53fcca313617e95ab91ca5f1594b7dd4" prot="private" static="no" mutable="no">
+        <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+        <definition>freqType BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vmax</definition>
+        <argsstring></argsstring>
+        <name>vmax</name>
+        <qualifiedname>BubbleFunctionCalculator::vmax</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="61" column="20" bodyfile="bubble/bubble_function.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a138c2cda02f5d075f3fde7c87f3c2c98" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::Nmin</definition>
+        <argsstring></argsstring>
+        <name>Nmin</name>
+        <qualifiedname>BubbleFunctionCalculator::Nmin</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="62" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a8dc738001f1eaa6530d72c25bb70d34a" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::Nmax</definition>
+        <argsstring></argsstring>
+        <name>Nmax</name>
+        <qualifiedname>BubbleFunctionCalculator::Nmax</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="62" column="14" bodyfile="bubble/bubble_function.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a1fb4ae46106b715ba0779bd8109f3a9f" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::tK1</definition>
+        <argsstring></argsstring>
+        <name>tK1</name>
+        <qualifiedname>BubbleFunctionCalculator::tK1</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="64" column="12" bodyfile="bubble/bubble_function.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a3f4c775b9646004bf5c3359040d39e5a" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::tK2</definition>
+        <argsstring></argsstring>
+        <name>tK2</name>
+        <qualifiedname>BubbleFunctionCalculator::tK2</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="64" column="17" bodyfile="bubble/bubble_function.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1abb6d2ff8764f5462e7308754da485a27" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::tK3</definition>
+        <argsstring></argsstring>
+        <name>tK3</name>
+        <qualifiedname>BubbleFunctionCalculator::tK3</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="64" column="22" bodyfile="bubble/bubble_function.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1aa437217d9dfe405724d14736399e4899" prot="private" static="no" mutable="no">
+        <type>std::array&lt; <ref refid="d9/db9/classbool" kindref="compound">bool</ref>, 3 &gt;</type>
+        <definition>std::array&lt;bool,3&gt; BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::tobecomputed</definition>
+        <argsstring></argsstring>
+        <name>tobecomputed</name>
+        <qualifiedname>BubbleFunctionCalculator::tobecomputed</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="66" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="de/d96/classBubbleFunctionCalculator_1a7059c902056342447ef9dd316fe070f6" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>const bool BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::store_integrand_for_PT</definition>
+        <argsstring></argsstring>
+        <name>store_integrand_for_PT</name>
+        <qualifiedname>BubbleFunctionCalculator::store_integrand_for_PT</qualifiedname>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="104" column="16" bodyfile="bubble/bubble_function.hpp" bodystart="104" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1af46f4d80e0be1f216b3793b40035614b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::check_presence_of_symmetry_related_contributions</definition>
+        <argsstring>()</argsstring>
+        <name>check_presence_of_symmetry_related_contributions</name>
+        <qualifiedname>BubbleFunctionCalculator::check_presence_of_symmetry_related_contributions</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="68" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="999" bodyend="1017"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a3a41b66df84d0e75680d9d2359f63ef5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::set_channel_specific_freq_ranges_and_prefactor</definition>
+        <argsstring>()</argsstring>
+        <name>set_channel_specific_freq_ranges_and_prefactor</name>
+        <qualifiedname>BubbleFunctionCalculator::set_channel_specific_freq_ranges_and_prefactor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="69" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="183" bodyend="195"/>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a304fd85e3afacf7639b3649c9f5fa5a8" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::nu</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a5e2253f2f931ce77217a8b5c1077233a" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nu</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a9e5671fd4724b9146863e5da178f0d4b" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nup</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a388adf559598d1f87dd0a5cd80843d0a" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::omega</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a8146dcfcbe23167ac60edaf9191ad73a" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::omega</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a86e3bd74dc6981efec4e1bf7b3bca9d4" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::omega</references>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</definition>
+        <argsstring>()</argsstring>
+        <name>find_vmin_and_vmax</name>
+        <qualifiedname>BubbleFunctionCalculator::find_vmin_and_vmax</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="70" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="199" bodyend="221"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="42">POSINTRANGE</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" compoundref="de/de8/bubble__function_8hpp" startline="109" endline="176">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+            <declname>diag_class</declname>
+            <defname>diag_class</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_bubble_function</definition>
+        <argsstring>()</argsstring>
+        <name>calculate_bubble_function</name>
+        <qualifiedname>BubbleFunctionCalculator::calculate_bubble_function</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="72" column="21" bodyfile="bubble/bubble_function.hpp" bodystart="272" bodyend="321"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a34fb911b69581f60e4c68e72a016fe84" compoundref="d4/dda/mpi__setup_8c_09_09" startline="15" endline="19">mpi_collect</references>
+        <references refid="db/de0/mpi__setup_8hpp_1a9488f953e45dc6429ee1c03a0e09c616" compoundref="db/de0/mpi__setup_8hpp" startline="77" endline="95">mpi_reorder_result</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a473d70b9ba7357e61087b8e26ed6384c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+            <declname>diag_class</declname>
+            <defname>diag_class</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="de/d96/classBubbleFunctionCalculator_1aca374f6919f32b9965df773f6438d3cd" kindref="member">value_type</ref></type>
+        <definition>value_type BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_value</definition>
+        <argsstring>(int i_mpi, int i_omp, int n_omp, int n_vectorization)</argsstring>
+        <name>get_value</name>
+        <qualifiedname>BubbleFunctionCalculator::get_value</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i_mpi</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_omp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_omp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_vectorization</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="73" column="27"/>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+            <declname>diag_class</declname>
+            <defname>diag_class</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>spin</declname>
+            <defname>spin</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</definition>
+        <argsstring>(value_type &amp;value, int i0, int i_in, int iw, freqType w, freqType v, freqType vp)</argsstring>
+        <name>calculate_value</name>
+        <qualifiedname>BubbleFunctionCalculator::calculate_value</qualifiedname>
+        <param>
+          <type><ref refid="de/d96/classBubbleFunctionCalculator_1aca374f6919f32b9965df773f6438d3cd" kindref="member">value_type</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>iw</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>vp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>determine integral of the integrand&apos;s tails via formula (corresponds to quadrature of bare bubble):</para>
+<para>determine integral of the integrand&apos;s tails via formula:</para>
+<para>write integration_result into value</para>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="74" column="22" bodyfile="bubble/bubble_function.hpp" bodystart="384" bodyend="571"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+        <references refid="d2/d1a/Keldysh__symmetries_8hpp_1ad13f63de44ed03c446f501a518be3129">glb_non_zero_Keldysh_bubble</references>
+        <references refid="dd/d1f/integrator_8hpp_1a48c076c51ab55e8e2172d7d4fe99b12a" compoundref="dd/d1f/integrator_8hpp" startline="318" endline="321">integrator</references>
+        <references refid="dd/d1f/integrator_8hpp_1a7302c6b3faf870a9680b7a66f4c44bc4" compoundref="dd/d1f/integrator_8hpp" startline="425" endline="486">integrator_Matsubara_T0</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" compoundref="d1/df8/master__parameters_8hpp" startline="19">KELDYSH_FORMALISM</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" compoundref="d1/df8/master__parameters_8hpp" startline="73">n_spin</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" compoundref="d3/d3c/frequency__parameters_8hpp" startline="38">nFER2</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" compoundref="d3/d3c/frequency__parameters_8hpp" startline="40">nFER3</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1afab6be6e4454a2c97b85a5d1a48684d1" compoundref="d3/d3c/frequency__parameters_8hpp" startline="42">POSINTRANGE</references>
+        <references refid="df/d31/math__utils_8c_09_09_1aa8c8683a92f6dbb9abd5fd9feb592372" compoundref="df/d31/math__utils_8c_09_09" startline="117" endline="126">signFlipCorrection_MF_int</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1aa9e93c49d1f43476367a48a0509ae368" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;Ordered_result, K_class diag_class)</argsstring>
+        <name>write_out_results</name>
+        <qualifiedname>BubbleFunctionCalculator::write_out_results</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>Ordered_result</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+          <declname>diag_class</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="76" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="578" bodyend="597"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a128238645c8ca2ae9fe3ac89a974dea6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K1</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;K1_ordered_result)</argsstring>
+        <name>write_out_results_K1</name>
+        <qualifiedname>BubbleFunctionCalculator::write_out_results_K1</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>K1_ordered_result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="77" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="603" bodyend="610"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1ad723c59a2ce8220b426d1790ef6283ec" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K2</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;K2_ordered_result)</argsstring>
+        <name>write_out_results_K2</name>
+        <qualifiedname>BubbleFunctionCalculator::write_out_results_K2</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>K2_ordered_result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="78" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="616" bodyend="626"/>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1afe0d0e11f74a88ed13eb7e3f2815a16e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K2b</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;K2b_ordered_result)</argsstring>
+        <name>write_out_results_K2b</name>
+        <qualifiedname>BubbleFunctionCalculator::write_out_results_K2b</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>K2b_ordered_result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="79" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="633" bodyend="636"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1addecd120bccc2c0faf65cdfec3f50953" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::write_out_results_K3</definition>
+        <argsstring>(const vec&lt; Q &gt; &amp;K3_ordered_result)</argsstring>
+        <name>write_out_results_K3</name>
+        <qualifiedname>BubbleFunctionCalculator::write_out_results_K3</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; Q &gt; &amp;</type>
+          <declname>K3_ordered_result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="80" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="643" bodyend="652"/>
+        <references refid="d1/d75/causality__FDT__checks_8hpp_1a3dc6aad596db6b3fb60ebf65fff83ba0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="203" endline="759">compute_components_through_FDTs</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a6e762e09dcd35c92375944d8efeaeb80" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::set_external_arguments_for_parallelization</definition>
+        <argsstring>(size_t &amp;n_mpi, size_t &amp;n_omp, size_t &amp;n_vectorization, K_class diag_class)</argsstring>
+        <name>set_external_arguments_for_parallelization</name>
+        <qualifiedname>BubbleFunctionCalculator::set_external_arguments_for_parallelization</qualifiedname>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>n_mpi</declname>
+        </param>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>n_omp</declname>
+        </param>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>n_vectorization</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+          <declname>diag_class</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>The computation of the vertex components of dgamma.Ki (i = 1, 2, 2&apos;, 3) can be parallelized parallelization is achieved via... ... MPI --&gt; distribute over multiple nodes (n_mpi = maximal number of MPI processes) ... OMP --&gt; distribute over multiple threads within the same node (n_omp = number of ... vectorization --&gt; use efficient matrix routines If vectorization is used (*this)-&gt;<ref refid="de/d96/classBubbleFunctionCalculator_1a473d70b9ba7357e61087b8e26ed6384c" kindref="member">get_value()</ref> returns a vector with the components over which we vectorize and in (*this)-&gt;<ref refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" kindref="member">calculate_bubble_function()</ref> we need to loop over the remaining dimensions (these are given in dimsK1, dimsK2 and dimsK3)</para>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="82" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="658" bodyend="694"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a986e3d2a3161efd61e3cacab9fcf8d53" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::keldysh</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a15d300f357fcce31b953e451001a1965" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::keldysh</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a30594ea11124e4d5a9e7018957462d14" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::convert_external_MPI_OMP_indices_to_physical_indices_K1</definition>
+        <argsstring>(int &amp;iK1, int &amp;i0, int &amp;ispin, int &amp;iw, int &amp;i_in, freqType &amp;w, int i_mpi, int n_omp, int i_omp)</argsstring>
+        <name>convert_external_MPI_OMP_indices_to_physical_indices_K1</name>
+        <qualifiedname>BubbleFunctionCalculator::convert_external_MPI_OMP_indices_to_physical_indices_K1</qualifiedname>
+        <param>
+          <type>int &amp;</type>
+          <declname>iK1</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>ispin</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>iw</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_mpi</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_omp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_omp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="84" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="700" bodyend="715"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0ec64b43f2e4294da9b761c0e8b13e72" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::internal</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a388adf559598d1f87dd0a5cd80843d0a" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::omega</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a0e8f8c5700d73a66191a72ea5eba2082" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::spin</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1ab4c38575e2b2a70056d33e2bca6756d3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::convert_external_MPI_OMP_indices_to_physical_indices_K2</definition>
+        <argsstring>(int &amp;iK2, int &amp;i0, int &amp;ispin, int &amp;iw, int &amp;iv, int &amp;i_in, freqType &amp;w, freqType &amp;v, int i_mpi, int n_omp, int i_omp)</argsstring>
+        <name>convert_external_MPI_OMP_indices_to_physical_indices_K2</name>
+        <qualifiedname>BubbleFunctionCalculator::convert_external_MPI_OMP_indices_to_physical_indices_K2</qualifiedname>
+        <param>
+          <type>int &amp;</type>
+          <declname>iK2</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>ispin</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>iw</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>iv</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_mpi</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_omp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_omp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="86" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="721" bodyend="737"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a6e324f30c27ae4137ff98a43ae712c0e" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::internal</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a986e3d2a3161efd61e3cacab9fcf8d53" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::keldysh</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a304fd85e3afacf7639b3649c9f5fa5a8" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::nu</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a8146dcfcbe23167ac60edaf9191ad73a" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::omega</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a0e00d54b522305dc57d86ce8f43d5d86" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::spin</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a9dd259be8996431927df69d965337f96" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::convert_external_MPI_OMP_indices_to_physical_indices_K2b</definition>
+        <argsstring>(int &amp;iK2, int &amp;i0, int &amp;ispin, int &amp;iw, int &amp;ivp, int &amp;i_in, freqType &amp;w, freqType &amp;vp, int i_mpi, int n_omp, int i_omp)</argsstring>
+        <name>convert_external_MPI_OMP_indices_to_physical_indices_K2b</name>
+        <qualifiedname>BubbleFunctionCalculator::convert_external_MPI_OMP_indices_to_physical_indices_K2b</qualifiedname>
+        <param>
+          <type>int &amp;</type>
+          <declname>iK2</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>ispin</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>iw</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>ivp</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>vp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_mpi</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_omp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_omp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="89" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="744" bodyend="760"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626aabef50eef7d4cc525c7fe4dde47c7e5d" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::internal</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626ae72c53fbf956970e07867183ff146878" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::keldysh</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626a72bf6d598fcdf4d78a824fc8b2a47760" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::nup</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626a986a6cbaef072a8285036f93c26898b4" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::omega</references>
+        <references refid="dc/dc5/namespacemy__defs_1_1K2b_1a6743763ea3dbd1a85f1c3472eed0f626af17587ce564f9ea54432c297f8b7e1c8" compoundref="d7/d59/data__structures_8hpp" startline="513">my_defs::K2b::spin</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1ace4a7efa46e060605dbf73b449822d37" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::convert_external_MPI_OMP_indices_to_physical_indices_K3</definition>
+        <argsstring>(int &amp;iK3, int &amp;i0, int &amp;ispin, int &amp;iw, int &amp;iv, int &amp;ivp, int &amp;i_in, freqType &amp;w, freqType &amp;v, freqType &amp;vp, int i_mpi, int n_omp, int i_omp)</argsstring>
+        <name>convert_external_MPI_OMP_indices_to_physical_indices_K3</name>
+        <qualifiedname>BubbleFunctionCalculator::convert_external_MPI_OMP_indices_to_physical_indices_K3</qualifiedname>
+        <param>
+          <type>int &amp;</type>
+          <declname>iK3</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>ispin</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>iw</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>iv</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>ivp</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &amp;</type>
+          <declname>vp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_mpi</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n_omp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_omp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="92" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="767" bodyend="784"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a14be3f8ac0084cf0252ba0212a1e8398" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::internal</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a15d300f357fcce31b953e451001a1965" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::keldysh</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a5e2253f2f931ce77217a8b5c1077233a" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nu</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a9e5671fd4724b9146863e5da178f0d4b" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nup</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a86e3bd74dc6981efec4e1bf7b3bca9d4" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::omega</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a243c27209bb0519793b3abe88418a158" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::spin</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a6fd361c516a0a817f42b270cc3958829" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K1</definition>
+        <argsstring>(int i0, freqType w)</argsstring>
+        <name>get_trafo_K1</name>
+        <qualifiedname>BubbleFunctionCalculator::get_trafo_K1</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="96" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="791" bodyend="827"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" compoundref="d1/df8/master__parameters_8hpp" startline="19">KELDYSH_FORMALISM</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K2</definition>
+        <argsstring>(int i0, freqType w, freqType v)</argsstring>
+        <name>get_trafo_K2</name>
+        <qualifiedname>BubbleFunctionCalculator::get_trafo_K2</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="97" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="833" bodyend="895"/>
+        <references refid="da/d3b/state_8hpp_1a8c0105792a1452c363b13de73808e167" compoundref="da/d3b/state_8hpp" startline="225" endline="228">abs</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6" compoundref="d1/df8/master__parameters_8hpp" startline="65">EQUILIBRIUM</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" compoundref="d1/df8/master__parameters_8hpp" startline="19">KELDYSH_FORMALISM</references>
+        <references refid="df/d31/math__utils_8c_09_09_1ad82842c15e5bf9c311b01ea3c595775b" compoundref="df/d31/math__utils_8c_09_09" startline="107" endline="115">signFlipCorrection_MF</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_trafo_K3</definition>
+        <argsstring>(int i0, freqType w, freqType v, freqType vp)</argsstring>
+        <name>get_trafo_K3</name>
+        <qualifiedname>BubbleFunctionCalculator::get_trafo_K3</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>vp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="98" column="9" bodyfile="bubble/bubble_function.hpp" bodystart="901" bodyend="966"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf" compoundref="d1/df8/master__parameters_8hpp" startline="11">DEBUG_SYMMETRIES</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6" compoundref="d1/df8/master__parameters_8hpp" startline="65">EQUILIBRIUM</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" compoundref="d1/df8/master__parameters_8hpp" startline="19">KELDYSH_FORMALISM</references>
+        <references refid="df/d31/math__utils_8c_09_09_1ad82842c15e5bf9c311b01ea3c595775b" compoundref="df/d31/math__utils_8c_09_09" startline="107" endline="115">signFlipCorrection_MF</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a054dceb68c5eb4713f18e88c980711ab" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_Matsubara_integration_intervals</definition>
+        <argsstring>(size_t &amp;num_intervals, vec&lt; vec&lt; freqType &gt; &gt; &amp;intervals, freqType w)</argsstring>
+        <name>get_Matsubara_integration_intervals</name>
+        <qualifiedname>BubbleFunctionCalculator::get_Matsubara_integration_intervals</qualifiedname>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>num_intervals</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref> &gt; &gt; &amp;</type>
+          <declname>intervals</declname>
+        </param>
+        <param>
+          <type><ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref></type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="100" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="972" bodyend="982"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28" compoundref="d9/d3a/technical__parameters_8hpp" startline="18">inter_tol</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a66832383adea26f0073cb95cdf0ecc6c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Q</type>
+        <definition>Q BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::bubble_value_prefactor</definition>
+        <argsstring>()</argsstring>
+        <name>bubble_value_prefactor</name>
+        <qualifiedname>BubbleFunctionCalculator::bubble_value_prefactor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="102" column="7" bodyfile="bubble/bubble_function.hpp" bodystart="988" bodyend="991"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1ae0c8f095bd2588bb4d374b002c94a90d">glb_i</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a812ac35cc43da6ba3591f65ccd94001e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::perform_computation</definition>
+        <argsstring>()</argsstring>
+        <name>perform_computation</name>
+        <qualifiedname>BubbleFunctionCalculator::perform_computation</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="107" column="10" bodyfile="bubble/bubble_function.hpp" bodystart="227" bodyend="265"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1a4ae6ae93d2caa1fda9be0ce8f6b339ee" compoundref="d6/d35/util_8c_09_09" startline="21" endline="27">utils::get_time</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::BubbleFunctionCalculator</definition>
+        <argsstring>(vertexType_result &amp;dgamma_in, const vertexType_left &amp;vertex1_in, const vertexType_right &amp;vertex2_in, const Bubble_Object &amp;Pi_in, const int number_of_nodes_in, const std::array&lt; bool, 3 &gt; tobecomputed)</argsstring>
+        <name>BubbleFunctionCalculator</name>
+        <qualifiedname>BubbleFunctionCalculator::BubbleFunctionCalculator</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_result</ref> &amp;</type>
+          <declname>dgamma_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_left</ref> &amp;</type>
+          <declname>vertex1_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">vertexType_right</ref> &amp;</type>
+          <declname>vertex2_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Bubble_Object</ref> &amp;</type>
+          <declname>Pi_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>number_of_nodes_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::array&lt; <ref refid="d9/db9/classbool" kindref="compound">bool</ref>, 3 &gt;</type>
+          <declname>tobecomputed</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>TODO(high): Figure out computations which need gamma_a_uu = gamma_a_ud - gamma_t_ud in a t-bubble, i.e. CP_to_t(gamma_a_uu) = CP_to_t(gamma_a_ud) - CP_to_a(gamma_t_ud). The integrand will need vertex AND vertex_initial to have access to cross-projected parts and non-crossprojected parts.</para>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="109" column="5" bodyfile="bubble/bubble_function.hpp" bodystart="109" bodyend="176"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a95a17d594f7e564494109436fe14430b" compoundref="de/de8/bubble__function_8hpp" startline="55">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1ac8effb336d5e64f1cc971bd2fa3ba867" compoundref="de/de8/bubble__function_8hpp" startline="55">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K2</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a3fd1d771ae0f8fffd65ac2f880c2360f" compoundref="de/de8/bubble__function_8hpp" startline="55">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dims_flat_K3</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1aa4fdc911c5229a66cbda5ed9ac3539e2" compoundref="de/de8/bubble__function_8hpp" startline="52">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a0fcbc47a399e2425ae9d5a24550dd872" compoundref="de/de8/bubble__function_8hpp" startline="53">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK2</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a06618b55ba44aeb007430623e1eb61d7" compoundref="de/de8/bubble__function_8hpp" startline="54">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::dimsK3</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" compoundref="de/de8/bubble__function_8hpp" startline="199" endline="221">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::find_vmin_and_vmax</references>
+        <references refid="de/dbb/math__utils_8hpp_1a0bb20dce81d05d42cbea49416726ad27" compoundref="de/dbb/math__utils_8hpp" startline="106" endline="110">getFlatSize</references>
+        <references refid="db/d58/namespacemy__defs_1_1K1_1ae0dde289d1bfdb687324024b44a56cb3a18e0a28d91dd207059eaac364f97d8eb" compoundref="d7/d59/data__structures_8hpp" startline="499">my_defs::K1::keldysh</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a986e3d2a3161efd61e3cacab9fcf8d53" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::keldysh</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a15d300f357fcce31b953e451001a1965" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::keldysh</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" compoundref="d1/df8/master__parameters_8hpp" startline="19">KELDYSH_FORMALISM</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa" compoundref="d1/df8/master__parameters_8hpp" startline="34">MAX_DIAG_CLASS</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a2029389dabd198955af1f502f84ad448" compoundref="de/de8/bubble__function_8hpp" startline="56">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1ac4a662a57b7979c04d39decd0da8a34f" compoundref="de/de8/bubble__function_8hpp" startline="56">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K2</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a2217ebd22b70efa811da8184f9170acf" compoundref="de/de8/bubble__function_8hpp" startline="56">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::n_vectorization_K3</references>
+        <references refid="d9/dc5/namespacemy__defs_1_1K2_1acded2c6297d902365cfe7ff28616f566a304fd85e3afacf7639b3649c9f5fa5a8" compoundref="d7/d59/data__structures_8hpp" startline="506">my_defs::K2::nu</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a5e2253f2f931ce77217a8b5c1077233a" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nu</references>
+        <references refid="db/d3d/namespacemy__defs_1_1K3_1a0a9b6e14191e05413fb8099205a6e618a9e5671fd4724b9146863e5da178f0d4b" compoundref="d7/d59/data__structures_8hpp" startline="520">my_defs::K3::nup</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1a3a41b66df84d0e75680d9d2359f63ef5" compoundref="de/de8/bubble__function_8hpp" startline="183" endline="195">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::set_channel_specific_freq_ranges_and_prefactor</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b" compoundref="d1/df8/master__parameters_8hpp" startline="23">VECTORIZED_INTEGRATION</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1aed74056e1050e0d548f0a30e1db5dbe1" compoundref="de/de8/bubble__function_8hpp" startline="37">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex1</references>
+        <references refid="de/d96/classBubbleFunctionCalculator_1ae04e25d11acbdca08e9ea07b6097b5a9" compoundref="de/de8/bubble__function_8hpp" startline="38">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::vertex2</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d96/classBubbleFunctionCalculator_1a8bfd9754031987d8a87e6e276950ec67" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+            <declname>diag_class</declname>
+            <defname>diag_class</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::get_value</definition>
+        <argsstring>(const int i_mpi, const int i_omp, const int n_omp, const int n_vectorization) -&gt; value_type</argsstring>
+        <name>get_value</name>
+        <qualifiedname>BubbleFunctionCalculator::get_value</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_mpi</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_omp</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>n_omp</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>n_vectorization</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bubble/bubble_function.hpp" line="328" column="2" bodyfile="bubble/bubble_function.hpp" bodystart="328" bodyend="377"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a8eff64c74e8a1744163cada25ca8087e" compoundref="d7/d59/data__structures_8hpp" startline="480">k1</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aacf29f614329fe5521d57037364d33eb" compoundref="d7/d59/data__structures_8hpp" startline="480">k2</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6aa19218abb77b991092b345b894ec3021" compoundref="d7/d59/data__structures_8hpp" startline="480">k2b</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6a583b10bbc3d9ca5483f447cc6daa0a90" compoundref="d7/d59/data__structures_8hpp" startline="480">k3</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" compoundref="d1/df8/master__parameters_8hpp" startline="73">n_spin</references>
+        <references refid="df/d31/math__utils_8c_09_09_1ad82842c15e5bf9c311b01ea3c595775b" compoundref="df/d31/math__utils_8c_09_09" startline="107" endline="115">signFlipCorrection_MF</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Class that actually performs the bubble computation. Invoked by the bubble_function. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Two-particle channel of the computation. Can be a, p, or t. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Template parameter specifying the type of the data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that results in the bubble computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_left</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the left part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vertexType_right</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the vertex that enters as the right part of the computation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Bubble_Object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the <ref refid="d8/d6e/classBubble" kindref="compound">Bubble</ref> object to connect the two vertices </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;</label>
+        <link refid="de/d96/classBubbleFunctionCalculator"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-dgamma</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>-vertex1</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>-vertex2</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>-Pi</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>-diff</edgelabel>
+          <edgelabel>-store_integrand_for_PT</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>-Delta</edgelabel>
+          <edgelabel>-tK1</edgelabel>
+          <edgelabel>-tK2</edgelabel>
+          <edgelabel>-tK3</edgelabel>
+          <edgelabel>-vmax</edgelabel>
+          <edgelabel>-vmin</edgelabel>
+        </childnode>
+        <childnode refid="8" relation="usage">
+          <edgelabel>-Nmax</edgelabel>
+          <edgelabel>-Nmin</edgelabel>
+          <edgelabel>-nw1_w</edgelabel>
+          <edgelabel>-nw2_v</edgelabel>
+          <edgelabel>-nw2_w</edgelabel>
+          <edgelabel>-nw3_v</edgelabel>
+          <edgelabel>-nw3_v_p</edgelabel>
+          <edgelabel>-nw3_w</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>-prefactor</edgelabel>
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>-dims_flat_K1</edgelabel>
+          <edgelabel>-dims_flat_K2</edgelabel>
+          <edgelabel>-dims_flat_K3</edgelabel>
+          <edgelabel>-mpi_rank</edgelabel>
+          <edgelabel>-mpi_size</edgelabel>
+          <edgelabel>-n_vectorization_K1</edgelabel>
+          <edgelabel>-n_vectorization_K2</edgelabel>
+          <edgelabel>-n_vectorization_K3</edgelabel>
+          <edgelabel>-number_of_nodes</edgelabel>
+        </childnode>
+        <childnode refid="11" relation="usage">
+          <edgelabel>-dimsK1</edgelabel>
+        </childnode>
+        <childnode refid="15" relation="usage">
+          <edgelabel>-dimsK2</edgelabel>
+        </childnode>
+        <childnode refid="16" relation="usage">
+          <edgelabel>-dimsK3</edgelabel>
+        </childnode>
+        <childnode refid="17" relation="usage">
+          <edgelabel>-tobecomputed</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>Q</label>
+      </node>
+      <node id="14">
+        <label>T</label>
+      </node>
+      <node id="17">
+        <label>std::array&lt; bool, 3 &gt;</label>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="template-instance">
+          <edgelabel>&lt; bool, 3 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>std::array&lt; std::size_t, my_defs::K1::rank &gt;</label>
+        <childnode refid="12" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="template-instance">
+          <edgelabel>&lt; std::size_t, my_defs::K1::rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="15">
+        <label>std::array&lt; std::size_t, my_defs::K2::rank &gt;</label>
+        <childnode refid="12" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="template-instance">
+          <edgelabel>&lt; std::size_t, my_defs::K2::rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>std::array&lt; std::size_t, my_defs::K3::rank &gt;</label>
+        <childnode refid="12" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="template-instance">
+          <edgelabel>&lt; std::size_t, my_defs::K3::rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="5">
+        <label>const Bubble_Object &amp;</label>
+      </node>
+      <node id="3">
+        <label>const vertexType_left</label>
+      </node>
+      <node id="4">
+        <label>const vertexType_right</label>
+      </node>
+      <node id="7">
+        <label>double</label>
+      </node>
+      <node id="8">
+        <label>int</label>
+      </node>
+      <node id="10">
+        <label>size_t</label>
+      </node>
+      <node id="13">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="14" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>size_t</label>
+      </node>
+      <node id="2">
+        <label>vertexType_result &amp;</label>
+      </node>
+    </collaborationgraph>
+    <location file="bubble/bubble_function.hpp" line="32" column="1" bodyfile="bubble/bubble_function.hpp" bodystart="32" bodyend="177"/>
+    <listofallmembers>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a66832383adea26f0073cb95cdf0ecc6c" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>bubble_value_prefactor</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ad6321cdf6432a2d9f6cd0ee44719f0c5" prot="public" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>BubbleFunctionCalculator</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ac1fc217608d10fab421df548fcffc888" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>calculate_bubble_function</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>calculate_value</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1af46f4d80e0be1f216b3793b40035614b" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>check_presence_of_symmetry_related_contributions</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a30594ea11124e4d5a9e7018957462d14" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>convert_external_MPI_OMP_indices_to_physical_indices_K1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ab4c38575e2b2a70056d33e2bca6756d3" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>convert_external_MPI_OMP_indices_to_physical_indices_K2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a9dd259be8996431927df69d965337f96" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>convert_external_MPI_OMP_indices_to_physical_indices_K2b</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ace4a7efa46e060605dbf73b449822d37" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>convert_external_MPI_OMP_indices_to_physical_indices_K3</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ac29d93d3ebecea159b546ffffce9677e" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>Delta</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a1bd08ca7d1eaefd1ec390d11df50545c" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>dgamma</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ad3090b83103f39dddc2ee26d03fabc77" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>diff</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a95a17d594f7e564494109436fe14430b" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>dims_flat_K1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ac8effb336d5e64f1cc971bd2fa3ba867" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>dims_flat_K2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a3fd1d771ae0f8fffd65ac2f880c2360f" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>dims_flat_K3</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1aa4fdc911c5229a66cbda5ed9ac3539e2" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>dimsK1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a0fcbc47a399e2425ae9d5a24550dd872" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>dimsK2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a06618b55ba44aeb007430623e1eb61d7" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>dimsK3</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1af4eec058e4d26e1be31295a7d02f3c25" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>find_vmin_and_vmax</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a054dceb68c5eb4713f18e88c980711ab" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>get_Matsubara_integration_intervals</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a6fd361c516a0a817f42b270cc3958829" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>get_trafo_K1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ad184f0736fcd9cd7a6f87d15919f9978" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>get_trafo_K2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a77bbe6267153e403bf38c78b83edf5a6" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>get_trafo_K3</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a473d70b9ba7357e61087b8e26ed6384c" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>get_value</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a8bfd9754031987d8a87e6e276950ec67" prot="public" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>get_value</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a49d0df162b5682fc9a03f9d1f965a75c" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>mpi_rank</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ae8b920860d8274c754a92faaaac2e5cd" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>mpi_size</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a2029389dabd198955af1f502f84ad448" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>n_vectorization_K1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ac4a662a57b7979c04d39decd0da8a34f" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>n_vectorization_K2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a2217ebd22b70efa811da8184f9170acf" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>n_vectorization_K3</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a8dc738001f1eaa6530d72c25bb70d34a" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>Nmax</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a138c2cda02f5d075f3fde7c87f3c2c98" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>Nmin</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ad6336c704bf8d12954158fb7931fce40" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>number_of_nodes</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a47b31ec55d0cf8a869536977c8b23b10" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>nw1_w</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a48d0b44a7919d3c848e98aa820d016a3" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>nw2_v</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a444b516e9971551e3c37edbf66c1c564" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>nw2_w</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a516598b92a46628ac7d2e6076f30992b" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>nw3_v</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a89b55ab9d50ba7f9aef73fed8a334784" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>nw3_v_p</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a8f6db94fee9253428eb9bab4e7851bba" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>nw3_w</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a812ac35cc43da6ba3591f65ccd94001e" prot="public" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>perform_computation</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a55556ec461a25b2ca5cbb24966e078c6" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>Pi</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1af0a02d1d2c60431685ee1c6811cba55e" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>prefactor</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a3a41b66df84d0e75680d9d2359f63ef5" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>set_channel_specific_freq_ranges_and_prefactor</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a6e762e09dcd35c92375944d8efeaeb80" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>set_external_arguments_for_parallelization</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a7059c902056342447ef9dd316fe070f6" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>store_integrand_for_PT</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a1fb4ae46106b715ba0779bd8109f3a9f" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>tK1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a3f4c775b9646004bf5c3359040d39e5a" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>tK2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1abb6d2ff8764f5462e7308754da485a27" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>tK3</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1aa437217d9dfe405724d14736399e4899" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>tobecomputed</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1aca374f6919f32b9965df773f6438d3cd" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>value_type</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1aed74056e1050e0d548f0a30e1db5dbe1" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>vertex1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ae04e25d11acbdca08e9ea07b6097b5a9" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>vertex2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a53fcca313617e95ab91ca5f1594b7dd4" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>vmax</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ad6e110723574bff14f956486aa43baf4" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>vmin</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1aa9e93c49d1f43476367a48a0509ae368" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>write_out_results</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1a128238645c8ca2ae9fe3ac89a974dea6" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>write_out_results_K1</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1ad723c59a2ce8220b426d1790ef6283ec" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>write_out_results_K2</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1afe0d0e11f74a88ed13eb7e3f2815a16e" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>write_out_results_K2b</name></member>
+      <member refid="de/d96/classBubbleFunctionCalculator_1addecd120bccc2c0faf65cdfec3f50953" prot="private" virt="non-virtual"><scope>BubbleFunctionCalculator</scope><name>write_out_results_K3</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

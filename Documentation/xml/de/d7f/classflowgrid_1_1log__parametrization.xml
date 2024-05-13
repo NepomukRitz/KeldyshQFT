@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="de/d7f/classflowgrid_1_1log__parametrization" kind="class" language="C++" prot="public">
+    <compoundname>flowgrid::log_parametrization</compoundname>
+    <includes refid="d5/dd1/flow__grid_8hpp" local="no">flow_grid.hpp</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="de/d7f/classflowgrid_1_1log__parametrization_1af683f72a04d956ff281ae64e5497bcb7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::log_parametrization::lambda_from_t</definition>
+        <argsstring>(double t)</argsstring>
+        <name>lambda_from_t</name>
+        <qualifiedname>flowgrid::log_parametrization::lambda_from_t</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="61" column="30" bodyfile="grids/flow_grid.hpp" bodystart="61" bodyend="66"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a70259e3a107270133da97beb4df92c1b" compoundref="d1/df8/master__parameters_8hpp" startline="113">Lambda_scale</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d7f/classflowgrid_1_1log__parametrization_1a844e759b31a54d5b02c858256c84abf8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::log_parametrization::t_from_lambda</definition>
+        <argsstring>(double Lambda)</argsstring>
+        <name>t_from_lambda</name>
+        <qualifiedname>flowgrid::log_parametrization::t_from_lambda</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="68" column="30" bodyfile="grids/flow_grid.hpp" bodystart="68" bodyend="73"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a70259e3a107270133da97beb4df92c1b" compoundref="d1/df8/master__parameters_8hpp" startline="113">Lambda_scale</references>
+      </memberdef>
+      <memberdef kind="function" id="de/d7f/classflowgrid_1_1log__parametrization_1adf4cd09e06d304ab687e5696505c336c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::log_parametrization::dlambda_dt</definition>
+        <argsstring>(double t)</argsstring>
+        <name>dlambda_dt</name>
+        <qualifiedname>flowgrid::log_parametrization::dlambda_dt</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="76" column="30" bodyfile="grids/flow_grid.hpp" bodystart="76" bodyend="79"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a70259e3a107270133da97beb4df92c1b" compoundref="d1/df8/master__parameters_8hpp" startline="113">Lambda_scale</references>
+        <references refid="d7/d43/KramersKronig_8c_09_09_1ad9512117c829517886f44895ef9ece90" compoundref="d7/d43/KramersKronig_8c_09_09" startline="3" endline="9">log</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>flowgrid::log_parametrization</label>
+        <link refid="de/d7f/classflowgrid_1_1log__parametrization"/>
+      </node>
+    </collaborationgraph>
+    <location file="grids/flow_grid.hpp" line="58" column="5" bodyfile="grids/flow_grid.hpp" bodystart="59" bodyend="80"/>
+    <listofallmembers>
+      <member refid="de/d7f/classflowgrid_1_1log__parametrization_1adf4cd09e06d304ab687e5696505c336c" prot="public" virt="non-virtual"><scope>flowgrid::log_parametrization</scope><name>dlambda_dt</name></member>
+      <member refid="de/d7f/classflowgrid_1_1log__parametrization_1af683f72a04d956ff281ae64e5497bcb7" prot="public" virt="non-virtual"><scope>flowgrid::log_parametrization</scope><name>lambda_from_t</name></member>
+      <member refid="de/d7f/classflowgrid_1_1log__parametrization_1a844e759b31a54d5b02c858256c84abf8" prot="public" virt="non-virtual"><scope>flowgrid::log_parametrization</scope><name>t_from_lambda</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

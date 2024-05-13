@@ -1,0 +1,402 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d3/dbd/classoneBubble" kind="class" language="C++" prot="public">
+    <compoundname>oneBubble</compoundname>
+    <includes refid="d8/dea/right__hand__sides_8hpp" local="no">right_hand_sides.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d3/dbd/classoneBubble_1a3fe41cc710ec8796c4e64dbe5d09e76a" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/d34/classPropagator" kindref="compound">Propagator</ref>&lt; Q &gt; &amp;</type>
+        <definition>const Propagator&lt;Q&gt;&amp; oneBubble&lt; Q &gt;::g</definition>
+        <argsstring></argsstring>
+        <name>g</name>
+        <qualifiedname>oneBubble::g</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="670" column="22" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="670" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d3/dbd/classoneBubble_1abab6db638143035484d71e669b9b622e" prot="public" static="no" mutable="no">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool oneBubble&lt; Q &gt;::diff</definition>
+        <argsstring></argsstring>
+        <name>diff</name>
+        <qualifiedname>oneBubble::diff</qualifiedname>
+        <initializer>= <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="671" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="671" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d3/dbd/classoneBubble_1ae5940cd7ff91cf9b1ea5cc56296aac89" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>oneBubble&lt; Q &gt;::oneBubble</definition>
+        <argsstring>(const Propagator&lt; Q &gt; &amp;g_in)</argsstring>
+        <name>oneBubble</name>
+        <qualifiedname>oneBubble::oneBubble</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/d34/classPropagator" kindref="compound">Propagator</ref>&lt; Q &gt; &amp;</type>
+          <declname>g_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor: <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>propagatorG</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: first propagator (always a standard one) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>propagatorS</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: second propagator (standard or single-scale/differentiated, depending on &quot;diff_in&quot;) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>diff_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: whether to compute standard (false) or differentiated (true) bubble </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="678" column="5" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="678" bodyend="678"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/dbd/classoneBubble_1aa2a151602c11bfed7c98c9379fab4743" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto oneBubble&lt; Q &gt;::value</definition>
+        <argsstring>(int iK, double v1, double v2, int i_in) const -&gt; Q</argsstring>
+        <name>value</name>
+        <qualifiedname>oneBubble::value</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>v2</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Call operator: <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index of combined bubble object (0 &lt;= iK &lt;= 15) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>v1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: frequency of first propagator </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>v2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: frequency of second propagator </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: internal structure index </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>comp : value of the bubble evaluated at (iK, v1, v2) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="688" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="688" bodyend="690"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/dbd/classoneBubble_1a14aace732e284c65ecbf8617e370a0cb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>char</type>
+            <declname>ch_bubble</declname>
+            <defname>ch_bubble</defname>
+          </param>
+        </templateparamlist>
+        <type>Q</type>
+        <definition>Q oneBubble&lt; Q &gt;::value_Matsubara</definition>
+        <argsstring>(const double w, const double vpp, int i_in) const</argsstring>
+        <name>value_Matsubara</name>
+        <qualifiedname>oneBubble::value_Matsubara</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>vpp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="693" column="7" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="693" bodyend="695"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/dbd/classoneBubble_1ac5ae10727ab08a1606e7a23715d3dd43" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto oneBubble&lt; Q &gt;::value</definition>
+        <argsstring>(int iK, double w, double vpp, int i_in, char channel) const -&gt; Q</argsstring>
+        <name>value</name>
+        <qualifiedname>oneBubble::value</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>vpp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type>char</type>
+          <declname>channel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Wrapper for value function above, providing the natural arguments for evaluation of the bubble in each channel: <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index of combined bubble object (0 &lt;= iK &lt;= 15) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: bubble transfer frequency of the corresponding channel </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vpp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: bubble integration frequency of the corresponding channel </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: internal structure index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: channel to which the bubble belongs </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Q : value of the bubble evaluated at the arguments described above (usually comp) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="706" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="706" bodyend="708"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/dbd/classoneBubble_1a73479e7b964b3f335b2480a305252457" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>char</type>
+            <declname>ch_bubble</declname>
+            <defname>ch_bubble</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_1</definition>
+        <argsstring>(double vpp, double w) const -&gt; double</argsstring>
+        <name>convert_to_fermionic_frequencies_1</name>
+        <qualifiedname>oneBubble::convert_to_fermionic_frequencies_1</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>vpp</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="711" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="711" bodyend="720"/>
+        <references refid="df/d31/math__utils_8c_09_09_1ab50760bf22e7166c8827eed1b61c9e1f" compoundref="df/d31/math__utils_8c_09_09" startline="71" endline="77">ceil2bfreq</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="df/d31/math__utils_8c_09_09_1a7df8af1ff99f368548d282ec8789fead" compoundref="df/d31/math__utils_8c_09_09" startline="64" endline="70">floor2bfreq</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dbd/classoneBubble_1a7b36904640b3abcf187cf860383888bb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>char</type>
+            <declname>ch_bubble</declname>
+            <defname>ch_bubble</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto oneBubble&lt; Q &gt;::convert_to_fermionic_frequencies_2</definition>
+        <argsstring>(double vpp, double w) const -&gt; double</argsstring>
+        <name>convert_to_fermionic_frequencies_2</name>
+        <qualifiedname>oneBubble::convert_to_fermionic_frequencies_2</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>vpp</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="722" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="722" bodyend="731"/>
+        <references refid="df/d31/math__utils_8c_09_09_1ab50760bf22e7166c8827eed1b61c9e1f" compoundref="df/d31/math__utils_8c_09_09" startline="71" endline="77">ceil2bfreq</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="df/d31/math__utils_8c_09_09_1a7df8af1ff99f368548d282ec8789fead" compoundref="df/d31/math__utils_8c_09_09" startline="64" endline="70">floor2bfreq</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1acc079412030119547ab769b82d3c37d1" compoundref="d1/df8/master__parameters_8hpp" startline="144">ZERO_T</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dbd/classoneBubble_1adb390fae6378269bb9201951cfa0d930" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>char</type>
+            <declname>ch_bubble</declname>
+            <defname>ch_bubble</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto oneBubble&lt; Q &gt;::value_vectorized</definition>
+        <argsstring>(const double w, const double vpp, const int i_in) const</argsstring>
+        <name>value_vectorized</name>
+        <qualifiedname>oneBubble::value_vectorized</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>vpp</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="mfRG_flow/right_hand_sides.hpp" line="735" column="10" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="735" bodyend="738"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="3">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="2">
+        <label>const Propagator&lt; Q &gt; &amp;</label>
+      </node>
+      <node id="1">
+        <label>oneBubble&lt; Q &gt;</label>
+        <link refid="d3/dbd/classoneBubble"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+g</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+diff</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="mfRG_flow/right_hand_sides.hpp" line="667" column="1" bodyfile="mfRG_flow/right_hand_sides.hpp" bodystart="667" bodyend="740"/>
+    <listofallmembers>
+      <member refid="d3/dbd/classoneBubble_1a73479e7b964b3f335b2480a305252457" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>convert_to_fermionic_frequencies_1</name></member>
+      <member refid="d3/dbd/classoneBubble_1a7b36904640b3abcf187cf860383888bb" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>convert_to_fermionic_frequencies_2</name></member>
+      <member refid="d3/dbd/classoneBubble_1abab6db638143035484d71e669b9b622e" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>diff</name></member>
+      <member refid="d3/dbd/classoneBubble_1a3fe41cc710ec8796c4e64dbe5d09e76a" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>g</name></member>
+      <member refid="d3/dbd/classoneBubble_1ae5940cd7ff91cf9b1ea5cc56296aac89" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>oneBubble</name></member>
+      <member refid="d3/dbd/classoneBubble_1aa2a151602c11bfed7c98c9379fab4743" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>value</name></member>
+      <member refid="d3/dbd/classoneBubble_1ac5ae10727ab08a1606e7a23715d3dd43" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>value</name></member>
+      <member refid="d3/dbd/classoneBubble_1a14aace732e284c65ecbf8617e370a0cb" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>value_Matsubara</name></member>
+      <member refid="d3/dbd/classoneBubble_1adb390fae6378269bb9201951cfa0d930" prot="public" virt="non-virtual"><scope>oneBubble</scope><name>value_vectorized</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

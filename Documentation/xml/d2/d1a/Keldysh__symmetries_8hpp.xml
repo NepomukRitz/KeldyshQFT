@@ -1,0 +1,1668 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d2/d1a/Keldysh__symmetries_8hpp" kind="file" language="C++">
+    <compoundname>Keldysh_symmetries.hpp</compoundname>
+    <includes local="no">vector</includes>
+    <includes local="no">algorithm</includes>
+    <includes refid="d7/d59/data__structures_8hpp" local="yes">../data_structures.hpp</includes>
+    <includes refid="d0/d3f/util_8hpp" local="yes">../utilities/util.hpp</includes>
+    <includes refid="d5/d39/frequency__grid_8hpp" local="yes">../grids/frequency_grid.hpp</includes>
+    <includedby refid="d4/de0/Keldysh__symmetries_8c_09_09" local="yes">Keldysh_symmetries.c++</includedby>
+    <includedby refid="d0/dac/bubble_8hpp" local="yes">bubble.hpp</includedby>
+    <includedby refid="de/de8/bubble__function_8hpp" local="yes">bubble_function.hpp</includedby>
+    <includedby refid="dc/d80/data__buffer_8hpp" local="yes">data_buffer.hpp</includedby>
+    <includedby refid="da/dbc/data__container_8hpp" local="yes">data_container.hpp</includedby>
+    <includedby refid="d5/d39/frequency__grid_8hpp" local="yes">frequency_grid.hpp</includedby>
+    <includedby refid="d5/de4/hdf5__routines_8hpp" local="yes">hdf5_routines.hpp</includedby>
+    <includedby refid="df/d83/integrand_8hpp" local="yes">integrand.hpp</includedby>
+    <includedby refid="df/d0a/main_8cpp" local="yes">main.cpp</includedby>
+    <includedby refid="dd/d00/main__postproc_8cpp" local="yes">main_postproc.cpp</includedby>
+    <includedby refid="d3/d22/r__vertex_8hpp" local="yes">r_vertex.hpp</includedby>
+    <includedby refid="d6/d2d/selfenergy_8hpp" local="yes">selfenergy.hpp</includedby>
+    <includedby refid="db/d7d/symmetry__transformations_8hpp" local="yes">symmetry_transformations.hpp</includedby>
+    <incdepgraph>
+      <node id="4">
+        <label>../data_structures.hpp</label>
+        <link refid="d7/d59/data__structures_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>../grids/frequency_grid.hpp</label>
+        <link refid="d5/d39/frequency__grid_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>../multidimensional/multiarray.hpp</label>
+        <link refid="df/da4/multiarray_8hpp"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>frequency_parameters.hpp</label>
+        <link refid="d3/d3c/frequency__parameters_8hpp"/>
+      </node>
+      <node id="11">
+        <label>parameters/master_parameters.hpp</label>
+        <link refid="d1/df8/master__parameters_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>technical_parameters.hpp</label>
+        <link refid="d9/d3a/technical__parameters_8hpp"/>
+      </node>
+      <node id="1">
+        <label>Keldysh_symmetries.hpp</label>
+        <link refid="d2/d1a/Keldysh__symmetries_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>../utilities/math_utils.hpp</label>
+        <link refid="de/dbb/math__utils_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>mpi_setup.hpp</label>
+        <link refid="db/de0/mpi__setup_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>runtime_error.hpp</label>
+        <link refid="d1/d64/runtime__error_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>../utilities/template_utils.hpp</label>
+        <link refid="dd/de3/template__utils_8hpp"/>
+      </node>
+      <node id="17">
+        <label>../utilities/util.hpp</label>
+        <link refid="d0/d3f/util_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>Eigen/Dense</label>
+      </node>
+      <node id="33">
+        <label>H5Cpp.h</label>
+      </node>
+      <node id="3">
+        <label>algorithm</label>
+      </node>
+      <node id="13">
+        <label>array</label>
+      </node>
+      <node id="22">
+        <label>bits/stdc++.h</label>
+      </node>
+      <node id="9">
+        <label>cassert</label>
+      </node>
+      <node id="19">
+        <label>chrono</label>
+      </node>
+      <node id="6">
+        <label>cmath</label>
+      </node>
+      <node id="5">
+        <label>complex</label>
+      </node>
+      <node id="29">
+        <label>exception</label>
+      </node>
+      <node id="8">
+        <label>functional</label>
+      </node>
+      <node id="7">
+        <label>initializer_list</label>
+      </node>
+      <node id="21">
+        <label>iostream</label>
+      </node>
+      <node id="25">
+        <label>mpi.h</label>
+      </node>
+      <node id="10">
+        <label>numeric</label>
+      </node>
+      <node id="32">
+        <label>stdexcept</label>
+      </node>
+      <node id="12">
+        <label>string</label>
+      </node>
+      <node id="23">
+        <label>sys/stat.h</label>
+      </node>
+      <node id="18">
+        <label>sys/time.h</label>
+      </node>
+      <node id="20">
+        <label>unistd.h</label>
+      </node>
+      <node id="2">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="31">
+        <label>ODE_solvers.c++</label>
+        <link refid="de/dd8/ODE__solvers_8c_09_09"/>
+      </node>
+      <node id="30">
+        <label>ODE_solvers.hpp</label>
+        <link refid="da/dc3/ODE__solvers_8hpp"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>old_solvers.hpp</label>
+        <link refid="dd/df7/old__solvers_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>bubble_corrections.c++</label>
+        <link refid="d7/d3a/bubble__corrections_8c_09_09"/>
+      </node>
+      <node id="18">
+        <label>bubble_corrections.hpp</label>
+        <link refid="dd/dea/bubble__corrections_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>correction_functions.hpp</label>
+        <link refid="d2/df0/correction__functions_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>loop_corrections.c++</label>
+        <link refid="d7/df0/loop__corrections_8c_09_09"/>
+      </node>
+      <node id="25">
+        <label>loop_corrections.hpp</label>
+        <link refid="d0/d0e/loop__corrections_8hpp"/>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>bubble.hpp</label>
+        <link refid="d0/dac/bubble_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>bubble_function.hpp</label>
+        <link refid="de/de8/bubble__function_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>integrand.hpp</label>
+        <link refid="df/d83/integrand_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>r_vertex.hpp</label>
+        <link refid="d3/d22/r__vertex_8hpp"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>vertex.hpp</label>
+        <link refid="d1/d2d/vertex_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>data_buffer.hpp</label>
+        <link refid="dc/d80/data__buffer_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="42">
+        <label>data_container.hpp</label>
+        <link refid="da/dbc/data__container_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>state.hpp</label>
+        <link refid="da/d3b/state_8hpp"/>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="41">
+        <label>propagator.c++</label>
+        <link refid="de/d5d/propagator_8c_09_09"/>
+      </node>
+      <node id="40">
+        <label>propagator.hpp</label>
+        <link refid="d5/df7/propagator_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>selfenergy.hpp</label>
+        <link refid="d6/d2d/selfenergy_8hpp"/>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="45">
+        <label>frequency_grid.c++</label>
+        <link refid="d5/d3d/frequency__grid_8c_09_09"/>
+      </node>
+      <node id="43">
+        <label>frequency_grid.hpp</label>
+        <link refid="d5/d39/frequency__grid_8hpp"/>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="48">
+        <label>integrator.c++</label>
+        <link refid="d7/d61/integrator_8c_09_09"/>
+      </node>
+      <node id="47">
+        <label>integrator.hpp</label>
+        <link refid="dd/d1f/integrator_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="49">
+        <label>old_integrators.c++</label>
+        <link refid="de/d11/old__integrators_8c_09_09"/>
+      </node>
+      <node id="46">
+        <label>old_integrators.hpp</label>
+        <link refid="d7/d65/old__integrators_8hpp"/>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
+        <label>InterpolatorLinOrSloppy.hpp</label>
+        <link refid="d3/d17/InterpolatorLinOrSloppy_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>integrandSE.hpp</label>
+        <link refid="de/d65/integrandSE_8hpp"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>loop.c++</label>
+        <link refid="d5/dae/loop_8c_09_09"/>
+      </node>
+      <node id="23">
+        <label>loop.hpp</label>
+        <link refid="d8/d1d/loop_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>main.cpp</label>
+        <link refid="df/d0a/main_8cpp"/>
+      </node>
+      <node id="6">
+        <label>flow.hpp</label>
+        <link refid="d5/d21/flow_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>right_hand_sides.hpp</label>
+        <link refid="d8/dea/right__hand__sides_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>hartree_term.c++</label>
+        <link refid="d4/d92/hartree__term_8c_09_09"/>
+      </node>
+      <node id="39">
+        <label>hartree_term.hpp</label>
+        <link refid="d1/db3/hartree__term_8hpp"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>parquet_solver.c++</label>
+        <link refid="d5/d94/parquet__solver_8c_09_09"/>
+      </node>
+      <node id="5">
+        <label>parquet_solver.hpp</label>
+        <link refid="dd/d0a/parquet__solver_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>perturbation_theory.hpp</label>
+        <link refid="d5/d0d/perturbation__theory_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>KramersKronig.c++</label>
+        <link refid="d7/d43/KramersKronig_8c_09_09"/>
+      </node>
+      <node id="28">
+        <label>KramersKronig.hpp</label>
+        <link refid="d1/db3/KramersKronig_8hpp"/>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="34">
+        <label>causality_FDT_checks.c++</label>
+        <link refid="d8/dca/causality__FDT__checks_8c_09_09"/>
+      </node>
+      <node id="33">
+        <label>causality_FDT_checks.hpp</label>
+        <link refid="d1/d75/causality__FDT__checks_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>main_postproc.cpp</label>
+        <link refid="dd/d00/main__postproc_8cpp"/>
+      </node>
+      <node id="12">
+        <label>postprocessing.hpp</label>
+        <link refid="d4/d81/postprocessing_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>sanity_check.hpp</label>
+        <link refid="d2/d3f/sanity__check_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Keldysh_symmetries.c++</label>
+        <link refid="d4/de0/Keldysh__symmetries_8c_09_09"/>
+      </node>
+      <node id="1">
+        <label>Keldysh_symmetries.hpp</label>
+        <link refid="d2/d1a/Keldysh__symmetries_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+      </node>
+      <node id="51">
+        <label>symmetry_transformations.c++</label>
+        <link refid="d5/def/symmetry__transformations_8c_09_09"/>
+      </node>
+      <node id="50">
+        <label>symmetry_transformations.hpp</label>
+        <link refid="db/d7d/symmetry__transformations_8hpp"/>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+      </node>
+      <node id="32">
+        <label>anderson_acceleration.hpp</label>
+        <link refid="d6/d7b/anderson__acceleration_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>hdf5_routines.c++</label>
+        <link refid="d5/d4f/hdf5__routines_8c_09_09"/>
+      </node>
+      <node id="36">
+        <label>hdf5_routines.hpp</label>
+        <link refid="d5/de4/hdf5__routines_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="dc/dba/structbuffer__config" prot="public">buffer_config</innerclass>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 3 &gt;</type>
+        <definition>constexpr buffer_config&lt;3&gt; SE_config</definition>
+        <argsstring></argsstring>
+        <name>SE_config</name>
+        <initializer>{
+    std::array&lt;size_t,3&gt;({<ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ? 4 : 1, <ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 1  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="35" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="35" bodyend="38"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1a5883bbc78fa13b2ec2cdb15f3e261fc5" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="92" endline="132">check_FDTs_selfenergy</referencedby>
+        <referencedby refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" compoundref="dc/d80/data__buffer_8hpp" startline="179" endline="423">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;::interpolate_impl</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1ad1eeffcbc75948315051e70ec5c84c50" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 4 &gt;</type>
+        <definition>constexpr buffer_config&lt;4&gt; K1at_config</definition>
+        <argsstring></argsstring>
+        <name>K1at_config</name>
+        <initializer>{
+    std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ? 16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 1  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="39" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="39" bodyend="42"/>
+        <referencedby refid="d1/d75/causality__FDT__checks_8hpp_1acb53ab67287d6ab6795194d05453e5b0" compoundref="d1/d75/causality__FDT__checks_8hpp" startline="136" endline="177">check_FDTs_K1</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a852021a10ef1051ae13b34914948d5b0" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 4 &gt;</type>
+        <definition>constexpr buffer_config&lt;4&gt; K1p_config</definition>
+        <argsstring></argsstring>
+        <name>K1p_config</name>
+        <initializer>{
+    std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ? 16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 1  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="43" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="43" bodyend="46"/>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a05d78e86026731e5b48397216fb31155" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 5 &gt;</type>
+        <definition>constexpr buffer_config&lt;5&gt; K2at_config</definition>
+        <argsstring></argsstring>
+        <name>K2at_config</name>
+        <initializer>{
+    std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ? 16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 2  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="47" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="47" bodyend="50"/>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a583e6974e40b3a17bdbf6ebea3ae529e" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 5 &gt;</type>
+        <definition>constexpr buffer_config&lt;5&gt; K2p_config</definition>
+        <argsstring></argsstring>
+        <name>K2p_config</name>
+        <initializer>{
+    std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ? 16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 2  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="51" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="51" bodyend="54"/>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a17ac32e598bded52cdae2237454d13e5" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 6 &gt;</type>
+        <definition>constexpr buffer_config&lt;6&gt; K3_config</definition>
+        <argsstring></argsstring>
+        <name>K3_config</name>
+        <initializer>{
+    std::array&lt;size_t,6&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">GRID!</ref>=2 ? <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref> : (<ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>-1)/2+1, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ? 16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 3  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="55" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="55" bodyend="58"/>
+        <referencedby refid="d9/dfe/classFrequencyGrid_3_01angularGrid_01_4_1a4d9dc1c79a6458478cbbc03384977075" compoundref="d5/d3d/frequency__grid_8c_09_09" startline="624" endline="678">FrequencyGrid&lt; angularGrid &gt;::guess_essential_parameters</referencedby>
+        <referencedby refid="d4/dbd/classrvert_1a699a407c579df05bcfcbc14f4a345c12" compoundref="d3/d22/r__vertex_8hpp" startline="143" endline="154">rvert&lt; Q &gt;::rvert</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a149f32fbbffe1dfc5361b8e7443b8fe8" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 3 &gt;</type>
+        <definition>constexpr buffer_config&lt;3&gt; SE_expanded_config</definition>
+        <argsstring></argsstring>
+        <name>SE_expanded_config</name>
+        <initializer>{
+    std::array&lt;size_t,3&gt;({ <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ?  4 : 1, <ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 1  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="140" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="140" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a6d0a058be9fd8c48a491d92ab818df13" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 4 &gt;</type>
+        <definition>constexpr buffer_config&lt;4&gt; K1_expanded_config</definition>
+        <argsstring></argsstring>
+        <name>K1_expanded_config</name>
+        <initializer>{
+    std::array&lt;size_t,4&gt;({1, <ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ?  16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+    , 1  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="144" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="144" bodyend="147"/>
+        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="937" endline="1075">rvert&lt; Q &gt;::symmetry_expand</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1ae93e47de1a55e5577faaa1b74d8d7927" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 5 &gt;</type>
+        <definition>constexpr buffer_config&lt;5&gt; K2_expanded_config</definition>
+        <argsstring></argsstring>
+        <name>K2_expanded_config</name>
+        <initializer>{
+
+    std::array&lt;size_t,5&gt;({1, <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ?  16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+
+
+
+    , 2  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="148" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="148" bodyend="155"/>
+        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="937" endline="1075">rvert&lt; Q &gt;::symmetry_expand</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a4836c149ec08918a1737864f9ba7f425" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 6 &gt;</type>
+        <definition>constexpr buffer_config&lt;6&gt; K3_SBE_expanded_config</definition>
+        <argsstring></argsstring>
+        <name>K3_SBE_expanded_config</name>
+        <initializer>{
+
+        std::array&lt;size_t,6&gt;({1, <ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">GRID!</ref>=2 ? <ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref> : (<ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>-1)/2+1, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ?  16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+
+
+
+        , 3  
+        , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="156" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="156" bodyend="163"/>
+        <referencedby refid="d4/dbd/classrvert_1a1e67e572b3a4f4919d70995d82162688" compoundref="d3/d22/r__vertex_8hpp" startline="1359" endline="1496">rvert&lt; Q &gt;::combine_SBE_to_K3_SBE</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1aab3b950cc6a1c759fb8f09121b83a27e" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref>&lt; 6 &gt;</type>
+        <definition>constexpr buffer_config&lt;6&gt; K3_expanded_config</definition>
+        <argsstring></argsstring>
+        <name>K3_expanded_config</name>
+        <initializer>{
+
+    std::array&lt;size_t,6&gt;({1, <ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>, <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">GRID!</ref>=2 ? <ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref> : (<ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>-1)/2+1, <ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref> ?  16 : 1, <ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})
+
+
+
+    , 3  
+    , 1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="164" column="25" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="164" bodyend="171"/>
+        <referencedby refid="d4/dbd/classrvert_1a4b49a6f186d0ab856e2a92adc4d37bb3" compoundref="d3/d22/r__vertex_8hpp" startline="937" endline="1075">rvert&lt; Q &gt;::symmetry_expand</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1abba9c469b7170e0e4e0ea440ba7e3e16" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+        <definition>constexpr unsigned int pos_first_freq</definition>
+        <argsstring></argsstring>
+        <name>pos_first_freq</name>
+        <initializer>= 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="173" column="24" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d2/d1a/Keldysh__symmetries_8hpp_1a2f24dbf3af29d35bd2122d63b4c29441" prot="public" static="no" constexpr="yes" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">constexpr</ref> int</type>
+        <definition>constexpr int glb_number_of_Keldysh_components_bubble</definition>
+        <argsstring></argsstring>
+        <name>glb_number_of_Keldysh_components_bubble</name>
+        <initializer>= 9</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="178" column="15" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="178" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1ad13f63de44ed03c446f501a518be3129" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::vector&lt; int &gt;</type>
+        <definition>const std::vector&lt; int &gt; glb_non_zero_Keldysh_bubble</definition>
+        <argsstring>({3, 6, 7, 9, 11, 12, 13, 14, 15})</argsstring>
+        <name>glb_non_zero_Keldysh_bubble</name>
+        <param>
+          <type>{3, 6, 7, 9, 11, 12, 13, 14, 15}</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="177" column="19" declfile="symmetries/Keldysh_symmetries.hpp" declline="177" declcolumn="19"/>
+        <referencedby refid="de/d96/classBubbleFunctionCalculator_1a53bebac3629a512ce90e8c4b4d05fe1c" compoundref="de/de8/bubble__function_8hpp" startline="384" endline="571">BubbleFunctionCalculator&lt; channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object &gt;::calculate_value</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1a619bef4c8f4c8b4e4e11ac1fc8a37676" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::vector&lt; int &gt;</type>
+        <definition>const std::vector&lt; int &gt; odd_Keldysh</definition>
+        <argsstring>({1, 2, 4, 7, 8, 11, 13, 14})</argsstring>
+        <name>odd_Keldysh</name>
+        <param>
+          <type>{1, 2, 4, 7, 8, 11, 13, 14}</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="216" column="19" declfile="symmetries/Keldysh_symmetries.hpp" declline="216" declcolumn="19"/>
+        <referencedby refid="da/dbf/classirreducible_1a808bca3689d1374634c3f74f28f70cc2" compoundref="d1/d2d/vertex_8hpp" startline="1243" endline="1266">irreducible&lt; Q &gt;::initialize</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1ae8b6c7aba446997e0f0e0913277394b5" compoundref="db/d7d/symmetry__transformations_8hpp" startline="168" endline="196">Tph</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1ab868aed0c3e67a5adcaeda8aeff35d85" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto isInList</definition>
+        <argsstring>(T val, const std::vector&lt; T &gt; &amp;list) -&gt; bool</argsstring>
+        <name>isInList</name>
+        <param>
+          <type>T</type>
+          <declname>val</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::vector&lt; T &gt; &amp;</type>
+          <declname>list</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="239" column="6" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="239" bodyend="241"/>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1ae8b6c7aba446997e0f0e0913277394b5" compoundref="db/d7d/symmetry__transformations_8hpp" startline="168" endline="196">Tph</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1a0e80a8241d25e8d4ae395ea1a91e98f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto convertToIndepIndex</definition>
+        <argsstring>(int iK) -&gt; int</argsstring>
+        <name>convertToIndepIndex</name>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="246" column="6" declfile="symmetries/Keldysh_symmetries.hpp" declline="246" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1aa68ac407814b8b823c4982c2441fc9bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto iK_to_alphas</definition>
+        <argsstring>(int index) -&gt; std::array&lt; int, 4 &gt;</argsstring>
+        <name>iK_to_alphas</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="249" column="6" bodyfile="symmetries/Keldysh_symmetries.c++" bodystart="4" bodyend="18" declfile="symmetries/Keldysh_symmetries.hpp" declline="249" declcolumn="6"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d4/de0/Keldysh__symmetries_8c_09_09_1a8ce5883bf24e8dbb17eb7e2cf3c51afe" compoundref="d4/de0/Keldysh__symmetries_8c_09_09" startline="35" endline="59">indices_sum</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1aec10c7c2fae276227544e207cbd802d0" compoundref="db/d7d/symmetry__transformations_8hpp" startline="17" endline="64">T1</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a689a60d7c45398774777d3cba59a88d9" compoundref="db/d7d/symmetry__transformations_8hpp" startline="66" endline="100">T2</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1a64b6be9ace7119bb9216e51456b2e3bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto alphas_to_iK</definition>
+        <argsstring>(const std::array&lt; int, 4 &gt; &amp;alphas) -&gt; int</argsstring>
+        <name>alphas_to_iK</name>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::array&lt; int, 4 &gt; &amp;</type>
+          <declname>alphas</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="250" column="6" bodyfile="symmetries/Keldysh_symmetries.c++" bodystart="20" bodyend="33" declfile="symmetries/Keldysh_symmetries.hpp" declline="250" declcolumn="6"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1aec10c7c2fae276227544e207cbd802d0" compoundref="db/d7d/symmetry__transformations_8hpp" startline="17" endline="64">T1</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a689a60d7c45398774777d3cba59a88d9" compoundref="db/d7d/symmetry__transformations_8hpp" startline="66" endline="100">T2</referencedby>
+        <referencedby refid="db/d7d/symmetry__transformations_8hpp_1a52c5fa4fdf94731c497e843c17c2860d" compoundref="db/d7d/symmetry__transformations_8hpp" startline="105" endline="167">TC</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1ab3ef98f1e58c31aca1a8bc57a7690b25" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>char</type>
+            <declname>channel_bubble</declname>
+            <defname>channel_bubble</defname>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">I</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void get_i0_left_right</definition>
+        <argsstring>(const my_index_t iK, I &amp;i0_left, I &amp;i0_right)</argsstring>
+        <name>get_i0_left_right</name>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">I</ref> &amp;</type>
+          <declname>i0_left</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">I</ref> &amp;</type>
+          <declname>i0_right</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="254" column="19" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="254" bodyend="272"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1a44e5552f932a6d11b1ee87a7229f2e5d" compoundref="de/dbb/math__utils_8hpp" startline="214" endline="227">getMultIndex</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1a7c2b62b33ed4c06a68f72af936839df8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>char</type>
+            <declname>channel_bubble</declname>
+            <defname>channel_bubble</defname>
+          </param>
+          <param>
+            <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+            <declname>is_left_vertex</declname>
+            <defname>is_left_vertex</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto rotate_Keldysh_matrix</definition>
+        <argsstring>(const my_index_t iK) -&gt; my_index_t</argsstring>
+        <name>rotate_Keldysh_matrix</name>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>iK</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="275" column="19" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="275" bodyend="320"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1a44e5552f932a6d11b1ee87a7229f2e5d" compoundref="de/dbb/math__utils_8hpp" startline="214" endline="227">getMultIndex</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1a23dfafa221f5c5eaf4fbe2ffa11ff842" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>char</type>
+            <declname>channel_bubble</declname>
+            <defname>channel_bubble</defname>
+          </param>
+          <param>
+            <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+            <declname>is_left_vertex</declname>
+            <defname>is_left_vertex</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto unrotate_Keldysh_matrix</definition>
+        <argsstring>(const my_index_t iK) -&gt; my_index_t</argsstring>
+        <name>unrotate_Keldysh_matrix</name>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>iK</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="322" column="19" bodyfile="symmetries/Keldysh_symmetries.hpp" bodystart="322" bodyend="367"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1a44e5552f932a6d11b1ee87a7229f2e5d" compoundref="de/dbb/math__utils_8hpp" startline="214" endline="227">getMultIndex</references>
+      </memberdef>
+      <memberdef kind="function" id="d2/d1a/Keldysh__symmetries_8hpp_1a8ce5883bf24e8dbb17eb7e2cf3c51afe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto indices_sum</definition>
+        <argsstring>(int i0, int i2, const char channel) -&gt; std::vector&lt; int &gt;</argsstring>
+        <name>indices_sum</name>
+        <param>
+          <type>int</type>
+          <declname>i0</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i2</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> char</type>
+          <declname>channel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Function that returns, for an input i0, i2 in 0...15, the two Keldysh indices of the left [0] and right [1] vertices of a bubble in a given channel. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>i0</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index of the lhs of a derivative equation for the vertex </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: Keldysh index of the non-zero components of the bubble propagators (takes values in a set of size 9) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: channel of the bubble </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>: Vector of two Keldysh indices for the left [0] and right [1] vertex in a bubble </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="symmetries/Keldysh_symmetries.hpp" line="378" column="6" bodyfile="symmetries/Keldysh_symmetries.c++" bodystart="35" bodyend="59" declfile="symmetries/Keldysh_symmetries.hpp" declline="378" declcolumn="6"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/de0/Keldysh__symmetries_8c_09_09_1aa68ac407814b8b823c4982c2441fc9bd" compoundref="d4/de0/Keldysh__symmetries_8c_09_09" startline="4" endline="18">iK_to_alphas</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <referencedby refid="d2/df0/correction__functions_8hpp_1ac617baabe863b35d7652e62c345a3400" compoundref="d2/df0/correction__functions_8hpp" startline="54" endline="349">asymp_corrections_bubble</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1a01835f6b66667febddc5b264ba4ea117" compoundref="df/d83/integrand_8hpp" startline="468" endline="548">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::compute_vertices</referencedby>
+        <referencedby refid="d1/d9f/classIntegrand_1a0862711a2564944845383e2968374aaa" compoundref="df/d83/integrand_8hpp" startline="297" endline="348">Integrand&lt; diag_class, channel, spin, Q, vertexType_left, vertexType_right, Bubble_Object, return_type &gt;::precompute_vertices</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>KELDYSH_MFRG_KELDYSH_SYMMETRIES_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>KELDYSH_MFRG_KELDYSH_SYMMETRIES_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>standard<sp/>std::vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;algorithm&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>find<sp/>function<sp/>in<sp/>isInList</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="d7/d59/data__structures_8hpp" kindref="compound">../data_structures.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="d0/d3f/util_8hpp" kindref="compound">../utilities/util.hpp</ref>&quot;</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>printing<sp/>text<sp/>output</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="d5/d39/frequency__grid_8hpp" kindref="compound">../grids/frequency_grid.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;std::</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>_rank&gt;</highlight></codeline>
+<codeline lineno="16" refid="dc/dba/structbuffer__config" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="17" refid="dc/dba/structbuffer__config_1a3170850a72092a6b30f51587e760738e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dc/dba/structbuffer__config_1a3170850a72092a6b30f51587e760738e" kindref="member">index_type</ref><sp/>=<sp/>std::array&lt;my_index_t,<sp/>_rank&gt;;</highlight></codeline>
+<codeline lineno="18" refid="dc/dba/structbuffer__config_1a88b14888a509675a39f1d4b0b726e442" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="dc/dba/structbuffer__config_1a88b14888a509675a39f1d4b0b726e442" kindref="member">dimensions_type</ref><sp/>=<sp/>std::array&lt;my_index_t,<sp/>_rank&gt;;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20" refid="dc/dba/structbuffer__config_1a3cf833a6a4ddb421be2d40c4c2ca6b4a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dc/dba/structbuffer__config_1a88b14888a509675a39f1d4b0b726e442" kindref="member">dimensions_type</ref><sp/><ref refid="dc/dba/structbuffer__config_1a3cf833a6a4ddb421be2d40c4c2ca6b4a" kindref="member">dims</ref>;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22" refid="dc/dba/structbuffer__config_1a256efd1e4144f7506e9e77ec6898be7b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/><ref refid="dc/dba/structbuffer__config_1a256efd1e4144f7506e9e77ec6898be7b" kindref="member">num_freqs</ref>;</highlight></codeline>
+<codeline lineno="23" refid="dc/dba/structbuffer__config_1a75d95b0bfa9e5c8339f87a50c29b75e4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/><ref refid="dc/dba/structbuffer__config_1a75d95b0bfa9e5c8339f87a50c29b75e4" kindref="member">position_first_freq_index</ref>;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26" refid="dc/dba/structbuffer__config_1a24d8fdd054f99612ad534b1a6375053a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::size_t<sp/><ref refid="dc/dba/structbuffer__config_1a24d8fdd054f99612ad534b1a6375053a" kindref="member">dims_flat</ref><sp/>=<sp/><ref refid="de/dbb/math__utils_8hpp_1a0bb20dce81d05d42cbea49416726ad27" kindref="member">getFlatSize</ref>(<ref refid="dc/dba/structbuffer__config_1a3cf833a6a4ddb421be2d40c4c2ca6b4a" kindref="member">dims</ref>);</highlight></codeline>
+<codeline lineno="27" refid="dc/dba/structbuffer__config_1a5437873217f0f010720add480ad79761" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config_1a5437873217f0f010720add480ad79761" kindref="member">rank</ref><sp/>=<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">_rank</ref>;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29" refid="dc/dba/structbuffer__config_1a09969fd94b00f78bf8df1d3c28add2b4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config_1a09969fd94b00f78bf8df1d3c28add2b4" kindref="member">buffer_config</ref>(<ref refid="dc/dba/structbuffer__config_1a88b14888a509675a39f1d4b0b726e442" kindref="member">dimensions_type</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dims_in</ref>,<sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">num_freqs_in</ref>,</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">position_first_freq_index_in</ref>):<sp/><ref refid="dc/dba/structbuffer__config_1a3cf833a6a4ddb421be2d40c4c2ca6b4a" kindref="member">dims</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">dims_in</ref>),</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="dc/dba/structbuffer__config_1a256efd1e4144f7506e9e77ec6898be7b" kindref="member">num_freqs</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">num_freqs_in</ref>),<sp/><ref refid="dc/dba/structbuffer__config_1a75d95b0bfa9e5c8339f87a50c29b75e4" kindref="member">position_first_freq_index</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">position_first_freq_index_in</ref>){};</highlight></codeline>
+<codeline lineno="32"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>DEBUG_SYMMETRIES</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35" refid="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;3&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" kindref="member">SE_config</ref>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,3&gt;({<ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>4<sp/>:<sp/>1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39" refid="d2/d1a/Keldysh__symmetries_8hpp_1ad1eeffcbc75948315051e70ec5c84c50" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ad1eeffcbc75948315051e70ec5c84c50" kindref="member">K1at_config</ref>{</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="d2/d1a/Keldysh__symmetries_8hpp_1a852021a10ef1051ae13b34914948d5b0" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a852021a10ef1051ae13b34914948d5b0" kindref="member">K1p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="d2/d1a/Keldysh__symmetries_8hpp_1a05d78e86026731e5b48397216fb31155" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a05d78e86026731e5b48397216fb31155" kindref="member">K2at_config</ref>{</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51" refid="d2/d1a/Keldysh__symmetries_8hpp_1a583e6974e40b3a17bdbf6ebea3ae529e" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a583e6974e40b3a17bdbf6ebea3ae529e" kindref="member">K2p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="d2/d1a/Keldysh__symmetries_8hpp_1a17ac32e598bded52cdae2237454d13e5" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;6&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a17ac32e598bded52cdae2237454d13e5" kindref="member">K3_config</ref>{</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" kindref="member">GRID</ref>!=2<sp/>?<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref><sp/>:<sp/>(<ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>-1)/2+1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>3<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>CONTOUR_BASIS<sp/>!=<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;3&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" kindref="member">SE_config</ref>{</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,3&gt;({<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>3<sp/>:<sp/>1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ad1eeffcbc75948315051e70ec5c84c50" kindref="member">K1at_config</ref>{</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a852021a10ef1051ae13b34914948d5b0" kindref="member">K1p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a05d78e86026731e5b48397216fb31155" kindref="member">K2at_config</ref>{</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a583e6974e40b3a17bdbf6ebea3ae529e" kindref="member">K2p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;6&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a17ac32e598bded52cdae2237454d13e5" kindref="member">K3_config</ref>{</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" kindref="member">GRID</ref>!=2<sp/>?<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref><sp/>:<sp/>(<ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>-1)/2+1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>3<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>not<sp/>PARTICLE_HOLE_SYMM</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;3&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" kindref="member">SE_config</ref>{</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,3&gt;({<sp/>3,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K1</ref>})</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ad1eeffcbc75948315051e70ec5c84c50" kindref="member">K1at_config</ref>{</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/>2,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K1</ref>})</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a852021a10ef1051ae13b34914948d5b0" kindref="member">K1p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/>3,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K1</ref>})</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a05d78e86026731e5b48397216fb31155" kindref="member">K2at_config</ref>{</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/>4,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K2</ref>})</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a583e6974e40b3a17bdbf6ebea3ae529e" kindref="member">K2p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/>6,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K2</ref>})</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;6&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a17ac32e598bded52cdae2237454d13e5" kindref="member">K3_config</ref>{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" kindref="member">GRID</ref>!=2<sp/>?<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref><sp/>:<sp/>(<ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>-1)/2+1,<sp/>7,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K3</ref>})</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>3<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;3&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a9d55dc23787fc6a6e7b51200bff8246f" kindref="member">SE_config</ref>{</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,3&gt;({<sp/><ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/>?<sp/>3<sp/>:<sp/>1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K1</ref>})<sp/></highlight><highlight class="comment">//<sp/>dims</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ad1eeffcbc75948315051e70ec5c84c50" kindref="member">K1at_config</ref>{</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/>?<sp/>3<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K1</ref>})<sp/></highlight><highlight class="comment">//<sp/>dims</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a852021a10ef1051ae13b34914948d5b0" kindref="member">K1p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/>?<sp/>3<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K1</ref>})<sp/></highlight><highlight class="comment">//<sp/>dims</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a05d78e86026731e5b48397216fb31155" kindref="member">K2at_config</ref>{</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/>?<sp/>3<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K2</ref>})<sp/></highlight><highlight class="comment">//<sp/>dims</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a583e6974e40b3a17bdbf6ebea3ae529e" kindref="member">K2p_config</ref><sp/>{</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/>?<sp/>3<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K2</ref>})<sp/></highlight><highlight class="comment">//<sp/>dims</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;6&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a17ac32e598bded52cdae2237454d13e5" kindref="member">K3_config</ref>{</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({<ref refid="d1/df8/master__parameters_8hpp_1a77214baed0962c0474516b5cc68673e7" kindref="member">n_spin</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" kindref="member">GRID</ref>!=2<sp/>?<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref><sp/>:<sp/>(<ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>-1)/2+1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c" kindref="member">KELDYSH_FORMALISM</ref><sp/>?<sp/>5<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K3</ref>})<sp/></highlight><highlight class="comment">//<sp/>dims</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>3<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140" refid="d2/d1a/Keldysh__symmetries_8hpp_1a149f32fbbffe1dfc5361b8e7443b8fe8" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;3&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a149f32fbbffe1dfc5361b8e7443b8fe8" kindref="member">SE_expanded_config</ref>{</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,3&gt;({<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/><sp/>4<sp/>:<sp/>1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" kindref="member">nFER</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="144" refid="d2/d1a/Keldysh__symmetries_8hpp_1a6d0a058be9fd8c48a491d92ab818df13" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;4&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a6d0a058be9fd8c48a491d92ab818df13" kindref="member">K1_expanded_config</ref>{</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,4&gt;({1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6" kindref="member">nBOS</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/><sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148" refid="d2/d1a/Keldysh__symmetries_8hpp_1ae93e47de1a55e5577faaa1b74d8d7927" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;5&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ae93e47de1a55e5577faaa1b74d8d7927" kindref="member">K2_expanded_config</ref>{</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>MAX_DIAG_CLASS<sp/>&gt;=2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/><sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="151"><highlight class="normal">#</highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,5&gt;({1,<sp/>0,<sp/>0,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/><sp/>16<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K2</ref>})</highlight></codeline>
+<codeline lineno="153"><highlight class="normal">#<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">endif</ref></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>2<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="156" refid="d2/d1a/Keldysh__symmetries_8hpp_1a4836c149ec08918a1737864f9ba7f425" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;6&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a4836c149ec08918a1737864f9ba7f425" kindref="member">K3_SBE_expanded_config</ref>{</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>MAX_DIAG_CLASS<sp/>&gt;=<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1" kindref="member">nBOS2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" kindref="member">GRID</ref>!=2<sp/>?<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref><sp/>:<sp/>(<ref refid="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40" kindref="member">nFER2</ref>-1)/2+1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/><sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="159"><highlight class="normal">#</highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({1,<sp/>0,<sp/>0,<sp/>0,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K3</ref>})</highlight></codeline>
+<codeline lineno="161"><highlight class="normal">#<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">endif</ref></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>3<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164" refid="d2/d1a/Keldysh__symmetries_8hpp_1aab3b950cc6a1c759fb8f09121b83a27e" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/><ref refid="dc/dba/structbuffer__config" kindref="compound">buffer_config&lt;6&gt;</ref><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1aab3b950cc6a1c759fb8f09121b83a27e" kindref="member">K3_expanded_config</ref>{</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>MAX_DIAG_CLASS<sp/>==<sp/>3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({1,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd" kindref="member">nBOS3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>,<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" kindref="member">GRID</ref>!=2<sp/>?<sp/><ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref><sp/>:<sp/>(<ref refid="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d" kindref="member">nFER3</ref>-1)/2+1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/><sp/>16<sp/>:<sp/>1,<sp/><ref refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" kindref="member">n_in</ref>})</highlight></codeline>
+<codeline lineno="167"><highlight class="normal">#</highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;size_t,6&gt;({1,<sp/>0,<sp/>0,<sp/>0,<sp/><ref refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" kindref="member">KELDYSH</ref><sp/>?<sp/>16<sp/>:<sp/>1,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">n_in_K3</ref>})</highlight></codeline>
+<codeline lineno="169"><highlight class="normal">#<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">endif</ref></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>3<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>frequency<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/>,<sp/>1};</highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"></highlight></codeline>
+<codeline lineno="173" refid="d2/d1a/Keldysh__symmetries_8hpp_1abba9c469b7170e0e4e0ea440ba7e3e16" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1abba9c469b7170e0e4e0ea440ba7e3e16" kindref="member">pos_first_freq</ref><sp/>=<sp/>1;<sp/><sp/></highlight><highlight class="comment">//<sp/>position<sp/>of<sp/>first<sp/>frequency<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight></codeline>
+<codeline lineno="175"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>KELDYSH_FORMALISM</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="176"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Vector<sp/>of<sp/>indices<sp/>of<sp/>the<sp/>non-zero<sp/>Keldysh<sp/>components<sp/>of<sp/>the<sp/>bubbles</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="177" refid="d2/d1a/Keldysh__symmetries_8hpp_1ad13f63de44ed03c446f501a518be3129" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ad13f63de44ed03c446f501a518be3129" kindref="member">glb_non_zero_Keldysh_bubble</ref>({3,6,7,9,11,12,13,14,15});</highlight></codeline>
+<codeline lineno="178" refid="d2/d1a/Keldysh__symmetries_8hpp_1a2f24dbf3af29d35bd2122d63b4c29441" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a2f24dbf3af29d35bd2122d63b4c29441" kindref="member">glb_number_of_Keldysh_components_bubble</ref><sp/>=<sp/>9;<sp/></highlight><highlight class="comment">//<sp/>length<sp/>of<sp/>the<sp/>previous<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Vector<sp/>of<sp/>indices<sp/>of<sp/>independent<sp/>components<sp/>of<sp/>the<sp/>diagrammatic<sp/>classes,<sp/>density<sp/>channel</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>CONTOUR_BASIS<sp/>!=<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="182"><highlight class="normal"></highlight><highlight class="comment">//const<sp/>std::vector&lt;int&gt;<sp/>non_zero_Keldysh_K1a({1,3,15});</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"></highlight><highlight class="comment">//const<sp/>std::vector&lt;int&gt;<sp/>non_zero_Keldysh_K1p({1,5,15});</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="184"><highlight class="normal"></highlight><highlight class="comment">//const<sp/>std::vector&lt;int&gt;<sp/>non_zero_Keldysh_K1t({1,3,15});</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="185"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>SBE_DECOMPOSITION</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="186"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2a</ref>({0,1,2,3,9});</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2p</ref>({0,1,4,5,12});</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2t</ref>({0,1,2,3,5});</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="190"><highlight class="normal"></highlight><highlight class="comment">//const<sp/>std::vector&lt;int&gt;<sp/>non_zero_Keldysh_K2a({0,1,2,3,11});</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="191"><highlight class="normal"></highlight><highlight class="comment">//const<sp/>std::vector&lt;int&gt;<sp/>non_zero_Keldysh_K2p({0,1,4,5,13});</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight><highlight class="comment">//const<sp/>std::vector&lt;int&gt;<sp/>non_zero_Keldysh_K2t({0,1,2,3,7});</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight><highlight class="comment">//const<sp/>std::vector&lt;int&gt;<sp/>non_zero_Keldysh_K3({0,1,3,5,6,7});</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>not<sp/>PARTICLE_HOLE_SYMM</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1a</ref>({0,6});</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2a</ref>({0,1,6,8});</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1p</ref>({0,3,12});</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2p</ref>({0,3,4,7,12,15});</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1t</ref>({0,5});</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2t</ref>({0,1,4,5});</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K3</ref>({0,1,3,4,5,6,12});</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="205"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1a</ref>({0,6});</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2a</ref>({0,1,6});</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1p</ref>({0,3});</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2p</ref>({0,3,4});</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1t</ref>({0,5});</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2t</ref>({0,1,5});</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K3</ref>({0,1,3,5,6});</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="214"><highlight class="normal"></highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Vector<sp/>of<sp/>indices<sp/>whose<sp/>respective<sp/>Keldysh<sp/>indices<sp/>add<sp/>up<sp/>to<sp/>an<sp/>odd<sp/>number</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="216" refid="d2/d1a/Keldysh__symmetries_8hpp_1a619bef4c8f4c8b4e4e11ac1fc8a37676" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a619bef4c8f4c8b4e4e11ac1fc8a37676" kindref="member">odd_Keldysh</ref>({1,<sp/>2,<sp/>4,<sp/>7,<sp/>8,<sp/>11,<sp/>13,<sp/>14});</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="218"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ad13f63de44ed03c446f501a518be3129" kindref="member">glb_non_zero_Keldysh_bubble</ref><sp/>{0};</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a2f24dbf3af29d35bd2122d63b4c29441" kindref="member">glb_number_of_Keldysh_components_bubble</ref><sp/>=<sp/>1;<sp/></highlight><highlight class="comment">//<sp/>length<sp/>of<sp/>the<sp/>previous<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight></codeline>
+<codeline lineno="221"><highlight class="normal"></highlight></codeline>
+<codeline lineno="222"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Vector<sp/>of<sp/>indices<sp/>of<sp/>independent<sp/>components<sp/>of<sp/>the<sp/>diagrammatic<sp/>classes,<sp/>density<sp/>channel</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="223"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1a</ref>({0});</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2a</ref>({0});</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1p</ref>({0});</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2p</ref>({0});</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K1t</ref>({0});</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K2t</ref>({0});</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">non_zero_Keldysh_K3</ref>({0});</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight></codeline>
+<codeline lineno="231"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int&gt;<sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a619bef4c8f4c8b4e4e11ac1fc8a37676" kindref="member">odd_Keldysh</ref>({1});<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>trivial,<sp/>never<sp/>used<sp/>in<sp/>Matsubara</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//<sp/>KELDYSH_FORMALISM</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"></highlight></codeline>
+<codeline lineno="236"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Checks<sp/>if<sp/>a<sp/>given<sp/>variable<sp/>val<sp/>is<sp/>in<sp/>a<sp/>list<sp/>passed<sp/>by<sp/>reference.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="237"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Used<sp/>to<sp/>check<sp/>if<sp/>a<sp/>Keldysh<sp/>index<sp/>is<sp/>in<sp/>a<sp/>list<sp/>of<sp/>indices<sp/>that<sp/>should<sp/>be<sp/>equal.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="238"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="239" refid="d2/d1a/Keldysh__symmetries_8hpp_1ab868aed0c3e67a5adcaeda8aeff35d85" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ab868aed0c3e67a5adcaeda8aeff35d85" kindref="member">isInList</ref><sp/>(T<sp/>val,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;T&gt;&amp;<sp/>list)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(std::find(list.begin(),<sp/>list.end(),<sp/>val)<sp/>!=<sp/>list.end());</highlight></codeline>
+<codeline lineno="241"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight></codeline>
+<codeline lineno="243"><highlight class="normal"></highlight><highlight class="comment">//<sp/>This<sp/>function<sp/>converts<sp/>indices<sp/>in<sp/>the<sp/>range<sp/>0...5<sp/>to<sp/>the<sp/>actual<sp/>Keldysh<sp/>index<sp/>they<sp/>correspond<sp/>to</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="244"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Rule:<sp/>{0,1,3,5,6,7}<sp/>-&gt;<sp/>{0,1,2,3,4,5}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="245"><highlight class="normal"></highlight><highlight class="comment">//<sp/>The<sp/>components<sp/>0,1,3,5,6<sp/>and<sp/>7<sp/>are<sp/>the<sp/>chosen<sp/>reference<sp/>components,<sp/>numerated<sp/>in<sp/>the<sp/>0...15<sp/>convention</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="246" refid="d2/d1a/Keldysh__symmetries_8hpp_1a0e80a8241d25e8d4ae395ea1a91e98f7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a0e80a8241d25e8d4ae395ea1a91e98f7" kindref="member">convertToIndepIndex</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>iK)<sp/>-&gt;<sp/>int;</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"></highlight></codeline>
+<codeline lineno="248"><highlight class="normal"></highlight><highlight class="comment">//<sp/>This<sp/>function<sp/>returns<sp/>the<sp/>values<sp/>of<sp/>the<sp/>4<sp/>alphas<sp/>for<sp/>a<sp/>given<sp/>index<sp/>in<sp/>the<sp/>0...15<sp/>set</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="249"><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1aa68ac407814b8b823c4982c2441fc9bd" kindref="member">iK_to_alphas</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">index</ref>)<sp/>-&gt;<sp/>std::array&lt;int,4&gt;;</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a64b6be9ace7119bb9216e51456b2e3bd" kindref="member">alphas_to_iK</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::array&lt;int,4&gt;&amp;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">alphas</ref>)<sp/>-&gt;<sp/>int;</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"></highlight></codeline>
+<codeline lineno="252"><highlight class="normal"></highlight></codeline>
+<codeline lineno="253"><highlight class="normal"></highlight></codeline>
+<codeline lineno="254" refid="d2/d1a/Keldysh__symmetries_8hpp_1ab3ef98f1e58c31aca1a8bc57a7690b25" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>channel_bubble,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>I&gt;<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1ab3ef98f1e58c31aca1a8bc57a7690b25" kindref="member">get_i0_left_right</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/>iK,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">I</ref>&amp;<sp/>i0_left,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">I</ref>&amp;<sp/>i0_right)<sp/><sp/>{</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>std::array&lt;I,<sp/>4&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Keldysh4pointdims</ref><sp/>=<sp/>{2,2,2,2};</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;I<sp/>,4&gt;<sp/>alpha;</highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="de/dbb/math__utils_8hpp_1a44e5552f932a6d11b1ee87a7229f2e5d" kindref="member">getMultIndex</ref>(alpha,<sp/>iK,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Keldysh4pointdims</ref>);</highlight></codeline>
+<codeline lineno="258"><highlight class="normal"></highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(channel_bubble<sp/>==<sp/></highlight><highlight class="charliteral">&apos;a&apos;</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/>=<sp/>alpha[0]*2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="261"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right=<sp/>alpha[2]*2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(channel_bubble<sp/>==<sp/></highlight><highlight class="charliteral">&apos;p&apos;</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/>=<sp/>alpha[0]*2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right=<sp/>alpha[2]*2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static_assert</highlight><highlight class="normal">(channel_bubble==</highlight><highlight class="charliteral">&apos;t&apos;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;Please<sp/>use<sp/>a,<sp/>p<sp/>or<sp/>t<sp/>for<sp/>the<sp/>channels.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/>=<sp/>alpha[1]*2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right=<sp/>alpha[2]*2<sp/>+<sp/>alpha[0];</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="272"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"></highlight></codeline>
+<codeline lineno="275" refid="d2/d1a/Keldysh__symmetries_8hpp_1a7c2b62b33ed4c06a68f72af936839df8" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>channel_bubble,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>is_left_vertex&gt;<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a7c2b62b33ed4c06a68f72af936839df8" kindref="member">rotate_Keldysh_matrix</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/>iK)<sp/>-&gt;<sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/>{</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>std::array&lt;my_index_t,<sp/>4&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Keldysh4pointdims</ref><sp/>=<sp/>{2,2,2,2};</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;my_index_t<sp/>,4&gt;<sp/>alpha;</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="de/dbb/math__utils_8hpp_1a44e5552f932a6d11b1ee87a7229f2e5d" kindref="member">getMultIndex</ref>(alpha,<sp/>iK,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Keldysh4pointdims</ref>);</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"></highlight></codeline>
+<codeline lineno="280"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/>i0_left,<sp/>i0_right;</highlight></codeline>
+<codeline lineno="281"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(channel_bubble<sp/>==<sp/></highlight><highlight class="charliteral">&apos;a&apos;</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"></highlight></codeline>
+<codeline lineno="283"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_left_vertex</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[0]<sp/>*<sp/>2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[2]<sp/>*<sp/>2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="287"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[2]<sp/>*<sp/>2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[0]<sp/>*<sp/>2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(channel_bubble<sp/>==<sp/></highlight><highlight class="charliteral">&apos;p&apos;</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_left_vertex</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/>=<sp/>alpha[0]*2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right=<sp/>alpha[2]*2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="296"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/>=<sp/>alpha[2]*2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right=<sp/>alpha[0]*2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="300"><highlight class="normal"></highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static_assert</highlight><highlight class="normal">(channel_bubble==</highlight><highlight class="charliteral">&apos;t&apos;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;Please<sp/>use<sp/>a,<sp/>p<sp/>or<sp/>t<sp/>for<sp/>the<sp/>channels.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"></highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_left_vertex</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[3]<sp/>*<sp/>2<sp/>+<sp/>alpha[0];</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[2]<sp/>*<sp/>2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[1]<sp/>*<sp/>2<sp/>+<sp/>alpha[2];</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[0]<sp/>*<sp/>2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="313"><highlight class="normal"></highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"></highlight></codeline>
+<codeline lineno="317"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">iK_read</ref><sp/>=<sp/>i0_left<sp/>*<sp/>4<sp/>+<sp/>i0_right;</highlight></codeline>
+<codeline lineno="318"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">iK_read</ref><sp/>&lt;<sp/>16);</highlight></codeline>
+<codeline lineno="319"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">iK_read</ref>;</highlight></codeline>
+<codeline lineno="320"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="321"><highlight class="normal"></highlight></codeline>
+<codeline lineno="322" refid="d2/d1a/Keldysh__symmetries_8hpp_1a23dfafa221f5c5eaf4fbe2ffa11ff842" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>channel_bubble,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>is_left_vertex&gt;<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a23dfafa221f5c5eaf4fbe2ffa11ff842" kindref="member">unrotate_Keldysh_matrix</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/>iK)<sp/>-&gt;<sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/>{</highlight></codeline>
+<codeline lineno="323"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>std::array&lt;my_index_t,<sp/>4&gt;<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Keldysh4pointdims</ref><sp/>=<sp/>{2,2,2,2};</highlight></codeline>
+<codeline lineno="324"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;my_index_t<sp/>,4&gt;<sp/>alpha;</highlight></codeline>
+<codeline lineno="325"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="de/dbb/math__utils_8hpp_1a44e5552f932a6d11b1ee87a7229f2e5d" kindref="member">getMultIndex</ref>(alpha,<sp/>iK,<sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Keldysh4pointdims</ref>);</highlight></codeline>
+<codeline lineno="326"><highlight class="normal"></highlight></codeline>
+<codeline lineno="327"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/>i0_left,<sp/>i0_right;</highlight></codeline>
+<codeline lineno="328"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(channel_bubble<sp/>==<sp/></highlight><highlight class="charliteral">&apos;a&apos;</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="329"><highlight class="normal"></highlight></codeline>
+<codeline lineno="330"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_left_vertex</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="331"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[0]<sp/>*<sp/>2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="332"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[2]<sp/>*<sp/>2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="333"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="334"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="335"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[2]<sp/>*<sp/>2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="336"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[0]<sp/>*<sp/>2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="337"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="338"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="339"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(channel_bubble<sp/>==<sp/></highlight><highlight class="charliteral">&apos;p&apos;</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="340"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_left_vertex</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="341"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/>=<sp/>alpha[0]*2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="342"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right=<sp/>alpha[2]*2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="343"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="344"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="345"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/>=<sp/>alpha[2]*2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="346"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right=<sp/>alpha[0]*2<sp/>+<sp/>alpha[1];</highlight></codeline>
+<codeline lineno="347"><highlight class="normal"></highlight></codeline>
+<codeline lineno="348"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="349"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="350"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="351"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static_assert</highlight><highlight class="normal">(channel_bubble==</highlight><highlight class="charliteral">&apos;t&apos;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;Please<sp/>use<sp/>a,<sp/>p<sp/>or<sp/>t<sp/>for<sp/>the<sp/>channels.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="352"><highlight class="normal"></highlight></codeline>
+<codeline lineno="353"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal">(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">is_left_vertex</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="354"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[1]<sp/>*<sp/>2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="355"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[2]<sp/>*<sp/>2<sp/>+<sp/>alpha[0];</highlight></codeline>
+<codeline lineno="356"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="357"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="358"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_left<sp/><sp/>=<sp/>alpha[2]<sp/>*<sp/>2<sp/>+<sp/>alpha[0];</highlight></codeline>
+<codeline lineno="359"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i0_right<sp/>=<sp/>alpha[1]<sp/>*<sp/>2<sp/>+<sp/>alpha[3];</highlight></codeline>
+<codeline lineno="360"><highlight class="normal"></highlight></codeline>
+<codeline lineno="361"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="362"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="363"><highlight class="normal"></highlight></codeline>
+<codeline lineno="364"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">iK_read</ref><sp/>=<sp/>i0_left<sp/>*<sp/>4<sp/>+<sp/>i0_right;</highlight></codeline>
+<codeline lineno="365"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">assert</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">iK_read</ref><sp/>&lt;<sp/>16);</highlight></codeline>
+<codeline lineno="366"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">iK_read</ref>;</highlight></codeline>
+<codeline lineno="367"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="368"><highlight class="normal"></highlight></codeline>
+<codeline lineno="369"><highlight class="normal"></highlight></codeline>
+<codeline lineno="378"><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="d2/d1a/Keldysh__symmetries_8hpp_1a8ce5883bf24e8dbb17eb7e2cf3c51afe" kindref="member">indices_sum</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i0,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>channel)<sp/>-&gt;<sp/>std::vector&lt;int&gt;;</highlight></codeline>
+<codeline lineno="379"><highlight class="normal"></highlight></codeline>
+<codeline lineno="380"><highlight class="normal"></highlight></codeline>
+<codeline lineno="381"><highlight class="normal"></highlight></codeline>
+<codeline lineno="382"><highlight class="normal"></highlight></codeline>
+<codeline lineno="383"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//KELDYSH_MFRG_KELDYSH_SYMMETRIES_HPP</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="symmetries/Keldysh_symmetries.hpp"/>
+  </compounddef>
+</doxygen>

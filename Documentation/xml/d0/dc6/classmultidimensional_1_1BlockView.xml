@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d0/dc6/classmultidimensional_1_1BlockView" kind="class" language="C++" prot="public">
+    <compoundname>multidimensional::BlockView</compoundname>
+    <includes refid="dd/df3/ranged__view_8hpp" local="no">ranged_view.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>depth</declname>
+        <defname>depth</defname>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" prot="private" static="no">
+        <type>std::array&lt; std::size_t, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">depth</ref> &gt;</type>
+        <definition>using multidimensional::BlockView&lt; T, depth &gt;::index_type =  std::array&lt;std::size_t,depth&gt;</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>multidimensional::BlockView::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="52" column="13" bodyfile="multidimensional/ranged_view.hpp" bodystart="52" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="d0/dc6/classmultidimensional_1_1BlockView_1a2e4054f50bca758313c04c646e450954" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref></type>
+        <definition>const index_type multidimensional::BlockView&lt; T, depth &gt;::m_start</definition>
+        <argsstring></argsstring>
+        <name>m_start</name>
+        <qualifiedname>multidimensional::BlockView::m_start</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="66" column="30" bodyfile="multidimensional/ranged_view.hpp" bodystart="66" bodyend="-1"/>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1ab8541a6759186032981a267f59e53adf" compoundref="dd/df3/ranged__view_8hpp" startline="54" endline="63">multidimensional::BlockView&lt; T, depth &gt;::BlockView</referencedby>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1ad97c037e56c71998e2bfba4cba7350cd" compoundref="dd/df3/ranged__view_8hpp" startline="88" endline="98">multidimensional::BlockView&lt; T, depth &gt;::flat_index</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d0/dc6/classmultidimensional_1_1BlockView_1ae737aaeba900ca8f6e8b6a0a091d06d2" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref></type>
+        <definition>const index_type multidimensional::BlockView&lt; T, depth &gt;::m_length</definition>
+        <argsstring></argsstring>
+        <name>m_length</name>
+        <qualifiedname>multidimensional::BlockView::m_length</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="67" column="30" bodyfile="multidimensional/ranged_view.hpp" bodystart="67" bodyend="-1"/>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1ab8541a6759186032981a267f59e53adf" compoundref="dd/df3/ranged__view_8hpp" startline="54" endline="63">multidimensional::BlockView&lt; T, depth &gt;::BlockView</referencedby>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1aea8a1c49f6dd081ec82e1c707ffe3c57" compoundref="dd/df3/ranged__view_8hpp" startline="74" endline="86">multidimensional::BlockView&lt; T, depth &gt;::check_bounds</referencedby>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1a49c016ebdac7ec19db87d454020d0bb6" compoundref="dd/df3/ranged__view_8hpp" startline="115" endline="124">multidimensional::BlockView&lt; T, depth &gt;::get_vec</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d0/dc6/classmultidimensional_1_1BlockView_1a503f1f8afc7ab2ba501ea6856240abf4" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref></type>
+        <definition>const index_type multidimensional::BlockView&lt; T, depth &gt;::m_stride</definition>
+        <argsstring></argsstring>
+        <name>m_stride</name>
+        <qualifiedname>multidimensional::BlockView::m_stride</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="68" column="30" bodyfile="multidimensional/ranged_view.hpp" bodystart="68" bodyend="-1"/>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1ad97c037e56c71998e2bfba4cba7350cd" compoundref="dd/df3/ranged__view_8hpp" startline="88" endline="98">multidimensional::BlockView&lt; T, depth &gt;::flat_index</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d0/dc6/classmultidimensional_1_1BlockView_1a1ee612cb59b07c60f15956246a75a27e" prot="private" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d3f/classmultidimensional_1_1multiarray" kindref="compound">multidimensional::multiarray</ref>&lt; T, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">depth</ref> &gt; &amp;</type>
+        <definition>const multidimensional::multiarray&lt;T,depth&gt;&amp; multidimensional::BlockView&lt; T, depth &gt;::m_data</definition>
+        <argsstring></argsstring>
+        <name>m_data</name>
+        <qualifiedname>multidimensional::BlockView::m_data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="69" column="48" bodyfile="multidimensional/ranged_view.hpp" bodystart="69" bodyend="-1"/>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1a32d058fc00a264f7f3fea7d05cb1260b" compoundref="dd/df3/ranged__view_8hpp" startline="101" endline="112">multidimensional::BlockView&lt; T, depth &gt;::at</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d0/dc6/classmultidimensional_1_1BlockView_1ab8541a6759186032981a267f59e53adf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>multidimensional::BlockView&lt; T, depth &gt;::BlockView</definition>
+        <argsstring>(const multiarray&lt; T, depth &gt; &amp;data, const index_type &amp;start, const index_type length)</argsstring>
+        <name>BlockView</name>
+        <qualifiedname>multidimensional::BlockView::BlockView</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d3f/classmultidimensional_1_1multiarray" kindref="compound">multiarray</ref>&lt; T, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">depth</ref> &gt; &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref> &amp;</type>
+          <declname>start</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref></type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="54" column="13" bodyfile="multidimensional/ranged_view.hpp" bodystart="54" bodyend="63"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d7/d3f/classmultidimensional_1_1multiarray_1aca0527dd01461a6b0e5979af8d399fc5" compoundref="df/da4/multiarray_8hpp" startline="563" endline="566">multidimensional::multiarray&lt; T, depth &gt;::length</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1ae737aaeba900ca8f6e8b6a0a091d06d2" compoundref="dd/df3/ranged__view_8hpp" startline="67">multidimensional::BlockView&lt; T, depth &gt;::m_length</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1a2e4054f50bca758313c04c646e450954" compoundref="dd/df3/ranged__view_8hpp" startline="66">multidimensional::BlockView&lt; T, depth &gt;::m_start</references>
+      </memberdef>
+      <memberdef kind="function" id="d0/dc6/classmultidimensional_1_1BlockView_1a32d058fc00a264f7f3fea7d05cb1260b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> T &amp;</type>
+        <definition>const T &amp; multidimensional::BlockView&lt; T, depth &gt;::at</definition>
+        <argsstring>(const index_type &amp;index) const</argsstring>
+        <name>at</name>
+        <qualifiedname>multidimensional::BlockView::at</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref> &amp;</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="101" column="17" bodyfile="multidimensional/ranged_view.hpp" bodystart="101" bodyend="112"/>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1aea8a1c49f6dd081ec82e1c707ffe3c57" compoundref="dd/df3/ranged__view_8hpp" startline="74" endline="86">multidimensional::BlockView&lt; T, depth &gt;::check_bounds</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1ad97c037e56c71998e2bfba4cba7350cd" compoundref="dd/df3/ranged__view_8hpp" startline="88" endline="98">multidimensional::BlockView&lt; T, depth &gt;::flat_index</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1a1ee612cb59b07c60f15956246a75a27e" compoundref="dd/df3/ranged__view_8hpp" startline="69">multidimensional::BlockView&lt; T, depth &gt;::m_data</references>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1a49c016ebdac7ec19db87d454020d0bb6" compoundref="dd/df3/ranged__view_8hpp" startline="115" endline="124">multidimensional::BlockView&lt; T, depth &gt;::get_vec</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d0/dc6/classmultidimensional_1_1BlockView_1a49c016ebdac7ec19db87d454020d0bb6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; T &gt;</type>
+        <definition>vec&lt; T &gt; multidimensional::BlockView&lt; T, depth &gt;::get_vec</definition>
+        <argsstring>() const</argsstring>
+        <name>get_vec</name>
+        <qualifiedname>multidimensional::BlockView::get_vec</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="115" column="13" bodyfile="multidimensional/ranged_view.hpp" bodystart="115" bodyend="124"/>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1a32d058fc00a264f7f3fea7d05cb1260b" compoundref="dd/df3/ranged__view_8hpp" startline="101" endline="112">multidimensional::BlockView&lt; T, depth &gt;::at</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="de/dbb/math__utils_8hpp_1a0bb20dce81d05d42cbea49416726ad27" compoundref="de/dbb/math__utils_8hpp" startline="106" endline="110">getFlatSize</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1ae737aaeba900ca8f6e8b6a0a091d06d2" compoundref="dd/df3/ranged__view_8hpp" startline="67">multidimensional::BlockView&lt; T, depth &gt;::m_length</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="d0/dc6/classmultidimensional_1_1BlockView_1aea8a1c49f6dd081ec82e1c707ffe3c57" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+        <definition>bool multidimensional::BlockView&lt; T, depth &gt;::check_bounds</definition>
+        <argsstring>(const index_type &amp;index) const</argsstring>
+        <name>check_bounds</name>
+        <qualifiedname>multidimensional::BlockView::check_bounds</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref> &amp;</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="74" column="14" bodyfile="multidimensional/ranged_view.hpp" bodystart="74" bodyend="86"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1ae737aaeba900ca8f6e8b6a0a091d06d2" compoundref="dd/df3/ranged__view_8hpp" startline="67">multidimensional::BlockView&lt; T, depth &gt;::m_length</references>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1a32d058fc00a264f7f3fea7d05cb1260b" compoundref="dd/df3/ranged__view_8hpp" startline="101" endline="112">multidimensional::BlockView&lt; T, depth &gt;::at</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d0/dc6/classmultidimensional_1_1BlockView_1ad97c037e56c71998e2bfba4cba7350cd" prot="private" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t multidimensional::BlockView&lt; T, depth &gt;::flat_index</definition>
+        <argsstring>(const index_type &amp;index) const noexcept</argsstring>
+        <name>flat_index</name>
+        <qualifiedname>multidimensional::BlockView::flat_index</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" kindref="member">index_type</ref> &amp;</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="multidimensional/ranged_view.hpp" line="88" column="16" bodyfile="multidimensional/ranged_view.hpp" bodystart="88" bodyend="98"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1a2e4054f50bca758313c04c646e450954" compoundref="dd/df3/ranged__view_8hpp" startline="66">multidimensional::BlockView&lt; T, depth &gt;::m_start</references>
+        <references refid="d0/dc6/classmultidimensional_1_1BlockView_1a503f1f8afc7ab2ba501ea6856240abf4" compoundref="dd/df3/ranged__view_8hpp" startline="68">multidimensional::BlockView&lt; T, depth &gt;::m_stride</references>
+        <referencedby refid="d0/dc6/classmultidimensional_1_1BlockView_1a32d058fc00a264f7f3fea7d05cb1260b" compoundref="dd/df3/ranged__view_8hpp" startline="101" endline="112">multidimensional::BlockView&lt; T, depth &gt;::at</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="3">
+        <label>T</label>
+      </node>
+      <node id="4">
+        <label>multiarray&lt; T, depth &gt; &amp;</label>
+      </node>
+      <node id="1">
+        <label>multidimensional::BlockView&lt; T, depth &gt;</label>
+        <link refid="d0/dc6/classmultidimensional_1_1BlockView"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_start</edgelabel>
+          <edgelabel>-m_stride</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>-m_data</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="multidimensional/ranged_view.hpp" line="50" column="5" bodyfile="multidimensional/ranged_view.hpp" bodystart="50" bodyend="127"/>
+    <listofallmembers>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1a32d058fc00a264f7f3fea7d05cb1260b" prot="public" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>at</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1ab8541a6759186032981a267f59e53adf" prot="public" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>BlockView</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1aea8a1c49f6dd081ec82e1c707ffe3c57" prot="private" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>check_bounds</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1ad97c037e56c71998e2bfba4cba7350cd" prot="private" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>flat_index</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1a49c016ebdac7ec19db87d454020d0bb6" prot="public" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>get_vec</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1a883b629fd8c81b0bc4a8d5c859b6be0b" prot="private" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>index_type</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1a1ee612cb59b07c60f15956246a75a27e" prot="private" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>m_data</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1ae737aaeba900ca8f6e8b6a0a091d06d2" prot="private" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>m_length</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1a2e4054f50bca758313c04c646e450954" prot="private" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>m_start</name></member>
+      <member refid="d0/dc6/classmultidimensional_1_1BlockView_1a503f1f8afc7ab2ba501ea6856240abf4" prot="private" virt="non-virtual"><scope>multidimensional::BlockView</scope><name>m_stride</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

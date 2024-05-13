@@ -1,0 +1,1096 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dc/d7a/classdataBuffer" kind="class" language="C++" prot="public">
+    <compoundname>dataBuffer</compoundname>
+    <basecompoundref refid="d3/df3/classInterpolator" prot="public" virt="non-virtual">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</basecompoundref>
+    <includes refid="dc/d80/data__buffer_8hpp" local="no">data_buffer.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a82cbf94ae42de55eaaa115fc78dffbc6" kindref="member">K_class</ref></type>
+        <declname>k</declname>
+        <defname>k</defname>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>rank</declname>
+        <defname>rank</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>numberFrequencyDims</declname>
+        <defname>numberFrequencyDims</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>pos_first_freqpoint</declname>
+        <defname>pos_first_freqpoint</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> frequencyGrid_type</type>
+      </param>
+      <param>
+        <type><ref refid="d9/d3a/technical__parameters_8hpp_1af61cf093a08a55eded130128949a6cf5" kindref="member">interpolMethod</ref></type>
+        <declname>inter</declname>
+        <defname>inter</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> std::enable_if_t&lt;(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>+<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt; rank) <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">and</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt;=3), <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
+        <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="dc/d7a/classdataBuffer_1a8507a712e8472ea02793586267d3912c" prot="private" static="no">
+        <type><ref refid="d3/df3/classInterpolator" kindref="compound">Interpolator</ref>&lt; Q, rank, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>, <ref refid="d3/dd8/classDataContainer" kindref="compound">DataContainer</ref>&lt; Q, rank, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>, frequencyGrid_type &gt;, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">inter</ref> &gt;</type>
+        <definition>using dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::base_class =  Interpolator&lt;Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt;Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type&gt;, inter&gt;</definition>
+        <argsstring></argsstring>
+        <name>base_class</name>
+        <qualifiedname>dataBuffer::base_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="660" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="660" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" prot="private" static="no">
+        <type><ref refid="dc/d7a/classdataBuffer" kindref="compound">dataBuffer</ref>&lt; Q, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">k</ref>, rank, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>, frequencyGrid_type, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">inter</ref> &gt;</type>
+        <definition>using dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::this_class =  dataBuffer&lt;Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter&gt;</definition>
+        <argsstring></argsstring>
+        <name>this_class</name>
+        <qualifiedname>dataBuffer::this_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="661" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="661" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="dc/d7a/classdataBuffer_1a69fed7d37e91770a81c17df4d67adbac" prot="private" static="no">
+        <type>std::array&lt; <ref refid="d1/df8/master__parameters_8hpp_1a509f74e58953ffbd5c00435ce600cd3e" kindref="member">freqType</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref> &gt;</type>
+        <definition>using dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::frequencies_type =  std::array&lt;freqType, numberFrequencyDims&gt;</definition>
+        <argsstring></argsstring>
+        <name>frequencies_type</name>
+        <qualifiedname>dataBuffer::frequencies_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="662" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="662" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="dc/d7a/classdataBuffer_1a4bded904070c67ccf6dd67c7e09baade" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="d3/df3/classInterpolator_1a90cb24659fbf8d65d29db9fe01ab475a" kindref="member">base_class::index_type</ref></type>
+        <definition>using dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::index_type =  typename base_class::index_type</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>dataBuffer::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="665" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="665" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="dc/d7a/classdataBuffer_1a92532a178577dbf50d6257937f1706aa" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="d3/df3/classInterpolator_1a220838ec7429b2d8ac08199acc0a8297" kindref="member">base_class::dimensions_type</ref></type>
+        <definition>using dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::dimensions_type =  typename base_class::dimensions_type</definition>
+        <argsstring></argsstring>
+        <name>dimensions_type</name>
+        <qualifiedname>dataBuffer::dimensions_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="666" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="666" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1ad98fef292c1055e74c2681f0a5579608" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::dataBuffer</definition>
+        <argsstring>()</argsstring>
+        <name>dataBuffer</name>
+        <qualifiedname>dataBuffer::dataBuffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="668" column="5" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="668" bodyend="668"/>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1afa513487c69eae424b628bc60edd703e" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::dataBuffer</definition>
+        <argsstring>(double Lambda, dimensions_type dims, const fRG_config &amp;config)</argsstring>
+        <name>dataBuffer</name>
+        <qualifiedname>dataBuffer::dataBuffer</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="dc/d7a/classdataBuffer_1a92532a178577dbf50d6257937f1706aa" kindref="member">dimensions_type</ref></type>
+          <declname>dims</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="669" column="14" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="669" bodyend="669"/>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a92ae72eb3b219072c7552081201048fe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::center_frequency_grids</definition>
+        <argsstring>(const std::array&lt; double, 3 &gt; shifts)</argsstring>
+        <name>center_frequency_grids</name>
+        <qualifiedname>dataBuffer::center_frequency_grids</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> std::array&lt; double, 3 &gt;</type>
+          <declname>shifts</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>shifting the center of the frequency grids is only allowed if no data is in the buffers yet.</para>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="671" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="671" bodyend="676"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a0a37a2f9aa70270332d4532a445a00d0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> result_type</type>
+            <defval>Q</defval>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> std::enable_if_t&lt;(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">pos_first_freqpoint</ref>+<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt; rank) <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">and</ref>(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>&lt;=3), <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
+            <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
+          </param>
+        </templateparamlist>
+        <type>result_type</type>
+        <definition>result_type dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::interpolate</definition>
+        <argsstring>(const VertexInput &amp;input) const</argsstring>
+        <name>interpolate</name>
+        <qualifiedname>dataBuffer::interpolate</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d2/db2/structVertexInput" kindref="compound">VertexInput</ref> &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="680" column="17" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="680" bodyend="682"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a74ad9cdfcb8e10219bb029e0af9df8ca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::update_grid</definition>
+        <argsstring>(double Lambda, std::array&lt; double, 3 &gt; shifts, const fRG_config &amp;config)</argsstring>
+        <name>update_grid</name>
+        <qualifiedname>dataBuffer::update_grid</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type>std::array&lt; double, 3 &gt;</type>
+          <declname>shifts</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>updates frequency grids by rescaling with Lambda <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>Lambda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>shifts</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>determines how much the centers of the frequency grids need to be shifted this shift can be non-zero for runs outside of PHS </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>config</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="691" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="691" bodyend="698"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d5/df6/classSelfEnergy_1ad4649b0e28e209ef9b99333a9d469f2d" compoundref="d6/d2d/selfenergy_8hpp" startline="263" endline="266">SelfEnergy&lt; Q &gt;::update_grid</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a978c397aa9d3cd841f9d2d61a0862ec6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::update_grid</definition>
+        <argsstring>(const frequencyGrid_type &amp;frequencies_new, const this_class &amp;buffer4data)</argsstring>
+        <name>update_grid</name>
+        <qualifiedname>dataBuffer::update_grid</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> frequencyGrid_type &amp;</type>
+          <declname>frequencies_new</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>buffer4data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="700" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="700" bodyend="723"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1addda1eff16406b44ee3b8d4020882821" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::optimize_grid</definition>
+        <argsstring>(bool verbose)</argsstring>
+        <name>optimize_grid</name>
+        <qualifiedname>dataBuffer::optimize_grid</qualifiedname>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>shrink grid</para>
+<para>Optimize grid parameters in first direction</para>
+<para>in other direction(s)</para>
+<para>no optimization for angular grid</para>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="725" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="725" bodyend="811"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d4/d21/minimizer_8hpp_1a4cf1f8fcc0a66dfcb227b42a1f615375" compoundref="d4/d21/minimizer_8hpp" startline="39" endline="154">minimizer</references>
+        <references refid="d4/d21/minimizer_8hpp_1ae9b809f8f55070fd8160cf3085bed020" compoundref="d4/d21/minimizer_8hpp" startline="170" endline="243">minimizer_nD</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a0f89e6cb358e2992c895af00050c5174" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::check_if_frequencyGrid_identical</definition>
+        <argsstring>(const this_class &amp;rhs) const</argsstring>
+        <name>check_if_frequencyGrid_identical</name>
+        <qualifiedname>dataBuffer::check_if_frequencyGrid_identical</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="813" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="813" bodyend="825"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a145b2b284153c734ce0fa4ae39d2d596" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator+=</definition>
+        <argsstring>(const this_class &amp;rhs) -&gt; this_class</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>dataBuffer::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="827" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="827" bodyend="827"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a80bdbdcb116b33add34b9a57f11d97bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator-=</definition>
+        <argsstring>(const this_class &amp;rhs) -&gt; this_class</argsstring>
+        <name>operator-=</name>
+        <qualifiedname>dataBuffer::operator-=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="828" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="828" bodyend="828"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a3d06b149b18284ac9a5c16769a159c61" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator*=</definition>
+        <argsstring>(const this_class &amp;rhs) -&gt; this_class</argsstring>
+        <name>operator*=</name>
+        <qualifiedname>dataBuffer::operator*=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="829" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="829" bodyend="829"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1acbba7e114f115fe152edfefcdffb574d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator/=</definition>
+        <argsstring>(const this_class &amp;rhs) -&gt; this_class</argsstring>
+        <name>operator/=</name>
+        <qualifiedname>dataBuffer::operator/=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="830" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="830" bodyend="830"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a0065e261f503e51e4a524591d6fe8e5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator+=</definition>
+        <argsstring>(const double rhs) -&gt; this_class</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>dataBuffer::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="853" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="853" bodyend="853"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1ae8f7119a3d28ed9715f03ec13616abda" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator-=</definition>
+        <argsstring>(const double rhs) -&gt; this_class</argsstring>
+        <name>operator-=</name>
+        <qualifiedname>dataBuffer::operator-=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="854" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="854" bodyend="854"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a6b4703c9dc07a6ed88c40e6c35827bd6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator*=</definition>
+        <argsstring>(const double rhs) -&gt; this_class</argsstring>
+        <name>operator*=</name>
+        <qualifiedname>dataBuffer::operator*=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="855" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="855" bodyend="855"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="dc/d7a/classdataBuffer_1a5a2a2931d539793128958c8646d3893e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;::operator/=</definition>
+        <argsstring>(const double rhs) -&gt; this_class</argsstring>
+        <name>operator/=</name>
+        <qualifiedname>dataBuffer::operator/=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="856" column="10" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="856" bodyend="856"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a24c662c6ed19f2601808f2154644818b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator+</definition>
+        <argsstring>(const this_class &amp;lhs, const this_class &amp;rhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>dataBuffer::operator+</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="831" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="831" bodyend="835"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a2266ab6088dd780c2ec0ba7f1e0cb90d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator-</definition>
+        <argsstring>(const this_class &amp;lhs, const this_class &amp;rhs)</argsstring>
+        <name>operator-</name>
+        <qualifiedname>dataBuffer::operator-</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="836" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="836" bodyend="840"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a38896497153124947f07cf2fe6427bea" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator*</definition>
+        <argsstring>(const this_class &amp;lhs, const this_class &amp;rhs)</argsstring>
+        <name>operator*</name>
+        <qualifiedname>dataBuffer::operator*</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="841" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="841" bodyend="845"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a483ec0b7c7692961568b769478aed41d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator/</definition>
+        <argsstring>(const this_class &amp;lhs, const this_class &amp;rhs)</argsstring>
+        <name>operator/</name>
+        <qualifiedname>dataBuffer::operator/</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="846" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="846" bodyend="850"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1ab27da49fe04c1f8994524ae2ba0f4434" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator+</definition>
+        <argsstring>(const this_class &amp;lhs, const double rhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>dataBuffer::operator+</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="857" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="857" bodyend="861"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a3b291037db947bb8ac692bb7f725f5bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator-</definition>
+        <argsstring>(const this_class &amp;lhs, const double rhs)</argsstring>
+        <name>operator-</name>
+        <qualifiedname>dataBuffer::operator-</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="862" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="862" bodyend="866"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a56d0f992dbe4bd3e0fea70513c06f617" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator*</definition>
+        <argsstring>(const this_class &amp;lhs, const double rhs)</argsstring>
+        <name>operator*</name>
+        <qualifiedname>dataBuffer::operator*</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="867" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="867" bodyend="871"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1ab1492f40d5cd3f37adc6eeac89a59095" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator+</definition>
+        <argsstring>(const double rhs, const this_class &amp;lhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>dataBuffer::operator+</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="872" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="872" bodyend="876"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a6a1006968e177f7858327e2732fea554" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator*</definition>
+        <argsstring>(const double rhs, const this_class &amp;lhs)</argsstring>
+        <name>operator*</name>
+        <qualifiedname>dataBuffer::operator*</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="877" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="877" bodyend="881"/>
+      </memberdef>
+      <memberdef kind="friend" id="dc/d7a/classdataBuffer_1a262de2eab4ff8a1386aa30d169c35def" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref></type>
+        <definition>this_class operator/</definition>
+        <argsstring>(const this_class &amp;lhs, const double rhs)</argsstring>
+        <name>operator/</name>
+        <qualifiedname>dataBuffer::operator/</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" kindref="member">this_class</ref> &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_buffer.hpp" line="882" column="23" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="882" bodyend="886"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Stores and interpolates data <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type of data </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>k</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>K_class selfenergy / k1 / k2 / k2b / k3 </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rank</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of dimensions </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>numberFrequencyDims</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of frequency indices </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pos_first_freqpoint</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>position of first frequency index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>frequencyGrid_type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>frequency grid </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>inter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>interpolation method </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+        <childnode refid="5" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>dataBuffer&lt; Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>dataBuffer&lt; Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="17">
+        <label>dataBuffer&lt; Q, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="18">
+        <label>dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="19">
+        <label>dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>dataBuffer&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>dataBuffer&lt; comp, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; comp, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>dataBuffer&lt; state_datatype, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="10">
+        <label>dataBuffer&lt; state_datatype, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>dataBuffer&lt; state_datatype, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="13">
+        <label>dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>dataBuffer&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+      </node>
+      <node id="6">
+        <label>dataContainer_type</label>
+        <link refid="db/dbf/classdataContainer__type"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+        <childnode refid="13" relation="usage">
+          <edgelabel>+frequencies</edgelabel>
+        </childnode>
+      </node>
+      <node id="10">
+        <label>Array&lt; Q, Eigen::Dynamic, 1 &gt;</label>
+        <link refid="d2/dc9/classEigen_1_1Array_3_01Q_00_01Eigen_1_1Dynamic_00_011_01_4"/>
+      </node>
+      <node id="12">
+        <label>Array&lt; T, Eigen::Dynamic, 1 &gt;</label>
+      </node>
+      <node id="15">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="16" relation="public-inheritance">
+        </childnode>
+        <childnode refid="14" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+        <childnode refid="14" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+        <childnode refid="15" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>T</label>
+      </node>
+      <node id="6">
+        <label>std::array&lt; size_type, depth &gt;</label>
+        <childnode refid="7" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="8" relation="template-instance">
+          <edgelabel>&lt; size_type, depth &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="1">
+        <label>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+        <childnode refid="5" relation="usage">
+          <edgelabel>#data</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>dataContainer_type</label>
+        <link refid="db/dbf/classdataContainer__type"/>
+      </node>
+      <node id="13">
+        <label>frequencyGrid_type</label>
+      </node>
+      <node id="5">
+        <label>multidimensional::multiarray&lt; Q, rank &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="6" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="11" relation="template-instance">
+          <edgelabel>&lt; Q, rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>multidimensional::multiarray&lt; T, depth &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="6" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="12" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>size_type</label>
+      </node>
+      <node id="8">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/n_point/data_buffer.hpp" line="659" column="1" bodyfile="correlation_functions/n_point/data_buffer.hpp" bodystart="659" bodyend="887"/>
+    <listofallmembers>
+      <member refid="d5/d5f/classdataContainerBase_1af8da5de4958e6394f3700dddba32956b" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>acc</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a94ed8cb0315262a605d076a7dd8a5782" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>add_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a72e6e78cae86e3036aea7d4f6b477401" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>add_vec</name></member>
+      <member refid="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>analyze_tails</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a57fc098f0ce433faa0c310ab412dafc7" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>at</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a8507a712e8472ea02793586267d3912c" prot="private" virt="non-virtual"><scope>dataBuffer</scope><name>base_class</name></member>
+      <member refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>buffer_type</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a92ae72eb3b219072c7552081201048fe" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>center_frequency_grids</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a0f89e6cb358e2992c895af00050c5174" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>check_if_frequencyGrid_identical</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" prot="protected" virt="non-virtual"><scope>dataBuffer</scope><name>data</name></member>
+      <member refid="dc/d7a/classdataBuffer_1ad98fef292c1055e74c2681f0a5579608" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>dataBuffer</name></member>
+      <member refid="dc/d7a/classdataBuffer_1afa513487c69eae424b628bc60edd703e" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>dataBuffer</name></member>
+      <member refid="d3/dd8/classDataContainer_1a13c674249912f45fa6daf9008c9d826b" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>DataContainer</name></member>
+      <member refid="d3/dd8/classDataContainer_1a782bfeb8044945935e022f73c64854b3" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>DataContainer</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a598a780596e0e8ff406ef06e3214d82f" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a0ff8fce064842266103959a8802f23b4" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a8a8a5f6d85f2534dd223a31da7390019" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1af0ae1996f1eb63afc64e2146d241dba8" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>dataContainerBase</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a92532a178577dbf50d6257937f1706aa" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>dimensions_type</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a554ee3f67bf16bd9438c9f056bcd58a2" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>direct_set</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a8ab6ca579df1cff6717d9fc17c37cdc9" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>eigen_segment</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6d65f15d6b8115ba71c9ec5145e63302" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>eigen_segment</name></member>
+      <member refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>frequencies</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a69fed7d37e91770a81c17df4d67adbac" prot="private" virt="non-virtual"><scope>dataBuffer</scope><name>frequencies_type</name></member>
+      <member refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_curvature_max</name></member>
+      <member refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_max</name></member>
+      <member refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_x</name></member>
+      <member refid="d3/dd8/classDataContainer_1a681c9f64ff0fcde1c1b2184eea000aee" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_xx</name></member>
+      <member refid="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_xy</name></member>
+      <member refid="d3/dd8/classDataContainer_1a7268a90acd9a25f59e478f2e0d5fd897" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_xyz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a35cf1d28e6d38966d84884732a5ee7f8" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_xz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_y</name></member>
+      <member refid="d3/dd8/classDataContainer_1abf64e95d9bb01aedbe9cf5821519d2d6" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_yy</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3247f2ace9abcbddcae61ae35556793d" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_yz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_z</name></member>
+      <member refid="d3/dd8/classDataContainer_1a990e1b7ce1069428c4ec6775e594c826" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_deriv_zz</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_dims</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6e5a70b0d2f29185cbd4f51a5e66782a" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_values</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1abcd2e5c8b272ee7a933d18869fa850e3" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_vec</name></member>
+      <member refid="d3/df3/classInterpolator_1a9e61fe174ea434ff4b3eb4a3d29c7c72" prot="private" virt="non-virtual"><scope>dataBuffer</scope><name>get_vecsize</name></member>
+      <member refid="d3/dd8/classDataContainer_1aab0412d13aea8ee95ed5bda2fea2350b" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_VertexFreqGrid</name></member>
+      <member refid="d3/df3/classInterpolator_1a7eec042901fc9826eb108a89c92ebf61" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>get_weights</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a4bded904070c67ccf6dd67c7e09baade" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>index_type</name></member>
+      <member refid="d3/df3/classInterpolator_1a67e07c1e4ad28745ebc847a70eb08096" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>initialized</name></member>
+      <member refid="d3/df3/classInterpolator_1a26f6d3b803b2279d27484071988e7b55" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>initInterpolator</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a0a37a2f9aa70270332d4532a445a00d0" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>interpolate</name></member>
+      <member refid="d3/df3/classInterpolator_1a28d139011c8ea9e07a14c068f660026d" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>interpolate_impl</name></member>
+      <member refid="d3/df3/classInterpolator_1a3a8a9849df9072cc2466910a0936e243" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>Interpolator</name></member>
+      <member refid="d3/df3/classInterpolator_1a58d96aa0aaf552d5fe58f0d52421a6ee" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>Interpolator</name></member>
+      <member refid="d3/df3/classInterpolator_1ad71f28c5cb4c5120963fd8a5141eeaa8" prot="private" virt="non-virtual"><scope>dataBuffer</scope><name>numSamples</name></member>
+      <member refid="d3/df3/classInterpolator_1a2569e20b63cd087a974ddf08d6e49ff9" prot="private" virt="non-virtual"><scope>dataBuffer</scope><name>numSamples_half</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a38896497153124947f07cf2fe6427bea" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator*</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a56d0f992dbe4bd3e0fea70513c06f617" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator*</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a6a1006968e177f7858327e2732fea554" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator*</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a3d06b149b18284ac9a5c16769a159c61" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator*=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a6b4703c9dc07a6ed88c40e6c35827bd6" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator*=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a24c662c6ed19f2601808f2154644818b" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator+</name></member>
+      <member refid="dc/d7a/classdataBuffer_1ab27da49fe04c1f8994524ae2ba0f4434" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator+</name></member>
+      <member refid="dc/d7a/classdataBuffer_1ab1492f40d5cd3f37adc6eeac89a59095" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator+</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a145b2b284153c734ce0fa4ae39d2d596" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator+=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a0065e261f503e51e4a524591d6fe8e5c" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator+=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a2266ab6088dd780c2ec0ba7f1e0cb90d" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator-</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a3b291037db947bb8ac692bb7f725f5bd" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator-</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a80bdbdcb116b33add34b9a57f11d97bf" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator-=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1ae8f7119a3d28ed9715f03ec13616abda" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator-=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a483ec0b7c7692961568b769478aed41d" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator/</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a262de2eab4ff8a1386aa30d169c35def" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator/</name></member>
+      <member refid="dc/d7a/classdataBuffer_1acbba7e114f115fe152edfefcdffb574d" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator/=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a5a2a2931d539793128958c8646d3893e" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>operator/=</name></member>
+      <member refid="dc/d7a/classdataBuffer_1addda1eff16406b44ee3b8d4020882821" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>optimize_grid</name></member>
+      <member refid="d3/df3/classInterpolator_1aa6c856038bb2e340e390ceeda17892bd" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>set_initializedInterpol</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1ae76c4352d8dbe3fa86fc4394eb781334" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>set_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a1cb357f678027c6170ae53ca8131c107" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>set_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a22ef70f4e159e8ff4cff0bf02a257c68" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>set_vec</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3c2988bac759ed2d22a7655a5342648d" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>set_VertexFreqGrid</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a4619283941f9095c26f409442c2431db" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>setvert</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1aefc529ad1483b4bb631d586e105051d9" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>setvert</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a627e34de6a12e83dcef094393f113c61" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>setvert_vectorized</name></member>
+      <member refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>shrink_freq_box</name></member>
+      <member refid="d3/dd8/classDataContainer_1a94e9f1cfa874bd2056aca270a646b24e" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>shrink_freq_box_impl</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a3be534439ffae82e04d48564daf59621" prot="private" virt="non-virtual"><scope>dataBuffer</scope><name>this_class</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a74ad9cdfcb8e10219bb029e0af9df8ca" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>update_grid</name></member>
+      <member refid="dc/d7a/classdataBuffer_1a978c397aa9d3cd841f9d2d61a0862ec6" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>update_grid</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6a12aa5133b4e718e71022aaa72fe819" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>val</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a3ef7520d345f57577a35ebe048897d0e" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>val</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6db8027ec05f0675c5795c5a6db81909" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>val_vectorized</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a562fde9ddb3882bd794e5ab5b6b1e191" prot="public" virt="non-virtual"><scope>dataBuffer</scope><name>val_vectorized</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

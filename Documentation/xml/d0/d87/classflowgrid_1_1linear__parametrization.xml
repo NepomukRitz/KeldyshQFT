@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d0/d87/classflowgrid_1_1linear__parametrization" kind="class" language="C++" prot="public">
+    <compoundname>flowgrid::linear_parametrization</compoundname>
+    <includes refid="d5/dd1/flow__grid_8hpp" local="no">flow_grid.hpp</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="d0/d87/classflowgrid_1_1linear__parametrization_1ad072e04f32528f785fed32cf36526ed5" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::linear_parametrization::lambda_from_t</definition>
+        <argsstring>(double t)</argsstring>
+        <name>lambda_from_t</name>
+        <qualifiedname>flowgrid::linear_parametrization::lambda_from_t</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="109" column="30" bodyfile="grids/flow_grid.hpp" bodystart="109" bodyend="112"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d0/d87/classflowgrid_1_1linear__parametrization_1a78809103035b254eafa178d1285f134b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::linear_parametrization::t_from_lambda</definition>
+        <argsstring>(double Lambda)</argsstring>
+        <name>t_from_lambda</name>
+        <qualifiedname>flowgrid::linear_parametrization::t_from_lambda</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="114" column="30" bodyfile="grids/flow_grid.hpp" bodystart="114" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="d0/d87/classflowgrid_1_1linear__parametrization_1ab8f36acf020ef339822055071ca6b24a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double flowgrid::linear_parametrization::dlambda_dt</definition>
+        <argsstring>(double t)</argsstring>
+        <name>dlambda_dt</name>
+        <qualifiedname>flowgrid::linear_parametrization::dlambda_dt</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="grids/flow_grid.hpp" line="119" column="30" bodyfile="grids/flow_grid.hpp" bodystart="119" bodyend="122"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>flowgrid::linear_parametrization</label>
+        <link refid="d0/d87/classflowgrid_1_1linear__parametrization"/>
+      </node>
+    </collaborationgraph>
+    <location file="grids/flow_grid.hpp" line="106" column="5" bodyfile="grids/flow_grid.hpp" bodystart="107" bodyend="123"/>
+    <listofallmembers>
+      <member refid="d0/d87/classflowgrid_1_1linear__parametrization_1ab8f36acf020ef339822055071ca6b24a" prot="public" virt="non-virtual"><scope>flowgrid::linear_parametrization</scope><name>dlambda_dt</name></member>
+      <member refid="d0/d87/classflowgrid_1_1linear__parametrization_1ad072e04f32528f785fed32cf36526ed5" prot="public" virt="non-virtual"><scope>flowgrid::linear_parametrization</scope><name>lambda_from_t</name></member>
+      <member refid="d0/d87/classflowgrid_1_1linear__parametrization_1a78809103035b254eafa178d1285f134b" prot="public" virt="non-virtual"><scope>flowgrid::linear_parametrization</scope><name>t_from_lambda</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

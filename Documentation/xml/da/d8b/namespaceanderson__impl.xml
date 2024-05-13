@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="da/d8b/namespaceanderson__impl" kind="namespace" language="C++">
+    <compoundname>anderson_impl</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="da/d8b/namespaceanderson__impl_1ad434f81a135af3c114d62fe2390e9252" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type>Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt;</type>
+        <definition>Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; anderson_impl::colwise_difference</definition>
+        <argsstring>(Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; m)</argsstring>
+        <name>colwise_difference</name>
+        <qualifiedname>anderson_impl::colwise_difference</qualifiedname>
+        <param>
+          <type>Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/anderson_acceleration.hpp" line="15" column="19" bodyfile="utilities/anderson_acceleration.hpp" bodystart="15" bodyend="19"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="da/d8b/namespaceanderson__impl_1a2062f95967b78f003e3aaa592084674a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+          </param>
+        </templateparamlist>
+        <type>Eigen::MatrixXd</type>
+        <definition>Eigen::MatrixXd anderson_impl::ordinary_least_squares</definition>
+        <argsstring>(const Eigen::Matrix&lt; Q, Eigen::Dynamic, 1 &gt; y, const Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt; A)</argsstring>
+        <name>ordinary_least_squares</name>
+        <qualifiedname>anderson_impl::ordinary_least_squares</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Eigen::Matrix&lt; Q, Eigen::Dynamic, 1 &gt;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> Eigen::Matrix&lt; Q, Eigen::Dynamic, Eigen::Dynamic &gt;</type>
+          <declname>A</declname>
+        </param>
+        <briefdescription>
+<para>Solves an ordinary least-squares problem. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return an $\vec x$ that minimizes the square norm of the error $\vec y - A\vec x$. assume that A consists out of two parts A = (a, a^*)^T and same for y = (b, b^*)^T. Hence we have A^dagger.A = a^\dagger.a + (a^\dagger.a)^* and A^dagger.y = a^\dagger.b + (a^\dagger.b)^* in the Keldysh formalism we don&apos;t store \Sigma^A =&gt; Take real part (see above).</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Matrix </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>auto Vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="utilities/anderson_acceleration.hpp" line="37" column="21" bodyfile="utilities/anderson_acceleration.hpp" bodystart="37" bodyend="42"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="utilities/anderson_acceleration.hpp" line="11" column="1"/>
+  </compounddef>
+</doxygen>

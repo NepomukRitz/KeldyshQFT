@@ -1,0 +1,376 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d8/db7/classIntegrand__Ward__id__integrated" kind="class" language="C++" prot="public">
+    <compoundname>Integrand_Ward_id_integrated</compoundname>
+    <includes refid="d4/d81/postprocessing_8hpp" local="no">postprocessing.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref></type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d8/db7/classIntegrand__Ward__id__integrated_1a23d379ca22634adcaa69380680494109" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref></type>
+        <definition>const gridType Integrand_Ward_id_integrated&lt; gridType &gt;::v</definition>
+        <argsstring></argsstring>
+        <name>v</name>
+        <qualifiedname>Integrand_Ward_id_integrated::v</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="38" column="20" bodyfile="postprocessing/postprocessing.hpp" bodystart="38" bodyend="-1"/>
+        <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/db7/classIntegrand__Ward__id__integrated_1aab53160eda0968e1debf44b34630d3b9" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+        <definition>const rvec&amp; Integrand_Ward_id_integrated&lt; gridType &gt;::Phi</definition>
+        <argsstring></argsstring>
+        <name>Phi</name>
+        <qualifiedname>Integrand_Ward_id_integrated::Phi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="39" column="16" bodyfile="postprocessing/postprocessing.hpp" bodystart="39" bodyend="-1"/>
+        <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/db7/classIntegrand__Ward__id__integrated_1af05b0e9be77c5f0b942abde78c740da9" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt; &amp;</type>
+        <definition>const SelfEnergy&lt;state_datatype&gt;&amp; Integrand_Ward_id_integrated&lt; gridType &gt;::selfEnergy</definition>
+        <argsstring></argsstring>
+        <name>selfEnergy</name>
+        <qualifiedname>Integrand_Ward_id_integrated::selfEnergy</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="40" column="22" bodyfile="postprocessing/postprocessing.hpp" bodystart="40" bodyend="-1"/>
+        <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/db7/classIntegrand__Ward__id__integrated_1ac387929e17645e12a88d86ef25c1d846" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int Integrand_Ward_id_integrated&lt; gridType &gt;::iLambda</definition>
+        <argsstring></argsstring>
+        <name>iLambda</name>
+        <qualifiedname>Integrand_Ward_id_integrated::iLambda</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="41" column="15" bodyfile="postprocessing/postprocessing.hpp" bodystart="41" bodyend="-1"/>
+        <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="d8/db7/classIntegrand__Ward__id__integrated_1a00062f0185faf86227c88cff1787ef1d" prot="public" static="no" mutable="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+        <definition>const int Integrand_Ward_id_integrated&lt; gridType &gt;::i_in</definition>
+        <argsstring></argsstring>
+        <name>i_in</name>
+        <qualifiedname>Integrand_Ward_id_integrated::i_in</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="42" column="15" bodyfile="postprocessing/postprocessing.hpp" bodystart="42" bodyend="-1"/>
+        <referencedby refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" compoundref="d4/d81/postprocessing_8hpp" startline="48" endline="67">Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d8/db7/classIntegrand__Ward__id__integrated_1aa9c40b9720dc7cf8365482a7d9009bb3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Integrand_Ward_id_integrated&lt; gridType &gt;::Integrand_Ward_id_integrated</definition>
+        <argsstring>(const gridType &amp;v_in, const rvec &amp;Phi_in, const SelfEnergy&lt; state_datatype &gt; &amp;selfEnergy_in, const int iLambda_in, const int i_in_in)</argsstring>
+        <name>Integrand_Ward_id_integrated</name>
+        <qualifiedname>Integrand_Ward_id_integrated::Integrand_Ward_id_integrated</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref> &amp;</type>
+          <declname>v_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d59/data__structures_8hpp_1a0b786e1da4feaf70e9d0817f0ba0bbee" kindref="member">rvec</ref> &amp;</type>
+          <declname>Phi_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d5/df6/classSelfEnergy" kindref="compound">SelfEnergy</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref> &gt; &amp;</type>
+          <declname>selfEnergy_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>iLambda_in</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>i_in_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="44" column="5" bodyfile="postprocessing/postprocessing.hpp" bodystart="44" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto Integrand_Ward_id_integrated&lt; gridType &gt;::operator()</definition>
+        <argsstring>(double vp) const -&gt; double</argsstring>
+        <name>operator()</name>
+        <qualifiedname>Integrand_Ward_id_integrated::operator()</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>vp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="postprocessing/postprocessing.hpp" line="48" column="10" bodyfile="postprocessing/postprocessing.hpp" bodystart="48" bodyend="67"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d8/db7/classIntegrand__Ward__id__integrated_1a00062f0185faf86227c88cff1787ef1d" compoundref="d4/d81/postprocessing_8hpp" startline="42">Integrand_Ward_id_integrated&lt; gridType &gt;::i_in</references>
+        <references refid="d8/db7/classIntegrand__Ward__id__integrated_1ac387929e17645e12a88d86ef25c1d846" compoundref="d4/d81/postprocessing_8hpp" startline="41">Integrand_Ward_id_integrated&lt; gridType &gt;::iLambda</references>
+        <references refid="d7/d59/data__structures_8hpp_1a82028e090d16388546ad4cf24976497e" compoundref="d7/d59/data__structures_8hpp" startline="98" endline="98">myimag</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222" compoundref="d3/d3c/frequency__parameters_8hpp" startline="36">nFER</references>
+        <references refid="d8/db7/classIntegrand__Ward__id__integrated_1aab53160eda0968e1debf44b34630d3b9" compoundref="d4/d81/postprocessing_8hpp" startline="39">Integrand_Ward_id_integrated&lt; gridType &gt;::Phi</references>
+        <references refid="d8/db7/classIntegrand__Ward__id__integrated_1af05b0e9be77c5f0b942abde78c740da9" compoundref="d4/d81/postprocessing_8hpp" startline="40">Integrand_Ward_id_integrated&lt; gridType &gt;::selfEnergy</references>
+        <references refid="d8/db7/classIntegrand__Ward__id__integrated_1a23d379ca22634adcaa69380680494109" compoundref="d4/d81/postprocessing_8hpp" startline="38">Integrand_Ward_id_integrated&lt; gridType &gt;::v</references>
+        <references refid="d5/df6/classSelfEnergy_1a31a451b494a93e5de88c9e6f2d993466" compoundref="d6/d2d/selfenergy_8hpp" startline="214" endline="233">SelfEnergy&lt; Q &gt;::valsmooth</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="13">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="14" relation="public-inheritance">
+        </childnode>
+        <childnode refid="22" relation="usage">
+          <edgelabel>+frequencies</edgelabel>
+        </childnode>
+      </node>
+      <node id="19">
+        <label>Array&lt; Q, Eigen::Dynamic, 1 &gt;</label>
+        <link refid="d2/dc9/classEigen_1_1Array_3_01Q_00_01Eigen_1_1Dynamic_00_011_01_4"/>
+      </node>
+      <node id="21">
+        <label>Array&lt; T, Eigen::Dynamic, 1 &gt;</label>
+      </node>
+      <node id="1">
+        <label>Integrand_Ward_id_integrated&lt; gridType &gt;</label>
+        <link refid="d8/db7/classIntegrand__Ward__id__integrated"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+v</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+Phi</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+selfEnergy</edgelabel>
+        </childnode>
+        <childnode refid="29" relation="usage">
+          <edgelabel>+iLambda</edgelabel>
+          <edgelabel>+i_in</edgelabel>
+        </childnode>
+      </node>
+      <node id="23">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="27">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="13" relation="public-inheritance">
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+        <childnode refid="23" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+initialized</edgelabel>
+        </childnode>
+      </node>
+      <node id="28">
+        <label>Q</label>
+      </node>
+      <node id="25">
+        <label>SelfEnergy&lt; Q &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+        <childnode refid="26" relation="usage">
+          <edgelabel>+Sigma</edgelabel>
+        </childnode>
+        <childnode refid="28" relation="usage">
+          <edgelabel>+asymp_val_R</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>SelfEnergy&lt; state_datatype &gt;</label>
+        <link refid="d5/df6/classSelfEnergy"/>
+        <childnode refid="7" relation="usage">
+          <edgelabel>+Sigma</edgelabel>
+        </childnode>
+        <childnode refid="24" relation="usage">
+          <edgelabel>+asymp_val_R</edgelabel>
+        </childnode>
+        <childnode refid="25" relation="template-instance">
+          <edgelabel>&lt; state_datatype &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="5">
+        <label>T</label>
+      </node>
+      <node id="16">
+        <label>std::array&lt; size_type, depth &gt;</label>
+        <childnode refid="17" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="18" relation="template-instance">
+          <edgelabel>&lt; size_type, depth &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="10">
+        <label>bool</label>
+        <link refid="d9/db9/classbool"/>
+      </node>
+      <node id="2">
+        <label>const gridType</label>
+      </node>
+      <node id="11">
+        <label>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="12" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>dataBuffer&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="27" relation="public-inheritance">
+        </childnode>
+        <childnode refid="11" relation="template-instance">
+          <edgelabel>&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>dataBuffer&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+        <childnode refid="11" relation="template-instance">
+          <edgelabel>&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+        <childnode refid="15" relation="usage">
+          <edgelabel>#data</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>dataContainer_type</label>
+        <link refid="db/dbf/classdataContainer__type"/>
+      </node>
+      <node id="22">
+        <label>frequencyGrid_type</label>
+      </node>
+      <node id="29">
+        <label>int</label>
+      </node>
+      <node id="15">
+        <label>multidimensional::multiarray&lt; Q, rank &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="16" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="19" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="20" relation="template-instance">
+          <edgelabel>&lt; Q, rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="20">
+        <label>multidimensional::multiarray&lt; T, depth &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="16" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="21" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="17">
+        <label>size_type</label>
+      </node>
+      <node id="18">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="24">
+        <label>std::complex</label>
+      </node>
+      <node id="4">
+        <label>std::vector&lt; T &gt;</label>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>vec&lt; T &gt;</label>
+        <link refid="d9/d2a/classvec"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="postprocessing/postprocessing.hpp" line="36" column="1" bodyfile="postprocessing/postprocessing.hpp" bodystart="36" bodyend="68"/>
+    <listofallmembers>
+      <member refid="d8/db7/classIntegrand__Ward__id__integrated_1a00062f0185faf86227c88cff1787ef1d" prot="public" virt="non-virtual"><scope>Integrand_Ward_id_integrated</scope><name>i_in</name></member>
+      <member refid="d8/db7/classIntegrand__Ward__id__integrated_1ac387929e17645e12a88d86ef25c1d846" prot="public" virt="non-virtual"><scope>Integrand_Ward_id_integrated</scope><name>iLambda</name></member>
+      <member refid="d8/db7/classIntegrand__Ward__id__integrated_1aa9c40b9720dc7cf8365482a7d9009bb3" prot="public" virt="non-virtual"><scope>Integrand_Ward_id_integrated</scope><name>Integrand_Ward_id_integrated</name></member>
+      <member refid="d8/db7/classIntegrand__Ward__id__integrated_1afb4f13bad58f6e7ef7cd9cbf65975fea" prot="public" virt="non-virtual"><scope>Integrand_Ward_id_integrated</scope><name>operator()</name></member>
+      <member refid="d8/db7/classIntegrand__Ward__id__integrated_1aab53160eda0968e1debf44b34630d3b9" prot="public" virt="non-virtual"><scope>Integrand_Ward_id_integrated</scope><name>Phi</name></member>
+      <member refid="d8/db7/classIntegrand__Ward__id__integrated_1af05b0e9be77c5f0b942abde78c740da9" prot="public" virt="non-virtual"><scope>Integrand_Ward_id_integrated</scope><name>selfEnergy</name></member>
+      <member refid="d8/db7/classIntegrand__Ward__id__integrated_1a23d379ca22634adcaa69380680494109" prot="public" virt="non-virtual"><scope>Integrand_Ward_id_integrated</scope><name>v</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

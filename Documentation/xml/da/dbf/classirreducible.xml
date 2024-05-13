@@ -1,0 +1,708 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="da/dbf/classirreducible" kind="class" language="C++" prot="public">
+    <compoundname>irreducible</compoundname>
+    <includes refid="d1/d2d/vertex_8hpp" local="no">vertex.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">class</ref> Q</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="da/dbf/classirreducible_1ac82eac054c899bb5688b376a2b0cbeff" prot="private" static="no">
+        <type><ref refid="d7/d3f/classmultidimensional_1_1multiarray" kindref="compound">multidimensional::multiarray</ref>&lt; Q, 2 &gt;</type>
+        <definition>using irreducible&lt; Q &gt;::buffer_type =  multidimensional::multiarray&lt;Q,2&gt;</definition>
+        <argsstring></argsstring>
+        <name>buffer_type</name>
+        <qualifiedname>irreducible::buffer_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="22" column="5" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" prot="private" static="no" mutable="yes">
+        <type><ref refid="da/dbf/classirreducible_1ac82eac054c899bb5688b376a2b0cbeff" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type irreducible&lt; Q &gt;::bare</definition>
+        <argsstring></argsstring>
+        <name>bare</name>
+        <qualifiedname>irreducible::bare</qualifiedname>
+        <initializer>= <ref refid="da/dbf/classirreducible_1a2b23d3100fe2c93800c92ce72f0c7e27" kindref="member">empty_bare</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="27" column="25" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="27" bodyend="-1"/>
+        <referencedby refid="da/dbf/classirreducible_1a90ab21c4facaca8dbbc3d626effc2095" compoundref="d1/d2d/vertex_8hpp" startline="57" endline="57">irreducible&lt; Q &gt;::get_vec</referencedby>
+        <referencedby refid="da/dbf/classirreducible_1a759255e112055d592bc3e4d61efe827a" compoundref="d1/d2d/vertex_8hpp" startline="58" endline="58">irreducible&lt; Q &gt;::set_vec</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="da/dbf/classirreducible_1aa0ab8d27e7ed5ce3762582c2416a9b45" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref> &gt;</type>
+        <definition>State&lt; state_datatype, false &gt; read_state_from_hdf</definition>
+        <argsstring>(const H5std_string &amp;filename, const int Lambda_it)</argsstring>
+        <name>read_state_from_hdf</name>
+        <qualifiedname>irreducible::read_state_from_hdf</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref> &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>Lambda_it</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read a state from a specified Lambda layer of a given hdf file. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String of the filename. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of the Λ layer from which the state shall be read. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="d7/d97/classState" kindref="compound">State</ref> that has been read out. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+<para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>
+<para>Write used parameters for documentation purpose</para>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="21" column="18" bodyfile="utilities/hdf5_routines.c++" bodystart="61" bodyend="191"/>
+      </memberdef>
+      <memberdef kind="friend" id="da/dbf/classirreducible_1afb11dc0950526efb10ba75aa7118e212" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+        <definition>irreducible&lt; Q &gt; operator+</definition>
+        <argsstring>(irreducible&lt; Q &gt; lhs, const irreducible&lt; Q &gt; &amp;rhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>irreducible::operator+</qualifiedname>
+        <param>
+          <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="65" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="65" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="friend" id="da/dbf/classirreducible_1af64273c1df9001e952aadd92386192c7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+        <definition>irreducible&lt; Q &gt; operator-</definition>
+        <argsstring>(irreducible&lt; Q &gt; lhs, const irreducible&lt; Q &gt; &amp;rhs)</argsstring>
+        <name>operator-</name>
+        <qualifiedname>irreducible::operator-</qualifiedname>
+        <param>
+          <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="72" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="72" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="friend" id="da/dbf/classirreducible_1aa2f70c0e8b654c8564e50495e4c4d69e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+        <definition>irreducible&lt; Q &gt; operator+</definition>
+        <argsstring>(irreducible&lt; Q &gt; lhs, const double &amp;rhs)</argsstring>
+        <name>operator+</name>
+        <qualifiedname>irreducible::operator+</qualifiedname>
+        <param>
+          <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="79" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="79" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="friend" id="da/dbf/classirreducible_1a7b5af51fba7ff0a537c6cb03d648dee4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+        <definition>irreducible&lt; Q &gt; operator*</definition>
+        <argsstring>(irreducible&lt; Q &gt; lhs, const double &amp;rhs)</argsstring>
+        <name>operator*</name>
+        <qualifiedname>irreducible::operator*</qualifiedname>
+        <param>
+          <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="86" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="86" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="friend" id="da/dbf/classirreducible_1a21312dd38595732f63625b21422e98a3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+        <definition>irreducible&lt; Q &gt; operator*</definition>
+        <argsstring>(irreducible&lt; Q &gt; lhs, const irreducible&lt; Q &gt; &amp;rhs)</argsstring>
+        <name>operator*</name>
+        <qualifiedname>irreducible::operator*</qualifiedname>
+        <param>
+          <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="93" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="93" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="friend" id="da/dbf/classirreducible_1a642b58493a885e17a05553e2fece45e6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+        <definition>irreducible&lt; Q &gt; operator/</definition>
+        <argsstring>(irreducible&lt; Q &gt; lhs, const irreducible&lt; Q &gt; &amp;rhs)</argsstring>
+        <name>operator/</name>
+        <qualifiedname>irreducible::operator/</qualifiedname>
+        <param>
+          <type><ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="100" column="24" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="100" bodyend="103"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="da/dbf/classirreducible_1a2b23d3100fe2c93800c92ce72f0c7e27" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible_1ac82eac054c899bb5688b376a2b0cbeff" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type irreducible&lt; Q &gt;::empty_bare</definition>
+        <argsstring>()</argsstring>
+        <name>empty_bare</name>
+        <qualifiedname>irreducible::empty_bare</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="23" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="23" bodyend="26"/>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="da/dbf/classirreducible_1a72107ea0700fee85cfc4d234fb7a0b19" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>irreducible&lt; Q &gt;::irreducible</definition>
+        <argsstring>()=default</argsstring>
+        <name>irreducible</name>
+        <qualifiedname>irreducible::irreducible</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="29" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a9621a3ec926627a203e91004e99d53aa" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> result_type</type>
+            <defval>Q</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::val</definition>
+        <argsstring>(my_index_t iK, my_index_t i_in, my_index_t spin) const -&gt; result_type</argsstring>
+        <name>val</name>
+        <qualifiedname>irreducible::val</qualifiedname>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+          <declname>spin</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the value of the irreducible vertex. Just constants, if it is the bare vertex. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>result_type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the result. Typically =Q. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Keldysh index. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Internal index. Always = 0 for the SIAM. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>spin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spin index. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Value of the irreducible vertex. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="39" column="21" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1188" bodyend="1225"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d6/d84/namespaceutils_1ad566cc1586ac4598d5823caa71620eb5" compoundref="d0/d3f/util_8hpp" startline="25" endline="38">utils::print</references>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a8647dcf6a154b2ffc52fd0b1d41f89fe" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::acc</definition>
+        <argsstring>(int i) const -&gt; Q</argsstring>
+        <name>acc</name>
+        <qualifiedname>irreducible::acc</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="41" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1227" bodyend="1231"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a4448249f11ee1d34431cf48212fbebe6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void irreducible&lt; Q &gt;::direct_set</definition>
+        <argsstring>(int i, Q value)</argsstring>
+        <name>direct_set</name>
+        <qualifiedname>irreducible::direct_set</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>Q</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="42" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1233" bodyend="1237"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a327c7420e3103e5c5e22fe7ab37a4ffc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void irreducible&lt; Q &gt;::setvert</definition>
+        <argsstring>(int iK, int i_in, Q)</argsstring>
+        <name>setvert</name>
+        <qualifiedname>irreducible::setvert</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>iK</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i_in</declname>
+        </param>
+        <param>
+          <type>Q</type>
+          <defname>value</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the value of the bare interaction to Q. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iK</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Keldysh index. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>i_in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Internal index </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="49" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1239" bodyend="1241"/>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a808bca3689d1374634c3f74f28f70cc2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void irreducible&lt; Q &gt;::initialize</definition>
+        <argsstring>(Q val)</argsstring>
+        <name>initialize</name>
+        <qualifiedname>irreducible::initialize</qualifiedname>
+        <param>
+          <type>Q</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize the irreducible vertex. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value of the bare interaction. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="55" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="1243" bodyend="1266"/>
+        <references refid="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9" compoundref="d1/df8/master__parameters_8hpp" startline="20">CONTOUR_BASIS</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d1/df8/master__parameters_8hpp_1afab5195e3ffff420d211040e5672fcbe" compoundref="d1/df8/master__parameters_8hpp" startline="137">KELDYSH</references>
+        <references refid="d1/df8/master__parameters_8hpp_1a37f8dd24020d8c5bf068a780c61d1fb8" compoundref="d1/df8/master__parameters_8hpp" startline="79">n_in</references>
+        <references refid="d2/d1a/Keldysh__symmetries_8hpp_1a619bef4c8f4c8b4e4e11ac1fc8a37676">odd_Keldysh</references>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a90ab21c4facaca8dbbc3d626effc2095" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="da/dbf/classirreducible_1ac82eac054c899bb5688b376a2b0cbeff" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type irreducible&lt; Q &gt;::get_vec</definition>
+        <argsstring>() const</argsstring>
+        <name>get_vec</name>
+        <qualifiedname>irreducible::get_vec</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="57" column="17" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="57" bodyend="57"/>
+        <references refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" compoundref="d1/d2d/vertex_8hpp" startline="27">irreducible&lt; Q &gt;::bare</references>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a759255e112055d592bc3e4d61efe827a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void irreducible&lt; Q &gt;::set_vec</definition>
+        <argsstring>(const buffer_type &amp;bare_in)</argsstring>
+        <name>set_vec</name>
+        <qualifiedname>irreducible::set_vec</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible_1ac82eac054c899bb5688b376a2b0cbeff" kindref="member">buffer_type</ref> &amp;</type>
+          <declname>bare_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="58" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="58" bodyend="58"/>
+        <references refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" compoundref="d1/d2d/vertex_8hpp" startline="27">irreducible&lt; Q &gt;::bare</references>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1af488ac21e4ba89124786bce72f658e26" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::operator+=</definition>
+        <argsstring>(const irreducible&lt; Q &gt; &amp;vertex) -&gt; irreducible&lt; Q &gt;</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>irreducible::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="61" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="61" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a199f543a4e3856d3a50c9209ad2a3c9c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::operator-=</definition>
+        <argsstring>(const irreducible&lt; Q &gt; &amp;vertex) -&gt; irreducible&lt; Q &gt;</argsstring>
+        <name>operator-=</name>
+        <qualifiedname>irreducible::operator-=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="68" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="68" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a9c80e23fb35f326cf4c68bfef18d06c2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::operator+=</definition>
+        <argsstring>(const double &amp;alpha) -&gt; irreducible&lt; Q &gt;</argsstring>
+        <name>operator+=</name>
+        <qualifiedname>irreducible::operator+=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double &amp;</type>
+          <declname>alpha</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="75" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="75" bodyend="78"/>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a24f17f078cab751942038ab55596da6a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::operator*=</definition>
+        <argsstring>(const double &amp;alpha) -&gt; irreducible&lt; Q &gt;</argsstring>
+        <name>operator*=</name>
+        <qualifiedname>irreducible::operator*=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double &amp;</type>
+          <declname>alpha</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="82" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="82" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a4bf9350ddf4d1dfda3cf3ad5ccfe1c47" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::operator*=</definition>
+        <argsstring>(const irreducible&lt; Q &gt; &amp;vertex) -&gt; irreducible&lt; Q &gt;</argsstring>
+        <name>operator*=</name>
+        <qualifiedname>irreducible::operator*=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="89" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="89" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="da/dbf/classirreducible_1a964195e00518477f73a82dc491a60126" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto irreducible&lt; Q &gt;::operator/=</definition>
+        <argsstring>(const irreducible&lt; Q &gt; &amp;vertex) -&gt; irreducible&lt; Q &gt;</argsstring>
+        <name>operator/=</name>
+        <qualifiedname>irreducible::operator/=</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/dbf/classirreducible" kindref="compound">irreducible</ref>&lt; Q &gt; &amp;</type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/four_point/vertex.hpp" line="96" column="10" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="96" bodyend="99"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>The irreducible part of the vertex. Working in the PA, it&apos;s just a set of 16 numbers, one per Keldysh component, of which at least half are always zero. <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the data. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>irreducible&lt; Q &gt;</label>
+        <link refid="da/dbf/classirreducible"/>
+      </node>
+      <node id="2">
+        <label>irreducible&lt; state_datatype &gt;</label>
+        <link refid="da/dbf/classirreducible"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="7">
+        <label>Array&lt; Q, Eigen::Dynamic, 1 &gt;</label>
+        <link refid="d2/dc9/classEigen_1_1Array_3_01Q_00_01Eigen_1_1Dynamic_00_011_01_4"/>
+      </node>
+      <node id="9">
+        <label>Array&lt; T, Eigen::Dynamic, 1 &gt;</label>
+      </node>
+      <node id="6">
+        <label>T</label>
+      </node>
+      <node id="3">
+        <label>std::array&lt; size_type, depth &gt;</label>
+        <childnode refid="4" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="template-instance">
+          <edgelabel>&lt; size_type, depth &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>irreducible&lt; Q &gt;</label>
+        <link refid="da/dbf/classirreducible"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-bare</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>multidimensional::multiarray&lt; Q, 2 &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="3" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="8" relation="template-instance">
+          <edgelabel>&lt; Q, 2 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>multidimensional::multiarray&lt; T, depth &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="3" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>size_type</label>
+      </node>
+      <node id="5">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/four_point/vertex.hpp" line="20" column="1" bodyfile="correlation_functions/four_point/vertex.hpp" bodystart="20" bodyend="104"/>
+    <listofallmembers>
+      <member refid="da/dbf/classirreducible_1a8647dcf6a154b2ffc52fd0b1d41f89fe" prot="public" virt="non-virtual"><scope>irreducible</scope><name>acc</name></member>
+      <member refid="da/dbf/classirreducible_1af3459dcb9b9daab9df0dc33cd03b160d" prot="private" virt="non-virtual"><scope>irreducible</scope><name>bare</name></member>
+      <member refid="da/dbf/classirreducible_1ac82eac054c899bb5688b376a2b0cbeff" prot="private" virt="non-virtual"><scope>irreducible</scope><name>buffer_type</name></member>
+      <member refid="da/dbf/classirreducible_1a4448249f11ee1d34431cf48212fbebe6" prot="public" virt="non-virtual"><scope>irreducible</scope><name>direct_set</name></member>
+      <member refid="da/dbf/classirreducible_1a2b23d3100fe2c93800c92ce72f0c7e27" prot="private" virt="non-virtual"><scope>irreducible</scope><name>empty_bare</name></member>
+      <member refid="da/dbf/classirreducible_1a90ab21c4facaca8dbbc3d626effc2095" prot="public" virt="non-virtual"><scope>irreducible</scope><name>get_vec</name></member>
+      <member refid="da/dbf/classirreducible_1a808bca3689d1374634c3f74f28f70cc2" prot="public" virt="non-virtual"><scope>irreducible</scope><name>initialize</name></member>
+      <member refid="da/dbf/classirreducible_1a72107ea0700fee85cfc4d234fb7a0b19" prot="public" virt="non-virtual"><scope>irreducible</scope><name>irreducible</name></member>
+      <member refid="da/dbf/classirreducible_1a7b5af51fba7ff0a537c6cb03d648dee4" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator*</name></member>
+      <member refid="da/dbf/classirreducible_1a21312dd38595732f63625b21422e98a3" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator*</name></member>
+      <member refid="da/dbf/classirreducible_1a24f17f078cab751942038ab55596da6a" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator*=</name></member>
+      <member refid="da/dbf/classirreducible_1a4bf9350ddf4d1dfda3cf3ad5ccfe1c47" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator*=</name></member>
+      <member refid="da/dbf/classirreducible_1afb11dc0950526efb10ba75aa7118e212" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator+</name></member>
+      <member refid="da/dbf/classirreducible_1aa2f70c0e8b654c8564e50495e4c4d69e" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator+</name></member>
+      <member refid="da/dbf/classirreducible_1af488ac21e4ba89124786bce72f658e26" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator+=</name></member>
+      <member refid="da/dbf/classirreducible_1a9c80e23fb35f326cf4c68bfef18d06c2" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator+=</name></member>
+      <member refid="da/dbf/classirreducible_1af64273c1df9001e952aadd92386192c7" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator-</name></member>
+      <member refid="da/dbf/classirreducible_1a199f543a4e3856d3a50c9209ad2a3c9c" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator-=</name></member>
+      <member refid="da/dbf/classirreducible_1a642b58493a885e17a05553e2fece45e6" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator/</name></member>
+      <member refid="da/dbf/classirreducible_1a964195e00518477f73a82dc491a60126" prot="public" virt="non-virtual"><scope>irreducible</scope><name>operator/=</name></member>
+      <member refid="da/dbf/classirreducible_1aa0ab8d27e7ed5ce3762582c2416a9b45" prot="private" virt="non-virtual"><scope>irreducible</scope><name>read_state_from_hdf</name></member>
+      <member refid="da/dbf/classirreducible_1a759255e112055d592bc3e4d61efe827a" prot="public" virt="non-virtual"><scope>irreducible</scope><name>set_vec</name></member>
+      <member refid="da/dbf/classirreducible_1a327c7420e3103e5c5e22fe7ab37a4ffc" prot="public" virt="non-virtual"><scope>irreducible</scope><name>setvert</name></member>
+      <member refid="da/dbf/classirreducible_1a9621a3ec926627a203e91004e99d53aa" prot="public" virt="non-virtual"><scope>irreducible</scope><name>val</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

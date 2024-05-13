@@ -1,0 +1,1077 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d3/dd8/classDataContainer" kind="class" language="C++" prot="public">
+    <compoundname>DataContainer</compoundname>
+    <basecompoundref refid="d5/d5f/classdataContainerBase" prot="public" virt="non-virtual">dataContainerBase&lt; Q, rank &gt;</basecompoundref>
+    <derivedcompoundref refid="d3/df3/classInterpolator" prot="public" virt="non-virtual">Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</derivedcompoundref>
+    <derivedcompoundref refid="d4/dde/classSpline_3_01Q_00_01rank_00_011_00_01pos__first__freq__index_00_01DataContainer_01_4" prot="public" virt="non-virtual">Spline&lt; Q, rank, 1, pos_first_freq_index, DataContainer &gt;</derivedcompoundref>
+    <derivedcompoundref refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4" prot="public" virt="non-virtual">Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</derivedcompoundref>
+    <derivedcompoundref refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4" prot="public" virt="non-virtual">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;</derivedcompoundref>
+    <includes refid="da/dbc/data__container_8hpp" local="no">data_container.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> Q</type>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>rank</declname>
+        <defname>rank</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>numberFrequencyDims</declname>
+        <defname>numberFrequencyDims</defname>
+      </param>
+      <param>
+        <type><ref refid="d7/d59/data__structures_8hpp_1a0bcc6ac8e774a3c55d2df75dc46c8b37" kindref="member">my_index_t</ref></type>
+        <declname>pos_first_freqpoint</declname>
+        <defname>pos_first_freqpoint</defname>
+      </param>
+      <param>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> frequencyGrid_type</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="d3/dd8/classDataContainer_1a3c7e249068ce71f411ab0e4dfaad939d" prot="protected" static="no">
+        <type><ref refid="d5/d5f/classdataContainerBase" kindref="compound">dataContainerBase</ref>&lt; Q, rank &gt;</type>
+        <definition>using DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::base_class =  dataContainerBase&lt;Q, rank&gt;</definition>
+        <argsstring></argsstring>
+        <name>base_class</name>
+        <qualifiedname>DataContainer::base_class</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="185" column="9" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="185" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="d3/dd8/classDataContainer_1aa90e46686ddc3e125a74c0fe8cf1d171" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="d5/d5f/classdataContainerBase_1a2ba42cf523d57a5b43a48c2c073dde3c" kindref="member">base_class::index_type</ref></type>
+        <definition>using DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::index_type =  typename base_class::index_type</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <qualifiedname>DataContainer::index_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="187" column="9" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="187" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d3/dd8/classDataContainer_1acc14ed86a6795835b9a2c05ee6ae5996" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="d5/d5f/classdataContainerBase_1af29d96f4edcb24986032d0faca3faaeb" kindref="member">base_class::dimensions_type</ref></type>
+        <definition>using DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::dimensions_type =  typename base_class::dimensions_type</definition>
+        <argsstring></argsstring>
+        <name>dimensions_type</name>
+        <qualifiedname>DataContainer::dimensions_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="188" column="9" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" prot="public" static="no">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="d5/d5f/classdataContainerBase_1a8ac5f1099d0c82679fea8bafe852d4ec" kindref="member">base_class::buffer_type</ref></type>
+        <definition>using DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::buffer_type =  typename base_class::buffer_type</definition>
+        <argsstring></argsstring>
+        <name>buffer_type</name>
+        <qualifiedname>DataContainer::buffer_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="189" column="9" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="189" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" prot="public" static="no" mutable="no">
+        <type>frequencyGrid_type</type>
+        <definition>frequencyGrid_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</definition>
+        <argsstring></argsstring>
+        <name>frequencies</name>
+        <qualifiedname>DataContainer::frequencies</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="191" column="28" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="191" bodyend="-1"/>
+        <referencedby refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a247f6deabff508e96fcd36956153e41d" compoundref="d6/d91/InterpolatorSpline2D_8hpp" startline="77" endline="181">Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::get_coeffs_from_derivs</referencedby>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1a8fc8fe2b6a6f7453a6f16e7f8ab8722c" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="60" endline="345">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::get_coeffs_from_derivs</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1aab0412d13aea8ee95ed5bda2fea2350b" compoundref="da/dbc/data__container_8hpp" startline="380" endline="382">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_VertexFreqGrid</referencedby>
+        <referencedby refid="d4/dde/classSpline_3_01Q_00_01rank_00_011_00_01pos__first__freq__index_00_01DataContainer_01_4_1a466941af6e8e26f61804f86a602e507a" compoundref="d1/d52/InterpolatorSpline1D_8hpp" startline="262" endline="272">Spline&lt; Q, rank, 1, pos_first_freq_index, DataContainer &gt;::get_weights</referencedby>
+        <referencedby refid="d4/dde/classSpline_3_01Q_00_01rank_00_011_00_01pos__first__freq__index_00_01DataContainer_01_4_1a2730b9af749e1c60d38863d21620c700" compoundref="d1/d52/InterpolatorSpline1D_8hpp" startline="276" endline="316">Spline&lt; Q, rank, 1, pos_first_freq_index, DataContainer &gt;::interpolate_spline</referencedby>
+        <referencedby refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1a9929ed45115e5545302fade3b8ecafb2" compoundref="d6/d91/InterpolatorSpline2D_8hpp" startline="227" endline="282">Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::interpolate_spline</referencedby>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1a31419dae3870700ecdd70c7ce06c08cb" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="399" endline="468">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::interpolate_spline</referencedby>
+        <referencedby refid="d4/dde/classSpline_3_01Q_00_01rank_00_011_00_01pos__first__freq__index_00_01DataContainer_01_4_1aaac27d6ba50e707d898e8bd41b42a953" compoundref="d1/d52/InterpolatorSpline1D_8hpp" startline="106" endline="140">Spline&lt; Q, rank, 1, pos_first_freq_index, DataContainer &gt;::set_coeffs_from_b</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a3c2988bac759ed2d22a7655a5342648d" compoundref="da/dbc/data__container_8hpp" startline="386" endline="388">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::set_VertexFreqGrid</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" compoundref="da/dbc/data__container_8hpp" startline="395" endline="458">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="d3/dd8/classDataContainer_1a4ef36651e471275bbf0c8e9f519be60e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void test_PT4</definition>
+        <argsstring>(double Lambda, bool write_flag)</argsstring>
+        <name>test_PT4</name>
+        <qualifiedname>DataContainer::test_PT4</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>write_flag</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="171" column="21"/>
+      </memberdef>
+      <memberdef kind="friend" id="d3/dd8/classDataContainer_1a8a00b1d61270a394d66ff5f55854616e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void test_PT_state</definition>
+        <argsstring>(std::string outputFileName, double Lambda, bool write_flag)</argsstring>
+        <name>test_PT_state</name>
+        <qualifiedname>DataContainer::test_PT_state</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>outputFileName</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>write_flag</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="174" column="21"/>
+      </memberdef>
+      <memberdef kind="friend" id="d3/dd8/classDataContainer_1ad38f611e9520a438f8884dfbec72db19" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void result_set_frequency_grids</definition>
+        <argsstring>(State&lt; T, false &gt; &amp;result, Buffer &amp;buffer)</argsstring>
+        <name>result_set_frequency_grids</name>
+        <qualifiedname>DataContainer::result_set_frequency_grids</qualifiedname>
+        <param>
+          <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; T, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref> &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">Buffer</ref> &amp;</type>
+          <declname>buffer</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="177" column="21"/>
+      </memberdef>
+      <memberdef kind="friend" id="d3/dd8/classDataContainer_1a16a92e686f898a8009a453837e59fa45" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void check_FDTs</definition>
+        <argsstring>(const State&lt; T, false &gt; &amp;state, bool verbose)</argsstring>
+        <name>check_FDTs</name>
+        <qualifiedname>DataContainer::check_FDTs</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; T, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref> &gt; &amp;</type>
+          <declname>state</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="180" column="21"/>
+      </memberdef>
+      <memberdef kind="friend" id="d3/dd8/classDataContainer_1aa0ab8d27e7ed5ce3762582c2416a9b45" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="d7/d97/classState" kindref="compound">State</ref>&lt; <ref refid="d7/d59/data__structures_8hpp_1aa06c6e6918506d71503662b864204749" kindref="member">state_datatype</ref>, <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">false</ref> &gt;</type>
+        <definition>State&lt; state_datatype, false &gt; read_state_from_hdf</definition>
+        <argsstring>(const H5std_string &amp;filename, const int Lambda_it)</argsstring>
+        <name>read_state_from_hdf</name>
+        <qualifiedname>DataContainer::read_state_from_hdf</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">H5std_string</ref> &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>Lambda_it</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read a state from a specified Lambda layer of a given hdf file. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String of the filename. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Lambda_it</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of the Λ layer from which the state shall be read. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="d7/d97/classState" kindref="compound">State</ref> that has been read out. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+<para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>
+<para>Write used parameters for documentation purpose</para>
+<para>check whether parameters in HDF file agree with <ref refid="d1/df8/master__parameters_8hpp" kindref="compound">parameters/master_parameters.hpp</ref></para>
+<para>Write used parameters for documentation purpose</para>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="182" column="22" bodyfile="utilities/hdf5_routines.c++" bodystart="61" bodyend="191"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a13c674249912f45fa6daf9008c9d826b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::DataContainer</definition>
+        <argsstring>()=default</argsstring>
+        <name>DataContainer</name>
+        <qualifiedname>DataContainer::DataContainer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="192" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a782bfeb8044945935e022f73c64854b3" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::DataContainer</definition>
+        <argsstring>(double Lambda, dimensions_type dims, const fRG_config &amp;config)</argsstring>
+        <name>DataContainer</name>
+        <qualifiedname>DataContainer::DataContainer</qualifiedname>
+        <param>
+          <type>double</type>
+          <declname>Lambda</declname>
+        </param>
+        <param>
+          <type><ref refid="d3/dd8/classDataContainer_1acc14ed86a6795835b9a2c05ee6ae5996" kindref="member">dimensions_type</ref></type>
+          <declname>dims</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="da/da0/structfRG__config" kindref="compound">fRG_config</ref> &amp;</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="194" column="18" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="194" bodyend="194"/>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1aab0412d13aea8ee95ed5bda2fea2350b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_VertexFreqGrid</definition>
+        <argsstring>() const -&gt; const frequencyGrid_type &amp;</argsstring>
+        <name>get_VertexFreqGrid</name>
+        <qualifiedname>DataContainer::get_VertexFreqGrid</qualifiedname>
+        <briefdescription>
+<para>Functions for getting and setting the frequency grid and its members. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="197" column="14" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="380" bodyend="382"/>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a3c2988bac759ed2d22a7655a5342648d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">void</ref></type>
+        <definition>void DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::set_VertexFreqGrid</definition>
+        <argsstring>(const frequencyGrid_type frequencyGrid)</argsstring>
+        <name>set_VertexFreqGrid</name>
+        <qualifiedname>DataContainer::set_VertexFreqGrid</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> frequencyGrid_type</type>
+          <declname>frequencyGrid</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="199" column="14" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="386" bodyend="388"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">unsigned</ref> int</type>
+            <declname>idim</declname>
+            <defname>idim</defname>
+          </param>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> std::enable_if_t&lt;(<ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">idim</ref>&lt; <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">numberFrequencyDims</ref>), <ref refid="d9/db9/classbool" kindref="compound">bool</ref> &gt;</type>
+            <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::analyze_tails</definition>
+        <argsstring>(const int index=0) const</argsstring>
+        <name>analyze_tails</name>
+        <qualifiedname>DataContainer::analyze_tails</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> int</type>
+          <declname>index</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="205" column="16" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="205" bodyend="211"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <references refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" compoundref="da/dbc/data__container_8hpp" startline="111" endline="111">dataContainerBase&lt; Q, rank &gt;::get_dims</references>
+        <references refid="d7/d3f/classmultidimensional_1_1multiarray_1a3b3a6cae9bb68e27514e2a8f972573aa" compoundref="df/da4/multiarray_8hpp" startline="534" endline="536">multidimensional::multiarray&lt; T, depth &gt;::max_norm</references>
+        <references refid="de/dbb/math__utils_8hpp_1a1e26b17d6ce68bbd4a4cc2031722a433" compoundref="de/dbb/math__utils_8hpp" startline="973" endline="983">maxabs</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</definition>
+        <argsstring>(const buffer_type &amp;dat) const</argsstring>
+        <name>get_deriv_x</name>
+        <qualifiedname>DataContainer::get_deriv_x</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref> &amp;</type>
+          <declname>dat</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="214" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="214" bodyend="217"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="292" endline="334">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" compoundref="da/dbc/data__container_8hpp" startline="265" endline="291">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</referencedby>
+        <referencedby refid="d4/dde/classSpline_3_01Q_00_01rank_00_011_00_01pos__first__freq__index_00_01DataContainer_01_4_1ae633a7403e0040c23dc1342d18687ea6" compoundref="d1/d52/InterpolatorSpline1D_8hpp" startline="143" endline="205">Spline&lt; Q, rank, 1, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+        <referencedby refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab2a08aa7bd6789c97411697e91dcf300" compoundref="d6/d91/InterpolatorSpline2D_8hpp" startline="184" endline="200">Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1aef9abe1f63f3904d3b582a33d197709b" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="348" endline="370">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_y</definition>
+        <argsstring>(const buffer_type &amp;dat) const</argsstring>
+        <name>get_deriv_y</name>
+        <qualifiedname>DataContainer::get_deriv_y</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref> &amp;</type>
+          <declname>dat</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="218" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="218" bodyend="221"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="292" endline="334">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" compoundref="da/dbc/data__container_8hpp" startline="265" endline="291">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</referencedby>
+        <referencedby refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab2a08aa7bd6789c97411697e91dcf300" compoundref="d6/d91/InterpolatorSpline2D_8hpp" startline="184" endline="200">Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1aef9abe1f63f3904d3b582a33d197709b" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="348" endline="370">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_z</definition>
+        <argsstring>(const buffer_type &amp;dat) const</argsstring>
+        <name>get_deriv_z</name>
+        <qualifiedname>DataContainer::get_deriv_z</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref> &amp;</type>
+          <declname>dat</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="222" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="222" bodyend="225"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="292" endline="334">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
+        <referencedby refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" compoundref="da/dbc/data__container_8hpp" startline="265" endline="291">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</referencedby>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1aef9abe1f63f3904d3b582a33d197709b" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="348" endline="370">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a681c9f64ff0fcde1c1b2184eea000aee" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xx</definition>
+        <argsstring>() const</argsstring>
+        <name>get_deriv_xx</name>
+        <qualifiedname>DataContainer::get_deriv_xx</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="227" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="227" bodyend="231"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <referencedby refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" compoundref="da/dbc/data__container_8hpp" startline="292" endline="334">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1abf64e95d9bb01aedbe9cf5821519d2d6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_yy</definition>
+        <argsstring>() const</argsstring>
+        <name>get_deriv_yy</name>
+        <qualifiedname>DataContainer::get_deriv_yy</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="232" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="232" bodyend="236"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a990e1b7ce1069428c4ec6775e594c826" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_zz</definition>
+        <argsstring>() const</argsstring>
+        <name>get_deriv_zz</name>
+        <qualifiedname>DataContainer::get_deriv_zz</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="237" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="237" bodyend="241"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xy</definition>
+        <argsstring>() const</argsstring>
+        <name>get_deriv_xy</name>
+        <qualifiedname>DataContainer::get_deriv_xy</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="242" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="242" bodyend="246"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <referencedby refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4_1ab2a08aa7bd6789c97411697e91dcf300" compoundref="d6/d91/InterpolatorSpline2D_8hpp" startline="184" endline="200">Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1aef9abe1f63f3904d3b582a33d197709b" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="348" endline="370">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a35cf1d28e6d38966d84884732a5ee7f8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xz</definition>
+        <argsstring>() const</argsstring>
+        <name>get_deriv_xz</name>
+        <qualifiedname>DataContainer::get_deriv_xz</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="247" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="247" bodyend="251"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1aef9abe1f63f3904d3b582a33d197709b" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="348" endline="370">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a3247f2ace9abcbddcae61ae35556793d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_yz</definition>
+        <argsstring>() const</argsstring>
+        <name>get_deriv_yz</name>
+        <qualifiedname>DataContainer::get_deriv_yz</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="252" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="252" bodyend="256"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1aef9abe1f63f3904d3b582a33d197709b" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="348" endline="370">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a7268a90acd9a25f59e478f2e0d5fd897" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" kindref="member">buffer_type</ref></type>
+        <definition>buffer_type DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xyz</definition>
+        <argsstring>() const</argsstring>
+        <name>get_deriv_xyz</name>
+        <qualifiedname>DataContainer::get_deriv_xyz</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="258" column="21" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="258" bodyend="263"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <referencedby refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4_1aef9abe1f63f3904d3b582a33d197709b" compoundref="dd/dcc/InterpolatorSpline3D_8hpp" startline="348" endline="370">Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;::initInterpolator</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_max</definition>
+        <argsstring>() const -&gt; double</argsstring>
+        <name>get_deriv_max</name>
+        <qualifiedname>DataContainer::get_deriv_max</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="265" column="14" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="265" bodyend="291"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <references refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" compoundref="da/dbc/data__container_8hpp" startline="214" endline="217">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</references>
+        <references refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" compoundref="da/dbc/data__container_8hpp" startline="218" endline="221">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_y</references>
+        <references refid="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" compoundref="da/dbc/data__container_8hpp" startline="222" endline="225">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_z</references>
+        <references refid="d5/d5f/classdataContainerBase_1abcd2e5c8b272ee7a933d18869fa850e3" compoundref="da/dbc/data__container_8hpp" startline="114" endline="114">dataContainerBase&lt; Q, rank &gt;::get_vec</references>
+        <references refid="d7/d3f/classmultidimensional_1_1multiarray_1a3b3a6cae9bb68e27514e2a8f972573aa" compoundref="df/da4/multiarray_8hpp" startline="534" endline="536">multidimensional::multiarray&lt; T, depth &gt;::max_norm</references>
+        <references refid="de/dbb/math__utils_8hpp_1a7aeba71c9187b7904b0e994030d89484" compoundref="de/dbb/math__utils_8hpp" startline="957" endline="966">power2</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_curvature_max</definition>
+        <argsstring>() const -&gt; double</argsstring>
+        <name>get_curvature_max</name>
+        <qualifiedname>DataContainer::get_curvature_max</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="292" column="14" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="292" bodyend="334"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <references refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" compoundref="da/dbc/data__container_8hpp" startline="214" endline="217">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_x</references>
+        <references refid="d3/dd8/classDataContainer_1a681c9f64ff0fcde1c1b2184eea000aee" compoundref="da/dbc/data__container_8hpp" startline="227" endline="231">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_xx</references>
+        <references refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" compoundref="da/dbc/data__container_8hpp" startline="218" endline="221">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_y</references>
+        <references refid="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" compoundref="da/dbc/data__container_8hpp" startline="222" endline="225">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::get_deriv_z</references>
+        <references refid="d5/d5f/classdataContainerBase_1abcd2e5c8b272ee7a933d18869fa850e3" compoundref="da/dbc/data__container_8hpp" startline="114" endline="114">dataContainerBase&lt; Q, rank &gt;::get_vec</references>
+        <references refid="d7/d3f/classmultidimensional_1_1multiarray_1a3b3a6cae9bb68e27514e2a8f972573aa" compoundref="df/da4/multiarray_8hpp" startline="534" endline="536">multidimensional::multiarray&lt; T, depth &gt;::max_norm</references>
+        <references refid="de/dbb/math__utils_8hpp_1a7aeba71c9187b7904b0e994030d89484" compoundref="de/dbb/math__utils_8hpp" startline="957" endline="966">power2</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a94e9f1cfa874bd2056aca270a646b24e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">typename</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref></type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box_impl</definition>
+        <argsstring>(const gridType &amp;freqGrid, const double rel_tail_threshold, const vec&lt; double &gt; &amp;maxabs_along_x, const bool verbose) const -&gt; gridType</argsstring>
+        <name>shrink_freq_box_impl</name>
+        <qualifiedname>DataContainer::shrink_freq_box_impl</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">gridType</ref> &amp;</type>
+          <declname>freqGrid</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rel_tail_threshold</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/d2a/classvec" kindref="compound">vec</ref>&lt; double &gt; &amp;</type>
+          <declname>maxabs_along_x</declname>
+        </param>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> <ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="337" column="14" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="337" bodyend="368"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+      </memberdef>
+      <memberdef kind="function" id="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">auto</ref></type>
+        <definition>auto DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::shrink_freq_box</definition>
+        <argsstring>(const double rel_tail_threshold, bool verbose=true, double constant=0.) const -&gt; frequencyGrid_type</argsstring>
+        <name>shrink_freq_box</name>
+        <qualifiedname>DataContainer::shrink_freq_box</qualifiedname>
+        <param>
+          <type><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">const</ref> double</type>
+          <declname>rel_tail_threshold</declname>
+        </param>
+        <param>
+          <type><ref refid="d9/db9/classbool" kindref="compound">bool</ref></type>
+          <declname>verbose</declname>
+          <defval><ref refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" kindref="member">true</ref></defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>constant</declname>
+          <defval>0.</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="correlation_functions/n_point/data_container.hpp" line="370" column="14" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="395" bodyend="458"/>
+        <references refid="dd/dea/bubble__corrections_8hpp_1aff27784f97591f505f77ff0065ab57af" compoundref="dd/dea/bubble__corrections_8hpp" startline="295" endline="324">correctionFunctionBubble_REG3_Matsubara_PHS_diff</references>
+        <references refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" compoundref="da/dbc/data__container_8hpp" startline="46">dataContainerBase&lt; Q, rank &gt;::data</references>
+        <references refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" compoundref="da/dbc/data__container_8hpp" startline="191">DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;::frequencies</references>
+        <references refid="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3" compoundref="d3/d3c/frequency__parameters_8hpp" startline="8">GRID</references>
+        <references refid="d7/d3f/classmultidimensional_1_1multiarray_1a3b3a6cae9bb68e27514e2a8f972573aa" compoundref="df/da4/multiarray_8hpp" startline="534" endline="536">multidimensional::multiarray&lt; T, depth &gt;::max_norm</references>
+        <references refid="de/dbb/math__utils_8hpp_1a1e26b17d6ce68bbd4a4cc2031722a433" compoundref="de/dbb/math__utils_8hpp" startline="973" endline="983">maxabs</references>
+        <references refid="d4/dda/mpi__setup_8c_09_09_1a191972e98e51a56d90e8e5f750496c7d" compoundref="d4/dda/mpi__setup_8c_09_09" startline="3" endline="7">mpi_world_rank</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="31">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="33">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="35">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="37">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>DataContainer&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="23">
+        <label>DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="25">
+        <label>DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="27">
+        <label>DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="29">
+        <label>DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="1" relation="template-instance">
+          <edgelabel>&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="32">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="31" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="34">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="33" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="36">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="35" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="37" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Interpolator&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>Interpolator&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; comp, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="21" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="23" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K1 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="25" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K2 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="27" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>Interpolator&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, DataContainer&lt; state_datatype, rank, numberFrequencyDims, pos_first_freqpoint, freqGrid_type_K3 &gt;, inter &gt;</label>
+        <link refid="d3/df3/classInterpolator"/>
+        <childnode refid="29" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>Spline&lt; Q, rank, 1, pos_first_freq_index, DataContainer &gt;</label>
+        <link refid="d4/dde/classSpline_3_01Q_00_01rank_00_011_00_01pos__first__freq__index_00_01DataContainer_01_4"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>Spline&lt; Q, rank, 2, pos_first_freq_index, DataContainer &gt;</label>
+        <link refid="d7/d8a/classSpline_3_01Q_00_01rank_00_012_00_01pos__first__freq__index_00_01DataContainer_01_4"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>Spline&lt; Q, rank, 3, pos_first_freq_index, DataContainer &gt;</label>
+        <link refid="d3/dab/classSpline_3_01Q_00_01rank_00_013_00_01pos__first__freq__index_00_01DataContainer_01_4"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>dataBuffer&lt; Q, k, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type, inter, &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>dataBuffer&lt; Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; Q, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>dataBuffer&lt; Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; Q, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="15">
+        <label>dataBuffer&lt; Q, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; Q, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="16">
+        <label>dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="17">
+        <label>dataBuffer&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>dataBuffer&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; Q, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="5">
+        <label>dataBuffer&lt; comp, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; comp, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>dataBuffer&lt; state_datatype, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k1, K1p_config.rank, K1p_config.num_freqs, K1p_config.position_first_freq_index, freqGrid_type_K1, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>dataBuffer&lt; state_datatype, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k2, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>dataBuffer&lt; state_datatype, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k2b, K2p_config.rank, K2p_config.num_freqs, K2p_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="10">
+        <label>dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K2, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>dataBuffer&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; state_datatype, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>dataBuffer&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</label>
+        <link refid="dc/d7a/classdataBuffer"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; state_datatype, selfenergy, SE_config.rank, SE_config.num_freqs, SE_config.position_first_freq_index, freqGrid_type, INTERPOLATION &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>DataContainer&lt; Q, rank, numberFrequencyDims, pos_first_freqpoint, frequencyGrid_type &gt;</label>
+        <link refid="d3/dd8/classDataContainer"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="11" relation="usage">
+          <edgelabel>+frequencies</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>Array&lt; Q, Eigen::Dynamic, 1 &gt;</label>
+        <link refid="d2/dc9/classEigen_1_1Array_3_01Q_00_01Eigen_1_1Dynamic_00_011_01_4"/>
+      </node>
+      <node id="10">
+        <label>Array&lt; T, Eigen::Dynamic, 1 &gt;</label>
+      </node>
+      <node id="7">
+        <label>T</label>
+      </node>
+      <node id="4">
+        <label>std::array&lt; size_type, depth &gt;</label>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="template-instance">
+          <edgelabel>&lt; size_type, depth &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>dataContainerBase&lt; Q, rank &gt;</label>
+        <link refid="d5/d5f/classdataContainerBase"/>
+        <childnode refid="3" relation="usage">
+          <edgelabel>#data</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>frequencyGrid_type</label>
+      </node>
+      <node id="3">
+        <label>multidimensional::multiarray&lt; Q, rank &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="4" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="template-instance">
+          <edgelabel>&lt; Q, rank &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>multidimensional::multiarray&lt; T, depth &gt;</label>
+        <link refid="d7/d3f/classmultidimensional_1_1multiarray"/>
+        <childnode refid="4" relation="usage">
+          <edgelabel>-m_length</edgelabel>
+          <edgelabel>-m_length_cumulative</edgelabel>
+        </childnode>
+        <childnode refid="10" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="5">
+        <label>size_type</label>
+      </node>
+      <node id="6">
+        <label>std::array&lt; T &gt;</label>
+        <childnode refid="7" relation="usage">
+          <edgelabel>+elements</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="correlation_functions/n_point/data_container.hpp" line="170" column="5" bodyfile="correlation_functions/n_point/data_container.hpp" bodystart="170" bodyend="372"/>
+    <listofallmembers>
+      <member refid="d5/d5f/classdataContainerBase_1af8da5de4958e6394f3700dddba32956b" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>acc</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a94ed8cb0315262a605d076a7dd8a5782" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>add_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a72e6e78cae86e3036aea7d4f6b477401" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>add_vec</name></member>
+      <member refid="d3/dd8/classDataContainer_1a1f8a7be178c433f68e29315810ecdc19" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>analyze_tails</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a57fc098f0ce433faa0c310ab412dafc7" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>at</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3c7e249068ce71f411ab0e4dfaad939d" prot="protected" virt="non-virtual"><scope>DataContainer</scope><name>base_class</name></member>
+      <member refid="d3/dd8/classDataContainer_1a0bb393b850003c9ce2dce4c4b0da0a9d" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>buffer_type</name></member>
+      <member refid="d3/dd8/classDataContainer_1a16a92e686f898a8009a453837e59fa45" prot="private" virt="non-virtual"><scope>DataContainer</scope><name>check_FDTs</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1ae51f02939594c99fc04ce4e04abe5412" prot="protected" virt="non-virtual"><scope>DataContainer</scope><name>data</name></member>
+      <member refid="d3/dd8/classDataContainer_1a13c674249912f45fa6daf9008c9d826b" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>DataContainer</name></member>
+      <member refid="d3/dd8/classDataContainer_1a782bfeb8044945935e022f73c64854b3" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>DataContainer</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a598a780596e0e8ff406ef06e3214d82f" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a0ff8fce064842266103959a8802f23b4" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a8a8a5f6d85f2534dd223a31da7390019" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>dataContainerBase</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1af0ae1996f1eb63afc64e2146d241dba8" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>dataContainerBase</name></member>
+      <member refid="d3/dd8/classDataContainer_1acc14ed86a6795835b9a2c05ee6ae5996" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>dimensions_type</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a554ee3f67bf16bd9438c9f056bcd58a2" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>direct_set</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a8ab6ca579df1cff6717d9fc17c37cdc9" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>eigen_segment</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6d65f15d6b8115ba71c9ec5145e63302" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>eigen_segment</name></member>
+      <member refid="d3/dd8/classDataContainer_1af49dea44f110b50ce24e9624c95af565" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>frequencies</name></member>
+      <member refid="d3/dd8/classDataContainer_1ae9bef99a8fc3ab5df6e95c5329fb6fcc" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_curvature_max</name></member>
+      <member refid="d3/dd8/classDataContainer_1a816b1d8369863639a1406f6936306609" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_max</name></member>
+      <member refid="d3/dd8/classDataContainer_1a1e4aff133ed7ad003cd8efaf466783bf" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_x</name></member>
+      <member refid="d3/dd8/classDataContainer_1a681c9f64ff0fcde1c1b2184eea000aee" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_xx</name></member>
+      <member refid="d3/dd8/classDataContainer_1a4b719c9932d2bde346913be47f3d34e3" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_xy</name></member>
+      <member refid="d3/dd8/classDataContainer_1a7268a90acd9a25f59e478f2e0d5fd897" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_xyz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a35cf1d28e6d38966d84884732a5ee7f8" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_xz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a247037141039bb1ea2d92822a27aaa13" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_y</name></member>
+      <member refid="d3/dd8/classDataContainer_1abf64e95d9bb01aedbe9cf5821519d2d6" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_yy</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3247f2ace9abcbddcae61ae35556793d" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_yz</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3607f4e3909ce18da22c4c00fbf4f48b" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_z</name></member>
+      <member refid="d3/dd8/classDataContainer_1a990e1b7ce1069428c4ec6775e594c826" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_deriv_zz</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a0c77f9ef4693c731137691ff87c199aa" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_dims</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6e5a70b0d2f29185cbd4f51a5e66782a" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_values</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1abcd2e5c8b272ee7a933d18869fa850e3" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_vec</name></member>
+      <member refid="d3/dd8/classDataContainer_1aab0412d13aea8ee95ed5bda2fea2350b" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>get_VertexFreqGrid</name></member>
+      <member refid="d3/dd8/classDataContainer_1aa90e46686ddc3e125a74c0fe8cf1d171" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>index_type</name></member>
+      <member refid="d3/dd8/classDataContainer_1aa0ab8d27e7ed5ce3762582c2416a9b45" prot="private" virt="non-virtual"><scope>DataContainer</scope><name>read_state_from_hdf</name></member>
+      <member refid="d3/dd8/classDataContainer_1ad38f611e9520a438f8884dfbec72db19" prot="private" virt="non-virtual"><scope>DataContainer</scope><name>result_set_frequency_grids</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1ae76c4352d8dbe3fa86fc4394eb781334" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>set_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a1cb357f678027c6170ae53ca8131c107" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>set_vec</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a22ef70f4e159e8ff4cff0bf02a257c68" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>set_vec</name></member>
+      <member refid="d3/dd8/classDataContainer_1a3c2988bac759ed2d22a7655a5342648d" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>set_VertexFreqGrid</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a4619283941f9095c26f409442c2431db" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>setvert</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1aefc529ad1483b4bb631d586e105051d9" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>setvert</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a627e34de6a12e83dcef094393f113c61" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>setvert_vectorized</name></member>
+      <member refid="d3/dd8/classDataContainer_1a46399d6d77d6ee47d3ed7e45d872da03" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>shrink_freq_box</name></member>
+      <member refid="d3/dd8/classDataContainer_1a94e9f1cfa874bd2056aca270a646b24e" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>shrink_freq_box_impl</name></member>
+      <member refid="d3/dd8/classDataContainer_1a4ef36651e471275bbf0c8e9f519be60e" prot="private" virt="non-virtual"><scope>DataContainer</scope><name>test_PT4</name></member>
+      <member refid="d3/dd8/classDataContainer_1a8a00b1d61270a394d66ff5f55854616e" prot="private" virt="non-virtual"><scope>DataContainer</scope><name>test_PT_state</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6a12aa5133b4e718e71022aaa72fe819" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>val</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a3ef7520d345f57577a35ebe048897d0e" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>val</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a6db8027ec05f0675c5795c5a6db81909" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>val_vectorized</name></member>
+      <member refid="d5/d5f/classdataContainerBase_1a562fde9ddb3882bd794e5ab5b6b1e191" prot="public" virt="non-virtual"><scope>DataContainer</scope><name>val_vectorized</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dir_d3aa368cf518ca4413cb05ed24da604b" kind="dir">
+    <compoundname>interpolations</compoundname>
+    <innerfile refid="d3/d17/InterpolatorLinOrSloppy_8hpp">InterpolatorLinOrSloppy.hpp</innerfile>
+    <innerfile refid="d1/d52/InterpolatorSpline1D_8hpp">InterpolatorSpline1D.hpp</innerfile>
+    <innerfile refid="d6/d91/InterpolatorSpline2D_8hpp">InterpolatorSpline2D.hpp</innerfile>
+    <innerfile refid="dd/dcc/InterpolatorSpline3D_8hpp">InterpolatorSpline3D.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="interpolations/"/>
+  </compounddef>
+</doxygen>

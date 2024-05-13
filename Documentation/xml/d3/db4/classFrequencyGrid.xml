@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="d3/db4/classFrequencyGrid" kind="class" language="C++" prot="public">
+    <compoundname>FrequencyGrid</compoundname>
+    <includes refid="d5/d39/frequency__grid_8hpp" local="no">frequency_grid.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type><ref refid="d5/d39/frequency__grid_8hpp_1a34be0fbd5a9f7466dd2ea8efec38066d" kindref="member">frequencyGridType</ref></type>
+        <declname>freqGridType</declname>
+        <defname>freqGridType</defname>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>FrequencyGrid&lt; freqGridType &gt;</label>
+        <link refid="d3/db4/classFrequencyGrid"/>
+      </node>
+    </collaborationgraph>
+    <location file="grids/frequency_grid.hpp" line="67" column="1" bodyfile="grids/frequency_grid.hpp" bodystart="67" bodyend="67"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

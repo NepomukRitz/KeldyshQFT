@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.10.0" xml:lang="en-US">
+  <compounddef id="dir_4cec6998d037ffff14fbd09b4928cae8" kind="dir">
+    <compoundname>mfRG_flow</compoundname>
+    <innerfile refid="d5/d21/flow_8hpp">flow.hpp</innerfile>
+    <innerfile refid="d8/dea/right__hand__sides_8hpp">right_hand_sides.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="mfRG_flow/"/>
+  </compounddef>
+</doxygen>
