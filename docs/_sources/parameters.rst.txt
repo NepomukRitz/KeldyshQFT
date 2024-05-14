@@ -1,8 +1,9 @@
+==========
 Parameters
 ==========
 
 Pre-processor flags
-+++++++++++++++++++
+===================
 
 .. doxygendefine:: ADAPTIVE_GRID
 
@@ -60,7 +61,7 @@ Pre-processor flags
 
 
 Global parameters
-+++++++++++++++++
+=================
 
 .. doxygenvariable:: BOSONIC_PARAM_FOR_K3
 

@@ -3,8 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+====================
 KeldyshDiagrammatics
-=====================
+====================
 **A C++ Codebase for real-frequency multiloop functional renormalization group and parquet computations for the single impurity Anderson model**
 
 
@@ -12,7 +13,7 @@ TODO: Add introductory paragraph
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents
 
    prerequisites

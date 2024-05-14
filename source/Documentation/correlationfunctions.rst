@@ -1,8 +1,9 @@
+=====================
 Correlation Functions
 =====================
 
 Vertices
-++++++++
+========
 
 .. doxygenclass:: irreducible
    :members:
@@ -18,26 +19,26 @@ Vertices
 
 
 Self-Energy
-+++++++++++
+===========
 
 .. doxygenclass:: SelfEnergy
    :members:
 
 State
-+++++
+=====
 
 .. doxygenclass:: State
    :members:
 
 
 Propagator
-++++++++++
+==========
 
 .. doxygenclass:: Propagator
    :members:
 
 Bubble
-++++++
+======
 
 .. doxygenclass:: Bubble
    :members:
