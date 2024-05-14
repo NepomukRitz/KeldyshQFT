@@ -16,7 +16,7 @@ TODO: Add introductory paragraph
    :maxdepth: 1
    :caption: Contents
 
-   prerequisites 
+   prerequisites
    correlationfunctions
    diagrams
    postprocessing

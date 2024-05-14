@@ -23,6 +23,14 @@ auto PT_initialize_Bubble(const Propagator<Q>& barePropagator){
     return Pi;
 }
 
+/**
+ * Compute the vertex in PT2. Consists of the sum of the PT2 diagrams of each channel.
+ * @tparam Q Data type.
+ * @tparam Bubble_Object Type of bubble object
+ * @param PsiVertex Vertex that shall store the result.
+ * @param bareState Bare state used for the computation. Should include only the bare vertex and the initialized Hartree self-energy.
+ * @param Pi Previously initialized bubble
+ */
 template <typename Q, class Bubble_Object>
 void vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi){
     std::string channels = "apt";
@@ -39,6 +47,14 @@ void vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const 
     }
 }
 
+/**
+ * Compute the self-energy in PT2 by calculating a bubble between bare vertices in the a-channel and closing the loop on top.
+ * @tparam Q Data type.
+ * @tparam Bubble_Object Type of bubble object.
+ * @param PsiSelfEnergy Self-energy that shall store the result.
+ * @param bareState Bare state used for the computation.
+ * @param Pi Previously initialized bubble object.
+ */
 template <typename Q, class Bubble_Object>
 void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, const Bubble_Object& Pi){
     Propagator<Q> barePropagator(bareState.Lambda, bareState.selfenergy, 'g', bareState.config);    //Bare propagator
@@ -130,12 +146,12 @@ void vertexInFOPT(Vertex<Q,false>& PsiVertex, State<Q>& bareState, const Bubble_
 }
 
 /**
- * Function which calculates a SOPT state. Should however toggle off the components not to be computed.
- * @tparam Q            Data type of the state, usually comp
- * @param Psi           State whose Vertex is to be calculated
- * @param Bubble_Object Previously initialized bubble object.
- * @param Lambda        Data structure-needed parameter. Should be set to 1. in all SOPT calculations
- * @param state         State whose Vertex whould be the bare vertex already initialized
+ * Function which calculates a state in PT2. Called by sopt_state.
+ * @tparam Q Data type of the state, usually comp.
+ * @tparam Bubble_Object Type of the previously initialized bubble object.
+ * @param Psi State that shall store the result.
+ * @param Pi Previously initialized bubble object.
+ * @param bareState Bare state used for the computation. Should include only the bare vertex and the initialized Hartree self-energy.
  */
 template<typename Q, class Bubble_Object>
 void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const State<Q>& bareState) {
@@ -151,7 +167,12 @@ void sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const State<Q>& bar
     vertexInSOPT(Psi.vertex, bareState, Pi);  // Uses the previously defined bubble, which does not contain the SOPT SE yet.
 }
 
-// Wrapper of sopt_state_impl, in case no Bubble object has been initialized yet.
+/**
+ * Wrapper of sopt_state_impl, in case no Bubble object has been initialized yet.
+ * @tparam Q Type of the data.
+ * @param Psi State that shall store the result.
+ * @param diff If true, a differentiated bubble is initialized. Incorrect for PT2, but useful for testing purposes.
+ */
 template<typename Q>
 void sopt_state(State<Q>& Psi, const bool diff = false) {
     assert(Psi.initialized);

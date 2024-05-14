@@ -13,7 +13,9 @@
 #include <utility>
 
 
-/// Class which determines the Hartree-term for the self-energy self-consistently in units of glb_U given the system parameters
+/**
+ * Class which determines the Hartree-term of the self-energy of the asymmetric Anderson model self-consistently in units of `glb_U`, given the system parameters.
+ */
 class Hartree_Solver {
     const double Lambda; // flow parameter, needed for correct frequency grid.
     const fRG_config& config;
@@ -32,7 +34,11 @@ class Hartree_Solver {
     double fermi_distribution (double nu) const;
 public:
     SelfEnergy<comp> selfEnergy = SelfEnergy<comp> (Lambda, config);
-    /// constructor used for obtaining the self-consistent solution of the Hartree-term
+    /**
+     * Constructor used for obtaining the self-consistent solution of the Hartree-term.
+     * @param Lambda_in Value of the regulator Λ.
+     * @param config_in Set of parameters.
+     */
     Hartree_Solver(const double Lambda_in, const fRG_config& config_in): Lambda(Lambda_in), config(config_in){
         //assert(KELDYSH);
         assert(EQUILIBRIUM); // because we use FDTs
@@ -40,14 +46,21 @@ public:
         selfEnergy.initialize(config.U * filling, 0);
         selfEnergy.Sigma.initInterpolator();
     };
-    /// constructor used for a one-shot calculation of the Hartree-term with a given selfenergy, e.g. in parquet iterations or in the 1l flow equation.
+    /**
+     * Constructor used for a one-shot calculation of the Hartree-term of the asymmetric Anderson model with a given self-energy, e.g. in parquet iterations or in the 1l fRG flow equation.
+     * @param Lambda_in Value of the regulator Λ.
+     * @param Sigma_in Self-energy used inside the propagator to be used for the one-shot calculation.
+     * @param config_in Set of parameters.
+     * @param diff Boolean specifying whether the propagator to be integrated over is differentiated or not. By default `== false`. Useful for testing purposes.
+     */
     Hartree_Solver(const double Lambda_in, const SelfEnergy<comp>& Sigma_in, const fRG_config& config_in, const bool diff=false): Lambda(Lambda_in), config(config_in){
         assert(EQUILIBRIUM); // because we use FDTs
 
         selfEnergy = Sigma_in;
         if (diff) prop_type = 's'; // single-scale
     };
-    /// constructor used for testing the Hartree-term computation with different Keldysh components of the single-scale propagator
+
+    // Constructor used for testing the Hartree-term computation with different Keldysh components of the single-scale propagator.
     Hartree_Solver(const double Lambda_in, const fRG_config& config_in, bool test_all_Keldysh_components):
     Lambda(Lambda_in), config(config_in){
         assert(KELDYSH);

@@ -21,9 +21,9 @@ Hartree-Fock
 Second-order perturbation theory (PT2)
 ++++++++++++++++++++++++++++++++++++++
 
-.. doxygenfunction:: sopt_state(State<Q>& Psi, const bool diff = false)
-
 .. doxygenfunction:: sopt_state_impl(State<Q>& Psi, const Bubble_Object& Pi, const State<Q>& bareState)
+
+.. doxygenfunction:: sopt_state(State<Q>& Psi, const bool diff = false)
 
 .. doxygenfunction:: vertexInSOPT(Vertex<Q, false>& PsiVertex, const State<Q>& bareState, const Bubble_Object& Pi)
 
