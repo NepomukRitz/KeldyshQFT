@@ -16,5 +16,5 @@ Project_Default.xml
 .DS_Store
 .vscode*
 build*
-source/Documentation/html*
-source/Documentation/xml*
+source/Documentation/html
+source/Documentation/xml
