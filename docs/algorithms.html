@@ -60,8 +60,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#second-order-perturbation-theory-pt2">Second-order perturbation theory (PT2)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I00E15sopt_state_implvR5StateI1QERK13Bubble_ObjectRK5StateI1QE"><code class="docutils literal notranslate"><span class="pre">sopt_state_impl()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4I0E10sopt_statevR5StateI1QEKb"><code class="docutils literal notranslate"><span class="pre">sopt_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I00E15sopt_state_implvR5StateI1QERK13Bubble_ObjectRK5StateI1QE"><code class="docutils literal notranslate"><span class="pre">sopt_state_impl()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4I00E12vertexInSOPTvR6VertexI1QXL0EEERK5StateI1QERK13Bubble_Object"><code class="docutils literal notranslate"><span class="pre">vertexInSOPT()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4I00E16selfEnergyInSOPTvR10SelfEnergyI1QERK5StateI1QERK13Bubble_Object"><code class="docutils literal notranslate"><span class="pre">selfEnergyInSOPT()</span></code></a></li>
 </ul>
@@ -161,12 +161,78 @@
 </dl>
 </dd></dl>
 
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N14Hartree_Solver31compute_Hartree_term_bracketingEdbb">
+<span id="_CPPv3N14Hartree_Solver31compute_Hartree_term_bracketingEdbb"></span><span id="_CPPv2N14Hartree_Solver31compute_Hartree_term_bracketingEdbb"></span><span id="Hartree_Solver::compute_Hartree_term_bracketing__double.b.b"></span><span class="target" id="d2/d75/classHartree__Solver_1ae2d914bd8a937dc7eabd1033b8100d5d"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_Hartree_term_bracketing</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">convergence_threshold</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-12</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Friedel_check</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N14Hartree_Solver31compute_Hartree_term_bracketingEdbb" title="Link to this definition"></a><br /></dt>
+<dd><p>Compute the Hartree-term self-consistently using a simple bracketing algorithm. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>convergence_threshold</strong> – Convergence criterion for the algorithm. </p></li>
+<li><p><strong>Friedel_check</strong> – If true, a check of the Friedel sum rule is performed after the computation. Only really meaningful at T=0. </p></li>
+<li><p><strong>verbose</strong> – If true, additional information is printed into the log file. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Self-consistently determined value of the Hartree term. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N14Hartree_Solver28compute_Hartree_term_FriedelEd">
+<span id="_CPPv3N14Hartree_Solver28compute_Hartree_term_FriedelEd"></span><span id="_CPPv2N14Hartree_Solver28compute_Hartree_term_FriedelEd"></span><span id="Hartree_Solver::compute_Hartree_term_Friedel__double"></span><span class="target" id="d2/d75/classHartree__Solver_1a671020485b79e01131f9f79bdfc8df85"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_Hartree_term_Friedel</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">convergence_threshold</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-12</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N14Hartree_Solver28compute_Hartree_term_FriedelEd" title="Link to this definition"></a><br /></dt>
+<dd><p>Solve the Friedel sum rule, Σ = 1./2. - 1./π * atan((ε + Σ)/Δ), self-consistently. Useful for benchmarks and checks at T=0, where it is supposed to hold. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>convergence_threshold</strong> – Accuracy of the bracketing algorithm used. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hartree-term as determined by the Friedel sum rule. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N14Hartree_Solver28compute_Hartree_term_oneshotEv">
+<span id="_CPPv3N14Hartree_Solver28compute_Hartree_term_oneshotEv"></span><span id="_CPPv2N14Hartree_Solver28compute_Hartree_term_oneshotEv"></span><span id="Hartree_Solver::compute_Hartree_term_oneshot"></span><span class="target" id="d2/d75/classHartree__Solver_1a81f76908acbe7c69cfb06a34611a192e"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_Hartree_term_oneshot</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N14Hartree_Solver28compute_Hartree_term_oneshotEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Evaluate the Hartree term using a previously provided self-energy. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value of the Hartree term. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK14Hartree_Solver22friedel_sum_rule_checkEv">
+<span id="_CPPv3NK14Hartree_Solver22friedel_sum_rule_checkEv"></span><span id="_CPPv2NK14Hartree_Solver22friedel_sum_rule_checkEv"></span><span id="Hartree_Solver::friedel_sum_rule_checkC"></span><span class="target" id="d2/d75/classHartree__Solver_1a2ec9d72693d8351fac847d28ef90fc09"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">friedel_sum_rule_check</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK14Hartree_Solver22friedel_sum_rule_checkEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Evaluate the rhs of the Friedel sum rule, Σ = 1./2. - 1./π * atan((ε + Σ)/Δ), which holds at T=0, with the precomputed Hartree-term and check for consistency. </p>
+</dd></dl>
+
 </div>
 </dd></dl>
 
 </section>
 <section id="second-order-perturbation-theory-pt2">
 <h3>Second-order perturbation theory (PT2)<a class="headerlink" href="#second-order-perturbation-theory-pt2" title="Link to this heading"></a></h3>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0E10sopt_statevR5StateI1QEKb">
+<span id="_CPPv3I0E10sopt_stateR5StateI1QEKb"></span><span id="_CPPv2I0E10sopt_stateR5StateI1QEKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sopt_state</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10sopt_statevR5StateI1QEKb" title="sopt_state::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Psi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">diff</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E10sopt_statevR5StateI1QEKb" title="Link to this definition"></a><br /></dt>
+<dd><p>Wrapper of sopt_state_impl, in case no <a class="reference internal" href="correlationfunctions.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object has been initialized yet. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Type of the data. </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Psi</strong> – <a class="reference internal" href="correlationfunctions.html#d7/d97/classState"><span class="std std-ref">State</span></a> that shall store the result. </p></li>
+<li><p><strong>diff</strong> – If true, a differentiated bubble is initialized. Incorrect for PT2, but useful for testing purposes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I00E15sopt_state_implvR5StateI1QERK13Bubble_ObjectRK5StateI1QE">
 <span id="_CPPv3I00E15sopt_state_implR5StateI1QERK13Bubble_ObjectRK5StateI1QE"></span><span id="_CPPv2I00E15sopt_state_implR5StateI1QERK13Bubble_ObjectRK5StateI1QE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bubble_Object</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/d0d/perturbation__theory_8hpp_1ad3a00a8aa8e7ec50537f318bda4c7432"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sopt_state_impl</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00E15sopt_state_implvR5StateI1QERK13Bubble_ObjectRK5StateI1QE" title="sopt_state_impl::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Psi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00E15sopt_state_implvR5StateI1QERK13Bubble_ObjectRK5StateI1QE" title="sopt_state_impl::Bubble_Object"><span class="n"><span class="pre">Bubble_Object</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Pi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00E15sopt_state_implvR5StateI1QERK13Bubble_ObjectRK5StateI1QE" title="sopt_state_impl::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bareState</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00E15sopt_state_implvR5StateI1QERK13Bubble_ObjectRK5StateI1QE" title="Link to this definition"></a><br /></dt>
@@ -183,23 +249,6 @@
 <li><p><strong>Psi</strong> – <a class="reference internal" href="correlationfunctions.html#d7/d97/classState"><span class="std std-ref">State</span></a> that shall store the result. </p></li>
 <li><p><strong>Pi</strong> – Previously initialized bubble object. </p></li>
 <li><p><strong>bareState</strong> – Bare state used for the computation. Should include only the bare vertex and the initialized Hartree self-energy. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4I0E10sopt_statevR5StateI1QEKb">
-<span id="_CPPv3I0E10sopt_stateR5StateI1QEKb"></span><span id="_CPPv2I0E10sopt_stateR5StateI1QEKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/d0d/perturbation__theory_8hpp_1a7ac208e8f3c934c5b68264609f81acd4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sopt_state</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E10sopt_statevR5StateI1QEKb" title="sopt_state::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Psi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">diff</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E10sopt_statevR5StateI1QEKb" title="Link to this definition"></a><br /></dt>
-<dd><p>Wrapper of sopt_state_impl, in case no <a class="reference internal" href="correlationfunctions.html#d8/d6e/classBubble"><span class="std std-ref">Bubble</span></a> object has been initialized yet. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Q</strong> – Type of the data. </p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>Psi</strong> – <a class="reference internal" href="correlationfunctions.html#d7/d97/classState"><span class="std std-ref">State</span></a> that shall store the result. </p></li>
-<li><p><strong>diff</strong> – If true, a differentiated bubble is initialized. Incorrect for PT2, but useful for testing purposes. </p></li>
 </ul>
 </dd>
 </dl>
@@ -254,12 +303,12 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv411run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb">
 <span id="_CPPv311run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb"></span><span id="_CPPv211run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb"></span><span id="run_parquet__fRG_configCR.std::vector:double:CR.iC.bC"></span><span class="target" id="d5/d94/parquet__solver_8c_09_09_1aaeb567e9e64243a1b424f89a13b5a425"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">run_parquet</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="miscellaneous.html#_CPPv410fRG_config" title="fRG_config"><span class="n"><span class="pre">fRG_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">U_NRG_list</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">overwrite_old_results</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411run_parquetRK10fRG_configRKNSt6vectorIdEEKiKb" title="Link to this definition"></a><br /></dt>
-<dd><p>Run the parquet solver, given a set of parameters. </p>
+<dd><p>Run the parquet solver for a list of interaction values. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config</strong> – Config struct which holds all necessary parameters </p></li>
-<li><p><strong>U_NRG_list</strong> – List of values for U/Δ for which to run a calculation </p></li>
+<li><p><strong>U_NRG_list</strong> – List of values for U/Δ for which to run a calculation. </p></li>
 <li><p><strong>version</strong> – Version of the implementation of the Schwinger-Dyson equation to be used. Recommendation: 1 </p></li>
 <li><p><strong>overwrite_old_results</strong> – Determines whether existing results for the given parameters shall be overwritten or not. </p></li>
 </ul>
@@ -269,17 +318,18 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb">
-<span id="_CPPv3I0E14parquet_solverKNSt6stringER5StateI1QEKdKiKdKiKbKdKb"></span><span id="_CPPv2I0E14parquet_solverKNSt6stringER5StateI1QEKdKiKdKiKbKdKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1a07f441b6693f6e2e8d958049ae06cb73"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parquet_solver</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">filename</span></span>, <a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb" title="parquet_solver::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">accuracy</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-6</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Nmax</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">6</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">overwrite_old_results</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mixing_ratio</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">use_last_state_anyway</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3I0E14parquet_solverKNSt6stringER5StateI1QEKdKiKdKiKbKdKb"></span><span id="_CPPv2I0E14parquet_solverKNSt6stringER5StateI1QEKdKiKdKiKbKdKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1ae12517bd3aca1adfe05eb9690f79278f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parquet_solver</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">filename</span></span>, <a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb" title="parquet_solver::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">accuracy</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-6</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Nmax</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">50</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">overwrite_old_results</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mixing_ratio</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">use_last_state_anyway</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E14parquet_solverbKNSt6stringER5StateI1QEKdKiKdKiKbKdKb" title="Link to this definition"></a><br /></dt>
 <dd><p>Iterate the parquet equations for a given input state until convergence. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> – : File name for result </p></li>
-<li><p><strong>state_in</strong> – : Input state used as initial input to the parquet equations (e.g. SOPT) </p></li>
-<li><p><strong>Lambda</strong> – : Lambda value at which to iterate the parquet equations </p></li>
-<li><p><strong>accuracy</strong> – : Desired relative accuracy used as convergence criterion for both vertex and selfenergy (default: 0.001) </p></li>
+<li><p><strong>filename</strong> – : File name for result. </p></li>
+<li><p><strong>state_in</strong> – : Input state used as initial input to the parquet equations (e.g. PT2). </p></li>
+<li><p><strong>Lambda</strong> – : Lambda value at which to iterate the parquet equations. </p></li>
+<li><p><strong>accuracy</strong> – : Desired relative accuracy used as convergence criterion for both vertex and self-energy (default: 1e-6) </p></li>
 <li><p><strong>Nmax</strong> – : Maximal number of parquet iterations, used as a break condition in case convergence cannot be reached (default: 50) </p></li>
-<li><p><strong>mixing_ratio</strong> – mixing ratio in [0.1 - 0.5] for stabilizing the parquet iteration </p></li>
+<li><p><strong>mixing_ratio</strong> – mixing ratio in [recommended: 0.1 - 0.5] for stabilizing the parquet iterations. </p></li>
+<li><p><strong>use_last_state_anyway</strong> – If true, the last state of a previous calculation for the same parameters is read in and returned, even if that calculation was not converged. </p></li>
 </ul>
 </dd>
 </dl>
@@ -290,11 +340,16 @@
 <span id="_CPPv3I0E17parquet_iterationR5StateI1QERK5StateI1QEKdKiKi"></span><span id="_CPPv2I0E17parquet_iterationR5StateI1QERK5StateI1QEKdKiKi"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1aad1680ae03adc0f566df945376e95234"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parquet_iteration</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi" title="parquet_iteration::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_out</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi" title="parquet_iteration::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">it_Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E17parquet_iterationvR5StateI1QERK5StateI1QEKdKiKi" title="Link to this definition"></a><br /></dt>
 <dd><p>One iteration of the parquet solver: Compute both the Bethe-Salpeter and the Schwinger-Dyson equation for given input. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state_out</strong> – : Lhs of the BSE and SDE. </p></li>
-<li><p><strong>state_in</strong> – : Input to the rhs of the BSE and SDE </p></li>
-<li><p><strong>Lambda</strong> – : Lambda value at which to compute the parquet equations </p></li>
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Type of the data. </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>state_out</strong> – Output of the parquet iteration, i.e. the LHS of the BSE and the SDE. </p></li>
+<li><p><strong>state_in</strong> – Input into the RHS of the BSE and the SDE. </p></li>
+<li><p><strong>Lambda</strong> – Λ value at which to compute the parquet equations. </p></li>
+<li><p><strong>it_Lambda</strong> – Number of the parquet iteration. Used, when intermediate results of the calculation are stored in hdf files. </p></li>
+<li><p><strong>version</strong> – Version of the implementation of the Schwinger-Dyson equation to be used. Recommendation: 1 </p></li>
 </ul>
 </dd>
 </dl>
@@ -303,15 +358,15 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd">
 <span id="_CPPv3I0E11compute_BSER6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd"></span><span id="_CPPv2I0E11compute_BSER6VertexI1QXfalseEER6VertexI1QXfalseEER6VertexI1QXfalseEERK5StateI1QEKd"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1a1541a0b7d193f70577c5fab1efc216e1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_BSE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Gamma_BSE</span></span>, <span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Gamma_BSE_L</span></span>, <span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Gamma_BSE_R</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="compute_BSE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E11compute_BSEvR6VertexI1QXL0EEER6VertexI1QXL0EEER6VertexI1QXL0EEERK5StateI1QEKd" title="Link to this definition"></a><br /></dt>
-<dd><p>Insert the vertex of input “state” into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs. </p>
+<dd><p>Insert the vertex of input state into the RHS of the (symmetrized) Bethe-Salpeter equation and compute the LHS. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Gamma_BSE</strong> – : Vertex computed as the lhs of the BSE </p></li>
-<li><p><strong>Gamma_BSE_L</strong> – : Vertex computed as the lhs of the BSE, with Ir on the left and full Gamma on the right </p></li>
-<li><p><strong>Gamma_BSE_R</strong> – : Vertex computed as the lhs of the BSE, with Ir on the right and full Gamma on the left </p></li>
-<li><p><strong>state_in</strong> – : Input state for which to check the BSE </p></li>
-<li><p><strong>Lambda</strong> – : Flow parameter Lambda at which input state was computed </p></li>
+<li><p><strong>Gamma_BSE</strong> – : Vertex computed as the lhs of the BSE. </p></li>
+<li><p><strong>Gamma_BSE_L</strong> – : Vertex computed as the lhs of the BSE, with Ir on the left and full Γ on the right. </p></li>
+<li><p><strong>Gamma_BSE_R</strong> – : Vertex computed as the lhs of the BSE, with Ir on the right and full Γ on the left. </p></li>
+<li><p><strong>state_in</strong> – : Input state which to input into the BSE. </p></li>
+<li><p><strong>Lambda</strong> – : Flow parameter Λ at which input state was computed. </p></li>
 </ul>
 </dd>
 </dl>
@@ -320,7 +375,28 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi">
 <span id="_CPPv3I0E11compute_SDER10SelfEnergyI1QERK5StateI1QEKdi"></span><span id="_CPPv2I0E11compute_SDER10SelfEnergyI1QERK5StateI1QEKdi"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dd/d0a/parquet__solver_8hpp_1a9ef507c1d49fff7991752cab04374824"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">compute_SDE</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi" title="compute_SDE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Sigma_SDE</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi" title="compute_SDE::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">version</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E11compute_SDEvR10SelfEnergyI1QERK5StateI1QEKdi" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Evaluate the second term of the SDE, <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="o">/----&lt;----</span>\
+     <span class="o">/</span>           \
+    <span class="o">|</span>  <span class="o">/-&gt;-|-----|</span>
+    \ <span class="o">/</span>    <span class="o">|</span>  <span class="n">Γ</span>  <span class="o">|</span>
+<span class="o">--&lt;--</span><span class="n">o</span><span class="o">--&lt;--|-----|--&lt;--</span>
+</pre></div>
+</div>
+ given an input state, at a given value of the flow parameter Λ. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Type of the data. </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Sigma_SDE</strong> – Self-energy to store the result of the computation. </p></li>
+<li><p><strong>state_in</strong> – Input state used to evaluate the RHS of the SDE. </p></li>
+<li><p><strong>Lambda</strong> – Value of the flow parameter Λ. </p></li>
+<li><p><strong>version</strong> – Version of the implementation of the SDE. Recommended: 1. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="mfrg">

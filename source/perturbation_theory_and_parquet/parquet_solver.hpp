@@ -17,12 +17,12 @@
 #include "../postprocessing/sanity_check.hpp"
 
 /**
- * Insert the vertex of input "state" into the rhs of the (symmetrized) Bethe-Salpeter equation and compute the lhs.
- * @param Gamma_BSE   : Vertex computed as the lhs of the BSE
- * @param Gamma_BSE_L : Vertex computed as the lhs of the BSE, with Ir on the left and full Gamma on the right
- * @param Gamma_BSE_R : Vertex computed as the lhs of the BSE, with Ir on the right and full Gamma on the left
- * @param state_in    : Input state for which to check the BSE
- * @param Lambda      : Flow parameter Lambda at which input state was computed
+ * Insert the vertex of input state into the RHS of the (symmetrized) Bethe-Salpeter equation and compute the LHS.
+ * @param Gamma_BSE   : Vertex computed as the lhs of the BSE.
+ * @param Gamma_BSE_L : Vertex computed as the lhs of the BSE, with Ir on the left and full Γ on the right.
+ * @param Gamma_BSE_R : Vertex computed as the lhs of the BSE, with Ir on the right and full Γ on the left.
+ * @param state_in    : Input state which to input into the BSE.
+ * @param Lambda      : Flow parameter Λ at which input state was computed.
  */
 template <typename Q>
 void compute_BSE(Vertex<Q,false>& Gamma_BSE, Vertex<Q,false>& Gamma_BSE_L, Vertex<Q,false>& Gamma_BSE_R,
@@ -457,7 +457,22 @@ void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
     //add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
 }
 
-
+/**
+ * Evaluate the second term of the SDE,
+ * ```
+ *       /----<----\
+ *      /           \
+ *     |  /->-|-----|
+ *     \ /    |  Γ  |
+ * --<--o--<--|-----|--<--
+ * ```
+ * given an input state, at a given value of the flow parameter Λ.
+ * @tparam Q Type of the data.
+ * @param Sigma_SDE Self-energy to store the result of the computation.
+ * @param state_in Input state used to evaluate the RHS of the SDE.
+ * @param Lambda Value of the flow parameter Λ.
+ * @param version Version of the implementation of the SDE. Recommended: 1.
+ */
 template <typename Q>
 void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const double Lambda, int version) {
     /// Pick your favorite version:
@@ -626,11 +641,14 @@ void susceptibilities_postprocessing(Vertex<Q,false>& chi, Vertex<Q,false>& chi_
 void parquet_checks(const std::string filename);
 
 /**
- * One iteration of the parquet solver: Compute both the Bethe-Salpeter and the Schwinger-Dyson equation for given input.
- * @param state_out  : Lhs of the BSE and SDE.
- * @param state_in   : Input to the rhs of the BSE and SDE
- * @param Lambda     : Lambda value at which to compute the parquet equations
- */
+  * One iteration of the parquet solver: Compute both the Bethe-Salpeter and the Schwinger-Dyson equation for given input.
+  * @tparam Q Type of the data.
+  * @param state_out Output of the parquet iteration, i.e. the LHS of the BSE and the SDE.
+  * @param state_in Input into the RHS of the BSE and the SDE.
+  * @param Lambda Λ value at which to compute the parquet equations.
+  * @param it_Lambda Number of the parquet iteration. Used, when intermediate results of the calculation are stored in hdf files.
+  * @param version Version of the implementation of the Schwinger-Dyson equation to be used. Recommendation: 1
+  */
 template <typename Q>
 void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const double Lambda, const int it_Lambda, const int version) {
 
@@ -646,18 +664,17 @@ void parquet_iteration(State<Q>& state_out, const State<Q>& state_in, const doub
 
 /**
  * Iterate the parquet equations for a given input state until convergence.
- * @param filename : File name for result
- * @param state_in : Input state used as initial input to the parquet equations (e.g. SOPT)
- * @param Lambda   : Lambda value at which to iterate the parquet equations
- * @param accuracy : Desired relative accuracy used as convergence criterion for both vertex and selfenergy
- *                     (default: 0.001)
- * @param Nmax     : Maximal number of parquet iterations, used as a break condition in case convergence cannot be
- *                     reached (default: 50)
- * @param mixing_ratio: mixing ratio in [0.1 - 0.5] for stabilizing the parquet iteration
+ * @param filename : File name for result.
+ * @param state_in : Input state used as initial input to the parquet equations (e.g. PT2).
+ * @param Lambda   : Lambda value at which to iterate the parquet equations.
+ * @param accuracy : Desired relative accuracy used as convergence criterion for both vertex and self-energy (default: 1e-6)
+ * @param Nmax     : Maximal number of parquet iterations, used as a break condition in case convergence cannot be reached (default: 50)
+ * @param mixing_ratio: mixing ratio in [recommended: 0.1 - 0.5] for stabilizing the parquet iterations.
+ * @param use_last_state_anyway: If true, the last state of a previous calculation for the same parameters is read in and returned, even if that calculation was not converged.
  */
 template <typename Q>
 bool parquet_solver(const std::string filename, State<Q>& state_in, const double Lambda, const int version,
-                    const double accuracy=1e-6, const int Nmax=6, const bool overwrite_old_results=true, const double mixing_ratio=1.0, const bool use_last_state_anyway=false) {
+                    const double accuracy=1e-6, const int Nmax=50, const bool overwrite_old_results=true, const double mixing_ratio=1.0, const bool use_last_state_anyway=false) {
     const double mixing_minimum = 0.01; // minimal mixing factor; tiny mixing factors guarantee "convergence" for anything and make the result totally useless.
     assert((mixing_ratio >= mixing_minimum and mixing_ratio <= 0.5) or mixing_ratio == 1.0);
     SDE_counter = 0;
@@ -807,7 +824,13 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
     return is_converged;
 }
 
-
+/**
+ * Run the parquet solver for a list of interaction values.
+ * @param config Config struct which holds all necessary parameters
+ * @param U_NRG_list List of values for U/Δ for which to run a calculation.
+ * @param version Version of the implementation of the Schwinger-Dyson equation to be used. Recommendation: 1
+ * @param overwrite_old_results Determines whether existing results for the given parameters shall be overwritten or not.
+ */
 void run_parquet(const fRG_config& config, const std::vector<double>&, int version, bool overwrite_old_results);
 
 

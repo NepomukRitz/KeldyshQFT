@@ -97,11 +97,38 @@ public:
     
     double compute_filling_oneshot();
     double compute_Hartree_term(double convergence_threshold = 1e-12);
+
+    /**
+     * Compute the Hartree-term self-consistently using a simple bracketing algorithm.
+     * @param convergence_threshold Convergence criterion for the algorithm.
+     * @param Friedel_check If true, a check of the Friedel sum rule is performed after the computation. Only really meaningful at T=0.
+     * @param verbose If true, additional information is printed into the log file.
+     * @return Self-consistently determined value of the Hartree term.
+     */
     double compute_Hartree_term_bracketing(double convergence_threshold = 1e-12, bool Friedel_check = true,
                                            bool verbose = true);
+
+    /**
+     * Solve the Friedel sum rule,
+     * Σ = 1./2. - 1./π * atan((ε + Σ)/Δ),
+     * self-consistently. Useful for benchmarks and checks at T=0, where it is supposed to hold.
+     * @param convergence_threshold Accuracy of the bracketing algorithm used.
+     * @return Hartree-term as determined by the Friedel sum rule.
+     */
     double compute_Hartree_term_Friedel(double convergence_threshold = 1e-12);
+
+    /**
+     * Evaluate the Hartree term using a previously provided self-energy.
+     * @return Value of the Hartree term.
+     */
     double compute_Hartree_term_oneshot();
     auto operator()(double nu) const -> double;
+
+    /**
+     * Evaluate the rhs of the Friedel sum rule,
+     * Σ = 1./2. - 1./π * atan((ε + Σ)/Δ),
+     * which holds at T=0, with the precomputed Hartree-term and check for consistency.
+     */
     void friedel_sum_rule_check() const;
     void write_out_propagators() const ;
 };

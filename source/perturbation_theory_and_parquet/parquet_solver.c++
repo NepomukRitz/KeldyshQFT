@@ -96,13 +96,6 @@ void parquet_checks(const std::string filename, const fRG_config& config) {
     }
 }
 
-/**
- * Run the parquet solver, given a set of parameters.
- * @param config Config struct which holds all necessary parameters
- * @param U_NRG_list List of values for U/Δ for which to run a calculation
- * @param version Version of the implementation of the Schwinger-Dyson equation to be used. Recommendation: 1
- * @param overwrite_old_results Determines whether existing results for the given parameters shall be overwritten or not.
- */
 void run_parquet(const fRG_config& config, const std::vector<double>& U_NRG_list, const int version, const bool overwrite_old_results){
     const std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG_list, config);
 
