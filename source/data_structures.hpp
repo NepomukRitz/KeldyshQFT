@@ -421,14 +421,15 @@ vec<T> operator+ (const double& rhs, vec<T> lhs) {
 }
 
 // subtraction of a double constant to comp vector
-template <typename T>
-vec<T> operator-= (vec<T>& lhs, const double& rhs) {
-//#pragma omp parallel for
-    for (size_t i=0; i<lhs.size(); ++i) {
-        lhs[i] -= rhs;
-    }
-    return lhs;
-}
+// template <typename T>
+// vec<T> operator-= (vec<T>& lhs, const double& rhs) {
+// //#pragma omp parallel for
+//     for (size_t i=0; i<lhs.size(); ++i) {
+//         lhs[i] -= rhs;
+//     }
+//     return lhs;
+// }
+
 template <typename T>
 vec<T> operator- (vec<T> lhs, const double& rhs) {
     lhs -= rhs; return lhs;

@@ -66,7 +66,7 @@ void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_
 
     }
     else {
-        std::cout << "current value: " << y_run.value << std::endl;
+        std::cout << "current value: " << y_run << std::endl;
     }
 
 }
@@ -798,7 +798,7 @@ namespace boost {
                         if( trials == config.max_stepResizing_attempts ) throw std::overflow_error(error_string );
 
                         lambdas_did[integration_step_count+1] = FlowGrid::lambda_from_t(t_now);
-                        postRKstep_stuff<State_t>(start_state, FlowGrid::lambda_from_t(t_now), lambdas_did, integration_step_count, config.filename, config, verbose);
+                        postRKstep_stuff<State_t>(start_state, system, FlowGrid::lambda_from_t(t_now), lambdas_did, integration_step_count, config.filename, config, verbose);
                         if constexpr(std::is_same<State<state_datatype>, State_t>::value) {
                             //utils::print("I'M A STATE!\n\n");
                             system.iteration = integration_step_count+1;

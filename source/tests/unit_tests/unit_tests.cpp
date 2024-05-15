@@ -80,42 +80,7 @@ int main(int argc, char* argv[]) {
 
     utils::print("   -----   Performing unit tests   -----", true);
 
-    fRG_config config;
-    config.epsODE_abs_ = 1e-8;
-    config.epsODE_rel_ = 1e-6;
-    config.nloops = 1;
-    config.U = 1.0;
-    config.T = (ZERO_T ? 0.0 : 0.1);
-    config.Gamma = 0.2;
-    config.epsilon = (PARTICLE_HOLE_SYMMETRY ? 0.0 : 0.5) - config.U * 0.5;
-    config.save_intermediateResults = true;
-    //test_symmetries(1.8, config);
-
-
-    //utils::check_input();
-
-    //test_Bubble.perform_test();
-
-
-    //if (ZERO_T and REG==2) {
-        //data_dir = "../Data_MFU=1.000000/";
-        //utils::makedir(data_dir);
-        //std::string filename = "test_PTstate.h5";
-        //test_PT_state<state_datatype>(data_dir + filename, 1.8, false);
-    //}
-
-    //compute_non_symmetric_diags(0.8, true, 1, true);
-
-
-    /// Test Hartree functionality
-    //compare_to_Friedel_rule();
-    //Hartree_Solver(0.5, true); // test what happens if the Hartree loop is closed with S.
-
-    /// Test perturbation theory machine
-    //const double Lambda = 9.;
-    //PT_Machine<state_datatype> PT_Calculator (2, Lambda, false);
-    //PT_Calculator.debug_TOPT();
-
+    // If more tests shall be done, call them here.
 
     return Catch::Session().run(argc, argv);
 #if defined(USE_MPI)

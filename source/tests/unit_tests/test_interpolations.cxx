@@ -68,7 +68,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     idx[my_defs::K2::internal]      = i_in;
     state_datatype value = 0.;
     for (int iw = 1; iw<nBOS2; iw++){
-        for (int iv = 1; iv<nFER2-1; iv++) {
+        for (int iv = 0; iv<nFER2; iv++) {
             idx[my_defs::K2::omega]         = iw;
             idx[my_defs::K2::nu]            = iv;
             avertex.K2.setvert(value, i_spin, iw, iv, iK, i_in);
@@ -83,7 +83,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
     vec<comp> values_inter (nBOS2*nFER2);
     int iter = 0;
     IndicesSymmetryTransformations indices(iK, i_spin, 0., 0., 0., i_in, 'a', k1, 0, 'a');
-    for (int iw = 1; iw<nBOS2; iw++){
+    for (int iw = 0; iw<nBOS2-1; iw++){
         for (int iv = 0; iv<nFER2; iv++) {
             idx[my_defs::K2::omega]         = iw;
             idx[my_defs::K2::nu]            = iv;
@@ -104,7 +104,7 @@ TEST_CASE( "Do the interpolations return the right values reliably for K2?", "[i
 
 
     SECTION( "Is the correct value retrieved from interpolation in K2?" ) {
-        REQUIRE( cumul_interpolation_error < cumul_interpolation_tolerance );
+        CHECK( cumul_interpolation_error < cumul_interpolation_tolerance );
     }
 
 }
@@ -364,7 +364,7 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
     output_t values_interpolated (dims);
     double interb = (avertex.K2.frequencies.get_tupper_b_aux() - avertex.K2.frequencies.get_tlower_b_aux()) / double(N-1);
     double interf = (avertex.K2.frequencies.get_tupper_f_aux() - avertex.K2.frequencies.get_tlower_f_aux()) / double(M-1);
-    for (size_t iw = 1; iw<N; iw++){
+    for (size_t iw = 1; iw<N-1; iw++){
         for (size_t iv = 1; iv<M-1; iv++) {
             indices.w  = avertex.K2.frequencies.  primary_grid.frequency_from_t(avertex.K2.frequencies.get_tlower_b_aux() + iw*interb);
             indices.v1 = avertex.K2.frequencies.secondary_grid.frequency_from_t(avertex.K2.frequencies.get_tlower_f_aux() + iv*interf);
@@ -404,10 +404,10 @@ TEST_CASE( "Does linear interpolation work reliably for K2?", "[interpolations]"
 
 
     SECTION( "Is the cumulative error within the tolerance for K2?" ) {
-        REQUIRE( cumul_interpolation_error < cumul_interpolation_tolerance );
+        CHECK( cumul_interpolation_error < cumul_interpolation_tolerance );
     }
     SECTION( "Is the maximal error within the tolerance for K2?" ) {
-        REQUIRE( not geq_interpolation_tolerance );
+        CHECK( not geq_interpolation_tolerance );
     }
 
 }

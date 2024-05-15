@@ -128,6 +128,9 @@ elseif(MACBOOK)
 
     target_link_libraries(Keldysh_postproc -L/opt/homebrew/Cellar/hdf5/1.14.3/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_postproc -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
+
+    target_link_libraries(Keldysh_mfRG_testing -L/opt/homebrew/Cellar/hdf5/1.14.3/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(Keldysh_mfRG_testing -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
 endif()
 
 

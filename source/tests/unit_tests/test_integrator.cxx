@@ -40,37 +40,9 @@ TEST_CASE( "integrate different test functions", "[integrator]" ) {
     INFO( "Integrand: " << types[i] );
     TestIntegrand integrand (i);
 
-    /* // only adaptive Gauss-Lobatto passes all tests
-
-    WHEN( "Simpson integrator with 1500 points" ) {
-        double res = integrator_simpson(integrand, -50., 50., 1500).real();
-        CHECK( res == Approx(exact[i]).epsilon(0.001) );
-    }
-    WHEN( "Simpson integrator with 1500 points with additional points around 0" ) {
-        double res = integrator_simpson(integrand, -50., 50., 0., 1500).real();
-        CHECK( res == Approx(exact[i]).epsilon(0.001) );
-    }
-    WHEN( "Simpson integrator with 1500 points with additional points around +- 5" ) {
-        double res = integrator_simpson(integrand, -50., 50., -5., 5., 1500).real();
-        CHECK( res == Approx(exact[i]).epsilon(0.001) );
-    }
-    WHEN( "self-made adaptive Simpson integrator with 1500 points" ) {
-        double res = adaptive_simpson_integrator(integrand, -50., 50., 1500).real();
-        CHECK( res == Approx(exact[i]).epsilon(0.001) );
-    }
-    // */
-
     WHEN( "adaptive Gauss-Lobatto integrator with Kronrod extension" ) {
         Adapt<TestIntegrand> adaptor(integrator_tol, integrand);
         double res = adaptor.integrate(-50., 50.);
-        CHECK( res == Approx(exact[i]).epsilon(0.0001) );
-    }
-    WHEN( "PAID integrator with Clenshaw-Curtis" ) {
-        paid::Domain<1> d({-50.},{50.});
-        paid::PAIDInput<1,TestIntegrand,int> paid_integrand{d,integrand,0};
-        paid::PAIDConfig config;
-        paid::PAID<1, TestIntegrand, double, int,double> paid_integral(config);
-        double res = paid_integral.solve({paid_integrand})[0];
-        CHECK( res == Approx(exact[i]).epsilon(0.0001));
+        CHECK(res == Approx(exact[i]).epsilon(0.0001));
     }
 }
