@@ -1,7 +1,3 @@
-/**
- * Initialize and run the fRG flow.
- */
-
 #ifndef KELDYSH_MFRG_FLOW_HPP
 #define KELDYSH_MFRG_FLOW_HPP
 
@@ -16,16 +12,21 @@
 #include "../postprocessing/postprocessing.hpp"      // to check the fulfillment of vertex sum-rules at the end of the flow
 #include "../utilities/hdf5_routines.hpp"       // file management
 
+
 /**
- * Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h.
- * Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin.
+ * Compute an mfRG flow up to loop order n, as specified by the runtime-parameter `n_loops`.
+ * The flow is initialized with the parquet result at the initial value of the regulator `Lambda_ini` and from there
+ * solved with a fourth-order Runge-Kutta solver up to the final value `Lambda_fin`.
+ * @param outputFileName Name of the output file used to store the results of the mfRG flow computation.
+ * @param config fRGconfig struct used to hold all relevant parameters
+ * @return The final state of the flow at `Lambda_fin`.
  */
 State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_config& config);
 
 /**
- * Checkpointing: Continue to compute an n-loop flow that has been canceled before, e.g. due to running into the wall
- * time. For given iteration it_start, read the state at this iteration from previously computed results, then continue
- * to compute the flow up to Lambda_fin.
+ * Version of the mfRG flow used for checkpointing: Continue to compute an n-loop flow that has been canceled before,
+ * e.g. due to running into the wall time. For given iteration it_start, read the state at this iteration from
+ * previously computed results, then continue to compute the flow up to Lambda_fin.
  *
  * Usage: Check the number <Nmax> of the last Lambda layer of a given file <inputFileName> that has been successfully
  *        computed. (See log file: "Successfully saved in hdf5 file: <inputFileName> in Lambda layer <Nmax>.)

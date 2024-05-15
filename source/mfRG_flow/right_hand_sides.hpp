@@ -157,11 +157,17 @@ struct mfRG_stats {
     }
 };
 
+
 /**
- * Function to implement an n-loop flow (without Katanin substitution).
- * @param Psi   : Known state of the State at Lambda
- * @param Lambda:  Scale at which the calculation is being performed
- * @return dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda
+ * Function which implements the rhs of an n-loop flow.
+ * @tparam Q Type of the data
+ * @param Psi Known State at the flow parameter Λ, used to evaluate the RHS.
+ * @param Lambda flow parameter Λ.
+ * @param nloops_max maximal number of loops
+ * @param opt Options specifying the iteration number and the Runge-Kutta step of that specific iteration.
+ * @param config Set of parameters
+ * @param stats Struct to hold some statistics from the flow, such as the number of self-energy iterations required for convergence.
+ * @return A new state from the evaluation of the RHS of the flow equation.
  */
 template <typename Q>
 auto rhs_n_loop_flow(const State<Q>& Psi, const double Lambda, const int nloops_max, const vec<size_t> opt, const fRG_config& config, mfRG_stats& stats) -> State<Q>{  //, const bool save_intermediate=false
@@ -565,12 +571,36 @@ public:
     }
 };
 
+/**
+ * Implements the rhs of the one-loop flow equation for the self-energy,
+ * ```
+ *    |----|<-----|
+ *    |           |
+ *    |--|-----|--|
+ *       |  Γ  |
+ *  --<--|-----|--<--
+ * ```
+ * @tparam Q Type of the data
+ * @param dPsiSelfEnergy Differentiated self-energy that results.
+ * @param PsiVertex Input vertex used.
+ * @param S Single-scale propagator used.
+ */
 template <typename Q>
 void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q,false>& PsiVertex, const Propagator<Q>& S){
     // Self-energy flow
     loop<true,0>(dPsiSelfEnergy, PsiVertex, S); // Loop for the Self-Energy calculation
 }
 
+
+/**
+ * Implements the rhs of the one-loop flow equation for the vertex, adding up the results for each channel.
+ * @tparam Q Type of the data.
+ * @tparam Bubble_Object Type of the bubble object to be used.
+ * @param dPsiVertex Differentiated vertex that results.
+ * @param PsiVertex Input vertex used.
+ * @param dPi Differentiated bubble object.
+ * @param config Set of parameters.
+ */
 template <typename Q, class Bubble_Object>
 void vertexOneLoopFlow(Vertex<Q,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& dPi, const fRG_config& config){
     // Vertex flow

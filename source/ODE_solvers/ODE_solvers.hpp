@@ -499,30 +499,21 @@ namespace ode_solver_impl
 } // namespace ode_solver_impl
 
 
-
 /**
- * ODE solver with different options --> master_parameters.h
- * currently implemented rules:
- *      basic Runge-Kutta 4
- *      Bogacki–Shampine
- *      Cash-Carp
- * @tparam Y                    double/comp/State
- * @tparam FlowGrid             suggests a set of step sizes;
- *                                  for non-adaptive rules these are used --> lambdas_try
- *                                  for adaptive rules FlowGrid only approximately "guides" the step sizes;
- *                                    e.g. for FlowGrid::exp_parametrization we have
- *                                      Lambda(t) = exp(-t)
- *                                    such that equal step sizes in t lead to exponentially decaying step sizes.
- *                                    Adaptive rules can grow or shrink the step sizes in terms of t!
- * @param result                final state
- * @param Lambda_f              final Lambda
- * @param state_ini             initial state of type Y
- * @param Lambda_i              initial Lambda
- * @param rhs                   right-hand side of differential equation rhs(y, dydt, Lambda)
- * @param lambda_checkpoints    checkpoints at which we want to know a result
- * @param filename              filename for storing the result (if Y == State)
- * @param iter_start            start at a certain iteration step (to continue a ODE flow)
- * @param N_ODE                 number of ODE steps (true number of steps is N_ODE + U_NRG for hybridization flow)
+ * ODE solver, by default implementing a fourth-order Runge-Kutta (Cash-Karp) algorithm.
+ * (Other options are possible but not recommended!)
+ * @tparam Y Type of the data to be handled by the solver. Can be double, comp, State, ...
+ * @tparam FlowGrid Suggests a set of step sizes:
+ * - for non-adaptive rules, these are used directly --> lambdas_try
+ * - for adaptive rules, FlowGrid only approximately "guides" the step sizes;
+ *   e.g. for FlowGrid::exp_parametrization we have Lambda(t) = exp(-t) such that equal step sizes in t lead to
+ *   exponentially decaying step sizes. Adaptive rules can grow or shrink the step sizes in terms of t!
+ * @tparam System
+ * @param result Final state.
+ * @param state_ini Initial state of type Y.
+ * @param rhs Callable instance of a class used to implement the RHS of the differential equation.
+ * @param config Config struct holding all relevant parameters for the ODE.
+ * @param verbose If true, additional information is printed into the log file. Recommendation: true.
  */
 template <typename Y, typename FlowGrid = flowgrid::sqrt_parametrization, typename System
         >

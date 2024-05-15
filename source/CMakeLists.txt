@@ -146,7 +146,6 @@ set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
 
 file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}) #Doxygen won't create this for us
-file(REMOVE_RECURSE ${DOXYGEN_OUTPUT_DIR}/html/) #delete old documentation, if required.
 
 add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
                    DEPENDS ${KELDYSH_MFRG_PUBLIC_HEADERS}

@@ -404,38 +404,50 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv411n_loop_flowRKNSt6stringERK10fRG_config">
 <span id="_CPPv311n_loop_flowRKNSt6stringERK10fRG_config"></span><span id="_CPPv211n_loop_flowRKNSt6stringERK10fRG_config"></span><span id="n_loop_flow__ssCR.fRG_configCR"></span><span class="target" id="d5/d21/flow_8hpp_1af65e6bb08f81c973893971c898e28298"></span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">state_datatype</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">n_loop_flow</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">outputFileName</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="miscellaneous.html#_CPPv410fRG_config" title="fRG_config"><span class="n"><span class="pre">fRG_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411n_loop_flowRKNSt6stringERK10fRG_config" title="Link to this definition"></a><br /></dt>
-<dd><p>Initialize and run the fRG flow. Compute n-loop flow, with number of loops specified by N_LOOPS in parameters.h. Initialize the flow with second order PT at Lambda_ini, compute the flow with RK4 ODE solver up to Lambda_fin. </p>
+<dd><p>Compute an mfRG flow up to loop order n, as specified by the runtime-parameter <code class="docutils literal notranslate"><span class="pre">n_loops</span></code>. The flow is initialized with the parquet result at the initial value of the regulator <code class="docutils literal notranslate"><span class="pre">Lambda_ini</span></code> and from there solved with a fourth-order Runge-Kutta solver up to the final value <code class="docutils literal notranslate"><span class="pre">Lambda_fin</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outputFileName</strong> – Name of the output file used to store the results of the mfRG flow computation. </p></li>
+<li><p><strong>config</strong> – fRGconfig struct used to hold all relevant parameters </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The final state of the flow at <code class="docutils literal notranslate"><span class="pre">Lambda_fin</span></code>. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv411n_loop_flowRKNSt6stringERK10fRG_configj">
 <span id="_CPPv311n_loop_flowRKNSt6stringERK10fRG_configj"></span><span id="_CPPv211n_loop_flowRKNSt6stringERK10fRG_configj"></span><span id="n_loop_flow__ssCR.fRG_configCR.unsigned-i"></span><span class="target" id="d5/d21/flow_8hpp_1a46bea4248f33778056b57442d4cb817a"></span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">state_datatype</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">n_loop_flow</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">inputFileName</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="miscellaneous.html#_CPPv410fRG_config" title="fRG_config"><span class="n"><span class="pre">fRG_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">it_start</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411n_loop_flowRKNSt6stringERK10fRG_configj" title="Link to this definition"></a><br /></dt>
-<dd><p>Checkpointing: Continue to compute an n-loop flow that has been canceled before, e.g. due to running into the wall time. For given iteration it_start, read the state at this iteration from previously computed results, then continue to compute the flow up to Lambda_fin.</p>
+<dd><p>Version of the mfRG flow used for checkpointing: Continue to compute an n-loop flow that has been canceled before, e.g. due to running into the wall time. For given iteration it_start, read the state at this iteration from previously computed results, then continue to compute the flow up to Lambda_fin.</p>
 <p>Usage: Check the number &lt;Nmax&gt; of the last Lambda layer of a given file &lt;inputFileName&gt; that has been successfully computed. (See log file: “Successfully saved in hdf5 file: &lt;inputFileName&gt; in Lambda layer &lt;Nmax&gt;.) Use this number &lt;Nmax&gt; as input &lt;it_start&gt; for this function. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I000E10ode_solvervR1YRK1YRK6SystemRK17ODE_solver_configKb">
 <span id="_CPPv3I000E10ode_solverR1YRK1YRK6SystemRK17ODE_solver_configKb"></span><span id="_CPPv2I000E10ode_solverR1YRK1YRK6SystemRK17ODE_solver_configKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Y</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FlowGrid</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">flowgrid</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">sqrt_parametrization</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">System</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="da/dc3/ODE__solvers_8hpp_1a7588d39cea3e1347f39c0872e2049114"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ode_solver</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I000E10ode_solvervR1YRK1YRK6SystemRK17ODE_solver_configKb" title="ode_solver::Y"><span class="n"><span class="pre">Y</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">result</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I000E10ode_solvervR1YRK1YRK6SystemRK17ODE_solver_configKb" title="ode_solver::Y"><span class="n"><span class="pre">Y</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_ini</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I000E10ode_solvervR1YRK1YRK6SystemRK17ODE_solver_configKb" title="ode_solver::System"><span class="n"><span class="pre">System</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">rhs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">ODE_solver_config</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">ODE_solver_config</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000E10ode_solvervR1YRK1YRK6SystemRK17ODE_solver_configKb" title="Link to this definition"></a><br /></dt>
-<dd><p>ODE solver with different options –&gt; master_parameters.h currently implemented rules: basic Runge-Kutta 4 Bogacki–Shampine Cash-Carp </p>
+<dd><p>ODE solver, by default implementing a fourth-order Runge-Kutta (Cash-Karp) algorithm. (Other options are possible but not recommended!) </p>
 <dl class="field-list simple">
 <dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Y</strong> – double/comp/State </p></li>
-<li><p><strong>FlowGrid</strong> – suggests a set of step sizes; for non-adaptive rules these are used –&gt; lambdas_try for adaptive rules FlowGrid only approximately “guides” the step sizes; e.g. for FlowGrid::exp_parametrization we have Lambda(t) = exp(-t) such that equal step sizes in t lead to exponentially decaying step sizes. Adaptive rules can grow or shrink the step sizes in terms of t! </p></li>
+<li><p><strong>Y</strong> – Type of the data to be handled by the solver. Can be double, comp, <a class="reference internal" href="correlationfunctions.html#d7/d97/classState"><span class="std std-ref">State</span></a>, … </p></li>
+<li><p><strong>FlowGrid</strong> – Suggests a set of step sizes:<ul>
+<li><p>for non-adaptive rules, these are used directly –&gt; lambdas_try</p></li>
+<li><p>for adaptive rules, FlowGrid only approximately “guides” the step sizes; e.g. for FlowGrid::exp_parametrization we have Lambda(t) = exp(-t) such that equal step sizes in t lead to exponentially decaying step sizes. Adaptive rules can grow or shrink the step sizes in terms of t! </p></li>
+</ul>
+</p></li>
+<li><p><strong>System</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>result</strong> – final state </p></li>
-<li><p><strong>Lambda_f</strong> – final Lambda </p></li>
-<li><p><strong>state_ini</strong> – initial state of type Y </p></li>
-<li><p><strong>Lambda_i</strong> – initial Lambda </p></li>
-<li><p><strong>rhs</strong> – right-hand side of differential equation rhs(y, dydt, Lambda) </p></li>
-<li><p><strong>lambda_checkpoints</strong> – checkpoints at which we want to know a result </p></li>
-<li><p><strong>filename</strong> – filename for storing the result (if Y == <a class="reference internal" href="correlationfunctions.html#d7/d97/classState"><span class="std std-ref">State</span></a>) </p></li>
-<li><p><strong>iter_start</strong> – start at a certain iteration step (to continue a ODE flow) </p></li>
-<li><p><strong>N_ODE</strong> – number of ODE steps (true number of steps is N_ODE + U_NRG for hybridization flow) </p></li>
+<li><p><strong>result</strong> – Final state. </p></li>
+<li><p><strong>state_ini</strong> – Initial state of type Y. </p></li>
+<li><p><strong>rhs</strong> – Callable instance of a class used to implement the RHS of the differential equation. </p></li>
+<li><p><strong>config</strong> – Config struct holding all relevant parameters for the ODE. </p></li>
+<li><p><strong>verbose</strong> – If true, additional information is printed into the log file. Recommendation: true. </p></li>
 </ul>
 </dd>
 </dl>
@@ -444,16 +456,23 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E15rhs_n_loop_flow5StateI1QERK5StateI1QEKdKiK3vecI6size_tERK10fRG_configR10mfRG_stats">
 <span id="_CPPv3I0E15rhs_n_loop_flowRK5StateI1QEKdKiK3vecI6size_tERK10fRG_configR10mfRG_stats"></span><span id="_CPPv2I0E15rhs_n_loop_flowRK5StateI1QEKdKiK3vecI6size_tERK10fRG_configR10mfRG_stats"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d8/dea/right__hand__sides_8hpp_1a856b8e93c4a2635c6c6edb5869837fb9"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rhs_n_loop_flow</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E15rhs_n_loop_flow5StateI1QERK5StateI1QEKdKiK3vecI6size_tERK10fRG_configR10mfRG_stats" title="rhs_n_loop_flow::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Psi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">nloops_max</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">vec</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opt</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="miscellaneous.html#_CPPv410fRG_config" title="fRG_config"><span class="n"><span class="pre">fRG_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span>, <span class="n"><span class="pre">mfRG_stats</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">stats</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="o"><span class="pre">-&gt;</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E15rhs_n_loop_flow5StateI1QERK5StateI1QEKdKiK3vecI6size_tERK10fRG_configR10mfRG_stats" title="rhs_n_loop_flow::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0E15rhs_n_loop_flow5StateI1QERK5StateI1QEKdKiK3vecI6size_tERK10fRG_configR10mfRG_stats" title="Link to this definition"></a><br /></dt>
-<dd><p>Function to implement an n-loop flow (without Katanin substitution). </p>
+<dd><p>Function which implements the rhs of an n-loop flow. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>Psi</strong> – : Known state of the <a class="reference internal" href="correlationfunctions.html#d7/d97/classState"><span class="std std-ref">State</span></a> at Lambda </p></li>
-<li><p><strong>Lambda</strong> – Scale at which the calculation is being performed </p></li>
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Type of the data </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Psi</strong> – Known <a class="reference internal" href="correlationfunctions.html#d7/d97/classState"><span class="std std-ref">State</span></a> at the flow parameter Λ, used to evaluate the RHS. </p></li>
+<li><p><strong>Lambda</strong> – flow parameter Λ. </p></li>
+<li><p><strong>nloops_max</strong> – maximal number of loops </p></li>
+<li><p><strong>opt</strong> – Options specifying the iteration number and the Runge-Kutta step of that specific iteration. </p></li>
+<li><p><strong>config</strong> – Set of parameters </p></li>
+<li><p><strong>stats</strong> – Struct to hold some statistics from the flow, such as the number of self-energy iterations required for convergence. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>dPsi : The derivative at Lambda, which includes the differential vertex as well as self-energy at scale Lambda </p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new state from the evaluation of the RHS of the flow equation. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -461,12 +480,49 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E21selfEnergyOneLoopFlowvR10SelfEnergyI1QERK6VertexI1QXL0EEERK10PropagatorI1QE">
 <span id="_CPPv3I0E21selfEnergyOneLoopFlowR10SelfEnergyI1QERK6VertexI1QXL0EEERK10PropagatorI1QE"></span><span id="_CPPv2I0E21selfEnergyOneLoopFlowR10SelfEnergyI1QERK6VertexI1QXfalseEERK10PropagatorI1QE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d8/dea/right__hand__sides_8hpp_1a228921d1d83becf2e271870348d22e00"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">selfEnergyOneLoopFlow</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E21selfEnergyOneLoopFlowvR10SelfEnergyI1QERK6VertexI1QXL0EEERK10PropagatorI1QE" title="selfEnergyOneLoopFlow::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">dPsiSelfEnergy</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E21selfEnergyOneLoopFlowvR10SelfEnergyI1QERK6VertexI1QXL0EEERK10PropagatorI1QE" title="selfEnergyOneLoopFlow::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">PsiVertex</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0E10Propagator" title="Propagator"><span class="n"><span class="pre">Propagator</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E21selfEnergyOneLoopFlowvR10SelfEnergyI1QERK6VertexI1QXL0EEERK10PropagatorI1QE" title="selfEnergyOneLoopFlow::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">S</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E21selfEnergyOneLoopFlowvR10SelfEnergyI1QERK6VertexI1QXL0EEERK10PropagatorI1QE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Implements the rhs of the one-loop flow equation for the self-energy, <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">|----|&lt;-----|</span>
+  <span class="o">|</span>           <span class="o">|</span>
+  <span class="o">|--|-----|--|</span>
+     <span class="o">|</span>  <span class="n">Γ</span>  <span class="o">|</span>
+<span class="o">--&lt;--|-----|--&lt;--</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Q</strong> – Type of the data </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>dPsiSelfEnergy</strong> – Differentiated self-energy that results. </p></li>
+<li><p><strong>PsiVertex</strong> – Input vertex used. </p></li>
+<li><p><strong>S</strong> – Single-scale propagator used. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I00E17vertexOneLoopFlowvR6VertexI1QXL1EEERK6VertexI1QXL0EEERK13Bubble_ObjectRK10fRG_config">
 <span id="_CPPv3I00E17vertexOneLoopFlowR6VertexI1QXL1EEERK6VertexI1QXL0EEERK13Bubble_ObjectRK10fRG_config"></span><span id="_CPPv2I00E17vertexOneLoopFlowR6VertexI1QXtrueEERK6VertexI1QXfalseEERK13Bubble_ObjectRK10fRG_config"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bubble_Object</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d8/dea/right__hand__sides_8hpp_1aa44996adc6f31dcfe0a85ff28f9ebf16"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vertexOneLoopFlow</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00E17vertexOneLoopFlowvR6VertexI1QXL1EEERK6VertexI1QXL0EEERK13Bubble_ObjectRK10fRG_config" title="vertexOneLoopFlow::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">dPsiVertex</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">Vertex</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00E17vertexOneLoopFlowvR6VertexI1QXL1EEERK6VertexI1QXL0EEERK13Bubble_ObjectRK10fRG_config" title="vertexOneLoopFlow::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Psi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00E17vertexOneLoopFlowvR6VertexI1QXL1EEERK6VertexI1QXL0EEERK13Bubble_ObjectRK10fRG_config" title="vertexOneLoopFlow::Bubble_Object"><span class="n"><span class="pre">Bubble_Object</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">dPi</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="miscellaneous.html#_CPPv410fRG_config" title="fRG_config"><span class="n"><span class="pre">fRG_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00E17vertexOneLoopFlowvR6VertexI1QXL1EEERK6VertexI1QXL0EEERK13Bubble_ObjectRK10fRG_config" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Implements the rhs of the one-loop flow equation for the vertex, adding up the results for each channel. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Q</strong> – Type of the data. </p></li>
+<li><p><strong>Bubble_Object</strong> – Type of the bubble object to be used. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>dPsiVertex</strong> – Differentiated vertex that results. </p></li>
+<li><p><strong>PsiVertex</strong> – Input vertex used. </p></li>
+<li><p><strong>dPi</strong> – Differentiated bubble object. </p></li>
+<li><p><strong>config</strong> – Set of parameters. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I00E17calculate_dGammaL6VertexI1QXL1EEERK13GeneralVertexI1Q17symmetric_r_irredXL1EEERK6VertexI1QXL0EEERK13Bubble_ObjectRK10fRG_config">
