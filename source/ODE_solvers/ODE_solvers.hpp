@@ -12,16 +12,21 @@
 #include "old_solvers.hpp"
 #include "ODE_solver_config.hpp"
 
-/// possible unit-tests:
-/// [IMPLEMENTED in unit_tests/test_ODE_solver] solve "trivial" ODE in 1 large step (polynomial of order N for a N-order rule)
-/// [IMPLEMENTED in unit_tests/test_ODE_solver] solve medium ODE with known solution and check accuracy of result with different choices of epsODE_rel
 
-
-/// possible unit-tests:
-/// [IMPLEMENTED in unit_tests/test_ODE_solver] solve "trivial" ODE in 1 large step (polynomial of order N for a N-order rule)
-/// [IMPLEMENTED in unit_tests/test_ODE_solver] solve medium ODE with known solution and check accuracy of result with different choices of epsODE_rel
-
-
+/**
+ * Implementation of things that can be done after a completed Runge-Kutta iteration of the ODE-solver,
+ * such as consistency checks, updates of frequency grids, output of intermediate results, ...
+ * @tparam Y Type of the data handled by the ODE solver.
+ * @tparam System Type of the callable class that can return the RHS of the ODE.
+ * @param y_run Object to be computed by the ODE solver
+ * @param rhs Callable class that can return the RHS of the ODE.
+ * @param x_run Flowing variable defining the ODE.
+ * @param x_vals Values of the flowing variable.
+ * @param iteration Iteration number.
+ * @param filename Filename to be used for potential output.
+ * @param config Set of parameters for the ODE solver.
+ * @param verbose If true, additional information is printed into the log file.
+ */
 template <typename Y, typename System>
 void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_vals, int iteration, const std::string& filename, const ODE_solver_config& config, bool verbose) {
     if constexpr (std::is_same_v<Y, State<state_datatype>>) {

@@ -635,9 +635,12 @@ void vertexOneLoopFlow(Vertex<Q,true>& dPsiVertex, const Vertex<Q,false>& PsiVer
 }
 
 
-
-/// for dGammaR in channel r we combine:     dgammaL_r = dgamma_rbar ◯ Pi_r ◯ Gamma
-/// Hence dgamma_rbar only returns values of the r-IRreducible sector
+/**
+ * Compute the first term of the higher-order flow equations, combining dgammaL_r = dgamma_rbar ◯ Pi_r ◯ Gamma,
+ * where dgamma_rbar only returns values of the r-irreducible sector. \n
+ * Parameters as for vertexOneLoopFlow, except
+ * @param Pi Bubble to connect the vertices on the rhs. Not differentiated!
+ */
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true>{
     Vertex<Q,true> dGammaL(Lambda_ini, config, PsiVertex);
@@ -666,8 +669,12 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
 
     return dGammaL;
 }
-/// for dGammaR in channel r we combine:     dgammaR_r = Gamma ◯ Pi_r ◯ dgamma_rbar
-/// Hence dgamma_rbar only returns values of the r-IRreducible sector
+
+/**
+ * Compute the final term of the higher-order flow equations, combining dgammaR_r = Gamma ◯ Pi_r ◯ dgamma_rbar,
+ * where dgamma_rbar only returns values of the r-irreducible sector. \n
+ * Parameters as for calculate_dGammaL.
+ */
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true>{
     Vertex<Q,true> dGammaR(Lambda_ini, config, PsiVertex);
@@ -769,9 +776,12 @@ public:
 
 };
 
-
-/// for dGammaC in channel r we combine:     dgammaC_r = Gamma ◯ Pi_r ◯ dGammaL_r
-/// Hence dGammaL only returns values of the r-reducible sector
+/**
+ * Calculate the central term of the higher-loop flow equations (starting at 3l), using the result form a previous
+ * computation using calculate_dGammaL, i.e. combining dgammaC_r = Gamma ◯ Pi_r ◯ dGammaL_r.\n
+ * Parameters as for calculate_dGammaL, except
+ * @param nonsymVertex Non-symmetric vertex obtained from calculate_dGammaL before, ie.e dGammaL_r.
+ */
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const GeneralVertex<Q, non_symmetric_diffleft,true>& nonsymVertex,
                                        const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true> {
@@ -807,6 +817,11 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const G
     return dGammaC;
 }
 
+/**
+ * Calculate the central term of the higher-loop flow equations (starting at 3l), using the result form a previous
+ * computation using calculate_dGammaR, i.e. combining dgammaC_r = dGammaR_r ◯ Pi_r ◯ Gamma. \n
+ * Parameters as for calculate_dGammaC_right_insertion.
+ */
 template <typename Q, class Bubble_Object>
 auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffright,true>& nonsymVertex, const Vertex<Q,false>& PsiVertex,
                                       const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true> {
@@ -852,11 +867,16 @@ auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffr
     return dGammaC;
 }
 
-// compute multiloop corrections to self-energy flow
-/// The first selfenergy correction is given by
-///     dSigma_tbar = G * dGamma_tbar     => dGamma_tbar has to be irreducible in the t-channel
-/// The second selfenergy correction is
-///     dSigma_t = (G dSigma_tbar G) * Gamma
+/**
+ * Compute the two terms of the multi-loop corrections to the self-energy:
+ * - dSigma_tbar = G * dGamma_tbar, where dGamma_tbar has to be irreducible in the t-channel
+ * - dSigma_t = (G dSigma_tbar G) * Gamma
+ * @tparam Q Type of the data
+ * @param dPsiSelfEnergy Differentiated self-energy that results from the multi-loop corrections to be computed.
+ * @param dGammaC_tbar Central term used for the first term of the correction.
+ * @param Psi State to be used
+ * @param G Propagator to be used.
+ */
 template <typename Q>
 void selfEnergyFlowCorrections(SelfEnergy<Q>& dPsiSelfEnergy, const GeneralVertex<Q, symmetric_r_irred,true>& dGammaC_tbar, const State<Q>& Psi, const Propagator<Q>& G){
     // TODO(low): also implement self-energy flow via differentiated SDE
