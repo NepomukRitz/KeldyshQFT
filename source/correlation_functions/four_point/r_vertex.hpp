@@ -4,7 +4,6 @@
 #include "../../data_structures.hpp"          // real/complex vector classes
 #include "../../parameters/master_parameters.hpp"               // system parameters (lengths of vectors etc.)
 #include "../../symmetries/Keldysh_symmetries.hpp"       // transformations on Keldysh indices
-#include "../../symmetries/internal_symmetries.hpp"      // symmetry transformations for internal indices (momentum etc.), currently trivial
 #include "../../symmetries/symmetry_transformations.hpp" // symmetry transformations of frequencies
 #include "../../symmetries/symmetry_table.hpp"           // table containing information when to apply which symmetry transformations
 #include "../../utilities/math_utils.hpp"

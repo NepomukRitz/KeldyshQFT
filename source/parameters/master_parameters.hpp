@@ -35,7 +35,7 @@ constexpr bool VERBOSE = false; ///< If true, detailed information about all com
 #define SBE_DECOMPOSITION 0
 #define USE_NEW_MFRG_EQS 1      // mfRG equations for SBE approximation. Only relevant when SBE_DECOMOSITION == 1.
 
-#define ANALYTIC_TAILS 1
+#define ANALYTIC_TAILS 1 ///<  for false; 1 for true. If true, the analytic expression for the bare bubble is used to treat the high-frequency asymptotics during bubble computations in the finit-$T$ MF.
 
 #define KATANIN ///< If defined, the Katanin extension is used during mfRG computations.
 #define SELF_ENERGY_FLOW_CORRECTIONS 1 ///< 0 for false; 1 for true. If true, corrections to the flow equations for the vertex from the self-energy, starting at l=3, are included.
