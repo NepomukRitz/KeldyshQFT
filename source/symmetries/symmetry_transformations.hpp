@@ -52,11 +52,6 @@ template <bool is_SBE_lambda> void T1 (IndicesSymmetryTransformations& indices) 
         }
     }
 
-    if (INTERPOL2D_FOR_K3) {
-        if(indices.channel_bubble != 'p'){
-            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
-        }
-    }
 
     switch_channel(indices);
     indices.spin = 1 - indices.spin;
@@ -132,11 +127,6 @@ template <bool is_SBE_lambda> void TC (IndicesSymmetryTransformations& indices) 
         }
     }
 
-    if constexpr(INTERPOL2D_FOR_K3) {
-        if (indices.channel_bubble == 't') {
-            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
-        }
-    }
 
     if constexpr(KELDYSH and CONTOUR_BASIS != 1)
     {
@@ -188,19 +178,12 @@ template <bool is_SBE_lambda> void Tph (IndicesSymmetryTransformations& indices)
             indices.v1 *= -1;
             indices.v2 *= -1;
         }
-
-        if (INTERPOL2D_FOR_K3) {
-            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
-        }
     }
 }
 template <bool is_SBE_lambda> void TR (IndicesSymmetryTransformations& indices) {
     if (!KELDYSH){ // used only for Matsubara calculations
         indices.conjugate ^= true;
         indices.w *= -1;
-        if (INTERPOL2D_FOR_K3) {
-            indices.iw_r = nBOS3 - 1 - indices.iw_r; // corresponds to "w *= -1"
-        }
         if (MAX_DIAG_CLASS > 1) {
             indices.v1 *= -1;
             indices.v2 *= -1;

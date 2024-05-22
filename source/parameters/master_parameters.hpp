@@ -32,16 +32,16 @@ constexpr bool VERBOSE = false; ///< If true, detailed information about all com
 /// Production runs parameters ///
 
 #define MAX_DIAG_CLASS 3 ///< Defines the diagrammatic classes that will be considered: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies. Useful for debugging purposes and for computations in second order perturbation theory, which only require K1.
-#define SBE_DECOMPOSITION 0
-#define USE_NEW_MFRG_EQS 1      // mfRG equations for SBE approximation. Only relevant when SBE_DECOMOSITION == 1.
+#define SBE_DECOMPOSITION 0  ///< 0 for false; 1 for true. If true, the SBE decomposition is used to parametrize the vertex and the flow equations. Only implemented in the MF!
+#define USE_NEW_MFRG_EQS 1      ///< Determines which version of the SBE approximation shall be used. 0 for SBEa, 1 for SBEb. Only implemented in the MF! Only relevant when SBE_DECOMOSITION == 1.
 
 #define ANALYTIC_TAILS 1 ///<  for false; 1 for true. If true, the analytic expression for the bare bubble is used to treat the high-frequency asymptotics during bubble computations in the finit-$T$ MF.
 
 #define KATANIN ///< If defined, the Katanin extension is used during mfRG computations.
 #define SELF_ENERGY_FLOW_CORRECTIONS 1 ///< 0 for false; 1 for true. If true, corrections to the flow equations for the vertex from the self-energy, starting at l=3, are included.
-const int nmax_Selfenergy_iterations = 10;
-const double tol_selfenergy_correction_abs = 1e-9;
-const double tol_selfenergy_correction_rel = 1e-5;
+const int nmax_Selfenergy_iterations = 10; ///< Maximal number of self-energy iterations to be done during an mfRG flow for l >= 3.
+const double tol_selfenergy_correction_abs = 1e-9; ///< Absolute tolerance for self-energy iterations in mfRG
+const double tol_selfenergy_correction_rel = 1e-5; ///< Relative tolerance for self-energy iterations in mfRG
 const double loop_tol_abs = 1e-9;
 const double loop_tol_rel = 1e-5;
 

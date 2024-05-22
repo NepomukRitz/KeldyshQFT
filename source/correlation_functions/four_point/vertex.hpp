@@ -2140,7 +2140,6 @@ template<typename Q> auto fullvert<Q>::analyze_tails_K3vp(bool verbose) const ->
 
 
 template <typename Q> void fullvert<Q>::findBestFreqGrid(const bool verbose) {
-    static_assert(not INTERPOL2D_FOR_K3, "2D interpolation of K3 requires identical frequency grids for all channels.");
     avertex.findBestFreqGrid(verbose);
     pvertex.findBestFreqGrid(verbose);
     tvertex.findBestFreqGrid(verbose);

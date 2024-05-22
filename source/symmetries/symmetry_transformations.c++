@@ -10,16 +10,5 @@ void switch_channel(IndicesSymmetryTransformations& indices) {
             break;
         default:;
     }
-    if (INTERPOL2D_FOR_K3) {
-        switch (indices.channel_bubble) {
-            case 'a':
-                indices.channel_bubble = 't';
-                break;
-            case 't':
-                indices.channel_bubble = 'a';
-                break;
-            default: ;
-        }
-    }
 }
 

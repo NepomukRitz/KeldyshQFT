@@ -10,9 +10,6 @@
 //#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
-constexpr bool BOSONIC_PARAM_FOR_K3 = false; // saves and interpolates K3 data on and rotated grid (corresponds to "bosonic" parametrization)
-
-constexpr bool INTERPOL2D_FOR_K3 = BOSONIC_PARAM_FOR_K3 and true;
 
 constexpr bool shift_fgrids_woPHS = false;      /// determines whether frequency grids are shifted by hartree+epsilon (depending on channel) -> many sample points around new points
 
