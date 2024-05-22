@@ -58,31 +58,10 @@ void FrequencyGrid<eliasGrid>::guess_essential_parameters(double Lambda, const f
                 case 'b':
                     number_of_gridpoints = nBOS2;
                     Delta_factor = Delta_factor_K2_w;
-                    #ifdef ROTATEK2
-                    if (KELDYSH){
-                            U_factor = 0.;
-                            Delta_factor = 5.;
-                        }
-                        else{
-                            U_factor = 10./3.;
-                            Delta_factor = 10.;
-                        }
-                    #endif
                     break;
                 case 'f':
                     number_of_gridpoints = nFER2;
                     Delta_factor = Delta_factor_K2_v;
-                    #ifdef ROTATEK2
-                    /// Needs to be the same as for 'b'!!!
-                    if (KELDYSH) {
-                        U_factor = 0.;
-                        Delta_factor = 5.;
-                    }
-                    else {
-                        U_factor = 10./3.;
-                        Delta_factor = 10.;
-                    }
-                    #endif
                     break;
                 default:
                     break;

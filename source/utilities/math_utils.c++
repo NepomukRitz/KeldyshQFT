@@ -183,13 +183,6 @@ template<> void switch2naturalFreqs<'t'> (double& w_a, double& w_p, double& w_t)
 
 void K2_convert2internalFreqs(freqType &w, freqType &v) { /// Insert this function before interpolation
     /// need to convert natural parametrization to internal coordinates when interpolating
-#ifdef ROTATEK2
-    // The internal parametrization corresponds to the fermionic frequencies at the two fermionic legs of K2
-    const double w_tmp = w*0.5 + v;
-    const double v_tmp = w*0.5 - v;
-    w = w_tmp;
-    v = v_tmp;
-#endif
     if constexpr (GRID == 2) {
         /// convert frequencies w and v to polar coordinates rho and phi (with phi in [-Pi, Pi])
         const double rho = sqrt(w*w*0.25 + v*v);
@@ -210,12 +203,6 @@ void K2_convert2naturalFreqs(freqType &w, freqType &v) { /// Insert this functio
         w = w_temp;
         v = v_temp;
     }
-#ifdef ROTATEK2
-    const double w_tmp = w + v;
-    const double v_tmp =(w - v)*0.5;
-    w = w_tmp;
-    v = v_tmp;
-#endif
 }
 
 

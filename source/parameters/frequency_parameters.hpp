@@ -9,9 +9,6 @@
 
 //#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
 
-//#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
-
-
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
 

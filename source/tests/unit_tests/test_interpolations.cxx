@@ -460,9 +460,6 @@ TEST_CASE( "Does bicubic interpolation work reliably for K2?", "[interpolations]
                 const double tv1= avertex.K2.frequencies.get_tlower_f_aux() + iv * interf;
                 indices.w  = avertex.K2.frequencies.  primary_grid.frequency_from_t(tw);
                 indices.v1 = avertex.K2.frequencies.secondary_grid.frequency_from_t(tv1);
-                #ifdef ROTATEK2
-                    K2_convert2naturalFreqs(indices.w, indices.v1);
-                #endif
 
                 values[iw * M + iv] = avertex.K2.interpolate(indices);
                 error = std::abs(avertex.K2.interpolate(indices) -

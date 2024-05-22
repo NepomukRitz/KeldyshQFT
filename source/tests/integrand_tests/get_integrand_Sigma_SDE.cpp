@@ -7,11 +7,7 @@
 
 auto main(int argc, char * argv[]) -> int {
     std::string job;
-#ifdef ROTATEK2
-    job = "_rotK2";
-#else
     job = "_unrotK2";
-#endif
     data_dir = "../Data_KF" + job + + "_GRID" + std::to_string(GRID) + "/";
     std::string dir_str;
     char channel;

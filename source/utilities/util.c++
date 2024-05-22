@@ -118,9 +118,6 @@ namespace utils {
         assert(MAX_DIAG_CLASS == 1);
     #endif
         if (MAX_DIAG_CLASS<2) assert(config.nloops < 2);
-    #ifdef ROTATEK2
-        assert (nBOS2 == nFER2);
-    #endif
 
     #if GRID==2
         static_assert(INTERPOLATION!=linear, "Linear interpolation not possible for polar coordinates.");

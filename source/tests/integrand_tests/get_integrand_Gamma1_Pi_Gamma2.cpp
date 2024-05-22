@@ -6,11 +6,7 @@
 #include "saveIntegrand.hpp"
 
 auto main(int argc, char * argv[]) -> int {
-#ifdef ROTATEK2
-    std::string job = "_rotK2";
-#else
     std::string job = "_unrotK2";
-#endif
     //data_dir = "../Data_KF" + job + (USE_FDT ? "useFDT" : "noFDT") + "/";
     std::string dir_str;
     char channel;
