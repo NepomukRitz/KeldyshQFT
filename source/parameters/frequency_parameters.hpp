@@ -11,7 +11,6 @@
 
 //#define ROTATEK2 // saves and interpolates K2 data on and rotated grid (corresponds to "fermionic" parametrization)
 
-constexpr bool shift_fgrids_woPHS = false;      /// determines whether frequency grids are shifted by hartree+epsilon (depending on channel) -> many sample points around new points
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
