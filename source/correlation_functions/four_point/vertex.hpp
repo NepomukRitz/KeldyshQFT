@@ -1797,11 +1797,6 @@ template<typename Q> void fullvert<Q>::reorder_due2antisymmetry(fullvert<Q>& rig
         right_vertex.tvertex.enforce_freqsymmetriesK3(tvertex);
     }
 
-#if defined(EQUILIBRIUM) and USE_FDT
-    for (char r:"apt") compute_components_through_FDTs(*this, *this, right_vertex, r, Pi.g.T);
-    for (char r:"apt") compute_components_through_FDTs(right_vertex, right_vertex, *this, r, Pi.g.T);
-#endif
-
     set_initializedInterpol(false);
     right_vertex.set_initializedInterpol(false);
 }

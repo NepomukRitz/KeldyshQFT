@@ -713,10 +713,6 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     deviations_K1.at(idx) = deviation;
                 }
 
-    #if CONTOUR_BASIS == 1 and ZERO_TEMP and USE_FDT
-                if (is_zero_due_to_FDTs<k1>(itK, w, 0, 0, channel)) deviations_K1.at(idx) = value_direct;
-    #endif
-
             }
         }
 
@@ -794,9 +790,6 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     deviation = value_direct - result_freqsymm;
                     deviations_K2.at(idx) = deviation;
 
-    #if CONTOUR_BASIS == 1 and ZERO_TEMP and USE_FDT
-                    if (is_zero_due_to_FDTs<k2>(itK, w, v, 0, channel)) deviations_K2.at(idx) = value_direct;
-    #endif
                 }
             }
 
@@ -889,10 +882,6 @@ template<typename Q> void rvert<Q>::check_symmetries(const std::string identifie
                     deviations_K3.at(idx) = deviation;
                     symmrel_K3.at(idx) = result_freqsymm;
 
-
-#if CONTOUR_BASIS == 1 and ZERO_TEMP and USE_FDT
-                    if (is_zero_due_to_FDTs<k3>(itK, w, v, vp, channel)) deviations_K3.at(idx) = value_direct;
-    #endif
                 }
             }
 
@@ -1932,11 +1921,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK1(const rvert<Q>& ve
         }
         if (components.K(k1, indices.spin, indices.iK) < 0) K1.setvert(0.   , idx);  // check which symmetry-transformed component should be read
 
-
-        if (CONTOUR_BASIS and ZERO_T and USE_FDT  and is_zero_due_to_FDTs<k1>(itK, w_in, 0., 0., channel)) {
-            K1.setvert(0., idx);
-        }
-
     }
 }
 
@@ -1983,9 +1967,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK2(const rvert<Q>& ve
             K2.setvert(0.   , idx);  // check which symmetry-transformed component should be read
         if (!KELDYSH and !ZERO_T and -v_in + signFlipCorrection_MF(w_in)*0.5 < K2.frequencies.get_wlower_f()) {
             K2.setvert(0., idx);                    }
-        if (CONTOUR_BASIS and ZERO_T and USE_FDT and is_zero_due_to_FDTs<k2>(itK, w_in, v_in, 0., channel)) {
-            K2.setvert(0., idx);
-        }
     }
 
 }
@@ -2038,11 +2019,6 @@ template <typename Q> void rvert<Q>::enforce_freqsymmetriesK3(const rvert<Q>& ve
         if (!KELDYSH and !ZERO_T and (-v_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f() or -vp_in + signFlipCorrection_MF(w_in)*0.5 < K3.frequencies.get_wlower_f())) {
             K3.setvert(0., idx);
         }
-
-        if (CONTOUR_BASIS and ZERO_T and USE_FDT and is_zero_due_to_FDTs<k3>(itK, w_in, v_in, vp_in, channel)) {
-            K3.setvert(0, idx);
-        }
-
 
     }
 

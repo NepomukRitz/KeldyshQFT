@@ -64,8 +64,6 @@ constexpr double glb_mu = 0.0;                     ///< Chemical potential -- w.
 constexpr double glb_V = 0.;                       ///< Bias voltage (glb_V == 0. in equilibrium)
 constexpr bool EQUILIBRIUM = true;                 ///< If true, use equilibrium FDT's for propagators
                                                    // (only sensible when glb_V = 0)
-#define USE_FDT 0
-
 /// Spin parameters ///
 
 // Number of independent spin components. n_spin = 1 with SU(2) symmetry.
