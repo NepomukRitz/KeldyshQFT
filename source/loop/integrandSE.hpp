@@ -329,15 +329,9 @@ else {
     evaluate_propagator(Gi2, iK,-vp);
 
     Q factorClosedAbove, factorClosedAbove2;
-#ifdef SYMMETRIZED_SELF_ENERGY_FLOW
-    Q factorClosedBelow;
-    evaluate_vertex(factorClosedAbove, factorClosedBelow, iK, vp);
-    return (1./2.) * Gi * (factorClosedAbove + factorClosedBelow);
-#else
     evaluate_vertex(factorClosedAbove,  iK, vp);
     evaluate_vertex(factorClosedAbove2, iK,-vp);
     return (Gi * factorClosedAbove +  Gi2 * factorClosedAbove2) * 0.5;
-#endif  // SYMMETRIZED_SELF_ENERGY_FLOW
 #endif  // SWITCH_SUM_N_INTEGRAL
 
 }
