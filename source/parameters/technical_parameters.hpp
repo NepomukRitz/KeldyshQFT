@@ -27,8 +27,4 @@ constexpr double converged_tol = 1e-7;  ///< Tolerance for loop convergence in m
 inline double integrator_tol = 1e-5;    ///< Integrator tolerance.
 
 
-// Debug mode allows to select specific Keldysh components contributing to loop and bubbles
-//#define DEBUG_MODE
-
-
 #endif //FPP_MFRG_TECHNICAL_PARAMETERS_H
