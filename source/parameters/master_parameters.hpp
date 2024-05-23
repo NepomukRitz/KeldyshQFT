@@ -17,7 +17,7 @@ constexpr bool VERBOSE = false; ///< If true, detailed information about all com
 
 #define ZERO_TEMP 0 ///< 0 for false; 1 for true. If true, temperature T = 0 is assumed.
 #define KELDYSH_FORMALISM 1     ///< Determines whether calculations shall be done in the Keldysh or Matsubara formalism.\n 0 for Matsubara; 1 for Keldysh formalism
-#define CONTOUR_BASIS 0     // 0 for Keldysh basis; 1 for Contour basis
+#define CONTOUR_BASIS 0     ///< 0 for false, 1 for true: If true, no Keldysh rotation is performed and the contour basis is used instead to parametrize the Keldysh components of all correlation functions. Useful for comparisons with results that use this convention. Not as well tested and thus not recommended for production runs.
 #define SWITCH_SUM_N_INTEGRAL 1    ///< 0 for false; 1 for true. If true, the sum over internal Keldysh indices is done before the frequency integration. Recommended setting: 1.
 #if KELDYSH_FORMALISM or not ZERO_TEMP
 #define VECTORIZED_INTEGRATION 1  ///< 0 for false; 1 for true. If true, integrals are performed with vector-valued integrands. For Keldysh, vectorization over Keldysh indices. For Matsubara at finite T, vectorization over the Matsubara sum.

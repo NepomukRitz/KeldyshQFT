@@ -4,10 +4,10 @@
 
 /// Frequency grid parameters ///
 
-// Grid type
+// Controls which frequency grid is to be used. 0 for the non-linear grid, 1 for the hybrid grid, 2 for the polar grid. Recommendation: 0.
 #define GRID 0      // 0: use Elias' grid;      1: use hybrid grid;     2: polar coordinates (currently not for K3 yet)
 
-//#define ADAPTIVE_GRID   // if defined: use optimization routine; if undefined: just rescale the grid;
+//#define ADAPTIVE_GRID   ///< if defined, use optimization routine to find the best scale factor A of the frequency grid; if undefined, just rescale the grid. Warning: Can be expensive and unreliable in the presence of numerical artifacts.
 
 // Limits of the frequency grid vectors for the different kinds of frequencies
 // (i.e. bosonic transfer frequency and fermionic frequencies
