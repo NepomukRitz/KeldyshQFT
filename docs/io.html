@@ -18,6 +18,7 @@
         <script src="_static/documentation_options.js?v=8d563738"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -47,7 +48,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing.html">Post processing</a></li>
@@ -88,6 +88,15 @@
              
   <section id="i-o">
 <h1>I/O<a class="headerlink" href="#i-o" title="Link to this heading"></a></h1>
+<p>For input and output purposes, the <a class="reference external" href="https://www.hdfgroup.org/HDF5/">HDF5</a> file format  is used throughout. To organize the data for output,
+the contents of a state to be stored are split up into different datasets that correspond, to all the asymptotic
+classes of the vertex in each channel, the self-energy, the frequency grids used, as well as the most important
+parameters of the calculation. The output file is then on a high level organized in terms of ‘’<span class="math notranslate nohighlight">\(\Lambda\)</span> layers’’,
+the idea being that each layer enables access to a different state stored inside the same file. This enables the output
+of, e.g., the results of a full mfRG flow into a single file, where each ‘’<span class="math notranslate nohighlight">\(\Lambda\)</span> layer index’’ corresponds to a
+different value of the regulator. Alternatively, this structure can be used to store the results of all the iterations
+done during a solution of the parquet equations separately. Of course, one can equally well use just a single layer to
+store the end result of a computation, such as a converged solution of the parquet equations or the result of a PT2 computation.</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb">
 <span id="_CPPv3I0_bE18write_state_to_hdfK12H5std_stringdKiRK5StateI1Q4diffEKbKb"></span><span id="_CPPv2I0_bE18write_state_to_hdfK12H5std_stringdKiRK5StateI1Q4diffEKbKb"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">diff</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d5/de4/hdf5__routines_8hpp_1ab7f115126010e4b017eb9e12cd1c29d9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_state_to_hdf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">H5std_string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">FILE_NAME</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda_i</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Lambda_size</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0_bE5State" title="State"><span class="n"><span class="pre">State</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb" title="write_state_to_hdf::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb" title="write_state_to_hdf::diff"><span class="n"><span class="pre">diff</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">state_in</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">verbose</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">is_converged</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0_bE18write_state_to_hdfvK12H5std_stringdKiRK5StateI1Q4diffEKbKb" title="Link to this definition"></a><br /></dt>

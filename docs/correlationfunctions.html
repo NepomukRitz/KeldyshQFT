@@ -18,11 +18,12 @@
         <script src="_static/documentation_options.js?v=8d563738"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Computing diagrams" href="diagrams.html" />
-    <link rel="prev" title="Prerequisites" href="prerequisites.html" /> 
+    <link rel="prev" title="KeldyshDiagrammatics" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,7 +48,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Correlation Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#vertices">Vertices</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0E11irreducible"><code class="docutils literal notranslate"><span class="pre">irreducible</span></code></a><ul>
@@ -182,8 +182,16 @@
              
   <section id="correlation-functions">
 <h1>Correlation Functions<a class="headerlink" href="#correlation-functions" title="Link to this heading"></a></h1>
+<p>This is the documentation of the classes that have been implemented to represent the correlation functions and related objects
+that are computed in all numerical calculations. Those are the different vertex classes and the class used to
+represent the self-energy, which are used together to represent the ‘’state’’ of a calculation. In addition, there are
+two helper classes, which don’t hold any additional non-trivial information, but which are used for convenience.
+First, there is a class to represent propagators, which combines the trivial non-interacting part determined by the
+physical system and the non-trivial self-energy. Second, there is another class that combines one pair of propagators
+in such a way that it is used to contract bubble-type diagrams.</p>
 <section id="vertices">
 <h2>Vertices<a class="headerlink" href="#vertices" title="Link to this heading"></a></h2>
+<p>In total, the code contains the four classes <code class="docutils literal notranslate"><span class="pre">irreducible</span></code>, <code class="docutils literal notranslate"><span class="pre">rvert</span></code>, <code class="docutils literal notranslate"><span class="pre">fullvert</span></code>, and <code class="docutils literal notranslate"><span class="pre">GeneralVertex</span></code> to store different types of four-point vertices.</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I0E11irreducible">
 <span id="_CPPv3I0E11irreducible"></span><span id="_CPPv2I0E11irreducible"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="da/dbf/classirreducible"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irreducible</span></span></span><a class="headerlink" href="#_CPPv4I0E11irreducible" title="Link to this definition"></a><br /></dt>
@@ -896,6 +904,9 @@
 </section>
 <section id="state">
 <h2>State<a class="headerlink" href="#state" title="Link to this heading"></a></h2>
+<p>Instances of the <code class="docutils literal notranslate"><span class="pre">State</span></code> class are the high-level objects that are mainly used by the high-level algorithms
+discussed in <span class="xref std std-ref">algorithms</span>. The <code class="docutils literal notranslate"><span class="pre">State</span></code> class combines a <code class="docutils literal notranslate"><span class="pre">GeneralVertex</span></code> and a <code class="docutils literal notranslate"><span class="pre">SelfEnergy</span></code>,
+which together contain all non-trivial information that one might wish to compute.</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I0_bE5State">
 <span id="_CPPv3I0_bE5State"></span><span id="_CPPv2I0_bE5State"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">differentiated</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d7/d97/classState"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">State</span></span></span><a class="headerlink" href="#_CPPv4I0_bE5State" title="Link to this definition"></a><br /></dt>
@@ -975,6 +986,10 @@
 </section>
 <section id="propagator">
 <h2>Propagator<a class="headerlink" href="#propagator" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Propagator</span></code> class is special in the sense that it stores almost no data itself. Instead, it references
+instances of the <code class="docutils literal notranslate"><span class="pre">SelfEnergy</span></code> class, which hold the non-trivial data from the computations. The <code class="docutils literal notranslate"><span class="pre">Propagator</span></code>
+class is then used to combine the analytical form of the bare propagator <span class="math notranslate nohighlight">\(G_0\)</span> with the self-energy via the
+Dyson equation, <span class="math notranslate nohighlight">\(G = 1 / [(G_0)^{-1} - \Sigma]\)</span>.</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I0E10Propagator">
 <span id="_CPPv3I0E10Propagator"></span><span id="_CPPv2I0E10Propagator"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d2/d34/classPropagator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Propagator</span></span></span><a class="headerlink" href="#_CPPv4I0E10Propagator" title="Link to this definition"></a><br /></dt>
@@ -1154,6 +1169,13 @@
 </section>
 <section id="bubble">
 <h2>Bubble<a class="headerlink" href="#bubble" title="Link to this heading"></a></h2>
+<p>Lastly, the <code class="docutils literal notranslate"><span class="pre">Bubble</span></code> class combines two propagators to yield a bubble in one of the three two-particle channels
+<span class="math notranslate nohighlight">\(a\)</span>, <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(t\)</span>.
+For evaluating differentiated bubbles in the context of mfRG computations, one of the
+propagators can be chosen to be the single-scale propagator <span class="math notranslate nohighlight">\(S\)</span> or the fully differentiated one <span class="math notranslate nohighlight">\(\dot{G}\)</span>.
+In that case, the bubble already takes care of the product rule, giving (symbolically)
+<span class="math notranslate nohighlight">\(\dot{\Pi}^S = G\cdot S + S \cdot G\)</span> or <span class="math notranslate nohighlight">\(\dot{\Pi} = G\cdot\dot{G} + \dot{G}\cdot G\)</span>.
+Otherwise, it just yields <span class="math notranslate nohighlight">\(\Pi = G\cdot G\)</span>.</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I0E6Bubble">
 <span id="_CPPv3I0E6Bubble"></span><span id="_CPPv2I0E6Bubble"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d8/d6e/classBubble"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bubble</span></span></span><a class="headerlink" href="#_CPPv4I0E6Bubble" title="Link to this definition"></a><br /></dt>
@@ -1256,7 +1278,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="prerequisites.html" class="btn btn-neutral float-left" title="Prerequisites" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="KeldyshDiagrammatics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="diagrams.html" class="btn btn-neutral float-right" title="Computing diagrams" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

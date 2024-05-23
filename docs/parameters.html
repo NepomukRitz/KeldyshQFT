@@ -18,6 +18,7 @@
         <script src="_static/documentation_options.js?v=8d563738"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -47,7 +48,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing.html">Post processing</a></li>
@@ -55,36 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="miscellaneous.html">Miscellaneous</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Parameters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pre-processor-flags">Pre-processor flags</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#global-parameters">Global parameters</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv420BOSONIC_PARAM_FOR_K3"><code class="docutils literal notranslate"><span class="pre">BOSONIC_PARAM_FOR_K3</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv413converged_tol"><code class="docutils literal notranslate"><span class="pre">converged_tol</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv415Delta_factor_K1"><code class="docutils literal notranslate"><span class="pre">Delta_factor_K1</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv415Delta_factor_SE"><code class="docutils literal notranslate"><span class="pre">Delta_factor_SE</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv417Delta_factor_K2_w"><code class="docutils literal notranslate"><span class="pre">Delta_factor_K2_w</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv417Delta_factor_K2_v"><code class="docutils literal notranslate"><span class="pre">Delta_factor_K2_v</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv417Delta_factor_K3_w"><code class="docutils literal notranslate"><span class="pre">Delta_factor_K3_w</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv417Delta_factor_K3_v"><code class="docutils literal notranslate"><span class="pre">Delta_factor_K3_v</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv411EQUILIBRIUM"><code class="docutils literal notranslate"><span class="pre">EQUILIBRIUM</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv46glb_mu"><code class="docutils literal notranslate"><span class="pre">glb_mu</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv45glb_V"><code class="docutils literal notranslate"><span class="pre">glb_V</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv414integrator_tol"><code class="docutils literal notranslate"><span class="pre">integrator_tol</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv49inter_tol"><code class="docutils literal notranslate"><span class="pre">inter_tol</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv413INTERPOLATION"><code class="docutils literal notranslate"><span class="pre">INTERPOLATION</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv410Lambda_ini"><code class="docutils literal notranslate"><span class="pre">Lambda_ini</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv410Lambda_fin"><code class="docutils literal notranslate"><span class="pre">Lambda_fin</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv412Lambda_scale"><code class="docutils literal notranslate"><span class="pre">Lambda_scale</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv415dLambda_initial"><code class="docutils literal notranslate"><span class="pre">dLambda_initial</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv44nBOS"><code class="docutils literal notranslate"><span class="pre">nBOS</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv44nFER"><code class="docutils literal notranslate"><span class="pre">nFER</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv45nBOS2"><code class="docutils literal notranslate"><span class="pre">nBOS2</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv45nFER2"><code class="docutils literal notranslate"><span class="pre">nFER2</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv45nBOS3"><code class="docutils literal notranslate"><span class="pre">nBOS3</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv45nFER3"><code class="docutils literal notranslate"><span class="pre">nFER3</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv418shift_fgrids_woPHS"><code class="docutils literal notranslate"><span class="pre">shift_fgrids_woPHS</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv45U_NRG"><code class="docutils literal notranslate"><span class="pre">U_NRG</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv47VERBOSE"><code class="docutils literal notranslate"><span class="pre">VERBOSE</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#global-parameters">Global parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
@@ -118,313 +89,352 @@
 <h1>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h1>
 <section id="pre-processor-flags">
 <h2>Pre-processor flags<a class="headerlink" href="#pre-processor-flags" title="Link to this heading"></a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “ADAPTIVE_GRID” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+<ul>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">ADAPTIVE_GRID</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, use optimization routine to find the best scale factor <span class="math notranslate nohighlight">\(A\)</span> of the frequency grid;</div>
+<div class="line">If undefined, just rescale the grid.</div>
+<div class="line"><strong>Warning</strong>: Can be expensive and unreliable in the presence of numerical artifacts.</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.ANALYTIC_TAILS">
-<span class="target" id="d1/df8/master__parameters_8hpp_1ac08bfaa6eab3580bd4690ef863625d12"></span><span class="sig-name descname"><span class="n"><span class="pre">ANALYTIC_TAILS</span></span></span><a class="headerlink" href="#c.ANALYTIC_TAILS" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “BARE_SE_FEEDBACK” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">ANALYTIC_TAILS</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, the analytic expression for the bare bubble is used to treat the high-frequency asymptotics during bubble computations in the finite-<span class="math notranslate nohighlight">\(T\)</span> MF.</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.CONTOUR_BASIS">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a209c004ba9b216412cae0ca89758f1a9"></span><span class="sig-name descname"><span class="n"><span class="pre">CONTOUR_BASIS</span></span></span><a class="headerlink" href="#c.CONTOUR_BASIS" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “DEBUG_MODE” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">BARE_SE_FEEDBACK</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, only bare selfenergy is used. Only makes sense if <code class="docutils literal notranslate"><span class="pre">STATIC_FEEDBACK</span></code> is defined. Useful for benchmarks with previous Keldysh fRG schemes.</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.DEBUG_SYMMETRIES">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a971bae9902862f2a2e1379520ee2d2bf"></span><span class="sig-name descname"><span class="n"><span class="pre">DEBUG_SYMMETRIES</span></span></span><a class="headerlink" href="#c.DEBUG_SYMMETRIES" title="Link to this definition"></a><br /></dt>
-<dd><p>0 for false; 1 for true. Performs computations without use of symmetries if true. Useful for debugging purposes. </p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.GRID">
-<span class="target" id="d3/d3c/frequency__parameters_8hpp_1ac389dbca21e58410d552988f3ec954c3"></span><span class="sig-name descname"><span class="n"><span class="pre">GRID</span></span></span><a class="headerlink" href="#c.GRID" title="Link to this definition"></a><br /></dt>
-<dd><p>Frequency grid parameters ///. </p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.KATANIN">
-<span class="target" id="d1/df8/master__parameters_8hpp_1ab158977719ecfc3a1859d883b01691fc"></span><span class="sig-name descname"><span class="n"><span class="pre">KATANIN</span></span></span><a class="headerlink" href="#c.KATANIN" title="Link to this definition"></a><br /></dt>
-<dd><p>If defined, the Katanin extension is used during mfRG computations. </p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.KELDYSH_FORMALISM">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a722c2af0617ed167ad80956c733f131c"></span><span class="sig-name descname"><span class="n"><span class="pre">KELDYSH_FORMALISM</span></span></span><a class="headerlink" href="#c.KELDYSH_FORMALISM" title="Link to this definition"></a><br /></dt>
-<dd><p><p>Determines whether calculations shall be done in the Keldysh or Matsubara formalism.</p>
-<p>0 for Matsubara; 1 for Keldysh formalism.</p>
-</p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.MAX_DIAG_CLASS">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a3dfa84f5ec32c85238883c47f2fadbaa"></span><span class="sig-name descname"><span class="n"><span class="pre">MAX_DIAG_CLASS</span></span></span><a class="headerlink" href="#c.MAX_DIAG_CLASS" title="Link to this definition"></a><br /></dt>
-<dd><p>Production runs parameters ///. </p>
-<p>Defines the diagrammatic classes that will be considered: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies. Useful for debugging purposes and for computations in second order perturbation theory, which only require K1. </p>
-</dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “NDEBUG” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">CONTOUR_BASIS</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false, 1 for true.</div>
+<div class="line">If true, no Keldysh rotation is performed and the contour basis is used instead to parametrize the Keldysh components of all correlation functions. Useful for comparisons with results that use this convention. Not as well tested and thus not recommended for production runs.</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.PARTICLE_HOLE_SYMM">
-<span class="target" id="d1/df8/master__parameters_8hpp_1adc2615f4fdb248979eb29fd4f32ff2e6"></span><span class="sig-name descname"><span class="n"><span class="pre">PARTICLE_HOLE_SYMM</span></span></span><a class="headerlink" href="#c.PARTICLE_HOLE_SYMM" title="Link to this definition"></a><br /></dt>
-<dd><p>0 for false; 1 for true. If true, particle-hole symmetry is assumed. </p>
-</dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “PT2_FLOW” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">DEBUG_SYMMETRIES</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">Performs computations without use of symmetries if true. Useful for debugging purposes.</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.REG">
-<span class="target" id="d1/df8/master__parameters_8hpp_1ac12997fa537ec8cbf0f69bf8228cc2a0"></span><span class="sig-name descname"><span class="n"><span class="pre">REG</span></span></span><a class="headerlink" href="#c.REG" title="Link to this definition"></a><br /></dt>
-<dd><p>fRG parameters /// </p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.REPARAMETRIZE_FLOWGRID">
-<span class="target" id="d1/df8/master__parameters_8hpp_1aaf458c464b2ca2a36803b018df2a927b"></span><span class="sig-name descname"><span class="n"><span class="pre">REPARAMETRIZE_FLOWGRID</span></span></span><a class="headerlink" href="#c.REPARAMETRIZE_FLOWGRID" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “ROTATEK2” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">GRID</span></code></dt><dd><div class="line-block">
+<div class="line">Controls which frequency grid is to be used.</div>
+<div class="line">0 for the non-linear grid, 1 for the hybrid grid, 2 for the polar grid.</div>
+<div class="line"><strong>Recommendation</strong>: 0.</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.SBE_DECOMPOSITION">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a8e29bcd96e548a3249a0a93917debc8b"></span><span class="sig-name descname"><span class="n"><span class="pre">SBE_DECOMPOSITION</span></span></span><a class="headerlink" href="#c.SBE_DECOMPOSITION" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.SELF_ENERGY_FLOW_CORRECTIONS">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a56eddb40f61b1b5d5984fa3048c09234"></span><span class="sig-name descname"><span class="n"><span class="pre">SELF_ENERGY_FLOW_CORRECTIONS</span></span></span><a class="headerlink" href="#c.SELF_ENERGY_FLOW_CORRECTIONS" title="Link to this definition"></a><br /></dt>
-<dd><p>0 for false; 1 for true. If true, corrections to the flow equations for the vertex from the self-energy, starting at l=3, are included. </p>
-</dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “STATIC_FEEDBACK” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">KATANIN</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, the Katanin extension is used during fRG computations.</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.SWITCH_SUM_N_INTEGRAL">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a2428b0f27a9cc2786d9454e71820f2e9"></span><span class="sig-name descname"><span class="n"><span class="pre">SWITCH_SUM_N_INTEGRAL</span></span></span><a class="headerlink" href="#c.SWITCH_SUM_N_INTEGRAL" title="Link to this definition"></a><br /></dt>
-<dd><p>0 for false; 1 for true. If true, the sum over internal Keldysh indices is done before the frequency integration. Recommended setting: 1. </p>
-</dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygendefine: Cannot find define “SYMMETRIZED_SELF_ENERGY_FLOW” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">KELDYSH_FORMALISM</span></code></dt><dd><div class="line-block">
+<div class="line">Determines whether calculations shall be done in the Keldysh or Matsubara formalism.</div>
+<div class="line">0 for Matsubara formalism (MF); 1 for Keldysh formalism (KF).</div>
 </div>
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.USE_ANDERSON_ACCELERATION">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a7404db19ae436f135f40c2621ef9a211"></span><span class="sig-name descname"><span class="n"><span class="pre">USE_ANDERSON_ACCELERATION</span></span></span><a class="headerlink" href="#c.USE_ANDERSON_ACCELERATION" title="Link to this definition"></a><br /></dt>
-<dd><p>0 for false; 1 for true. If true, Anderson acceleration is used to converge parquet iterations and self-energy iterations in mfRG faster. </p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.USE_FDT">
-<span class="target" id="d1/df8/master__parameters_8hpp_1ae20708713b54d1d5431fd089f5125fad"></span><span class="sig-name descname"><span class="n"><span class="pre">USE_FDT</span></span></span><a class="headerlink" href="#c.USE_FDT" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.USE_MPI">
-<span class="target" id="d9/d3a/technical__parameters_8hpp_1a3869d282031f6ea6b50fdb980b758420"></span><span class="sig-name descname"><span class="n"><span class="pre">USE_MPI</span></span></span><a class="headerlink" href="#c.USE_MPI" title="Link to this definition"></a><br /></dt>
-<dd><p>Technical parameters ///. </p>
-<p>If defined, MPI is used for parallelization across multiple nodes. </p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.USE_NEW_MFRG_EQS">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a808342a47e654eb0ea306a96b76ecc22"></span><span class="sig-name descname"><span class="n"><span class="pre">USE_NEW_MFRG_EQS</span></span></span><a class="headerlink" href="#c.USE_NEW_MFRG_EQS" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.VECTORIZED_INTEGRATION">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a8686f007b17788aec22df2c68263005b"></span><span class="sig-name descname"><span class="n"><span class="pre">VECTORIZED_INTEGRATION</span></span></span><a class="headerlink" href="#c.VECTORIZED_INTEGRATION" title="Link to this definition"></a><br /></dt>
-<dd><p>0 for false; 1 for true. If true, integrals are performed with vector-valued integrands. For Keldysh, vectorization over Keldysh indices. For Matsubara at finite T, vectorization over the Matsubara sum. </p>
-</dd></dl>
-
-<dl class="cpp macro">
-<dt class="sig sig-object cpp" id="c.ZERO_TEMP">
-<span class="target" id="d1/df8/master__parameters_8hpp_1a9897b8f62212deed8e0b93f70f570970"></span><span class="sig-name descname"><span class="n"><span class="pre">ZERO_TEMP</span></span></span><a class="headerlink" href="#c.ZERO_TEMP" title="Link to this definition"></a><br /></dt>
-<dd><p>0 for false; 1 for true. If true, temperature T = 0 is assumed. </p>
-</dd></dl>
-
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">MAX_DIAG_CLASS</span></code></dt><dd><div class="line-block">
+<div class="line">Defines the diagrammatic classes that will be considered.</div>
+<div class="line">1 for only <span class="math notranslate nohighlight">\(K_1\)</span>, 2 for <span class="math notranslate nohighlight">\(K_1\)</span> and <span class="math notranslate nohighlight">\(K_2\)</span> and 3 for the full dependencies.</div>
+<div class="line">Useful for debugging purposes and for computations in second-order perturbation theory, or if <code class="docutils literal notranslate"><span class="pre">STATIC_FEEDBACK</span></code> is defined, when only <span class="math notranslate nohighlight">\(K_1\)</span> is required.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">NDEBUG</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, assert functions are switched off. Recommended setting for production runs.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">PARTICLE_HOLE_SYMM</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, particle-hole symmetry is assumed.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">PT2_FLOW</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, only compute the flow equations up to <span class="math notranslate nohighlight">\(O(U^2)\)</span>. Only makes sense for pure <span class="math notranslate nohighlight">\(K_1\)</span> calculations. Useful as a consistency check together with independent PT2 calculations.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">REG</span></code></dt><dd><div class="line-block">
+<div class="line">Specifies the mfRG flow regulator to be used.</div>
+<div class="line"><span class="math notranslate nohighlight">\(2\)</span>: <span class="math notranslate nohighlight">\(\Delta\)</span>-flow, <span class="math notranslate nohighlight">\(3\)</span>: <span class="math notranslate nohighlight">\(\omega\)</span>-flow, <span class="math notranslate nohighlight">\(4\)</span>: <span class="math notranslate nohighlight">\(U\)</span>-flow, <span class="math notranslate nohighlight">\(5\)</span>: <span class="math notranslate nohighlight">\(T\)</span>-flow.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">REPARAMETRIZE_FLOWGRID</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, the flow parameter is reparametrized. Only recommended for the <span class="math notranslate nohighlight">\(\Delta\)</span>-flow.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">SBE_DECOMPOSITION</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, the SBE decomposition is used to parametrize the vertex and the flow equations. Only implemented in the MF!</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">SELF_ENERGY_FLOW_CORRECTIONS</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, corrections to the flow equations for the vertex from the self-energy, starting at <span class="math notranslate nohighlight">\(\ell=3\)</span>, are included.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">STATIC_FEEDBACK</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, use static <span class="math notranslate nohighlight">\(K_1\)</span> inter-channel feedback. Only makes sense for pure <span class="math notranslate nohighlight">\(K_1\)</span> calculations.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">SWITCH_SUM_N_INTEGRAL</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, the sum over internal Keldysh indices is done before the frequency integration.</div>
+<div class="line"><strong>Recommended setting</strong>: 1.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">USE_ANDERSON_ACCELERATION</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, Anderson acceleration is used to converge parquet iterations and self-energy iterations in mfRG faster.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">USE_MPI</span></code></dt><dd><div class="line-block">
+<div class="line">If defined, MPI is used for parallelization across multiple nodes.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">USE_NEW_MFRG_EQS</span></code></dt><dd><div class="line-block">
+<div class="line">Determines which version of the SBE approximation shall be used.</div>
+<div class="line">0 for SBEa, 1 for SBEb.</div>
+<div class="line"><strong>Warning</strong>: Only implemented in the MF!</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">VECTORIZED_INTEGRATION</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, integrals are performed with vector-valued integrands. For Keldysh, vectorization over Keldysh indices. For Matsubara at finite <span class="math notranslate nohighlight">\(T\)</span>, vectorization over the Matsubara sum.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">ZERO_TEMP</span></code></dt><dd><div class="line-block">
+<div class="line">0 for false; 1 for true.</div>
+<div class="line">If true, temperature <span class="math notranslate nohighlight">\(T = 0\)</span> is assumed.</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
 </section>
 <section id="global-parameters">
 <h2>Global parameters<a class="headerlink" href="#global-parameters" title="Link to this heading"></a></h2>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv420BOSONIC_PARAM_FOR_K3">
-<span id="_CPPv320BOSONIC_PARAM_FOR_K3"></span><span id="_CPPv220BOSONIC_PARAM_FOR_K3"></span><span id="BOSONIC_PARAM_FOR_K3__b"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a0202923e518730f85dd10460af50fea6"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BOSONIC_PARAM_FOR_K3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv420BOSONIC_PARAM_FOR_K3" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv413converged_tol">
-<span id="_CPPv313converged_tol"></span><span id="_CPPv213converged_tol"></span><span id="converged_tol__double"></span><span class="target" id="d9/d3a/technical__parameters_8hpp_1a0058ef1bfd1db523d535f62feb311546"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">converged_tol</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-7</span></span><a class="headerlink" href="#_CPPv413converged_tol" title="Link to this definition"></a><br /></dt>
-<dd><p>Tolerance for loop convergence in mfRG. </p>
-</dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygenvariable: Cannot find variable “COUNT” in doxygen xml output for project “KeldyshDiag” from directory: /Users/nepomuk-work/PhD/mfrg/source/cmake-build-debug/../Documentation/xml/</p>
+<ul>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">converged_tol</span></code></dt><dd><p>Tolerance for loop convergence in mfRG.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">COUNT</span></code></dt><dd><p>Used to set the number of frequency points in the MF. For details, see the definitions in the file <code class="docutils literal notranslate"><span class="pre">frequency_parameters.hpp</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Delta_factor_K1</span></code></dt><dd><p>Scale factor for the frequency grid of the <span class="math notranslate nohighlight">\(K_1\)</span> vertex class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Delta_factor_SE</span></code></dt><dd><p>Scale factor for the frequency grid of the self-energy.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Delta_factor_K2_w</span></code></dt><dd><p>Scale factor for the frequency grid of the bosonic frequency of the <span class="math notranslate nohighlight">\(K_2\)</span> and <span class="math notranslate nohighlight">\(K_{2'}\)</span> vertex classes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Delta_factor_K2_v</span></code></dt><dd><p>Scale factor for the frequency grid of the fermionic frequency of the <span class="math notranslate nohighlight">\(K_2\)</span> and <span class="math notranslate nohighlight">\(K_{2'}\)</span> vertex classes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Delta_factor_K3_w</span></code></dt><dd><p>Scale factor for the frequency grid of the bosonic frequency of the <span class="math notranslate nohighlight">\(K_3\)</span> vertex class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Delta_factor_K3_v</span></code></dt><dd><p>Scale factor for the frequency grid of the fermionic frequencies of the <span class="math notranslate nohighlight">\(K_3\)</span> vertex class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">EQUILIBRIUM</span></code></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, use equilibrium FDTs for propagators.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">glb_mu</span></code></dt><dd><p>Chemical potential – w.l.o.g. <strong>ALWAYS</strong> set to 0.0 for the AM!</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">integrator_tol</span></code></dt><dd><p>Integrator tolerance.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">inter_tol</span></code></dt><dd><p>Tolerance for closeness to grid points when interpolating.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">INTERPOLATION</span></code></dt><dd><div class="line-block">
+<div class="line">Interpolation method to me used.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">linear</span></code>: linear interpolation on the frequency grid.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">linear_on_aux</span></code>: linear interpolation on the grid for the auxiliary frequency <span class="math notranslate nohighlight">\(\Omega\)</span>.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">cubic</span></code>: Interpolation with cubic splines (<strong>warning</strong>: expensive!).</div>
 </div>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv415Delta_factor_K1">
-<span id="_CPPv315Delta_factor_K1"></span><span id="_CPPv215Delta_factor_K1"></span><span id="Delta_factor_K1__doubleC"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a6ea138cf1b23526993fe12f3add4ff35"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Delta_factor_K1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">5.</span></span><a class="headerlink" href="#_CPPv415Delta_factor_K1" title="Link to this definition"></a><br /></dt>
-<dd><p>Scale factor for the frequency grid of the K1 vertex class. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv415Delta_factor_SE">
-<span id="_CPPv315Delta_factor_SE"></span><span id="_CPPv215Delta_factor_SE"></span><span id="Delta_factor_SE__doubleC"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1ab3096582b02c56eb2c838631a7e5de51"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Delta_factor_SE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">10.</span></span><a class="headerlink" href="#_CPPv415Delta_factor_SE" title="Link to this definition"></a><br /></dt>
-<dd><p>Scale factor for the frequency grid of the self-energy. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv417Delta_factor_K2_w">
-<span id="_CPPv317Delta_factor_K2_w"></span><span id="_CPPv217Delta_factor_K2_w"></span><span id="Delta_factor_K2_w__doubleC"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a6e08a06d210b49b2ac511ad77d0be00d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Delta_factor_K2_w</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">15.</span></span><a class="headerlink" href="#_CPPv417Delta_factor_K2_w" title="Link to this definition"></a><br /></dt>
-<dd><p>Scale factor for the frequency grid of the bosonic frequency of the K2 and K2’ vertex classes. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv417Delta_factor_K2_v">
-<span id="_CPPv317Delta_factor_K2_v"></span><span id="_CPPv217Delta_factor_K2_v"></span><span id="Delta_factor_K2_v__doubleC"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a1bd20877e89f8eb953d5bb4e9f147a20"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Delta_factor_K2_v</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">20.</span></span><a class="headerlink" href="#_CPPv417Delta_factor_K2_v" title="Link to this definition"></a><br /></dt>
-<dd><p>Scale factor for the frequency grid of the fermionic frequency of the K2 and K2’ vertex classes. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv417Delta_factor_K3_w">
-<span id="_CPPv317Delta_factor_K3_w"></span><span id="_CPPv217Delta_factor_K3_w"></span><span id="Delta_factor_K3_w__doubleC"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a823f4683d45c1c5e52d311a5075a0275"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Delta_factor_K3_w</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">10.</span></span><a class="headerlink" href="#_CPPv417Delta_factor_K3_w" title="Link to this definition"></a><br /></dt>
-<dd><p>Scale factor for the frequency grid of the bosonic frequency of the K3 vertex class. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv417Delta_factor_K3_v">
-<span id="_CPPv317Delta_factor_K3_v"></span><span id="_CPPv217Delta_factor_K3_v"></span><span id="Delta_factor_K3_v__doubleC"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1ad46998952fa4265ee0a38e0021ca46b4"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Delta_factor_K3_v</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">10.</span></span><a class="headerlink" href="#_CPPv417Delta_factor_K3_v" title="Link to this definition"></a><br /></dt>
-<dd><p>Scale factor for the frequency grid of the fermionic frequencies of the K3 vertex class. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv411EQUILIBRIUM">
-<span id="_CPPv311EQUILIBRIUM"></span><span id="_CPPv211EQUILIBRIUM"></span><span id="EQUILIBRIUM__b"></span><span class="target" id="d1/df8/master__parameters_8hpp_1a43edd82c9c2393607af220b1e0f4d2e6"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EQUILIBRIUM</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv411EQUILIBRIUM" title="Link to this definition"></a><br /></dt>
-<dd><p>If true, use equilibrium FDT’s for propagators. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv46glb_mu">
-<span id="_CPPv36glb_mu"></span><span id="_CPPv26glb_mu"></span><span id="glb_mu__double"></span><span class="target" id="d1/df8/master__parameters_8hpp_1a18e4694bb937d4a6e8e55f3f795518a0"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">glb_mu</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv46glb_mu" title="Link to this definition"></a><br /></dt>
-<dd><p>Physical parameters ///. </p>
-<p>Chemical potential &amp;#8212; w.l.o.g. ALWAYS set to 0.0 for the AM! </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv45glb_V">
-<span id="_CPPv35glb_V"></span><span id="_CPPv25glb_V"></span><span id="glb_V__double"></span><span class="target" id="d1/df8/master__parameters_8hpp_1a8229a287d8546a0bdb5c5d19e2cd3d23"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">glb_V</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.</span></span><a class="headerlink" href="#_CPPv45glb_V" title="Link to this definition"></a><br /></dt>
-<dd><p>Bias voltage (glb_V == 0. in equilibrium) </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv414integrator_tol">
-<span id="_CPPv314integrator_tol"></span><span id="_CPPv214integrator_tol"></span><span id="integrator_tol__double"></span><span class="target" id="d9/d3a/technical__parameters_8hpp_1a1215f05b56bc42fec8313a0561b4f4b1"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">integrator_tol</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-5</span></span><a class="headerlink" href="#_CPPv414integrator_tol" title="Link to this definition"></a><br /></dt>
-<dd><p>Integrator tolerance. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv49inter_tol">
-<span id="_CPPv39inter_tol"></span><span id="_CPPv29inter_tol"></span><span id="inter_tol__double"></span><span class="target" id="d9/d3a/technical__parameters_8hpp_1a15d603dbf79667bdfc824df8bcb0ab28"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">inter_tol</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-5</span></span><a class="headerlink" href="#_CPPv49inter_tol" title="Link to this definition"></a><br /></dt>
-<dd><p>Tolerance for closeness to grid points when interpolating. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv413INTERPOLATION">
-<span id="_CPPv313INTERPOLATION"></span><span id="_CPPv213INTERPOLATION"></span><span id="INTERPOLATION__interpolMethod"></span><span class="target" id="d9/d3a/technical__parameters_8hpp_1a6b7445f4535a5480e56a9be7fbc10529"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">interpolMethod</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">INTERPOLATION</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">linear_on_aux</span></span><a class="headerlink" href="#_CPPv413INTERPOLATION" title="Link to this definition"></a><br /></dt>
-<dd><p>Interpolation method to me used. linear: linear interpolation on the frequency grid. linear_on_aux: linear interpolation on the grid for the auxiliary frequency \Omega. cubic: Interpolation with cubic splines (warning: expensive!). </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv410Lambda_ini">
-<span id="_CPPv310Lambda_ini"></span><span id="_CPPv210Lambda_ini"></span><span id="Lambda_ini__doubleC"></span><span class="target" id="d1/df8/master__parameters_8hpp_1add586d3294a24dfa965265d0f80c3329"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Lambda_ini</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">19.8</span></span><a class="headerlink" href="#_CPPv410Lambda_ini" title="Link to this definition"></a><br /></dt>
-<dd><p>Initial value of the regulator \Lambda for an mfRG flow. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv410Lambda_fin">
-<span id="_CPPv310Lambda_fin"></span><span id="_CPPv210Lambda_fin"></span><span id="Lambda_fin__doubleC"></span><span class="target" id="d1/df8/master__parameters_8hpp_1ae49dd34b69d851c406f86ec1d6512ad3"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Lambda_fin</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.1</span></span><a class="headerlink" href="#_CPPv410Lambda_fin" title="Link to this definition"></a><br /></dt>
-<dd><p>Final value of the regulator \Lambda for an mfRG flow. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv412Lambda_scale">
-<span id="_CPPv312Lambda_scale"></span><span id="_CPPv212Lambda_scale"></span><span id="Lambda_scale__double"></span><span class="target" id="d1/df8/master__parameters_8hpp_1a70259e3a107270133da97beb4df92c1b"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Lambda_scale</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.</span></span><span class="w"> </span><span class="o"><span class="pre">/</span></span><span class="w"> </span><span class="m"><span class="pre">200.</span></span><a class="headerlink" href="#_CPPv412Lambda_scale" title="Link to this definition"></a><br /></dt>
-<dd><p>Scale of the log substitution, relevant in the hybridization flow. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv415dLambda_initial">
-<span id="_CPPv315dLambda_initial"></span><span id="_CPPv215dLambda_initial"></span><span id="dLambda_initial__double"></span><span class="target" id="d1/df8/master__parameters_8hpp_1a32376f9b22dd79c20dceee6af4857234"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dLambda_initial</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.5</span></span><a class="headerlink" href="#_CPPv415dLambda_initial" title="Link to this definition"></a><br /></dt>
-<dd><p>Initial step size for ODE solvers with adaptive step size control. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv44nBOS">
-<span id="_CPPv34nBOS"></span><span id="_CPPv24nBOS"></span><span id="nBOS__i"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a53beecdaf61aae67af4961c402376dc6"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nBOS</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">COUNT</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">16</span></span><span class="w"> </span><span class="o"><span class="pre">+</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv44nBOS" title="Link to this definition"></a><br /></dt>
-<dd><p>determines whether frequency grids are shifted by hartree+epsilon (depending on channel) -&gt; many sample points around new points </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv44nFER">
-<span id="_CPPv34nFER"></span><span id="_CPPv24nFER"></span><span id="nFER__i"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1ad5072d3f3d8695936a61384479d97222"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nFER</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">COUNT</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">32</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><a class="headerlink" href="#_CPPv44nFER" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv45nBOS2">
-<span id="_CPPv35nBOS2"></span><span id="_CPPv25nBOS2"></span><span id="nBOS2__i"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a18fa2894433252528682ce7deae641c1"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nBOS2</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">COUNT</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">+</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv45nBOS2" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv45nFER2">
-<span id="_CPPv35nFER2"></span><span id="_CPPv25nFER2"></span><span id="nFER2__i"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1a580d7024830b27dded65df8d5daf1e40"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nFER2</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">COUNT</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><a class="headerlink" href="#_CPPv45nFER2" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv45nBOS3">
-<span id="_CPPv35nBOS3"></span><span id="_CPPv25nBOS3"></span><span id="nBOS3__i"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1acf74a969ffcb98c08a18e0341b82d0dd"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nBOS3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">COUNT</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">+</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv45nBOS3" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv45nFER3">
-<span id="_CPPv35nFER3"></span><span id="_CPPv25nFER3"></span><span id="nFER3__i"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1afa4534d8578c96e9f98cd8c211b8889d"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nFER3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">COUNT</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><a class="headerlink" href="#_CPPv45nFER3" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv418shift_fgrids_woPHS">
-<span id="_CPPv318shift_fgrids_woPHS"></span><span id="_CPPv218shift_fgrids_woPHS"></span><span id="shift_fgrids_woPHS__b"></span><span class="target" id="d3/d3c/frequency__parameters_8hpp_1abaf7a8bf0faac6945caeae137a97d0e6"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">shift_fgrids_woPHS</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv418shift_fgrids_woPHS" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv45U_NRG">
-<span id="_CPPv35U_NRG"></span><span id="_CPPv25U_NRG"></span><span id="U_NRG__std::vector:double:C"></span><span class="target" id="d1/df8/master__parameters_8hpp_1a7814fa5332c4bb8481ef5c6a621147c9"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">U_NRG</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0.05</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.1</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.5</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.3</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.4</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.5</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.5</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.6</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.7</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.75</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2.5</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.8</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0.9</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.1</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3.5</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.25</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">4.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.3</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.4</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">4.5</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.5</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">5.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">6.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">8.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="w"> </span><span class="o"><span class="pre">*</span></span><span class="w"> </span><span class="n"><span class="pre">M_PI</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">10.0</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv45U_NRG" title="Link to this definition"></a><br /></dt>
-<dd><p>Vector with the values of U in units of \Delta that an mfRG flow should cover. Serve as checkpoints for the flow. Useful for benchmarking purposes if data from other methods at precise parameter points are available. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv47VERBOSE">
-<span id="_CPPv37VERBOSE"></span><span id="_CPPv27VERBOSE"></span><span id="VERBOSE__b"></span><span class="target" id="d1/df8/master__parameters_8hpp_1a789ba32fd34b3ceb54fce8a9b3958565"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VERBOSE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv47VERBOSE" title="Link to this definition"></a><br /></dt>
-<dd><p>If true, detailed information about all computational steps are written into the log file. Recommended setting for production runs: false. </p>
-</dd></dl>
-
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Lambda_ini</span></code></dt><dd><p>Initial value of the regulator <span class="math notranslate nohighlight">\(\Lambda\)</span> for an mfRG flow.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Lambda_fin</span></code></dt><dd><p>Final value of the regulator <span class="math notranslate nohighlight">\(\Lambda\)</span> for an mfRG flow.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Lambda_scale</span></code></dt><dd><p>Scale of the log substitution, relevant in the hybridization flow.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dLambda_initial</span></code></dt><dd><p>Initial step size for ODE solvers with adaptive step size control.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nBOS</span></code></dt><dd><p>Number of bosonic frequency points for the <span class="math notranslate nohighlight">\(K_1\)</span> vertex class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nFER</span></code></dt><dd><p>Number of fermionic frequency points for the self-energy.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nBOS2</span></code></dt><dd><p>Number of bosonic frequency points for the <span class="math notranslate nohighlight">\(K_2\)</span> and <span class="math notranslate nohighlight">\(K_{2'}\)</span> vertex classes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nFER2</span></code></dt><dd><p>Number of fermionic frequency points for the <span class="math notranslate nohighlight">\(K_2\)</span> and <span class="math notranslate nohighlight">\(K_{2'}\)</span> vertex classes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nBOS3</span></code></dt><dd><p>Number of bosonic frequency points for the <span class="math notranslate nohighlight">\(K_3\)</span> vertex class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nFER3</span></code></dt><dd><p>Number of fermionic frequency points for the <span class="math notranslate nohighlight">\(K_3\)</span> vertex class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">U_NRG</span></code></dt><dd><p>Vector with the values of <span class="math notranslate nohighlight">\(U\)</span> in units of <span class="math notranslate nohighlight">\(\Delta\)</span> that an mfRG flow should cover. Serve as checkpoints for the flow. Useful for benchmarking purposes if data from other methods at precise parameter points are available.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">VERBOSE</span></code></dt><dd><div class="line-block">
+<div class="line">If <code class="docutils literal notranslate"><span class="pre">true</span></code>, detailed information about all computational steps is written into the log file.</div>
+<div class="line">Recommended setting for production runs: <code class="docutils literal notranslate"><span class="pre">false</span></code></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">nmax_Selfenergy_iterations</span></code></dt><dd><div class="line-block">
+<div class="line">Maximal number of self-energy iterations to be done during an mfRG flow for <span class="math notranslate nohighlight">\(\ell \geq 3\)</span>.</div>
+<div class="line">Default value: 10</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">tol_selfenergy_correction_abs</span></code></dt><dd><div class="line-block">
+<div class="line">Absolute tolerance for self-energy iterations in mfRG.</div>
+<div class="line">Default value: <span class="math notranslate nohighlight">\(10^{-9}\)</span></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">tol_selfenergy_correction_rel</span></code></dt><dd><div class="line-block">
+<div class="line">Relative tolerance for self-energy iterations in mfRG.</div>
+<div class="line">Default value: <span class="math notranslate nohighlight">\(10^{-5}\)</span></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
 </section>
 </section>
 

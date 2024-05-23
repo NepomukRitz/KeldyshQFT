@@ -2,6 +2,11 @@
 Computing diagrams
 ==================
 
+All diagrammatic computations for self-energies and vertices in the setting discussed here ultimately require the
+computation of diagrams of one of two types, which we call ''bubbles'' and ''loops''. The former uses an instance of
+the ``Bubble`` class to connect two four-point vertices with a propagator pair, yielding another four-point object.
+The latter contracts two external fermionic legs of a four-point vertex with a propagator, yielding a two-point object.
+
 Bubbles
 =======
 

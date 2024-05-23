@@ -47,7 +47,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Computing diagrams</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bubbles">Bubbles</a><ul>
@@ -106,6 +105,10 @@
              
   <section id="computing-diagrams">
 <h1>Computing diagrams<a class="headerlink" href="#computing-diagrams" title="Link to this heading"></a></h1>
+<p>All diagrammatic computations for self-energies and vertices in the setting discussed here ultimately require the
+computation of diagrams of one of two types, which we call ‘’bubbles’’ and ‘’loops’’. The former uses an instance of
+the <code class="docutils literal notranslate"><span class="pre">Bubble</span></code> class to connect two four-point vertices with a propagator pair, yielding another four-point object.
+The latter contracts two external fermionic legs of a four-point vertex with a propagator, yielding a two-point object.</p>
 <section id="bubbles">
 <h2>Bubbles<a class="headerlink" href="#bubbles" title="Link to this heading"></a></h2>
 <dl class="cpp function">

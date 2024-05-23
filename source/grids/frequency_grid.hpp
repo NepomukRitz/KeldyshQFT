@@ -63,6 +63,10 @@ namespace hdf5_impl {
 
 enum frequencyGridType {eliasGrid, hybridGrid, angularGrid};
 
+/**
+ *
+ * @tparam freqGridType
+ */
 template <frequencyGridType freqGridType>
 class FrequencyGrid {};
 

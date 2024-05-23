@@ -2,6 +2,10 @@
 Post processing
 ===============
 
+The following functions can be invoked after a calculation has been performed.
+They are not required for the actual calculations themselves but are useful to extract additional information from
+their results, either as consistency checks or to infer derived quantities for later analysis.
+
 .. doxygenfunction:: check_SE_causality(const SelfEnergy<Q>& selfEnergy)
 
 .. doxygenfunction:: check_FDTs_selfenergy(const SelfEnergy<Q>& selfenergy, const double T, const bool verbose)

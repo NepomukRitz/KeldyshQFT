@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Prerequisites" href="prerequisites.html" /> 
+    <link rel="next" title="Correlation Functions" href="correlationfunctions.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,7 +46,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing.html">Post processing</a></li>
@@ -83,11 +82,38 @@
   <section id="keldyshdiagrammatics">
 <h1>KeldyshDiagrammatics<a class="headerlink" href="#keldyshdiagrammatics" title="Link to this heading"></a></h1>
 <p><strong>A C++ Codebase for real-frequency multiloop functional renormalization group and parquet computations for the single impurity Anderson model</strong></p>
-<p>TODO: Add introductory paragraph</p>
+<p>This is the technical documentation for the computational
+framework designed for the accurate calculation of real-frequency
+dynamical correlation functions of the single-impurity Anderson model
+(AM) in the regime of weak to intermediate coupling, see its <a class="reference external" href="https://github.com/NepomukRitz/KeldyshDiagrammatics/tree/master_to_be_published">source code</a>.</p>
+<p>It uses quantum field theory within the Keldysh formalism to directly access the
+self-energy and dynamical susceptibilities along the real-frequency
+axis, as detailed in <a class="reference external" href="https://doi.org/10.1103/PhysRevB.109.115128">this publication</a>. The primary challenge we
+address is the computationally demanding task of obtaining the full
+three-dimensional real-frequency dependence of the four-point vertex.</p>
+<p>This codebase provides a fully MPI+OpenMP parallelized implementation of the multiloop
+functional renormalization group, and, independently, the solution
+of the self-consistent parquet equations within the parquet
+approximation. It leverages vectorization to handle the additional
+complexity imposed by the Keldysh formalism, using optimized data
+structures and highly performant integration routines.</p>
+<p>The code itself is written in <a class="reference external" href="https://en.cppreference.com/w/cpp/17">C++17</a>
+and is built using <a class="reference external" href="https://cmake.org/documentation/">CMake</a>, demanding at least version 3.10. It requires the
+<a class="reference external" href="https://www.gnu.org/software/gsl/doc/latex/gsl-ref.pdf">GSL</a>, <a class="reference external" href="https://www.boost.org/">boost</a> and
+<a class="reference external" href="http://eigen.tuxfamily.org/">Eigen3</a> libraries as well as the <a class="reference external" href="https://www.hdfgroup.org/HDF5/">HDF5</a> library for
+input and output. For parallelization, the <a class="reference external" href="https://www.openmp.org/">OpenMP</a> and
+<a class="reference external" href="https://hpc.nmsu.edu/discovery/mpi/introduction/">MPI</a> interfaces are used.
+All these libraries are hence required on the system that is used to build and run the code.
+Notably, we do not supply precompiled executables, that could be run directly, for several reasons:
+First, the code makes heavy use of preprocessor flags that must be set <em>before</em> compilation and that are
+in part used to specify the concrete problem at hand, see <a class="reference internal" href="parameters.html"><span class="doc">Parameters</span></a>. Second, depending on the system
+at hand, special compilers for the particular architecture might be available, which could optimize the code during
+compilation and linking, leading to a significant improvement in performance. The user should hence adapt the file
+<a class="reference external" href="https://github.com/NepomukRitz/KeldyshDiagrammatics/blob/master_to_be_published/source/CMakeLists.txt">CMakeLists.txt</a>
+accordingly, such that the required libraries are included and linked properly and all compiler settings are set as desired.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing.html">Post processing</a></li>
@@ -97,6 +123,9 @@
 <li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
 </ul>
 </div>
+<p>This technical documentation supplied with the code is generated automatically using the tools
+<a class="reference external" href="https://www.doxygen.nl/">Doxygen</a>, <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>,
+<a class="reference external" href="https://breathe.readthedocs.io/en/latest/">Breathe</a> and <a class="reference external" href="https://cmake.org/documentation/">CMake</a>.</p>
 <hr class="docutils" />
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
@@ -107,7 +136,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="prerequisites.html" class="btn btn-neutral float-right" title="Prerequisites" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="correlationfunctions.html" class="btn btn-neutral float-right" title="Correlation Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

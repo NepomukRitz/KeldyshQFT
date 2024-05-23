@@ -47,7 +47,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correlationfunctions.html">Correlation Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="diagrams.html">Computing diagrams</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Post processing</a><ul>
@@ -90,6 +89,9 @@
              
   <section id="post-processing">
 <h1>Post processing<a class="headerlink" href="#post-processing" title="Link to this heading"></a></h1>
+<p>The following functions can be invoked after a calculation has been performed.
+They are not required for the actual calculations themselves but are useful to extract additional information from
+their results, either as consistency checks or to infer derived quantities for later analysis.</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I0E18check_SE_causalityvRK10SelfEnergyI1QE">
 <span id="_CPPv3I0E18check_SE_causalityRK10SelfEnergyI1QE"></span><span id="_CPPv2I0E18check_SE_causalityRK10SelfEnergyI1QE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d1/d75/causality__FDT__checks_8hpp_1a78b466ca2e79927fb9baa44f24d320a1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">check_SE_causality</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="correlationfunctions.html#_CPPv4I0E10SelfEnergy" title="SelfEnergy"><span class="n"><span class="pre">SelfEnergy</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0E18check_SE_causalityvRK10SelfEnergyI1QE" title="check_SE_causality::Q"><span class="n"><span class="pre">Q</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">selfEnergy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0E18check_SE_causalityvRK10SelfEnergyI1QE" title="Link to this definition"></a><br /></dt>

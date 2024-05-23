@@ -120,16 +120,16 @@ elseif(MACBOOK)
             /usr/local/include/
             /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/
             /opt/homebrew/Cellar/gsl/2.7.1/include
-            /opt/homebrew/Cellar/hdf5/1.14.3/include
-            /opt/homebrew/Cellar/boost/1.84.0/include
+            /opt/homebrew/Cellar/hdf5/1.14.3_1/include
+            /opt/homebrew/Cellar/boost/1.85.0/include
     )
-    target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/hdf5/1.14.3/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/hdf5/1.14.3_1/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
 
-    target_link_libraries(Keldysh_postproc -L/opt/homebrew/Cellar/hdf5/1.14.3/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(Keldysh_postproc -L/opt/homebrew/Cellar/hdf5/1.14.3_1/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_postproc -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
 
-    target_link_libraries(Keldysh_mfRG_testing -L/opt/homebrew/Cellar/hdf5/1.14.3/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(Keldysh_mfRG_testing -L/opt/homebrew/Cellar/hdf5/1.14.3_1/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG_testing -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
 endif()
 

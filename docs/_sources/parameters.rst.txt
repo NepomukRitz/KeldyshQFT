@@ -5,116 +5,189 @@ Parameters
 Pre-processor flags
 ===================
 
-.. doxygendefine:: ADAPTIVE_GRID
+- ``ADAPTIVE_GRID``
+    | If defined, use optimization routine to find the best scale factor :math:`A` of the frequency grid;
+    | If undefined, just rescale the grid.
+    | **Warning**: Can be expensive and unreliable in the presence of numerical artifacts.
 
-.. doxygendefine:: ANALYTIC_TAILS
+- ``ANALYTIC_TAILS``
+    | 0 for false; 1 for true.
+    | If true, the analytic expression for the bare bubble is used to treat the high-frequency asymptotics during bubble computations in the finite-:math:`T` MF.
 
-.. doxygendefine:: BARE_SE_FEEDBACK
+- ``BARE_SE_FEEDBACK``
+    | If defined, only bare selfenergy is used. Only makes sense if ``STATIC_FEEDBACK`` is defined. Useful for benchmarks with previous Keldysh fRG schemes.
 
-.. doxygendefine:: CONTOUR_BASIS
+- ``CONTOUR_BASIS``
+    | 0 for false, 1 for true.
+    | If true, no Keldysh rotation is performed and the contour basis is used instead to parametrize the Keldysh components of all correlation functions. Useful for comparisons with results that use this convention. Not as well tested and thus not recommended for production runs.
 
-.. doxygendefine:: DEBUG_MODE
+- ``DEBUG_SYMMETRIES``
+    | 0 for false; 1 for true.
+    | Performs computations without use of symmetries if true. Useful for debugging purposes.
 
-.. doxygendefine:: DEBUG_SYMMETRIES
+- ``GRID``
+    | Controls which frequency grid is to be used.
+    | 0 for the non-linear grid, 1 for the hybrid grid, 2 for the polar grid.
+    | **Recommendation**: 0.
 
-.. doxygendefine:: GRID
+- ``KATANIN``
+    | If defined, the Katanin extension is used during fRG computations.
 
-.. doxygendefine:: KATANIN
+- ``KELDYSH_FORMALISM``
+    | Determines whether calculations shall be done in the Keldysh or Matsubara formalism.
+    | 0 for Matsubara formalism (MF); 1 for Keldysh formalism (KF).
 
-.. doxygendefine:: KELDYSH_FORMALISM
+- ``MAX_DIAG_CLASS``
+    | Defines the diagrammatic classes that will be considered.
+    | 1 for only :math:`K_1`, 2 for :math:`K_1` and :math:`K_2` and 3 for the full dependencies.
+    | Useful for debugging purposes and for computations in second-order perturbation theory, or if ``STATIC_FEEDBACK`` is defined, when only :math:`K_1` is required.
 
-.. doxygendefine:: MAX_DIAG_CLASS
+- ``NDEBUG``
+    | If defined, assert functions are switched off. Recommended setting for production runs.
 
-.. doxygendefine:: NDEBUG
+- ``PARTICLE_HOLE_SYMM``
+    | 0 for false; 1 for true.
+    | If true, particle-hole symmetry is assumed.
 
-.. doxygendefine:: PARTICLE_HOLE_SYMM
+- ``PT2_FLOW``
+    | If defined, only compute the flow equations up to :math:`O(U^2)`. Only makes sense for pure :math:`K_1` calculations. Useful as a consistency check together with independent PT2 calculations.
 
-.. doxygendefine:: PT2_FLOW
+- ``REG``
+    | Specifies the mfRG flow regulator to be used.
+    | :math:`2`: :math:`\Delta`-flow, :math:`3`: :math:`\omega`-flow, :math:`4`: :math:`U`-flow, :math:`5`: :math:`T`-flow.
 
-.. doxygendefine:: REG
+- ``REPARAMETRIZE_FLOWGRID``
+    | If defined, the flow parameter is reparametrized. Only recommended for the :math:`\Delta`-flow.
 
-.. doxygendefine:: REPARAMETRIZE_FLOWGRID
+- ``SBE_DECOMPOSITION``
+    | 0 for false; 1 for true.
+    | If true, the SBE decomposition is used to parametrize the vertex and the flow equations. Only implemented in the MF!
 
-.. doxygendefine:: ROTATEK2
+- ``SELF_ENERGY_FLOW_CORRECTIONS``
+    | 0 for false; 1 for true.
+    | If true, corrections to the flow equations for the vertex from the self-energy, starting at :math:`\ell=3`, are included.
 
-.. doxygendefine:: SBE_DECOMPOSITION
+- ``STATIC_FEEDBACK``
+    | If defined, use static :math:`K_1` inter-channel feedback. Only makes sense for pure :math:`K_1` calculations.
 
-.. doxygendefine:: SELF_ENERGY_FLOW_CORRECTIONS
+- ``SWITCH_SUM_N_INTEGRAL``
+    | 0 for false; 1 for true.
+    | If true, the sum over internal Keldysh indices is done before the frequency integration.
+    | **Recommended setting**: 1.
 
-.. doxygendefine:: STATIC_FEEDBACK
+- ``USE_ANDERSON_ACCELERATION``
+    | 0 for false; 1 for true.
+    | If true, Anderson acceleration is used to converge parquet iterations and self-energy iterations in mfRG faster.
 
-.. doxygendefine:: SWITCH_SUM_N_INTEGRAL
+- ``USE_MPI``
+    | If defined, MPI is used for parallelization across multiple nodes.
 
-.. doxygendefine:: SYMMETRIZED_SELF_ENERGY_FLOW
+- ``USE_NEW_MFRG_EQS``
+    | Determines which version of the SBE approximation shall be used.
+    | 0 for SBEa, 1 for SBEb.
+    | **Warning**: Only implemented in the MF!
 
-.. doxygendefine:: USE_ANDERSON_ACCELERATION
+- ``VECTORIZED_INTEGRATION``
+    | 0 for false; 1 for true.
+    | If true, integrals are performed with vector-valued integrands. For Keldysh, vectorization over Keldysh indices. For Matsubara at finite :math:`T`, vectorization over the Matsubara sum.
 
-.. doxygendefine:: USE_FDT
-
-.. doxygendefine:: USE_MPI
-
-.. doxygendefine:: USE_NEW_MFRG_EQS
-
-.. doxygendefine:: VECTORIZED_INTEGRATION
-
-.. doxygendefine:: ZERO_TEMP
+- ``ZERO_TEMP``
+    | 0 for false; 1 for true.
+    | If true, temperature :math:`T = 0` is assumed.
 
 
 Global parameters
 =================
 
-.. doxygenvariable:: BOSONIC_PARAM_FOR_K3
 
-.. doxygenvariable:: converged_tol
+- ``converged_tol``
+    Tolerance for loop convergence in mfRG.
 
-.. doxygenvariable:: COUNT
+- ``COUNT``
+    Used to set the number of frequency points in the MF. For details, see the definitions in the file ``frequency_parameters.hpp``.
 
-.. doxygenvariable:: Delta_factor_K1
+- ``Delta_factor_K1``
+    Scale factor for the frequency grid of the :math:`K_1` vertex class.
 
-.. doxygenvariable:: Delta_factor_SE
+- ``Delta_factor_SE``
+    Scale factor for the frequency grid of the self-energy.
 
-.. doxygenvariable:: Delta_factor_K2_w
+- ``Delta_factor_K2_w``
+    Scale factor for the frequency grid of the bosonic frequency of the :math:`K_2` and :math:`K_{2'}` vertex classes.
 
-.. doxygenvariable:: Delta_factor_K2_v
+- ``Delta_factor_K2_v``
+    Scale factor for the frequency grid of the fermionic frequency of the :math:`K_2` and :math:`K_{2'}` vertex classes.
 
-.. doxygenvariable:: Delta_factor_K3_w
+- ``Delta_factor_K3_w``
+    Scale factor for the frequency grid of the bosonic frequency of the :math:`K_3` vertex class.
 
-.. doxygenvariable:: Delta_factor_K3_v
+- ``Delta_factor_K3_v``
+    Scale factor for the frequency grid of the fermionic frequencies of the :math:`K_3` vertex class.
 
-.. doxygenvariable:: EQUILIBRIUM
+- ``EQUILIBRIUM``
+    If ``true``, use equilibrium FDTs for propagators.
 
-.. doxygenvariable:: glb_mu
+- ``glb_mu``
+    Chemical potential -- w.l.o.g. **ALWAYS** set to 0.0 for the AM!
 
-.. doxygenvariable:: glb_V
+- ``integrator_tol``
+    Integrator tolerance.
 
-.. doxygenvariable:: integrator_tol
+- ``inter_tol``
+    Tolerance for closeness to grid points when interpolating.
 
-.. doxygenvariable:: inter_tol
+- ``INTERPOLATION``
+    | Interpolation method to me used.
+    | ``linear``: linear interpolation on the frequency grid.
+    | ``linear_on_aux``: linear interpolation on the grid for the auxiliary frequency :math:`\Omega`.
+    | ``cubic``: Interpolation with cubic splines (**warning**: expensive!).
 
-.. doxygenvariable:: INTERPOLATION
 
-.. doxygenvariable:: Lambda_ini
+- ``Lambda_ini``
+    Initial value of the regulator :math:`\Lambda` for an mfRG flow.
 
-.. doxygenvariable:: Lambda_fin
+- ``Lambda_fin``
+    Final value of the regulator :math:`\Lambda` for an mfRG flow.
 
-.. doxygenvariable:: Lambda_scale
+- ``Lambda_scale``
+    Scale of the log substitution, relevant in the hybridization flow.
 
-.. doxygenvariable:: dLambda_initial
+- ``dLambda_initial``
+    Initial step size for ODE solvers with adaptive step size control.
 
-.. doxygenvariable:: nBOS
+- ``nBOS``
+    Number of bosonic frequency points for the :math:`K_1` vertex class.
 
-.. doxygenvariable:: nFER 
+- ``nFER``
+    Number of fermionic frequency points for the self-energy.
 
-.. doxygenvariable:: nBOS2
+- ``nBOS2``
+    Number of bosonic frequency points for the :math:`K_2` and :math:`K_{2'}` vertex classes.
 
-.. doxygenvariable:: nFER2 
+- ``nFER2``
+    Number of fermionic frequency points for the :math:`K_2` and :math:`K_{2'}` vertex classes.
 
-.. doxygenvariable:: nBOS3
+- ``nBOS3``
+    Number of bosonic frequency points for the :math:`K_3` vertex class.
 
-.. doxygenvariable:: nFER3
+- ``nFER3``
+    Number of fermionic frequency points for the :math:`K_3` vertex class.
 
-.. doxygenvariable:: shift_fgrids_woPHS
+- ``U_NRG``
+    Vector with the values of :math:`U` in units of :math:`\Delta` that an mfRG flow should cover. Serve as checkpoints for the flow. Useful for benchmarking purposes if data from other methods at precise parameter points are available.
 
-.. doxygenvariable:: U_NRG
+- ``VERBOSE``
+    | If ``true``, detailed information about all computational steps is written into the log file.
+    | Recommended setting for production runs: ``false``
 
-.. doxygenvariable:: VERBOSE
+- ``nmax_Selfenergy_iterations``
+    | Maximal number of self-energy iterations to be done during an mfRG flow for :math:`\ell \geq 3`.
+    | Default value: 10
+
+- ``tol_selfenergy_correction_abs``
+    | Absolute tolerance for self-energy iterations in mfRG.
+    | Default value: :math:`10^{-9}`
+
+- ``tol_selfenergy_correction_rel``
+    | Relative tolerance for self-energy iterations in mfRG.
+    | Default value: :math:`10^{-5}`
