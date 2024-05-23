@@ -79,7 +79,8 @@ constexpr int n_in = 1;     // internal index for any additional dependence. Alw
 /// fRG parameters ///
 
 // Regulator
-// 1: sharp cutoff, 2: hybridization flow, 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen), including Fabian's idea for Keldysh
+// 2: hybridization flow,
+// 3: frequency regulator (as used in Vienna, Stuttgart, Tuebingen), including Fabian's idea for Keldysh
 // 4: interaction cutoff
 // 5: temperature flow
 #define REG 2

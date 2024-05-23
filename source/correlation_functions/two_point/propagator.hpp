@@ -205,14 +205,6 @@ public:
     Q G0R_inv(freqType v, int i_in) const;
     Q G0R_inv_SIAM(freqType v, int i_in) const;
 
-    // propagators for REG == 1
-    Q GR_REG1(freqType v, int i_in) const;
-    Q SR_REG1(freqType v, int i_in) const;
-    Q GM_REG1(freqType v, int i_in) const;
-    Q SM_REG1(freqType v, int i_in) const;
-
-    Q SM_REG1_FPP(double v, double ksquared, int i_in) const;
-
     // propagators for REG == 2
     Q GR_REG2(freqType v, int i_in) const;
     Q SR_REG2(freqType v, int i_in) const;
@@ -243,8 +235,7 @@ public:
 template <typename Q>
 auto Propagator<Q>::GR(const double v, const int i_in) const -> Q
 {
-    if      constexpr (REG == 1) { return GR_REG1(v, i_in); }
-    else if constexpr (REG == 2) { return GR_REG2(v, i_in); }
+    if      constexpr (REG == 2) { return GR_REG2(v, i_in); }
     else if constexpr (REG == 3) { return GR_REG3(v, i_in); }
     else if constexpr (REG == 4) { return GR_REG4(v, i_in); }
     else if constexpr (REG == 5) { return GR_REG5(v, i_in); }
@@ -283,8 +274,7 @@ auto Propagator<Q>::GK(const double v, const int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::SR(const double v, const int i_in) const -> Q
 {
-    if      constexpr (REG == 1) { return SR_REG1(v, i_in); }
-    else if constexpr (REG == 2) { return SR_REG2(v, i_in); }
+    if      constexpr (REG == 2) { return SR_REG2(v, i_in); }
     else if constexpr (REG == 3) { return SR_REG3(v, i_in); }
     else if constexpr (REG == 4) { return SR_REG4(v, i_in); }
     else if constexpr (REG == 5) { return SR_REG5(v, i_in); }
@@ -348,8 +338,7 @@ Q Propagator<Q>::Katanin_K(double v, int i_in) const {
 template <typename Q>
 auto Propagator<Q>::GM(const freqType v, const int i_in) const -> Q
 {
-    if      constexpr (REG == 1) { return GM_REG1(v, i_in); }
-    else if constexpr (REG == 2) { return GM_REG2(v, i_in); }
+    if      constexpr (REG == 2) { return GM_REG2(v, i_in); }
     else if constexpr (REG == 3) { return GM_REG3(v, i_in); }
     else if constexpr (REG == 4) { return GM_REG4(v, i_in); }
     else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
@@ -358,8 +347,7 @@ auto Propagator<Q>::GM(const freqType v, const int i_in) const -> Q
 template <typename Q>
 auto Propagator<Q>::SM(const freqType v, const int i_in) const -> Q
 {
-    if      constexpr (REG == 1) { return SM_REG1(v, i_in); }
-    else if constexpr (REG == 2) { return SM_REG2(v, i_in); }
+    if      constexpr (REG == 2) { return SM_REG2(v, i_in); }
     else if constexpr (REG == 3) { return SM_REG3(v, i_in); }
     else if constexpr (REG == 4) { return SM_REG4(v, i_in); }
     else {utils::print("The Regulator " + std::to_string(REG) + "is not implemented. Abort."); assert(false);}
@@ -686,47 +674,6 @@ template <typename Q>
 auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
     const Q G0inv_R = v - epsilon + glb_i * Gamma * 0.5;
     return G0inv_R;
-}
-
-
-/******* PROPAGATOR FUNCTIONS for sharp frequency-cutoff regulator ***********/
-// G_0^Λ(v) = θ(|v| - Λ) G_0(v)
-
-
-template <typename Q>
-auto Propagator<Q>::GR_REG1(const freqType v, const int i_in) const -> Q {
-    Q GR = 1. / (G0R_inv(v, i_in) - selfenergy.valsmooth(0, v, i_in));
-    if (std::abs(v) < Lambda)       return GR;
-    else if (std::abs(v) == Lambda) return GR/2.;
-    else                            return 0.;
-}
-
-template <typename Q>
-auto Propagator<Q>::SR_REG1(const freqType v, const int i_in) const -> Q {
-    if (std::abs(v) == Lambda) return -GR(v, i_in);
-    else                       return 0.;
-}
-
-
-template <typename Q>
-auto Propagator<Q>::GM_REG1(const freqType v, const int i_in) const -> Q {
-    Q GM = 1. / (G0M_inv(v, i_in) - selfenergy.valsmooth(0, v, i_in));
-    if (std::abs(v) < Lambda)       return GM;
-    else if (std::abs(v) == Lambda) return GM/2.;
-    else                            return 0.;
-}
-
-template <typename Q>
-auto Propagator<Q>::SM_REG1(const freqType v, const int i_in) const -> Q {
-    if (std::abs(v) == Lambda) return -GM(v, i_in);
-    else                       return 0.;
-}
-
-
-template <typename Q>
-auto Propagator<Q>::SM_REG1_FPP(const double v, const double ksquared, const int i_in) const -> Q {
-    std::cout << "SM_REG1_FPP not yet implemented\n";
-    return 0;
 }
 
 
