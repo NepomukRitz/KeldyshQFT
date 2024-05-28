@@ -32,9 +32,7 @@ public:
     bool initialized = false;
 
     State(): Lambda(0.) , vertex(fullvert<Q>(0., fRG_config())), selfenergy(SelfEnergy<Q>(0., fRG_config())) {
-#ifndef NDEBUG
-        //utils::print("Watch out! Use of default constructor for State<Q>!", true);
-#endif
+
     }
     /**
      * Constructor which generates a state with frequency grids corresponding to the given value of Lambda.
@@ -212,11 +210,6 @@ auto State<Q,differentiated>::norm() const -> double {
 
 template<typename Q>
 auto max_rel_err(const State<Q,false>& err, const State<Q,false>& scale_State) -> double {
-    /// element-wise relative deviation
-    //State<Q,false> relState = (err / scale_State);
-    //return relState.norm();
-
-    /// alternative: relative deviation of norm
     return err.norm() / scale_State.norm();
 
 }

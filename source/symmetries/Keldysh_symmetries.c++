@@ -10,10 +10,6 @@ auto iK_to_alphas(int index) -> std::array<int,4> {
         base /=2;
         alphas[i]++;
     }
-    //alphas[0] = (index % 16)/8 + 1;
-    //alphas[1] = (index % 8)/4 + 1;
-    //alphas[2] = (index % 4)/2 + 1;
-    //alphas[3] = (index % 2) + 1;
     return alphas;
 }
 
@@ -24,10 +20,6 @@ auto alphas_to_iK(const std::array<int,4>& alphas) -> int {
         iK += (alphas[3-i] - 1) * base;
         base *= 2;
     }
-    //alphas[0] = (index % 16)/8 + 1;
-    //alphas[1] = (index % 8)/4 + 1;
-    //alphas[2] = (index % 4)/2 + 1;
-    //alphas[3] = (index % 2) + 1;
     assert(iK>=0);
     return iK;
 }

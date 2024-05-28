@@ -323,15 +323,6 @@ template <typename Q, typename Integrand> auto adaptive_simpson_integrator(const
 
 /* Integration using the PAID algorithm (not yet properly implemented) */
 template <typename Q, typename Integrand> auto integrator_PAID(Integrand& integrand, double a, double b) -> Q {
-    //PAID
-    //Solve issue with the first vertex not being passed completely
-//    Domain1D<comp> D (grid[0], grid[grid.size()-1]);
-//    vector<PAIDInput> inputs;
-//    inputs.emplace_back(D, integrand, 1);
-//    PAID p(inputs);
-//    auto result = p.solve();
-//
-//    return result[1];
 }
 
 

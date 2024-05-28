@@ -646,14 +646,6 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
     Vertex<Q,true> dGammaL(Lambda_ini, config, PsiVertex);
     dGammaL.set_frequency_grid(PsiVertex);
 
-    //Vertex<Q,false> dPsiVertex_calc = dPsiVertex;
-    //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
-    //Vertex<Q> PsiVertex_calc = PsiVertex;
-    //for (char r : {'a', 'p', 't'}) {
-    //    PsiVertex_calc.get_rvertex(r).K1 *= 0;
-    //    PsiVertex_calc.get_rvertex(r).K2 *= 0;
-    //    if (DEBUG_SYMMETRIES) PsiVertex_calc.get_rvertex(r).K2b *= 0;
-    //}
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
         Vertex<Q,false> One(Lambda_ini, config);
@@ -679,9 +671,6 @@ template <typename Q, class Bubble_Object>
 auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true>{
     Vertex<Q,true> dGammaR(Lambda_ini, config, PsiVertex);
     dGammaR.set_frequency_grid(PsiVertex);
-
-    //Vertex<Q,true> dPsiVertex_calc = dPsiVertex;
-    //dPsiVertex_calc.set_Ir(true); // Only use the r-irreducible part
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
         Vertex<Q,false> One(Lambda_ini, config);
@@ -788,16 +777,6 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const G
     Vertex<Q,true> dGammaC (Lambda_ini, config, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
 
-    //GeneralVertex<Q, non_symmetric_diffleft> nonsymVertex_calc = nonsymVertex;
-    //for (char r: {'a', 'p', 't'}) {
-    //    nonsymVertex_calc.get_rvertex(r).K2 *= 0;
-    //    if (DEBUG_SYMMETRIES) nonsymVertex_calc.get_rvertex(r).K2b *= 0;
-    //    if (r != 'p')
-    //        nonsymVertex_calc.get_rvertex(r).K3 *= 0;
-    //}
-    ////nonsymVertex_calc.get_rvertex('p').K3 += 1;
-    ////nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
-
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;
         for (char r: {'a', 'p','t'}) {
@@ -827,26 +806,6 @@ auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffr
                                       const Bubble_Object& Pi, const fRG_config& config) -> Vertex<Q,true> {
     Vertex<Q,true> dGammaC (Lambda_ini, config, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
-
-    //GeneralVertex<Q, non_symmetric_diffright> nonsymVertex_calc = nonsymVertex;
-    //for (char r: {'a', 'p', 't'}) {
-    //    nonsymVertex_calc.get_rvertex(r).K2 *= 0;
-    //    if (DEBUG_SYMMETRIES) nonsymVertex_calc.get_rvertex(r).K2b *= 0;
-    //    if (r != 'p')
-    //        nonsymVertex_calc.get_rvertex(r).K3 *= 0;
-    //}
-    ////nonsymVertex_calc.get_rvertex('p').K3 += 1;
-    //Vertex<Q> PsiVertex_calc = PsiVertex;
-    //for (char r: {'a', 'p', 't'}) {
-    //    if (r != 'a')
-    //        PsiVertex_calc.get_rvertex(r).K1 *= 0;
-    //    PsiVertex_calc.get_rvertex(r).K2 *= 0;
-    //    if (DEBUG_SYMMETRIES) PsiVertex_calc.get_rvertex(r).K2b *= 0;
-    //    //if (r != 'p')
-    //        //PsiVertex_calc.get_rvertex(r).K3 *= 0;
-    //}
-    ////PsiVertex_calc.get_rvertex('a').K1 += 1;
-    ////nonsymVertex_calc.set_only_same_channel(true); // only use channel r of this vertex when computing r bubble
 
     if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;

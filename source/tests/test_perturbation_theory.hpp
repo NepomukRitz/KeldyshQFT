@@ -776,35 +776,6 @@ void test_PT4(double Lambda, bool write_flag = false) {
 
     utils::print("----------------------", true);
 
-    /*
-    // Compute K1a contributions in PT4, using
-    // (22):   K1a in PT2
-    // (13_1): K1a in PT3
-    // (13_2): K2a in PT3
-    // (31_2): K2a in PT3
-    State<Q> PT4_K1a22 (Lambda);
-    State<Q> PT4_K1a13_1 (Lambda);
-    State<Q> PT4_K1a13_2 (Lambda);
-    State<Q> PT4_K1a31_2 (Lambda);
-
-    t0 = utils::get_time();
-    bubble_function(PT4_K1a22.vertex, PT2_K1a.vertex, PT2_K1a.vertex, G, G, 'a', false, stdConfig);
-    bubble_function(PT4_K1a13_1.vertex, bare.vertex, PT3_K1a.vertex, G, G, 'a', false, stdConfig);
-    bubble_function(PT4_K1a13_2.vertex, bare.vertex, PT3_K2a.vertex, G, G, 'a', false, stdConfig);
-    bubble_function(PT4_K1a31_2.vertex, PT3_K2a.vertex, bare.vertex, G, G, 'a', false, stdConfig);
-    utils::print("Computed K1 in PT4.", true);
-    utils::get_time(t0);
-
-    // FDT checks
-    utils::print("Check K1a in PT4 (22):", true);
-    check_FDTs(PT4_K1a22);
-    utils::print("Check K1a in PT4 (13_1):", true);
-    check_FDTs(PT4_K1a13_1);
-    utils::print("Check K1a in PT4 (13_2):", true);
-    check_FDTs(PT4_K1a13_2);
-    utils::print("Check K1a in PT4 (31_2):", true);
-    check_FDTs(PT4_K1a31_2);
-    // */
 }
 
 /**
@@ -2938,21 +2909,6 @@ void test_PT_state(std::string outputFileName, const double Lambda, const bool d
         //PT_state.vertex.pvertex().K1.setvert( -val_K1 - val_K1*val_K1/config.U, 0, i, 0);
         PT_state.vertex.pvertex().K1.setvert( val_K1  , it_spin, i, 0, 0);
         PT_state.vertex.pvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);
-
-        //w = PT_state.vertex.tvertex().K1.frequencies.  primary_grid.get_frequency(i);
-        //KR = diff ? SOPT_K1a_diff<Q,1>(w, Lambda, Hartree_value) : SOPT_K1a<Q,1>(w, Lambda, Hartree_value);
-        //KA = myconj(KR);
-        //KK = diff ? SOPT_K1a_diff<Q,0>(w, Lambda, Hartree_value) : SOPT_K1a<Q,0>(w, Lambda, Hartree_value);
-        //K00 = ( KR + KA + KK);// * 0.5;
-        //K01 = ( KR - KA - KK);// * 0.5;
-        //K10 = (-KR + KA - KK);// * 0.5;
-        //K11 = (-KR - KA + KK);// * 0.5;
-        //val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
-        //val_K1_K = CONTOUR_BASIS != 1 ? KK : K10;
-        //val_K1 = CONTOUR_BASIS != 1 ? KA : K00;
-        //val_K1_K = state_cpp.vertex.tvertex().K1.val(it_spin, i, 1, 0);
-        //PT_state.vertex.tvertex().K1.setvert( -val_K1*val_K1*2./stdConfig.U    , it_spin, i, 0, 0);
-        //PT_state.vertex.tvertex().K1.setvert( val_K1_K, it_spin, i, 1, 0);
     }
     write_state_to_hdf(outputFileName + "_exact", Lambda, 1, PT_state);
 

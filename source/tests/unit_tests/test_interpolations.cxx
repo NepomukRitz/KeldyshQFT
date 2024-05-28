@@ -709,14 +709,6 @@ TEST_CASE("Does the vectorized interpolation reproduce the results of repeated s
 
                 my_defs::K1::index_type idx;
                 getMultIndex<rank_K1>(idx, iflat, rvertex.K1.get_dims());
-                //int iK              = (int) idx[my_defs::K1::keldysh];
-                //my_index_t ispin    = idx[my_defs::K1::spin];
-                //my_index_t iw       = idx[my_defs::K1::omega];
-                //my_index_t i_in     = idx[my_defs::K1::internal];
-                //my_index_t iK;
-                //my_index_t ispin, iw, i_in;
-                //getMultIndex<4, my_index_t, my_index_t, my_index_t, my_index_t>(ispin, iw, iK, i_in, iflat,
-                //                                                                rvertex.K1.get_dims());
                 rvertex.K1.setvert(value, idx);
                 value += 1.;
             }

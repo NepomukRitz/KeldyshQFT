@@ -54,9 +54,7 @@ class BubbleFunctionCalculator{
     std::array<std::size_t,my_defs::K3::rank> dimsK3; // number of vertex components over which i_mpi and i_omp are looped
     size_t dims_flat_K1, dims_flat_K2, dims_flat_K3; // flat dimensions of above arrays;
     size_t n_vectorization_K1, n_vectorization_K2, n_vectorization_K3;
-    //std::vector<int> indepKeldyshComponents_K1;
-    //std::vector<int> indepKeldyshComponents_K2;
-    //std::vector<int> indepKeldyshComponents_K3;
+
 
     freqType vmin = 0, vmax = 0;
     int Nmin, Nmax; // Matsubara indices for minimal and maximal frequency. Only needed for finite-temperature Matsubara calculations!
@@ -169,9 +167,6 @@ class BubbleFunctionCalculator{
         dims_flat_K2 = getFlatSize(dimsK2);
         dims_flat_K3 = getFlatSize(dimsK3);
 
-        //indepKeldyshComponents_K1 = channel == 'a' ? non_zero_Keldysh_K1a : (channel == 'p'? non_zero_Keldysh_K1p : non_zero_Keldysh_K1t);
-        //indepKeldyshComponents_K2 = channel == 'a' ? non_zero_Keldysh_K2a : (channel == 'p'? non_zero_Keldysh_K2p : non_zero_Keldysh_K2t);
-        //indepKeldyshComponents_K3 = non_zero_Keldysh_K3;
 
     }
 };
@@ -197,20 +192,9 @@ Bubble_Object>::set_channel_specific_freq_ranges_and_prefactor() {
 template<char channel, typename Q, typename vertexType_result, typename vertexType_left,
         typename vertexType_right, class Bubble_Object>
 void BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexType_right, Bubble_Object>::find_vmin_and_vmax() {
-    // use std::min/std::max of selfenergy/K1 frequency grids as integration limits
-    vmin =-Delta * 10.; // std::min(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_lower);
-    vmax = Delta * 10.; // std::max(dgamma.avertex().K1.frequencies.get_wupper_b(), Pi.g.selfenergy.Sigma.frequencies.primary_grid.w_upper);
+    vmin =-Delta * 10.;
+    vmax = Delta * 10.;
 
-    if constexpr(MAX_DIAG_CLASS >= 2){
-        // use std::min/std::max of selfenergy/K1/K2 frequency grids as integration limits
-        //vmin = std::min(vmin, dgamma.avertex().K2.frequencies.get_wlower_f());
-        //vmax = std::max(vmax, dgamma.avertex().K2.frequencies.get_wupper_f());
-    }
-    if constexpr(MAX_DIAG_CLASS >= 3){
-        // use std::min/std::max of selfenergy/K1/K2/K3 frequency grids as integration limits
-        //vmin = std::min(vmin, dgamma.avertex().K3.frequencies.get_wlower_f());
-        //vmax = std::max(vmax, dgamma.avertex().K3.frequencies.get_wupper_f());
-    }
     if constexpr((!KELDYSH) && (!ZERO_T)) { // for finite-temperature Matsubara calculations
         // make sure that the limits for the Matsubara sum are fermionic
         Nmin = - POSINTRANGE;
@@ -482,10 +466,6 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
                     }
                 }
 
-                //if (k == k2) {
-                //    std::cout << "summation result" << summation_result << std::endl;
-                //}
-
                 for (int i = Nmin_v; i <= Nmax_v; i++) {
                     for (int j = Nmin_vp; j <= Nmax_vp; j++) {
                         value[(-Nmin_v+i)*N_vp  + (-Nmin_vp+j)] = summation_result(-Nmin_v+i,-Nmin_vp+j);
@@ -494,8 +474,6 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
             }
             else
             {
-                // if interval_correction=-1, then the integrand is symmetric_full around v=-M_PI*T
-
                 integration_result = bubble_value_prefactor() * (2 * M_PI) * Pi.g.T *
                                      matsubarasum<Q>(integrand, Nmin_sum, Nmax_sum);
 #if ANALYTIC_TAILS
@@ -535,36 +513,14 @@ BubbleFunctionCalculator<channel, Q, vertexType_result, vertexType_left, vertexT
 
         if constexpr (KELDYSH_FORMALISM) {
             // for vector-/matrix-valued result:
-            if constexpr(DEBUG_SYMMETRIES or true) {
-                // if DEBUG_SYMMETRIES is true, we compute and store ALL components
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
-                        value[rotate_Keldysh_matrix<channel, true>(i * 4 + j)] = integration_result(i, j);
-                    }
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    value[rotate_Keldysh_matrix<channel, true>(i * 4 + j)] = integration_result(i, j);
                 }
-            }
-            else {
-                /*
-                // if DEBUG_SYMMETRIES is false, we compute and store symmetry-reduced components (given in indepKeldyshComponents_Ki)
-                std::vector<int> &indepKeldyshComponents = (k == k1 ? indepKeldyshComponents_K1 : (k == k3 ? indepKeldyshComponents_K3 : indepKeldyshComponents_K2));
-                const int size = indepKeldyshComponents.size();
-                for (int i = 0; i < size; i++) {
-                    int left, right;
-                    get_i0_left_right<channel>(indepKeldyshComponents[i], left, right);
-                    const Q val_temp = integration_result(left, right);
-                    value[i] = val_temp;
-                }
-                */
             }
         }
-        //else { // Matsubara finite_T
-        //    assert(!ZERO_T);
-        //
-        //
-        //}
-
-
-    } else {
+    }
+    else {
         // for scalar result:
         value[0] = integration_result;
     }

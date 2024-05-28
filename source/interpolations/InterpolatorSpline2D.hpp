@@ -125,59 +125,6 @@ void Spline<Q,rank,2,pos_first_freq_index,DataContainer>::get_coeffs_from_derivs
             }
         }
     }
-
-
-    //int ispin = indices[my_defs::K2::spin];
-    //int iw = indices[my_defs::K2::omega];
-    //int iv = indices[my_defs::K2::nu];
-    //int iK = indices[my_defs::K2::keldysh];
-    //int i_in = indices[my_defs::K2::internal];
-    //const vec<Q> fs = {
-    //        DataContainer::data[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv    , iK, i_in, DataContainer::get_dims())],
-    //        DataContainer::data[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv    , iK, i_in, DataContainer::get_dims())],
-    //        DataContainer::data[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv + 1, iK, i_in, DataContainer::get_dims())],
-    //        DataContainer::data[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv + 1, iK, i_in, DataContainer::get_dims())],
-    //             dw * m_deriv_x[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv    , iK, i_in, DataContainer::get_dims())],
-    //             dw * m_deriv_x[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv    , iK, i_in, DataContainer::get_dims())],
-    //             dw * m_deriv_x[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv + 1, iK, i_in, DataContainer::get_dims())],
-    //             dw * m_deriv_x[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv + 1, iK, i_in, DataContainer::get_dims())],
-    //             dv * m_deriv_y[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv    , iK, i_in, DataContainer::get_dims())],
-    //             dv * m_deriv_y[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv    , iK, i_in, DataContainer::get_dims())],
-    //             dv * m_deriv_y[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv + 1, iK, i_in, DataContainer::get_dims())],
-    //             dv * m_deriv_y[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv + 1, iK, i_in, DataContainer::get_dims())],
-    //         dw*dv * m_deriv_xy[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv    , iK, i_in, DataContainer::get_dims())],
-    //         dw*dv * m_deriv_xy[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv    , iK, i_in, DataContainer::get_dims())],
-    //         dw*dv * m_deriv_xy[::getFlatIndex<5,int,int,int,int,int>(ispin, iw    , iv + 1, iK, i_in, DataContainer::get_dims())],
-    //         dw*dv * m_deriv_xy[::getFlatIndex<5,int,int,int,int,int>(ispin, iw + 1, iv + 1, iK, i_in, DataContainer::get_dims())],
-    //};
-
-    //vec<Q> coeffs = vec<Q> (16);
-    //for (int i = 0; i<16; i++) {
-    //    coeffs[i] = 0.;
-    //    for (int j = 0; j<16; j++) {
-    //        coeffs[i] += A[i][j] * fs[j];
-    //    }
-    //}
-    // Same as double for-loop above (matrix-vector multiplication):
-    //vec<Q> coeffs = {
-    //        fs[0]
-    //        , fs[4]
-    //        , 3.*(-fs[0]+fs[1]) -2.*fs[4] -fs[5]
-    //        , 2.*(fs[0]-fs[1]) +fs[4] +fs[5]
-    //        , fs[8]
-    //        , fs[12]
-    //        , -3.*(fs[8]-fs[9]) -2.*fs[12] -fs[13]
-    //        , 2.*(fs[8]-fs[9]) +fs[12] +fs[13]
-    //        , -3.*(fs[0]-fs[2]) -2.*fs[8] -fs[10]
-    //        , -3.*(fs[4]-fs[6]) -2.*fs[12] -fs[14]
-    //        , 9.*(fs[0]-fs[1]-fs[2]+fs[3]) + 6.*(fs[4]-fs[6]+fs[8]-fs[9]) + 3.*(fs[5]-fs[7]+fs[10]-fs[11]) + 4.*fs[12] + 2.*(fs[13]+fs[14]) + fs[15]
-    //        , 6.*(-fs[0]+fs[1]+fs[2]-fs[3]) +3.*(-fs[4]-fs[5]+fs[6]+fs[7]) +4.*(-fs[8]+fs[9]) +2.*(-fs[10]+fs[11]-fs[12]-fs[13]) +(-fs[14]-fs[15])
-    //        , 2.*(fs[0]-fs[2]) +fs[8] +fs[10]
-    //        , 2.*(fs[4]-fs[6]) +fs[12] +fs[14]
-    //        , 6.*(-fs[0]+fs[1]+fs[2]-fs[3]) +4.*(-fs[4]+fs[6]) +2.*(-fs[5]+fs[7]-fs[12]-fs[14]) +3.*(-fs[8]+fs[9]-fs[10]+fs[11]) +(-fs[13]-fs[15])
-    //        , 4.*(fs[0]-fs[1]-fs[2]+fs[3]) +2.*(fs[4]+fs[5]-fs[6]-fs[7]+fs[8]-fs[9]+fs[10]-fs[11]) + fs[12]+fs[13]+fs[14]+fs[15]
-    //};
-    //return coeffs;
 }
 
 template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
@@ -228,17 +175,12 @@ result_type Spline<Q,rank,2,pos_first_freq_index,DataContainer>::interpolate_spl
 {
 
     assert(initialized);
-    //const int iK, const int spin, const double w, const double v, const int i_in
 
 
     std::array<my_index_t,2> freq_idx;      // frequency indices of nearest smaller gridpoints
     std::array<double,2> dt_unnormalized;   // distance to nearest smaller gridpoint
     DataContainer::frequencies.get_auxgrid_index_unnormalized(freq_idx, dt_unnormalized, frequencies);
 
-    //double tw;
-    //const size_t iw=DataContainer::frequencies.  primary_grid.get_grid_index(tw, frequencies[0]);
-    //double tv;
-    //const size_t iv=DataContainer::frequencies.secondary_grid.get_grid_index(tv, frequencies[1]);
     index_type index_temp = indices;
     index_temp[pos_first_freq_index  ] = freq_idx[0];
     index_temp[pos_first_freq_index+1] = freq_idx[1];
@@ -248,17 +190,6 @@ result_type Spline<Q,rank,2,pos_first_freq_index,DataContainer>::interpolate_spl
 
     if constexpr(std::is_same_v<result_type,Q>) {
         Q result;
-        //vec<Q> coeffs = get_coeffs_from_derivs(index_temp, dw, dv);
-        //Q result = 0.;
-        //const std::array<size_t,2> dims = {4,4};
-        //
-        //const double dwpow[4] = {1, hw, hw*hw, hw*hw*hw};
-        //const double dvpow[4] = {1, hv, hv*hv, hv*hv*hv};
-        //for (int i = 0; i<4; i++) {
-        //    for (int j = 0; j<4; j++) {
-        //        result += dvpow[i] * coeffs[::getFlatIndex<2,int,int>(i, j, dims)] * dwpow[j];
-        //    }
-        //}
 
         Eigen::Matrix<Q, 1, 16> values = all_coefficients.row(i_row);
         result = (values * weights).eval()[0];

@@ -14,16 +14,7 @@ auto main(int argc, char * argv[]) -> int {
     double w, v, vp;
     std::cout << "----  Getting integrand  ----" << std::endl;
     std::cout << "number of args: " << argc-1 << ", expected: 11" << std::endl;
-    /// Prompt user for input:
-    // dir_str: directory in which the intermediate results lie
-    // it_Lambda: iteration of ODE solver
-    // k_class_int: integer for the K_class 0->k1, 1->k2, 2->k2', 3->k3
-    // channel: char for channel
-    // i0: external Keldysh indices ranging in [0,...,15]
-    // i2: internal Keldysh indices ranging in [0,..., 9] (--> directly corresponding to non-zero components of the BubbleObject)
-    // w, v, vp: frequencies in the natural parametrization of channel
-    // i_in: internal index
-    //std::cin >> dir_str >> it_Lambda >> k_class_int >> channel >> i0 >> i2 >> w >> v >> vp >> i_in;
+
     /// Parse input:
     dir_str = argv[1];
     it_Lambda = atoi(argv[2]);

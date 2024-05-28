@@ -142,134 +142,32 @@ void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::set_coeffs_from_b() co
 template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
 void Spline<Q,rank,1,pos_first_freq_index,DataContainer>::initInterpolator() const
 {
+    m_b = vec<Q>(n);
 
-    // hermite cubic splines which are C^1 (cont. differentiable)
-    // and derivatives are specified on each grid point
-    // (here we use 3-point finite differences)
-    // set b to match 1st order derivative finite difference
-    /*
-    for(int i=1; i<n-1; i++) {
-        const double h  = m_x[i+1]-m_x[i];
-        const double hl = m_x[i]-m_x[i-1];
-        m_b[i] = -h / (hl*(hl+h)) * DataContainer::data[i - 1] + (h - hl) / (hl * h) * DataContainer::data[i]
-                 + hl / (h*(hl+h)) * DataContainer::data[i + 1];
-    }
-    // boundary conditions determine b[0] and b[n-1]
-    if(m_left==first_deriv) {
-        m_b[0]=m_left_value;
-    } else if(m_left==second_deriv) {
-        const double h = m_x[1]-m_x[0];
-        m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (DataContainer::data[1] - DataContainer::data[0]) / h);  /// checked
-    } else if (m_left==third_deriv) {
-        const double h = m_x[1]-m_x[0];
-        m_b[0]=-m_b[1]+m_left_value/6.*h*h+ 2.0 * (DataContainer::data[1] - DataContainer::data[0]) / h;  /// added by me
-    } else {
-        assert(false);
-    }
-    if(m_right==first_deriv) {
-        m_b[n-1]=m_right_value;
-        m_c[n-1]=0.0;
-    } else if(m_right==second_deriv) {
-        const double h = m_x[n-1]-m_x[n-2];
-        m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (DataContainer::data[n - 1] - DataContainer::data[n - 2]) / h); /// checked
-        m_c[n-1]=0.5*m_right_value; /// m_d[n-1] is set to 0. Is this correct/necessary?
-    } else if (m_right==third_deriv) {
-        const double h = m_x[n-1]-m_x[n-2];
-        m_b[n-1]=-m_b[n-2]-m_right_value/6.*h*h+ 2.0 * (DataContainer::data[n - 1] - DataContainer::data[n - 2]) / h;  /// added by me
-        m_d[n-1]= DataContainer::data[n - 1] - DataContainer::data[n - 2] - m_b[n - 2]; /// ???
-    } else {
-        assert(false);
-    }
-    m_d[n-1]=0.0;
-     */
-    //n = DataContainer::data.size();
-        m_b = vec<Q>(n);
-        //m_c = vec<Q>(n);
-        //m_d = vec<Q>(n);
-        multidimensional::multiarray<Q,rank> temp = DataContainer::get_deriv_x();
+    multidimensional::multiarray<Q,rank> temp = DataContainer::get_deriv_x();
     m_b = vec<Q>(temp.begin(), temp.end());
 
 
     // parameters c and d are determined by continuity and differentiability
     set_coeffs_from_b();
 
-    //all_coefficients.col(0) = DataContainer::get_vec().get_elements();
-    //for (int i = 0; i < n; i++) {
-    //    all_coefficients(i,1) = m_b[i];
-    //    all_coefficients(i,2) = m_c[i];
-    //    all_coefficients(i,3) = m_d[i];
-    //}
-
     initialized = true;
 
 }
 
-    /*
-    template <class DataContainer, typename Q>
-    bool Spline<DataContainer,Q>::make_monotonic()
-    {
-    assert(m_x.size() == DataContainer::data.size());
-    assert(m_x.size()==m_b.size());
-    assert(m_x.size()>2);
-    bool modified = false;
-    // make sure: input data monotonic increasing --> b_i>=0
-    //            input data monotonic decreasing --> b_i<=0
-    for(int i=0; i<n; i++) {
-        int im1 = std::max(i-1, 0);
-        int ip1 = std::min(i+1, n-1);
-        if(((DataContainer::data[im1] <= DataContainer::data[i]) && (DataContainer::data[i] <= DataContainer::data[ip1]) && m_b[i] < 0.0) ||
-           ((DataContainer::data[im1] >= DataContainer::data[i]) && (DataContainer::data[i] >= DataContainer::data[ip1]) && m_b[i] > 0.0) ) {
-            modified=true;
-            m_b[i]=0.0;
-        }
-    }
-    // if input data is monotonic (b[i], b[i+1], avg have all the same sign)
-    // ensure a sufficient criteria for monotonicity is satisfied:
-    //     sqrt(b[i]^2+b[i+1]^2) <= 3 |avg|, with avg=(y[i+1]-y[i])/h,
-    for(int i=0; i<n-1; i++) {
-        double h = m_x[i+1]-m_x[i];
-        double avg = (DataContainer::data[i + 1] - DataContainer::data[i]) / h;
-        if( avg==0.0 && (m_b[i]!=0.0 || m_b[i+1]!=0.0) ) {
-            modified=true;
-            m_b[i]=0.0;
-            m_b[i+1]=0.0;
-        } else if( (m_b[i]>=0.0 && m_b[i+1]>=0.0 && avg>0.0) ||
-                   (m_b[i]<=0.0 && m_b[i+1]<=0.0 && avg<0.0) ) {
-            // input data is monotonic
-            double r = sqrt(m_b[i]*m_b[i]+m_b[i+1]*m_b[i+1])/std::fabs(avg);
-            if(r>3.0) {
-                // sufficient criteria for monotonicity: r<=3
-                // adjust b[i] and b[i+1]
-                modified=true;
-                m_b[i]   *= (3.0/r);
-                m_b[i+1] *= (3.0/r);
-            }
-        }
-    }
 
-    if(modified==true) {
-        set_coeffs_from_b();
-        m_made_monotonic=true;
-    }
+template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
+auto Spline<Q,rank,1,pos_first_freq_index,DataContainer>::get_weights (int idx, double t) const -> weights_type{
 
-    return modified;
-    }
-     */
-
-
-
-    template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
-    auto Spline<Q,rank,1,pos_first_freq_index,DataContainer>::get_weights (int idx, double t) const -> weights_type{
-
-        double t_low = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx);
-        //double t_high= DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx+1);
-        double h = (t - t_low);
-        //assert(h>-1e-10);
-        //assert(t<t_high+1e-6);
-        weights_type weights;
-        weights << 1., h, h*h, h*h*h;
-        return weights;
-    }
+    double t_low = DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx);
+    //double t_high= DataContainer::frequencies.  primary_grid.get_auxiliary_gridpoint(idx+1);
+    double h = (t - t_low);
+    //assert(h>-1e-10);
+    //assert(t<t_high+1e-6);
+    weights_type weights;
+    weights << 1., h, h*h, h*h*h;
+    return weights;
+}
 
 template <typename Q, size_t rank, my_index_t pos_first_freq_index, class DataContainer>
 template <typename result_type>
@@ -289,15 +187,7 @@ result_type Spline<Q,rank,1,pos_first_freq_index,DataContainer>::interpolate_spl
         Eigen::Matrix<Q, 1, 4> values = all_coefficients.row(i_row);
         result = (values * weights).eval()[0];
 
-        //Q result_compare;
-        //result_compare   =((m_d[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())]*h
-        //                    + m_c[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())])*h
-        //                    + m_b[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())])*h
-        //    + DataContainer::data[::getFlatIndex<rank>(index_tmp, DataContainer::get_dims())];
-        //assert(std::abs(result - result_compare) < 1e-10);
-
         assert(isfinite(result));
-        //assert(std::abs(result) < 1e-10);
         return result;
     }
     else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){
@@ -314,37 +204,6 @@ result_type Spline<Q,rank,1,pos_first_freq_index,DataContainer>::interpolate_spl
         return result;
     }
 }
-    /*
-    template <class DataContainer, typename Q>
-    Q Spline<DataContainer,Q>::deriv(int order, double x) const
-    {
-    assert(order>0);
-    size_t idx = DataContainer::frequencies.  primary_grid.get_grid_index(x);
-
-    double h=x-m_x[idx];
-    Q interpol;
-
-    switch(order) {
-        case 1:
-            interpol=(3.0*m_d[idx]*h + 2.0*m_c[idx])*h + m_b[idx];
-            break;
-        case 2:
-            interpol=6.0*m_d[idx]*h + 2.0*m_c[idx];
-            break;
-        case 3:
-            interpol=6.0*m_d[idx];
-            break;
-        default:
-            interpol=0.0;
-            break;
-    }
-
-    return interpol;
-    }
-    */
-
-
-
 
 
 #endif //FPP_MFRG_INTERPOLATOR1D_H

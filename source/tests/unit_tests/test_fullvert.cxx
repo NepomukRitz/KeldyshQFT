@@ -3,9 +3,6 @@
 #include "../../utilities/math_utils.hpp"
 #include "../../utilities/hdf5_routines.hpp"
 
-// TODO(high): Write unit tests for cross projection functionality!
-
-
 
 TEST_CASE("Does the vectorized interpolation work for the GeneralVertex?", "vectorized interpolation") {
     if constexpr(KELDYSH and MAX_DIAG_CLASS==3) {

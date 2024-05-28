@@ -1,7 +1,6 @@
 #include "propagator.hpp"
 
 auto Fermi_distr(const double v, const double mu, const double T) -> double {
-    // return 1./(exp((v-mu)/T)+1.);
     if constexpr (!ZERO_T) return 0.5 * (1. - tanh((v-mu)/(2.*T))); // numerically preferential
     else return (v-mu) < 0. ? 1. : 0.;
 }

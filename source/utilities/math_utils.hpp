@@ -157,22 +157,7 @@ namespace math_impl {
     }
 }
 /// Overloads of above function for 5, 4, 3 or 2 indices (with the array dims containing number of grids points in each direction)
-//inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const  size_t m, const std::array<size_t,5>&  dims) {
-//    std::array<size_t,5>  indx = {i, j, k ,l ,m};
-//    return getFlatIndex<5>(indx, dims);
-//}
-//inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const  size_t l, const std::array<size_t,4>& dims) {
-//    std::array<size_t,4>  indx = {i, j, k ,l};
-//    return getFlatIndex<4>(indx, dims);
-//}
-//inline size_t getFlatIndex(const size_t i, const  size_t j, const  size_t k, const std::array<size_t,3>& dims) {
-//    std::array<size_t,3>  indx = {i, j, k};
-//    return getFlatIndex<3>(indx, dims);
-//}
-//inline size_t getFlatIndex(const size_t i, const  size_t j, const std::array<size_t,2> & dims) {
-//    std::array<size_t,2>  indx = {i, j};
-//    return getFlatIndex<2>(indx, dims);
-//}
+
 template<size_t rank, typename... Types,    /// "..." is syntax for a parameter pack
         typename std::enable_if_t<(sizeof...(Types) == rank) and (are_all_integral<int, Types...>::value), bool> = true>
 inline int getFlatIndex(const Types &... i, const std::array<size_t,rank>&  dims) {
@@ -186,27 +171,6 @@ inline int getFlatIndex(const Types &&... i, const std::array<size_t,rank>&  dim
     return getFlatIndex<rank>(temp, dims);
 }
 
-
-//template<size_t rank>
-//inline void getMultIndex(std::array<size_t,rank>&&  indx, const size_t iflat, const std::array<size_t,rank>&  dims) {
-//    size_t temp = iflat;
-//    size_t dimtemp = 1;
-//    for (int it = 1; it < rank; it++) {
-//        dimtemp *= dims[it];
-//    }
-//    indx[0] = temp / dimtemp;
-//    temp -= indx[0] * dimtemp;
-//    for (int it = 1; it < rank; it++) {
-//        dimtemp = dimtemp / dims[it];
-//        indx[it] = temp / dimtemp;
-//        temp -= indx[it] * dimtemp;
-//    }
-//}
-///// Template specialization for special case rank == 1
-//template<>
-//inline void getMultIndex<1>(std::array<size_t,1>&& indx, const size_t iflat, const std::array<size_t,1>&  dims) {
-//    indx[0] = iflat;
-//}
 
 template<size_t rank, typename I = size_t,
         typename std::enable_if_t<std::is_integral<I>::value, bool> = true
@@ -456,48 +420,6 @@ namespace { // hide the following to the outside world
                             ) / (12. * h);
                     }
             }
-
-            /*
-            // set boundary values
-            if (left==first_deriv) {        // "known first derivative at left boundary"
-                result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] = left_value;
-            }else if (left==second_deriv) {        // "known second derivative at left boundary"
-                double h = xs[1]-xs[0];
-                result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
-                        0.5*(-result[rotateFlatIndex(it * dimsum + 1, dims, permutation)]
-                        -0.5*left_value*h
-                        + 3.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] - data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h);
-                //const double h = m_x[1]-m_x[0];
-                //m_b[0]=0.5*(-m_b[1]-0.5*m_left_value*h+ 3.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h);  /// checked
-            } else if (left==third_deriv) {        // "known third derivative at left boundary"
-                double h = xs[1] - xs[0];
-                result[rotateFlatIndex(it * dimsum + 0, dims, permutation)] =
-                        -result[rotateFlatIndex(it * dimsum + 1, dims, permutation)] + left_value / 6. * h * h
-                        + 2.0 * (data[rotateFlatIndex(it * dimsum + 1, dims, permutation)] -
-                                 data[rotateFlatIndex(it * dimsum + 0, dims, permutation)]) / h;
-                //+0.5 * data[rotateFlatIndex(it*dimsum + 1       , dims, permutation)];
-                //m_b[0]=-m_b[1]+m_left_value/6*h*h+ 2.0 * (DataContainer::K1[1] - DataContainer::K1[0]) / h;  /// added by me
-            }
-            if (right==first_deriv) {        // "known first derivative at right boundary"
-                result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] = right_value;
-            } else if (right==second_deriv) {        // "known second derivative at right boundary"
-                double h = xs[dimsum-1]-xs[dimsum-2];
-                result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
-                        0.5*(-result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]
-                        +0.5*right_value*h
-                        + 3.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h);
-                //const double h = m_x[n-1]-m_x[n-2];
-                //m_b[n-1]=0.5*(-m_b[n-2]+0.5*m_right_value*h+ 3.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h); /// checked
-            } else if (right==third_deriv) {        // "known third derivative at right boundary"
-                double h = xs[dimsum - 1] - xs[dimsum - 2];
-                result[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] =
-                        -result[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)] - right_value / 6. * h * h +
-                        2.0 * (data[rotateFlatIndex(it * dimsum + dimsum - 1, dims, permutation)] -
-                               data[rotateFlatIndex(it * dimsum + dimsum - 2, dims, permutation)]) / h;
-                //      -0.5 * data[rotateFlatIndex(it*dimsum + dimsum-2, dims, permutation)];
-                //m_b[n-1]=-m_b[n-2]-m_left_value/6*h*h+ 2.0 * (DataContainer::K1[n - 1] - DataContainer::K1[n - 2]) / h;
-            }
-            */
         }
         return result;
     }
@@ -653,20 +575,6 @@ namespace { // hide the following to the outside world
                 result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, no_is[jt], -jt, order-1-jt);
                 result[rotateFlatIndex(it*dimsum + dimsum - 1 - jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, dimsum-1-jt, no_is[order-1-jt], -order+1+jt, jt);
             }
-
-            /*
-            size_t jt = 0;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left2, 0, 4);
-
-            jt = 1;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left1, -1, 3);
-
-            jt = dimsum - 2;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right1, -3, 1);
-
-            jt = dimsum - 1;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right2, -4, 0);
-             */
         }
         return result;
     }
@@ -711,20 +619,6 @@ namespace { // hide the following to the outside world
                 result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper_v2(data, xs, dims, permutation, it*dimsum, jt, no_is[jt], -jt, order-1-jt);
                 result[rotateFlatIndex(it*dimsum + dimsum - 1 - jt, dims, permutation)] = get_finite_differences_helper_v2(data, xs, dims, permutation, it*dimsum, dimsum-1-jt, no_is[order-1-jt], -order+1+jt, jt);
             }
-
-            /*
-            size_t jt = 0;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left2, 0, 4);
-
-            jt = 1;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, left1, -1, 3);
-
-            jt = dimsum - 2;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right1, -3, 1);
-
-            jt = dimsum - 1;
-            result[rotateFlatIndex(it*dimsum + jt, dims, permutation)] = get_finite_differences_helper(data, xs, dims, permutation, it*dimsum, jt, right2, -4, 0);
-             */
         }
         return result;
     }
@@ -895,64 +789,6 @@ T collapse_all(const vec<T>& data, const binaryOp& op) {
     return result;
 }
 
-/*
-/// Collapses the i_dim-th dimension of a vector using an operator op
-template<typename binaryOp, typename T, size_t rank>
-vec<T> collapse(const vec<T> data, const binaryOp& op, const size_t (&dims) [rank], const size_t i_dim) {
-    ///  TODO: check
-    if (dims[i_dim] <= 1) std::length_error("Dimension too small to collapse"); // nothing to collapse
-    size_t dim_collapse = dims[i_dim];
-    size_t dimsflat_new = 1;
-    size_t dims_new[rank-1];   // dims for the result
-    for (size_t i = 0; i < i_dim; i++) {
-        dims_new[i] = dims[i];
-        dimsflat_new*= dims[i];
-    }
-    for (size_t i = i_dim; i < rank-1; i++) {
-        dims_new[i] = dims[i+1];
-        dimsflat_new*= dims[i+1];
-    }
-    vec<T> result(dimsflat_new);
-    size_t i_dim_new = (i_dim > 0) ? i_dim-1 : rank-2;
-    for (size_t i = 0; i < dimsflat_new; i++) {
-        result[rotateFlatIndex(i, dims_new, i_dim_new)] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim)];
-        for (size_t j = 1; j < dim_collapse; j++) {
-            result[rotateFlatIndex(i, dims_new, i_dim_new)] = op(result[rotateFlatIndex(i, dims_new, i_dim_new)], data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim)]
-            );
-
-        }
-    }
-
-    return result;
-}
-
-/// Collapses all but the i_dim-th dimension of a vector using an operator op
-template<typename binaryOp, typename T, size_t rank>
-vec<T> collapse_rev(const vec<T> data, const binaryOp& op, const size_t (&dims) [rank], const size_t i_dim) {
-    size_t dim_collapse = 1;
-    size_t dimsflat_new = dims[i_dim];
-    vec<size_t> dims_new = {dimsflat_new};
-    for (size_t i = 0; i < i_dim; i++) {
-        dim_collapse*= dims[i];
-    }
-    for (size_t i = i_dim; i < rank-1; i++) {
-        dim_collapse*= dims[i+1];
-    }
-
-    size_t i_dim_minus1 = (i_dim == 0 ? rank-1 : i_dim-1);
-    vec<T> result(dimsflat_new);
-    for (size_t i = 0; i < dimsflat_new; i++) {
-        result[i] = data[rotateFlatIndex(i*dim_collapse + 0, dims, i_dim_minus1)];
-        for (size_t j = 1; j < dim_collapse; j++) {
-            result[i] = op(result[i], data[rotateFlatIndex(i*dim_collapse + j  , dims, i_dim_minus1)]
-            );
-
-        }
-    }
-
-    return result;
-}
-*/
 
 template<typename T> vec<T> power2(const vec<T>& vec_in) {
     size_t flatdim = vec_in.size();

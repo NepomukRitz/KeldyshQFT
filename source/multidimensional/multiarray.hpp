@@ -134,10 +134,6 @@ namespace multidimensional
         multiarray<T, depth> &operator=(multiarray<T, depth> &&) = default;
 
         /// === iterators ===
-        // using iterator = typename buffer_type::iterator;
-        // using const_iterator = typename buffer_type::const_iterator;
-        // using reverse_iterator = typename buffer_type::reverse_iterator;
-        // using const_reverse_iterator = typename buffer_type::const_reverse_iterator;
         using iterator = pointer;
         using const_iterator = const_pointer;
 

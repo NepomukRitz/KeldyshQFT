@@ -48,8 +48,6 @@ void compute_BSE(Vertex<Q,false>& Gamma_BSE, Vertex<Q,false>& Gamma_BSE_L, Verte
             if constexpr (DEBUG_SYMMETRIES) Gamma_BSE_R.get_rvertex(r).K2b= Gamma_BSE_L.get_rvertex(r).K2b;
         }
     }
-    //for (char r : {'a', 'p', 't'})
-    //    Gamma_BSE_L.get_rvertex(r).K1 = state_in.vertex.get_rvertex(r).K1;
 
         Gamma_BSE = (Gamma_BSE_L + Gamma_BSE_R) * 0.5; // symmetrize the BSE
 
@@ -135,11 +133,6 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
         bubble_l += bubble_l_other;
     }
 
-    // if bubble_l.K1+K2_r identical to Gamma.K1+K2_r ?
-    //utils::print("For channel r = ", channel, "\n");
-    //utils::print("difference in bubble_l.K1r and Gamma.K1r: \t", (bubble_l.get_rvertex(channel).K1 - Gamma.get_rvertex(channel).K1).get_vec().max_norm() / Gamma.get_rvertex(channel).K1.get_vec().max_norm(), "\n");
-    //utils::print("difference in bubble_l.K2r and Gamma.K2r: \t", (bubble_l.get_rvertex(channel).K2 - Gamma.get_rvertex(channel).K2).get_vec().max_norm() / Gamma.get_rvertex(channel).K2.get_vec().max_norm(), "\n");
-
     GeneralVertex<Q,symmetric_full,false> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the a bubble
 
     /// make sure that integrand only contains K1r + K2r + K2br
@@ -157,22 +150,6 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
     // compute the self-energy via SDE using the bubble
     SelfEnergy<Q> Sigma_SDE(G_bubble.selfenergy.Sigma.frequencies);
     loop<false,channel == 't' ? 1 : 0>(Sigma_SDE, bubble, G_loop);
-
-    //if (channel == 'a') {
-    //    State<Q, false> Psi_a_l(bubble_l, Sigma_SDE, Lambda);
-    //    State<Q, false> Psi_a_r(bubble_r, Sigma_SDE, Lambda);
-    //    add_state_to_hdf(data_dir + "Psi_SDE_a_l.h5", SDE_counter + 1, Psi_a_l, true);
-    //    add_state_to_hdf(data_dir + "Psi_SDE_a_r.h5", SDE_counter + 1, Psi_a_r, true);
-    //}
-    //else if (channel == 'p') {
-    //    State<Q, false> Psi_p_l(bubble_l, Sigma_SDE, Lambda);
-    //    State<Q, false> Psi_p_r(bubble_r, Sigma_SDE, Lambda);
-    //    add_state_to_hdf(data_dir + "Psi_SDE_p_l.h5", SDE_counter + 1, Psi_p_l, true);
-    //    add_state_to_hdf(data_dir + "Psi_SDE_p_r.h5", SDE_counter + 1, Psi_p_r, true);
-    //}
-    //utils::print("Check causality of Sigma_SDE_", channel, ": \n");
-    //check_SE_causality(Sigma_SDE);
-    //compare_with_FDTs(bubble, Lambda, 0, "SDE_bubble_" + std::to_string(channel));
 
     return Sigma_SDE;
 }
@@ -241,105 +218,11 @@ void compute_SDE_impl_v2(SelfEnergy<Q>& Sigma_SDE, SelfEnergy<Q>& Sigma_SDE_a, S
     bool write_state = false;
     /// alternative to below code (does the same stuff in more compact code):
     Propagator<Q> G (Lambda, state_in.selfenergy, 'g', state_in.config);   // full propagator
-    //Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
-    //Gamma_0.set_frequency_grid(state_in.vertex);
-    //if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-config.U / 2.);         // initialize bare vertex (Keldysh)
-    //else         Gamma_0.initialize(-config.U);              // initialize bare vertex (Matsubara)
     Sigma_SDE_a = compute_SDE_impl<'a',Q>(Lambda, state_in.vertex, G, G, config);
     Sigma_SDE_p = compute_SDE_impl<'p',Q>(Lambda, state_in.vertex, G, G, config);
 
-    //SelfEnergy<Q> Sigma_SDE_t = compute_SDE_impl<'t',Q>(Lambda, state_in.vertex, G, G);
-    //utils::print("deviation between a and t version: ", (Sigma_SDE_a - Sigma_SDE_t).norm() / Sigma_SDE_a.norm(), "\n");
 
     Sigma_SDE = 0.5 * (Sigma_SDE_a + Sigma_SDE_p);
-    ///
-    /*
-    Vertex<Q,false> Gamma_0 (Lambda);                  // bare vertex
-    Gamma_0.set_frequency_grid(state_in.vertex);
-    if (KELDYSH and not CONTOUR_BASIS) Gamma_0.initialize(-config.U / 2.);         // initialize bare vertex (Keldysh)
-    else         Gamma_0.initialize(-config.U);              // initialize bare vertex (Matsubara)
-    Propagator<Q> G (Lambda, state_in.selfenergy, 'g');   // full propagator
-
-    //G.save_propagator_values(data_dir + "parquetPropagator.h5", G.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies());
-
-    // compute the a bubble with full vertex on the right
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_a_r (Lambda);
-    bubble_a_r.set_Ir(true);
-    bubble_a_r.set_frequency_grid(state_in.vertex);
-    bubble_function(bubble_a_r, Gamma_0, state_in.vertex, G, G, 'a', false, config);  // full vertex on the right
-
-    // compute the a bubble with full vertex on the left
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_a_l (Lambda);
-    bubble_a_l.set_Ir(true);
-    bubble_a_l.set_frequency_grid(state_in.vertex);
-    bubble_function(bubble_a_l, state_in.vertex, Gamma_0, G, G, 'a', false, config);  // full vertex on the left
-
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_a = (bubble_a_r + bubble_a_l) * 0.5;  // symmetrize the two versions of the a bubble
-
-    // compute the self-energy via SDE using the a bubble
-    Sigma_SDE_a.initialize(config.U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
-    //bubble_a.avertex().K2 *= 0.;
-    loop<false,0>(Sigma_SDE_a, bubble_a, G);
-    utils::print("Check causality of Sigma_SDE_a: \n");
-    check_SE_causality(Sigma_SDE_a);
-    compare_with_FDTs(bubble_a, state_in.Lambda, SDE_counter, "SDE_bubble_a_" + std::to_string(SDE_counter));
-
-    // compute the p bubble with full vertex on the right
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_p_r (Lambda);
-    bubble_p_r.set_Ir(true);
-    bubble_p_r.set_frequency_grid(state_in.vertex);
-    bubble_function(bubble_p_r, Gamma_0, state_in.vertex, G, G, 'p', false, config);  // full vertex on the right
-
-    // compute the p bubble with full vertex on the left
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_p_l (Lambda);
-    bubble_p_l.set_Ir(true);
-    bubble_p_l.set_frequency_grid(state_in.vertex);
-    bubble_function(bubble_p_l, state_in.vertex, Gamma_0, G, G, 'p', false, config);  // full vertex on the left
-
-    GeneralVertex<Q,symmetric_r_irred,false> bubble_p = (bubble_p_r + bubble_p_l) * 0.5;  // symmetrize the two versions of the p bubble
-
-    // compute the self-energy via SDE using the p bubble
-    Sigma_SDE_p.initialize(glb_U / 2., 0.); /// Note: Only valid for the particle-hole symmetric_full case
-    //bubble_p.pvertex().K2 *= 0.;
-    loop<false,0>(Sigma_SDE_p, bubble_p, G);
-    utils::print("Check causality of Sigma_SDE_p: \n");
-    check_SE_causality(Sigma_SDE_p);
-    compare_with_FDTs(bubble_p, state_in.Lambda, SDE_counter, "SDE_bubble_p_" + std::to_string(SDE_counter));
-
-
-    // symmetrize the contributions computed via a/p bubble
-    Sigma_SDE = (Sigma_SDE_a + Sigma_SDE_p) * 0.5;
-    utils::print("Check causality of Sigma_SDE: \n");
-    check_SE_causality(Sigma_SDE);
-
-    //utils::print(" ---> difference between K1a-left and -right: ", (bubble_a_l - bubble_a_r).avertex().K1.get_vec().max_norm(), "\n");
-    //utils::print(" ---> difference between K1p-left and -right: ", (bubble_p_l - bubble_p_r).pvertex().K1.get_vec().max_norm(), "\n");
-
-    if (write_state) {
-        std::string filename = data_dir + "SDE_iteration" + std::to_string(SDE_counter);
-        H5::H5File file_out = H5::H5File(filename, H5F_ACC_TRUNC);
-        write_to_hdf(file_out, "Sigma_SDE_a", Sigma_SDE_a.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_p", Sigma_SDE_p.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE", Sigma_SDE.Sigma.get_vec(), false);
-        file_out.close();
-
-#ifndef NDEBUG
-        State<Q> Psi_a(Vertex<Q,false>(bubble_a.half1()), Sigma_SDE_a, Lambda);
-        State<Q> Psi_a_l(Vertex<Q,false>(bubble_a_l.half1()), Sigma_SDE_a, Lambda);
-        State<Q> Psi_a_r(Vertex<Q,false>(bubble_a_r.half1()), Sigma_SDE_a, Lambda);
-        State<Q> Psi_p(Vertex<Q,false>(bubble_p.half1()), Sigma_SDE_p, Lambda);
-        State<Q> Psi_p_l(Vertex<Q,false>(bubble_p_l.half1()), Sigma_SDE_p, Lambda);
-        State<Q> Psi_p_r(Vertex<Q,false>(bubble_p_r.half1()), Sigma_SDE_p, Lambda);
-        add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
-        add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
-        add_state_to_hdf(data_dir + "Psi_SDE_a_l.h5", SDE_counter + 1, Psi_a_l, true);
-        add_state_to_hdf(data_dir + "Psi_SDE_a_r.h5", SDE_counter + 1, Psi_a_r, true);
-        add_state_to_hdf(data_dir + "Psi_SDE_p_l.h5", SDE_counter + 1, Psi_p_l, true);
-        add_state_to_hdf(data_dir + "Psi_SDE_p_r.h5", SDE_counter + 1, Psi_p_r, true);
-#endif
-    }
-    SDE_counter++;
-    */
 }
 
 template <char channel, typename Q>
@@ -364,21 +247,12 @@ void check_selfconsistency_of_K1K2(const Vertex<Q,false>& Gamma, double Lambda, 
         bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 'a', false, config);  // full vertex on the left
         bubble_l += bubble_l_other;
     }
-
-    /// is bubble_l.K1+K2_r identical to Gamma.K1+K2_r ?
-    //utils::print("For channel r = ", channel, "\n");
-    //utils::print("difference in bubble_l.K1r and Gamma.K1r: \t", (bubble_l.get_rvertex(channel).K1 - Gamma.get_rvertex(channel).K1).get_vec().max_norm() / Gamma.get_rvertex(channel).K1.get_vec().max_norm(), "\n");
-    //utils::print("difference in bubble_l.K2r and Gamma.K2r: \t", (bubble_l.get_rvertex(channel).K2 - Gamma.get_rvertex(channel).K2).get_vec().max_norm() / Gamma.get_rvertex(channel).K2.get_vec().max_norm(), "\n");
-
 }
 
 /// Compute the SDE by closing the loop over K1a+K2a or K1p+K2p
 template<bool version, bool is_differentiated_vertex, bool is_differentiated_SE, typename Q>
 SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const Vertex<Q,is_differentiated_vertex>& Gamma, const Propagator<Q> & G_loop, const fRG_config& config) {
     assert((version == 0 and (channel == 'a' or channel == 'p')) or (version == 1 and (channel == 't' or channel == 'p')));
-
-    //check_selfconsistency_of_K1K2<'a',Q>(Gamma, Lambda, G_loop, config);
-    //check_selfconsistency_of_K1K2<'p',Q>(Gamma, Lambda, G_loop, config);
 
     GeneralVertex<Q,non_symmetric_diffleft,is_differentiated_vertex> Gamma_temp_onlyK2(Gamma.half1(), Gamma.half1(), Gamma.get_vertex_nondiff());
     for (char r: {'a', 'p', 't'}) {
@@ -387,8 +261,6 @@ SelfEnergy<Q> compute_SDE_impl_v3(const char channel, const double Lambda, const
             Gamma_temp_onlyK2.set_to_zero_in_integrand(r, k2);
         }
         else {
-            //Gamma_temp_onlyK2.get_rvertex(r).K2 *= 0.5;
-            //if constexpr (is_differentiated_vertex) {Gamma_temp_onlyK2.get_vertex_nondiff().get_rvertex(r).K2 *= 0.5;}
             if constexpr (DEBUG_SYMMETRIES) {
                 Gamma_temp_onlyK2.get_rvertex(r).K2b *= 0.5;
                 if constexpr (is_differentiated_vertex) {Gamma_temp_onlyK2.get_vertex_nondiff().get_rvertex(r).K2b *= 0.5;}
@@ -418,19 +290,6 @@ void compute_SDE_v3(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
 
     utils::print("difference bw SDE_a and SDE_p: \n");
     utils::print("\t", (Sigma_SDE_a - Sigma_SDE_p).norm() / Sigma_SDE_p.norm(), "\n");
-    //utils::print("difference bw SDE_t and SDE_a: \n");
-    //utils::print("\t", (Sigma_SDE_a - Sigma_SDE_t).norm() / Sigma_SDE_t.norm(), "\n");
-
-    /// Save results via a- and p-channel separately:
-    //State<Q,false> Psi_a = state_in;
-    //State<Q,false> Psi_p = state_in;
-    //State<Q,false> Psi_t = state_in;
-    //Psi_a.selfenergy = Sigma_SDE_a;
-    //Psi_p.selfenergy = Sigma_SDE_p;
-    //Psi_t.selfenergy = Sigma_SDE_t;
-    //add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
-    //add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
-    //add_state_to_hdf(data_dir + "Psi_SDE_t.h5", SDE_counter + 1, Psi_t, true);
 }
 
 
@@ -448,13 +307,6 @@ void compute_SDE_v2(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const do
 
     utils::print("difference bw SDE_a and SDE_p: \n");
     utils::print("\t", (Sigma_SDE_a - Sigma_SDE_p).norm() / Sigma_SDE_p.norm(), "\n");
-
-    //State<Q,false> Psi_a = state_in;
-    //State<Q,false> Psi_p = state_in;
-    //Psi_a.selfenergy = Sigma_SDE_a;
-    //Psi_p.selfenergy = Sigma_SDE_p;
-    //add_state_to_hdf(data_dir + "Psi_SDE_a.h5", SDE_counter + 1, Psi_a, true);
-    //add_state_to_hdf(data_dir + "Psi_SDE_p.h5", SDE_counter + 1, Psi_p, true);
 }
 
 /**
@@ -478,9 +330,6 @@ void compute_SDE(SelfEnergy<Q>& Sigma_SDE, const State<Q>& state_in, const doubl
     /// Pick your favorite version:
     if (version == 1) {
         compute_SDE_v1<Q>(Sigma_SDE, state_in, Lambda, state_in.config);
-        //SelfEnergy<Q> Sigma_compare = Sigma_SDE;
-        //compute_SDE_v3<Q>(Sigma_compare, state_in, Lambda, config);
-        //utils::print("rel. dev. bw. v1 and v3: \t", (Sigma_SDE - Sigma_compare).norm(), "\n");
     }
     else if (version == 2) {
         compute_SDE_v2<Q>(Sigma_SDE, state_in, Lambda, state_in.config);
@@ -520,29 +369,6 @@ SelfEnergy<Q> compute_diff_SDE(const State<Q>& state_in, const Vertex<Q,true>& d
     SelfEnergy<Q> dSigma_SDE = (Sigma_SDE_a_1 + Sigma_SDE_p_1
                               + Sigma_SDE_a_2 + Sigma_SDE_p_2
                               ) * 0.5;
-
-    if (false) {
-        SelfEnergy<Q> Sigma_SDE_p_1_v2 = compute_SDE_impl_v3<1, false, true>('p', Lambda, state_in.vertex,dG, state_in.config);
-        SelfEnergy<Q> Sigma_SDE_t_1    = compute_SDE_impl_v3<1, false, true>('t', Lambda, state_in.vertex,dG, state_in.config);
-
-        SelfEnergy<Q> Sigma_SDE_p_2_v2 = compute_SDE_impl_v3<1, true, true>('p', Lambda,          dGamma, G, state_in.config);
-        SelfEnergy<Q> Sigma_SDE_t_2    = compute_SDE_impl_v3<1, true, true>('t', Lambda,          dGamma, G, state_in.config);
-
-
-        std::string filename = data_dir + "diffSDE_in_different_channels.h5";
-        H5::H5File file_out = H5::H5File(filename, H5F_ACC_TRUNC);
-        write_to_hdf(file_out, "Sigma_SDE_a_1", Sigma_SDE_a_1.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_p_1", Sigma_SDE_p_1.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_p_1_v2", Sigma_SDE_p_1_v2.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_t_1", Sigma_SDE_t_1.Sigma.get_vec(), false);
-
-        write_to_hdf(file_out, "Sigma_SDE_a_2", Sigma_SDE_a_2.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_p_2", Sigma_SDE_p_2.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_p_2_v2", Sigma_SDE_p_2_v2.Sigma.get_vec(), false);
-        write_to_hdf(file_out, "Sigma_SDE_t_2", Sigma_SDE_t_2.Sigma.get_vec(), false);
-
-        file_out.close();
-    }
 
     //dSigma_SDE.check_symmetries();
     return dSigma_SDE;
@@ -717,11 +543,6 @@ bool parquet_solver(const std::string filename, State<Q>& state_in, const double
 #ifndef NDEBUG
     bool write_state = false;
     if (write_state) {
-        //write_state_to_hdf(data_dir + "Parquet_GammaL", Lambda, Nmax + 1,
-        //                   state_in); // save input into 0-th layer of hdf5 file
-        //write_state_to_hdf(data_dir + "Parquet_GammaR", Lambda, Nmax + 1,
-        //                   state_in); // save input into 0-th layer of hdf5 file
-
         write_state_to_hdf(data_dir + "Psi_SDE_a.h5", Lambda, Nmax + 1, state_in, true);
         write_state_to_hdf(data_dir + "Psi_SDE_p.h5", Lambda, Nmax + 1, state_in, true);
         write_state_to_hdf(data_dir + "Psi_SDE_a_l.h5", Lambda, Nmax + 1, state_in, true);

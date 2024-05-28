@@ -21,10 +21,7 @@ void FrequencyGrid<eliasGrid>::initialize_grid() {
         all_frequencies[0] = 0.;
         auxiliary_grid[0] = 0.;
     }
-    //if (number_of_gridpoints % 2 == 1 and not purely_positive) {
-    //    all_frequencies[(int) number_of_gridpoints / 2] = 0.;  // make sure that the center of the grid is exactly zero (and not ~10^{-30})
-    //    auxiliary_grid[(int) number_of_gridpoints / 2] = 0.;
-    //}
+
     if (!KELDYSH && !ZERO_T) assert (is_doubleOccurencies(all_frequencies) == 0);
 }
 
@@ -200,9 +197,6 @@ auto FrequencyGrid<eliasGrid>::t_from_frequency(freqType w) const -> freqType {
         else return grid_transf_lin(w, this->W_scale);
 
     }
-        //else if (this->type == 'b' and this->diag_class == 1) {
-        //    return grid_transf_v2(w, this->W_scale);
-        //}
     else {
         if constexpr (ZERO_T) return grid_transf_v4(w, this->W_scale, w_center);
         else                   return grid_transf_lin(w, this->W_scale);
@@ -220,10 +214,7 @@ auto FrequencyGrid<eliasGrid>::frequency_from_t(freqType t) const -> freqType {
         if (ZERO_T) return grid_transf_inv_v3(t, this->W_scale, w_center);
         else return grid_transf_inv_lin(t, this->W_scale) + (std::is_same_v<freqType,int> and type=='f' ? 1 : 0);
     }
-        //else if (this->type == 'b' and this->diag_class == 1) {
-        //    return grid_transf_inv_v2(w, this->W_scale);
-        //}
-    else { // TODO(medium): Remove commented part?
+    else {
         if constexpr (KELDYSH || ZERO_T) return grid_transf_inv_v4(t, this->W_scale, w_center);
         else return grid_transf_inv_lin(t, this->W_scale) + (std::is_same_v<freqType,int> and type=='f' ? 1 : 0);
     }
@@ -291,12 +282,7 @@ double integration_measure_v2(const double t, const double W_scale) {
     double temp = sqrt(1 - t*t);
     return W_scale * sgn(t) * t * (2 - t*t) / (temp*temp*temp);
 }
-//double grid_transf_v2b(const double w, const double W_scale) {
-//    return sgn(w) * log(1 + std::abs(w)/w_a) / log(1. + glb_w_upper/w_a);
-//}
-//double grid_transf_inv_v2b(const double t, const double W_scale) {
-//    return sgn(t) * w_a * (exp(log(1. + glb_w_upper/w_a) * std::abs(t)) - 1);
-//}
+
 
 double grid_transf_v3(const double w, const double W_scale, const double w_center) {
     // Version 3: linear around w=0, good for w^(-1) tails
@@ -334,9 +320,7 @@ double integration_measure_v4(const double t, const double W_scale) {
 double grid_transf_lin(double w, double W_scale) {
     return w / W_scale;
 }
-//int grid_transf_lin(int w, int W_scale) {
-//    return integer_division_floor(w , W_scale);
-//}
+
 freqType grid_transf_inv_lin(freqType W, freqType W_scale) {
     return W * W_scale;
 }
@@ -532,8 +516,6 @@ freqType FrequencyGrid<hybridGrid>::t_from_frequency(const freqType w) const {
 
 void FrequencyGrid<hybridGrid>::initialize_grid() {
     derive_auxiliary_parameters();
-    //auxiliary_grid[0] = t_lower; auxiliary_grid[number_of_gridpoints-1] = t_upper;
-    //all_frequencies[0] = -std::numeric_limits<double>::infinity(); all_frequencies[number_of_gridpoints-1] = std::numeric_limits<double>::infinity();
     for (int i = 0; i < number_of_gridpoints; i++) {
         const double t = t_lower + spacing_auxiliary_gridpoint * (double)i;
         auxiliary_grid[i] = t;
@@ -562,8 +544,6 @@ int FrequencyGrid<hybridGrid>::get_grid_index(const freqType frequency)const {
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
 #endif
-    //assert(all_frequencies[index] <= frequency + (std::abs(frequency)+1)*1e-12);
-    //assert(all_frequencies[index+1] >= frequency);
     assert(auxiliary_grid[index] <= t+inter_tol);
     assert(auxiliary_grid[index+1] >= t-inter_tol or index == number_of_gridpoints-2);
     return index;
@@ -669,7 +649,6 @@ double FrequencyGrid<angularGrid>::frequency_from_t(const double t) const {
 double FrequencyGrid<angularGrid>::t_from_frequency(const double w) const {
     const double i_interval = floor( (w + half_of_interval_length_for_w) * interval_length_for_w_recip);
     const double remainder  = w / half_of_interval_length_for_w - i_interval * 2; // remainder in [-1, 1]
-    //const double result = ( i_interval + 0.5 * (sqrt(std::abs(remainder)*quad_fac_recip + lin_fac*lin_fac) - lin_fac) * sgn(remainder)) * half_of_interval_length_for_t * 2.;
     const double result = ( i_interval + 0.5 * (pow(std::abs(remainder) * quad_fac_recip + lin_fac_to_power, recip_power) - lin_fac) * sgn(remainder)) * half_of_interval_length_for_t * 2.;
     assert(isfinite(result));
     return result;
@@ -683,8 +662,6 @@ void FrequencyGrid<angularGrid>::initialize_grid() {
         auxiliary_grid[i] = t;
         all_frequencies[i] = frequency_from_t(t);
     }
-    //all_frequencies[purely_positive ? 0 : (int) (number_of_gridpoints - 1) / 2] = 0.;
-    //auxiliary_grid [purely_positive ? 0 : (int) (number_of_gridpoints - 1) / 2] = 0.;
 }
 
 int FrequencyGrid<angularGrid>::get_grid_index(const double frequency)const {
@@ -699,8 +676,6 @@ int FrequencyGrid<angularGrid>::get_grid_index(const double frequency)const {
     int index = int((t - t_lower) + 1e-12);
     index = std::max(0, index);
     index = std::min(number_of_gridpoints - 2, index);
-    //assert(all_frequencies[index] <= frequency + (std::abs(frequency)+1)*1e-12);
-    //assert(all_frequencies[index+1] >= frequency);
     assert(auxiliary_grid[index] <= t+inter_tol);
     assert(auxiliary_grid[index+1] >= t-inter_tol or index == number_of_gridpoints-2);
     return index;

@@ -13,7 +13,6 @@
 #include "H5Cpp.h"
 
 template <typename Q> class rvert; // forward declaration of rvert
-//template <typename Q> class fullvert; // forward declaration of fullvert
 template <typename Q, bool differentiated> class State; // forward declaration of State
 template<typename Q, std::size_t depth, typename H5object>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const multidimensional::multiarray<Q, depth>& data, const bool data_set_exists);
@@ -21,11 +20,8 @@ template<typename Q, typename H5object, int nrows, int ncols>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const Eigen::Matrix<Q,nrows, ncols>& data, const bool data_set_exists);
 template <typename Q, typename H5object>
 void write_to_hdf(H5object& group, const H5std_string& dataset_name, const std::vector<Q>& data, const bool data_set_exists);
-//template <typename Q, vertexType symm_type> class GeneralVertex;
-////template <typename Q>class symmetric_full;
-//template <typename Q>using Vertex = GeneralVertex<Q, symmetric_full>;
+
 class Buffer;
-//namespace n_point_fc {
 /**
  * Offers basic functionality that is identical for all K_classes
  * @tparam Q        data type of vertex data

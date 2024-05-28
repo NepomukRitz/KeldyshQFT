@@ -112,34 +112,6 @@ TEST_CASE( "How accurate is the inversion of the frequency grid function?" , "[g
     const double tolerance = 1e-10;
 
     REQUIRE(tdeviations.max_norm() < tolerance);
-    /*
-    FrequencyGrid<angularGrid> angular_phi('f', 3, Lambda_ini, test_config, false);
-    FrequencyGrid<angularGrid> angular_theta('f', 3, Lambda_ini, test_config, true);
-    std::vector<double> phi_values = {-M_PI, -1., -1e-5, 0., 1e-5, 1, M_PI};
-    std::vector<double> theta_values = { 0., 1e-5, 1, M_PI};
-
-
-    deviations = vec<double>  (2*phi_values.size());
-    tdeviations = vec<double> (2*phi_values.size());
-    for (size_t j = 0; j < phi_values.size(); j++) {
-
-        double t = angular_phi.t_from_frequency(phi_values[j]);
-        double  deviation = phi_values[j] - angular_phi.frequency_from_t(t);
-        double tdeviation = t - angular_phi.t_from_frequency( angular_phi.frequency_from_t(t));
-        deviations[ j] = deviation;
-        tdeviations[ j]=tdeviation;
-    }
-    for (size_t j = 0; j < theta_values.size(); j++) {
-
-        double t = angular_theta.t_from_frequency(theta_values[j]);
-        double  deviation = theta_values[j] - angular_theta.frequency_from_t(t);
-        double tdeviation = t - angular_theta.t_from_frequency( angular_theta.frequency_from_t(t));
-        deviations[ phi_values.size() + j] = deviation;
-        tdeviations[phi_values.size() + j] =tdeviation;
-    }
-
-    REQUIRE(tdeviations.max_norm() < tolerance);
-    */
 
 }
 #endif

@@ -465,20 +465,6 @@ template <typename Integrand> auto integrator_Matsubara_T0(Integrand& integrand,
         intervals[num_intervals-1][1] -= tol;
     }
 
-
-/*
-    size_t num_intervals_max;
-    vec<vec<double>> intervals;
-    if( -w_half+tol < w_half-tol){
-        intervals = {{vmin, -w_half-tol}, {-w_half+tol, w_half-tol}, {w_half+tol, vmax}};
-        num_intervals_max = 3;
-    }
-    else {
-        intervals = {{vmin, -w_half-tol}, {w_half+tol, vmax}};
-        num_intervals_max = 2;
-    }
-*/
-
     return integrator(integrand, intervals, num_intervals, isinf);
 
 
@@ -502,58 +488,6 @@ template <typename Q, typename Integrand> auto matsubarasum(const Integrand& int
         result += integrand(vpp);
     }
     return result;// values.sum();
-
-    //// Adaptive summator:
-    /*
-    if (N_tresh * balance_fac >= N) {
-
-        //cout << "Direct SUMMATION on interval[" << Nmin << ", " << Nmax << "] of length " << N <<  "!!! \n";
-        vec<Q> values(N);
-        double vpp;
-        for (int i = 0; i < N; i++) {
-            vpp = (2*Nmin+1) * (M_PI * glb_T) + i * freq_step;
-            values[i] = integrand(vpp);
-        }
-        return values.sum();
-    }
-    else {
-        //cout << "Adapt on interval[" << vmin << ", " << vmax << "] of length " << N <<  "!!! \n";
-        vec<Q> values(N_tresh);
-        vec<double> mfreqs(N_tresh);    // linear grid of sample points
-        int intstep = (Nmax - Nmin) / (N_tresh-1);
-        for (int i = 0; i < N_tresh-1; i++) {
-            mfreqs[i] = ((Nmin + intstep * i ) * 2 + 1) * (M_PI * glb_T);
-            values[i] = integrand(mfreqs[i]);
-        }
-        mfreqs[N_tresh-1] = (Nmax * 2 + 1) * (M_PI * glb_T);
-        values[N_tresh-1] = integrand(mfreqs[N_tresh-1]);
-
-        Q slope = (values[N_tresh-1] - values[0]) / (mfreqs[N_tresh-1] - mfreqs[0]);
-        vec<Q> linrzd = values[0] + (mfreqs - mfreqs[0]) * slope;   // linear approximation
-        //vec<double> intermediate = (linrzd - values).abs(); // deviation of linear approximation from function values
-        double error_estimate = (values[0] + (mfreqs - mfreqs[0]) * slope - values).abs().sum();
-        //double vmaxn = vmax/(M_PI*glb_T);
-        //double vminn = vmin/(M_PI*glb_T);
-        Q resul_estimate = (values[0] - freq_step/.2 * slope) * (double)N + freq_step*slope / 2. * (double)N * (double)N;
-        //cout << "error_estimate = " << error_estimate << "\t < tol * sum = " << reltol * values.std::abs().sum() << " ? \n";
-        if (error_estimate < reltol * std::abs(values.abs().sum()) or error_estimate < abstol) {
-            //cout << "Accepted estimate! \n";
-            return resul_estimate;
-        }
-        else {
-            //cout << "Recursion step \n";
-            vec<Q> result(N_tresh-1);
-            //cout << "Recursion step with error " << error_estimate << "\t on the interval[" << Nmin << ", " << Nmax << "] of length " << N << "\n";
-            for (int i = 0; i < N_tresh - 2; i++) {
-                result[i] = matsubarasum<Q>(integrand, Nmin + i*intstep, Nmin + (i+1)*intstep - 1, N_tresh, balance_fac, reltol, abstol);
-            }
-            result[N_tresh-2] = matsubarasum<Q>(integrand, Nmin + (N_tresh - 2)*intstep, Nmax, N_tresh, balance_fac, reltol, abstol);
-            return result.sum();
-        }
-
-
-    }
-    */
 }
 
 template <int spin, int channel, typename Integrand> auto matsubarasum_vectorized(const Integrand& integrand, const int Nmin_v, const int Nmax_v, const int Nmin_sum, const int Nmax_sum, const int Nmin_vp, const int Nmax_vp) -> Eigen::Matrix<std::result_of_t<Integrand(freqType)>, Eigen::Dynamic, Eigen::Dynamic>{
@@ -601,9 +535,6 @@ template <int spin, int channel, typename Integrand> auto matsubarasum_vectorize
     Eigen::Matrix<std::result_of_t<Integrand(freqType)>, Eigen::Dynamic, Eigen::Dynamic> result = vertex_values_left * Pi_values.asDiagonal() * vertex_values_right;
     auto result_alt = Pi_values.sum() * 2.5*2.5;
 
-    //std::cout << vertex_values_left << "\n * " << Pi_values << "\n * " << vertex_values_right << std::endl;
-    //std::cout << "result: " << result << std::endl;
-    //std::cout << "result_alt: " << result_alt << std::endl;
     return vertex_values_left * Pi_values.asDiagonal() * vertex_values_right;
 
 }

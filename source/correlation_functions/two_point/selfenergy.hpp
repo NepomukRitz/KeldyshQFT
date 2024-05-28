@@ -120,14 +120,7 @@ public:
         lhs *= rhs;
         return lhs;
     }
-    //auto operator*= (double alpha) -> SelfEnergy<Q> {
-    //    this->Sigma *= alpha;
-    //    return *this;
-    //}
-    //friend SelfEnergy<Q> operator* (SelfEnergy<Q> lhs, const double& rhs) {
-    //    lhs *= rhs;
-    //    return lhs;
-   // }
+
     auto operator-= (const SelfEnergy<Q>& self1) -> SelfEnergy<Q> {//sum operator overloading
         this->Sigma -= self1.Sigma;
         this->asymp_val_R -= self1.asymp_val_R;
@@ -337,8 +330,6 @@ template <typename Q> auto SelfEnergy<Q>::shrink_freq_box(const double rel_tail_
 
 template <typename Q> double SelfEnergy<Q>::analyze_tails(const bool verbose) const {
     buffer_type Sigma_temp = Sigma;
-    //if(KELDYSH) for (int i = 0; i < Sigma.get_vec().size()/2; i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
-    //else for (int i = 0; i < Sigma.get_vec().size(); i++) Sigma_temp.direct_set(i, Sigma_temp.acc(i) - asymp_val_R);
 
     double maxabs_SE_total = Sigma_temp.get_vec().max_norm();
     vec<double> maxabsSE_along_w = maxabs(Sigma_temp.get_vec(), Sigma_temp.get_dims(), 1);
@@ -391,9 +382,6 @@ template <typename Q> auto SelfEnergy<Q>::get_deriv_maxSE(const bool verbose) co
     return max_SE;
 }
 template <typename Q> auto SelfEnergy<Q>::get_curvature_maxSE(const bool verbose) const -> double {
-    //vec<Q> Sigma_temp = Sigma;
-    //if(KELDYSH) for (int i = 0; i < Sigma.size()/2; i++) Sigma_temp -= asymp_val_R;
-    //else for (int i = 0; i < Sigma.size(); i++) Sigma_temp -= asymp_val_R;
 
     double max_SE = Sigma.get_curvature_max();
     if (verbose and mpi_world_rank() == 0) {

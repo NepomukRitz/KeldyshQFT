@@ -148,21 +148,12 @@ void compute_postprocessed_susceptibilities(const std::string& filename) {
         for (char r : {'a', 'p', 't'}) {
             bubble_function(intermediate_res.vertex, state_preproc.vertex, state_bare.vertex, Pi, r, state_preproc.config, {true,true,false});
         }
-        //std::string fn_intermediate = filename + "_intermediate";
-        //if (iLambda == 0) write_state_to_hdf(fn_intermediate, state_preproc.Lambda, Lambda_it_max+1, intermediate_res);
-        //else add_state_to_hdf(fn_intermediate, iLambda, intermediate_res);
 
         State<state_datatype> result = state_bare;
         for (char r : {'a', 'p', 't'}) {
             bubble_function(result.vertex,  state_bare.vertex, intermediate_res.vertex, Pi, r, state_preproc.config, {true,false,false});
         }
 
-        //std::string fn_result= filename + "_result";
-        //if (iLambda == 0) write_state_to_hdf(fn_result, state_preproc.Lambda, Lambda_it_max+1, result);
-        //else add_state_to_hdf(fn_result, iLambda, result);
-
-        //if (iLambda == 0) file = H5::H5File(filename+"_postproc", H5F_ACC_TRUNC);
-        //else file = H5::H5File(filename+"_postproc", H5F_ACC_RDWR);
         utils::print("Writing post-processed result for Lambda layer " + std::to_string(iLambda) + " ...", true);
         std::array<char,3> channels = {'a', 'p', 't'};
         for (int i = 0; i < 3; i++) {
@@ -170,7 +161,6 @@ void compute_postprocessed_susceptibilities(const std::string& filename) {
             const H5std_string& datasetname = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
             write_to_hdf_LambdaLayer<state_datatype>(file, datasetname, result.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
         }
-        //file.close();
     }
 }
 
@@ -181,8 +171,6 @@ void compute_proprocessed_susceptibilities_PT2(const std::string& filename) {
 
 
     H5::H5File file(filename+"_postproc", H5F_ACC_TRUNC);
-    //H5::H5File file_Hartree_first(filename+"_postproc_Hartree_first", H5F_ACC_TRUNC);
-    //H5::H5File file_Hartree_second(filename+"_postproc_Hartree_second", H5F_ACC_TRUNC);
     H5::H5File file_PT2_corr(filename+"_postproc_PT2_corr", H5F_ACC_TRUNC);
 
     for (int iLambda = 0; iLambda <= Lambda_it_max; iLambda++) {
@@ -198,9 +186,6 @@ void compute_proprocessed_susceptibilities_PT2(const std::string& filename) {
         for (char r : {'a', 'p', 't'}) {
             bubble_function(intermediate_res.vertex, state_preproc.vertex, state_bare.vertex, Pi_H, r, state_preproc.config, {true,true,false});
         }
-        //std::string fn_intermediate = filename + "_intermediate";
-        //if (iLambda == 0) write_state_to_hdf(fn_intermediate, state_preproc.Lambda, Lambda_it_max+1, intermediate_res);
-        //else add_state_to_hdf(fn_intermediate, iLambda, intermediate_res);
 
         State<state_datatype> result = state_bare;
         for (char r : {'a', 'p', 't'}) {
@@ -217,18 +202,6 @@ void compute_proprocessed_susceptibilities_PT2(const std::string& filename) {
             bubble_function(PT2_SE_correction.vertex, state_bare.vertex, state_bare.vertex, Pi_K, r, state_preproc.config, {true,false,false});
         }
 
-        /*
-        ///necessary Hartree corrections?
-        const Propagator<state_datatype> G_K_Hartree(state_preproc.Lambda, state_bare.selfenergy, state_bare.selfenergy, 'e', state_preproc.config);
-        const Bubble<state_datatype> Pi_K_Hartree_diff(G_H,G_K_Hartree,true);
-        const Bubble<state_datatype> Pi_K_Hartree(G_K_Hartree,G_K_Hartree,false);
-        State<state_datatype> Hartree_SE_correction_firstorder (state_preproc, state_preproc.Lambda);
-        State<state_datatype> Hartree_SE_correction_secondorder (state_preproc, state_preproc.Lambda);
-        for (char r : {'a', 'p', 't'}) {
-            bubble_function(Hartree_SE_correction_firstorder.vertex, state_bare.vertex, state_bare.vertex, Pi_K_Hartree_diff, r, state_preproc.config, {true,false,false});
-            bubble_function(Hartree_SE_correction_secondorder.vertex, state_bare.vertex, state_bare.vertex, Pi_K_Hartree, r, state_preproc.config, {true,false,false});
-        }
-         */
 
         State<state_datatype> result_complete = result + PT2_SE_correction; //+ Hartree_SE_correction_firstorder + Hartree_SE_correction_secondorder;
 
@@ -239,18 +212,10 @@ void compute_proprocessed_susceptibilities_PT2(const std::string& filename) {
             const H5std_string& datasetname = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
             write_to_hdf_LambdaLayer<state_datatype>(file, datasetname, result_complete.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
 
-
-            //const H5std_string& datasetname_Hartree_first = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
-            //write_to_hdf_LambdaLayer<state_datatype>(file_Hartree_first, datasetname_Hartree_first, Hartree_SE_correction_firstorder.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
-
-            //const H5std_string& datasetname_Hartree_second = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
-            //write_to_hdf_LambdaLayer<state_datatype>(file_Hartree_second, datasetname_Hartree_second, Hartree_SE_correction_secondorder.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
-
             const H5std_string& datasetname_PT2_corr = r == 'a' ? DATASET_K1_a_postproc : (r == 'p' ? DATASET_K1_p_postproc : DATASET_K1_t_postproc);
             write_to_hdf_LambdaLayer<state_datatype>(file_PT2_corr, datasetname_PT2_corr, PT2_SE_correction.vertex.get_rvertex(r).K1.get_vec(), iLambda, Lambda_it_max+1, iLambda>0);
 
          }
-        //file.close();
     }
 }
 

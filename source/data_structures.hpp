@@ -420,39 +420,12 @@ vec<T> operator+ (const double& rhs, vec<T> lhs) {
     lhs += rhs; return lhs;
 }
 
-// subtraction of a double constant to comp vector
-// template <typename T>
-// vec<T> operator-= (vec<T>& lhs, const double& rhs) {
-// //#pragma omp parallel for
-//     for (size_t i=0; i<lhs.size(); ++i) {
-//         lhs[i] -= rhs;
-//     }
-//     return lhs;
-// }
 
 template <typename T>
 vec<T> operator- (vec<T> lhs, const double& rhs) {
     lhs -= rhs; return lhs;
 }
 
-
-/*// multiplication of a double constant to comp vector
-template <typename T>
-vec<T> operator*= (vec<T>& lhs, const double& rhs) {
-#pragma omp parallel for
-    for (unsigned int i=0; i<lhs.size(); ++i) {
-        lhs[i] *= rhs;
-    }
-    return lhs;
-}
-template <typename T>
-vec<T> operator* (vec<T> lhs, const double& rhs) {
-    lhs *= rhs; return lhs;
-}
-template <typename T>
-vec<T> operator* (const double& rhs, vec<T> lhs) {
-    lhs *= rhs; return lhs;
-}*/
 
 
 // multiplication of a comp constant to double vector
@@ -545,11 +518,7 @@ struct VertexInput{
 
     VertexInput(int iK_in, my_index_t spin_in, freqType w_in, freqType v1_in, freqType v2_in, my_index_t i_in_in, char channel_in, K_class k_in=k1, my_index_t iw_in=0)
             :
-//#if KELDYSH_FORMALISM
             iK(iK_in),
-//#else
-//            iK(0),
-//#endif
             w(w_in), v1(v1_in), v2(v2_in), i_in(i_in_in), spin(spin_in), channel_bubble(channel_in), kClass_aim(k_in), iw_r(iw_in)
     {assert(iK < 16);}
 
@@ -629,10 +598,6 @@ struct IndicesSymmetryTransformations: VertexInput{
     double prefactor = 1.;
     bool conjugate = false;
     bool asymmetry_transform = false;
-    //int spin;
-    //int iw_r;
-    //double w, v1, v2; int i_in;
-    //K_class kClass_aim;     // we only distinguish kClass==k3 from kClass!=k3 --> important for interpolation in K3
     char channel_rvert;
 
     IndicesSymmetryTransformations(int iK_in, my_index_t spin_in, double w_in, double v1_in, double v2_in, my_index_t i_in_in, char channel_rvert_in, K_class k_in, my_index_t iw_in, char channel_bubble_in)

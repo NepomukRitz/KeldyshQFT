@@ -236,28 +236,4 @@ TEST_CASE( "Compute finite differences", "[finite_differences]") {
 
         REQUIRE(errorcount == 0);
     }
-
-/*
- *  // Current implementation of cubic interpolation scheme requires at least five grid points
-    SECTION ( "Compute finite differences along first dimension (with permutation)" ) {
-        vec<double> xs = {0,1,2};
-        size_t permutation[rank] = {3, 0, 1, 2};
-        size_t dims_temp[rank] = {5, 7, 1, 3};
-        vec<double> dlinvals = ::get_finite_differences(linvals, xs, dims_temp, permutation);
-
-
-        int errorcount = 0;
-        for (size_t i = 1; i < dims[0] - 1; i++) {
-            for (size_t j = 1; j < dims[1] - 1; j++) {
-                for (size_t k = 1; k < dims[2] - 1; k++) {
-                    size_t multidx_temp[rank] = {i, j, k, 0};
-                    if (dlinvals[::getFlatIndex<rank>(multidx_temp, dims)] != 1.) errorcount++;
-                }
-            }
-        }
-
-
-        REQUIRE(errorcount == 0);
-    }
-*/
 }

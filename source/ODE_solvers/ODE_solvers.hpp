@@ -34,15 +34,6 @@ void postRKstep_stuff(Y& y_run, System& rhs, double x_run, const vec<double>& x_
         check_SE_causality(y_run); // check if the self-energy is causal at each step of the flow
         if constexpr(KELDYSH and (REG!=5)) check_FDTs(y_run, verbose); // check FDTs for Sigma and K1r at each step of the flow
 
-        /// Try to converge the parquet equations at this point.
-        /**
-        const double Delta = (y_run.config.Gamma + x_run) * 0.5;
-        double U_over_Delta = y_run.config.U / Delta;
-        std::string parquet_filename = data_dir + "parquet4fRG_U_over_Delta=" + std::to_string(U_over_Delta) + "_T=" + std::to_string(y_run.config.T) + "_eVg=" + std::to_string(y_run.config.epsilon+y_run.config.U*0.5) + ".h5";;
-        const bool converged = parquet_solver(parquet_filename, y_run, x_run, 2, 1e-6, 100, true, 0.5);
-        if (not converged) utils::print("WARNING! THE PARQUET SOLVER DID NOT CONVERGE!!", true);
-
-        */
         if (filename != "") {
             const bool is_converged = std::abs(x_run - config.Lambda_f) <= 1e-10 * (1 + std::abs(config.Lambda_f));
             add_state_to_hdf(filename, iteration + 1, y_run, is_converged); // save result to hdf5 file
@@ -117,70 +108,6 @@ void ODE_solver_RK4(T& y_fin, const T& y_ini,
     }
     y_fin = y_run; // final y value
 }
-/*
-template <typename T>
-void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
-                    T rhs (const T& y, const double x),
-                    double subst(double x), double resubst(double x),
-                    const int N_ODE, std::string filename="", const int it_start=0, bool save_intermediate_states=false) {
-ODE_solver_RK4(y_fin, x_fin, y_ini, x_ini, [&](const T y, const double x)-> T{return rhs;}, subst, resubst, N_ODE, filename, it_start, save_intermediate_states);
-}
-*/
-
-/** Overload for above function, defining the standard case: Flow is integrated from the first iteration on. */
-/*
-template <typename T>
-void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
-                    std::function<T(const T& y, const double x, const vec<int> opt)> rhs ,
-                    double subst(double x), double resubst(double x),
-                    const int N_ODE, std::string filename,
-                    bool save_intermediate_states=false) {
-    ODE_solver_RK4(y_fin, x_fin, y_ini, x_ini,
-                   rhs,
-                   subst, resubst,
-                   N_ODE, filename, 0, save_intermediate_states); // start at iteration 0 (from Lambda_ini)
-}
-*/
-/** Overload for above function, defining the standard case: Flow is integrated from the first iteration on. */
-/*
-template <typename T>
-void ODE_solver_RK4(T& y_fin, const double x_fin, const T& y_ini, const double x_ini,
-                    std::function<T(const T& y, const double x)> rhs ,
-                    double subst(double x), double resubst(double x),
-                    const int N_ODE, std::string filename="",
-                    bool save_intermediate_states=false) {
-    ODE_solver_RK4(y_fin, x_fin, y_ini, x_ini,
-                   [&](const T& y, const double x, const vec<int> opt) -> T {return rhs(y, x);},
-                   subst, resubst,
-                   N_ODE, filename, 0, save_intermediate_states); // start at iteration 0 (from Lambda_ini)
-}
-*/
-
-
-
-/// Currently unused ODE solvers:
-
-template <typename T>
-void ODE_solver_Euler(T& y_fin, const double x_fin, const T& y_ini, const double x_ini, T rhs (const T& y, const double x), const int N_ODE) {
-    const double dx = (x_fin-x_ini)/((double)N_ODE); // explicit Euler, equidistant step width dx, N_ODE steps
-    T y_run = y_ini; // initial y value
-    double x_run = x_ini; // initial x value
-    for (int i=0; i<N_ODE; ++i) {
-        y_run += rhs(y_run, x_run) * dx; // update y
-        x_run += dx; // update x
-    }
-    y_fin = y_run; // final y value
-}
-
-template <typename T>
-void SCE_solver(T& y_fin, const T& y_ini, const double x, T rhs (const T& y, const double x), const int N_SCE, const double damp) {
-    T y_run = y_ini; // initial y value
-    for (int i=0; i<N_SCE; ++i) // iterate N_SCE times
-        y_run = rhs(y_run, x) * (1.-damp) + y_run * damp; // update y with damping
-    y_fin = y_run; // final y value
-}
-
-
 
 
 
@@ -202,9 +129,6 @@ namespace ode_solver_impl
         const bool adaptive;
         const std::string name;
 
-        //butcher_tableau(const std::array<double, (stages - 1) * (stages - 1)> a_in, const std::array<double, stages> b_high_in,
-        //                const std::array<double, stages> b_low_in, const std::array<double, stages - 1> c_in) :
-        //        a(a_in), b_high(b_high_in), b_low(b_low_in), c(c_in) {};
         double get_a(size_t row_index, size_t column_index) const
         {
             // 0th row and last column are 0.
@@ -361,8 +285,6 @@ namespace ode_solver_impl
         Y y_scale = (abs(result) * config.a_State + abs(dydx*stepsize) * config.a_dState_dLambda) * config.relative_error + config.absolute_error;
         maxrel_error = max_rel_err(err, y_scale); // alternatively state yscal = abs_sum_tiny(integrated, h * dydx, tiny);
         if (VERBOSE) utils::print("ODE solver error estimate: ", maxrel_error, "\n");
-        //assert(my_isfinite(result));
-        //assert(my_isfinite(maxrel_error));
     }
 
 /**

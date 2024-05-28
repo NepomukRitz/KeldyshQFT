@@ -68,20 +68,7 @@ void selfEnergyInSOPT(SelfEnergy<Q>& PsiSelfEnergy, const State<Q>& bareState, c
     //Calculate the Self-Energy
     loop<false,0>(PsiSelfEnergy, bubble_a, barePropagator);
 
-    if constexpr ((not PARTICLE_HOLE_SYMMETRY) and KELDYSH){
-        PsiSelfEnergy.asymp_val_R = bareState.selfenergy.asymp_val_R; // set the self-consistently determined Hartree value.
-
-        /// evaluate the Hartree diagram once with the SOPT SE in the propagator:
-        //Hartree_Solver Hartree_Term(bareState.Lambda, bareState.config);
-        //Hartree_Term.selfEnergy = PsiSelfEnergy;
-        //const double hartree_value = Hartree_Term.compute_Hartree_term_oneshot();
-        //PsiSelfEnergy.asymp_val_R = hartree_value;
-    }
-    else{ // copy hartree term from bare input state
-        PsiSelfEnergy.asymp_val_R = bareState.selfenergy.asymp_val_R;
-    }
-
-
+    PsiSelfEnergy.asymp_val_R = bareState.selfenergy.asymp_val_R;
 }
 
 template <typename Q, class Bubble_Object>

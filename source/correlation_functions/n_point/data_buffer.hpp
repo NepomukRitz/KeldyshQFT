@@ -9,11 +9,6 @@
 #include "../../interpolations/InterpolatorSpline2D.hpp"
 #include "../../interpolations/InterpolatorSpline3D.hpp"
 
-///  TODO: Profile and improve:
-/// * get_weights()
-/// * get_values()
-/// * handling of frequency-/index-arrays (avoid copies)
-
 template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type, interpolMethod inter>
 class Interpolator : public dataContainer_type {
     using base_class = dataContainer_type;
@@ -83,96 +78,7 @@ public:
 
 
         return weights;
-
     }
-    /*
-    template <typename result_type, my_index_t vecsize>
-    Eigen::Matrix<Q, vecsize, numSamples()> get_values(const index_type& vertex_index) const {
-        Eigen::Matrix<Q, vecsize, numSamples()> result;
-        if constexpr(std::is_same_v<result_type, Q>) {
-            if constexpr (numberFrequencyDims == 1) {
-                for (int i = 0; i < 2; i++) {
-                    index_type vertex_index_tmp = vertex_index;
-                    vertex_index_tmp[pos_first_freqpoint] += i;
-                    result[i] = base_class::val(vertex_index_tmp);
-                }
-            }
-            else if constexpr(numberFrequencyDims == 2){ // k2 and k2b
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        index_type vertex_index_tmp = vertex_index;
-                        vertex_index_tmp[pos_first_freqpoint] += i;
-                        vertex_index_tmp[pos_first_freqpoint+1] += j;
-                        result[i * 2 + j] = base_class::val(vertex_index_tmp);
-
-                    }
-                }
-            }
-            else if constexpr (numberFrequencyDims == 3) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        for (int l = 0; l < 2; l++) {
-                            index_type vertex_index_tmp = vertex_index;
-                            vertex_index_tmp[pos_first_freqpoint] += i;
-                            vertex_index_tmp[pos_first_freqpoint+1] += j;
-                            vertex_index_tmp[pos_first_freqpoint+2] += l;
-                            result[i * 4 + j * 2 + l] = base_class::val(vertex_index_tmp);
-                        }
-                    }
-                }
-            }
-            else {
-                assert(false); // numberFrequencyDims > 3 not supported
-            }
-
-        }
-        else { // typ == vec_left or vec_right
-
-            if constexpr (numberFrequencyDims == 1) {
-                for (int i = 0; i < 2; i++) {
-                    index_type vertex_index_tmp = vertex_index;
-                    vertex_index_tmp[pos_first_freqpoint] += i;
-                    auto res = base_class::template val_vectorized<numberFrequencyDims,vecsize>(vertex_index_tmp);
-                    result.col(i) = res;
-                }
-            }
-            else if constexpr(numberFrequencyDims == 2) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        index_type vertex_index_tmp = vertex_index;
-                        vertex_index_tmp[pos_first_freqpoint] += i;
-                        vertex_index_tmp[pos_first_freqpoint+1] += j;
-                        result.col(i * 2 + j) = base_class::template val_vectorized<numberFrequencyDims,vecsize>(vertex_index_tmp);
-
-                    }
-                }
-            }
-            else if constexpr (numberFrequencyDims == 3) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        for (int l = 0; l < 2; l++) {
-                            index_type vertex_index_tmp = vertex_index;
-                            vertex_index_tmp[pos_first_freqpoint] += i;
-                            vertex_index_tmp[pos_first_freqpoint+1] += j;
-                            vertex_index_tmp[pos_first_freqpoint+2] += l;
-                            result.col(i * 4 + j * 2 + l) = base_class::template val_vectorized<numberFrequencyDims,vecsize>(vertex_index_tmp);
-                        }
-                    }
-                }
-            }
-            else {
-                assert(false); // numberFrequencyDims > 3 not supported
-            }
-
-        }
-
-
-
-        return result;
-    }
-
-    */
-
 
     template <typename result_type = Q,
             typename std::enable_if_t<(pos_first_freqpoint+numberFrequencyDims < rank) and (numberFrequencyDims <= 3), bool> = true>
@@ -426,73 +332,6 @@ public:
 
 };
 
-
-/*
-template<typename Q, size_t rank, my_index_t pos_first_freqpoint, typename dataContainer_type>
-class Interpolator<Q, rank, 1, pos_first_freqpoint, dataContainer_type, cubic> : public Spline1D<Q,rank,pos_first_freqpoint,dataContainer_type> {
-    using base_class = Spline1D<Q,rank,pos_first_freqpoint,dataContainer_type>;
-    using this_class = Interpolator<Q, rank, 1, pos_first_freq, dataContainer_type, cubic>;
-
-    using frequencies_type = std::array<double, 1>;
-
-    static constexpr my_index_t numSamples() {
-        return my_integer_pow<1>(my_index_t(2));
-    }
-    static constexpr my_index_t numSamples_half() {
-        return my_integer_pow<1-1>(my_index_t(2));
-    }
-    template <typename result_type>
-    static constexpr my_index_t get_vecsize() {
-        if constexpr(std::is_same_v<result_type, Q>) return 1;
-        else { return 4; }
-    }
-public:
-    using index_type = typename dataContainer_type::index_type;
-    using dimensions_type = typename dataContainer_type::dimensions_type;
-
-    //mutable bool initialized = false;
-    Interpolator() = default;
-    explicit Interpolator (double Lambda, dimensions_type dims) : base_class(Lambda, dims) {};
-    //void initInterpolator() const {initialized = true;};
-    //void set_initializedInterpol(const bool is) const {initialized = is;}
-
-
-
-    template <typename result_type = Q,
-            typename std::enable_if_t<(pos_first_freqpoint+1 < rank), bool> = true>
-    auto interpolate_impl(const frequencies_type& frequencies, index_type indices) const -> result_type {
-
-        constexpr my_index_t vecsize = get_vecsize<result_type>();
-        using weights_type = Eigen::Matrix<double, numSamples(), 1>;
-        using values_type = Eigen::Matrix<Q, vecsize, numSamples()>;
-
-        // Check if the frequency runs out of the box; if yes: return asymptotic value
-        if (base_class::frequencies.is_in_box(frequencies))
-        {
-
-#ifdef DENSEGRID
-            assert(false); // Use "linear" interpolation for dense grid
-#else
-            result_type result = base_class::template interpolate_spline<result_type>(frequencies, indices);
-            return result;
-
-#endif
-
-            //assert(my_isfinite(result));
-            //return result;
-
-        } else { //asymptotic value
-            if constexpr (std::is_same_v<result_type,Q>) return result_type{};
-            else return result_type::Zero();
-
-        }
-
-    };
-
-
-
-};
-*/
 template<typename Q, size_t rank, my_index_t numberFrequencyDims, my_index_t pos_first_freqpoint, typename dataContainer_type>
 class Interpolator<Q, rank, numberFrequencyDims, pos_first_freqpoint, dataContainer_type, cubic> : public Spline<Q,rank,numberFrequencyDims,pos_first_freqpoint,dataContainer_type> {
     using base_class = Spline<Q,rank,numberFrequencyDims,pos_first_freqpoint,dataContainer_type>;
@@ -524,7 +363,6 @@ public:
 #ifdef DENSEGRID
         assert(false); // Use "linear" interpolation for dense grid
 #endif
-        //constexpr my_index_t vecsize = get_vecsize<result_type>();
 
         // Check if the frequency runs out of the box; if yes: return asymptotic value
         if (base_class::frequencies.is_in_box(frequencies))

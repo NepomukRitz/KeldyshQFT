@@ -85,11 +85,6 @@ template <bool is_SBE_lambda> void T2 (IndicesSymmetryTransformations& indices) 
             }
         }
     }
-    else {
-//        indices.w  *= 1.;
-//        indices.v1 *= 1.;
-//        indices.v2 *= 1.;
-    }
     switch_channel(indices);
     indices.spin = 1 - indices.spin;
 }
@@ -105,16 +100,10 @@ template <bool is_SBE_lambda> void TC (IndicesSymmetryTransformations& indices) 
         indices.iK = alphas_to_iK(alphas_tmp);
     }
     indices.conjugate ^= true;
-    //if constexpr(SBE_DECOMPOSITION) {
-    //    if (indices.channel_rvert == 'p') {
-    //        indices.prefactor *= -1;
-    //    }
-    //}
+
 
     if (indices.channel_rvert == 't'){ //TC acts differently on t, not on p!!
         indices.w  *= -1.;
-//        indices.v1 *= 1.;
-//        indices.v2 *= 1.;
     }
     else{
         indices.asymmetry_transform ^= true;

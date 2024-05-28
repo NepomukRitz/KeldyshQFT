@@ -19,17 +19,10 @@
 
 
 template<typename Q,bool differentiated> class State;
-/// TODO: Save frequency grids and frequency parameters for each channel individually
 
 #ifdef USE_MPI
 #include "mpi_setup.hpp"          // mpi routines: when using mpi, only the process with ID 0 writes into file
 #endif
-
-// TODO(medium): Currently, global parameters are used to set the size of the buffer arrays.
-//  Thus, in order to properly read data from a file, global parameters need to be the same as in the file
-//  --> fix this: read buffer sizes (and dims) from file (-> Marc; Write this once and use for several projects!)
-//  Also, always save parameters.h and FrequencyGrid.h (and whereever elso global parameters are stored)
-//  for each computation and load it as well.
 
 /// --- Constants concerning HDF5 data format --- ///
 

@@ -451,24 +451,9 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_zeroT() {
         integratedR = prefactor * integrator_Matsubara_T0(integrand, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
                                                                  {v}, Delta, true);
 
-        // If taking spins sum, add contribution of all-spins-equal vertex: V -> 2*V + V^
-        //if (all_spins) {
-        //    integratedR *= 2.;
-        //    IntegrandSE<Q,vertType,all_spins,Q,version> integrand_Vhat (0, fullvertex, prop, 0, pick_spin<version,1>(), v, i_in);
-        //    // split up the integrand at discontinuities and (possible) kinks:
-        //    integratedR += prefactor * integrator_Matsubara_T0(integrand_Vhat, v_lower-std::abs(v), v_upper+std::abs(v), 0.,
-        //                                                            {v}, Delta, true);
-        //}
-
-
-        //integratedR += -1./(2.*M_PI)
-        //               * asymp_corrections_loop<Q,vertType>(fullvertex, prop, v_lower-std::abs(v), v_upper+std::abs(v), v, 0, spin, i_in, all_spins);
         self.setself(0, iv, i_in, integratedR);
 
     }
-    //else {
-    //    self.setself(0, iv, i_in, self.asymp_val_R);
-    //}
 }
 
 template <typename Q, typename vertType, bool all_spins, bool version>
@@ -480,21 +465,9 @@ void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() 
 
         integratedR = - prop.T * matsubarasum<Q>(integrand, Nmin, Nmax);
 
-        //if (all_spins) {
-        //    integratedR *= 2.;
-        //    IntegrandSE<Q,vertType,all_spins,Q,version> integrand_Vhat (0, fullvertex, prop, 0, pick_spin<version,1>(), v, i_in);
-        //    integratedR += - glb_T * matsubarasum<Q>(integrand_Vhat, Nmin, Nmax);
-        //}
-
-        /// in MF: use symmetric_full integration interval => asymptotic correction=0
-        //integratedR += - 1./(2.*M_PI)
-        //                   * asymp_corrections_loop<Q>(fullvertex, prop, v_lower - std::abs(v), v_upper + std::abs(v), v, 0, spin, i_in, all_spins);
-
         self.setself(0, iv, i_in, integratedR);
     }
-    //else {
-       //self.setself(0, iv, i_in, self.asymp_val_R);
-    //}
+
 }
 
 

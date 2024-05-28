@@ -27,9 +27,6 @@ auto main(int argc, char * argv[]) -> int {
 
     // const std::string filename = directory + file; // hdf5 file with states to be postprocessed
 
-    //const std::string filename = "/tmp/mfrg_Laptop/Data_KFT=0.300000_U=1.000000_REG=2/parquetInit4_U_over_Delta=2.356194_T=0.300000_eVg=0.000000_n1=201_n2=51_n3=11_version1.h5"; // hdf5 file with states to be postprocessed
-    //const std::string filename = "/tmp/mfrg_Laptop/Data_KFT=0.010000_U=1.000000_REG=2/parquetInit4_U_over_Delta=2.356194_T=0.010000_eVg=0.000000_n1=1001_n2=501_n3=125_version1_final.h5";
-
     utils::print("Starting Post-Processing...", true);
 
     /// functions that do post-processing on several Lambda layers

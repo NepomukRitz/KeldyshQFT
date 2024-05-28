@@ -1106,11 +1106,6 @@ public:
             }
         }
 
-        //double t = utils::get_time() - t_start;
-        //utils::print("symmetry expansion of vertex done, ");
-        //utils::get_time(t_start);
-
-
     }
     void save_expanded(const std::string& filename_prefix) const {
         for (unsigned int i = 0; i < vertices_bubbleintegrand.size(); i++) {
@@ -1227,13 +1222,11 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::val(co
 template <typename Q> auto irreducible<Q>::acc(int i) const -> Q {
    assert(i>=0 && i<bare.size());
    return bare.flat_at(i);
-   //else {utils::print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::direct_set(int i, Q value) {
     assert(i>=0 && i<bare.size());
     bare.flat_at(i)=value;
-    //else {utils::print("ERROR: Tried to access value outside of range in irreducible vertex. Abort."); assert(false);}
 }
 
 template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {

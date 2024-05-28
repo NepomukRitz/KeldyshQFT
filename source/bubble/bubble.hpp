@@ -178,7 +178,7 @@ public:
         else{ // bosonic frequencies have to be rounded to an integer value for finite-temperature Matsubara calculation
             wa_1 = wp_2 = wt_1 = floor2bfreq(w / 2);
             wa_2 = wp_1 = wt_2 = ceil2bfreq(w / 2);
-        } // TODO(medium): Put this first part into an extra function?
+        }
         Q Pival;
         switch (channel) {
             case 'a':
@@ -231,14 +231,14 @@ public:
             const buffertype_propagator G1 = g.template valsmooth_vectorized<buffertype_propagator>(convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
             const buffertype_propagator G2 = g.template valsmooth_vectorized<buffertype_propagator>(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
 
-            const Q G00_1 = G1(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            const Q G01_1 = G1(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            const Q G10_1 = G1(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            const Q G11_1 = G1(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-            const Q G00_2 = G2(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-            const Q G01_2 = G2(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-            const Q G10_2 = G2(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-            const Q G11_2 = G2(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+            const Q G00_1 = G1(0,0);
+            const Q G01_1 = G1(0,1);
+            const Q G10_1 = G1(1,0);
+            const Q G11_1 = G1(1,1);
+            const Q G00_2 = G2(0,0);
+            const Q G01_2 = G2(0,1);
+            const Q G10_2 = G2(1,0);
+            const Q G11_2 = G2(1,1);
 
             result_type result;
 
@@ -247,14 +247,14 @@ public:
                 const buffertype_propagator S2 = s.template valsmooth_vectorized<buffertype_propagator>(convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);;
 
 
-                const Q S00_1 = S1(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-                const Q S01_1 = S1(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-                const Q S10_1 = S1(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-                const Q S11_1 = S1(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_1<ch_bubble>(vpp, w), i_in);
-                const Q S00_2 = S2(0,0); // g.valsmooth(0, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-                const Q S01_2 = S2(0,1); // g.valsmooth(1, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-                const Q S10_2 = S2(1,0); // g.valsmooth(2, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
-                const Q S11_2 = S2(1,1); // g.valsmooth(3, convert_to_fermionic_frequencies_2<ch_bubble>(vpp, w), i_in);
+                const Q S00_1 = S1(0,0);
+                const Q S01_1 = S1(0,1);
+                const Q S10_1 = S1(1,0);
+                const Q S11_1 = S1(1,1);
+                const Q S00_2 = S2(0,0);
+                const Q S01_2 = S2(0,1);
+                const Q S10_2 = S2(1,0);
+                const Q S11_2 = S2(1,1);
 
                 if constexpr(ch_bubble=='p') {
                     result <<    S00_1*G00_2 + G00_1*S00_2, S00_1*G01_2 + G00_1*S01_2, S01_1*G00_2 + G01_1*S00_2, S01_1*G01_2 + G01_1*S01_2,

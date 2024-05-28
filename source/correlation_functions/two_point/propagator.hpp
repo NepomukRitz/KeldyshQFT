@@ -8,7 +8,6 @@
 #include "selfenergy.hpp"      // self-energy class
 #include "../../parameters/master_parameters.hpp"      // system parameters (lengths of vectors etc.)
 #include "../../utilities/util.hpp"            // sign - function
-//#include "../../utilities/hdf5_routines.hpp"
 
 
 // Fermi--Dirac distribution function

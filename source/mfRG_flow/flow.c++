@@ -84,9 +84,6 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     config.Lambda_now = Lambda_now;
     config.Lambda_f = Lambda_fin;
 
-    /// old Runge-Kutta solver:
-    //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
-    // compute the flow using an ODE solver
 #if REG == 4
     using param = flowgrid::linear_parametrization;
 #else
@@ -98,15 +95,9 @@ State<state_datatype> n_loop_flow(const std::string& outputFileName, const fRG_c
     utils::print("CPU hours for fRG run: \t ");
     utils::get_cpu_hours(t_start);
 
-    //using namespace boost::numeric::odeint;
-    //ode_solver_boost<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
-
     /// use parquet solver to compute result at Lambda_fin (for comparison with frg result)
     State<state_datatype> state_parquet_compare (Lambda_fin, frgConfig);
     state_parquet_compare.initialize();
-    //sopt_state(state_parquet_compare, Lambda_fin);
-    //const std::string parquet_filename_forcomparison = data_dir + "parquet_for_comparison_n1=" + std::to_string(nBOS) + "_n2=" + std::to_string(nBOS2) + "_n3=" + std::to_string(nBOS3) + ".h5";
-    //parquet_solver(parquet_filename_forcomparison, state_parquet_compare, Lambda_fin, 1, 1e-6, 10);
 
     std::string filename_result = outputFileName + "_final";
     write_state_to_hdf(filename_result, Lambda_ini,   1, state_fin);  // save the initial state to hdf5 file
@@ -133,20 +124,7 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
         double Lambda_now = state_ini.Lambda;
         State<state_datatype> state_fin (Lambda_fin, frgConfig);
 
-        //state_ini.findBestFreqGrid(true);
-        //state_ini.vertex.half1().check_vertex_resolution();
-
         std::vector<double> Lambda_checkpoints = flowgrid::get_Lambda_checkpoints(U_NRG, frgConfig);
-
-
-//        compare_with_FDTs(state_ini.vertex, Lambda_now, 0, inputFileName, true, frgConfig.nODE_ + U_NRG.size() + 1);
-
-        //ode_solver<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_n_loop_flow,
-        //                                                                  Lambda_checkpoints, inputFileName, it_start);
-
-        // construct the flowgrid for ODE solver with non-adaptive step-size
-        // for the adaptive algorithms this only determines the maximal number of ODE steps
-        //vec<double> lambdas_try = flowgrid::construct_flow_grid(Lambda_fin, Lambda_ini, flowgrid::linear_parametrization::t_from_lambda, flowgrid::linear_parametrization::lambda_from_t, frgConfig.nODE_, Lambda_checkpoints);
 
         rhs_n_loop_flow_t<state_datatype> rhs_mfrg(frgConfig);
         ODE_solver_config config;
@@ -163,14 +141,8 @@ State<state_datatype> n_loop_flow(const std::string& inputFileName, const fRG_co
 #else
         using param = flowgrid::exp_parametrization;
 #endif
-        //ode_solver_boost<State<state_datatype>, param>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
-        //ODE_solver_RK4(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, flowgrid::sq_substitution, flowgrid::sq_resubstitution, nODE, Lambda_checkpoints, outputFileName);
-        // compute the flow using an ODE solver
+             // compute the flow using an ODE solver
         ode_solver<State<state_datatype>, param>(state_fin, state_ini, rhs_mfrg, config, true);
-
-        //using namespace boost::numeric::odeint;
-        //ode_solver_boost<State<state_datatype>, flowgrid::sqrt_parametrization>(state_fin, Lambda_fin, state_ini, Lambda_ini, rhs_mfrg, config, true);
-
 
         std::string filename_result = inputFileName + "_final";
         write_state_to_hdf(filename_result, Lambda_ini,   1, state_fin);  // save the initial state to hdf5 file
