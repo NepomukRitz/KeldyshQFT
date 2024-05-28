@@ -38,7 +38,7 @@ State
 =====
 
 Instances of the ``State`` class are the high-level objects that are mainly used by the high-level algorithms
-discussed in :ref:`algorithms`. The ``State`` class combines a ``GeneralVertex`` and a ``SelfEnergy``,
+discussed in :doc:`algorithms`. The ``State`` class combines a ``GeneralVertex`` and a ``SelfEnergy``,
 which together contain all non-trivial information that one might wish to compute.
 
 .. doxygenclass:: State

@@ -52,14 +52,6 @@
 <li class="toctree-l1"><a class="reference internal" href="postprocessing.html">Post processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Miscellaneous</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#frequency-grid">Frequency Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I_17frequencyGridTypeE13FrequencyGrid"><code class="docutils literal notranslate"><span class="pre">FrequencyGrid</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#interpolation">Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0_6size_t_10my_index_t_10my_index_t0E6Spline"><code class="docutils literal notranslate"><span class="pre">Spline</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#integration">Integration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00E5Adapt"><code class="docutils literal notranslate"><span class="pre">Adapt</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N5Adapt9integrateEdd"><code class="docutils literal notranslate"><span class="pre">Adapt::integrate()</span></code></a></li>
@@ -106,28 +98,6 @@
              
   <section id="miscellaneous">
 <h1>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading"></a></h1>
-<section id="frequency-grid">
-<h2>Frequency Grid<a class="headerlink" href="#frequency-grid" title="Link to this heading"></a></h2>
-<dl class="cpp class">
-<dt class="sig sig-object cpp" id="_CPPv4I_17frequencyGridTypeE13FrequencyGrid">
-<span id="_CPPv3I_17frequencyGridTypeE13FrequencyGrid"></span><span id="_CPPv2I_17frequencyGridTypeE13FrequencyGrid"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">frequencyGridType</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">freqGridType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d3/db4/classFrequencyGrid"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrequencyGrid</span></span></span><a class="headerlink" href="#_CPPv4I_17frequencyGridTypeE13FrequencyGrid" title="Link to this definition"></a><br /></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>freqGridType</strong> – </p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="interpolation">
-<h2>Interpolation<a class="headerlink" href="#interpolation" title="Link to this heading"></a></h2>
-<dl class="cpp class">
-<dt class="sig sig-object cpp" id="_CPPv4I0_6size_t_10my_index_t_10my_index_t0E6Spline">
-<span id="_CPPv3I0_6size_t_10my_index_t_10my_index_t0E6Spline"></span><span id="_CPPv2I0_6size_t_10my_index_t_10my_index_t0E6Spline"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Q</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rank</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">my_index_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numberFrequencyDims</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">my_index_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pos_first_freq_index</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DataContainer</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="d1/de6/classSpline"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Spline</span></span></span><a class="headerlink" href="#_CPPv4I0_6size_t_10my_index_t_10my_index_t0E6Spline" title="Link to this definition"></a><br /></dt>
-<dd><p>below is a modified version of source: <a class="reference external" href="https://kluge.in-chemnitz.de/opensource/SplineK1/SplineK1.h">https://kluge.in-chemnitz.de/opensource/SplineK1/SplineK1.h</a> alternative: <a class="reference external" href="https://github.com/igmhub/likely/blob/master/likely/TriCubicInterpolator.h">https://github.com/igmhub/likely/blob/master/likely/TriCubicInterpolator.h</a></p>
-</dd></dl>
-
-</section>
 <section id="integration">
 <h2>Integration<a class="headerlink" href="#integration" title="Link to this heading"></a></h2>
 <dl class="cpp struct">
