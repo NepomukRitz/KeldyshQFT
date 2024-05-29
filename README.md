@@ -22,14 +22,14 @@ To build the code, adapt the file
 
 Afterwards, specify all parameters and system settings in the header files included in the directory 
 `source/parameters/`, 
-see also the [documentation](https://nepomukritz.github.io/KeldyshDiagrammatics/parameters.html).
+see also the [documentation](https://nepomukritz.github.io/KeldyshQFT/parameters.html).
 
 Finally, compile 
 [`main.cpp`](https://github.com/NepomukRitz/KeldyshDiagrammatics/blob/master_to_be_published/source/main.cpp). 
 
 ## Documentation
 
-Find the documentation [here](https://nepomukritz.github.io/KeldyshDiagrammatics/). Comments are welcome!
+Find the documentation [here](https://nepomukritz.github.io/KeldyshQFT/). Comments are welcome!
 
 ## License
 
