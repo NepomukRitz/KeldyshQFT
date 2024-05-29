@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 ====================
-KeldyshDiagrammatics
+KeldyshQFT
 ====================
 **A C++ Codebase for real-frequency multiloop functional renormalization group and parquet computations for the single impurity Anderson model**
 

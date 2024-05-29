@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'KeldyshDiagrammatics'
+project = 'KeldyshQFT'
 copyright = '2024, Nepomuk Ritz'
 author = 'Nepomuk Ritz'
 release = '1.0.0'
