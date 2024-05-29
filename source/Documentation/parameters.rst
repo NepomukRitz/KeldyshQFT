@@ -82,7 +82,7 @@ Pre-processor flags
 - ``USE_MPI``
     | If defined, MPI is used for parallelization across multiple nodes.
 
-- ``USE_NEW_MFRG_EQS``
+- ``USE_SBEb_MFRG_EQS``
     | Determines which version of the SBE approximation shall be used.
     | 0 for SBEa, 1 for SBEb.
     | **Warning**: Only implemented in the MF!

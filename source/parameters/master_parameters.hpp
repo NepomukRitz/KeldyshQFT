@@ -33,7 +33,7 @@ constexpr bool VERBOSE = false; ///< If true, detailed information about all com
 
 #define MAX_DIAG_CLASS 3 ///< Defines the diagrammatic classes that will be considered: 1 for only K1, 2 for K1 and K2 and 3 for the full dependencies. Useful for debugging purposes and for computations in second order perturbation theory, which only require K1.
 #define SBE_DECOMPOSITION 0  ///< 0 for false; 1 for true. If true, the SBE decomposition is used to parametrize the vertex and the flow equations. Only implemented in the MF!
-#define USE_NEW_MFRG_EQS 1      ///< Determines which version of the SBE approximation shall be used. 0 for SBEa, 1 for SBEb. Only implemented in the MF! Only relevant when SBE_DECOMOSITION == 1.
+#define USE_SBEb_MFRG_EQS 1      ///< Determines which version of the SBE approximation shall be used. 0 for SBEa, 1 for SBEb. Only implemented in the MF! Only relevant when SBE_DECOMOSITION == 1.
 
 #define ANALYTIC_TAILS 1 ///<  for false; 1 for true. If true, the analytic expression for the bare bubble is used to treat the high-frequency asymptotics during bubble computations in the finit-$T$ MF.
 

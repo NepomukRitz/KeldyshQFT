@@ -604,7 +604,7 @@ void selfEnergyOneLoopFlow(SelfEnergy<Q>& dPsiSelfEnergy, const Vertex<Q,false>&
 template <typename Q, class Bubble_Object>
 void vertexOneLoopFlow(Vertex<Q,true>& dPsiVertex, const Vertex<Q,false>& PsiVertex, const Bubble_Object& dPi, const fRG_config& config){
     // Vertex flow
-    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_SBEb_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;
         for (char r: {'a', 'p','t'}) {
             One.get_rvertex(r).K2 *= 0;
@@ -647,7 +647,7 @@ auto calculate_dGammaL(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
     dGammaL.set_frequency_grid(PsiVertex);
 
 
-    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_SBEb_MFRG_EQS) {
         Vertex<Q,false> One(Lambda_ini, config);
         for (char r: "apt") {
             bubble_function(dGammaL, dPsiVertex, One, Pi, r, config);
@@ -672,7 +672,7 @@ auto calculate_dGammaR(const GeneralVertex<Q, symmetric_r_irred,true>& dPsiVerte
     Vertex<Q,true> dGammaR(Lambda_ini, config, PsiVertex);
     dGammaR.set_frequency_grid(PsiVertex);
 
-    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_SBEb_MFRG_EQS) {
         Vertex<Q,false> One(Lambda_ini, config);
         for (char r: "apt") {
             bubble_function(dGammaR, One, dPsiVertex, Pi, r, config);
@@ -777,7 +777,7 @@ auto calculate_dGammaC_right_insertion(const Vertex<Q,false>& PsiVertex, const G
     Vertex<Q,true> dGammaC (Lambda_ini, config, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
 
-    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_SBEb_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;
         for (char r: {'a', 'p','t'}) {
             One.get_rvertex(r).K2 *= 0;
@@ -807,7 +807,7 @@ auto calculate_dGammaC_left_insertion(const GeneralVertex<Q, non_symmetric_diffr
     Vertex<Q,true> dGammaC (Lambda_ini, config, PsiVertex);
     dGammaC.set_frequency_grid(PsiVertex);
 
-    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_NEW_MFRG_EQS) {
+    if constexpr (SBE_DECOMPOSITION and MAX_DIAG_CLASS==2 and USE_SBEb_MFRG_EQS) {
         Vertex<Q,false> One = PsiVertex;
         for (char r: {'a', 'p','t'}) {
             One.get_rvertex(r).K2 *= 0;
