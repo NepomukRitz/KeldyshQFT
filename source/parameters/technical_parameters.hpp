@@ -5,7 +5,7 @@
 
 /// Technical parameters ///
 
-#define USE_MPI ///< If defined, MPI is used for parallelization across multiple nodes.
+//#define USE_MPI ///< If defined, MPI is used for parallelization across multiple nodes.
 #ifdef USE_MPI
 constexpr bool MPI_FLAG = true;
 #else

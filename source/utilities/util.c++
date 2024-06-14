@@ -243,7 +243,6 @@ namespace utils {
         print("on linux.\n");
     #elif __APPLE__
         print("on apple.\n");
-        print("on apple.\n");
     #endif
     }
 

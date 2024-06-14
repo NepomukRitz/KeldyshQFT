@@ -1,4 +1,6 @@
 #include "hdf5_routines.hpp"
+#include "correlation_functions/four_point/irreducible_vertex.hpp"
+
 
 // Create the memory data type for storing complex numbers in file
 

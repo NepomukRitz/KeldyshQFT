@@ -70,7 +70,7 @@ namespace multidimensional
 
         // === members ===
 
-        // using buffer_type = std::vector<T>;
+        // using buffer_type_bare = std::vector<T>;
         using buffer_type = Eigen::Array<T, Eigen::Dynamic, 1>;
         buffer_type elements;
 

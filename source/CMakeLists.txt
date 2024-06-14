@@ -18,8 +18,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(WORKSTATION)
     # for DEBUG build:
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O3 -march=native -flto  -fopenmp ")
-    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -D_DEBUG -O3 -march=native -flto  ")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O3 -march=native -flto  -fopenmp")
+    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -D_DEBUG -O3 -march=native -flto")
     # for RELEASE build:
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fopenmp")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ")
@@ -50,20 +50,30 @@ file(GLOB_RECURSE keldysh_H *.hpp *.h)                                  # collec
 
 
 ## standard executable for production runs
-add_executable(Keldysh_mfRG main.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(Keldysh_mfRG main.cpp ${keldysh_H} ${keldysh_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
 
 ## executable for post-processing
-add_executable(Keldysh_postproc postprocessing/main_postproc.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(Keldysh_postproc postprocessing/main_postproc.cpp ${keldysh_H} ${keldysh_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
 
 ## executable for (unit) tests (using Catch)
-add_executable(Keldysh_mfRG_testing tests/unit_tests/unit_tests.cpp ${keldysh_H} ${keldysh_SRC} ${test_SRC})
+add_executable(Keldysh_mfRG_testing tests/unit_tests/unit_tests.cpp ${keldysh_H} ${keldysh_SRC} ${test_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
 
 
 ## executable for integrand tests
-add_executable(get_integrand_dGammaL tests/integrand_tests/get_integrand_dGammaL.cpp ${keldysh_H} ${keldysh_SRC})
-add_executable(get_integrand_dGamma_1loop tests/integrand_tests/get_integrand_dGamma_1loop.cpp ${keldysh_H} ${keldysh_SRC})
-add_executable(get_integrand_Gamma1_Pi_Gamma2 tests/integrand_tests/get_integrand_Gamma1_Pi_Gamma2.cpp ${keldysh_H} ${keldysh_SRC})
-add_executable(get_integrand_Sigma_SDE tests/integrand_tests/get_integrand_Sigma_SDE.cpp ${keldysh_H} ${keldysh_SRC})
+add_executable(get_integrand_dGammaL tests/integrand_tests/get_integrand_dGammaL.cpp ${keldysh_H} ${keldysh_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
+add_executable(get_integrand_dGamma_1loop tests/integrand_tests/get_integrand_dGamma_1loop.cpp ${keldysh_H} ${keldysh_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
+add_executable(get_integrand_Gamma1_Pi_Gamma2 tests/integrand_tests/get_integrand_Gamma1_Pi_Gamma2.cpp ${keldysh_H} ${keldysh_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
+add_executable(get_integrand_Sigma_SDE tests/integrand_tests/get_integrand_Sigma_SDE.cpp ${keldysh_H} ${keldysh_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
+
+add_executable(NRG_QFT NRG_QFT_test/NRG_QFT.cpp ${keldysh_H} ${keldysh_SRC}
+        correlation_functions/four_point/irreducible_vertex.hpp)
 
 ## rest works so far only on workstation and ASC
 if(WORKSTATION OR ASC)
@@ -131,6 +141,10 @@ elseif(MACBOOK)
 
     target_link_libraries(Keldysh_mfRG_testing -L/opt/homebrew/Cellar/hdf5/1.14.3_1/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG_testing -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
+
+    target_link_libraries(NRG_QFT -L/opt/homebrew/Cellar/hdf5/1.14.3_1/lib -lhdf5 -lhdf5_cpp)
+    target_link_libraries(NRG_QFT -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
+    target_compile_options(NRG_QFT PRIVATE -w )
 endif()
 
 
