@@ -72,8 +72,7 @@ add_executable(get_integrand_Gamma1_Pi_Gamma2 tests/integrand_tests/get_integran
 add_executable(get_integrand_Sigma_SDE tests/integrand_tests/get_integrand_Sigma_SDE.cpp ${keldysh_H} ${keldysh_SRC}
         correlation_functions/four_point/irreducible_vertex.hpp)
 
-add_executable(NRG_QFT NRG_QFT_test/NRG_QFT.cpp ${keldysh_H} ${keldysh_SRC}
-        correlation_functions/four_point/irreducible_vertex.hpp)
+add_executable(NRG_QFT NRG_QFT_test/NRG_QFT.cpp ${keldysh_H} ${keldysh_SRC})
 
 ## rest works so far only on workstation and ASC
 if(WORKSTATION OR ASC)

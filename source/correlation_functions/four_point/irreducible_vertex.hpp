@@ -19,9 +19,11 @@ class irreducible{
     using buffer_type_NRG = dataBuffer<Q, k3, K3_config.rank, K3_config.num_freqs, K3_config.position_first_freq_index, freqGrid_type_K3, INTERPOLATION>;
 
     mutable buffer_type_bare bare;
+
+    bool has_NRG_input = false;
+public:
     mutable buffer_type_NRG NRG_rest;
     // shall hold R + \sum_r K_{3, r} - \Gamma_0 -> Do we need two of those, one for each spin component?
-public:
 
     /**
      * Standard constructor for just the bare vertex.
@@ -31,14 +33,15 @@ public:
     };
 
     /**
-     * Constructor used if NRG input for the rest term and K3 is to be used.
+     * Used if NRG input for the rest term and K3 is to be used.
      * Needs some parameters to set the frequency grid.
      * @param lambda    regulator
      * @param config    parameters
      */
-    irreducible(const double lambda, const fRG_config config){
+    void initialize_NRG_input(const double lambda, const fRG_config config){
         bare = empty_bare();
         NRG_rest = buffer_type_NRG(lambda, K3_config.dims, config);
+        has_NRG_input = true;
     };
 
 
@@ -72,10 +75,22 @@ public:
     void setvert(int iK, int i_in, Q);
 
     /**
-     * Set the value of the dynamical NRG rest term (+K3)
+     *
      * @param input
+     * @param val
      */
-    void set_NRG_rest(const VertexInput& input);
+
+    /**
+     * Set the value of the dynamical NRG rest term (+K3)
+     * @param iK        Keldysh index
+     * @param i_spin    Spin index
+     * @param iw_t      Bosonic transfer frequency index in the t-channel
+     * @param iv_t      Fermionic transfer frequency index in the t-channel
+     * @param ivp_t     Fermionic transfer frequency index in the t-channel
+     * @param val       Value of the vertex.
+     */
+    void set_NRG_rest(const int iK, const int i_spin,
+                      const int iw_t, const int iv_t, const int ivp_t, const Q val);
 
     /**
      * Initialize the irreducible vertex.
@@ -176,6 +191,8 @@ template <typename Q> template<typename result_type> auto irreducible<Q>::valsmo
     // read out bare vertex
     result_type bare_part = val(input.iK, input.i_in, input.spin);
 
+    if (not has_NRG_input) return bare_part;
+
     // read out NRG rest term
     result_type dynamical_part = NRG_rest.interpolate(input) ; // TODO: How to specify the channel parametrization?
 
@@ -197,8 +214,10 @@ template <typename Q> void irreducible<Q>::setvert(int iK, int i_in, Q value) {
     bare.at(iK, i_in) = value;
 }
 
-template <typename Q> void irreducible<Q>::set_NRG_rest(const VertexInput &input) {
-    // TODO: Implement!
+template <typename Q> void irreducible<Q>::set_NRG_rest(const int iK, const int i_spin,
+        const int iw_t, const int iv_t, const int ivp_t, const Q val) {
+    assert(has_NRG_input);
+    NRG_rest.setvert(val, i_spin, iw_t, iv_t, ivp_t, iK, 0);
 }
 
 template <typename Q> void irreducible<Q>::initialize(Q val) {

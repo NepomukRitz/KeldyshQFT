@@ -15,6 +15,6 @@ Project_Default.xml
 !*.rst
 .DS_Store
 .vscode*
-build*
+build/*
 source/Documentation/html
 source/Documentation/xml

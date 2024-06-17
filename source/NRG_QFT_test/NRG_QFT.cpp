@@ -17,6 +17,8 @@
 
 #include "../utilities/util.hpp"
 #include "correlation_functions/state.hpp"
+#include "gsl/gsl_interp.h"
+#include "build_NRG_state.hpp"
 
 #ifdef USE_MPI
 #include <mpi.h>
@@ -42,6 +44,7 @@ auto main(int argc, char * argv[]) -> int {
     static_assert(MAX_DIAG_CLASS == 3);
     static_assert(SBE_DECOMPOSITION == 0);
     static_assert(REG == 2);
+    static_assert(VECTORIZED_INTEGRATION == 0);
 
     /// Set up config struct
     fRG_config config;
@@ -57,8 +60,12 @@ auto main(int argc, char * argv[]) -> int {
     // new state to hold NRG data with Hartree value initialized to config.U / 2
     // and vertex initialized to -config.U / 2:
     State<comp,false> NRG_state = State<comp,false>(lambda, config, true);
+    NRG_state.vertex.irred().initialize_NRG_input(lambda, config);
 
-
+    build_NRG_Sigma(NRG_state);
+    build_NRG_K1(NRG_state);
+    build_NRG_K2_and_K2p(NRG_state);
+    build_NRG_rest_term(NRG_state);
 
     utils::check_input(config);
     utils::hello_world();
