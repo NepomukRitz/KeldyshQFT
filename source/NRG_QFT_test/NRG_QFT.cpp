@@ -57,6 +57,11 @@ auto main(int argc, char * argv[]) -> int {
     /// Code goes here:
     double lambda = 2.0 / U_over_Delta - config.Gamma;
 
+    std::string NRG_DATAPATH = "/Users/nepomuk-work/PhD/NRG_consistency/data/";
+    std::string NRG_FILENAME = NRG_DATAPATH + "siam_u1.0.h5";   // TODO: Wrong file for now.
+
+    // TODO: Assertions that the metadata in the NRG file agree with the physical parameters set here.
+
     // new state to hold NRG data with Hartree value initialized to config.U / 2
     // and vertex initialized to -config.U / 2:
     State<comp,false> NRG_state = State<comp,false>(lambda, config, true);
@@ -66,6 +71,34 @@ auto main(int argc, char * argv[]) -> int {
     build_NRG_K1(NRG_state);
     build_NRG_K2_and_K2p(NRG_state);
     build_NRG_rest_term(NRG_state);
+
+    /// Read in data from NRG file
+    H5::H5File NRG_file(NRG_FILENAME, H5F_ACC_RDONLY);
+    H5::DataSet NRG_dataset = NRG_file.openDataSet("KF/ph/K1/a/up_down/real");
+    H5::DataSpace NRG_dataspace = NRG_dataset.getSpace();
+
+    int rank = NRG_dataspace.getSimpleExtentNdims();
+    assert(rank==7);
+    //utils::print(rank, true);
+
+    hsize_t dims[7];
+    NRG_dataspace.getSimpleExtentDims(dims, NULL);
+
+    //utils::print(dims[0], true);
+    //utils::print(dims[1], true);
+    //utils::print(dims[2], true);
+    //utils::print(dims[3], true);
+    //utils::print(dims[4], true);
+    //utils::print(dims[5], true);
+    //utils::print(dims[6], true);
+
+    //NRG_dataset.read();
+
+
+    std::array<std::size_t, 7> length = {dims[0], dims[1], dims[2], dims[3], dims[4], dims[5], dims[6]};
+
+    multidimensional::multiarray<double,7> K1_a_updown_real_data = multidimensional::multiarray<double,7>(length);
+    NRG_dataset.read(K1_a_updown_real_data.data(), H5::PredType::NATIVE_DOUBLE);
 
     utils::check_input(config);
     utils::hello_world();
