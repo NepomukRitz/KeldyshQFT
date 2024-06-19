@@ -14,10 +14,11 @@
  *      - Don't necessarily need to do this here
 */
 
-
+#include "../data_structures.hpp"
 #include "../utilities/util.hpp"
 #include "correlation_functions/state.hpp"
 #include "gsl/gsl_interp.h"
+#include "read_NRG_data.hpp"
 #include "build_NRG_state.hpp"
 
 #ifdef USE_MPI
@@ -58,9 +59,10 @@ auto main(int argc, char * argv[]) -> int {
     double lambda = 2.0 / U_over_Delta - config.Gamma;
 
     std::string NRG_DATAPATH = "/Users/nepomuk-work/PhD/NRG_consistency/data/";
-    std::string NRG_FILENAME = NRG_DATAPATH + "siam_u1.0.h5";   // TODO: Wrong file for now.
+    std::string NRG_FILENAME = NRG_DATAPATH + "siam_u0.5.h5";   // TODO: Wrong file for now.
 
     // TODO: Assertions that the metadata in the NRG file agree with the physical parameters set here.
+    utils::check_input(config);
 
     // new state to hold NRG data with Hartree value initialized to config.U / 2
     // and vertex initialized to -config.U / 2:
@@ -73,34 +75,22 @@ auto main(int argc, char * argv[]) -> int {
     build_NRG_rest_term(NRG_state);
 
     /// Read in data from NRG file
-    H5::H5File NRG_file(NRG_FILENAME, H5F_ACC_RDONLY);
-    H5::DataSet NRG_dataset = NRG_file.openDataSet("KF/ph/K1/a/up_down/real");
-    H5::DataSpace NRG_dataspace = NRG_dataset.getSpace();
+    multidimensional::multiarray<double,7> K1_a_updown_real_data =
+            read_raw_NRG_vertex_component(NRG_FILENAME, "KF/ph/K1/a/up_down/real");
 
-    int rank = NRG_dataspace.getSimpleExtentNdims();
-    assert(rank==7);
+    utils::print(K1_a_updown_real_data.at(1, 0, 0, 0, 100, 100, 100), true);
+
+    utils::print(normalize_NRG_vertex_component(K1_a_updown_real_data, 1.0).at(1, 100, 100, 100), true);
+
+    //H5::H5File NRG_file(NRG_FILENAME, H5F_ACC_RDONLY);
+    //H5::DataSet NRG_dataset = NRG_file.openDataSet("KF/omega");
+    //H5::DataSpace NRG_dataspace = NRG_dataset.getSpace();
+//
+    //int rank = NRG_dataspace.getSimpleExtentNdims();
     //utils::print(rank, true);
-
-    hsize_t dims[7];
-    NRG_dataspace.getSimpleExtentDims(dims, NULL);
-
-    //utils::print(dims[0], true);
-    //utils::print(dims[1], true);
-    //utils::print(dims[2], true);
-    //utils::print(dims[3], true);
-    //utils::print(dims[4], true);
-    //utils::print(dims[5], true);
-    //utils::print(dims[6], true);
-
-    //NRG_dataset.read();
+    //assert(rank==1);
 
 
-    std::array<std::size_t, 7> length = {dims[0], dims[1], dims[2], dims[3], dims[4], dims[5], dims[6]};
-
-    multidimensional::multiarray<double,7> K1_a_updown_real_data = multidimensional::multiarray<double,7>(length);
-    NRG_dataset.read(K1_a_updown_real_data.data(), H5::PredType::NATIVE_DOUBLE);
-
-    utils::check_input(config);
     utils::hello_world();
 #ifdef USE_MPI
     if (MPI_FLAG) {
