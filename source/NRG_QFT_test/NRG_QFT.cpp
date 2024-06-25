@@ -63,6 +63,7 @@ auto main(int argc, char * argv[]) -> int {
 
     // TODO: Assertions that the metadata in the NRG file agree with the physical parameters set here.
     utils::check_input(config);
+    check_NRG_input(NRG_FILENAME, U_over_Delta, T_in);
 
     // new state to hold NRG data with Hartree value initialized to config.U / 2
     // and vertex initialized to -config.U / 2:
@@ -75,20 +76,21 @@ auto main(int argc, char * argv[]) -> int {
     build_NRG_rest_term(NRG_state);
 
     /// Read in data from NRG file
+
+    /*
     multidimensional::multiarray<double,7> K1_a_updown_real_data =
             read_raw_NRG_vertex_component(NRG_FILENAME, "KF/ph/K1/a/up_down/real");
 
     utils::print(K1_a_updown_real_data.at(1, 0, 0, 0, 100, 100, 100), true);
 
     utils::print(normalize_NRG_vertex_component(K1_a_updown_real_data, 1.0).at(1, 100, 100, 100), true);
+    */
 
-    //H5::H5File NRG_file(NRG_FILENAME, H5F_ACC_RDONLY);
-    //H5::DataSet NRG_dataset = NRG_file.openDataSet("KF/omega");
-    //H5::DataSpace NRG_dataspace = NRG_dataset.getSpace();
-//
-    //int rank = NRG_dataspace.getSimpleExtentNdims();
-    //utils::print(rank, true);
-    //assert(rank==1);
+    std::vector<double> Ws_unnormalized = read_raw_NRG_frequency(NRG_FILENAME, "KF/omega");
+
+    for (double i : Ws_unnormalized) {
+        utils::print(i, true);
+    }
 
 
     utils::hello_world();
