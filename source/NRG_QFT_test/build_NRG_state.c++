@@ -2,7 +2,7 @@
 
 int NRG_frequency_grid::get_grid_index(const double v) const {
     assert(all_frequencies[0] < v);
-    assert(v < all_frequencies[all_frequencies.size()]);
+    assert(v < all_frequencies[all_frequencies.size()-1]);
     for (int i = 0; i < all_frequencies.size(); ++i) {
         if (all_frequencies[i] > v) return i-1;
     }
@@ -24,7 +24,7 @@ void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME){
     /// construct frequency grid that we can use later to interpolate
     const NRG_frequency_grid NRG_grid(NRG_SE_freqs);
     const double v_min = NRG_SE_freqs[0];
-    const double v_max = NRG_SE_freqs[NRG_SE_freqs.size()];
+    const double v_max = NRG_SE_freqs[NRG_SE_freqs.size()-1];
 
     /// read in NRG self-energy:
     const multidimensional::multiarray<double,2> NRG_selfenergy_real = normalize_NRG_selfenergy(
