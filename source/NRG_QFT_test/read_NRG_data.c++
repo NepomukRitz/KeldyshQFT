@@ -65,8 +65,55 @@ multidimensional::multiarray<double,4> normalize_NRG_vertex_component(const mult
     return NRG_component;
 }
 
-std::vector<double> read_raw_NRG_frequency(const std::string& FILENAME,
-                                           const std::string& DATASET_NAME){
+multidimensional::multiarray<double,3> read_raw_NRG_selfenergy(const std::string& FILENAME,
+                                                               const std::string& DATASET_NAME){
+    H5::H5File NRG_file(FILENAME, H5F_ACC_RDONLY);
+    H5::DataSet NRG_dataset = NRG_file.openDataSet(DATASET_NAME);
+    H5::DataSpace NRG_dataspace = NRG_dataset.getSpace();
+
+    int rank = NRG_dataspace.getSimpleExtentNdims();
+    assert(rank==3);
+
+    hsize_t dims[3];
+    NRG_dataspace.getSimpleExtentDims(dims, nullptr);
+
+    std::array<std::size_t, 3> length = {dims[0], dims[1], dims[2]};
+
+    multidimensional::multiarray<double,3> data(length);
+    NRG_dataset.read(data.data(), H5::PredType::NATIVE_DOUBLE);
+
+    //normalize data by U:
+    H5::DataSet NRG_U_set = NRG_file.openDataSet("meta_physical/U");
+    H5::DataSpace NRG_U_space = NRG_U_set.getSpace();
+
+    double NRG_U;
+    NRG_U_set.read(&NRG_U, H5::PredType::NATIVE_DOUBLE);
+
+    for (double & NRG_selfenergy : data) {
+        NRG_selfenergy = NRG_selfenergy / NRG_U;
+    }
+
+    return data;
+}
+
+multidimensional::multiarray<double,2> normalize_NRG_selfenergy(const multidimensional::multiarray<double,3>& raw_selfenergy,
+                                                                const double Hartree_shift_in_units_of_U){
+    const size_t Nv  = raw_selfenergy.length()[2];
+
+    //initialize array to be returned
+    std::array<std::size_t, 2> length = {2, Nv};    // Keldysh component, frequencies
+    multidimensional::multiarray<double, 2> selfenergy(length);
+
+    for (int iv = 0; iv < Nv; ++iv) {
+        selfenergy.at(0, iv) = raw_selfenergy.at(1, 0, iv) - Hartree_shift_in_units_of_U;   // retarded component
+        selfenergy.at(1, iv) = raw_selfenergy.at(0, 0, iv);                                 // Keldysh component
+    }
+
+    return selfenergy;
+}
+
+std::vector<double> read_NRG_frequency(const std::string& FILENAME,
+                                       const std::string& DATASET_NAME){
     H5::H5File NRG_file(FILENAME, H5F_ACC_RDONLY);
     H5::DataSet NRG_dataset = NRG_file.openDataSet(DATASET_NAME);
     H5::DataSpace NRG_dataspace = NRG_dataset.getSpace();
@@ -80,27 +127,15 @@ std::vector<double> read_raw_NRG_frequency(const std::string& FILENAME,
 
     NRG_dataset.read(NRG_frequencies.data(), H5::PredType::NATIVE_DOUBLE);
 
-    //normalize frequencies by Δ:
-    H5::DataSet NRG_Delta_set = NRG_file.openDataSet("meta_physical/Delta");
-    H5::DataSpace NRG_Delta_space = NRG_Delta_set.getSpace();
-
-    double NRG_Delta;
-    NRG_Delta_set.read(&NRG_Delta, H5::PredType::NATIVE_DOUBLE);
-
+    /// normalize frequencies by U:
+    H5::DataSet NRG_U_set = NRG_file.openDataSet("meta_physical/U");
+    double NRG_U;
+    NRG_U_set.read(&NRG_U, H5::PredType::NATIVE_DOUBLE);
     for (double & NRG_frequency : NRG_frequencies) {
-        NRG_frequency = NRG_frequency / NRG_Delta;
+        NRG_frequency = NRG_frequency / NRG_U;
     }
-    return NRG_frequencies;
-}
 
-std::vector<double>
-normalize_NRG_frequencies(const std::vector<double> &frequencies, const double U_over_Delta) {
-    // in our code, we need the frequencies normalized w.r.t. U, as this is our energy unit.
-    std::vector<double> normalized_frequencies(frequencies.size());
-    for (int iv = 0; iv < normalized_frequencies.size(); ++iv) {
-        normalized_frequencies.at(iv) = frequencies.at(iv) / U_over_Delta;
-    }
-    return normalized_frequencies;
+    return NRG_frequencies;
 }
 
 void check_NRG_input(const std::string& NRG_FILENAME, const double U_over_Delta, const double T_in){

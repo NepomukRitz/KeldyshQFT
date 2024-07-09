@@ -1,16 +1,60 @@
 #include "build_NRG_state.hpp"
 
-void build_NRG_Sigma(State<comp>& NRG_state){
+int NRG_frequency_grid::get_grid_index(const double v) const {
+    assert(all_frequencies[0] < v);
+    assert(v < all_frequencies[all_frequencies.size()]);
+    for (int i = 0; i < all_frequencies.size(); ++i) {
+        if (all_frequencies[i] > v) return i-1;
+    }
+    assert(false);
+}
+
+double NRG_frequency_grid::get_frequency(int i) const {
+    assert(i<all_frequencies.size());
+    assert(i>=0);
+    return all_frequencies[i];
+}
+
+
+void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME){
+    /// read in NRG self-energy frequencies:
+    const std::vector<double> NRG_SE_freqs = read_NRG_frequency(NRG_FILENAME, "KF/ph/SE/nu");
+    // normalized w.r.t. U ✔︎
+
+    /// construct frequency grid that we can use later to interpolate
+    const NRG_frequency_grid NRG_grid(NRG_SE_freqs);
+    const double v_min = NRG_SE_freqs[0];
+    const double v_max = NRG_SE_freqs[NRG_SE_freqs.size()];
+
+    /// read in NRG self-energy:
+    const multidimensional::multiarray<double,2> NRG_selfenergy_real = normalize_NRG_selfenergy(
+            read_raw_NRG_selfenergy(NRG_FILENAME, "KF/ph/SE/leg_1/real"),
+            0.5);
+    // normalized w.r.t. U ✔︎
+
+    const multidimensional::multiarray<double,2> NRG_selfenergy_imag = normalize_NRG_selfenergy(
+            read_raw_NRG_selfenergy(NRG_FILENAME, "KF/ph/SE/leg_1/imag"));
+    // normalized w.r.t. U ✔︎
+
+    /// interpolate self-energy on the grid that we need:
     for (int iK = 0; iK < 2; ++iK) {
+        std::function<double(const int&)> val_real = [&NRG_selfenergy_real, iK](const int& i)
+                {return NRG_selfenergy_real.at(iK, i);};
+        std::function<double(const int&)> val_imag = [&NRG_selfenergy_imag, iK](const int& i)
+                {return NRG_selfenergy_imag.at(iK, i);};
+
         for (int iv = 0; iv < nFER; ++iv) {
             const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
-            //utils::print(v, true);
-            // TODO: read in self-energy
+            if ((v < v_min) or (v > v_max)) continue;   // leave at zero
+            const double val_re = interpolate_lin1D(v, NRG_grid, val_real);
+            const double val_im = interpolate_lin1D(v, NRG_grid, val_imag);
+            const comp val(val_re, val_im);
+            NRG_state.selfenergy.setself(iK, iv, 0, val);
         }
     }
 }
 
-void build_NRG_K1(State<comp>& NRG_state){
+void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
     for (int iK = 0; iK < 16; ++iK) {
         for (int i_spin = 0; i_spin < 2; ++i_spin) {
             //TODO: Read in K1, K2 and K2p
@@ -27,7 +71,7 @@ void build_NRG_K1(State<comp>& NRG_state){
     }
 }
 
-void build_NRG_K2_and_K2p(State<comp>& NRG_state){
+void build_NRG_K2_and_K2p(State<comp>& NRG_state, const std::string& NRG_FILENAME){
     for (int iK = 0; iK < 16; ++iK) {
         for (int i_spin = 0; i_spin < 2; ++i_spin) {
             for (int iw = 0; iw < nBOS2; ++iw) {
@@ -56,7 +100,7 @@ void build_NRG_K2_and_K2p(State<comp>& NRG_state){
     }
 }
 
-void build_NRG_rest_term(State<comp>& NRG_state){
+void build_NRG_rest_term(State<comp>& NRG_state, const std::string& NRG_FILENAME){
     for (int iK = 0; iK < 16; ++iK) {
         for (int i_spin = 0; i_spin < 2; ++i_spin) {
             for (int iw = 0; iw < nBOS3; ++iw) {

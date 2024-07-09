@@ -16,6 +16,7 @@
 
 #include "../data_structures.hpp"
 #include "../utilities/util.hpp"
+#include "../utilities/hdf5_routines.hpp"
 #include "correlation_functions/state.hpp"
 #include "gsl/gsl_interp.h"
 #include "read_NRG_data.hpp"
@@ -59,9 +60,8 @@ auto main(int argc, char * argv[]) -> int {
     double lambda = 2.0 / U_over_Delta - config.Gamma;
 
     std::string NRG_DATAPATH = "/Users/nepomuk-work/PhD/NRG_consistency/data/";
-    std::string NRG_FILENAME = NRG_DATAPATH + "siam_u0.5.h5";   // TODO: Wrong file for now.
+    std::string NRG_FILENAME = NRG_DATAPATH + "siam_u0.5.h5";
 
-    // TODO: Assertions that the metadata in the NRG file agree with the physical parameters set here.
     utils::check_input(config);
     check_NRG_input(NRG_FILENAME, U_over_Delta, T_in);
 
@@ -70,10 +70,12 @@ auto main(int argc, char * argv[]) -> int {
     State<comp,false> NRG_state = State<comp,false>(lambda, config, true);
     NRG_state.vertex.irred().initialize_NRG_input(lambda, config);
 
-    build_NRG_Sigma(NRG_state);
-    build_NRG_K1(NRG_state);
-    build_NRG_K2_and_K2p(NRG_state);
-    build_NRG_rest_term(NRG_state);
+    build_NRG_Sigma(NRG_state, NRG_FILENAME);
+    //build_NRG_K1(NRG_state, NRG_FILENAME);
+    //build_NRG_K2_and_K2p(NRG_state, NRG_FILENAME);
+    //build_NRG_rest_term(NRG_state, NRG_FILENAME);
+
+    write_state_to_hdf(NRG_DATAPATH + "siam_u0.5_C++.h5", 0, 1, NRG_state);
 
     /// Read in data from NRG file
 
@@ -85,12 +87,6 @@ auto main(int argc, char * argv[]) -> int {
 
     utils::print(normalize_NRG_vertex_component(K1_a_updown_real_data, 1.0).at(1, 100, 100, 100), true);
     */
-
-    std::vector<double> Ws_unnormalized = read_raw_NRG_frequency(NRG_FILENAME, "KF/omega");
-
-    for (double i : Ws_unnormalized) {
-        utils::print(i, true);
-    }
 
 
     utils::hello_world();
