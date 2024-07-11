@@ -114,8 +114,8 @@ void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
                         NRG_state.vertex.avertex().K1.setvert(val_K1_upup - val_K1_updown, 1, iw, iK, 0);
                         break;
                     case 'p':
-                        NRG_state.vertex.tvertex().K1.setvert(val_K1_updown, 0, iw, iK, 0);  // in a-channel param.
-                        NRG_state.vertex.tvertex().K1.setvert(val_K1_upup - val_K1_updown, 1, iw, iK, 0);
+                        NRG_state.vertex.pvertex().K1.setvert(val_K1_updown, 0, iw, iK, 0);  // in a-channel param.
+                        NRG_state.vertex.pvertex().K1.setvert(val_K1_upup - val_K1_updown, 1, iw, iK, 0);
                         break;
                     case 't':
                         NRG_state.vertex.tvertex().K1.setvert(val_K1_updown, 0, iw, iK, 0);  // in a-channel param.
