@@ -6,16 +6,26 @@
 #include "../correlation_functions/state.hpp"
 #include "read_NRG_data.hpp"
 #include "interpolations/InterpolatorLinOrSloppy.hpp"
+#include "NRG_frequencies.hpp"
 
-class NRG_frequency_grid{
-    const std::vector<double> all_frequencies;
+using vertex_getter = std::function<double(const int&, const int&, const int&)>;
 
-public:
-    explicit NRG_frequency_grid(const std::vector<double>& NRG_freqs_in): all_frequencies(NRG_freqs_in){};
+using vertex_array = multidimensional::multiarray<double,4>;
 
-    [[nodiscard]] int get_grid_index(double v) const;
+vertex_getter get_vertex_comp(const int& iK, const vertex_array& vertex_comp);
 
-    [[nodiscard]] double get_frequency(int i) const;
+struct NRG_vertex_comps{
+    vertex_array updown_real;
+    vertex_array updown_imag;
+    vertex_array upup_real;
+    vertex_array upup_imag;
+};
+
+struct NRG_vertex_getters{
+    vertex_getter updown_real;
+    vertex_getter updown_imag;
+    vertex_getter upup_real;
+    vertex_getter upup_imag;
 };
 
 void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME);

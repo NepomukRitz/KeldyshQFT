@@ -71,7 +71,7 @@ auto main(int argc, char * argv[]) -> int {
     NRG_state.vertex.irred().initialize_NRG_input(lambda, config);
 
     build_NRG_Sigma(NRG_state, NRG_FILENAME);
-    //build_NRG_K1(NRG_state, NRG_FILENAME);
+    build_NRG_K1(NRG_state, NRG_FILENAME);
     //build_NRG_K2_and_K2p(NRG_state, NRG_FILENAME);
     //build_NRG_rest_term(NRG_state, NRG_FILENAME);
 

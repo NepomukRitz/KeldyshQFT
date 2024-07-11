@@ -36,11 +36,17 @@ multidimensional::multiarray<double,7> read_raw_NRG_vertex_component(const std::
     multidimensional::multiarray<double,7> data(length);
     NRG_dataset.read(data.data(), H5::PredType::NATIVE_DOUBLE);
 
+    //normalize data by U:
+    H5::DataSet NRG_U_set = NRG_file.openDataSet("meta_physical/U");
+    double NRG_U;
+    NRG_U_set.read(&NRG_U, H5::PredType::NATIVE_DOUBLE);
+    for (double & NRG_vertex : data) {
+        NRG_vertex = NRG_vertex / NRG_U;
+    }
     return data;
 }
 
-multidimensional::multiarray<double,4> normalize_NRG_vertex_component(const multidimensional::multiarray<double,7>& vertex_component,
-                                                                      const double U){
+multidimensional::multiarray<double,4> normalize_NRG_vertex_component(const multidimensional::multiarray<double,7>& vertex_component){
 
     const size_t Nw  = vertex_component.length()[4];
     const size_t Nv  = vertex_component.length()[5];
@@ -56,13 +62,18 @@ multidimensional::multiarray<double,4> normalize_NRG_vertex_component(const mult
         for (int iw = 0; iw < Nw; ++iw) {
             for (int iv = 0; iv < Nv; ++iv) {
                 for (int ivp = 0; ivp < Nvp; ++ivp) {
-                    NRG_component.at(iK, iw, iv, ivp) = - vertex_component.at(K[3], K[1], K[2], K[0], iw, iv, ivp) / U;
-                    // global minus sign, switch middle Keldysh components, normalize by U. TODO: Check that this is now correct.
+                    NRG_component.at(iK, iw, iv, ivp) = - vertex_component.at(K[3], K[1], K[2], K[0], iw, iv, ivp);
+                    // global minus sign, switch middle Keldysh components. TODO: Check that this is now correct.
                 }
             }
         }
     }
     return NRG_component;
+}
+
+multidimensional::multiarray<double,4> read_NRG_vertex_component(const std::string& FILENAME,
+                                                                 const std::string& DATASET_NAME){
+    return normalize_NRG_vertex_component(read_raw_NRG_vertex_component(FILENAME, DATASET_NAME));
 }
 
 multidimensional::multiarray<double,3> read_raw_NRG_selfenergy(const std::string& FILENAME,
@@ -84,7 +95,6 @@ multidimensional::multiarray<double,3> read_raw_NRG_selfenergy(const std::string
 
     //normalize data by U:
     H5::DataSet NRG_U_set = NRG_file.openDataSet("meta_physical/U");
-    H5::DataSpace NRG_U_space = NRG_U_set.getSpace();
 
     double NRG_U;
     NRG_U_set.read(&NRG_U, H5::PredType::NATIVE_DOUBLE);

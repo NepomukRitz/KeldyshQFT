@@ -6,11 +6,19 @@
 #include "H5Cpp.h"
 #include <cassert>
 
+/**
+ * Helper funciton used by `read_NRG_vertex_component`.
+ */
 multidimensional::multiarray<double,7> read_raw_NRG_vertex_component(const std::string& FILENAME,
                                                                      const std::string& DATASET_NAME);
 
-multidimensional::multiarray<double,4> normalize_NRG_vertex_component(const multidimensional::multiarray<double,7>& vertex_component,
-                                                                      double U);
+/**
+ * Helper funciton used by `read_NRG_vertex_component`.
+ */
+multidimensional::multiarray<double,4> normalize_NRG_vertex_component(const multidimensional::multiarray<double,7>& vertex_component);
+
+multidimensional::multiarray<double,4> read_NRG_vertex_component(const std::string& FILENAME,
+                                                                 const std::string& DATASET_NAME);
 
 multidimensional::multiarray<double,3> read_raw_NRG_selfenergy(const std::string& FILENAME,
                                                                const std::string& DATASET_NAME);
