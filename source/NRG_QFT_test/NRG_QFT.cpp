@@ -72,7 +72,7 @@ auto main(int argc, char * argv[]) -> int {
 
     build_NRG_Sigma(NRG_state, NRG_FILENAME);
     build_NRG_K1(NRG_state, NRG_FILENAME);
-    //build_NRG_K2_and_K2p(NRG_state, NRG_FILENAME);
+    build_NRG_K2_and_K2p(NRG_state, NRG_FILENAME);
     //build_NRG_rest_term(NRG_state, NRG_FILENAME);
 
     write_state_to_hdf(NRG_DATAPATH + "siam_u0.5_C++.h5", 0, 1, NRG_state);

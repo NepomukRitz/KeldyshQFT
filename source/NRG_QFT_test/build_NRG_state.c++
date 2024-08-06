@@ -43,7 +43,7 @@ void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME){
             NRG_state.selfenergy.setself(iK, iv, 0, val);
         }
     }
-    utils::print("done.", true);
+    utils::print_add("done.", true);
 }
 
 void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
@@ -114,11 +114,11 @@ void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
                         NRG_state.vertex.avertex().K1.setvert(val_K1_upup - val_K1_updown, 1, iw, iK, 0);
                         break;
                     case 'p':
-                        NRG_state.vertex.pvertex().K1.setvert(val_K1_updown, 0, iw, iK, 0);  // in a-channel param.
+                        NRG_state.vertex.pvertex().K1.setvert(val_K1_updown, 0, iw, iK, 0);  // in p-channel param.
                         NRG_state.vertex.pvertex().K1.setvert(val_K1_upup - val_K1_updown, 1, iw, iK, 0);
                         break;
                     case 't':
-                        NRG_state.vertex.tvertex().K1.setvert(val_K1_updown, 0, iw, iK, 0);  // in a-channel param.
+                        NRG_state.vertex.tvertex().K1.setvert(val_K1_updown, 0, iw, iK, 0);  // in t-channel param.
                         NRG_state.vertex.tvertex().K1.setvert(val_K1_upup - val_K1_updown, 1, iw, iK, 0);
                         break;
                     default:
@@ -128,36 +128,197 @@ void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
             }
         }
     }
-    utils::print("done.", true);
+    utils::print_add("done.", true);
 }
 
 void build_NRG_K2_and_K2p(State<comp>& NRG_state, const std::string& NRG_FILENAME){
-    for (int iK = 0; iK < 16; ++iK) {
-        for (int i_spin = 0; i_spin < 2; ++i_spin) {
+    utils::print("Reading in K2 and K2p ... ", true);
+
+    const NRG_frequencies NRG_freqs(NRG_FILENAME);
+
+    for (const char& ch: std::string("apt")) {
+        utils::print("... in channel " + std::string(1, ch) + "...", true);
+        /// read in NRG K2 and K2p components:
+        NRG_vertex_comps NRG_K2;
+        NRG_vertex_comps NRG_K2p;
+        switch (ch) {
+            case 'a':
+                NRG_K2.updown_real  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/a/up_down/real");
+                NRG_K2p.updown_real = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/a/up_down/real");
+                NRG_K2.updown_imag  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/a/up_down/imag");
+                NRG_K2p.updown_imag = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/a/up_down/imag");
+                NRG_K2.upup_real    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/a/up_up/real");
+                NRG_K2p.upup_real   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/a/up_up/real");
+                NRG_K2.upup_imag    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/a/up_up/imag");
+                NRG_K2p.upup_imag   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/a/up_up/imag");
+                break;
+            case 'p':   // no imaginary part of up-up component in p-channel
+                NRG_K2.updown_real  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/p/up_down/real");
+                NRG_K2p.updown_real = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/p/up_down/real");
+                NRG_K2.updown_imag  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/p/up_down/imag");
+                NRG_K2p.updown_imag = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/p/up_down/imag");
+                NRG_K2.upup_real    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/p/up_up/real");
+                NRG_K2p.upup_real   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/p/up_up/real");
+                break;
+            case 't':   // need to swap K2 and K2p in t-channel
+                NRG_K2p.updown_real = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_down/real");
+                NRG_K2.updown_real  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_down/real");
+                NRG_K2p.updown_imag = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_down/imag");
+                NRG_K2.updown_imag  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_down/imag");
+                NRG_K2p.upup_real   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_up/real");
+                NRG_K2.upup_real    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_up/real");
+                NRG_K2p.upup_imag   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_up/imag");
+                NRG_K2.upup_imag    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_up/imag");
+                break;
+            default:
+                assert(false);
+                break;
+        }
+
+        /// interpolate vertex:
+#pragma omp parallel for schedule(static)
+        for (int iK = 0; iK < 16; ++iK) {
+            NRG_vertex_getters vals_K2;
+            NRG_vertex_getters vals_K2p;
+            vals_K2.updown_real  = get_vertex_comp(iK, NRG_K2.updown_real);
+            vals_K2p.updown_real = get_vertex_comp(iK, NRG_K2p.updown_real);
+            vals_K2.updown_imag  = get_vertex_comp(iK, NRG_K2.updown_imag);
+            vals_K2p.updown_imag = get_vertex_comp(iK, NRG_K2p.updown_imag);
+            vals_K2.upup_real    = get_vertex_comp(iK, NRG_K2.upup_real);
+            vals_K2p.upup_real   = get_vertex_comp(iK, NRG_K2p.upup_real);
+            if (ch != 'p'){
+                vals_K2.upup_imag  = get_vertex_comp(iK, NRG_K2.upup_imag);
+                vals_K2p.upup_imag = get_vertex_comp(iK, NRG_K2p.upup_imag);
+            }
+
             for (int iw = 0; iw < nBOS2; ++iw) {
                 const double w = NRG_state.vertex.avertex().K2.frequencies.get_freqGrid_b().get_frequency(iw);
+
+                /// This is for K2
                 for (int iv = 0; iv < nFER2; ++iv) {
-                    const double v =
-                            NRG_state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_frequency(iv);
-                    comp val_K2a (0.0, 0.0); // TODO: Use interpolated value
-                    comp val_K2p (0.0, 0.0); // TODO: Use interpolated value
-                    comp val_K2t (0.0, 0.0); // TODO: Use interpolated value
+                    const double v = NRG_state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_frequency(iv);
 
-                    comp val_K2ba (0.0, 0.0); // TODO: Use interpolated value
-                    comp val_K2bp (0.0, 0.0); // TODO: Use interpolated value
-                    comp val_K2bt (0.0, 0.0); // TODO: Use interpolated value
+                    double wt_NRG;
+                    double vt_NRG;
+                    double vpt_NRG;
+                    switch (ch) {
+                        case 'a':
+                            wt_NRG  = -v;
+                            vt_NRG  = v - 0.5 * w;
+                            vpt_NRG = v + 0.5 * w;
+                            break;
+                        case 'p':
+                            wt_NRG  = -v;
+                            vt_NRG  = v + 0.5 * w;
+                            vpt_NRG = 0.5 * w;
+                            break;
+                        case 't':
+                            wt_NRG  = -w;
+                            vt_NRG  = 0.5 * w;
+                            vpt_NRG = v + 0.5 * w;
+                            break;
+                        default:
+                            assert(false);
+                            break;
+                    }
 
-                    NRG_state.vertex.avertex().K2.setvert(val_K2a, i_spin, iw, iv, iK, 0);   // in a-channel param.
-                    NRG_state.vertex.pvertex().K2.setvert(val_K2p, i_spin, iw, iv, iK, 0);   // in p-channel param.
-                    NRG_state.vertex.tvertex().K2.setvert(val_K2t, i_spin, iw, iv, iK, 0);   // in t-channel param.
+                    if (NRG_freqs.is_out_of_bounds(wt_NRG, vt_NRG, vpt_NRG)) continue;
 
-                    NRG_state.vertex.avertex().K2b.setvert(val_K2ba, i_spin, iw, iv, iK, 0); // in a-channel param.
-                    NRG_state.vertex.pvertex().K2b.setvert(val_K2bp, i_spin, iw, iv, iK, 0); // in p-channel param.
-                    NRG_state.vertex.tvertex().K2b.setvert(val_K2bt, i_spin, iw, iv, iK, 0); // in t-channel param.
+                    auto interp = [wt_NRG, vpt_NRG, vt_NRG, NRG_freqs] (vertex_getter& val)
+                    {return interpolate_lin3D(wt_NRG, vpt_NRG, vt_NRG,
+                                              NRG_freqs.wt_grid, NRG_freqs.vpt_grid, NRG_freqs.vt_grid,
+                                              val);};
+
+                    comp val_K2_updown(interp(vals_K2.updown_real), interp(vals_K2.updown_imag));
+                    comp val_K2_upup;
+                    if (ch != 'p')
+                        val_K2_upup = comp(interp(vals_K2.upup_real), interp(vals_K2.upup_imag));
+                    else
+                        val_K2_upup = comp(interp(vals_K2.upup_real), 0.0);    // no imaginary part in up-up component of the p-channel
+
+                    switch (ch) {
+                        case 'a':
+                            NRG_state.vertex.avertex().K2.setvert(val_K2_updown, 0, iw, iv, iK, 0);
+                            NRG_state.vertex.avertex().K2.setvert(val_K2_upup - val_K2_updown, 1, iw, iv, iK, 0);
+                            break;
+                        case 'p':
+                            NRG_state.vertex.pvertex().K2.setvert(val_K2_updown, 0, iw, iv, iK, 0);  // in p-channel param.
+                            NRG_state.vertex.pvertex().K2.setvert(val_K2_upup - val_K2_updown, 1, iw, iv, iK, 0);
+                            break;
+                        case 't':
+                            NRG_state.vertex.tvertex().K2.setvert(val_K2_updown, 0, iw, iv, iK, 0);  // in t-channel param.
+                            NRG_state.vertex.tvertex().K2.setvert(val_K2_upup - val_K2_updown, 1, iw, iv, iK, 0);
+                            break;
+                        default:
+                            assert(false);
+                            break;
+                    }
+                }
+
+                /// This is for K2p
+                for (int ivp = 0; ivp < nFER2; ++ivp) {
+                    const double vp = NRG_state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_frequency(ivp);
+
+                    double wt_NRG;
+                    double vt_NRG;
+                    double vpt_NRG;
+                    switch (ch) {
+                        case 'a':
+                            wt_NRG  = vp;
+                            vt_NRG  = - 0.5 * w;
+                            vpt_NRG = 0.5 * w;
+                            break;
+                        case 'p':
+                            wt_NRG  = vp;
+                            vt_NRG  = 0.5 * w;
+                            vpt_NRG = -vp + 0.5 * w;
+                            break;
+                        case 't':
+                            wt_NRG  = -w;
+                            vt_NRG  = vp + 0.5 * w;
+                            vpt_NRG = 0.5 * w;
+                            break;
+                        default:
+                            assert(false);
+                            break;
+                    }
+
+                    if (NRG_freqs.is_out_of_bounds(wt_NRG, vt_NRG, vpt_NRG)) continue;
+
+                    auto interp = [wt_NRG, vpt_NRG, vt_NRG, NRG_freqs] (vertex_getter& val)
+                    {return interpolate_lin3D(wt_NRG, vpt_NRG, vt_NRG,
+                                              NRG_freqs.wt_grid, NRG_freqs.vpt_grid, NRG_freqs.vt_grid,
+                                              val);};
+
+                    comp val_K2p_updown(interp(vals_K2p.updown_real), interp(vals_K2p.updown_imag));
+                    comp val_K2p_upup;
+                    if (ch != 'p')
+                        val_K2p_upup = comp(interp(vals_K2p.upup_real), interp(vals_K2p.upup_imag));
+                    else
+                        val_K2p_upup = comp(interp(vals_K2p.upup_real), 0.0);    // no imaginary part in up-up component of the p-channel
+
+                    switch (ch) {
+                        case 'a':
+                            NRG_state.vertex.avertex().K2b.setvert(val_K2p_updown, 0, iw, ivp, iK, 0);
+                            NRG_state.vertex.avertex().K2b.setvert(val_K2p_upup - val_K2p_updown, 1, iw, ivp, iK, 0);
+                            break;
+                        case 'p':
+                            NRG_state.vertex.pvertex().K2b.setvert(val_K2p_updown, 0, iw, ivp, iK, 0);  // in p-channel param.
+                            NRG_state.vertex.pvertex().K2b.setvert(val_K2p_upup - val_K2p_updown, 1, iw, ivp, iK, 0);
+                            break;
+                        case 't':
+                            NRG_state.vertex.tvertex().K2b.setvert(val_K2p_updown, 0, iw, ivp, iK, 0);  // in t-channel param.
+                            NRG_state.vertex.tvertex().K2b.setvert(val_K2p_upup - val_K2p_updown, 1, iw, ivp, iK, 0);
+                            break;
+                        default:
+                            assert(false);
+                            break;
+                    }
                 }
             }
         }
     }
+    utils::print("... done.", true);
 }
 
 void build_NRG_rest_term(State<comp>& NRG_state, const std::string& NRG_FILENAME){
