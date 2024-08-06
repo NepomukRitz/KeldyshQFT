@@ -21,10 +21,35 @@
 #include "gsl/gsl_interp.h"
 #include "read_NRG_data.hpp"
 #include "build_NRG_state.hpp"
+#include "perturbation_theory_and_parquet/parquet_solver.hpp"
 
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
+
+State<comp, false> read_or_build_NRG_state(const double& lambda, const fRG_config& config,
+                                           const std::string& NRG_FILENAME, const std::string& NRG_Cpp_FILENAME){
+    if (std::filesystem::exists(NRG_Cpp_FILENAME)) {
+        utils::print("Reading in existing NRG-state ... ");
+        State<comp, false> NRG_state = read_state_from_hdf(NRG_Cpp_FILENAME, 0);
+        utils::print_add("done.", true);
+        return NRG_state;
+    }
+    else {
+        // new state to hold NRG data with Hartree value initialized to config.U / 2
+        // and vertex initialized to -config.U / 2:
+        State<comp,false> NRG_state = State<comp,false>(lambda, config, true);
+        NRG_state.vertex.irred().initialize_NRG_input(lambda, config);
+
+        build_NRG_Sigma(NRG_state, NRG_FILENAME);
+        build_NRG_K1(NRG_state, NRG_FILENAME);
+        build_NRG_K2_and_K2p(NRG_state, NRG_FILENAME);
+        //build_NRG_rest_term(NRG_state, NRG_FILENAME);     // Still TODO!
+
+        write_state_to_hdf(NRG_Cpp_FILENAME, 0, 1, NRG_state);
+        return NRG_state;
+    }
+}
 
 
 auto main(int argc, char * argv[]) -> int {
@@ -56,38 +81,23 @@ auto main(int argc, char * argv[]) -> int {
     config.epsilon = - config.U * 0.5;
     config.number_of_nodes = 1;
 
-    /// Code goes here:
-    double lambda = 2.0 / U_over_Delta - config.Gamma;
 
-    std::string NRG_DATAPATH = "/Users/nepomuk-work/PhD/NRG_consistency/data/";
-    std::string NRG_FILENAME = NRG_DATAPATH + "siam_u0.5.h5";
+    const double lambda = 2.0 / U_over_Delta - config.Gamma;
+
+    std::string NRG_DATAPATH     = "/Users/nepomuk-work/PhD/NRG_consistency/data/";
+    std::string NRG_FILENAME     = NRG_DATAPATH + "siam_u0.5.h5";
+    std::string NRG_Cpp_FILENAME = NRG_DATAPATH + "siam_u0.5_C++.h5";
 
     utils::check_input(config);
     check_NRG_input(NRG_FILENAME, U_over_Delta, T_in);
 
-    // new state to hold NRG data with Hartree value initialized to config.U / 2
-    // and vertex initialized to -config.U / 2:
-    State<comp,false> NRG_state = State<comp,false>(lambda, config, true);
-    NRG_state.vertex.irred().initialize_NRG_input(lambda, config);
+    const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
-    build_NRG_Sigma(NRG_state, NRG_FILENAME);
-    build_NRG_K1(NRG_state, NRG_FILENAME);
-    build_NRG_K2_and_K2p(NRG_state, NRG_FILENAME);
-    //build_NRG_rest_term(NRG_state, NRG_FILENAME);
-
-    write_state_to_hdf(NRG_DATAPATH + "siam_u0.5_C++.h5", 0, 1, NRG_state);
-
-    /// Read in data from NRG file
-
-    /*
-    multidimensional::multiarray<double,7> K1_a_updown_real_data =
-            read_raw_NRG_vertex_component(NRG_FILENAME, "KF/ph/K1/a/up_down/real");
-
-    utils::print(K1_a_updown_real_data.at(1, 0, 0, 0, 100, 100, 100), true);
-
-    utils::print(normalize_NRG_vertex_component(K1_a_updown_real_data, 1.0).at(1, 100, 100, 100), true);
-    */
-
+    State<comp,false> state_for_SDE = State<comp,false>(lambda, config, true);
+    utils::print("Evaluating SDE ... ");
+    compute_SDE(state_for_SDE.selfenergy, NRG_state, lambda, 1);
+    utils::print_add("done.", true);
+    write_state_to_hdf(NRG_DATAPATH + "siam_u0.5_SDE.h5", 0, 1, state_for_SDE);
 
     utils::hello_world();
 #ifdef USE_MPI
