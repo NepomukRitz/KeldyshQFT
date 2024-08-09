@@ -22,10 +22,13 @@
 #include "read_NRG_data.hpp"
 #include "build_NRG_state.hpp"
 #include "perturbation_theory_and_parquet/parquet_solver.hpp"
+#include "frequencies_for_NRG.hpp"
 
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
+
+
 
 State<comp, false> read_or_build_NRG_state(const double& lambda, const fRG_config& config,
                                            const std::string& NRG_FILENAME, const std::string& NRG_Cpp_FILENAME){
@@ -91,13 +94,25 @@ auto main(int argc, char * argv[]) -> int {
     utils::check_input(config);
     check_NRG_input(NRG_FILENAME, U_over_Delta, T_in);
 
+    /// build required frequency grids
+    WantedFrequencyValues freqs = collectWantedFrequencyValues(lambda, config);
+
+    freqs.W_t  = FrequencyProcessorForNRG(freqs.W_t, U_over_Delta).process_frequencies();
+    freqs.V_t  = FrequencyProcessorForNRG(freqs.V_t, U_over_Delta).process_frequencies();
+    freqs.Vp_t = FrequencyProcessorForNRG(freqs.Vp_t, U_over_Delta).process_frequencies();
+
+    saveWantedFrequenciesToHDF(NRG_DATAPATH + "frequencies.h5", freqs);
+
+
+    /*
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
     State<comp,false> state_for_SDE = State<comp,false>(lambda, config, true);
     utils::print("Evaluating SDE ... ");
-    compute_SDE(state_for_SDE.selfenergy, NRG_state, lambda, 1);
+    compute_SDE(state_for_SDE.selfenergy, NRG_state, lambda, 3);
     utils::print_add("done.", true);
     write_state_to_hdf(NRG_DATAPATH + "siam_u0.5_SDE.h5", 0, 1, state_for_SDE);
+    */
 
     utils::hello_world();
 #ifdef USE_MPI
