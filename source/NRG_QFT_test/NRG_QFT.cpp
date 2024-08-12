@@ -47,7 +47,7 @@ State<comp, false> read_or_build_NRG_state(const double& lambda, const fRG_confi
         build_NRG_Sigma(NRG_state, NRG_FILENAME);
         build_NRG_K1(NRG_state, NRG_FILENAME);
         build_NRG_K2_and_K2p(NRG_state, NRG_FILENAME);
-        //build_NRG_rest_term(NRG_state, NRG_FILENAME);     // Still TODO!
+        build_NRG_core_as_K3t(NRG_state, NRG_FILENAME);
 
         write_state_to_hdf(NRG_Cpp_FILENAME, 0, 1, NRG_state);
         return NRG_state;
@@ -104,9 +104,9 @@ auto main(int argc, char * argv[]) -> int {
     saveWantedFrequenciesToHDF(NRG_DATAPATH + "frequencies.h5", freqs);
 
 
-    /*
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
+    /*
     State<comp,false> state_for_SDE = State<comp,false>(lambda, config, true);
     utils::print("Evaluating SDE ... ");
     compute_SDE(state_for_SDE.selfenergy, NRG_state, lambda, 3);

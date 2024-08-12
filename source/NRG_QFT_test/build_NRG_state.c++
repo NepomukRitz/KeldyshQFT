@@ -321,25 +321,56 @@ void build_NRG_K2_and_K2p(State<comp>& NRG_state, const std::string& NRG_FILENAM
     utils::print("... done.", true);
 }
 
-void build_NRG_rest_term(State<comp>& NRG_state, const std::string& NRG_FILENAME){
+void build_NRG_core_as_K3t(State<comp>& NRG_state, const std::string& NRG_FILENAME){
+    utils::print("Reading in the vertex core ... ");
+
+    const NRG_frequencies NRG_freqs(NRG_FILENAME);
+
+    /// read in NRG core components:
+    NRG_vertex_comps NRG_core;
+    NRG_core.updown_real = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/core/up_down/real");
+    NRG_core.updown_imag = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/core/up_down/imag");
+    NRG_core.upup_real   = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/core/up_up/real");
+    NRG_core.upup_imag   = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/core/up_up/imag");
+
     for (int iK = 0; iK < 16; ++iK) {
-        for (int i_spin = 0; i_spin < 2; ++i_spin) {
-            for (int iw = 0; iw < nBOS3; ++iw) {
-                const double w =
-                        NRG_state.vertex.irred().NRG_rest.frequencies.get_freqGrid_b().get_frequency(iw);
-                for (int iv = 0; iv < nFER3; ++iv) {
-                    const double v =
-                            NRG_state.vertex.irred().NRG_rest.frequencies.get_freqGrid_3().get_frequency(iv);
-                    for (int ivp = 0; ivp < nFER3; ++ivp) {
-                        const double vp =
-                                NRG_state.vertex.irred().NRG_rest.frequencies.get_freqGrid_3().get_frequency(ivp);
-                        comp val (0.0, 0.0);  // TODO: Use interpolated value
-                        NRG_state.vertex.irred().set_NRG_rest(iK, i_spin, iw, iv, ivp, val);
-                    }
+        NRG_vertex_getters vals;
+        vals.updown_real = get_vertex_comp(iK, NRG_core.updown_real);
+        vals.updown_imag = get_vertex_comp(iK, NRG_core.updown_imag);
+        vals.upup_real   = get_vertex_comp(iK, NRG_core.upup_real);
+        vals.upup_imag   = get_vertex_comp(iK, NRG_core.upup_imag);
 
+        for (int iw = 0; iw < nBOS3; ++iw) {
+            const double w =
+                    NRG_state.vertex.tvertex().K3.frequencies.get_freqGrid_b().get_frequency(iw);
+            for (int iv = 0; iv < nFER3; ++iv) {
+                const double v =
+                        NRG_state.vertex.tvertex().K3.frequencies.get_freqGrid_3().get_frequency(iv);
+                for (int ivp = 0; ivp < nFER3; ++ivp) {
+                    const double vp =
+                            NRG_state.vertex.tvertex().K3.frequencies.get_freqGrid_3().get_frequency(ivp);
+
+                    const double wt_NRG  = -w;
+                    const double vt_NRG  = vp + 0.5 * w;
+                    const double vpt_NRG = v  + 0.5 * w;
+
+                    if (NRG_freqs.is_out_of_bounds(wt_NRG, vt_NRG, vpt_NRG)) continue;
+
+                    auto interp = [wt_NRG, vpt_NRG, vt_NRG, NRG_freqs] (vertex_getter& val)
+                    {return interpolate_lin3D(wt_NRG, vpt_NRG, vt_NRG,
+                                              NRG_freqs.wt_grid, NRG_freqs.vpt_grid, NRG_freqs.vt_grid,
+                                              val);};
+
+                    comp val_core_updown(interp(vals.updown_real), interp(vals.updown_imag));
+                    comp val_core_upup(interp(vals.upup_real), interp(vals.upup_imag));
+
+                    NRG_state.vertex.tvertex().K3.setvert(val_core_updown,
+                                                          0, iw, iv, ivp, iK, 0);  // in t-channel param.
+                    NRG_state.vertex.tvertex().K3.setvert(val_core_upup - val_core_updown,
+                                                          1, iw, iv, ivp, iK, 0);
                 }
-
             }
         }
     }
+    utils::print_add("done.", true);
 }

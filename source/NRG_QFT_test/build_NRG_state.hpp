@@ -34,6 +34,6 @@ void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME);
 
 void build_NRG_K2_and_K2p(State<comp>& NRG_state, const std::string& NRG_FILENAME);
 
-void build_NRG_rest_term(State<comp>& NRG_state, const std::string& NRG_FILENAME);
+void build_NRG_core_as_K3t(State<comp>& NRG_state, const std::string& NRG_FILENAME);
 
 #endif //KELDYSH_MFRG_BUILD_NRG_STATE_HPP
