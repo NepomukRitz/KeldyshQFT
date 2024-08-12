@@ -20,8 +20,8 @@ constexpr int nFER = 401 - (KELDYSH_FORMALISM ? 0 : 1);                         
 // Number of frequency points for K2 and K3 classes
 constexpr int nBOS2 = 201;                                                      ///< Number of bosonic frequency points for the K2 and K2' vertex classes.
 constexpr int nFER2 = 201 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);           ///< Number of fermionic frequency points for the K2 and K2' vertex classes.
-constexpr int nBOS3 = 51;                                                       ///< Number of bosonic frequency points for the K3 vertex class.
-constexpr int nFER3 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);            ///< Number of fermionic frequency points for the K3 vertex class.
+constexpr int nBOS3 = 3;                                                       ///< Number of bosonic frequency points for the K3 vertex class.
+constexpr int nFER3 = 3 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);            ///< Number of fermionic frequency points for the K3 vertex class.
 
 const int COUNT = 4;                                ///< Used to set the number of frequency points in the MF. For details, see the definitions in the file frequency_parameters.hpp
 #else

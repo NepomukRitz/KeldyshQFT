@@ -21,8 +21,8 @@
 #include "gsl/gsl_interp.h"
 #include "read_NRG_data.hpp"
 #include "build_NRG_state.hpp"
-#include "perturbation_theory_and_parquet/parquet_solver.hpp"
 #include "frequencies_for_NRG.hpp"
+#include "identities.hpp"
 
 #ifdef USE_MPI
 #include <mpi.h>
@@ -94,7 +94,9 @@ auto main(int argc, char * argv[]) -> int {
     utils::check_input(config);
     check_NRG_input(NRG_FILENAME, U_over_Delta, T_in);
 
-    /// build required frequency grids
+
+    /// build required frequency grids to give to MuNRG
+    /*
     WantedFrequencyValues freqs = collectWantedFrequencyValues(lambda, config);
 
     freqs.W_t  = FrequencyProcessorForNRG(freqs.W_t, U_over_Delta).process_frequencies();
@@ -102,17 +104,21 @@ auto main(int argc, char * argv[]) -> int {
     freqs.Vp_t = FrequencyProcessorForNRG(freqs.Vp_t, U_over_Delta).process_frequencies();
 
     saveWantedFrequenciesToHDF(NRG_DATAPATH + "frequencies.h5", freqs);
+    */
 
 
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
-    /*
-    State<comp,false> state_for_SDE = State<comp,false>(lambda, config, true);
-    utils::print("Evaluating SDE ... ");
-    compute_SDE(state_for_SDE.selfenergy, NRG_state, lambda, 3);
-    utils::print_add("done.", true);
-    write_state_to_hdf(NRG_DATAPATH + "siam_u0.5_SDE.h5", 0, 1, state_for_SDE);
-    */
+    const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u0.5_identities.h5";
+
+    State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_v3(NRG_state);
+    write_state_to_hdf(IDENTITIES_FILENAME, 0, 3, selfenergy_from_SDE_v3);
+
+    State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 1, K1_from_BSE);
+
+    //State<comp,false> K1_plus_K2_from_BSE    = evaluate_BSE_for_K1_plus_K2(NRG_state);
+    //add_state_to_hdf  (IDENTITIES_FILENAME, 2, K1_plus_K2_from_BSE);
 
     utils::hello_world();
 #ifdef USE_MPI
