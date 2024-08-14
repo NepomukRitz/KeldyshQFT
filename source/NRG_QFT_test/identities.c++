@@ -10,8 +10,14 @@ State<comp,false> evaluate_SDE_from_K1_plus_K2(const State<comp,false>& NRG_stat
 
 State<comp,false> evaluate_SDE_from_Gamma(const State<comp,false>& NRG_state){
     State<comp,false> state_for_SDE = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+    State<comp,false> bare_state    = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+
+    Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+
     utils::print("Evaluating SDE from Γ ... ");
-    compute_SDE(state_for_SDE.selfenergy, NRG_state, NRG_state.Lambda, 2);
+    bubble_function(state_for_SDE.vertex, bare_state.vertex, NRG_state.vertex,
+                    G, G, 'a', false, NRG_state.config, {true, true, false});
+    loop<false,0>(state_for_SDE.selfenergy, state_for_SDE.vertex, G);
     utils::print_add("done.", true);
     return state_for_SDE;
 }

@@ -63,7 +63,8 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     /// Parse command line arguments
     const double T_in = atof(argv[1]);              // Temperature in units of U
-    const double U_over_Delta = atof(argv[2]);
+    const double u = atof(argv[2]);
+    const double U_over_Delta = u * M_PI;
 
     /// Parameter assertions
     static_assert(DEBUG_SYMMETRIES == 1);
@@ -87,10 +88,11 @@ auto main(int argc, char * argv[]) -> int {
 
     const double lambda = 2.0 / U_over_Delta - config.Gamma;
 
-    //std::string NRG_DATAPATH     = "/Users/nepomuk-work/PhD/NRG_consistency/data/";              // for MacBook
-    std::string NRG_DATAPATH     = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
-    std::string NRG_FILENAME     = NRG_DATAPATH + "siam_u0.5.h5";
-    std::string NRG_Cpp_FILENAME = NRG_DATAPATH + "siam_u0.5_C++.h5";
+    const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/";              // for MacBook
+    //const std::string NRG_DATAPATH        = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
+    const std::string NRG_FILENAME        = NRG_DATAPATH + "siam_u"+std::to_string(u)+".h5";
+    const std::string NRG_Cpp_FILENAME    = NRG_DATAPATH + "siam_u"+std::to_string(u)+"_C++.h5";
+    const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u"+std::to_string(u)+"_identities.h5";
 
     utils::check_input(config);
     check_NRG_input(NRG_FILENAME, U_over_Delta, T_in);
@@ -109,8 +111,6 @@ auto main(int argc, char * argv[]) -> int {
 
 
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
-
-    const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u0.5_identities.h5";
 
     State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
     write_state_to_hdf(IDENTITIES_FILENAME, 0, 4, selfenergy_from_SDE_v3);
