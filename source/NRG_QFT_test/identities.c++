@@ -1,9 +1,17 @@
 #include "identities.hpp"
 
-State<comp,false> evaluate_SDE_v3(const State<comp,false>& NRG_state){
+State<comp,false> evaluate_SDE_from_K1_plus_K2(const State<comp,false>& NRG_state){
     State<comp,false> state_for_SDE = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
-    utils::print("Evaluating SDE ... ");
+    utils::print("Evaluating SDE from K1+K2 ... ");
     compute_SDE(state_for_SDE.selfenergy, NRG_state, NRG_state.Lambda, 3);
+    utils::print_add("done.", true);
+    return state_for_SDE;
+}
+
+State<comp,false> evaluate_SDE_from_Gamma(const State<comp,false>& NRG_state){
+    State<comp,false> state_for_SDE = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+    utils::print("Evaluating SDE from Γ ... ");
+    compute_SDE(state_for_SDE.selfenergy, NRG_state, NRG_state.Lambda, 2);
     utils::print_add("done.", true);
     return state_for_SDE;
 }

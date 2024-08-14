@@ -87,7 +87,7 @@ auto main(int argc, char * argv[]) -> int {
 
     const double lambda = 2.0 / U_over_Delta - config.Gamma;
 
-    std::string NRG_DATAPATH     = "/Users/nepomuk-work/PhD/NRG_consistency/data/";
+    std::string NRG_DATAPATH     = "/Users/nepomuk-work/PhD/NRG_consistency/data/";     // for MacBook
     std::string NRG_FILENAME     = NRG_DATAPATH + "siam_u0.5.h5";
     std::string NRG_Cpp_FILENAME = NRG_DATAPATH + "siam_u0.5_C++.h5";
 
@@ -111,14 +111,17 @@ auto main(int argc, char * argv[]) -> int {
 
     const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u0.5_identities.h5";
 
-    State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_v3(NRG_state);
-    write_state_to_hdf(IDENTITIES_FILENAME, 0, 3, selfenergy_from_SDE_v3);
+    State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
+    write_state_to_hdf(IDENTITIES_FILENAME, 0, 4, selfenergy_from_SDE_v3);
+
+    State<comp,false> selfenergy_from_SDE_v2 = evaluate_SDE_from_Gamma(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 1, selfenergy_from_SDE_v2);
 
     State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
-    add_state_to_hdf  (IDENTITIES_FILENAME, 1, K1_from_BSE);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 2, K1_from_BSE);
 
-    //State<comp,false> K1_plus_K2_from_BSE    = evaluate_BSE_for_K1_plus_K2(NRG_state);
-    //add_state_to_hdf  (IDENTITIES_FILENAME, 2, K1_plus_K2_from_BSE);
+    State<comp,false> K1_plus_K2_from_BSE    = evaluate_BSE_for_K1_plus_K2(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 3, K1_plus_K2_from_BSE);
 
     utils::hello_world();
 #ifdef USE_MPI
