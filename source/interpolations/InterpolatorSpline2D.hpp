@@ -194,7 +194,7 @@ result_type Spline<Q,rank,2,pos_first_freq_index,DataContainer>::interpolate_spl
         Eigen::Matrix<Q, 1, 16> values = all_coefficients.row(i_row);
         result = (values * weights).eval()[0];
 
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
     }
     else if constexpr(std::is_same_v<result_type,Eigen::Matrix<Q,result_type::RowsAtCompileTime,1>>){

@@ -1944,7 +1944,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        if (isfinite(vpp)) return SOPT_K1a(vp+ vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(v + vpp, Lambda, hartree_term) ;
+        if (my_isfinite(vpp)) return SOPT_K1a(vp+ vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(v + vpp, Lambda, hartree_term) ;
         else return 0.;
         //return vpp*vpp;
     }
@@ -2038,7 +2038,7 @@ public:
     }
 
     auto operator() (double vpp) const -> Q {
-        if (isfinite(vpp)) return SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(vp + vpp, Lambda, hartree_term);
+        if (my_isfinite(vpp)) return SOPT_K1a(v + vpp, Lambda, hartree_term) * Pi.value(0, w, vpp, 0, 'a') * SOPT_K1a_diff(vp + vpp, Lambda, hartree_term);
         else return 0.;
         //return vpp*vpp;
     }

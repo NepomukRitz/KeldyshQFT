@@ -152,7 +152,7 @@ auto FrequencyGrid<eliasGrid>::get_grid_index(const freqType w_in) const -> int 
  */
 auto FrequencyGrid<eliasGrid>::get_grid_index(freqType& t, const freqType w_in) const -> int {
     t = t_from_frequency(w_in);
-    assert(isfinite(t));
+    assert(my_isfinite(t));
 #ifdef PARAMETRIZED_GRID
 
     freqType t_rescaled = (t - t_lower) / spacing_auxiliary_gridpoint;
@@ -271,7 +271,7 @@ double grid_transf_v2(const double w, const double W_scale, const double w_cente
     const double w_dev = w - w_center;
     const double w2 = w_dev * w_dev;
     const double res = sgn(w_dev) * sqrt((sqrt(w2*w2 + 4 * w2 * W_scale * W_scale) - w2) / 2.) / W_scale;
-    assert(isfinite(res));
+    assert(my_isfinite(res));
     return res;
 }
 double grid_transf_inv_v2(const double t, const double W_scale, const double w_center) {
@@ -460,25 +460,25 @@ freqType FrequencyGrid<hybridGrid>::frequency_from_t(const freqType t) const {
     if (t_abs < aux_pos_section_boundaries[0]) {
         // quaddratic part
         const double result = t_abs*t_abs / recip_curvature_quad * sgn(t);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
     }
     else if (t_abs < aux_pos_section_boundaries[1]) {
         // linear part
         const double result = (pos_section_boundaries[0] + (t_abs - aux_pos_section_boundaries[0]) / recip_slope_lin)* sgn(t);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
     }
     else {
 #if HYBRID_GRID_OPTION==0
         // rational part
         const double result = factor_rat / (1. - t_abs / rescale_rat) * sgn(t);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
 #else
         // exponential part
         const double result = (pos_section_boundaries[1] * exp((t_abs - aux_pos_section_boundaries[1]) / (recip_slope_lin * pos_section_boundaries[1]))) * sgn(t);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
 #endif
     }
@@ -490,25 +490,25 @@ freqType FrequencyGrid<hybridGrid>::t_from_frequency(const freqType w) const {
     if (w_abs < pos_section_boundaries[0]) {
         // quadratic part
         const double result = sqrt(w_abs * recip_curvature_quad) * sgn(w);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
     }
     else if (w_abs < pos_section_boundaries[1]) {
         // linear part
         const double result = ((w_abs - pos_section_boundaries[0]) * recip_slope_lin + aux_pos_section_boundaries[0]) * sgn(w);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
     }
     else {
 #if HYBRID_GRID_OPTION==0
         // rational part
         const double result = (1. - factor_rat / w_abs) * rescale_rat * sgn(w);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
 #else
         // exponential part
         const double result = sgn(w) * (aux_pos_section_boundaries[1] + log(w_abs / pos_section_boundaries[1]) * pos_section_boundaries[1] * recip_slope_lin);
-        assert(isfinite(result));
+        assert(my_isfinite(result));
         return result;
 #endif
     }
@@ -641,7 +641,7 @@ double FrequencyGrid<angularGrid>::frequency_from_t(const double t) const {
     const double remainder  = t / half_of_interval_length_for_t - i_interval * 2; // remainder in [-1, 1]
     //const double result = ( i_interval + 0.5 / quad_fac_recip * remainder * (std::abs(remainder) + 2.*lin_fac)) * half_of_interval_length_for_w * 2.;
     const double result = ( i_interval + 0.5 / quad_fac_recip * sgn(remainder) * (pow(std::abs(remainder) + lin_fac, power) - lin_fac_to_power)) * half_of_interval_length_for_w * 2.;
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 
 }
@@ -650,7 +650,7 @@ double FrequencyGrid<angularGrid>::t_from_frequency(const double w) const {
     const double i_interval = floor( (w + half_of_interval_length_for_w) * interval_length_for_w_recip);
     const double remainder  = w / half_of_interval_length_for_w - i_interval * 2; // remainder in [-1, 1]
     const double result = ( i_interval + 0.5 * (pow(std::abs(remainder) * quad_fac_recip + lin_fac_to_power, recip_power) - lin_fac) * sgn(remainder)) * half_of_interval_length_for_t * 2.;
-    assert(isfinite(result));
+    assert(my_isfinite(result));
     return result;
 }
 

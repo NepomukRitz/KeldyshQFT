@@ -129,7 +129,7 @@ template <typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType,all_spins, version>::compute_Keldysh() {
     using namespace selfenergy_loop;
 
-    if (isfinite(v)) {
+    if (my_isfinite(v)) {
 #if SWITCH_SUM_N_INTEGRAL
 
         if constexpr(VECTORIZED_INTEGRATION == 1) {
@@ -444,7 +444,7 @@ template <typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_zeroT() {
     using namespace selfenergy_loop;
 
-    if (isfinite(v)) {
+    if (my_isfinite(v)) {
         // V component
         IntegrandSE<Q,vertType,all_spins,Q,version> integrand (0, fullvertex, prop, 0, pick_spin<version,0>(), v, i_in);
         // split up the integrand at discontinuities and (possible) kinks:
@@ -460,7 +460,7 @@ template <typename Q, typename vertType, bool all_spins, bool version>
 void LoopCalculator<Q,vertType,all_spins, version>::compute_Matsubara_finiteT() {
     using namespace selfenergy_loop;
 
-    if (isfinite(v)) {
+    if (my_isfinite(v)) {
         IntegrandSE<Q,vertType,all_spins,Q,version> integrand(0, fullvertex, prop, 0, pick_spin<version,0>(), v, i_in);
 
         integratedR = - prop.T * matsubarasum<Q>(integrand, Nmin, Nmax);

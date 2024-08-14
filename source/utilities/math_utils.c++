@@ -187,7 +187,7 @@ void K2_convert2internalFreqs(freqType &w, freqType &v) { /// Insert this functi
         /// convert frequencies w and v to polar coordinates rho and phi (with phi in [-Pi, Pi])
         const double rho = sqrt(w*w*0.25 + v*v);
         const double phi = atan2(v,  w*0.5); //rho < 1e-15 ? 0. : acos(  w*0.5 / rho);
-        assert(isfinite(phi));
+        assert(my_isfinite(phi));
         assert(std::abs(phi) < M_PI + 1e-15);
         assert(rho > -1e-15);
         v = phi;// * (v > 0 ? 1. : -1.);
@@ -220,7 +220,7 @@ void K3_convert2internalFreqs(freqType &w, freqType &v, freqType &vp) { /// Inse
         const double theta = rho < 1e-15 ? 0. : acos(w*0.5/rho);
         //const double r = sqrt(v*v + vp*vp);
         //const double theta = atan2(r, w*0.5);
-        assert(isfinite(phi));
+        assert(my_isfinite(phi));
         vp = theta;
         v = phi;
         assert(std::abs(phi) < M_PI + 1e-15);

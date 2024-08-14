@@ -37,14 +37,14 @@ namespace flowgrid {
         inline static double lambda_from_t(double t)
         {
             double value = std::exp(t*log(10));
-            assert (isfinite(value));
+            assert (my_isfinite(value));
             return value; // -t;//
         }
 
         inline static double t_from_lambda(double Lambda)
         {
             double value = std::log(Lambda)/log(10);
-            assert (isfinite(value));
+            assert (my_isfinite(value));
             return value; // -Lambda;//
         }
 
@@ -60,14 +60,14 @@ namespace flowgrid {
         inline static double lambda_from_t(double t)
         {
             double value = Lambda_scale*(pow(10, -t) - 1);
-            assert (isfinite(value));
+            assert (my_isfinite(value));
             return value; // -t;//
         }
 
         inline static double t_from_lambda(double Lambda)
         {
             double value = -log10(1 + Lambda/Lambda_scale);
-            assert (isfinite(value));
+            assert (my_isfinite(value));
             return value; // -Lambda;//
         }
 

@@ -116,8 +116,8 @@ public:
     };
 
     /// getter functions
-    auto get_frequency(int index) const -> freqType {assert(index>=0); assert(index<number_of_gridpoints); assert(isfinite(all_frequencies[index])); return all_frequencies[index];};
-    auto get_auxiliary_gridpoint(int index) const -> freqType {assert(index>=0); assert(index<number_of_gridpoints); assert(isfinite(auxiliary_grid[index])); return auxiliary_grid[index];};
+    auto get_frequency(int index) const -> freqType {assert(index>=0); assert(index<number_of_gridpoints); assert(my_isfinite(all_frequencies[index])); return all_frequencies[index];};
+    auto get_auxiliary_gridpoint(int index) const -> freqType {assert(index>=0); assert(index<number_of_gridpoints); assert(my_isfinite(auxiliary_grid[index])); return auxiliary_grid[index];};
     auto get_all_frequencies() const -> vec<freqType> {return all_frequencies;}
     auto get_all_auxiliary_gridpoints() const -> vec<freqType> {return auxiliary_grid;}
     freqType get_spacing_auxiliary_gridpoints() const {return spacing_auxiliary_gridpoint;}
