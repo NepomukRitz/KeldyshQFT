@@ -114,6 +114,10 @@ elseif(KCS)
 
     target_link_libraries(Keldysh_mfRG $ENV{SZIP_LIB} -lz)
     target_link_libraries(Keldysh_mfRG $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
+
+    target_link_libraries(NRG_QFT $ENV{SZIP_LIB} -lz)
+    target_link_libraries(NRG_QFT $ENV{FFTW_LIB} $ENV{GSL_LIB} -L$ENV{BOOST_LIBDIR}$)
+    target_compile_options(NRG_QFT PRIVATE -w )
 elseif(JSC)
     include_directories(/p/software/juwelsbooster/stages/2022/software/HDF5/1.12.1-iompi-2021b/include) # $HDF5_INC
     include_directories(/p/software/juwelsbooster/stages/2022/software/FFTW/3.3.10-iompi-2021b/include) # $FFTW_INC
