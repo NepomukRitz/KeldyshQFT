@@ -3,11 +3,11 @@ cmake_minimum_required(VERSION 3.10)
 ## Only one of these option can ever be set to ON! This is automatically done by the compile_cluster.sh script.
 option(WORKSTATION "Build on workstation" OFF)
 option(ASC         "Build on ASC cluster" OFF)
-option(KCS         "Build on KCS cluster" OFF)
+option(KCS         "Build on KCS cluster" ON)
 option(SuperMUC    "Build on SuperMUC"    OFF)
 option(JSC         "Build at JSC"         OFF)
 
-option(MACBOOK     "Build on MacBook"     ON)
+option(MACBOOK     "Build on MacBook"     OFF)
 
 
 ## Set the C++ standard, the compiler, compiler optimization options (O0 - off, O3 - best) and add -fopenmp
@@ -146,7 +146,7 @@ elseif(MACBOOK)
     target_compile_options(NRG_QFT PRIVATE -w )
 endif()
 
-
+if (MACBOOK)
 # Documentation
 find_package(Doxygen REQUIRED)
 get_target_property(KELDYSH_MFRG_PUBLIC_HEADER_DIR Keldysh_mfRG INTERFACE_INCLUDE_DIRECTORIES)
@@ -187,3 +187,4 @@ add_custom_target(Sphinx ALL
                   ${SPHINX_SOURCE} ${SPHINX_BUILD}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                   COMMENT "Generating documentation with Sphinx")
+endif()

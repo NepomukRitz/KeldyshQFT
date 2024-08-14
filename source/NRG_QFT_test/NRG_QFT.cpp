@@ -87,7 +87,8 @@ auto main(int argc, char * argv[]) -> int {
 
     const double lambda = 2.0 / U_over_Delta - config.Gamma;
 
-    std::string NRG_DATAPATH     = "/Users/nepomuk-work/PhD/NRG_consistency/data/";     // for MacBook
+    //std::string NRG_DATAPATH     = "/Users/nepomuk-work/PhD/NRG_consistency/data/";              // for MacBook
+    std::string NRG_DATAPATH     = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
     std::string NRG_FILENAME     = NRG_DATAPATH + "siam_u0.5.h5";
     std::string NRG_Cpp_FILENAME = NRG_DATAPATH + "siam_u0.5_C++.h5";
 
