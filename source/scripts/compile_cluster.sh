@@ -24,6 +24,7 @@ then
   module load boost/1.75.0-intel21-impi
   module load eigen/3.4.0-intel21
   module load cmake/3.21.4
+  module load doxygen
 
   #module load intel intel-mpi/2019.8.254
 
@@ -65,11 +66,11 @@ cmake -DWORKSTATION=OFF -D$CLUSTER=ON -S$src_dir -B$build_dir
 
 
 # build
-TARGET=source
+TARGET=NRG_QFT
 cmake --build . --target $TARGET -- -j 9
 
-mv ./$TARGET $src_dir
+mv ./$TARGET $src_dir/..
 
 GREEN='\033[1;32m' # green
 NC='\033[0m' # no color
-echo -e "\n Moved executable ${GREEN}$TARGET ${NC}to Keldysh_mfRG source directory.\n"
+echo -e "\n Moved executable ${GREEN}$TARGET ${NC}to main directory.\n"
