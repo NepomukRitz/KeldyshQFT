@@ -15,6 +15,9 @@ Project_Default.xml
 !*.rst
 .DS_Store
 .vscode*
-build/*
+source/build/*
 source/Documentation/html
 source/Documentation/xml
+data/*
+runs/*
+NRG_QFT
