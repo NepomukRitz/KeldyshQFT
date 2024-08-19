@@ -116,7 +116,7 @@ auto main(int argc, char * argv[]) -> int {
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
     const State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
-    write_state_to_hdf(IDENTITIES_FILENAME, 0, 5, selfenergy_from_SDE_v3);
+    write_state_to_hdf(IDENTITIES_FILENAME, 0, 6, selfenergy_from_SDE_v3);
 
     const State<comp,false> selfenergy_from_SDE_v2 = evaluate_SDE_from_Gamma(NRG_state);
     add_state_to_hdf  (IDENTITIES_FILENAME, 1, selfenergy_from_SDE_v2);
