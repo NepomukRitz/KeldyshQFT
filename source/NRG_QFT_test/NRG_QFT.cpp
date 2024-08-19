@@ -75,7 +75,7 @@ auto main(int argc, char * argv[]) -> int {
     static_assert(MAX_DIAG_CLASS == 3);
     static_assert(SBE_DECOMPOSITION == 0);
     static_assert(REG == 2);
-    static_assert(VECTORIZED_INTEGRATION == 0);
+    static_assert(VECTORIZED_INTEGRATION == 1);
 
     /// Set up config struct
     fRG_config config;
@@ -88,11 +88,14 @@ auto main(int argc, char * argv[]) -> int {
 
     const double lambda = 2.0 / U_over_Delta - config.Gamma;
 
-    const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/";              // for MacBook
-    //const std::string NRG_DATAPATH        = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
-    const std::string NRG_FILENAME        = NRG_DATAPATH + "siam_u"+std::to_string(u)+".h5";
-    const std::string NRG_Cpp_FILENAME    = NRG_DATAPATH + "siam_u"+std::to_string(u)+"_C++.h5";
-    const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u"+std::to_string(u)+"_identities.h5";
+    std::ostringstream u_str;
+    u_str << std::fixed << std::setprecision(1) << u;
+
+    //const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/";              // for MacBook
+    const std::string NRG_DATAPATH        = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
+    const std::string NRG_FILENAME        = NRG_DATAPATH + "siam_u"+u_str.str()+".h5";
+    const std::string NRG_Cpp_FILENAME    = NRG_DATAPATH + "siam_u"+u_str.str()+"_C++.h5";
+    const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u"+u_str.str()+"_identities.h5";
 
     utils::check_input(config);
     check_NRG_input(NRG_FILENAME, U_over_Delta, T_in);
@@ -112,17 +115,23 @@ auto main(int argc, char * argv[]) -> int {
 
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
-    State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
-    write_state_to_hdf(IDENTITIES_FILENAME, 0, 4, selfenergy_from_SDE_v3);
+    const State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
+    write_state_to_hdf(IDENTITIES_FILENAME, 0, 5, selfenergy_from_SDE_v3);
 
-    State<comp,false> selfenergy_from_SDE_v2 = evaluate_SDE_from_Gamma(NRG_state);
+    const State<comp,false> selfenergy_from_SDE_v2 = evaluate_SDE_from_Gamma(NRG_state);
     add_state_to_hdf  (IDENTITIES_FILENAME, 1, selfenergy_from_SDE_v2);
 
-    State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
+    const State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
     add_state_to_hdf  (IDENTITIES_FILENAME, 2, K1_from_BSE);
 
-    State<comp,false> K1_plus_K2_from_BSE    = evaluate_BSE_for_K1_plus_K2(NRG_state);
-    add_state_to_hdf  (IDENTITIES_FILENAME, 3, K1_plus_K2_from_BSE);
+    const State<comp,false> K1_from_BSE_via_K2b = evaluate_BSE_for_K1_via_K2b(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 3, K1_from_BSE_via_K2b);
+
+    const State<comp,false> K2_from_BSE = evaluate_BSE_for_K2(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 4, K2_from_BSE);
+
+    const State<comp,false> K1_plus_K2_from_BSE = evaluate_BSE_for_K1_plus_K2(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 5, K1_plus_K2_from_BSE);
 
     utils::hello_world();
 #ifdef USE_MPI
