@@ -62,7 +62,7 @@ cd "$build_dir" || exit
 
 
 # load cmake project
-cmake -DWORKSTATION=OFF -D$CLUSTER=ON -S$src_dir -B$build_dir
+cmake -DWORKSTATION=OFF -DMACBOOK=OFF -D$CLUSTER=ON -S$src_dir -B$build_dir
 
 
 # build

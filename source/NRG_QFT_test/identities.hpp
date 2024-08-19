@@ -10,6 +10,10 @@ State<comp,false> evaluate_SDE_from_Gamma(const State<comp,false>& NRG_state);
 
 State<comp,false> evaluate_BSE_for_K1(const State<comp,false>& NRG_state);
 
+State<comp,false> evaluate_BSE_for_K1_via_K2b(const State<comp,false>& NRG_state);
+
+State<comp,false> evaluate_BSE_for_K2(const State<comp,false>& NRG_state);
+
 State<comp,false> evaluate_BSE_for_K1_plus_K2(const State<comp,false>& NRG_state);
 
 

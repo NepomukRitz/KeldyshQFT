@@ -3,11 +3,11 @@ cmake_minimum_required(VERSION 3.10)
 ## Only one of these option can ever be set to ON! This is automatically done by the compile_cluster.sh script.
 option(WORKSTATION "Build on workstation" OFF)
 option(ASC         "Build on ASC cluster" OFF)
-option(KCS         "Build on KCS cluster" ON)
+option(KCS         "Build on KCS cluster" OFF)
 option(SuperMUC    "Build on SuperMUC"    OFF)
 option(JSC         "Build at JSC"         OFF)
 
-option(MACBOOK     "Build on MacBook"     OFF)
+option(MACBOOK     "Build on MacBook"     ON)
 
 
 ## Set the C++ standard, the compiler, compiler optimization options (O0 - off, O3 - best) and add -fopenmp

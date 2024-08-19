@@ -47,11 +47,12 @@ void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME){
 }
 
 void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
-    utils::print("Reading in K1 ... ");
+    utils::print("Reading in K1 ... ", false);
 
     const NRG_frequencies NRG_freqs(NRG_FILENAME);
 
     for (const char& ch: std::string("apt")) {
+        utils::print_add("in channel "+ std::string(1, ch) +" ... ", false);
         /// read in NRG K1 components:
         NRG_vertex_comps NRG_K1;
         NRG_K1.updown_real = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/K1/"+ std::string(1, ch) +"/up_down/real");
@@ -132,12 +133,12 @@ void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
 }
 
 void build_NRG_K2_and_K2p(State<comp>& NRG_state, const std::string& NRG_FILENAME){
-    utils::print("Reading in K2 and K2p ... ", true);
+    utils::print("Reading in K2 and K2p ... ", false);
 
     const NRG_frequencies NRG_freqs(NRG_FILENAME);
 
     for (const char& ch: std::string("apt")) {
-        utils::print("... in channel " + std::string(1, ch) + "...", true);
+        utils::print_add("in channel " + std::string(1, ch) + " ... ", false);
         /// read in NRG K2 and K2p components:
         NRG_vertex_comps NRG_K2;
         NRG_vertex_comps NRG_K2p;
@@ -318,7 +319,7 @@ void build_NRG_K2_and_K2p(State<comp>& NRG_state, const std::string& NRG_FILENAM
             }
         }
     }
-    utils::print("... done.", true);
+    utils::print_add("done.", true);
 }
 
 void build_NRG_core_as_K3t(State<comp>& NRG_state, const std::string& NRG_FILENAME){
