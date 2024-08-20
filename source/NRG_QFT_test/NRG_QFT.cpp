@@ -42,7 +42,6 @@ State<comp, false> read_or_build_NRG_state(const double& lambda, const fRG_confi
         // new state to hold NRG data with Hartree value initialized to config.U / 2
         // and vertex initialized to -config.U / 2:
         State<comp,false> NRG_state = State<comp,false>(lambda, config, true);
-        NRG_state.vertex.irred().initialize_NRG_input(lambda, config);
 
         build_NRG_Sigma(NRG_state, NRG_FILENAME);
         build_NRG_K1(NRG_state, NRG_FILENAME);
