@@ -148,7 +148,7 @@ State<comp,false> evaluate_BSE_for_K1_plus_K2(const State<comp,false>& NRG_state
     State<comp,false>       state_for_BSE = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
     const State<comp,false> bare_state    = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
 
-    Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+    const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
     utils::print("Evaluating BSE for K1 + K2 ... ");
     for (const char& ch: std::string("apt")) {
@@ -158,4 +158,25 @@ State<comp,false> evaluate_BSE_for_K1_plus_K2(const State<comp,false>& NRG_state
     }
     utils::print_add("done.", true);
     return state_for_BSE;
+}
+
+std::vector<double> evaluate_WardIdentity_RHS(const State<comp,false>& NRG_state){
+    const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+
+    const double vmin = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_lower;
+    const double vmax = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_upper;
+
+    std::vector<double> WI_RHS (nFER);
+#pragma omp parallel for schedule(static)
+    for (int iv=0; iv<nFER; ++iv) {
+        const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
+
+        const Integrand_Phi_tilde<comp> integrand (G, NRG_state.vertex, v, 0);
+        Adapt<Integrand_Phi_tilde<comp>> adaptor(1e-7, integrand);
+
+        const double result = (NRG_state.config.Gamma + NRG_state.Lambda) / (2 * M_PI)
+                * myimag(adaptor.integrate(vmin, vmax));
+        WI_RHS[iv] = result;
+    }
+    return WI_RHS;
 }

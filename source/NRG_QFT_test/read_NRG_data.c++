@@ -63,7 +63,7 @@ multidimensional::multiarray<double,4> normalize_NRG_vertex_component(const mult
             for (int iv = 0; iv < Nv; ++iv) {
                 for (int ivp = 0; ivp < Nvp; ++ivp) {
                     NRG_component.at(iK, iw, iv, ivp) = - vertex_component.at(K[3], K[1], K[2], K[0], iw, iv, ivp);
-                    // global minus sign, switch middle Keldysh components. TODO: Check that this is now correct.
+                    // global minus sign, switch middle Keldysh components.
                 }
             }
         }

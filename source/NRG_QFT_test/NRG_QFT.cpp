@@ -90,8 +90,8 @@ auto main(int argc, char * argv[]) -> int {
     std::ostringstream u_str;
     u_str << std::fixed << std::setprecision(1) << u;
 
-    //const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/";              // for MacBook
-    const std::string NRG_DATAPATH        = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
+    const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/";              // for MacBook
+    //const std::string NRG_DATAPATH        = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
     const std::string NRG_FILENAME        = NRG_DATAPATH + "siam_u"+u_str.str()+".h5";
     const std::string NRG_Cpp_FILENAME    = NRG_DATAPATH + "siam_u"+u_str.str()+"_C++.h5";
     const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u"+u_str.str()+"_identities.h5";
@@ -114,6 +114,7 @@ auto main(int argc, char * argv[]) -> int {
 
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
+    /*
     const State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
     write_state_to_hdf(IDENTITIES_FILENAME, 0, 6, selfenergy_from_SDE_v3);
 
@@ -131,6 +132,10 @@ auto main(int argc, char * argv[]) -> int {
 
     const State<comp,false> K1_plus_K2_from_BSE = evaluate_BSE_for_K1_plus_K2(NRG_state);
     add_state_to_hdf  (IDENTITIES_FILENAME, 5, K1_plus_K2_from_BSE);
+    */
+
+    const std::vector<double> WI_RHS = evaluate_WardIdentity_RHS(NRG_state);
+    write_h5_rvecs(NRG_DATAPATH + "siam_u"+u_str.str()+"_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
 
     utils::hello_world();
 #ifdef USE_MPI
