@@ -620,6 +620,7 @@ struct IndicesSymmetryTransformations: VertexInput{
  * - T: temperature
  * - Gamma: hybridization strength
  * - epsilon: Impurity on-site energy
+ * - D: width of the box-shaped hybridization function. Set to, e.g., 10000 for wide-band limit (standard setting). At present, only used for REG==2 in the KF.
  * - save_intermediateResults: determines whether intermediate results during individual steps of the ODE solver shall be saved or not.
  * - nloops: maximal loop order to be computed during the fRG flow
  * - number_of_nodes: number of nodes to be used during the computation
@@ -632,6 +633,7 @@ struct fRG_config {
     double T = 1.;
     double Gamma = 1.;
     double epsilon = -0.5 * U;
+    double D = 10000;
     bool save_intermediateResults = false;
     int nloops=1;
     int number_of_nodes=1;

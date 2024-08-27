@@ -62,8 +62,9 @@ auto main(int argc, char * argv[]) -> int {
 #endif
     /// Parse command line arguments
     const double T_in = atof(argv[1]);              // Temperature in units of U
-    const double u = atof(argv[2]);
+    const double u = atof(argv[2]);                 // value for u = U / (πΔ)
     const double U_over_Delta = u * M_PI;
+    const double D_in = atof(argv[3]);              // hybridization band-width. Use >= 10000 for wide-band limit
 
     /// Parameter assertions
     static_assert(DEBUG_SYMMETRIES == 1);
@@ -82,6 +83,7 @@ auto main(int argc, char * argv[]) -> int {
     config.T = T_in;
     config.Gamma = 0.2;
     config.epsilon = - config.U * 0.5;
+    config.D = D_in;
     config.number_of_nodes = 1;
 
 

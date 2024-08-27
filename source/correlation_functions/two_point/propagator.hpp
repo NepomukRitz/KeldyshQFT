@@ -40,6 +40,7 @@ public:
     const double epsilon;
     const double Gamma;
     const double T;
+    const double D;
 
 public:
 
@@ -55,7 +56,7 @@ public:
      */
     Propagator(double Lambda_in, char type_in, const fRG_config& config)
             : Lambda(Lambda_in), selfenergy(SelfEnergy<Q> (Lambda_in, config)), diff_selfenergy(SelfEnergy<Q> (Lambda_in, config)), type(type_in),
-              epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
+              epsilon(config.epsilon), Gamma(config.Gamma), T(config.T), D(config.D) { }
 
     /**
      * Dressed propagator for non-flowing calculations, i,e, no differential SelfEnergy is needed and is set to the undifferentiated self-energy.
@@ -66,7 +67,7 @@ public:
      */
     Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, char type_in, const fRG_config& config)
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(self_in), type(type_in),
-            epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
+            epsilon(config.epsilon), Gamma(config.Gamma), T(config.T), D(config.D) { }
 
 
     /**
@@ -79,7 +80,7 @@ public:
      */
     Propagator(double Lambda_in, const SelfEnergy<Q>& self_in, const SelfEnergy<Q>& diffSelf_in, char type_in, const fRG_config& config)
             :Lambda(Lambda_in), selfenergy(self_in), diff_selfenergy(diffSelf_in), type(type_in),
-             epsilon(config.epsilon), Gamma(config.Gamma), T(config.T) { }
+             epsilon(config.epsilon), Gamma(config.Gamma), T(config.T), D(config.D) { }
 
      /**
       * Function to smoothly interpolate the propagator on the frequency grid of the underlying self-energy.
@@ -671,7 +672,7 @@ auto Propagator<Q>::G0R_inv(const freqType v, const int i_in) const -> Q {
 }
 template <typename Q>
 auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
-    const Q G0inv_R = v - epsilon + glb_i * Gamma * 0.5;
+    const Q G0inv_R = v - epsilon + glb_i * Gamma * 0.5 * ((std::abs(v) < D) ? 1.0 : 0.0);
     return G0inv_R;
 }
 
@@ -680,7 +681,7 @@ auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::GR_REG2(const freqType v, const int i_in) const -> Q {
-    const Q res = 1./( G0R_inv(v, i_in) + glb_i*Lambda*0.5 - selfenergy.valsmooth(0, v, i_in) );
+    const Q res = 1./( G0R_inv(v, i_in) + glb_i * Lambda * 0.5 * ((std::abs(v) < D) ? 1.0 : 0.0) - selfenergy.valsmooth(0, v, i_in) );
     return res;
 }
 
