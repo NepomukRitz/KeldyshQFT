@@ -32,6 +32,25 @@ double Fermi_distribution(const double nu, const double T) {
     }
 }
 
+/**
+ * @param v fermionic frequency argument
+ * @param D half-bandwidth
+ * @return negative of the real part of a box-shaped hybridization function divided by Δ.
+ * Enters as G_0^R(ν) = [ν - ε - Δ^R(ν)]^(-1) with Δ^R(ν) = Δ/π * ln|(ν+D)/(ν-D)| - iΔ θ(D - |v|), see, e.g., (16.28) in Coleman
+ */
+auto box_HybFct_re(const double& v, const double& D) -> double{
+    return -std::log((v + D) / (v - D)) / M_PI;
+}
+
+/**
+ * @param v fermionic frequency argument
+ * @param D half-bandwidth
+ * @return negative of the imaginary part of a box-shaped retarded hybridization function divided by Δ.
+ */
+auto box_HybFct_im(const double& v, const double& D) -> double{
+    return ((std::abs(v) < D) ? 1.0 : 0.0);
+}
+
 
 template <>
 auto Propagator<double>::GK(const double v, const int i_in) const -> double {

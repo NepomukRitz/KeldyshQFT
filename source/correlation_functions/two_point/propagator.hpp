@@ -25,6 +25,11 @@ auto Eff_fac(double v, const double T) -> double;
 // Textbook version of the Fermi distribution
 double Fermi_distribution (double nu);
 
+auto box_HybFct_re(const double& v, const double& D) -> double;
+
+auto box_HybFct_im(const double& v, const double& D) -> double;
+
+
 
 /**
  * Propagator class used for G, S, and the Katanin extension.
@@ -672,7 +677,7 @@ auto Propagator<Q>::G0R_inv(const freqType v, const int i_in) const -> Q {
 }
 template <typename Q>
 auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
-    const Q G0inv_R = v - epsilon + glb_i * Gamma * 0.5 * ((std::abs(v) < D) ? 1.0 : 0.0);
+    const Q G0inv_R = v - epsilon + Gamma * 0.5 * (box_HybFct_re(v, D) + glb_i * box_HybFct_im(v, D));
     return G0inv_R;
 }
 
@@ -681,7 +686,7 @@ auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
 
 template <typename Q>
 auto Propagator<Q>::GR_REG2(const freqType v, const int i_in) const -> Q {
-    const Q res = 1./( G0R_inv(v, i_in) + glb_i * Lambda * 0.5 * ((std::abs(v) < D) ? 1.0 : 0.0) - selfenergy.valsmooth(0, v, i_in) );
+    const Q res = 1./( G0R_inv(v, i_in) + Lambda * 0.5 * (box_HybFct_re(v, D) + glb_i * box_HybFct_im(v, D)) - selfenergy.valsmooth(0, v, i_in) );
     return res;
 }
 
