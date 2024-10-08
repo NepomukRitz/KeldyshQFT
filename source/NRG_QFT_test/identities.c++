@@ -160,7 +160,7 @@ State<comp,false> evaluate_BSE_for_K1_plus_K2(const State<comp,false>& NRG_state
     return state_for_BSE;
 }
 
-std::vector<double> evaluate_WardIdentity_RHS(const State<comp,false>& NRG_state){
+std::vector<double> evaluate_1D_WardIdentity_RHS(const State<comp,false>& NRG_state){
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
     const double vmin = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_lower;
@@ -179,4 +179,36 @@ std::vector<double> evaluate_WardIdentity_RHS(const State<comp,false>& NRG_state
         WI_RHS[iv] = result;
     }
     return WI_RHS;
+}
+
+std::vector<std::vector<comp>> evaluate_2D_WardIdentity_RHS(const State<comp, false>& NRG_state, const bool using_G0){
+    const int a1p = 1;    // Keldysh index. Can be 1 or 2
+    const int a1  = 1;    // todo: loop over all four combinations of a1p and a1.
+    const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+
+    const double vmin = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_lower;
+    const double vmax = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_upper;
+
+    // do the calculation for each value of w separately.
+    std::vector<double> Ws = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies();
+    std::vector<std::vector<comp>> results = {};
+
+    //todo: parallelize here already, once everything works.
+    for (int iw=0; iw<nBOS; ++iw){
+        utils::print("Computing the WI for iw=" + std::to_string(iw) + " of "+std::to_string(nBOS), true);
+        const double w = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_frequency(iw);
+        std::vector<comp> WI_RHS(nFER);
+
+#pragma omp parallel for schedule(static)
+        for (int iv=0; iv<nFER; ++iv){
+            const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
+
+            const Integrand_2D_WI integrand(G, NRG_state.vertex, w, v, a1p, a1);
+            Adapt<Integrand_2D_WI> adaptor(1e-7, integrand);
+
+            WI_RHS[iv] = adaptor.integrate(vmin, vmax);
+        }
+        results.push_back(WI_RHS);
+    }
+    return results;
 }

@@ -10,6 +10,29 @@
 #include "KramersKronig.hpp"   // perform check of Kramers-Kronig relation
 #include "../bubble/bubble_function.hpp"
 
+class Integrand_2D_WI {
+    const Propagator<comp> G;
+    const Vertex<comp,false>& vertex;
+    const double w;
+    const double v;
+    const int a1p;
+    const int a1;
+
+    //not to be changed:
+    const int i_spin = 0;
+    const int i_in = 0;
+
+public:
+    Integrand_2D_WI(const Propagator<comp>& G_in, const Vertex<comp,false>& vertex_in, const double w_in,
+                    const double v_in, const int a1p_in, const int a1_in) : G(G_in), vertex(vertex_in),
+                    w(w_in), v(v_in), a1p(a1p_in), a1(a1_in) {}
+
+    auto operator() (double v) const -> comp {
+        //todo: implement!
+        return 0.0;
+    }
+};
+
 template <typename Q>
 class Integrand_Phi_tilde {
 public:

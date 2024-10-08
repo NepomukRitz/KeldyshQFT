@@ -136,8 +136,10 @@ auto main(int argc, char * argv[]) -> int {
     add_state_to_hdf  (IDENTITIES_FILENAME, 5, K1_plus_K2_from_BSE);
     */
 
-    const std::vector<double> WI_RHS = evaluate_WardIdentity_RHS(NRG_state);
-    write_h5_rvecs(NRG_DATAPATH + "siam_u"+u_str.str()+"_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
+    //const std::vector<double> WI_RHS = evaluate_1D_WardIdentity_RHS(NRG_state);
+    //write_h5_rvecs(NRG_DATAPATH + "siam_u"+u_str.str()+"_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
+
+    const std::vector<std::vector<comp>> results = evaluate_2D_WardIdentity_RHS(NRG_state);
 
     utils::hello_world();
 #ifdef USE_MPI
