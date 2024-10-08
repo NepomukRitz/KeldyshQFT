@@ -182,8 +182,8 @@ std::vector<double> evaluate_1D_WardIdentity_RHS(const State<comp,false>& NRG_st
 }
 
 std::vector<std::vector<comp>> evaluate_2D_WardIdentity_RHS(const State<comp, false>& NRG_state, const bool using_G0){
-    const int a1p = 1;    // Keldysh index. Can be 1 or 2
-    const int a1  = 1;    // todo: loop over all four combinations of a1p and a1.
+    const int a1p = 0;    // Keldysh index. Can be 0 or 1. Corresponds to 1 or 2 in our formulas
+    const int a1  = 0;    // todo: loop over all four combinations of a1p and a1.
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
     const double vmin = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_lower;
@@ -199,7 +199,7 @@ std::vector<std::vector<comp>> evaluate_2D_WardIdentity_RHS(const State<comp, fa
         const double w = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_frequency(iw);
         std::vector<comp> WI_RHS(nFER);
 
-#pragma omp parallel for schedule(static)
+//#pragma omp parallel for schedule(static)
         for (int iv=0; iv<nFER; ++iv){
             const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
 

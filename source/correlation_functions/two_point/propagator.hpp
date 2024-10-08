@@ -682,6 +682,7 @@ auto Propagator<Q>::G0R_inv_SIAM(const freqType v, const int i_in) const -> Q {
 }
 
 
+
 /////// PROPAGATOR FUNCTIONS for hybridization regulator ///////
 
 template <typename Q>
