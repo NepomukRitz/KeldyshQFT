@@ -123,7 +123,7 @@ auto main(int argc, char * argv[]) -> int {
     //const State<comp,false> selfenergy_from_SDE_v2 = evaluate_SDE_from_Gamma(NRG_state);
     //add_state_to_hdf  (IDENTITIES_FILENAME, 1, selfenergy_from_SDE_v2);
 
-    const State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
+    //const State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
     //add_state_to_hdf  (IDENTITIES_FILENAME, 2, K1_from_BSE);
 
     //const State<comp,false> K1_from_BSE_via_K2b = evaluate_BSE_for_K1_via_K2b(NRG_state);
@@ -139,7 +139,7 @@ auto main(int argc, char * argv[]) -> int {
     //const std::vector<double> WI_RHS = evaluate_1D_WardIdentity_RHS(NRG_state);
     //write_h5_rvecs(NRG_DATAPATH + "siam_u"+u_str.str()+"_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
 
-    //const std::vector<std::vector<comp>> results = evaluate_2D_WardIdentity_RHS(NRG_state);
+    const std::vector<std::vector<comp>> results = evaluate_2D_WardIdentity_RHS(NRG_state);
 
     utils::hello_world();
 #ifdef USE_MPI

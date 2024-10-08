@@ -39,7 +39,8 @@ double Fermi_distribution(const double nu, const double T) {
  * Enters as G_0^R(ν) = [ν - ε - Δ^R(ν)]^(-1) with Δ^R(ν) = Δ/π * ln|(ν+D)/(ν-D)| - iΔ θ(D - |v|), see, e.g., (16.28) in Coleman
  */
 auto box_HybFct_re(const double& v, const double& D) -> double{
-    return -std::log((v + D) / (v - D)) / M_PI;
+    //if (D > 1000) return 0.0;
+    return -std::log(std::abs((v + D) / (v - D))) / M_PI;
 }
 
 /**

@@ -199,12 +199,12 @@ std::vector<std::vector<comp>> evaluate_2D_WardIdentity_RHS(const State<comp, fa
         const double w = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_frequency(iw);
         std::vector<comp> WI_RHS(nFER);
 
-//#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(static)
         for (int iv=0; iv<nFER; ++iv){
             const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
 
             const Integrand_2D_WI integrand(G, NRG_state.vertex, w, v, a1p, a1);
-            Adapt<Integrand_2D_WI> adaptor(1e-7, integrand);
+            Adapt<Integrand_2D_WI> adaptor(1e-5, integrand);
 
             WI_RHS[iv] = adaptor.integrate(vmin, vmax);
         }
