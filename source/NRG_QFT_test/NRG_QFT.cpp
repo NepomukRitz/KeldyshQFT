@@ -116,30 +116,39 @@ auto main(int argc, char * argv[]) -> int {
 
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config, NRG_FILENAME, NRG_Cpp_FILENAME);
 
+    const IdentityChecker Identities(NRG_state, NRG_DATAPATH + "siam_u"+u_str.str());
+    //Identities.check_parquet_equations();
+    //Identities.compute_1D_WardIdentity_RHS();
+    //Identities.compute_2D_WardIdentity_LHS();
+    Identities.compute_2D_WardIdentity_RHS();
 
-    //const State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
-    //write_state_to_hdf(IDENTITIES_FILENAME, 0, 6, selfenergy_from_SDE_v3);
+    /*
+    const State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);
+    write_state_to_hdf(IDENTITIES_FILENAME, 0, 6, selfenergy_from_SDE_v3);
 
-    //const State<comp,false> selfenergy_from_SDE_v2 = evaluate_SDE_from_Gamma(NRG_state);
-    //add_state_to_hdf  (IDENTITIES_FILENAME, 1, selfenergy_from_SDE_v2);
+    const State<comp,false> selfenergy_from_SDE_v2 = evaluate_SDE_from_Gamma(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 1, selfenergy_from_SDE_v2);
 
-    //const State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
-    //add_state_to_hdf  (IDENTITIES_FILENAME, 2, K1_from_BSE);
+    const State<comp,false> K1_from_BSE = evaluate_BSE_for_K1(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 2, K1_from_BSE);
 
-    //const State<comp,false> K1_from_BSE_via_K2b = evaluate_BSE_for_K1_via_K2b(NRG_state);
-    //add_state_to_hdf  (IDENTITIES_FILENAME, 3, K1_from_BSE_via_K2b);
+    const State<comp,false> K1_from_BSE_via_K2b = evaluate_BSE_for_K1_via_K2b(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 3, K1_from_BSE_via_K2b);
 
-    //const State<comp,false> K2_from_BSE = evaluate_BSE_for_K2(NRG_state);
-    //add_state_to_hdf  (IDENTITIES_FILENAME, 4, K2_from_BSE);
+    const State<comp,false> K2_from_BSE = evaluate_BSE_for_K2(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 4, K2_from_BSE);
 
-    //const State<comp,false> K1_plus_K2_from_BSE = evaluate_BSE_for_K1_plus_K2(NRG_state);
-    //add_state_to_hdf  (IDENTITIES_FILENAME, 5, K1_plus_K2_from_BSE);
-
+    const State<comp,false> K1_plus_K2_from_BSE = evaluate_BSE_for_K1_plus_K2(NRG_state);
+    add_state_to_hdf  (IDENTITIES_FILENAME, 5, K1_plus_K2_from_BSE);
+    */
 
     //const std::vector<double> WI_RHS = evaluate_1D_WardIdentity_RHS(NRG_state);
     //write_h5_rvecs(NRG_DATAPATH + "siam_u"+u_str.str()+"_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
 
-    const std::vector<std::vector<comp>> results = evaluate_2D_WardIdentity_RHS(NRG_state);
+    //const std::vector<std::vector<comp>> results_LHS = evaluate_2D_WardIdentity_LHS(NRG_state);
+    //const std::vector<std::vector<comp>> results_RHS = evaluate_2D_WardIdentity_RHS(NRG_state);
+
+    //write_h5_rvecs(NRG_DATAPATH + "siam_u"+u_str.str()+"_2D_WI_LHS.h5", {"2D_WI_LHS"}, {results_LHS});
 
     utils::hello_world();
 #ifdef USE_MPI

@@ -40,3 +40,7 @@ void test_write_h5_rvecs() {
     rvec y{-0.5, 0.5, 1.5, 4};
     write_h5_rvecs("test_write_h5_rvecs.h5", {"xvector", "yvector"}, {x, y});
 }
+
+void write_h5_cvecs(){
+
+}

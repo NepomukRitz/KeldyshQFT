@@ -85,7 +85,6 @@ public:
         const double v_a  = v + 0.5 * w;
         const double vp_a = vt + 0.5 * w;
 
-        //if ((std::abs(w_a) > 10) or (std::abs(v_a) > 10) or (std::abs(vp_a) > 10)) return 0.0;
 
         // Keldysh sums:
         for (int a2p = 0; a2p < 2; ++a2p) {
@@ -95,11 +94,10 @@ public:
                 for (int a1t = 0; a1t < 2; ++a1t) {
                     const int a1t_bar = (a1t + 1) % 2;
                     for (int a2t = 0; a2t < 2; ++a2t) {
-                        const int a2t_bar = (a2t + 1) % 2;
-
                         const int iK = integer_Keldysh_index({a1p, a2p_bar, a2_bar, a1});
-                        const VertexInput input (iK , i_spin, w_a, v_a, vp_a, i_in, 'a');
-                        const comp vertex_value = vertex.value<'a'>(input);
+                        const VertexInput input_V    (iK , 0, w_a, v_a, vp_a, i_in, 'a');
+                        const VertexInput input_Vhat (iK , 1, w_a, v_a, vp_a, i_in, 'a');
+                        const comp vertex_value = 2.0 * vertex.value<'a'>(input_Vhat) + vertex.value<'a'>(input_V);
 
                         first_term += G0inv_value(a2t, a1t_bar, vt) * G_value(a1t, a2p, vt)
                                 * vertex_value * G_value(a2, a2t, vt + w);
@@ -110,7 +108,7 @@ public:
                 }
             }
         }
-        return first_term - second_term;
+        return (first_term - second_term) / (2 * M_PI);
     }
 };
 

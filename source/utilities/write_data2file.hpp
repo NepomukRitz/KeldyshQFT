@@ -20,4 +20,6 @@ void test_write_dat_rvecs();
 void write_h5_rvecs(std::string path, std::initializer_list<std::string> key_list, std::initializer_list<rvec> rvec_list);
 void test_write_h5_rvecs();
 
+void write_h5_cvecs();
+
 #endif // KELDYSH_MFRG_WRITE_DATA2FILE_HPP
