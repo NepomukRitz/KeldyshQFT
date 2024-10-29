@@ -118,9 +118,10 @@ auto main(int argc, char * argv[]) -> int {
 
     const IdentityChecker Identities(NRG_state, NRG_DATAPATH + "siam_u"+u_str.str());
     //Identities.check_parquet_equations();
-    //Identities.compute_1D_WardIdentity_RHS();
+    //Identities.compute_1D_WardIdentity_wrt_v_RHS();
+    Identities.compute_1D_WardIdentity_wrt_w_RHS();
     //Identities.compute_2D_WardIdentity_LHS();
-    Identities.compute_2D_WardIdentity_RHS();
+    //Identities.compute_2D_WardIdentity_RHS();
 
     /*
     const State<comp,false> selfenergy_from_SDE_v3 = evaluate_SDE_from_K1_plus_K2(NRG_state);

@@ -36,7 +36,7 @@ class Integrand_2D_WI {
     }
 
     [[nodiscard]] comp G0_inv_R(const double vt) const {
-        const comp Delta = (box_HybFct_re(vt, G.D) + glb_i * box_HybFct_im(vt, G.D));
+        const comp Delta = box_HybFct_re(vt, G.D) + glb_i * box_HybFct_im(vt, G.D);
         return vt - G.epsilon + 0.5 * (G.Gamma + G.Lambda) * Delta;
     }
 
@@ -55,10 +55,26 @@ class Integrand_2D_WI {
 
         if ((k1p == 0) and (k1 == 0)) return G0_inv_K(vt);
         if ((k1p == 0) and (k1 == 1)) return G0_inv_R(vt);
-        if ((k1p == 1) and (k1 == 0)) return conj(G0_inv_R(vt));
+        if ((k1p == 1) and (k1 == 0)) return myconj(G0_inv_R(vt));
         if ((k1p == 1) and (k1 == 1)) return 0.0;
 
         assert (false);
+    }
+
+    [[nodiscard]] comp minus_hybFct_value(const int k1p, const int k1, const double vt) const {
+        assert (k1p==0 or k1p==1);
+        assert (k1 ==0 or k1 ==1);
+
+        if ((k1p == 0) and (k1 == 0)) return G0_inv_K(vt);  // only contribution from hybridization function
+        if ((k1p == 0) and (k1 == 1)) { // retarded component
+            const comp minus_Delta = box_HybFct_re(vt, G.D) + glb_i * box_HybFct_im(vt, G.D);
+            return 0.5 * (G.Gamma + G.Lambda) * minus_Delta;
+        }
+        if ((k1p == 1) and (k1 == 0)) { // advanced component
+            const comp minus_Delta_conj = box_HybFct_re(vt, G.D) - glb_i * box_HybFct_im(vt, G.D);
+            return 0.5 * (G.Gamma + G.Lambda) * minus_Delta_conj;
+        }
+        if ((k1p == 1) and (k1 == 1)) return 0.0;
     }
 
     static int integer_Keldysh_index(const std::vector<int>& iK_vec) {
@@ -77,38 +93,40 @@ public:
                     w(w_in), v(v_in), a1p(a1p_in), a1(a1_in) {}
 
     auto operator() (double vt) const -> comp {
-        comp first_term = 0.0;
-        comp second_term = 0.0;
+        comp omega_term        = 0.0;
+        comp first_Delta_term  = 0.0;
+        comp second_Delta_term = 0.0;
 
-        // prepare frequencies for vertex in a-channel parametrization:
-        const double w_a  = -w;
-        const double v_a  = v + 0.5 * w;
-        const double vp_a = vt + 0.5 * w;
-
-
-        // Keldysh sums:
+        // Keldysh sums
         for (int a2p = 0; a2p < 2; ++a2p) {
             const int a2p_bar = (a2p + 1) % 2;
             for (int a2 = 0; a2 < 2; ++a2) {
                 const int a2_bar = (a2 + 1) % 2;
-                for (int a1t = 0; a1t < 2; ++a1t) {
-                    const int a1t_bar = (a1t + 1) % 2;
-                    for (int a2t = 0; a2t < 2; ++a2t) {
-                        const int iK = integer_Keldysh_index({a1p, a2p_bar, a2_bar, a1});
-                        const VertexInput input_V    (iK , 0, w_a, v_a, vp_a, i_in, 'a');
-                        const VertexInput input_Vhat (iK , 1, w_a, v_a, vp_a, i_in, 'a');
-                        const comp vertex_value = 2.0 * vertex.value<'a'>(input_Vhat) + vertex.value<'a'>(input_V);
+                for (int a2t = 0; a2t < 2; ++a2t) {
+                    const int iK = integer_Keldysh_index({a1p, a2p_bar, a2_bar, a1});
+                    const VertexInput input_V    (iK , 0, w, v, vt, i_in, 'a');
+                    const VertexInput input_Vhat (iK , 1, w, v, vt, i_in, 'a');
+                    const comp vertex_value = 2.0 * vertex.value<'a'>(input_Vhat) + vertex.value<'a'>(input_V);
+                    //const comp vertex_value = 2.0 * vertex.value<'a'>(input_Vhat);
 
-                        first_term += G0inv_value(a2t, a1t_bar, vt) * G_value(a1t, a2p, vt)
-                                * vertex_value * G_value(a2, a2t, vt + w);
+                    omega_term += w * G_value(a2t, a2p, vt + 0.5 * w) * vertex_value
+                                  * G_value(a2, a2t, vt - 0.5 * w);
 
-                        second_term += G_value(a2t, a2p, vt) * vertex_value
-                                * G_value(a2, a1t, vt + w) * G0inv_value(a1t_bar, a2t, vt + w);
+                    for (int a1t = 0; a1t < 2; ++a1t) {
+                        const int a1t_bar = (a1t + 1) % 2;
+
+                        first_Delta_term += minus_hybFct_value(a2t, a1t_bar, vt + 0.5 * w) * G_value(a1t, a2p, vt + 0.5 * w)
+                                            * vertex_value * G_value(a2, a2t, vt - 0.5 * w);
+
+                        second_Delta_term += G_value(a2t, a2p, vt + 0.5 * w) * vertex_value
+                                             * G_value(a2, a1t, vt - 0.5 * w) * minus_hybFct_value(a1t_bar, a2t, vt - 0.5 * w);
                     }
                 }
             }
         }
-        return (first_term - second_term) / (2 * M_PI);
+
+        const comp result = omega_term + first_Delta_term - second_Delta_term;
+        return result / (2 * M_PI);
     }
 };
 
