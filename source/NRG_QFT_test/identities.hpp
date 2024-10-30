@@ -20,6 +20,10 @@ class IdentityChecker{
 
     static comp value_of_Sigma_for_LHS(const SelfEnergy<comp>& Sigma, double vt, int k1p, int k1) ;
 
+    static void write_WI_to_file(const std::string filename,
+                                 const std::vector<std::vector<double>>& real_part,
+                                 const std::vector<std::vector<double>>& imag_part) ;
+
 public:
     IdentityChecker(const State<comp,false>& NRG_state_in, const std::string NRG_FILENAME_in):
     NRG_state(NRG_state_in), NRG_FILENAME(NRG_FILENAME_in){};
@@ -40,11 +44,9 @@ public:
 
     void compute_1D_WardIdentity_wrt_v_RHS() const;
 
-    void compute_1D_WardIdentity_wrt_w_RHS() const;
+    void compute_1D_WardIdentity_wrt_w_RHS(int a1p=1, int a1=1) const;
 
-    void compute_2D_WardIdentity_LHS() const;
-
-    void compute_2D_WardIdentity_RHS() const;
+    void compute_2D_WardIdentity(int a1p=1, int a1=1) const;
 
 };
 

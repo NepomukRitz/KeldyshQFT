@@ -175,6 +175,8 @@ void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS() const {
     const double vmax = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_upper;
 
     std::vector<double> WI_RHS (nFER);
+
+    utils::print("Computing the 1D WI w.r.t. v for nFER = " + std::to_string(nFER), true);
 #pragma omp parallel for schedule(static)
     for (int iv=0; iv<nFER; ++iv) {
         const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
@@ -189,17 +191,13 @@ void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS() const {
     write_h5_rvecs(NRG_FILENAME + "_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
 }
 
-void IdentityChecker::compute_1D_WardIdentity_wrt_w_RHS() const {
-    // TODO: Unify with the 2D function once everything works
-    const int a1p = 1;    // Keldysh index. Can be 0 or 1. Corresponds to 1 or 2 in our formulas
-    const int a1  = 1;    // todo: loop over all four combinations of a1p and a1.
+void IdentityChecker::compute_1D_WardIdentity_wrt_w_RHS(const int a1p, const int a1) const {
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
     const double vmin = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_lower;
     const double vmax = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_upper;
 
     // do the calculation for each value of w separately.
-    std::vector<double> Ws = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies();
     std::vector<double> results_re(nBOS);
     std::vector<double> results_im(nBOS);
 
@@ -220,63 +218,6 @@ void IdentityChecker::compute_1D_WardIdentity_wrt_w_RHS() const {
     write_h5_rvecs(NRG_FILENAME + "_1DWI_wrt_w_RHS.h5", {"re", "im"}, {results_re, results_im});
 }
 
-
-void IdentityChecker::compute_2D_WardIdentity_LHS() const {
-    // todo: Unify with the function for the RHS once everything works.
-    const int a1p = 1;
-    const int a1  = 1;
-
-    const int a1p_bar = (a1p + 1) % 2;
-    const int a1_bar  = (a1  + 1) % 2;
-
-    std::vector<double> Ws = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies();
-    std::vector<std::vector<double>> results_re = {};
-    std::vector<std::vector<double>> results_im = {};
-
-    for (int iw=0; iw<nBOS; ++iw){
-        utils::print("Computing the WI for iw=" + std::to_string(iw) + " of "+std::to_string(nBOS), true);
-        const double w = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_frequency(iw);
-        std::vector<double> WI_LHS_re(nFER);
-        std::vector<double> WI_LHS_im(nFER);
-
-        for (int iv=0; iv<nFER; ++iv){
-            const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
-            const comp left_term  = value_of_Sigma_for_LHS(NRG_state.selfenergy, v - 0.5 * w, a1p, a1_bar);
-            const comp right_term = value_of_Sigma_for_LHS(NRG_state.selfenergy, v + 0.5 * w, a1p_bar, a1);
-
-            const comp WI_LHS = glb_i * (left_term - right_term);
-            WI_LHS_re[iv] = myreal(WI_LHS);
-            WI_LHS_im[iv] = myimag(WI_LHS);
-        }
-        results_re.push_back(WI_LHS_re);
-        results_im.push_back(WI_LHS_im);
-    }
-
-    // write to file:
-    if (mpi_world_rank()==0){
-        H5::H5File myfile(NRG_FILENAME + "_2DWI_LHS.h5", H5F_ACC_TRUNC);
-        vec<std::string> keys_re; for (int iw=0; iw<nBOS; ++iw){keys_re.push_back(std::to_string(iw)+"_re");}
-        vec<std::string> keys_im; for (int iw=0; iw<nBOS; ++iw){keys_im.push_back(std::to_string(iw)+"_im");}
-
-        for (int iw=0; iw<nBOS; ++iw) {
-            hsize_t dim_vec[1]; // dimension of vector, to be updated
-            dim_vec[0] = results_re.size();
-            H5::DataSpace mydataspace_re(1, dim_vec); // create dataspace to store vector
-            H5::DataSpace mydataspace_im(1, dim_vec);
-            H5::DataSet mydataset_re = myfile.createDataSet(keys_re[iw], H5::PredType::NATIVE_DOUBLE, mydataspace_re); // put vector in dataset
-            H5::DataSet mydataset_im = myfile.createDataSet(keys_im[iw], H5::PredType::NATIVE_DOUBLE, mydataspace_im);
-
-            mydataset_re.write(&results_re[iw][0], H5::PredType::NATIVE_DOUBLE); // write dataset into file
-            mydataset_im.write(&results_im[iw][0], H5::PredType::NATIVE_DOUBLE);
-
-            mydataset_re.close();
-            mydataset_im.close();
-            mydataspace_re.close();
-            mydataspace_im.close();
-        }
-    }
-}
-
 comp IdentityChecker::value_of_Sigma_for_LHS(const SelfEnergy<comp> &Sigma, double vt, int k1p, int k1) {
     if ((k1p == 0) and (k1 == 0)) return Sigma.valsmooth(1, vt, 0);
     if ((k1p == 0) and (k1 == 1)) return Sigma.valsmooth(0, vt, 0);
@@ -284,22 +225,27 @@ comp IdentityChecker::value_of_Sigma_for_LHS(const SelfEnergy<comp> &Sigma, doub
     if ((k1p == 1) and (k1 == 1)) return 0.0;
 }
 
-void IdentityChecker::compute_2D_WardIdentity_RHS() const {
-    const int a1p = 1;    // Keldysh index. Can be 0 or 1. Corresponds to 1 or 2 in our formulas
-    const int a1  = 1;    // todo: loop over all four combinations of a1p and a1.
-    const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+void IdentityChecker::compute_2D_WardIdentity(const int a1p, const int a1) const {
+    const int a1p_bar = (a1p + 1) % 2;
+    const int a1_bar  = (a1  + 1) % 2;
 
     const double vmin = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_lower;
     const double vmax = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_upper;
 
-    // do the calculation for each value of w separately.
+    const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+
+    // do the calculations for each value of w separately.
     std::vector<double> Ws = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies();
-    std::vector<std::vector<double>> results_re = {};
-    std::vector<std::vector<double>> results_im = {};
+    std::vector<std::vector<double>> results_LHS_re = {};
+    std::vector<std::vector<double>> results_LHS_im = {};
+    std::vector<std::vector<double>> results_RHS_re = {};
+    std::vector<std::vector<double>> results_RHS_im = {};
 
     for (int iw=0; iw<nBOS; ++iw){
         utils::print("Computing the WI for iw=" + std::to_string(iw) + " of "+std::to_string(nBOS), true);
         const double w = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_frequency(iw);
+        std::vector<double> WI_LHS_re(nFER);
+        std::vector<double> WI_LHS_im(nFER);
         std::vector<double> WI_RHS_re(nFER);
         std::vector<double> WI_RHS_im(nFER);
 
@@ -307,33 +253,49 @@ void IdentityChecker::compute_2D_WardIdentity_RHS() const {
         for (int iv=0; iv<nFER; ++iv){
             const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
 
+            // left side:
+            const comp left_term  = value_of_Sigma_for_LHS(NRG_state.selfenergy, v - 0.5 * w, a1p, a1_bar);
+            const comp right_term = value_of_Sigma_for_LHS(NRG_state.selfenergy, v + 0.5 * w, a1p_bar, a1);
+            const comp WI_LHS = glb_i * (left_term - right_term);
+            WI_LHS_re[iv] = myreal(WI_LHS);
+            WI_LHS_im[iv] = myimag(WI_LHS);
+
+            // right side:
             const Integrand_2D_WI integrand(G, NRG_state.vertex, w, v, a1p, a1);
             Adapt<Integrand_2D_WI> adaptor(1e-5, integrand);
-
             const comp WI_RHS = adaptor.integrate(vmin, vmax);
             WI_RHS_re[iv] = myreal(WI_RHS);
             WI_RHS_im[iv] = myimag(WI_RHS);
         }
-        results_re.push_back(WI_RHS_re);
-        results_im.push_back(WI_RHS_im);
+        results_LHS_re.push_back(WI_LHS_re);
+        results_LHS_im.push_back(WI_LHS_im);
+        results_RHS_re.push_back(WI_RHS_re);
+        results_RHS_im.push_back(WI_RHS_im);
     }
+    write_WI_to_file(NRG_FILENAME + "_2DWI_LHS.h5", results_LHS_re, results_LHS_im);
+    write_WI_to_file(NRG_FILENAME + "_2DWI_RHS.h5", results_RHS_re, results_RHS_im);
+}
 
-    // write to file:
+
+void IdentityChecker::write_WI_to_file(const std::string filename,
+                                       const std::vector<std::vector<double>>& real_part,
+                                       const std::vector<std::vector<double>>& imag_part) {
+    assert (real_part.size() == imag_part.size());
     if (mpi_world_rank()==0){
-        H5::H5File myfile(NRG_FILENAME + "_2DWI_RHS.h5", H5F_ACC_TRUNC);
+        H5::H5File myfile(filename, H5F_ACC_TRUNC);
         vec<std::string> keys_re; for (int iw=0; iw<nBOS; ++iw){keys_re.push_back(std::to_string(iw)+"_re");}
         vec<std::string> keys_im; for (int iw=0; iw<nBOS; ++iw){keys_im.push_back(std::to_string(iw)+"_im");}
 
         for (int iw=0; iw<nBOS; ++iw) {
             hsize_t dim_vec[1]; // dimension of vector, to be updated
-            dim_vec[0] = results_re.size();
+            dim_vec[0] = real_part.size();
             H5::DataSpace mydataspace_re(1, dim_vec); // create dataspace to store vector
             H5::DataSpace mydataspace_im(1, dim_vec);
             H5::DataSet mydataset_re = myfile.createDataSet(keys_re[iw], H5::PredType::NATIVE_DOUBLE, mydataspace_re); // put vector in dataset
             H5::DataSet mydataset_im = myfile.createDataSet(keys_im[iw], H5::PredType::NATIVE_DOUBLE, mydataspace_im);
 
-            mydataset_re.write(&results_re[iw][0], H5::PredType::NATIVE_DOUBLE); // write dataset into file
-            mydataset_im.write(&results_im[iw][0], H5::PredType::NATIVE_DOUBLE);
+            mydataset_re.write(&real_part[iw][0], H5::PredType::NATIVE_DOUBLE); // write dataset into file
+            mydataset_im.write(&imag_part[iw][0], H5::PredType::NATIVE_DOUBLE);
 
             mydataset_re.close();
             mydataset_im.close();
