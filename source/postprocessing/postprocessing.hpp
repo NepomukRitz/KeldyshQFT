@@ -103,7 +103,8 @@ public:
             for (int a2 = 0; a2 < 2; ++a2) {
                 const int a2_bar = (a2 + 1) % 2;
                 for (int a2t = 0; a2t < 2; ++a2t) {
-                    const int iK = integer_Keldysh_index({a1p, a2p_bar, a2_bar, a1});
+                    const int a2t_bar = (a2t + 1) % 2;
+                    const int iK = integer_Keldysh_index({a1p, a2p, a2, a1});
                     const VertexInput input_V    (iK , 0, w, v, vt, i_in, 'a');
                     const VertexInput input_Vhat (iK , 1, w, v, vt, i_in, 'a');
                     const comp vertex_value = 2.0 * vertex.value<'a'>(input_Vhat) + vertex.value<'a'>(input_V);
@@ -115,11 +116,11 @@ public:
                     for (int a1t = 0; a1t < 2; ++a1t) {
                         const int a1t_bar = (a1t + 1) % 2;
 
-                        first_Delta_term += minus_hybFct_value(a2t, a1t_bar, vt + 0.5 * w) * G_value(a1t, a2p, vt + 0.5 * w)
+                        first_Delta_term += minus_hybFct_value(a2t_bar, a1t, vt + 0.5 * w) * G_value(a1t, a2p, vt + 0.5 * w)
                                             * vertex_value * G_value(a2, a2t, vt - 0.5 * w);
 
                         second_Delta_term += G_value(a2t, a2p, vt + 0.5 * w) * vertex_value
-                                             * G_value(a2, a1t, vt - 0.5 * w) * minus_hybFct_value(a1t_bar, a2t, vt - 0.5 * w);
+                                             * G_value(a2, a1t, vt - 0.5 * w) * minus_hybFct_value(a1t, a2t_bar, vt - 0.5 * w);
                     }
                 }
             }
