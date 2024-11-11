@@ -24,9 +24,9 @@ if(WORKSTATION)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fopenmp")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -march=native -flto")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} ")
 endif()
 
 if(WORKSTATION)
@@ -131,10 +131,13 @@ elseif(JSC)
 elseif(MACBOOK)
     include_directories(
             /usr/local/include/
+            /Library/Developer/CommandLineTools/SDKs/
+            #/Library/Developer/usr/lib/clang/14.0.0/include
             /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/
             /opt/homebrew/Cellar/gsl/2.7.1/include
             /opt/homebrew/Cellar/hdf5/1.14.3_1/include
             /opt/homebrew/Cellar/boost/1.85.0/include
+            #/opt/homebrew/opt/libomp/include
     )
     target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/hdf5/1.14.3_1/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
@@ -147,6 +150,7 @@ elseif(MACBOOK)
 
     target_link_libraries(NRG_QFT -L/opt/homebrew/Cellar/hdf5/1.14.3_1/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(NRG_QFT -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas)
+    #target_link_libraries(NRG_QFT -L/opt/homebrew/opt/libomp/lib -lomp)
     target_compile_options(NRG_QFT PRIVATE -w )
 endif()
 

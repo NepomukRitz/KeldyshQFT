@@ -4,12 +4,70 @@ vertex_getter get_vertex_comp(const int& iK, const vertex_array& vertex_comp){
     return [&vertex_comp, iK](const int& i, const int& j, const int& k){return vertex_comp.at(iK, i, j, k);};
 }
 
+void build_NRG_Sigma(State<comp>& NRG_state, std::string& NRG_SELFENERGY_FILENAME){
+    utils::print("Reading in self-energy from a normal NRG computation ... ");
 
-void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME){
-    utils::print("Reading in self-energy ... ");
+    /// get NRG parameters:
+    H5::H5File NRG_file(NRG_SELFENERGY_FILENAME, H5F_ACC_RDONLY);
+
+    double NRG_U;
+    H5::DataSet NRG_U_set = NRG_file.openDataSet("Hamilton_parameters/U");
+    NRG_U_set.read(&NRG_U, H5::PredType::NATIVE_DOUBLE);
+    double NRG_T;
+    H5::DataSet NRG_T_set = NRG_file.openDataSet("Hamilton_parameters/T");
+    NRG_T_set.read(&NRG_T, H5::PredType::NATIVE_DOUBLE);
 
     /// read in NRG self-energy frequencies:
-    const std::vector<double> NRG_SE_freqs = read_NRG_frequency(NRG_FILENAME, "KF/ph/SE/nu");
+    const std::vector<double> NRG_SE_freqs = read_NRG_frequency(NRG_SELFENERGY_FILENAME,
+                                                                "w", false);
+
+    /// construct frequency grid that we can use later to interpolate
+    const NRG_frequency_grid NRG_grid(NRG_SE_freqs);
+    const double v_min = NRG_SE_freqs[0];
+    const double v_max = NRG_SE_freqs[NRG_SE_freqs.size()-1];
+
+    /// read in NRG self-energy:
+    std::vector<double> SE_R_re;
+    std::vector<double> SE_R_im;
+
+    read_from_hdf(NRG_file, "SE_re", SE_R_re);
+    read_from_hdf(NRG_file, "SE_im", SE_R_im);
+    // normalize w.r.t. U:
+    for (double & val : SE_R_re) val = val / NRG_U;
+    for (double & val : SE_R_im) val = val / NRG_U;
+    // subtract Hartree-term from real part (at half filling only):
+    for (double & val : SE_R_re) val = val - 0.5;
+
+    /// interpolate self-energy on the grid that we need:
+    std::function<double(const int&)> val_real = [&SE_R_re](const int& i){return SE_R_re.at(i);};
+    std::function<double(const int&)> val_imag = [&SE_R_im](const int& i){return SE_R_im.at(i);};
+    for (int iv = 0; iv < nFER; ++iv) {
+        const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
+        if ((v < v_min) or (v > v_max)) continue;   // leave at zero
+        const double val_re = interpolate_lin1D(v, NRG_grid, val_real);
+        const double val_im = interpolate_lin1D(v, NRG_grid, val_imag);
+        const comp val(val_re, val_im);
+        NRG_state.selfenergy.setself(0, iv, 0, val);
+    }
+
+    /// compute the imaginary part of the Keldysh component from the FDT:
+    std::vector<double> SE_K_im;
+    for (int iv = 0; iv < nFER; ++iv) {
+        const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
+        if ((v < v_min) or (v > v_max)) continue;
+        const double val_im = 2 * tanh(v * NRG_U / (2 * NRG_T)) * myimag(NRG_state.selfenergy.valsmooth(0, v,0));
+        const comp val(0.0, val_im);
+        NRG_state.selfenergy.setself(1, iv, 0, val);
+    }
+    utils::print_add("done.", true);
+}
+
+
+void build_NRG_Sigma_from_MuNRG(State<comp>& NRG_state, const std::string& MuNRG_FILENAME){
+    utils::print("Reading in self-energy from MuNRG ... ");
+
+    /// read in NRG self-energy frequencies:
+    const std::vector<double> NRG_SE_freqs = read_NRG_frequency(MuNRG_FILENAME, "KF/ph/SE/nu");
     // normalized w.r.t. U ✔︎
 
     /// construct frequency grid that we can use later to interpolate
@@ -19,12 +77,12 @@ void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME){
 
     /// read in NRG self-energy:
     const multidimensional::multiarray<double,2> NRG_selfenergy_real = normalize_NRG_selfenergy(
-            read_raw_NRG_selfenergy(NRG_FILENAME, "KF/ph/SE/leg_1/real"),
+            read_raw_NRG_selfenergy(MuNRG_FILENAME, "KF/ph/SE/leg_1/real"),
             0.5);
     // normalized w.r.t. U ✔︎
 
     const multidimensional::multiarray<double,2> NRG_selfenergy_imag = normalize_NRG_selfenergy(
-            read_raw_NRG_selfenergy(NRG_FILENAME, "KF/ph/SE/leg_1/imag"));
+            read_raw_NRG_selfenergy(MuNRG_FILENAME, "KF/ph/SE/leg_1/imag"));
     // normalized w.r.t. U ✔︎
 
     /// interpolate self-energy on the grid that we need:

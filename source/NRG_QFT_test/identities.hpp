@@ -8,8 +8,8 @@
 
 class IdentityChecker{
     const State<comp,false>& NRG_state;
-    const std::string NRG_FILENAME;
-    const std::string IDENTITIES_FILENAME = NRG_FILENAME + "_parquet.h5";
+    const std::string NRG_DATAPATH;
+    const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "_parquet.h5";
 
     void check_SDE_from_K1_plus_K2() const;
     void check_SDE_from_Gamma() const;
@@ -25,8 +25,8 @@ class IdentityChecker{
                                  const std::vector<std::vector<double>>& imag_part) ;
 
 public:
-    IdentityChecker(const State<comp,false>& NRG_state_in, const std::string NRG_FILENAME_in):
-    NRG_state(NRG_state_in), NRG_FILENAME(NRG_FILENAME_in){};
+    IdentityChecker(const State<comp,false>& NRG_state_in, const std::string NRG_DATAPATH_in):
+            NRG_state(NRG_state_in), NRG_DATAPATH(NRG_DATAPATH_in){};
 
     /**
      * Evaluates all meaningful relations from the parquet formalism for a state from NRG in the Keldysh formalism.

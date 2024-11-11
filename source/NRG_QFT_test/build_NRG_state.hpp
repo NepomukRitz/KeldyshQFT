@@ -7,6 +7,7 @@
 #include "read_NRG_data.hpp"
 #include "interpolations/InterpolatorLinOrSloppy.hpp"
 #include "NRG_frequencies.hpp"
+#include "utilities/hdf5_routines.hpp"
 
 using vertex_getter = std::function<double(const int&, const int&, const int&)>;
 
@@ -28,7 +29,9 @@ struct NRG_vertex_getters{
     vertex_getter upup_imag;
 };
 
-void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_FILENAME);
+void build_NRG_Sigma(State<comp>& NRG_state, const std::optional<std::string>& NRG_SELFENERGY_FILENAME);
+
+void build_NRG_Sigma_from_MuNRG(State<comp>& NRG_state, const std::string& MuNRG_FILENAME);
 
 void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME);
 

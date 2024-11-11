@@ -123,7 +123,8 @@ multidimensional::multiarray<double,2> normalize_NRG_selfenergy(const multidimen
 }
 
 std::vector<double> read_NRG_frequency(const std::string& FILENAME,
-                                       const std::string& DATASET_NAME){
+                                       const std::string& DATASET_NAME,
+                                       const bool data_from_MuNRG){
     H5::H5File NRG_file(FILENAME, H5F_ACC_RDONLY);
     H5::DataSet NRG_dataset = NRG_file.openDataSet(DATASET_NAME);
     H5::DataSpace NRG_dataspace = NRG_dataset.getSpace();
@@ -138,7 +139,8 @@ std::vector<double> read_NRG_frequency(const std::string& FILENAME,
     NRG_dataset.read(NRG_frequencies.data(), H5::PredType::NATIVE_DOUBLE);
 
     /// normalize frequencies by U:
-    H5::DataSet NRG_U_set = NRG_file.openDataSet("meta_physical/U");
+    const std::string U_name = (data_from_MuNRG ? "meta_physical/U" : "Hamilton_parameters/U");
+    H5::DataSet NRG_U_set = NRG_file.openDataSet(U_name);
     double NRG_U;
     NRG_U_set.read(&NRG_U, H5::PredType::NATIVE_DOUBLE);
     for (double & NRG_frequency : NRG_frequencies) {

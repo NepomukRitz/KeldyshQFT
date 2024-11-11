@@ -188,7 +188,7 @@ void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS() const {
                               * myimag(adaptor.integrate(vmin, vmax));
         WI_RHS[iv] = result;
     }
-    write_h5_rvecs(NRG_FILENAME + "_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
+    write_h5_rvecs(NRG_DATAPATH + "_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
 }
 
 void IdentityChecker::compute_1D_WardIdentity_wrt_w_RHS(const int a1p, const int a1) const {
@@ -215,7 +215,7 @@ void IdentityChecker::compute_1D_WardIdentity_wrt_w_RHS(const int a1p, const int
         results_im[iw] = myimag(WI_RHS);
     }
 
-    write_h5_rvecs(NRG_FILENAME + "_1DWI_wrt_w_RHS.h5", {"re", "im"}, {results_re, results_im});
+    write_h5_rvecs(NRG_DATAPATH + "_1DWI_wrt_w_RHS.h5", {"re", "im"}, {results_re, results_im});
 }
 
 comp IdentityChecker::value_of_Sigma_for_LHS(const SelfEnergy<comp> &Sigma, double vt, int k1p, int k1) {
@@ -272,8 +272,8 @@ void IdentityChecker::compute_2D_WardIdentity(const int a1p, const int a1) const
         results_RHS_re.push_back(WI_RHS_re);
         results_RHS_im.push_back(WI_RHS_im);
     }
-    write_WI_to_file(NRG_FILENAME + "_2DWI_LHS.h5", results_LHS_re, results_LHS_im);
-    write_WI_to_file(NRG_FILENAME + "_2DWI_RHS.h5", results_RHS_re, results_RHS_im);
+    write_WI_to_file(NRG_DATAPATH + "_2DWI_LHS.h5", results_LHS_re, results_LHS_im);
+    write_WI_to_file(NRG_DATAPATH + "_2DWI_RHS.h5", results_RHS_re, results_RHS_im);
 }
 
 
