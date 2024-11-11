@@ -4,7 +4,7 @@ vertex_getter get_vertex_comp(const int& iK, const vertex_array& vertex_comp){
     return [&vertex_comp, iK](const int& i, const int& j, const int& k){return vertex_comp.at(iK, i, j, k);};
 }
 
-void build_NRG_Sigma(State<comp>& NRG_state, std::string& NRG_SELFENERGY_FILENAME){
+void build_NRG_Sigma(State<comp>& NRG_state, const std::string& NRG_SELFENERGY_FILENAME){
     utils::print("Reading in self-energy from a normal NRG computation ... ");
 
     /// get NRG parameters:

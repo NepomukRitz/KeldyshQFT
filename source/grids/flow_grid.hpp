@@ -5,7 +5,7 @@
 #include "../parameters/master_parameters.hpp"         // needed for the vector of grid values to add
 #include "../data_structures.hpp"    // for rvec
 #include "../utilities/math_utils.hpp"
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
 #include <algorithm>               // needed for std::find_if
 #include <cmath>                   // for log10, pow
 
