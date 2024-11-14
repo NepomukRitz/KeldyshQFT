@@ -16,6 +16,8 @@ set(CMAKE_CXX_COMPILER mpicxx)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+project(Keldysh_mfRG)
+
 if(WORKSTATION)
     # for DEBUG build:
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O3 -march=native -flto  -fopenmp")
@@ -44,7 +46,6 @@ if(WORKSTATION)
     #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 endif()
 
-project(Keldysh_mfRG)
 
 ## include header and source code files
 include_directories(${CMAKE_SOURCE_DIR})

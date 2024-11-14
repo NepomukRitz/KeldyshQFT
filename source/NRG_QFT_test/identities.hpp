@@ -11,14 +11,52 @@ class IdentityChecker{
     const std::string NRG_DATAPATH;
     const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "_parquet.h5";
 
-    void check_SDE_from_K1_plus_K2() const;
-    void check_SDE_from_Gamma() const;
-    void check_BSE_for_K1() const;
-    void check_BSE_for_K1_via_K2b() const;
-    void check_BSE_for_K2() const;
-    void check_BSE_for_K1_plus_K2() const;
+    // shall hold self-energy results from various options of evaluating the SDE.
+    SelfEnergy<comp> SE_from_SDE_via_Hedin_a = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_SDE_via_Hedin_p = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_SDE_via_Hedin_t = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_SDE_via_Gamma_using_channel_decomposition = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_SDE_via_Gamma_direct = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+
+    // shall hold results from evaluation of BSEs.
+    State<comp,false> state_for_BSE_for_K1 = State<comp,false>(NRG_state.Lambda,
+                                                               NRG_state.config, false);
+    State<comp,false> state_for_BSE_for_K1_via_K2b = State<comp,false>(NRG_state.Lambda,
+                                                                       NRG_state.config, false);
+    State<comp,false> state_for_BSE_for_K2 = State<comp,false>(NRG_state.Lambda,
+                                                               NRG_state.config, false);
+    State<comp,false> state_for_BSE_for_K1_plus_K2 = State<comp,false>(NRG_state.Lambda,
+                                                                       NRG_state.config, false);
+
+
+    /**
+     * Evaluation of the SDE in "Hedin" form, directly closing a loop above K1+K2.
+     * Currently (2024-11-14), the mean value of the evaluation using the a- and p-channel is used.
+     */
+    void check_SDE_from_K1_plus_K2();
+
+    /**
+     * Use implementation of SDE v1 for the K1 + K2 classes. This first closes a bubble in each of the three channels
+     * using K1 and K2 of that channel only.
+     * Afterwards, the contribution from the core is added separately.
+     */
+    void check_SDE_from_Gamma_via_channel_decomposition();
+
+    /**
+     * Use the full vertex as a single entity to evaluate the SDE:
+     * Compute an a-bubble and close the loop.
+     */
+    void check_SDE_from_Gamma();
+
+    void check_BSE_for_K1();
+    void check_BSE_for_K1_via_K2b();
+    void check_BSE_for_K2();
+    void check_BSE_for_K1_plus_K2();
 
     static comp value_of_Sigma_for_LHS(const SelfEnergy<comp>& Sigma, double vt, int k1p, int k1) ;
+
+    void write_SDE_to_file() const;
+    void write_BSE_to_file() const;
 
     static void write_WI_to_file(const std::string filename,
                                  const std::vector<std::vector<double>>& real_part,
@@ -40,7 +78,9 @@ public:
      *      of asymptotic classes in layer 4
      *      - State that holds a vertex obtained from an evaluation of the BSE for K2 using the full Γ in later 5
      */
-    void check_parquet_equations() const;
+    void check_BSE();
+
+    void check_SDE();
 
     void compute_1D_WardIdentity_wrt_v_RHS() const;
 

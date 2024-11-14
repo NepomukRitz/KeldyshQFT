@@ -1,39 +1,82 @@
 #include "identities.hpp"
 
-void IdentityChecker::check_parquet_equations() const {
-    check_SDE_from_K1_plus_K2();
-    check_SDE_from_Gamma();
+void IdentityChecker::check_BSE() {
     check_BSE_for_K1();
     check_BSE_for_K1_via_K2b();
     check_BSE_for_K2();
     check_BSE_for_K1_plus_K2();
+
+    write_BSE_to_file();
 }
 
-void IdentityChecker::check_SDE_from_K1_plus_K2() const {
+void IdentityChecker::check_SDE(){
+    check_SDE_from_K1_plus_K2();
+    check_SDE_from_Gamma_via_channel_decomposition();
+    check_SDE_from_Gamma();
+
+    write_SDE_to_file();
+}
+
+void IdentityChecker::check_SDE_from_K1_plus_K2() {
     State<comp,false> state_for_SDE = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
-    utils::print("Evaluating SDE from K1+K2 ... ", true);
-    compute_SDE(state_for_SDE.selfenergy, NRG_state, NRG_state.Lambda, 3);
-    utils::print("... done.", true);
-    write_state_to_hdf(IDENTITIES_FILENAME, 0, 10, state_for_SDE);
+    utils::print("Evaluating SDE in the Hedin form from K1+K2 ... ", false);
+
+    Propagator<comp> G(NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+
+    utils::print_add("in channel a ... ", false);
+    SE_from_SDE_via_Hedin_a = compute_SDE_impl_v3<0, false, false>('a', NRG_state.Lambda,
+                                                                   NRG_state.vertex, G, NRG_state.config);
+
+    utils::print_add("in channel p ... ", false);
+    SE_from_SDE_via_Hedin_p = compute_SDE_impl_v3<0, false, false>('p', NRG_state.Lambda,
+                                                                   NRG_state.vertex, G, NRG_state.config);
+
+    utils::print_add("in channel t ... ", false);
+    SE_from_SDE_via_Hedin_t = compute_SDE_impl_v3<1, false, false>('t', NRG_state.Lambda,
+                                                                   NRG_state.vertex, G, NRG_state.config);
+    utils::print_add("done.", true);
 }
 
-void IdentityChecker::check_SDE_from_Gamma() const {
-    State<comp,false>       state_for_SDE = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
-    const State<comp,false> bare_state    = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+void IdentityChecker::check_SDE_from_Gamma_via_channel_decomposition() {
+    utils::print("Evaluating SDE from Γ via channel decomposition ... ", false);
 
-    Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+    State<comp,false> NRG_state_without_core = NRG_state;
+    NRG_state_without_core.vertex.set_to_zero_in_integrand('t', k3);  // remove core
 
-    utils::print("Evaluating SDE from Γ ... ", true);
-    bubble_function(state_for_SDE.vertex, bare_state.vertex, NRG_state.vertex,
+    compute_SDE(SE_from_SDE_via_Gamma_using_channel_decomposition, NRG_state_without_core, NRG_state.Lambda, 1);
+
+    // Add contribution from the core:
+    utils::print_add("adding the contribution from the core ... ", false);
+    const State<comp,false> bare_state_for_NRG_core = State<comp,false>(NRG_state.Lambda, NRG_state.config,
+                                                                        false);
+    Vertex<comp,false> NRG_core = bare_state_for_NRG_core.vertex;
+    NRG_core.tvertex().K3 = NRG_state.vertex.tvertex().K3;
+
+    const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+    const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+
+    State<comp,false> state_for_SDE_vertex = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
+    bubble_function(state_for_SDE_vertex.vertex, bare_state.vertex, NRG_core,
                     G, G, 'a', false, NRG_state.config, {true, true, false});
-    loop<false,0>(state_for_SDE.selfenergy, state_for_SDE.vertex, G);
-    utils::print("... done.", true);
-    add_state_to_hdf(IDENTITIES_FILENAME, 1, state_for_SDE);
+    loop<false,0>(SE_from_SDE_via_Gamma_using_channel_decomposition, state_for_SDE_vertex.vertex, G);
+    utils::print_add("done.", true);
 }
 
-void IdentityChecker::check_BSE_for_K1() const {
-    State<comp,false>       state_for_BSE = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
-    const State<comp,false> bare_state    = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+void IdentityChecker::check_SDE_from_Gamma() {
+    State<comp,false> state_for_SDE_vertex = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+    const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+
+    const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
+
+    utils::print("Evaluating SDE from Γ ... ", false);
+    bubble_function(state_for_SDE_vertex.vertex, bare_state.vertex, NRG_state.vertex,
+                    G, G, 'a', false, NRG_state.config, {true, true, false});
+    loop<false,0>(SE_from_SDE_via_Gamma_direct, state_for_SDE_vertex.vertex, G);
+    utils::print_add("done.", true);
+}
+
+void IdentityChecker::check_BSE_for_K1() {
+    const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
 
     Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
@@ -59,16 +102,14 @@ void IdentityChecker::check_BSE_for_K1() const {
                 assert(false);
                 break;
         }
-        bubble_function(state_for_BSE.vertex, bare_state.vertex, state_for_rhs.vertex,
+        bubble_function(state_for_BSE_for_K1.vertex, bare_state.vertex, state_for_rhs.vertex,
                         G, G, ch, false, NRG_state.config, {true, false, false});
     }
     utils::print_add("done.", true);
-    add_state_to_hdf(IDENTITIES_FILENAME, 2, state_for_BSE);
 }
 
-void IdentityChecker::check_BSE_for_K1_via_K2b() const {
-    State<comp,false>       state_for_BSE = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
-    const State<comp,false> bare_state    = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+void IdentityChecker::check_BSE_for_K1_via_K2b() {
+    const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
 
     Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
@@ -94,16 +135,14 @@ void IdentityChecker::check_BSE_for_K1_via_K2b() const {
                 assert(false);
                 break;
         }
-        bubble_function(state_for_BSE.vertex, state_for_rhs.vertex, bare_state.vertex,
+        bubble_function(state_for_BSE_for_K1_via_K2b.vertex, state_for_rhs.vertex, bare_state.vertex,
                         G, G, ch, false, NRG_state.config, {true, false, false});
     }
     utils::print_add("done.", true);
-    add_state_to_hdf  (IDENTITIES_FILENAME, 3, state_for_BSE);
 }
 
-void IdentityChecker::check_BSE_for_K2() const {
-    State<comp,false>       state_for_BSE = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
-    const State<comp,false> bare_state    = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+void IdentityChecker::check_BSE_for_K2() {
+    const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
 
     Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
@@ -145,27 +184,24 @@ void IdentityChecker::check_BSE_for_K2() const {
                 break;
         }
 
-        bubble_function(state_for_BSE.vertex, state_for_rhs.vertex, bare_state.vertex,
+        bubble_function(state_for_BSE_for_K2.vertex, state_for_rhs.vertex, bare_state.vertex,
                         G, G, ch, false, NRG_state.config, {true, true, false});
     }
     utils::print_add("done.", true);
-    add_state_to_hdf(IDENTITIES_FILENAME, 4, state_for_BSE);
 }
 
-void IdentityChecker::check_BSE_for_K1_plus_K2() const {
-    State<comp,false>       state_for_BSE = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
-    const State<comp,false> bare_state    = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
+void IdentityChecker::check_BSE_for_K1_plus_K2() {
+    const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
 
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
     utils::print("Evaluating BSE for K1 + K2 ... ");
     for (const char& ch: std::string("apt")) {
         utils::print_add("in channel " + std::string(1, ch) + " ... ", false);
-        bubble_function(state_for_BSE.vertex, NRG_state.vertex, bare_state.vertex,
+        bubble_function(state_for_BSE_for_K1_plus_K2.vertex, NRG_state.vertex, bare_state.vertex,
                         G, G, ch, false, NRG_state.config, {true, true, false});
     }
     utils::print_add("done.", true);
-    add_state_to_hdf(IDENTITIES_FILENAME, 5, state_for_BSE);
 }
 
 void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS() const {
@@ -274,6 +310,109 @@ void IdentityChecker::compute_2D_WardIdentity(const int a1p, const int a1) const
     }
     write_WI_to_file(NRG_DATAPATH + "_2DWI_LHS.h5", results_LHS_re, results_LHS_im);
     write_WI_to_file(NRG_DATAPATH + "_2DWI_RHS.h5", results_RHS_re, results_RHS_im);
+}
+
+
+void IdentityChecker::write_SDE_to_file() const {
+    if (mpi_world_rank()!=0) ;
+
+    H5::H5File file_out = H5::H5File(NRG_DATAPATH + "_SDE.h5", H5F_ACC_TRUNC);
+
+    const H5std_string FREQS ("freqs");
+    const H5std_string SE_from_NRG("SE_from_NRG");
+    const H5std_string HEDIN_A("Hedin_a");
+    const H5std_string HEDIN_P("Hedin_p");
+    const H5std_string HEDIN_T("Hedin_t");
+    const H5std_string GAMMA_DECOMPOSED("Gamma_decomposed");
+    const H5std_string GAMMA_DIRECT("Gamma");
+
+    write_to_hdf<double>(file_out, FREQS,
+                         NRG_state.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies(), false);
+
+    write_to_hdf<comp>(file_out, SE_from_NRG,
+                       NRG_state.selfenergy.Sigma.get_vec(), false);
+    write_to_hdf<comp>(file_out, HEDIN_A,
+                       SE_from_SDE_via_Hedin_a.Sigma.get_vec(), false);
+    write_to_hdf<comp>(file_out, HEDIN_P,
+                       SE_from_SDE_via_Hedin_p.Sigma.get_vec(), false);
+    write_to_hdf<comp>(file_out, HEDIN_T,
+                       SE_from_SDE_via_Hedin_t.Sigma.get_vec(), false);
+    write_to_hdf<comp>(file_out, GAMMA_DECOMPOSED,
+                       SE_from_SDE_via_Gamma_using_channel_decomposition.Sigma.get_vec(), false);
+    write_to_hdf<comp>(file_out, GAMMA_DIRECT,
+                       SE_from_SDE_via_Gamma_direct.Sigma.get_vec(), false);
+}
+
+void IdentityChecker::write_BSE_to_file() const {
+    if (mpi_world_rank()!=0) ;
+
+    H5::H5File file_out = H5::H5File(NRG_DATAPATH + "_BSE.h5", H5F_ACC_TRUNC);
+    const H5std_string BFREQS1 ("b_freqs1");
+    const H5std_string BFREQS2 ("b_freqs2");
+    const H5std_string FFREQS2 ("f_freqs2");
+
+    const H5std_string BSE4K1_K1a ("BSE4K1_K1a");
+    const H5std_string BSE4K1_K1p ("BSE4K1_K1p");
+    const H5std_string BSE4K1_K1t ("BSE4K1_K1t");
+
+    const H5std_string BSE4K1_viaK2b_K1a ("BSE4K1_viaK2b_K1a");
+    const H5std_string BSE4K1_viaK2b_K1p ("BSE4K1_viaK2b_K1p");
+    const H5std_string BSE4K1_viaK2b_K1t ("BSE4K1_viaK2b_K1t");
+
+    const H5std_string BSE4K2_K2a ("BSE4K2_K2a");
+    const H5std_string BSE4K2_K2p ("BSE4K2_K2p");
+    const H5std_string BSE4K2_K2t ("BSE4K2_K2t");
+
+    const H5std_string BSE4K1plusK2_K1a ("BSE4K1plusK2_K1a");
+    const H5std_string BSE4K1plusK2_K1p ("BSE4K1plusK2_K1p");
+    const H5std_string BSE4K1plusK2_K1t ("BSE4K1plusK2_K1t");
+    const H5std_string BSE4K1plusK2_K2a ("BSE4K1plusK2_K2a");
+    const H5std_string BSE4K1plusK2_K2p ("BSE4K1plusK2_K2p");
+    const H5std_string BSE4K1plusK2_K2t ("BSE4K1plusK2_K2t");
+
+    write_to_hdf<double>(file_out, BFREQS1,
+                         NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_all_frequencies(),
+                         false);
+    write_to_hdf<double>(file_out, BFREQS2,
+                         NRG_state.vertex.avertex().K2.frequencies.get_freqGrid_b().get_all_frequencies(),
+                         false);
+    write_to_hdf<double>(file_out, FFREQS2,
+                         NRG_state.vertex.avertex().K2.frequencies.get_freqGrid_f().get_all_frequencies(),
+                         false);
+
+    write_to_hdf<comp>(file_out, BSE4K1_K1a,
+                       state_for_BSE_for_K1.vertex.avertex().K1.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1_K1p,
+                       state_for_BSE_for_K1.vertex.pvertex().K1.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1_K1t,
+                       state_for_BSE_for_K1.vertex.tvertex().K1.get_vec(), false);
+
+    write_to_hdf<comp>(file_out, BSE4K1_viaK2b_K1a,
+                       state_for_BSE_for_K1_via_K2b.vertex.avertex().K1.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1_viaK2b_K1p,
+                       state_for_BSE_for_K1_via_K2b.vertex.pvertex().K1.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1_viaK2b_K1t,
+                       state_for_BSE_for_K1_via_K2b.vertex.tvertex().K1.get_vec(), false);
+
+    write_to_hdf<comp>(file_out, BSE4K2_K2a,
+                       state_for_BSE_for_K2.vertex.avertex().K2.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K2_K2p,
+                       state_for_BSE_for_K2.vertex.pvertex().K2.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K2_K2t,
+                       state_for_BSE_for_K2.vertex.tvertex().K2.get_vec(), false);
+
+    write_to_hdf<comp>(file_out, BSE4K1plusK2_K1a,
+                       state_for_BSE_for_K1_plus_K2.vertex.avertex().K1.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1plusK2_K1p,
+                       state_for_BSE_for_K1_plus_K2.vertex.pvertex().K1.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1plusK2_K1t,
+                       state_for_BSE_for_K1_plus_K2.vertex.tvertex().K1.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1plusK2_K2a,
+                       state_for_BSE_for_K1_plus_K2.vertex.avertex().K2.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1plusK2_K2p,
+                       state_for_BSE_for_K1_plus_K2.vertex.pvertex().K2.get_vec(), false);
+    write_to_hdf<comp>(file_out, BSE4K1plusK2_K2t,
+                       state_for_BSE_for_K1_plus_K2.vertex.tvertex().K2.get_vec(), false);
 }
 
 
