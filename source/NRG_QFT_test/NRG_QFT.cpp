@@ -132,7 +132,7 @@ auto main(int argc, char * argv[]) -> int {
 
 
     IdentityChecker Identities(NRG_state, NRG_DATAPATH + "siam_u"+u_str.str());
-    //Identities.check_SDE();
+    Identities.check_SDE();
     Identities.check_BSE();
      /*
     Identities.compute_1D_WardIdentity_wrt_v_RHS();

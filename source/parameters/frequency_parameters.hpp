@@ -15,13 +15,13 @@
 // Number of bosonic and fermionic frequency points.
 // Good production values for Keldysh: nBOS = nFER = 401, nBOS2 = nFER2 = 201, nBOS3 = nFER3 = 51
 #if KELDYSH_FORMALISM
-constexpr int nBOS = 11;                                                       ///< Number of bosonic frequency points for the K1 vertex class.
-constexpr int nFER = 11 - (KELDYSH_FORMALISM ? 0 : 1);                         ///< Number of fermionic frequency points for the self-energy.
+constexpr int nBOS = 101;                                                       ///< Number of bosonic frequency points for the K1 vertex class.
+constexpr int nFER = 101 - (KELDYSH_FORMALISM ? 0 : 1);                         ///< Number of fermionic frequency points for the self-energy.
 // Number of frequency points for K2 and K3 classes
-constexpr int nBOS2 = 5;                                                      ///< Number of bosonic frequency points for the K2 and K2' vertex classes.
-constexpr int nFER2 = 5 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);           ///< Number of fermionic frequency points for the K2 and K2' vertex classes.
-constexpr int nBOS3 = 3;                                                       ///< Number of bosonic frequency points for the K3 vertex class.
-constexpr int nFER3 = 3 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);            ///< Number of fermionic frequency points for the K3 vertex class.
+constexpr int nBOS2 = 51;                                                      ///< Number of bosonic frequency points for the K2 and K2' vertex classes.
+constexpr int nFER2 = 51 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);           ///< Number of fermionic frequency points for the K2 and K2' vertex classes.
+constexpr int nBOS3 = 21;                                                       ///< Number of bosonic frequency points for the K3 vertex class.
+constexpr int nFER3 = 21 - (KELDYSH_FORMALISM or ZERO_TEMP ? 0 : 1);            ///< Number of fermionic frequency points for the K3 vertex class.
 
 const int COUNT = 4;                                ///< Used to set the number of frequency points in the MF. For details, see the definitions in the file frequency_parameters.hpp
 #else

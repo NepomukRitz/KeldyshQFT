@@ -12,11 +12,14 @@ option(MACBOOK     "Build on MacBook"     ON)
 
 ## Set the C++ standard, the compiler, compiler optimization options (O0 - off, O3 - best) and add -fopenmp
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_COMPILER mpicxx)
+if(MACBOOK)
+    set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm@14/bin/clang++")
+    #set(CMAKE_CXX_COMPILER mpicxx)
+else()
+    set(CMAKE_CXX_COMPILER mpicxx)
+endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-project(Keldysh_mfRG)
 
 if(WORKSTATION)
     # for DEBUG build:
@@ -25,27 +28,19 @@ if(WORKSTATION)
     # for RELEASE build:
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fopenmp")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp") # unnecessary??
 elseif (MACBOOK)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -march=native -flto ")
-    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -flto -march=native")
+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -flto")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -march=native -flto ")
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -O3 -march=native -flto")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp")
 endif()
 
-if(WORKSTATION)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS} -fopenmp") # unnecessary??
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") // for code coverage analysis (slows down the code a lot!)
 
-    ## enable profiling (will generate a gmon.out file which can be interpreted with gprof in Linux).
-    ## Comment out when no profiling shall be done!!
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
-    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
-    #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
-endif()
-
+project(Keldysh_mfRG)
 
 ## include header and source code files
 include_directories(${CMAKE_SOURCE_DIR})
@@ -139,7 +134,8 @@ elseif(MACBOOK)
             /opt/homebrew/Cellar/gsl/2.8/include
             /opt/homebrew/Cellar/hdf5/1.14.4.3/include/
             /opt/homebrew/Cellar/boost/1.86.0_2/include
-            /opt/homebrew/opt/libomp/include/
+            #/opt/homebrew/opt/libomp/include/
+            #/usr/local/include
     )
     target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/hdf5/1.14.4.3/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(Keldysh_mfRG -L/opt/homebrew/Cellar/gsl/2.8/lib -lgsl -lgslcblas)
@@ -152,7 +148,8 @@ elseif(MACBOOK)
 
     target_link_libraries(NRG_QFT -L/opt/homebrew/Cellar/hdf5/1.14.4.3/lib -lhdf5 -lhdf5_cpp)
     target_link_libraries(NRG_QFT -L/opt/homebrew/Cellar/gsl/2.8/lib -lgsl -lgslcblas)
-    target_link_libraries(NRG_QFT -L/opt/homebrew/opt/libomp/lib -lomp)
+    #target_link_libraries(NRG_QFT -L/opt/homebrew/opt/libomp/lib -lomp)
+    #target_link_libraries(NRG_QFT -L/usr/local/lib -lomp)
     target_compile_options(NRG_QFT PRIVATE -w )
 endif()
 
