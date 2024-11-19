@@ -25,6 +25,7 @@
 #include "identities.hpp"
 
 #include <optional>
+#include <filesystem>
 
 #ifdef USE_MPI
 #include <mpi.h>
