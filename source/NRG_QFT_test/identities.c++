@@ -11,42 +11,45 @@ void IdentityChecker::check_BSE() {
 
 void IdentityChecker::check_SDE(){
     check_SDE_from_K1_plus_K2();
-    check_SDE_from_Gamma_via_channel_decomposition();
     check_SDE_from_Gamma();
+    check_SDE_from_Gamma_via_channel_decomposition();
 
     write_SDE_to_file();
 }
 
 void IdentityChecker::check_SDE_from_K1_plus_K2() {
     State<comp,false> state_for_SDE = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
-    utils::print("Evaluating SDE in the Hedin form from K1+K2 ... ", false);
+    utils::print("Evaluating SDE in the Hedin form from K1+K2 ... ", true);
 
     Propagator<comp> G(NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print_add("in channel a ... ", false);
+    utils::print("... in channel a ... ", true);
     SE_from_SDE_via_Hedin_a = compute_SDE_impl_v3<0, false, false>('a', NRG_state.Lambda,
                                                                    NRG_state.vertex, G, NRG_state.config);
 
-    utils::print_add("in channel p ... ", false);
+    utils::print("... in channel p ... ", true);
     SE_from_SDE_via_Hedin_p = compute_SDE_impl_v3<0, false, false>('p', NRG_state.Lambda,
                                                                    NRG_state.vertex, G, NRG_state.config);
 
-    utils::print_add("in channel t ... ", false);
+    utils::print("... in channel t ... ", true);
     SE_from_SDE_via_Hedin_t = compute_SDE_impl_v3<1, false, false>('t', NRG_state.Lambda,
                                                                    NRG_state.vertex, G, NRG_state.config);
-    utils::print_add("done.", true);
+    utils::print("... done.", true);
 }
 
 void IdentityChecker::check_SDE_from_Gamma_via_channel_decomposition() {
-    utils::print("Evaluating SDE from Γ via channel decomposition ... ", false);
+    utils::print("Evaluating SDE from Γ via channel decomposition ... ", true);
+    SelfEnergy<comp> SE_from_bare_K1_K2 = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_core       = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
 
     State<comp,false> NRG_state_without_core = NRG_state;
     NRG_state_without_core.vertex.set_to_zero_in_integrand('t', k3);  // remove core
 
-    compute_SDE(SE_from_SDE_via_Gamma_using_channel_decomposition, NRG_state_without_core, NRG_state.Lambda, 1);
+    compute_SDE(SE_from_bare_K1_K2, NRG_state_without_core, NRG_state.Lambda, 1);
+
 
     // Add contribution from the core:
-    utils::print_add("adding the contribution from the core ... ", false);
+    utils::print("... adding the contribution from the core ... ", true);
     const State<comp,false> bare_state_for_NRG_core = State<comp,false>(NRG_state.Lambda, NRG_state.config,
                                                                         false);
     Vertex<comp,false> NRG_core = bare_state_for_NRG_core.vertex;
@@ -55,11 +58,19 @@ void IdentityChecker::check_SDE_from_Gamma_via_channel_decomposition() {
     const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    State<comp,false> state_for_SDE_vertex = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
-    bubble_function(state_for_SDE_vertex.vertex, bare_state.vertex, NRG_core,
-                    G, G, 'a', false, NRG_state.config, {true, true, false});
-    loop<false,0>(SE_from_SDE_via_Gamma_using_channel_decomposition, state_for_SDE_vertex.vertex, G);
-    utils::print_add("done.", true);
+    GeneralVertex<comp,symmetric_full,false> bubble_l (NRG_state.Lambda, NRG_state.config);
+    GeneralVertex<comp,symmetric_full,false> bubble_r (NRG_state.Lambda, NRG_state.config);
+
+    bubble_function(bubble_l, NRG_core, bare_state.vertex,
+                    G, G, 't', false, NRG_state.config, {true, true, false});
+    bubble_function(bubble_r, bare_state.vertex, NRG_core,
+                    G, G, 't', false, NRG_state.config, {true, true, false});
+
+    loop<false,1>(SE_from_core, (bubble_l + bubble_r) * 0.5, G);
+
+    SE_from_SDE_via_Gamma_using_channel_decomposition = SE_from_bare_K1_K2 + SE_from_core;
+    utils::print("... done.", true);
+
 }
 
 void IdentityChecker::check_SDE_from_Gamma() {
@@ -68,11 +79,11 @@ void IdentityChecker::check_SDE_from_Gamma() {
 
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print("Evaluating SDE from Γ ... ", false);
+    utils::print("Evaluating SDE from Γ ... ", true);
     bubble_function(state_for_SDE_vertex.vertex, bare_state.vertex, NRG_state.vertex,
                     G, G, 'a', false, NRG_state.config, {true, true, false});
     loop<false,0>(SE_from_SDE_via_Gamma_direct, state_for_SDE_vertex.vertex, G);
-    utils::print_add("done.", true);
+    utils::print("... done.", true);
 }
 
 void IdentityChecker::check_BSE_for_K1() {
@@ -80,9 +91,9 @@ void IdentityChecker::check_BSE_for_K1() {
 
     Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print("Evaluating BSE for K1 via K2 ... ");
+    utils::print("Evaluating BSE for K1 via K2 ...", true);
     for (const char& ch: std::string("apt")) {
-        utils::print_add("in channel " + std::string(1, ch) + " ... ", false);
+        utils::print("... in channel " + std::string(1, ch) + " ...", true);
         State<comp,false> state_for_rhs = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
         // need a new state for each channel
         switch (ch) {
@@ -105,7 +116,7 @@ void IdentityChecker::check_BSE_for_K1() {
         bubble_function(state_for_BSE_for_K1.vertex, bare_state.vertex, state_for_rhs.vertex,
                         G, G, ch, false, NRG_state.config, {true, false, false});
     }
-    utils::print_add("done.", true);
+    utils::print("...done.", true);
 }
 
 void IdentityChecker::check_BSE_for_K1_via_K2b() {
@@ -113,9 +124,9 @@ void IdentityChecker::check_BSE_for_K1_via_K2b() {
 
     Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print("Evaluating BSE for K1 via K2' ... ");
+    utils::print("Evaluating BSE for K1 via K2' ... ", true);
     for (const char& ch: std::string("apt")) {
-        utils::print_add("in channel " + std::string(1, ch) + " ... ", false);
+        utils::print("... in channel " + std::string(1, ch) + " ... ", true);
         State<comp,false> state_for_rhs = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
         // need a new state for each channel
         switch (ch) {
@@ -138,7 +149,7 @@ void IdentityChecker::check_BSE_for_K1_via_K2b() {
         bubble_function(state_for_BSE_for_K1_via_K2b.vertex, state_for_rhs.vertex, bare_state.vertex,
                         G, G, ch, false, NRG_state.config, {true, false, false});
     }
-    utils::print_add("done.", true);
+    utils::print("... done.", true);
 }
 
 void IdentityChecker::check_BSE_for_K2() {
@@ -146,9 +157,9 @@ void IdentityChecker::check_BSE_for_K2() {
 
     Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print("Evaluating BSE for K2 ... ");
+    utils::print("Evaluating BSE for K2 ... ", true);
     for (const char& ch: std::string("apt")) {
-        utils::print_add("in channel " + std::string(1, ch) + " ... ", false);
+        utils::print("... in channel " + std::string(1, ch) + " ... ", true);
         State<comp,false> state_for_rhs = State<comp,false>(NRG_state.Lambda, NRG_state.config, false);
 
         state_for_rhs.vertex.avertex().K2 = NRG_state.vertex.avertex().K2;
@@ -187,7 +198,7 @@ void IdentityChecker::check_BSE_for_K2() {
         bubble_function(state_for_BSE_for_K2.vertex, state_for_rhs.vertex, bare_state.vertex,
                         G, G, ch, false, NRG_state.config, {true, true, false});
     }
-    utils::print_add("done.", true);
+    utils::print("... done.", true);
 }
 
 void IdentityChecker::check_BSE_for_K1_plus_K2() {
@@ -195,13 +206,13 @@ void IdentityChecker::check_BSE_for_K1_plus_K2() {
 
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print("Evaluating BSE for K1 + K2 ... ");
+    utils::print("Evaluating BSE for K1 + K2 ... ", true);
     for (const char& ch: std::string("apt")) {
-        utils::print_add("in channel " + std::string(1, ch) + " ... ", false);
+        utils::print("... in channel " + std::string(1, ch) + " ... ", true);
         bubble_function(state_for_BSE_for_K1_plus_K2.vertex, NRG_state.vertex, bare_state.vertex,
                         G, G, ch, false, NRG_state.config, {true, true, false});
     }
-    utils::print_add("done.", true);
+    utils::print("... done.", true);
 }
 
 void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS() const {

@@ -98,25 +98,26 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
     // compute the r-bubble with full vertex on the right
     GeneralVertex<Q,symmetric_full,false> bubble_r (Lambda, config);
     bubble_r.set_frequency_grid(Gamma);
-    bubble_function(bubble_r, Gamma_0, Gamma, G_bubble, G_bubble, channel, false, config);  // full vertex on the right
+    bubble_function(bubble_r, Gamma_0, Gamma, G_bubble, G_bubble, channel, false, config, {true, true, false});  // full vertex on the right
 
 
 
         // compute the r bubble with full vertex on the left
     GeneralVertex<Q,symmetric_full,false> bubble_l (Lambda, config);
     bubble_l.set_frequency_grid(Gamma);
-    bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, G_bubble, channel, false, config);  // full vertex on the left
+    bubble_function(bubble_l, Gamma, Gamma_0, G_bubble, G_bubble, channel, false, config, {true, true, false});  // full vertex on the left
+#if not defined(DEBUG_SYMMETRIES)
     if constexpr (channel == 't') {
         Gamma.swap_vanishing_component_channel_a_and_t();
 
         GeneralVertex<Q,symmetric_full,false> bubble_r_other (Lambda, config);
         bubble_r_other.set_frequency_grid(Gamma);
-        bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 'a', false, config);  // full vertex on the right
+        bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 'a', false, config, {true, true, false});  // full vertex on the right
         bubble_r += bubble_r_other;
 
         GeneralVertex<Q,symmetric_full,false> bubble_l_other (Lambda, config);
         bubble_l_other.set_frequency_grid(Gamma);
-        bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 'a', false, config);  // full vertex on the left
+        bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 'a', false, config, {true, true, false});  // full vertex on the left
         bubble_l += bubble_l_other;
     }
     else if constexpr (channel == 'a') {
@@ -124,16 +125,17 @@ SelfEnergy<Q> compute_SDE_impl(const double Lambda, const Vertex<Q,false>& Gamma
 
         GeneralVertex<Q,symmetric_full,false> bubble_r_other (Lambda, config);
         bubble_r_other.set_frequency_grid(Gamma);
-        bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 't', false, config);  // full vertex on the right
+        bubble_function(bubble_r_other, Gamma_0, Gamma, G_bubble, G_bubble, 't', false, config, {true, true, false});  // full vertex on the right
         bubble_r += bubble_r_other;
 
         GeneralVertex<Q,symmetric_full,false> bubble_l_other (Lambda, config);
         bubble_l_other.set_frequency_grid(Gamma);
-        bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 't', false, config);  // full vertex on the left
+        bubble_function(bubble_l_other, Gamma, Gamma_0, G_bubble, G_bubble, 't', false, config, {true, true, false});  // full vertex on the left
         bubble_l += bubble_l_other;
     }
+#endif
 
-    GeneralVertex<Q,symmetric_full,false> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the a bubble
+    GeneralVertex<Q,symmetric_full,false> bubble = (bubble_r + bubble_l) * 0.5;  // symmetrize the two versions of the bubble
 
     /// make sure that integrand only contains K1r + K2r + K2br
     bubble.vanishing_component_gamma0 = true;
