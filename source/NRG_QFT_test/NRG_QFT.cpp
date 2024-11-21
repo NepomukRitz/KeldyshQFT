@@ -102,7 +102,7 @@ auto main(int argc, char * argv[]) -> int {
     std::ostringstream u_str;
     u_str << std::fixed << std::setprecision(1) << u;
 
-    //const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/testing/";              // for MacBook
+    //const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/weak/";              // for MacBook
     const std::string NRG_DATAPATH        = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
     const std::string MuNRG_FILENAME      = NRG_DATAPATH + "siam_u"+u_str.str()+".h5";
     const std::string NRG_Cpp_FILENAME    = NRG_DATAPATH + "siam_u"+u_str.str()+"_C++.h5";
@@ -133,11 +133,11 @@ auto main(int argc, char * argv[]) -> int {
 
 
     IdentityChecker Identities(NRG_state, NRG_DATAPATH + "siam_u"+u_str.str());
-    Identities.check_BSE();
-    Identities.check_SDE();
+    //Identities.check_BSE();
+    //Identities.check_SDE();
     Identities.compute_1D_WardIdentity_wrt_v_RHS();
-    Identities.compute_1D_WardIdentity_wrt_w_RHS();
-    Identities.compute_2D_WardIdentity();
+    //Identities.compute_1D_WardIdentity_wrt_w_RHS();
+    //Identities.compute_2D_WardIdentity();
 
 
     utils::hello_world();

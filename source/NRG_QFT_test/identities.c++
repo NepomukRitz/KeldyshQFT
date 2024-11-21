@@ -215,7 +215,7 @@ void IdentityChecker::check_BSE_for_K1_plus_K2() {
     utils::print("... done.", true);
 }
 
-void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS() const {
+void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS(const int a1p, const int a1) const {
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
     const double vmin = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().w_lower;
@@ -228,12 +228,20 @@ void IdentityChecker::compute_1D_WardIdentity_wrt_v_RHS() const {
     for (int iv=0; iv<nFER; ++iv) {
         const double v = NRG_state.selfenergy.Sigma.frequencies.get_freqGrid_b().get_frequency(iv);
 
+        /*
         const Integrand_Phi_tilde<comp> integrand (G, NRG_state.vertex, v, 0);
         Adapt<Integrand_Phi_tilde<comp>> adaptor(1e-7, integrand);
 
         const double result = (NRG_state.config.Gamma + NRG_state.Lambda) / (2 * M_PI)
                               * myimag(adaptor.integrate(vmin, vmax));
         WI_RHS[iv] = result;
+        */
+
+        const Integrand_2D_WI integrand(G, NRG_state.vertex, 0.0, v, a1p, a1);
+        Adapt<Integrand_2D_WI> adaptor(integrator_tol, integrand);
+
+        WI_RHS[iv] = myreal(adaptor.integrate(vmin, vmax));
+
     }
     write_h5_rvecs(NRG_DATAPATH + "_WI_RHS.h5", {"WI_RHS"}, {WI_RHS});
 }
@@ -254,7 +262,7 @@ void IdentityChecker::compute_1D_WardIdentity_wrt_w_RHS(const int a1p, const int
         const double w = NRG_state.vertex.avertex().K1.frequencies.get_freqGrid_b().get_frequency(iw);
 
         const Integrand_2D_WI integrand(G, NRG_state.vertex, w, 0.0, a1p, a1);
-        Adapt<Integrand_2D_WI> adaptor(1e-5, integrand);
+        Adapt<Integrand_2D_WI> adaptor(integrator_tol, integrand);
 
         const comp WI_RHS = adaptor.integrate(vmin, vmax);
 

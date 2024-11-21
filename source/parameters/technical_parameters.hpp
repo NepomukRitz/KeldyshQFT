@@ -21,7 +21,7 @@ constexpr interpolMethod INTERPOLATION = linear_on_aux;     ///< Interpolation m
 
 constexpr double converged_tol = 1e-7;  ///< Tolerance for loop convergence in mfRG.
 
-inline double integrator_tol = 1e-5;    ///< Integrator tolerance.
+inline double integrator_tol = 1e-7;    ///< Integrator tolerance.
 
 
 #endif //FPP_MFRG_TECHNICAL_PARAMETERS_H

@@ -82,7 +82,7 @@ public:
 
     void check_SDE();
 
-    void compute_1D_WardIdentity_wrt_v_RHS() const;
+    void compute_1D_WardIdentity_wrt_v_RHS(int a1p=1, int a1=1) const;
 
     void compute_1D_WardIdentity_wrt_w_RHS(int a1p=1, int a1=1) const;
 
