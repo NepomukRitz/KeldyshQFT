@@ -12,7 +12,7 @@ constexpr bool MPI_FLAG = true;
 constexpr bool MPI_FLAG = false;
 #endif
 
-constexpr double inter_tol = 1e-5;  ///< Tolerance for closeness to grid points when interpolating.
+constexpr double inter_tol = 1e-7;  ///< Tolerance for closeness to grid points when interpolating.
 
 
 enum interpolMethod {linear=0, linear_on_aux=1, cubic=4};

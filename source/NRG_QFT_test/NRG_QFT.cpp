@@ -133,11 +133,11 @@ auto main(int argc, char * argv[]) -> int {
 
 
     IdentityChecker Identities(NRG_state, NRG_DATAPATH + "siam_u"+u_str.str());
-    //Identities.check_BSE();
-    //Identities.check_SDE();
+    Identities.check_BSE();
+    Identities.check_SDE();
     Identities.compute_1D_WardIdentity_wrt_v_RHS();
-    //Identities.compute_1D_WardIdentity_wrt_w_RHS();
-    //Identities.compute_2D_WardIdentity();
+    Identities.compute_1D_WardIdentity_wrt_w_RHS();
+    Identities.compute_2D_WardIdentity();
 
 
     utils::hello_world();
