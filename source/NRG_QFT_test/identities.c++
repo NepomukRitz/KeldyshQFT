@@ -11,9 +11,7 @@ void IdentityChecker::check_BSE() {
 
 void IdentityChecker::check_SDE(){
     check_SDE_from_K1_plus_K2();
-    check_SDE_from_Gamma('a');
-    check_SDE_from_Gamma('p');
-    check_SDE_from_Gamma('t');
+    for (const char& ch: std::string("apt")) check_SDE_from_Gamma(ch);
     check_SDE_from_Gamma_via_channel_decomposition();
 
     write_SDE_to_file();
@@ -81,14 +79,21 @@ void IdentityChecker::check_SDE_from_Gamma(const char ch) {
 
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print("Evaluating SDE from Γ in channel" + std::to_string(ch) + " ... ", true);
+    const std::string ch_str = std::string(1, ch);
+    utils::print("Evaluating SDE from Γ in channel" + ch_str + " ... ", true);
     bubble_function(state_for_SDE_vertex.vertex, bare_state.vertex, NRG_state.vertex,
                     G, G, ch, false, NRG_state.config, {true, true, false});
 
     switch (ch) {
-        case 'a': loop<false,0>(SE_from_SDE_via_Gamma_direct_a, state_for_SDE_vertex.vertex, G);
-        case 'p': loop<false,0>(SE_from_SDE_via_Gamma_direct_p, state_for_SDE_vertex.vertex, G);
-        case 't': loop<false,1>(SE_from_SDE_via_Gamma_direct_t, state_for_SDE_vertex.vertex, G);
+        case 'a':
+            loop<false,0>(SE_from_SDE_via_Gamma_direct_a, state_for_SDE_vertex.vertex, G);
+            break;
+        case 'p':
+            loop<false,0>(SE_from_SDE_via_Gamma_direct_p, state_for_SDE_vertex.vertex, G);
+            break;
+        case 't':
+            loop<false,1>(SE_from_SDE_via_Gamma_direct_t, state_for_SDE_vertex.vertex, G);
+            break;
         default: assert(false);
     }
 
