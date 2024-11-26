@@ -16,7 +16,9 @@ class IdentityChecker{
     SelfEnergy<comp> SE_from_SDE_via_Hedin_p = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
     SelfEnergy<comp> SE_from_SDE_via_Hedin_t = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
     SelfEnergy<comp> SE_from_SDE_via_Gamma_using_channel_decomposition = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
-    SelfEnergy<comp> SE_from_SDE_via_Gamma_direct = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_SDE_via_Gamma_direct_a = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_SDE_via_Gamma_direct_p = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
+    SelfEnergy<comp> SE_from_SDE_via_Gamma_direct_t = SelfEnergy<comp>(NRG_state.Lambda, NRG_state.config);
 
     // shall hold results from evaluation of BSEs.
     State<comp,false> state_for_BSE_for_K1 = State<comp,false>(NRG_state.Lambda,
@@ -46,7 +48,7 @@ class IdentityChecker{
      * Use the full vertex as a single entity to evaluate the SDE:
      * Compute an a-bubble and close the loop.
      */
-    void check_SDE_from_Gamma();
+    void check_SDE_from_Gamma(char ch='a');
 
     void check_BSE_for_K1();
     void check_BSE_for_K1_via_K2b();

@@ -11,7 +11,9 @@ void IdentityChecker::check_BSE() {
 
 void IdentityChecker::check_SDE(){
     check_SDE_from_K1_plus_K2();
-    check_SDE_from_Gamma();
+    check_SDE_from_Gamma('a');
+    check_SDE_from_Gamma('p');
+    check_SDE_from_Gamma('t');
     check_SDE_from_Gamma_via_channel_decomposition();
 
     write_SDE_to_file();
@@ -73,16 +75,23 @@ void IdentityChecker::check_SDE_from_Gamma_via_channel_decomposition() {
 
 }
 
-void IdentityChecker::check_SDE_from_Gamma() {
+void IdentityChecker::check_SDE_from_Gamma(const char ch) {
     State<comp,false> state_for_SDE_vertex = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
     const State<comp,false> bare_state = State<comp,false>(NRG_state.Lambda, NRG_state.config, true);
 
     const Propagator<comp> G (NRG_state.Lambda, NRG_state.selfenergy, 'g', NRG_state.config);
 
-    utils::print("Evaluating SDE from Γ ... ", true);
+    utils::print("Evaluating SDE from Γ in channel" + std::to_string(ch) + " ... ", true);
     bubble_function(state_for_SDE_vertex.vertex, bare_state.vertex, NRG_state.vertex,
-                    G, G, 'a', false, NRG_state.config, {true, true, false});
-    loop<false,0>(SE_from_SDE_via_Gamma_direct, state_for_SDE_vertex.vertex, G);
+                    G, G, ch, false, NRG_state.config, {true, true, false});
+
+    switch (ch) {
+        case 'a': loop<false,0>(SE_from_SDE_via_Gamma_direct_a, state_for_SDE_vertex.vertex, G);
+        case 'p': loop<false,0>(SE_from_SDE_via_Gamma_direct_p, state_for_SDE_vertex.vertex, G);
+        case 't': loop<false,1>(SE_from_SDE_via_Gamma_direct_t, state_for_SDE_vertex.vertex, G);
+        default: assert(false);
+    }
+
     utils::print("... done.", true);
 }
 
@@ -278,6 +287,7 @@ comp IdentityChecker::value_of_Sigma_for_LHS(const SelfEnergy<comp> &Sigma, doub
     if ((k1p == 0) and (k1 == 1)) return Sigma.valsmooth(0, vt, 0);
     if ((k1p == 1) and (k1 == 0)) return conj(Sigma.valsmooth(0, vt, 0));
     if ((k1p == 1) and (k1 == 1)) return 0.0;
+    assert(false);
 }
 
 void IdentityChecker::compute_2D_WardIdentity(const int a1p, const int a1) const {
@@ -342,8 +352,10 @@ void IdentityChecker::write_SDE_to_file() const {
     const H5std_string HEDIN_A("Hedin_a");
     const H5std_string HEDIN_P("Hedin_p");
     const H5std_string HEDIN_T("Hedin_t");
-    const H5std_string GAMMA_DECOMPOSED("Gamma_decomposed");
-    const H5std_string GAMMA_DIRECT("Gamma");
+    const H5std_string SDE_DECOMPOSED("SDE_decomposed");
+    const H5std_string SDEa("SDEa");
+    const H5std_string SDEp("SDEp");
+    const H5std_string SDEt("SDEt");
 
     write_to_hdf<double>(file_out, FREQS,
                          NRG_state.selfenergy.Sigma.frequencies.primary_grid.get_all_frequencies(), false);
@@ -356,10 +368,14 @@ void IdentityChecker::write_SDE_to_file() const {
                        SE_from_SDE_via_Hedin_p.Sigma.get_vec(), false);
     write_to_hdf<comp>(file_out, HEDIN_T,
                        SE_from_SDE_via_Hedin_t.Sigma.get_vec(), false);
-    write_to_hdf<comp>(file_out, GAMMA_DECOMPOSED,
+    write_to_hdf<comp>(file_out, SDE_DECOMPOSED,
                        SE_from_SDE_via_Gamma_using_channel_decomposition.Sigma.get_vec(), false);
-    write_to_hdf<comp>(file_out, GAMMA_DIRECT,
-                       SE_from_SDE_via_Gamma_direct.Sigma.get_vec(), false);
+    write_to_hdf<comp>(file_out, SDEa,
+                       SE_from_SDE_via_Gamma_direct_a.Sigma.get_vec(), false);
+   write_to_hdf<comp>(file_out, SDEp,
+                        SE_from_SDE_via_Gamma_direct_p.Sigma.get_vec(), false);
+   write_to_hdf<comp>(file_out, SDEt,
+                        SE_from_SDE_via_Gamma_direct_t.Sigma.get_vec(), false);
 }
 
 void IdentityChecker::write_BSE_to_file() const {
