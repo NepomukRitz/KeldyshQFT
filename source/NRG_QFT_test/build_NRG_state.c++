@@ -119,6 +119,7 @@ void build_NRG_K1(State<comp>& NRG_state, const std::string& NRG_FILENAME){
         if (ch != 'p') NRG_K1.upup_imag = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/K1/"+ std::string(1, ch) +"/up_up/imag");
 
         /// interpolate vertex:
+#pragma omp parallel for schedule(static)
         for (int iK = 0; iK < 16; ++iK) {
             NRG_vertex_getters vals;
             vals.updown_real = get_vertex_comp(iK, NRG_K1.updown_real);
@@ -392,6 +393,7 @@ void build_NRG_core_as_K3t(State<comp>& NRG_state, const std::string& NRG_FILENA
     NRG_core.upup_real   = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/core/up_up/real");
     NRG_core.upup_imag   = read_NRG_vertex_component(NRG_FILENAME, "KF/ph/core/up_up/imag");
 
+#pragma omp parallel for schedule(static)
     for (int iK = 0; iK < 16; ++iK) {
         NRG_vertex_getters vals;
         vals.updown_real = get_vertex_comp(iK, NRG_core.updown_real);

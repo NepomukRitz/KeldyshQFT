@@ -31,7 +31,33 @@
 #include <mpi.h>
 #endif
 
+struct filepaths {
+    std::string NRG_DATAPATH;
+    std::string MuNRG_FILENAME;
+    std::string NRG_Cpp_FILENAME;
+    std::string NRG_SELFENERGY_FILENAME;
+};
 
+filepaths set_filepaths(const double& u, const double& U_over_Delta, const std::ostringstream& u_str, const bool MacBook) {
+    struct filepaths paths;
+    if (std::abs(u-0.5) < 1e-4) { // weak coupling dataset
+        if (MacBook) paths.NRG_DATAPATH = "/Users/nepomuk-work/PhD/NRG_consistency/data/weak/";
+        else         paths.NRG_DATAPATH = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";
+
+        paths.MuNRG_FILENAME          = paths.NRG_DATAPATH + "siam_weak.h5";
+        paths.NRG_SELFENERGY_FILENAME = paths.NRG_DATAPATH + "SIAM_NRG4fRG_Gamma=1_U=1.5708_T=0.015708_eVg=0_Lambda=2_nz=6_Nkeep=5000_Etrunc=12.h5";
+    }
+    else { // strong coupling dataset
+        assert (std::abs(U_over_Delta - 5) < 1e-4);
+        if (MacBook) paths.NRG_DATAPATH = "/Users/nepomuk-work/PhD/NRG_consistency/data/strong/";
+        else         paths.NRG_DATAPATH = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";
+        paths.MuNRG_FILENAME          = paths.NRG_DATAPATH + "siam_strong.h5";
+        paths.NRG_SELFENERGY_FILENAME = paths.NRG_DATAPATH + "SIAM_NRG4fRG_Gamma=1_U=5_T=0.0025_Lambda=2_nz=6_Nkeep=5000.h5";
+    }
+    paths.NRG_Cpp_FILENAME = paths.NRG_DATAPATH + "siam_u"+u_str.str()+"_C++.h5";
+
+    return paths;
+}
 
 State<comp, false> read_or_build_NRG_state(const double& lambda, const fRG_config& config,
                                            const std::string& MuNRG_FILENAME, const std::string& NRG_Cpp_FILENAME,
@@ -70,11 +96,17 @@ auto main(int argc, char * argv[]) -> int {
         MPI_Init(nullptr, nullptr);
     }
 #endif
-    /// Parse command line arguments
+    /*
+     * Parse command line arguments.
+     * For the weak-coupling parameter set, they should be 0.01 0.5 100000
+     * For the strong-coupling parameter set, they should be 0.0005 1.5915494309 5
+    */
     const double T_in = atof(argv[1]);              // Temperature in units of U
     const double u = atof(argv[2]);                 // value for u = U / (πΔ)
     const double U_over_Delta = u * M_PI;
     const double D_in = atof(argv[3]);              // hybridization band-width. Use >= 10000 for wide-band limit
+
+
 
     /// Parameter assertions
     static_assert(DEBUG_SYMMETRIES == 1);
@@ -102,16 +134,9 @@ auto main(int argc, char * argv[]) -> int {
     std::ostringstream u_str;
     u_str << std::fixed << std::setprecision(1) << u;
 
-    //const std::string NRG_DATAPATH        = "/Users/nepomuk-work/PhD/NRG_consistency/data/weak/";              // for MacBook
-    const std::string NRG_DATAPATH        = "/dss/dssfs02/pn34vu/pn34vu-dss-0001/ra49hif/mfrg/data/";     // for KCS
-    const std::string MuNRG_FILENAME      = NRG_DATAPATH + "siam_u"+u_str.str()+".h5";
-    const std::string NRG_Cpp_FILENAME    = NRG_DATAPATH + "siam_u"+u_str.str()+"_C++.h5";
-    const std::string IDENTITIES_FILENAME = NRG_DATAPATH + "siam_u"+u_str.str()+"_identities.h5";
-
-    const std::string NRG_SELFENERGY_FILENAME = NRG_DATAPATH + "SIAM_NRG4fRG_Gamma=1_U=1.5708_T=0.015708_eVg=0_Lambda=2_nz=6_Nkeep=5000_Etrunc=12.h5"; // only weak coupling as of now
-
+    const filepaths paths = set_filepaths(u, U_over_Delta, u_str, false);  // set last option to "false" for KCS
     utils::check_input(config);
-    check_NRG_input(MuNRG_FILENAME, U_over_Delta, T_in);
+    check_NRG_input(paths.MuNRG_FILENAME, U_over_Delta, T_in);
 
 
     /// build required frequency grids to give to MuNRG
@@ -125,14 +150,13 @@ auto main(int argc, char * argv[]) -> int {
     saveWantedFrequenciesToHDF(NRG_DATAPATH + "frequencies.h5", freqs);
     */
 
-
     const State<comp, false> NRG_state = read_or_build_NRG_state(lambda, config,
-                                                                 MuNRG_FILENAME,
-                                                                 NRG_Cpp_FILENAME,
-                                                                 NRG_SELFENERGY_FILENAME);
+                                                                 paths.MuNRG_FILENAME,
+                                                                 paths.NRG_Cpp_FILENAME,
+                                                                 paths.NRG_SELFENERGY_FILENAME);
 
 
-    IdentityChecker Identities(NRG_state, NRG_DATAPATH + "siam_u"+u_str.str());
+    IdentityChecker Identities(NRG_state, paths.MuNRG_FILENAME);
     Identities.check_BSE();
     Identities.check_SDE();
     Identities.compute_1D_WardIdentity_wrt_v_RHS();
