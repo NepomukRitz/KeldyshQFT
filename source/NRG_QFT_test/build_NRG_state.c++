@@ -221,14 +221,14 @@ void build_NRG_K2_and_K2p(State<comp>& NRG_state, const std::string& NRG_FILENAM
                 NRG_K2p.upup_real   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/p/up_up/real");
                 break;
             case 't':   // need to swap K2 and K2p in t-channel
-                NRG_K2p.updown_real = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_down/real");
-                NRG_K2.updown_real  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_down/real");
-                NRG_K2p.updown_imag = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_down/imag");
-                NRG_K2.updown_imag  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_down/imag");
-                NRG_K2p.upup_real   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_up/real");
-                NRG_K2.upup_real    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_up/real");
-                NRG_K2p.upup_imag   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_up/imag");
-                NRG_K2.upup_imag    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_up/imag");
+                NRG_K2.updown_real = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_down/real");
+                NRG_K2p.updown_real  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_down/real");
+                NRG_K2.updown_imag = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_down/imag");
+                NRG_K2p.updown_imag  = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_down/imag");
+                NRG_K2.upup_real   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_up/real");
+                NRG_K2p.upup_real    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_up/real");
+                NRG_K2.upup_imag   = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2/t/up_up/imag");
+                NRG_K2p.upup_imag    = read_NRG_vertex_component(NRG_FILENAME,"KF/ph/K2prime/t/up_up/imag");
                 break;
             default:
                 assert(false);
