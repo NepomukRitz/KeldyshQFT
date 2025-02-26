@@ -35,6 +35,18 @@ then
   #module load boost/1.70.0-intel19
   #module load cmake
   #module load eigen/3.3.7-intel19
+elif [ "$1" == "--CM4" ]
+then
+  export CLUSTER=KCS
+  module unload spack gcc hdf5 fftw gsl boost eigen cmake intel-mpi # in case some old versions have been loaded previously
+  
+  module load spack/22.2.1
+  module load intel-mpi/2019-gcc
+  module load hdf5/1.8.22-gcc11-impi
+  module load gsl/2.7-gcc11
+  module load boost/1.75.0-gcc11-impi
+  module load eigen/3.4.0-gcc11
+  module load cmake
 elif [ "$1" == "--JSC" ]
 then
   export CLUSTER=JSC
@@ -45,7 +57,7 @@ then
   module load Boost
   module load CMake/3.21.1
 else
-  echo "Invalid cluster option! Needs to be --ASC, --KCS or --JSC"
+  echo "Invalid cluster option! Needs to be --ASC, --KCS, CM4, or --JSC"
   exit
 fi
 
