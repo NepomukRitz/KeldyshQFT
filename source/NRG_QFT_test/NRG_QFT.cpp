@@ -62,7 +62,7 @@ filepaths set_filepaths(const double& u, const double& U_over_Delta, const std::
 State<comp, false> read_or_build_NRG_state(const double& lambda, const fRG_config& config,
                                            const std::string& MuNRG_FILENAME, const std::string& NRG_Cpp_FILENAME,
                                            const std::optional<std::string>& NRG_SELFENERGY_FILENAME = std::nullopt){
-    if (std::filesystem::exists(NRG_Cpp_FILENAME)) {
+    if (std::experimental::filesystem::exists(NRG_Cpp_FILENAME)) {
         utils::print("Reading in existing NRG-state ... ");
         State<comp, false> NRG_state = read_state_from_hdf(NRG_Cpp_FILENAME, 0);
         utils::print_add("done.", true);
