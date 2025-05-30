@@ -85,52 +85,52 @@ constexpr buffer_config<6> K3_config{
 #else
 #if not PARTICLE_HOLE_SYMM
 constexpr buffer_config<3> SE_config{
-    std::array<size_t,3>({ 3, nFER, n_in_K1})
+    std::array<size_t,3>({ 3, nFER, n_in})
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<4> K1at_config{
-    std::array<size_t,4>({n_spin, nBOS, 2, n_in_K1})
+    std::array<size_t,4>({n_spin, nBOS, 2, n_in})
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<4> K1p_config {
-    std::array<size_t,4>({n_spin, nBOS, 3, n_in_K1})
+    std::array<size_t,4>({n_spin, nBOS, 3, n_in})
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<5> K2at_config{
-    std::array<size_t,5>({n_spin, nBOS2, nFER2, 4, n_in_K2})
+    std::array<size_t,5>({n_spin, nBOS2, nFER2, 4, n_in})
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<5> K2p_config {
-    std::array<size_t,5>({n_spin, nBOS2, nFER2, 6, n_in_K2})
+    std::array<size_t,5>({n_spin, nBOS2, nFER2, 6, n_in})
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<6> K3_config{
-    std::array<size_t,6>({n_spin, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, 7, n_in_K3})
+    std::array<size_t,6>({n_spin, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, 7, n_in})
     , 3  // number of frequency dimensions
     , 1};// position of first frequency index
 #else
 constexpr buffer_config<3> SE_config{
-    std::array<size_t,3>({ KELDYSH_FORMALISM ? 3 : 1, nFER, n_in_K1}) // dims
+    std::array<size_t,3>({ KELDYSH_FORMALISM ? 3 : 1, nFER, n_in}) // dims
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<4> K1at_config{
-    std::array<size_t,4>({n_spin, nBOS, KELDYSH_FORMALISM ? 3 : 1, n_in_K1}) // dims
+    std::array<size_t,4>({n_spin, nBOS, KELDYSH_FORMALISM ? 3 : 1, n_in}) // dims
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<4> K1p_config {
-    std::array<size_t,4>({n_spin, nBOS, KELDYSH_FORMALISM ? 3 : 1, n_in_K1}) // dims
+    std::array<size_t,4>({n_spin, nBOS, KELDYSH_FORMALISM ? 3 : 1, n_in}) // dims
     , 1  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<5> K2at_config{
-    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH_FORMALISM ? 3 : 1, n_in_K2}) // dims
+    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH_FORMALISM ? 3 : 1, n_in}) // dims
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<5> K2p_config {
-    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH_FORMALISM ? 3 : 1, n_in_K2}) // dims
+    std::array<size_t,5>({n_spin, nBOS2, nFER2, KELDYSH_FORMALISM ? 3 : 1, n_in}) // dims
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
 constexpr buffer_config<6> K3_config{
-    std::array<size_t,6>({n_spin, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH_FORMALISM ? 5 : 1, n_in_K3}) // dims
+    std::array<size_t,6>({n_spin, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH_FORMALISM ? 5 : 1, n_in}) // dims
     , 3  // number of frequency dimensions
     , 1};// position of first frequency index
 #endif
@@ -149,7 +149,7 @@ constexpr buffer_config<5> K2_expanded_config{
 #if MAX_DIAG_CLASS >=2
     std::array<size_t,5>({1, nBOS2, nFER2, KELDYSH ?  16 : 1, n_in})
 #else
-    std::array<size_t,5>({1, 0, 0, KELDYSH ?  16 : 1, n_in_K2})
+    std::array<size_t,5>({1, 0, 0, KELDYSH ?  16 : 1, n_in})
 #endif
     , 2  // number of frequency dimensions
     , 1};// position of first frequency index
@@ -157,7 +157,7 @@ constexpr buffer_config<6> K3_SBE_expanded_config{
 #if MAX_DIAG_CLASS >= 2
         std::array<size_t,6>({1, nBOS2, nFER2, GRID!=2 ? nFER2 : (nFER2-1)/2+1, KELDYSH ?  16 : 1, n_in})
 #else
-        std::array<size_t,6>({1, 0, 0, 0, KELDYSH ? 16 : 1, n_in_K3})
+        std::array<size_t,6>({1, 0, 0, 0, KELDYSH ? 16 : 1, n_in})
 #endif
         , 3  // number of frequency dimensions
         , 1};// position of first frequency index
@@ -165,7 +165,7 @@ constexpr buffer_config<6> K3_expanded_config{
 #if MAX_DIAG_CLASS == 3
     std::array<size_t,6>({1, nBOS3, nFER3, GRID!=2 ? nFER3 : (nFER3-1)/2+1, KELDYSH ?  16 : 1, n_in})
 #else
-    std::array<size_t,6>({1, 0, 0, 0, KELDYSH ? 16 : 1, n_in_K3})
+    std::array<size_t,6>({1, 0, 0, 0, KELDYSH ? 16 : 1, n_in})
 #endif
     , 3  // number of frequency dimensions
     , 1};// position of first frequency index

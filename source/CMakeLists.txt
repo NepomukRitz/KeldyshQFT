@@ -11,7 +11,7 @@ option(MACBOOK     "Build on MacBook"     ON)
 
 
 ## Set the C++ standard, the compiler, compiler optimization options (O0 - off, O3 - best) and add -fopenmp
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 if(MACBOOK)
     set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm@14/bin/clang++")
     #set(CMAKE_CXX_COMPILER mpicxx)
